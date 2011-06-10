@@ -1,0 +1,33 @@
+AUSGANGSLAGE
+Für viele biologische Projekte ist die Verfügbarkeit von Art-Beobachtungsdaten in digitaler Form wichtig. Anspruchsvolle Auswertungen und Erfolgskontrollen sind nur möglich, wenn die Daten di­gital vorliegen. Fliessen digitale Daten in den nationalen Kreislauf der Schweiz (CSCF, SISF), können sie über das ur­sprüngliche Projekt hinaus weiteren Nutzen bringen.
+
+Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereite­ten Formularen, welche sicherstellen, dass die benötigten Informationen festgehalten wer­den.
+
+Fehlerquellen: 
+- Nicht eindeutige Bezeichnung von Arten
+- Verwendung von nicht (mehr) offiziellen Artnamen
+- Erfassung unvollständig oder nicht gemäss den Vorgaben des Projekts
+- Nicht eindeutige Ortsbeschreibung oder ungenaues/fehlerhaftes Auslesen von Koordinaten
+
+Die Digitalisierung erfolgt später im Büro. Im besten Fall nach wenigen Stunden durch die­selbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn.
+
+Fehlerquellen: Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. Im besten Fall wer­den unklare Beobachtungen nicht digitalisiert. 
+Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Massenverarbeitung. Es ist allzu menschlich, sie 1. an eine andere Person auszulagern und 2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
+
+ZIELE
+1. Artbeobachtungen liegen vermehrt digital vor
+2. sie stehen schneller zur Verfügung
+3. ihre Datenqualität ist höher, da bedeutende Fehlerquellen ausgeschaltet wurden
+4. der Gesamtaufwand für Felderfassung und Digitalisierung sinkt
+5. die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfas­sen
+
+PROJEKTIDEE
+- Eine Mobil-App ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld
+- Eine Website ermöglicht (später) die weitere Bearbeitung, Auswertung und den Export derselben Daten
+- Damit Felderfassungen unabhängig vom Mobilnetz möglich sind, werden die Daten in einer CouchDb gespeichert
+- CouchDb ermöglicht es auch, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
+- Für die Mobil-App wird jQuery mobile und Phonegap verwendet. Damit sollte das App für möglichst viele Geräte verfügbar sein
+
+HILFE ERWÜNSCHT
+Ich bin Biologe. Mit Access-Datenbanken habe ich viel Erfahrung, auch mit deren Programmierung mit Visual Basic. Was JavaScript, jQuery, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+
