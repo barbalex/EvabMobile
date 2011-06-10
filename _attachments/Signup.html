@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/main.css" type="text/css">
+  	<link rel="stylesheet" href="style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
+  </head>
+  <body>
+  	<div data-role="page">
+		<div data-role="header">
+			<a href="#index.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external" data-rel="back" >Back</a>
+			<h1>Konto erstellen</h1>
+		</div>
+		<div data-role="content">
+			<form id="Form" action="#" method="get">
+				<div data-role="fieldcontain">
+					<label for="UserName">Benutzername*:</label>
+					<input id="UserName" name="UserName" type="text"/>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Passwort">Passwort*:</label>
+					<input id="Passwort" name="Passwort" type="password"/>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Passwort2">Passwort bestätigen*:</label>
+					<input id="Passwort2" name="Passwort2" type="password"/>
+				</div>
+				<p>Es wird eine verschlüsselte Version des Passworts gespeichert. Das Original kennt ausser Ihnen niemand.</p>
+				<hr />
+				<div data-role="fieldcontain">
+					<label for="Autor">Autor*:</label>
+					<input id="Autor" name="Autor" type="text"/>
+					<p>Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
+				</div>
+				<hr />
+				<div data-role="fieldcontain">
+					<label for="Email">email-Adresse:</label>
+					<input id="Email" name="Email" type="email"/>
+					<hr />
+					<p>Felder mit * sind obligatorisch</p>
+				</div>
+			</form>
+		</div>
+		<div data-role="footer">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+					<li><a href="index.html" id="CancelButton" data-icon="delete" data-iconpos="left">abbrechen</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
+	</div>
+  </body>
+  <script src="vendor/couchapp/loader.js"></script>
+  <script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
+  <script type="text/javascript" charset="utf-8">;
+	function handleDocumentReady()
+	{
+		$db = $.couch.db("evab-ch_barbalex_evab");
+		
+		$("#SubmitButton").tap(function(event){
+			var UserName = $('input[name=UserName]').val();
+			var Passwort = $('input[name=Passwort]').val();
+			var Passwort2 =$('input[name=Passwort2]').val();
+			var Autor =$("input#Autor").val();
+			if (UserName == "") {
+				MeldungEinzeilig("Bitte Benutzernamen eingeben");
+			} else if (Passwort==""){
+				MeldungEinzeilig("Bitte Passwort eingeben");
+			} else if (Passwort2==""){
+				MeldungEinzeilig("Bitte Passwort bestätigen");
+			} else if (Passwort != Passwort2) {
+				MeldungEinzeilig("Passwort ist falsch bestätigt");
+			} else if (Autor==""){
+				MeldungEinzeilig("Bitte Autor eingeben");
+			} else {
+				signup();
+			}
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+	function signup() {
+		//User in _user eintragen
+		var Autor = $("input#Autor").val();                                     
+		var email = $("input#Email").val();                                      
+		var name = $('input[name=UserName]').val();
+		var pass = $('input[name=Passwort]').val();
+		$.couch.signup({
+				name : name, Autor: Autor, email: email
+		  	}, pass, {
+		  	success : function() {
+		  		einloggen(name, pass);
+		  	},
+		  	error : function() {
+		  		MeldungZweizeilig("Das Konto konnte nicht gespeichert werden.", "Versuchen Sie es mit einem anderen Benutzernamen");
+		  	}
+		});
+	}
+	
+  	function einloggen(name, pass) {
+		$.couch.login({
+			name : name,
+			password : pass,
+			success : function(r) {
+				_init();
+			},
+			error: function() {
+				MeldungZweizeilig("Die automatische Anmeldung ist gescheitert.","Bitte melden Sie sich mit dem neuen Konto an.");
+				window.open("index.html", target="_self");
+			}
+		});      
+	}
+	
+	function _init() {
+		var userCtx;
+		$.couch.session({
+			success : function(r) {
+				userCtx = r.userCtx;
+				if (userCtx.name) {
+					UserInEvabSpeichern();
+					MeldungZweizeilig("Willkommen " + userCtx.name, "Sie sind angemeldet");
+					setTimeout("window.open('BeobListe.html', target='_self')",2800);
+				} else if (userCtx.roles.indexOf("_admin") != -1) {
+					MeldungEinzeilig("Oops, die Datenbank hat keine Benutzer!");
+				} else {
+					MeldungEinzeilig("Sie konnten nicht eingeloggt werden");
+				}
+			}
+		});
+	}
+	
+	function UserInEvabSpeichern() {
+		var document = {};
+		document.Typ = "User";
+		document.UserName = $('input[name=UserName]').val();
+		document.Autor = $("input#Autor").val();
+		document.Email = $("input#Email").val();
+		$db.saveDoc(document);
+	}
+  </script>
+</html>

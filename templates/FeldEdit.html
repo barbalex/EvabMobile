@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
+  	<link rel="stylesheet" href="../../style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+    	<script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
+    	<script type="text/javascript">
+		$(document).ready(function(){
+			$db = $.couch.db("evab-ch_barbalex_evab");
+			userCtx = null;
+			var user;
+			$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				user = userCtx.name;
+				}
+			});
+			
+			var UserFeldDocId;
+			
+			//User-Felder setzen
+			var viewname = "evab/UserFeld";
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var Feld = "{{FeldName}}";
+					var UserFeld = user + Feld;
+					var UserFeldVonView;
+					for(i in data.rows)
+					{
+						UserFeldVonView = data.rows[i].key;
+						var row = data.rows[i].value;
+						if(UserFeldVonView == UserFeld){
+							UserFeldDocId = row._id;
+							$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
+							$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
+							$("input#Standardwert").val(row.Standardwert);
+						}
+					}
+					$("select#SichtbarModusEinfach").slider("refresh");
+					$("select#SichtbarModusHierarchisch").slider("refresh");
+				}
+			});
+			
+			ArtGruppeAufbauen();
+			$("select#ArtGruppe").val('{{ArtGruppe}}');
+			$("select#ArtGruppe").selectmenu("refresh");
+			
+			$("select#Tabelle").val("{{Tabelle}}");
+			$("select#Tabelle").selectmenu("refresh");
+			
+			$("select#RolleModusEinfach").val("{{RolleModusEinfach}}");
+			$("select#RolleModusEinfach").selectmenu("refresh");
+			
+			$("select#Formularelement").val("{{Formularelement}}");
+			$("select#Formularelement").selectmenu("refresh");
+			
+			$("select#FormElementTyp").val("{{FormElementTyp}}");
+			$("select#FormElementTyp").selectmenu("refresh");
+			
+			var docId = "{{id}}";
+			document.getElementById("deleteButton").href = "../../_show/Feld_delete/" + docId;
+			
+			$("#submitButton").tap(function(event) {
+				var docId = "{{id}}";
+				$db.openDoc(docId, {
+					success: function(document) {
+						document.Typ = "Feld";
+						document.user = user;
+						document.Tabelle = $("select#Tabelle").val();
+						document.FeldName = $("input#FeldName").val();
+						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
+						document.FeldBeschreibung = $("input#FeldBeschreibung").val();						
+						document.Reihenfolge = parseInt($("input#Reihenfolge").val());
+						document.FeldNameEvab = $("input#FeldNameEvab").val();
+						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
+						document.FeldNameCscf = $("input#FeldNameCscf").val();
+						document.RolleModusEinfach = $("select#RolleModusEinfach").val();
+						document.Formularelement = $("select#Formularelement").val();
+						document.FormElementTyp = $("select#FormElementTyp").val();
+						document.ArtGruppe = $("select#ArtGruppe").val();
+						saveDocument(document);
+					},
+					error: function() {
+						MeldungEinzeilig("Dieses Dokument kann nicht geöffnet werden: " + docId);
+					}
+				});
+			});
+			
+			$("#submitUserFeldButton").tap(function(event) {
+				if (UserFeldDocId) {
+					$db.openDoc(UserFeldDocId, {
+						success: function(document) {
+							document.Typ = "UserFeld";
+							document.user = user;
+							document.FeldName = "{{FeldName}}";
+							document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+							document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+							document.Standardwert = $("input#Standardwert").val();
+							saveUserFeld(document);
+						},
+						error: function() {
+							MeldungEinzeilig("Fehler beim Speichern");
+						}
+					});
+				} else {
+					var document = {};
+					document.Typ = "UserFeld";
+					document.user = user;
+					document.FeldName = "{{FeldName}}";
+					document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+					document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+					document.Standardwert = $("input#Standardwert").val();
+					saveUserFeld(document);
+				}
+			});
+
+			//für Löschmenu
+			var docId = "{{id}}";
+			var url = "../../../../../evab/_design/evab/_show/Feld_edit/" + docId;
+			document.getElementById("neinButton").href = url;
+			$("#jaButton").tap(handleDelete);
+		});
+	</script>
+	<script type="text/javascript">
+		function saveDocument(document)
+		{
+			$db.saveDoc(document, {
+				success: function() {
+					window.open("../../Feldliste.html", target="_self");
+				},
+				error: function() {
+					MeldungEinzeilig("Diese Beobachtung kann nicht gespeichert werden: " + document._id + ", " + document.bArtName);
+				}
+			});
+		}
+		
+		function saveUserFeld(document)
+		{
+			$db.saveDoc(document, {
+				success: function() {
+				},
+				error: function() {
+					MeldungEinzeilig("Speichern misslungen");
+				}
+			});
+		}
+		
+		function ArtGruppeAufbauen()
+		{
+			$("select#ArtGruppe").empty();
+			var viewname = "evab/Artgruppen";
+			$db.view(viewname, {
+				success: function( data ) {
+					var i;
+					var ArtGruppe;
+					var ArtGruppenWerte;
+					ArtGruppenWerte = '{{ArtGruppe}}';
+					var listItem;
+					var ListItemContainer = "<option value=''>Artgruppen w&auml;hlen</option>";
+					for(i in data.rows)
+					{
+						ArtGruppe = data.rows[i].key;
+						if(ArtGruppenWerte.indexOf(ArtGruppe)!=-1){      //Was passiert, wenn ArtGruppenWerte nicht existiert?
+							listItem = "<option value='" + ArtGruppe + "' selected='selected'>" + ArtGruppe + "</option>";
+						} else {
+							listItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
+						}
+						ListItemContainer = ListItemContainer + listItem;
+					}
+					$("select#ArtGruppe").append(ListItemContainer);
+					$("select#ArtGruppe").selectmenu("refresh");
+				}
+			});
+			
+		}
+
+		function handleDelete(event)
+		{
+			var docId = "{{id}}";
+			// First open doc based on ID in order to get full document
+			$db.openDoc(docId, {
+				success: function(document) {
+					// Then use the opened doc as reference to remove
+					$db.removeDoc(document, {
+						success: function() {
+							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/Feldliste.html", target = '_self');
+						},
+						error: function() {
+							MeldungEinzeilig("Das Feld mit der ID: " + docId + " konnte nicht gelöscht werden");
+						}
+					});
+				},
+				error: function() {
+					MeldungEinzeilig("Ein Feld mit der ID: " + docId + " wurde nicht gefunden");
+				}
+			});
+			return false;
+		}
+	</script>
+  </head>
+  <body>
+  	<div data-role="page">
+  		<div data-role="header" data-position="fixed">
+  			<a href="../../Feldliste.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+  			<h2>Datenfelder</h2>
+  			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
+				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto erstellen</a>
+				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="Feldliste" href="../../Feldliste.html" data-role="button" rel="external">Datenfelder verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder exportieren<br />(CSV)</a>
+  			</div>
+  		</div>
+		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
+			<form id="UserFeldForm" action="#" method="get" >
+				<h2>Meine Einstellungen</h2>
+				<div data-role="fieldcontain">
+					<label for="SichtbarModusEinfach">Sichtbar im einfachen Modus?</label>
+					<select name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
+						<option value="nein">nein</option>
+						<option value="ja">ja</option>
+					</select> 
+				</div>
+				<div data-role="fieldcontain">
+					<label for="SichtbarModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
+					<select name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
+						<option value="nein">nein</option>
+						<option value="ja">ja</option>
+					</select> 
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Standardwert">Standardwert:</label>
+					<input id="Standardwert" name="Standardwert" type="text" />
+				</div>
+				<button type="submit" id="submitUserFeldButton" data-icon="check" data-iconpos="left" class="ui-btn-active" data-role="button">speichern</button>
+			</form>
+				<hr>
+				<h2>Feldeigenschaften</h2>
+			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
+				<div data-role="fieldcontain">
+					<label for="Tabelle" class="select">Tabelle:</label>
+					<select id="Tabelle" name="Tabelle" value="{{Tabelle}}" data-native-menu="false">
+						<option value="Art">Art</option>
+						<option value="Zeit">Zeit</option>
+						<option value="Ort">Ort</option>
+						<option value="Raum">Raum</option>
+						<option value="Projekt">Projekt</option>
+					</select>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldName">Feld-Name:</label>
+					<input id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldBeschriftung">Beschriftung:</label>
+					<input id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldBeschreibung">Beschreibung:</label>
+					<textarea id="FeldBeschreibung" name="FeldBeschreibung" type="textarea" value="{{FeldBeschreibung}}"></textarea>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Reihenfolge">Reihenfolge:</label>
+					<input id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldNameEvab">Feldname in EvAB:</label>
+					<input id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldNameZdsf">Feldname beim ZDSF:</label>
+					<input id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldNameCscf">Feldname beim CSCF:</label>
+					<input id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="RolleModusEinfach" class="select">Rolle im Modus "einfach":</label>
+					<select id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="false">
+						<option value="EingabeErforderlich">EingabeErforderlich</option>
+						<option value="EingabeMöglich">EingabeMöglich</option>
+						<option value="EingabeNichtVorgesehen">EingabeNichtVorgesehen</option>
+					</select>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Formularelement" class="select">Formularelement:</label>
+					<select id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="false">
+						<option value="textinput">textinput</option>
+						<option value="textarea">textarea</option>
+						<option value="toggleswitch">toggleswitch</option>
+						<option value="selectmenu">selectmenu</option>
+						<option value="multipleselect">multipleselect</option>
+					</select>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>
+					<select id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="false">
+						<optio value=""></option>
+						<option value="text">text</option>
+						<option value="date">date</option>
+					</select>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="ArtGruppe" class="select">Art-Gruppen:</label>
+					<select id="ArtGruppe" name="ArtGruppe" value='{{ArtGruppe}}' multiple="multiple" data-native-menu="false">
+					</select>
+				</div>
+				<button type="submit" id="submitButton" data-icon="check" data-theme="b">speichern</button>
+				<a data-icon="minus" class="ui-btn-right" data-role="actionsheet">löschen</a>
+				<div>
+					<p>Wollen Sie das Feld "{{FeldBeschriftung}}" der Tabelle "{{Tabelle}}" wirklich löschen?</p>
+					<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/Feldliste.html" data-role="button" rel="external">ja</a>
+					<a id="neinButton" href="#" data-role="button" rel="external">nein</a>
+				</div>
+			</form>
+		</div>
+	</div>
+  </body>
+</html>

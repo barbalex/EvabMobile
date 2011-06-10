@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/main.css" type="text/css">
+  	<link rel="stylesheet" href="style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.actionsheet.css" type="text/css"/>
+  </head>
+  <body>
+  	<div data-role="page" id="BeobListe">
+  		<div id="BeobListeHeader" data-role="header" data-position="fixed" data-backbtn="false">
+  			<h2>Beobachtungen</h2>
+  			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
+				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto erstellen</a>
+				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="Feldliste" href="Feldliste.html" data-role="button" rel="external">Datenfelder verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder exportieren<br />(CSV)</a>
+  			</div>
+  		</div>
+		<div data-role="content">
+			<ul id="beobachtungen" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
+					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div data-role="page" id="BeobListeMap" style="width:100%; height:100%;">
+		<div data-role="header" data-position="fixed">
+			<a href="#BeobListe" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
+			<h1>Karte</h1>
+			<a href="Menu.html" data-role="button" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+		</div>
+		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
+			<div id="map_canvas" style="width:100%; height:100%;"></div>
+		</div>
+	</div>
+
+  </body>
+  <script src="vendor/couchapp/loader.js"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" charset="utf-8">
+	function handleDocumentReady()
+	{
+		$db = $.couch.db("evab-ch_barbalex_evab");
+		AnmeldungPruefen();
+		refreshBeobListe();
+
+		$('li').bind('taphold', function(event){
+			var that = this;
+			var BeobId = $(that).attr('id');
+			MeldungEinzeilig("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
+		});
+
+		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
+			$.mobile.changePage("#BeobListeMap", "slide", false, true);
+		});
+
+		$('#BeobListeMap').live("pagecreate", function() {
+			/*
+			zuerst Koordinaten holen, Karte darum zentrieren
+			dann in schleife alle marker setzen
+			listener schaffen
+			*/
+			var lat = 47.383333;
+			var lng = 8.533333;
+			if ( navigator.geolocation ) { 
+	        	navigator.geolocation.getCurrentPosition ( 
+	            function(position) {
+	            	lat = position.coords.latitude;
+	            	lng = position.coords.longitude;     
+	            }); 
+	        }
+	        alert("center lat = " + lat);
+	        alert("center lng = " + lng);
+			var latlng = new google.maps.LatLng(lat, lng);
+			var options = {
+			    zoom: 15,
+			    center: latlng,
+			    streetViewControl: false,
+			    mapTypeId: google.maps.MapTypeId.HYBRID
+			};
+			var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+			google.maps.event.trigger(map,'resize');
+			
+			//jetzt werden für alle Beobachtungen marker erstellt
+			$db.view("evab/BeobListeLatLng",
+				{success: function(data) {
+					var i;
+					var anzBeob = 0;
+					var user;
+					var beob;
+					var zDatum;
+					var zZeit;
+					var bArtGruppe;
+					var image;
+					var bArtName;
+					var bAutor;
+					var UserZeit;
+					var infowindow = new google.maps.InfoWindow();
+					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+						key = data.rows[i].key;
+						User = userCtx.name;
+						if (key[0] == User) {            //nur eigene Beobachtungen zählen!
+							anzBeob = anzBeob + 1;
+						}
+					}
+					if (anzBeob == 0) {
+						MeldungEinzeilig("Es wurden noch keine Beobachtungen mit Breiten- und Längengrad erfasst");
+					} else {
+						for(i in data.rows)                  //Liste aufbauen
+						{
+							beob = data.rows[i].value;
+							key = data.rows[i].key;
+							User = userCtx.name;
+							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+								var zDatum = beob.zDatum;
+								var zZeit = beob.zZeit;
+								var bArtGruppe = beob.bArtGruppe;
+								var image = "Artgruppenbilder/" + bArtGruppe + ".png";
+								var bArtName = beob.bArtName;
+								var bAutor = beob.bAutor;
+								var lat2 = beob.oLatitudeDecDeg;
+								var lng2 = beob.oLongitudeDecDeg;
+								var latlng2 = new google.maps.LatLng(lat2, lng2);
+								var marker = new google.maps.Marker({ 
+									map: map,
+									position: latlng2,  
+								    title: bArtName,
+								    icon: image
+								});
+								var contentString = '<div id="content">'+
+								    '<div id="siteNotice">'+
+								    '</div>'+
+								    '<h4 id="firstHeading" class="GmInfowindow">' + bArtName + '</h4>'+
+								    '<div id="bodyContent" class="GmInfowindow">'+
+								    '<p>Art-Gruppe: ' + bArtGruppe + '</p>'+
+								    '<p>Autor: ' + bAutor + '</p>'+
+								    '<p>Datum: ' + zDatum + '</p>'+
+								    '<p>Zeit: ' + zZeit + '</p>'+
+								    '</div>'+
+								    '</div>';
+								makeListener(map, marker, contentString);
+							}
+						}
+					}
+					function makeListener(map, marker, contentString){
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.setContent(contentString);
+							infowindow.open(map,marker);
+						});
+					}
+				}
+			});
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	function AnmeldungPruefen() {
+		userCtx = null;
+		$.couch.session({
+			success : function(r) {
+				userCtx = r.userCtx;
+				if (userCtx.name) {
+					//jetzt muss nichts gemacht werden
+				} else if (userCtx.roles.indexOf("_admin") != -1) {
+					MeldungEinzeilig("admin party");
+				} else {
+					window.open("index.html", target="_self");
+				}
+			}
+		});
+	}
+
+  	function refreshBeobListe()
+	{
+		$("#beobachtungen").empty();
+		$db.view("evab/BeobListe",
+			{success: function(data) {
+				var i;
+				var anzBeob = 0;
+				var user;
+				var beob;
+				var zDatum;
+				var zZeit;
+				var bArtName;
+				var externalPage;
+				var listItem;
+				var ListItemContainer = "";
+				var UserZeit;
+				for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+					key = data.rows[i].key;
+					User = userCtx.name;
+					if (key[0] == User) {            //nur eigene Beobachtungen zählen!
+						anzBeob = anzBeob + 1;
+					}
+				}
+				
+				//$("#BeobListeHeader").text(anzBeob + " Beobachtungen");   //Header soll anzeigen, wieviele Beobachtungen erfasst wurden. Breaks jquery mobile style!
+
+				if (anzBeob == 0) {
+					$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
+				} else {
+					data.rows.reverse();                 //zuletzt erfasste sind zuoberst
+					for(i in data.rows)                  //Liste aufbauen
+					{
+						beob = data.rows[i].value;
+						key = data.rows[i].key;
+						User = userCtx.name;
+						if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+							zDatum = beob.zDatum;
+							zZeit = beob.zZeit;
+							bArtGruppe = beob.bArtGruppe;
+							ImageLink = "Artgruppenbilder/" + bArtGruppe + ".png";
+							bArtName = beob.bArtName;
+							externalPage = "_show/BeobDetail_edit/" + beob._id;
+							listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
+								"<a href=\"" + externalPage + "\" rel=\"external\">" +
+								"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+								"<h3 class=\"bArtName\">" + bArtName + "<\/h3>" +
+								"<p class=\"zZeit\">" + zDatum + "&nbsp; &nbsp;" + zZeit + "<\/p>" +
+								"<\/a> <\/li>";
+							ListItemContainer = ListItemContainer + listItem;
+						}
+					}
+				}
+				ListItemContainer = ListItemContainer + "<\/ul>";
+				$("#beobachtungen").append(ListItemContainer);
+				$("#beobachtungen").listview("refresh");
+			}
+		});
+	}
+  </script>
+</html>
