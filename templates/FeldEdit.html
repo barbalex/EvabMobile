@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
@@ -211,10 +212,10 @@
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto erstellen</a>
+				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../Feldliste.html" data-role="button" rel="external">Datenfelder verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder exportieren<br />(CSV)</a>
+				<a id="Feldliste" href="../../Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
   			</div>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -245,7 +246,7 @@
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain">
 					<label for="Tabelle" class="select">Tabelle:</label>
-					<select id="Tabelle" name="Tabelle" value="{{Tabelle}}" data-native-menu="false">
+					<select id="Tabelle" name="Tabelle" value="{{Tabelle}}" data-native-menu="true">
 						<option value="Art">Art</option>
 						<option value="Zeit">Zeit</option>
 						<option value="Ort">Ort</option>
@@ -283,7 +284,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="RolleModusEinfach" class="select">Rolle im Modus "einfach":</label>
-					<select id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="false">
+					<select id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="true">
 						<option value="EingabeErforderlich">EingabeErforderlich</option>
 						<option value="EingabeMöglich">EingabeMöglich</option>
 						<option value="EingabeNichtVorgesehen">EingabeNichtVorgesehen</option>
@@ -291,7 +292,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Formularelement" class="select">Formularelement:</label>
-					<select id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="false">
+					<select id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
 						<option value="textinput">textinput</option>
 						<option value="textarea">textarea</option>
 						<option value="toggleswitch">toggleswitch</option>
@@ -301,7 +302,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>
-					<select id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="false">
+					<select id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
 						<optio value=""></option>
 						<option value="text">text</option>
 						<option value="date">date</option>
@@ -309,7 +310,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="ArtGruppe" class="select">Art-Gruppen:</label>
-					<select id="ArtGruppe" name="ArtGruppe" value='{{ArtGruppe}}' multiple="multiple" data-native-menu="false">
+					<select id="ArtGruppe" name="ArtGruppe" value='{{ArtGruppe}}' multiple="multiple" data-native-menu="true">
 					</select>
 				</div>
 				<button type="submit" id="submitButton" data-icon="check" data-theme="b">speichern</button>
