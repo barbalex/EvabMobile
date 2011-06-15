@@ -222,7 +222,8 @@
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
-				MeldungEinzeilig("Die Koordinaten wurden übernommen");
+				$("#submitButton").trigger('tap');
+				//MeldungEinzeilig("Die Koordinaten wurden übernommen");
 			}
 
 			//alle InfoWindows löschen. SCHEINT NICHT ZU FUNKTIONIEREN
@@ -253,7 +254,8 @@
 		{
 			$db.saveDoc(document, {
 				success: function() {
-					window.open("../../BeobListe.html", target="_self");
+					MeldungEinzeilig("Beobachtung gespeichert");
+					//window.open("../../BeobListe.html", target="_self");
 				},
 				error: function() {
 					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.bArtName);

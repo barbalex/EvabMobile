@@ -16,7 +16,7 @@
   	<script type="text/javascript">
 		$( document ).bind( "mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
-			//$.mobile.selectmenu.prototype.options.nativeMenu = true;
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
 		});	
 	</script>
   </head>
@@ -38,13 +38,13 @@
 			<form id="BeobNeuForm" action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="bArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="bArtGruppe" name="bArtGruppe" data-native-menu="false">
+					<select id="bArtGruppe" name="bArtGruppe"  data-native-menu="false">
 						<option>bitte w&auml;hlen</option>
 					</select>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="bArtName" class="select">Art-Name:</label>
-					<select id="bArtName" name="bArtName" data-icon="arrow-r" data-native-menu="true">
+					<select id="bArtName" name="bArtName" data-icon="arrow-r"  data-native-menu="true">
 						<option></option>
 					</select>
 				</div>
@@ -90,7 +90,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="addSubmitButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
 					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">auf Karte lokalisieren</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -201,7 +201,7 @@
 				$("select#bArtName").empty();
 				$("select#bArtName").append("<option>jetzt die Art w&auml;hlen</option>");
 				$("select#bArtName").val("jetzt die Art w&auml;hlen");
-				$("select#bArtName").selectmenu("refresh");
+				$("select#bArtName").selectmenu("refresh", true);
 			}
 		});
 
@@ -233,7 +233,7 @@
 			$("#ArtlisteBeobNeu").empty();
 		});	
 
-		$("#addSubmitButton").tap(function(event) {
+		$("#SpeichernButton").tap(function(event) {
 			event.preventDefault();
 			var doc = {};
 			doc.Modus = "einfach";
@@ -287,8 +287,8 @@
 				delete doc.zZeit;
 			}
 			$db.saveDoc(doc, {
-				success: function() {
-				    window.open("BeobListe.html", target="_self");
+				success: function(data) {
+					window.open("_show/BeobDetail_edit/" + data.id, target="_self");
 				},
 				error: function() {
 					MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
