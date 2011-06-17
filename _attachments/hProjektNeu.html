@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/main.css" type="text/css">
+  	<link rel="stylesheet" href="style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.actionsheet.css" type="text/css"/>
+	<script src="vendor/couchapp/loader.js"></script>
+  	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+  	<script type="text/javascript">
+		$( document ).bind( "mobileinit", function(){
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+		});	
+	</script>
+  </head>
+  <body>
+	<div data-role="page">
+		<div data-role="header" data-position="fixed">
+			<a href="BeobListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+			<h1>neues Projekt</h1>
+			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
+				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="Feldliste" href="Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="EModus" href="BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+  			</div>
+		</div>
+		<div data-role="content">
+			<form id="BeobNeuForm" action="#" method="get">
+				<div data-role="fieldcontain">
+					<label for="pName">Name:</label>
+					<input id="pName" name="pName" type="text" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pBemerkungen">Bemerkungen:</label>
+					<textarea cols="40" rows="8" name="pBemerkungen" id="pBemerkungen"></textarea>
+				</div>
+			</form>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
+	</div>
+ 
+  </body>
+  
+  
+  <script type="text/javascript" charset="utf-8">;
+	function handleDocumentReady()
+	{
+  		$db = $.couch.db("evab-ch_barbalex_evab");
+		
+		userCtx = null;
+		var User;
+		var Autor;
+		
+		$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+		});
+
+		$("#SpeichernButton").tap(function(event) {
+			event.preventDefault();
+			var doc = {};
+			doc.Typ = "hProjekt";
+			doc.User = User;
+			doc.pName = $("input#pName").val();
+			doc.pBemerkungen = $("input#pBemerkungen").val();
+			if ($("input#pName").val() != ""){
+				doc.pName = $("input#pName").val();
+			} else if (doc.pName!=null){
+				delete doc.pName;
+			}
+			if ($("input#pBemerkungen").val()!=""){
+				doc.pBemerkungen = $("input#pBemerkungen").val();
+			} else if (doc.pBemerkungen!=null){
+				delete doc.pBemerkungen;
+			}
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("_show/ProjDetail_edit/" + data.id, target="_self");
+				},
+				error: function() {
+					MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
+				 }
+			});
+			return false;
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+
+  <script type="text/javascript" charset="utf-8">	
+	Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
+  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
+		'dateFormat': 'YYYY-MM-DD',
+		'headerFormat': 'YYYY-MM-DD',
+		'monthsOfYear': Monate
+	});
+  </script>
+</html>
