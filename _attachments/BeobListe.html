@@ -58,6 +58,8 @@
   </body>
   <script src="vendor/couchapp/loader.js"></script>
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
+  <script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady()
 	{
@@ -125,6 +127,7 @@
 					if (anzBeob == 0) {
 						MeldungEinzeilig("Es wurden noch keine Beobachtungen mit Breiten- und Längengrad erfasst");
 					} else {
+						var markers = [];
 						for(i in data.rows)                  //Liste aufbauen
 						{
 							beob = data.rows[i].value;
@@ -140,12 +143,17 @@
 								var lat2 = beob.oLatitudeDecDeg;
 								var lng2 = beob.oLongitudeDecDeg;
 								var latlng2 = new google.maps.LatLng(lat2, lng2);
-								var marker = new google.maps.Marker({ 
+								var marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,  
 								    title: bArtName,
-								    icon: image
+								    icon: image,
+								    labelContent: bArtName,
+								    labelAnchor: new google.maps.Point(22, 0),
+								    labelClass: "MapLabel", // the CSS class for the label
+									labelStyle: {opacity: 0.75}
 								});
+								markers.push(marker);
 								var contentString = '<div id="content">'+
 								    '<div id="siteNotice">'+
 								    '</div>'+
@@ -160,6 +168,8 @@
 								makeListener(map, marker, contentString);
 							}
 						}
+						var mcOptions = {maxZoom: 17};
+						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
 					}
 					function makeListener(map, marker, contentString){
 						google.maps.event.addListener(marker, 'click', function() {
