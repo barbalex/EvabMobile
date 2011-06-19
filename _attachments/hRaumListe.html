@@ -12,7 +12,7 @@
   <body>
   	<div data-role="page">
   		<div id="ProjListeHeader" data-role="header" data-position="fixed" data-backbtn="false">
-  			<h2>Projekte</h2>
+  			<h2>R&auml;ume</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
@@ -22,14 +22,20 @@
 				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="EModus" href="BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
   			</div>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="hProjektListe.html " rel="external">Projekt</a></li>
+					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active" >Raum</a></li>
+				</ul>
+			</div><!-- /navbar -->
   		</div>
 		<div data-role="content">
-			<ul id="Projekte" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			<ul id="Räume" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="hProjektNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neues Projekt</a></li>
+					<li><a href="hRaumNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neuer Raum</a></li>
 				</ul>
 			</div>
 		</div>
@@ -66,13 +72,13 @@
 
   	function refreshProjListe()
 	{
-		$("#Projekte").empty();
-		$db.view("evab/hProjListe",
+		$("#Räume").empty();
+		$db.view("evab/hRaumListe",
 			{success: function(data) {
 				var i;
-				var anzProj = 0;
+				var anzRaum = 0;
 				var user;
-				var Proj;
+				var Raum;
 				var externalPage;
 				var listItem;
 				var ListItemContainer = "";
@@ -80,31 +86,31 @@
 					key = data.rows[i].key;
 					User = userCtx.name;
 					if (key[0] == User) {            //nur eigene Beobachtungen zählen!
-						anzProj = anzProj + 1;
+						anzRaum = anzRaum + 1;
 					}
 				}
-				if (anzProj == 0) {
-					$("#Projekte").append("<li>Sie haben noch kein Projekt erfasst</li>");
+				if (anzRaum == 0) {
+					$("#Räume").append("<li>Sie haben noch keinen Raum erfasst</li>");
 				} else {
 					for(i in data.rows)                  //Liste aufbauen
 					{
-						Proj = data.rows[i].value;
+						Raum = data.rows[i].value;
 						key = data.rows[i].key;
 						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-							pName = key[1];
-							externalPage = "_show/hProjekt_edit/" + Proj._id;
-							listItem = "<li id=\"" + Proj._id + "\">" +
+							rName = key[1];
+							externalPage = "_show/hRaum_edit/" + Raum._id;
+							listItem = "<li id=\"" + Raum._id + "\">" +
 								"<a href=\"" + externalPage + "\" rel=\"external\">" +
-								"<h3>" + pName + "<\/h3>" +
+								"<h3>" + rName + "<\/h3>" +
 								"<\/a> <\/li>";
 							ListItemContainer = ListItemContainer + listItem;
 						}
 					}
 				}
 				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Projekte").append(ListItemContainer);
-				$("#Projekte").listview("refresh");
+				$("#Räume").append(ListItemContainer);
+				$("#Räume").listview("refresh");
 			}
 		});
 	}

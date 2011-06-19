@@ -75,7 +75,7 @@
 						document.Tabelle = $("select#Tabelle").val();
 						document.FeldName = $("input#FeldName").val();
 						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
-						document.FeldBeschreibung = $("input#FeldBeschreibung").val();						
+						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
 						document.Reihenfolge = parseInt($("input#Reihenfolge").val());
 						document.FeldNameEvab = $("input#FeldNameEvab").val();
 						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
@@ -264,7 +264,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea id="FeldBeschreibung" name="FeldBeschreibung" type="textarea" value="{{FeldBeschreibung}}"></textarea>
+					<textarea id="FeldBeschreibung" name="FeldBeschreibung">{{FeldBeschreibung}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>

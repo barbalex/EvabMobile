@@ -21,8 +21,8 @@
   <body>
 	<div data-role="page">
 		<div data-role="header" data-position="fixed">
-			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
-			<h1>neues Projekt</h1>
+			<a href="hRaumListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+			<h1>neuer Raum</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
@@ -32,16 +32,22 @@
 				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="EModus" href="BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
   			</div>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="hProjektListe.html " rel="external">Projekt</a></li>
+					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active" >Raum</a></li>
+				</ul>
+			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form id="BeobNeuForm" action="#" method="get">
+			<form action="#" method="get">
 				<div data-role="fieldcontain">
-					<label for="pName">Name:</label>
-					<input id="pName" name="pName" type="text" />
+					<label for="rName">Name:</label>
+					<input id="rName" name="rName" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="pBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="pBemerkungen" id="pBemerkungen"></textarea>
+					<label for="rBemerkungen">Bemerkungen:</label>
+					<textarea cols="40" rows="8" name="rBemerkungen" id="rBemerkungen"></textarea>
 				</div>
 			</form>
 		</div>
@@ -76,16 +82,16 @@
 		$("#SpeichernButton").tap(function(event) {
 			event.preventDefault();
 			var doc = {};
-			doc.Typ = "hProjekt";
+			doc.Typ = "hRaum";
 			doc.User = User;
-			doc.pName = $("input#pName").val();
-			doc.pBemerkungen = $("[id$='pBemerkungen']").val();
+			doc.rName = $("input#rName").val();
+			doc.rBemerkungen = $("[id$='rBemerkungen']").val();
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("_show/hProjekt_edit/" + data.id, target="_self");
+					window.open("_show/hRaum_edit/" + data.id, target="_self");
 				},
 				error: function() {
-					MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
+					MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
 				 }
 			});
 			return false;

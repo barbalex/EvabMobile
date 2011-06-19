@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
+  	<link rel="stylesheet" href="../../style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+	<script src="../../vendor/couchapp/loaderTemplate.js"></script>
+  	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
+  	<script type="text/javascript">
+		$( document ).bind( "mobileinit", function(){
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+		});	
+	</script>
+  </head>
+  <body>
+	<div data-role="page">
+		<div data-role="header" data-position="fixed">
+			<a href="../../hRaumListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
+			<h1>Raum</h1>
+			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
+				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="Feldliste" href="../../Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+  			</div>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="../../hProjektListe.html" rel="external">Projekt</a></li>
+					<li><a href="../../hRaumListe.html" rel="external" class="ui-btn-active" >Raum</a></li>
+					<li><a href="c.html">Zeit</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div>
+		<div data-role="content">
+			<form action="#" method="get">
+				<div data-role="fieldcontain">
+					<label for="rName">Name:</label>
+					<input id="rName" name="rName" type="text" value="{{rName}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="rBemerkungen">Bemerkungen:</label>
+					<textarea cols="40" rows="8" name="rBemerkungen" id="rBemerkungen">{{rBemerkungen}}</textarea>
+				</div>
+			</form>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+					<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Raum löschen?</p>
+				<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html" data-role="button" rel="external">ja</a>
+				<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
+	</div>
+ 
+  </body>
+  
+  
+  <script type="text/javascript" charset="utf-8">;
+	function handleDocumentReady()
+	{
+  		$db = $.couch.db("evab-ch_barbalex_evab");
+		
+		userCtx = null;
+		var User;
+		var Autor;
+		
+		$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+		});
+
+		$("#SpeichernButton").tap(function(event) {
+			var docId = "{{id}}";
+			$db.openDoc(docId, {
+				success: function(doc) {
+					doc.Typ = "hRaum";
+					doc.User = User;
+					doc.rName = $("input#rName").val();
+					doc.rBemerkungen = $("[id$='rBemerkungen']").val();
+					if ($("input#rName").val() != ""){
+						doc.rName = $("input#rName").val();
+					} else if (doc.rName!=null){
+						delete doc.rName;
+					}
+					if ($("[id$='rBemerkungen']").val()!=""){
+						doc.rBemerkungen = $("[id$='rBemerkungen']").val();
+					} else if (doc.rBemerkungen!=null){
+						delete doc.rBemerkungen;
+					}
+					$db.saveDoc(doc, {
+						success: function(data) {
+							MeldungEinzeilig("Raum gespeichert");
+						},
+						error: function() {
+							MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
+						 }
+					});
+				}
+			});
+		});
+
+		//Code für das Löschen-Popup
+		var docId = "{{id}}";
+		var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaum_edit/" + docId;
+		document.getElementById("neinButton").href = url;
+		$("#jaButton").tap(handleDelete);
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+
+  <script type="text/javascript" charset="utf-8">	
+	Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
+  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
+		'dateFormat': 'YYYY-MM-DD',
+		'headerFormat': 'YYYY-MM-DD',
+		'monthsOfYear': Monate
+	});
+
+	function handleDelete(event)
+		{
+			var docId = "{{id}}";
+			// First open doc based on ID in order to get full document
+			$db.openDoc(docId, {
+				success: function(document) {
+					// Then use the opened doc as reference to remove
+					$db.removeDoc(document, {
+						success: function() {
+							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html", target = '_self');
+						},
+						error: function() {
+							MeldungEinzeilig("Der Raum mit der ID: " + docId + " konnte nicht gelöscht werden");
+						}
+					});
+				},
+				error: function() {
+					MeldungEinzeilig("Ein Raum mit der ID: " + docId + " wurde nicht gefunden");
+				}
+			});
+			return false;
+		}
+  </script>
+</html>
