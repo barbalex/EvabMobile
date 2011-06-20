@@ -82,7 +82,7 @@
 			doc.pBemerkungen = $("[id$='pBemerkungen']").val();
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("_show/hProjekt_edit/" + data.id, target="_self");
+					window.open("_show/hProjektEdit/" + data.id, target="_self");
 				},
 				error: function() {
 					MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");

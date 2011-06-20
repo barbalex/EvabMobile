@@ -15,5 +15,5 @@ function(doc, req) {
 		zDatum: doc.zDatum,
 		zZeit: doc.zZeit
 	};
-	return Mustache.to_html(this.templates.BeobDetailEdit, stash);
+	return Mustache.to_html(this.templates.BeobEdit, stash);
 }

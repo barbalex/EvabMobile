@@ -51,7 +51,7 @@
 		refreshRaumListe();
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjekt_edit/" + "{{id}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{id}}";
 
 		//Link zum RaumNeu in Navbar setzen
 		document.getElementById("hRaumNeuLink").href = "../hRaumNeu/" + "{{id}}";
@@ -113,7 +113,7 @@
 						if (key[0] == User) {                   //nur eigene Räume anzeigen!
 							if(key[1] == ProjektId) {    		//nur Räume mit dieser ProjektId anzeigen
 								rName = Raum.rName;
-								externalPage = "../../_show/hRaum_edit/" + Raum._id;
+								externalPage = "../../_show/hRaumEdit/" + Raum._id;
 								listItem = "<li id=\"" + Raum._id + "\">" +
 									"<a href=\"" + externalPage + "\" rel=\"external\">" +
 									"<h3>" + rName + "<\/h3>" +

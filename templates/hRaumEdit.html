@@ -114,12 +114,12 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaum_edit/" + "{{id}}";
+		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaumEdit/" + "{{id}}";
 		$("#jaButton").tap(handleDelete);
 		document.getElementById("jaButton").href = "../hRaumListe/" + "{{ProjektId}}";
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjekt_edit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
 
 		//Link zur RaumListe in Navbar setzen
 		var url = "../hRaumListe/" + "{{ProjektId}}";

@@ -89,7 +89,7 @@
 			doc.rBemerkungen = $("[id$='rBemerkungen']").val();
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("../hRaum_edit/" + data.id, target="_self");
+					window.open("../hRaumEdit/" + data.id, target="_self");
 				},
 				error: function() {
 					MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
@@ -99,7 +99,7 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjekt_edit/" + "{{id}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{id}}";
 
 		//Link zur RaumListe in Navbar setzen
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
