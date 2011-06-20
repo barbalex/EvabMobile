@@ -3,6 +3,7 @@ function(doc, req) {
 	var stash = {
 		id: doc._id,
 		rev: doc._rev,
+		ProjektId: doc.ProjektId,
 		rName: doc.rName,
 		rBemerkungen: doc.rBemerkungen
 	};

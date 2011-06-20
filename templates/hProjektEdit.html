@@ -34,8 +34,8 @@
   			</div>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="../../hProjektListe.html" class="ui-btn-active" rel="external">Projekt</a></li>
-					<li><a href="../../hRaumListe.html" rel="external">Raum</a></li>
+					<li><a href="../../hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
+					<li><a href="#" rel="external" id="hRaumListeLink">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -57,7 +57,7 @@
 					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
 					<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Dieses Projekt löschen?</p>
 				<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hProjektListe.html" data-role="button" rel="external">ja</a>
-				<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hProjektListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -113,10 +113,11 @@
 		});
 
 		//Code für das Löschen-Popup
-		var docId = "{{id}}";
-		var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hProjekt_edit/" + docId;
-		document.getElementById("neinButton").href = url;
+		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hProjekt_edit/" + "{{id}}";
 		$("#jaButton").tap(handleDelete);
+
+		//Link zur Raumliste in Navbar setzen
+		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 	}
 	
 	$(document).ready(handleDocumentReady);

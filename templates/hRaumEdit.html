@@ -21,7 +21,7 @@
   <body>
 	<div data-role="page">
 		<div data-role="header" data-position="fixed">
-			<a href="../../hRaumListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
+			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumListeLink" name="hRaumListeLink">abbrechen</a>
 			<h1>Raum</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
@@ -34,8 +34,8 @@
   			</div>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="../../hProjektListe.html" rel="external">Projekt</a></li>
-					<li><a href="../../hRaumListe.html" rel="external" class="ui-btn-active" >Raum</a></li>
+					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" name="hRaumListeLink" id="hRaumListeLink">Räume</a></li>
 					<li><a href="c.html">Zeit</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -57,8 +57,8 @@
 				<ul>
 					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
 					<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Raum löschen?</p>
-				<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html" data-role="button" rel="external">ja</a>
-				<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+				<a id="jaButton" href="#" data-role="button" rel="external" id="hRaumListeLink">ja</a>
+				<a id="neinButton" href="#" data-role="button" rel="external">nein</a></div></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -114,10 +114,16 @@
 		});
 
 		//Code für das Löschen-Popup
-		var docId = "{{id}}";
-		var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaum_edit/" + docId;
-		document.getElementById("neinButton").href = url;
+		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaum_edit/" + "{{id}}";
 		$("#jaButton").tap(handleDelete);
+		document.getElementById("jaButton").href = "../hRaumListe/" + "{{ProjektId}}";
+
+		//Link zum Projekt in Navbar setzen
+		document.getElementById("hProjektLink").href = "../hProjekt_edit/" + "{{ProjektId}}";
+
+		//Link zur RaumListe in Navbar setzen
+		var url = "../hRaumListe/" + "{{ProjektId}}";
+		$("[name='hRaumListeLink']").attr('href', url);
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -134,13 +140,15 @@
 	function handleDelete(event)
 		{
 			var docId = "{{id}}";
+			var ProjektId = "{{ProjektId}}";
 			// First open doc based on ID in order to get full document
 			$db.openDoc(docId, {
 				success: function(document) {
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/hRaumListe.html", target = '_self');
+							MeldungEinzeilig("Raum gelöscht");
+							window.open("../hRaumListe/" + ProjektId, target="_self");
 						},
 						error: function() {
 							MeldungEinzeilig("Der Raum mit der ID: " + docId + " konnte nicht gelöscht werden");

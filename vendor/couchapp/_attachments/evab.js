@@ -150,7 +150,7 @@ function DdInChY(Breite, Laenge){
 
 function MeldungEinzeilig(ErsteZeile) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile +"</h1></div>")
-	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 100 })
+	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo( $.mobile.pageContainer )
 	    .delay( 2100 )
 	    .fadeOut( 700, function(){
@@ -160,7 +160,7 @@ function MeldungEinzeilig(ErsteZeile) {
 
 function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile + "<br>" + ZweiteZeile +"</h1></div>")
-	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 100 })
+	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo( $.mobile.pageContainer )
 	    .delay( 2100 )
 	    .fadeOut( 700, function(){
