@@ -36,7 +36,7 @@
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" class="ui-btn-active" name="hRaumListeLink" id="hRaumListeLink">Räume</a></li>
-					<li><a href="c.html">Zeit</a></li>
+					<li><a href="#" rel="external" id="hOrtListeLink">Orte</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -89,6 +89,7 @@
 				success: function(doc) {
 					doc.Typ = "hRaum";
 					doc.User = User;
+					doc.ProjektId = "{{ProjektId}}";
 					doc.rName = $("input#rName").val();
 					doc.rBemerkungen = $("[id$='rBemerkungen']").val();
 					if ($("input#rName").val() != ""){
@@ -124,6 +125,9 @@
 		//Link zur RaumListe in Navbar setzen
 		var url = "../hRaumListe/" + "{{ProjektId}}";
 		$("[name='hRaumListeLink']").attr('href', url);
+
+		//Link zur Ortliste in Navbar setzen
+		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 	}
 	
 	$(document).ready(handleDocumentReady);

@@ -87,9 +87,20 @@
 			doc.ProjektId = "{{id}}";
 			doc.rName = $("input#rName").val();
 			doc.rBemerkungen = $("[id$='rBemerkungen']").val();
+			if ($("input#rName").val() != ""){
+				doc.rName = $("input#rName").val();
+			} else if (doc.rName!=null){
+				delete doc.rName;
+			}
+			if ($("[id$='rBemerkungen']").val()!=""){
+				doc.rBemerkungen = $("[id$='rBemerkungen']").val();
+			} else if (doc.rBemerkungen!=null){
+				delete doc.rBemerkungen;
+			}
 			$db.saveDoc(doc, {
 				success: function(data) {
 					window.open("../hRaumEdit/" + data.id, target="_self");
+					MeldungEinzeilig("Raum gespeichert");
 				},
 				error: function() {
 					MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");

@@ -80,9 +80,20 @@
 			doc.User = User;
 			doc.pName = $("input#pName").val();
 			doc.pBemerkungen = $("[id$='pBemerkungen']").val();
+			if ($("input#pName").val() != ""){
+				doc.pName = $("input#pName").val();
+			} else if (doc.pName!=null){
+				delete doc.pName;
+			}
+			if ($("[id$='pBemerkungen']").val()!=""){
+				doc.pBemerkungen = $("[id$='pBemerkungen']").val();
+			} else if (doc.pBemerkungen!=null){
+				delete doc.pBemerkungen;
+			}
 			$db.saveDoc(doc, {
 				success: function(data) {
 					window.open("_show/hProjektEdit/" + data.id, target="_self");
+					MeldungEinzeilig("Projekt gespeichert");
 				},
 				error: function() {
 					MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
