@@ -1,0 +1,43 @@
+function(doc, req) {
+	var Mustache = require("vendor/couchapp/lib/mustache");
+	var stash = {
+		id: doc._id,
+		rev: doc._rev,
+		ProjektId: doc.ProjektId,
+		RaumId: doc.RaumId,
+		OrtId: doc.OrtId,
+		zDatum: doc.zDatum,
+		zZeit: doc.zZeit,
+		zGenauigkeit: doc.zGenauigkeit,
+		zDeckungAlgen: doc.zDeckungAlgen,
+		zDeckungBäume: doc.zDeckungBäume,
+		zDeckungSträucher: doc.zDeckungSträucher,
+		zDeckungKryptogamen: doc.zDeckungKryptogamen,
+		zDeckungWasser: doc.zDeckungWasser,
+		zDeckungKräuter: doc.zDeckungKräuter,
+		zDeckungFlechten: doc.zDeckungFlechten,
+		zDeckungStreu: doc.zDeckungStreu,
+		zDeckungMoos: doc.zDeckungMoos,
+		zDeckungGestein: doc.zDeckungGestein,
+		zDeckungBoden: doc.zDeckungBoden,
+		zDeckungVegetation: doc.zDeckungVegetation,
+		zDeckungDefinition: doc.zDeckungDefinition,
+		zBaumschichtHöheMax: doc.zBaumschichtHöheMax,
+		zBaumschichtHöheMin: doc.zBaumschichtHöheMin,
+		zBaumschichtHöheMit: doc.zBaumschichtHöheMit,
+		zStrauchschichtHöheMax: doc.zStrauchschichtHöheMax,
+		zStrauchschichtHöheMin: doc.zStrauchschichtHöheMin,
+		zStrauchschichtHöheMit: doc.zStrauchschichtHöheMit,
+		zKrautschichtHöheMax: doc.zKrautschichtHöheMax,
+		zKrautschichtHöheMin: doc.zKrautschichtHöheMin,
+		zKrautschichtHöheMit: doc.zKrautschichtHöheMit,
+		zVegHöheMax: doc.zVegHöheMax,
+		zVegHöheMin: doc.zVegHöheMin,
+		zVegHöheMit: doc.zVegHöheMit,
+		zMoosschichtHöheMit: doc.zMoosschichtHöheMit,
+		zFlechtenschichtHöheMit: doc.zFlechtenschichtHöheMit,
+		zKryptogamenschichtHöheMit: doc.zKryptogamenschichtHöheMit,
+		zBemerkungen: doc.zBemerkungen
+	};
+	return Mustache.to_html(this.templates.hZeitEdit, stash);
+}

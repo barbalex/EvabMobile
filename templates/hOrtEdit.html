@@ -9,6 +9,7 @@
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script src="../../vendor/couchapp/loaderTemplate.js"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
   	<script type="text/javascript">
@@ -37,8 +38,8 @@
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" name="hOrtListeLink" id="hOrtListeLink" name="hOrtListeLink">Orte</a></li>
-					<li><a href="c.html">Zeit</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" name="hOrtListeLink" id="hOrtListeLink">Orte</a></li>
+					<li><a href="#" rel="external" id="hZeitListeLink">Zeit</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -67,7 +68,6 @@
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
 					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
-					<button type="submit" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left" data-role="button" data-theme="e">automatisch verorten</button>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oBemerkungen">Bemerkungen:</label>
@@ -83,6 +83,7 @@
 				<a id="jaButton" name="hOrtListeLink" href="#" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
+							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -196,6 +197,9 @@
 		//Link zur OrtListe in Navbar setzen
 		var url = "../hOrtListe/" + "{{RaumId}}";
 		$("[name='hOrtListeLink']").attr('href', url);
+
+		//Link zur Zeit in Navbar setzen
+		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
 		$("#GeButton").tap(function(event) {
 			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != ""){
