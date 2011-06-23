@@ -32,12 +32,9 @@
 			});
 
 			refreshArtGruppen("{{bArtGruppe}}");
-			$("select#bArtGruppe").val("{{bArtGruppe}}");
-			$("select#bArtGruppe").selectmenu("refresh");
 			refreshArtName("{{bArtName}}");
 			
 			var docId = "{{id}}";
-			//document.getElementById("deleteButton").href = "../../_show/BeobDetail_delete/" + docId;     löste Fehler aus??!!
 			
 			$("#submitButton").tap(function(event) {
 				var docId = "{{id}}";
@@ -136,13 +133,13 @@
 				$("input#bArtName").val(ArtName);
 				$("select#bArtName").selectmenu("refresh");
 				$("input#bArtId").val(ArtId);
-				$.mobile.changePage("#BeobDetailEditPage", "slide", true, false);
+				$.mobile.changePage("#BeobEditPage", "slide", true, false);
 				$("#Artliste").empty();
 			});
 
 			$("#GeButton").tap(function(event) {
 				if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != ""){
-					$.mobile.changePage("#BeobDetailEditMap", "slide", false, false);
+					$.mobile.changePage("#BeobEditMap", "slide", false, false);
 				} else {
 					MeldungEinzeilig("Breiten- und Längengrad müssen erfasst sein");
 				}
@@ -154,7 +151,7 @@
 
 			var InfoWindowArray = [];
 
-			$('#BeobDetailEditMap').live("pagecreate", function() {
+			$('#BeobEditMap').live("pagecreate", function() {
 				var lat = $("input#oLatitudeDecDeg").val();
 				var lng = $("input#oLongitudeDecDeg").val();
 				var latlng = new google.maps.LatLng(lat, lng);
@@ -237,7 +234,7 @@
 
 			//Code für das Löschen-Popup
 			var docId = "{{id}}";
-			var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/BeobDetail_edit/" + docId;
+			var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/Beobdit/" + docId;
 			document.getElementById("neinButton").href = url;
 			$("#jaButton").tap(handleDelete);
 		});
@@ -255,7 +252,6 @@
 			$db.saveDoc(document, {
 				success: function() {
 					MeldungEinzeilig("Beobachtung gespeichert");
-					//window.open("../../BeobListe.html", target="_self");
 				},
 				error: function() {
 					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.bArtName);
@@ -279,6 +275,7 @@
 						ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
 						ListItemContainer = ListItemContainer + ListItem;
 					}
+					$("select#bArtGruppe").selectmenu();
 					$("select#bArtGruppe").append(ListItemContainer);
 					$("select#bArtGruppe").val(bArtGruppe);
 					$("select#bArtGruppe").selectmenu("refresh");
@@ -288,6 +285,7 @@
 		
 		function refreshArtName(bArtName)
 		{
+			$("select#bArtName").selectmenu();
 			$("select#bArtName").empty();
 			var startoption = "<option value='" + bArtName + "'>" + bArtName + "</option>";
 			$("select#bArtName").append(startoption);
@@ -350,6 +348,7 @@
 					}
 					ListItemContainer = ListItemContainer + "<\/ul>";
 					$("#Artliste").append(ListItemContainer);
+					$("#Artliste").listview();
 					$("#Artliste").listview("refresh");
 				}
 			});
@@ -380,7 +379,7 @@
 	</script>
   </head>
   <body>
-  	<div data-role="page" id="BeobDetailEditPage">
+  	<div data-role="page" id="BeobEditPage">
   		<div data-role="header" data-position="fixed">
   			<a href="../../BeobListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2>Beobachtung</h2>
@@ -389,13 +388,13 @@
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
   		</div>
-		<div id="BeobDetailEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<form id="BeobDetailEditForm" action="#" method="get" data-identity="{{document}}"
+		<div id="BeobEditContent" data-role="content" data-theme="c" style="padding:0em;">
+			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
 					<label for="bArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="bArtGruppe" name="bArtGruppe" value="{{bArtGruppe}}"  data-native-menu="false">
@@ -443,7 +442,7 @@
 					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timebox"}' value="{{zZeit}}" />
 				</div>
 				<div data-role="footer" data-position="fixed">
-					<div data-role="navbar" id="BeobDetailEditNavbar">
+					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Beobachtung löschen?</p>
@@ -460,15 +459,15 @@
 
 	<div data-role="page" id="Artauswahl">
 		<div data-role="header" data-position="fixed">
-			<a href="#BeobDetailEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
+			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
 			<h1>Art wählen</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
@@ -477,17 +476,17 @@
 		</div>
 	</div>
 
-	<div data-role="page" id="BeobDetailEditMap" style="width:100%; height:100%;">
+	<div data-role="page" id="BeobEditMap" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed">
-			<a href="#BeobDetailEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
+			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
 			<h1>Karte</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>

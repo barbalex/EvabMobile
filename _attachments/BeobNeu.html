@@ -29,8 +29,8 @@
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
@@ -105,8 +105,8 @@
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
@@ -124,8 +124,8 @@
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="Feldliste.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
@@ -192,6 +192,7 @@
 					ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
 					ListItemContainer = ListItemContainer + ListItem;
 				}
+				$("select#bArtGruppe").selectmenu();
 				$("select#bArtGruppe").append(ListItemContainer);
 				$("select#bArtGruppe").selectmenu("refresh");
 			}
@@ -200,6 +201,7 @@
 		$("select#bArtGruppe").change(function(){
 			var ArtGruppe = $("select#bArtGruppe").val();
 			if (ArtGruppe != "bitte w&auml;hlen") {
+				//$("select#bArtName").selectmenu();
 				$("select#bArtName").empty();
 				$("select#bArtName").append("<option>jetzt die Art w&auml;hlen</option>");
 				$("select#bArtName").val("jetzt die Art w&auml;hlen");
@@ -214,6 +216,7 @@
 				$.mobile.changePage("#BeobNeuArtauswahl", "slide", false, false);
 				ArtlisteAufbauen(ArtGruppe);
 			} else {
+				//$("select#bArtName").selectmenu();
 				$("select#bArtName").empty();
 				$("select#bArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
 				$("select#bArtName").val("bitte Art-Gruppe w&auml;hlen!");
@@ -226,6 +229,7 @@
 			var ArtBezeichnung = $(this).attr("id");
 			var ArtId = $(this).attr("artid");
 			var option = "<option value='" + ArtBezeichnung + "'>" + ArtBezeichnung + "</option>";
+			//$("select#bArtName").selectmenu();
 			$("select#bArtName").empty();
 			$("select#bArtName").append(option);
 			$("select#bArtName").val(ArtBezeichnung);
@@ -290,7 +294,7 @@
 			}
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("_show/BeobDetail_edit/" + data.id, target="_self");
+					window.open("_show/BeobEdit/" + data.id, target="_self");
 				},
 				error: function() {
 					MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
@@ -467,6 +471,7 @@
 				}
 				ListItemContainer = ListItemContainer + "<\/ul>";
 				$("#ArtlisteBeobNeu").append(ListItemContainer);
+				//$("#ArtlisteBeobNeu").listview();
 				$("#ArtlisteBeobNeu").listview("refresh");
 			}
 		});

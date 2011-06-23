@@ -42,25 +42,32 @@
 							$("input#Standardwert").val(row.Standardwert);
 						}
 					}
+					$("select#SichtbarModusEinfach").slider();
 					$("select#SichtbarModusEinfach").slider("refresh");
+					$("select#SichtbarModusHierarchisch").slider();
 					$("select#SichtbarModusHierarchisch").slider("refresh");
 				}
 			});
 			
 			ArtGruppeAufbauen();
 			$("select#ArtGruppe").val('{{ArtGruppe}}');
+			$("select#ArtGruppe").selectmenu();
 			$("select#ArtGruppe").selectmenu("refresh");
 			
 			$("select#Tabelle").val("{{Tabelle}}");
+			$("select#Tabelle").selectmenu();
 			$("select#Tabelle").selectmenu("refresh");
 			
 			$("select#RolleModusEinfach").val("{{RolleModusEinfach}}");
+			$("select#RolleModusEinfach").selectmenu();
 			$("select#RolleModusEinfach").selectmenu("refresh");
 			
 			$("select#Formularelement").val("{{Formularelement}}");
+			$("select#Formularelement").selectmenu();
 			$("select#Formularelement").selectmenu("refresh");
 			
 			$("select#FormElementTyp").val("{{FormElementTyp}}");
+			$("select#FormElementTyp").selectmenu();
 			$("select#FormElementTyp").selectmenu("refresh");
 			
 			var docId = "{{id}}";
@@ -172,6 +179,8 @@
 						ListItemContainer = ListItemContainer + listItem;
 					}
 					$("select#ArtGruppe").append(ListItemContainer);
+					$("select#ArtGruppe").val('{{ArtGruppe}}');
+					$("select#ArtGruppe").selectmenu();
 					$("select#ArtGruppe").selectmenu("refresh");
 				}
 			});
@@ -203,7 +212,7 @@
 	</script>
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="FeldEditPage">
   		<div data-role="header" data-position="fixed">
   			<a href="../../FeldListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2>Datenfelder</h2>
@@ -212,8 +221,8 @@
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
 				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
   		</div>
