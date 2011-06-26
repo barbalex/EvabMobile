@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
+  	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
+  </head>
+  <body>
+  	<div data-role="page">
+  		<div data-role="header" data-position="fixed" data-backbtn="false">
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">abbrechen</a>
+  			<h2>Art</h2>
+  			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
+				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+  			</div>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
+					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
+					<li><a href="#" rel="external" id="hZeitLink" name="hZeitLink">Zeit</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink">Art</a></li>
+				</ul>
+			</div><!-- /navbar -->
+  		</div>
+		<div data-role="content">
+			<ul id="Arten" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+  </body>
+  <script src="../../vendor/couchapp/loaderTemplate.js"></script>
+  <script type="text/javascript" charset="utf-8">
+	function handleDocumentReady()
+	{
+		$db = $.couch.db("evab-ch_barbalex_evab");
+		AnmeldungPruefen();
+		refreshArtListe();
+
+		//Link zum Projekt in Navbar setzen
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+
+		//Link zum Raum in Navbar setzen
+		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{RaumId}}";
+
+		//Link zum Ort in Navbar setzen
+		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{OrtId}}";
+
+		//Link zur Zeit in Navbar und Titelleiste setzen
+		var url = "../hZeitEdit/" + "{{id}}";
+		$("[name='hZeitLink']").attr('href', url);
+
+		//Link zu ArtNeu in Navbar setzen
+		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{id}}";
+
+		//Link zur ArtListe in Navbar setzen
+		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	function AnmeldungPruefen() {
+		userCtx = null;
+		$.couch.session({
+			success : function(r) {
+				userCtx = r.userCtx;
+				if (userCtx.name) {
+					//jetzt muss nichts gemacht werden
+				} else if (userCtx.roles.indexOf("_admin") != -1) {
+					MeldungEinzeilig("admin party");
+				} else {
+					window.open("../../index.html", target="_self");
+				}
+			}
+		});
+	}
+
+  	function refreshArtListe()
+	{
+		$("#Arten").empty();
+		$db.view("evab/hArtListe",
+			{success: function(data) {
+				var i;
+				var anzArt = 0;
+				var User;
+				var Art;
+				var ZeitId = "{{id}}";
+				var externalPage;
+				var listItem;
+				var ListItemContainer = "";
+				for(i in data.rows) {                    //Arten zählen. Wenn noch keine: darauf hinweisen
+					key = data.rows[i].key;
+					User = userCtx.name;
+					if (key[0] == User) {            //nur eigene Arten zählen!
+						
+						if(key[1] == ZeitId) {    //nur Arten mit dieser ZeitId zählen
+							anzArt = anzArt + 1;
+						}
+					}
+				}
+				if (anzArt == 0) {
+					$("#Arten").append("<li>Sie haben noch keine Art erfasst</li>");
+				} else {
+					for(i in data.rows)                  //Liste aufbauen
+					{
+						Art = data.rows[i].value;
+						key = data.rows[i].key;
+						User = userCtx.name;
+						if (key[0] == User) {                   //nur eigene Zeiten anzeigen!
+							if(key[1] == ZeitId) {    		//nur Zeiten mit dieser OrtId anzeigen
+								var bArtName = key[2];
+								externalPage = "../../_show/hArtEdit/" + Art._id;
+								listItem = "<li id=\"" + Art._id + "\">" +
+									"<a href=\"" + externalPage + "\" rel=\"external\">" +
+									"<h3>" + bArtName + "<\/h3>" +
+									"<\/a> <\/li>";
+								ListItemContainer = ListItemContainer + listItem;
+							}
+						}
+					}
+				}
+				ListItemContainer = ListItemContainer + "<\/ul>";
+				$("#Arten").append(ListItemContainer);
+				$("#Arten").listview();
+				$("#Arten").listview("refresh");
+			}
+		});
+	}
+  </script>
+</html>

@@ -31,8 +31,8 @@
 				}
 			});
 
-			refreshArtGruppen("{{bArtGruppe}}");
-			refreshArtName("{{bArtName}}");
+			refreshArtGruppen("{{aArtGruppe}}");
+			refreshArtName("{{aArtName}}");
 			
 			var docId = "{{id}}";
 			
@@ -44,17 +44,17 @@
 						doc.Modus = "einfach";
 						doc.Typ = "Beobachtung";
 						doc.User = User;
-						doc.bArtGruppe = $("select#bArtGruppe").val();
-						doc.bArtName = $("select#bArtName").val();
-						if ($("input#bArtId").val() != ""){
-							doc.bArtId = $("input#bArtId").val();
-						} else if (doc.bArtId!=null){
-							delete doc.bArtId;
+						doc.aArtGruppe = $("select#aArtGruppe").val();
+						doc.aArtName = $("select#aArtName").val();
+						if ($("input#aArtId").val() != ""){
+							doc.aArtId = $("input#aArtId").val();
+						} else if (doc.aArtId!=null){
+							delete doc.aArtId;
 						}
-						if ($("input#bAutor").val()!=""){
-							doc.bAutor = $("input#bAutor").val();
-						} else if (doc.bAutor!=null){
-							delete doc.bAutor;
+						if ($("input#aAutor").val()!=""){
+							doc.aAutor = $("input#aAutor").val();
+						} else if (doc.aAutor!=null){
+							delete doc.aAutor;
 						}
 						if ($("input#oXKoord").val()!=""){
 							doc.oXKoord = $("input#oXKoord").val();
@@ -99,27 +99,27 @@
 				});
 			});	
 			
-			$("select#bArtGruppe").change(function(){
-				var ArtGruppe = $("select#bArtGruppe").val();
+			$("select#aArtGruppe").change(function(){
+				var ArtGruppe = $("select#aArtGruppe").val();
 				if (ArtGruppe != "") {
-					$("select#bArtName").empty();
-					$("select#bArtName").append("<option>jetzt die Art w&auml;hlen</option>");
-					$("select#bArtName").val("jetzt die Art w&auml;hlen");
-					$("select#bArtName").selectmenu("refresh");
+					$("select#aArtName").empty();
+					$("select#aArtName").append("<option>jetzt die Art w&auml;hlen</option>");
+					$("select#aArtName").val("jetzt die Art w&auml;hlen");
+					$("select#aArtName").selectmenu("refresh");
 				}
 			});
 			
-			$("select#bArtName").tap(function(event){
+			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				var ArtGruppe = $("select#bArtGruppe").val();
+				var ArtGruppe = $("select#aArtGruppe").val();
 				if (ArtGruppe != "") {
 					$.mobile.changePage("#Artauswahl", "slide", false, false);
 					ArtlisteAufbauen(ArtGruppe);
 				} else {
-					$("select#bArtName").empty();
-					$("select#bArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
-					$("select#bArtName").val("bitte Art-Gruppe w&auml;hlen!");
-					$("select#bArtName").selectmenu("refresh");
+					$("select#aArtName").empty();
+					$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
+					$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
+					$("select#aArtName").selectmenu("refresh");
 				}
 			});
 		
@@ -128,11 +128,11 @@
 				var ArtName = $(this).attr("id");
 				var ArtId = $(this).attr("artid");
 				var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-				$("select#bArtName").empty();
-				$("select#bArtName").append(option);
-				$("input#bArtName").val(ArtName);
-				$("select#bArtName").selectmenu("refresh");
-				$("input#bArtId").val(ArtId);
+				$("select#aArtName").empty();
+				$("select#aArtName").append(option);
+				$("input#aArtName").val(ArtName);
+				$("select#aArtName").selectmenu("refresh");
+				$("input#aArtId").val(ArtId);
 				$.mobile.changePage("#BeobEditPage", "slide", true, false);
 				$("#Artliste").empty();
 			});
@@ -163,26 +163,26 @@
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 				google.maps.event.trigger(map,'resize');
-				var bArtGruppe = $("select#bArtGruppe").val();
-				var bArtName = $("select#bArtName").val();
-				var bAutor = $("input#bAutor").val();
+				var aArtGruppe = $("select#aArtGruppe").val();
+				var aArtName = $("select#aArtName").val();
+				var aAutor = $("input#aAutor").val();
 				var zDatum = $("input#zDatum").val();
 				var zZeit = $("input#zZeit").val();
-				var image = "../../Artgruppenbilder/" + bArtGruppe + ".png";
+				var image = "../../Artgruppenbilder/" + aArtGruppe + ".png";
 				var marker = new google.maps.Marker({
 					position: latlng, 
 				    map: map, 
-				    title: bArtName,
+				    title: aArtName,
 				    icon: image,
 					draggable: true
 				});
 				var contentString = '<div id="content">'+
 				    '<div id="siteNotice">'+
 				    '</div>'+
-				    '<h4 id="firstHeading" class="GmInfowindow">' + bArtName + '</h4>'+
+				    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
 				    '<div id="bodyContent" class="GmInfowindow">'+
-				    '<p>Art-Gruppe: ' + bArtGruppe + '</p>'+
-				    '<p>Autor: ' + bAutor + '</p>'+
+				    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
+				    '<p>Autor: ' + aAutor + '</p>'+
 				    '<p>Datum: ' + zDatum + '</p>'+
 				    '<p>Zeit: ' + zZeit + '</p>'+
 				    '</div>'+
@@ -254,14 +254,14 @@
 					MeldungEinzeilig("Beobachtung gespeichert");
 				},
 				error: function() {
-					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.bArtName);
+					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.aArtName);
 				}
 			});
 		}
 		
-		function refreshArtGruppen(bArtGruppe)
+		function refreshArtGruppen(aArtGruppe)
 		{
-			$("select#bArtGruppe").empty();
+			$("select#aArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
 			$db.view(viewname, {
 				success: function(data) {
@@ -275,22 +275,22 @@
 						ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
 						ListItemContainer = ListItemContainer + ListItem;
 					}
-					$("select#bArtGruppe").selectmenu();
-					$("select#bArtGruppe").append(ListItemContainer);
-					$("select#bArtGruppe").val(bArtGruppe);
-					$("select#bArtGruppe").selectmenu("refresh");
+					$("select#aArtGruppe").selectmenu();
+					$("select#aArtGruppe").append(ListItemContainer);
+					$("select#aArtGruppe").val(aArtGruppe);
+					$("select#aArtGruppe").selectmenu("refresh");
 				}
 			});
 		}
 		
-		function refreshArtName(bArtName)
+		function refreshArtName(aArtName)
 		{
-			$("select#bArtName").selectmenu();
-			$("select#bArtName").empty();
-			var startoption = "<option value='" + bArtName + "'>" + bArtName + "</option>";
-			$("select#bArtName").append(startoption);
-			$("select#bArtName").val(bArtName);
-			$("select#bArtName").selectmenu("refresh");
+			$("select#aArtName").selectmenu();
+			$("select#aArtName").empty();
+			var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
+			$("select#aArtName").append(startoption);
+			$("select#aArtName").val(aArtName);
+			$("select#aArtName").selectmenu("refresh");
 		}
 
 		function GetGeolocation(){
@@ -331,7 +331,7 @@
 					{
 						ArtName = data.rows[i].key;
 						ArtValue = data.rows[i].value;
-						ArtId = ArtValue.ArtId;
+						ArtId = ArtValue.id;
 						if(ArtValue.HinweisVerwandschaft){
 							ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
 							"<a href=\"#\">" +
@@ -396,22 +396,22 @@
 		<div id="BeobEditContent" data-role="content" data-theme="c" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
-					<label for="bArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="bArtGruppe" name="bArtGruppe" value="{{bArtGruppe}}"  data-native-menu="false">
+					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
+					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}"  data-native-menu="false">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bArtName" class="select">Art-Name:</label>
-					<select id="bArtName" name="bArtName" value="{{bArtName}}" data-icon="arrow-r">
+					<label for="aArtName" class="select">Art-Name:</label>
+					<select id="aArtName" name="aArtName" value="{{aArtName}}" data-icon="arrow-r">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bArtId">Art-ID:</label>
-					<input id="bArtId" name="bArtId" type="text" value="{{bArtId}}" />
+					<label for="aArtId">Art-ID:</label>
+					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bAutor">Autor:</label>
-					<input id="bAutor" name="bAutor" type="text" value="{{bAutor}}" />
+					<label for="aAutor">Autor:</label>
+					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>

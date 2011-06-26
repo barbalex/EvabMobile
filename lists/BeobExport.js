@@ -7,9 +7,9 @@ function(head, req) {
 			"Accept-Charset": "utf-8"
 	    }
 	});
-	send('bArtGruppe, bArtName, bArtId, bAutor, oXKoord, oYKoord, zDatum, zZeit \n');
+	send('aArtGruppe, aArtName, aArtId, aAutor, oXKoord, oYKoord, zDatum, zZeit \n');
 	while(row = getRow()) {
-		send('"' + row.value.bArtGruppe + '", "' + row.value.bArtName + '", "' + row.value.bArtId + '", "' + row.value.bAutor + '", "' + row.value.oXKoord + '", "' + row.value.oYKoord + '", "' + row.value.zDatum + '", "' + row.value.zZeit + '" \n');
+		send('"' + row.value.aArtGruppe + '", "' + row.value.aArtName + '", "' + row.value.aArtId + '", "' + row.value.aAutor + '", "' + row.value.oXKoord + '", "' + row.value.oYKoord + '", "' + row.value.zDatum + '", "' + row.value.zZeit + '" \n');
 	}
 }
 

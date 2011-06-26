@@ -111,10 +111,10 @@
 					var beob;
 					var zDatum;
 					var zZeit;
-					var bArtGruppe;
+					var aArtGruppe;
 					var image;
-					var bArtName;
-					var bAutor;
+					var aArtName;
+					var aAutor;
 					var UserZeit;
 					var infowindow = new google.maps.InfoWindow();
 					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
@@ -136,19 +136,19 @@
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
 								var zDatum = beob.zDatum;
 								var zZeit = beob.zZeit;
-								var bArtGruppe = beob.bArtGruppe;
-								var image = "Artgruppenbilder/" + bArtGruppe + ".png";
-								var bArtName = beob.bArtName;
-								var bAutor = beob.bAutor;
+								var aArtGruppe = beob.aArtGruppe;
+								var image = "Artgruppenbilder/" + aArtGruppe + ".png";
+								var aArtName = beob.aArtName;
+								var aAutor = beob.aAutor;
 								var lat2 = beob.oLatitudeDecDeg;
 								var lng2 = beob.oLongitudeDecDeg;
 								var latlng2 = new google.maps.LatLng(lat2, lng2);
 								var marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,  
-								    title: bArtName,
+								    title: aArtName,
 								    icon: image,
-								    labelContent: bArtName,
+								    labelContent: aArtName,
 								    labelAnchor: new google.maps.Point(22, 0),
 								    labelClass: "MapLabel", // the CSS class for the label
 									labelStyle: {opacity: 0.75}
@@ -157,10 +157,10 @@
 								var contentString = '<div id="content">'+
 								    '<div id="siteNotice">'+
 								    '</div>'+
-								    '<h4 id="firstHeading" class="GmInfowindow">' + bArtName + '</h4>'+
+								    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
 								    '<div id="bodyContent" class="GmInfowindow">'+
-								    '<p>Art-Gruppe: ' + bArtGruppe + '</p>'+
-								    '<p>Autor: ' + bAutor + '</p>'+
+								    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
+								    '<p>Autor: ' + aAutor + '</p>'+
 								    '<p>Datum: ' + zDatum + '</p>'+
 								    '<p>Zeit: ' + zZeit + '</p>'+
 								    '</div>'+
@@ -212,7 +212,7 @@
 				var beob;
 				var zDatum;
 				var zZeit;
-				var bArtName;
+				var aArtName;
 				var externalPage;
 				var listItem;
 				var ListItemContainer = "";
@@ -240,14 +240,14 @@
 						if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
 							zDatum = beob.zDatum;
 							zZeit = beob.zZeit;
-							bArtGruppe = beob.bArtGruppe;
-							ImageLink = "Artgruppenbilder/" + bArtGruppe + ".png";
-							bArtName = beob.bArtName;
+							aArtGruppe = beob.aArtGruppe;
+							ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+							aArtName = beob.aArtName;
 							externalPage = "_show/BeobEdit/" + beob._id;
 							listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
 								"<a href=\"" + externalPage + "\" rel=\"external\">" +
 								"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-								"<h3 class=\"bArtName\">" + bArtName + "<\/h3>" +
+								"<h3 class=\"aArtName\">" + aArtName + "<\/h3>" +
 								"<p class=\"zZeit\">" + zDatum + "&nbsp; &nbsp;" + zZeit + "<\/p>" +
 								"<\/a> <\/li>";
 							ListItemContainer = ListItemContainer + listItem;
