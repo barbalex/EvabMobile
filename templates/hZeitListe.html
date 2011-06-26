@@ -12,7 +12,7 @@
   <body>
   	<div data-role="page">
   		<div data-role="header" data-position="fixed" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">abbrechen</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hOrtLink" name="hOrtLink">abbrechen</a>
   			<h2>Zeit</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
@@ -27,7 +27,7 @@
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hOrtLink" name="hRaumLink">Ort</a></li>
+					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
 					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink">Zeit</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -96,7 +96,7 @@
 			{success: function(data) {
 				var i;
 				var anzZeit = 0;
-				var user;
+				var User;
 				var Zeit;
 				var OrtId = "{{id}}";
 				var externalPage;
@@ -122,7 +122,7 @@
 						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Zeiten anzeigen!
 							if(key[1] == OrtId) {    		//nur Zeiten mit dieser OrtId anzeigen
-								var zZeitDatum = key[2] + "  " + key[3];
+								var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 								externalPage = "../../_show/hZeitEdit/" + Zeit._id;
 								listItem = "<li id=\"" + Zeit._id + "\">" +
 									"<a href=\"" + externalPage + "\" rel=\"external\">" +

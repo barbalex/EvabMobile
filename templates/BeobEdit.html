@@ -13,7 +13,7 @@
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
   	<script type="text/javascript">
-		$( document ).bind( "mobileinit", function(){
+		$(document).bind("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 		});	
 	</script>
@@ -123,7 +123,7 @@
 				}
 			});
 		
-			$('[name="ArtListItem"]').live("click", function(event) {
+			$('[name="ArtListItem"]').live("vclick", function(event) {
 				event.preventDefault();
 				var ArtName = $(this).attr("id");
 				var ArtId = $(this).attr("artid");
@@ -190,7 +190,7 @@
 				var infowindow = new google.maps.InfoWindow({
 				    content: contentString
 				});
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'vclick', function() {
 				  infowindow.open(map,marker);
 				});
 				google.maps.event.addListener(marker, "dragend", function(event) {
@@ -216,7 +216,7 @@
 				    content: contentString
 				});
 				InfoWindowArray.push(infowindow);
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'vclick', function() {
 				  infowindow.open(map,marker);
 				});
 				$("#submitButton").trigger('tap');
