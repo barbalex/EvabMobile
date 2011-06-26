@@ -22,7 +22,7 @@
   <body>
 	<div data-role="page" id="ZeitNeuPage">
 		<div data-role="header" data-position="fixed">
-			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext" id="hZeitListeLink" name=id="hZeitListeLink">abbrechen</a>
+			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">abbrechen</a>
 			<h1>neuer Zeitpunkt</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
@@ -56,6 +56,10 @@
 					<label for="zGenauigkeit">Zeit Genauigkeit:</label>
 					<input id="zGenauigkeit" name="zGenauigkeit" type="text" />
 				</div>
+				<div data-role="fieldcontain">
+					<label for="zDeckungDefinition">Deckung Definition:</label>
+					<textarea cols="40" rows="8" name="zDeckungDefinition" id="zDeckungDefinition"></textarea>
+				</div>			
 				<div data-role="fieldcontain">
 					<label for="zDeckungAlgen">Deckung Algen:</label>
 					<input id="zDeckungAlgen" name="zDeckungAlgen" type="text" />
@@ -105,72 +109,68 @@
 					<input id="zDeckungVegetation" name="zDeckungVegetation" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zDeckungDefinition">Deckung Definition:</label>
-					<input id="zDeckungDefinition" name="zDeckungDefinition" type="text" />
-				</div>
-				<div data-role="fieldcontain">
 					<label for="zBaumschichtHöheMax">Baumschicht max. Höhe cm:</label>
-					<input id="zBaumschichtHöheMax" name="zBaumschichtHöheMax" type="text" />
+					<input id="zBaumschichtHöheMax" name="zBaumschichtHöheMax" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zBaumschichtHöheMin">Baumschicht min. Höhe cm:</label>
-					<input id="zBaumschichtHöheMin" name="zBaumschichtHöheMin" type="text" />
+					<input id="zBaumschichtHöheMin" name="zBaumschichtHöheMin" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zBaumschichtHöheMit">Baumschicht mittlere Höhe cm:</label>
-					<input id="zBaumschichtHöheMit" name="zBaumschichtHöheMit" type="text" />
+					<input id="zBaumschichtHöheMit" name="zBaumschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zStrauchschichtHöheMax">Strauchschicht max. Höhe cm:</label>
-					<input id="zStrauchschichtHöheMax" name="zStrauchschichtHöheMax" type="text" />
+					<input id="zStrauchschichtHöheMax" name="zStrauchschichtHöheMax" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zStrauchschichtHöheMin">Strauchschicht min. Höhe cm:</label>
-					<input id="zStrauchschichtHöheMin" name="zStrauchschichtHöheMin" type="text" />
+					<input id="zStrauchschichtHöheMin" name="zStrauchschichtHöheMin" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zStrauchschichtHöheMit">Strauchschicht mittlere Höhe cm:</label>
-					<input id="zStrauchschichtHöheMit" name="zStrauchschichtHöheMit" type="text" />
+					<input id="zStrauchschichtHöheMit" name="zStrauchschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKrautschichtHöheMax">Krautschicht max. Höhe cm:</label>
-					<input id="zKrautschichtHöheMax" name="zKrautschichtHöheMax" type="text" />
+					<input id="zKrautschichtHöheMax" name="zKrautschichtHöheMax" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKrautschichtHöheMin">Krautschicht min. Höhe cm:</label>
-					<input id="zKrautschichtHöheMin" name="zKrautschichtHöheMin" type="text" />
+					<input id="zKrautschichtHöheMin" name="zKrautschichtHöheMin" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKrautschichtHöheMit">Krautschicht mittlere Höhe cm:</label>
-					<input id="zKrautschichtHöheMit" name="zKrautschichtHöheMit" type="text" />
+					<input id="zKrautschichtHöheMit" name="zKrautschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zVegHöheMax">Vegetation max. Höhe cm:</label>
-					<input id="zVegHöheMax" name="zVegHöheMax" type="text" />
+					<input id="zVegHöheMax" name="zVegHöheMax" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zVegHöheMin">Vegetation min. Höhe cm:</label>
-					<input id="zVegHöheMin" name="zVegHöheMin" type="text" />
+					<input id="zVegHöheMin" name="zVegHöheMin" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zVegHöheMit">Vegetation mittlere Höhe cm:</label>
-					<input id="zVegHöheMit" name="zVegHöheMit" type="text" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="xxx">Moosschicht mittlere Höhe cm:</label>
-					<input id="xxx" name="xxx" type="text" />
+					<input id="zVegHöheMit" name="zVegHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zMoosschichtHöheMit">Moosschicht mittlere Höhe cm:</label>
-					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="text" />
+					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="number" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="zMoosschichtHöheMit">Moosschicht mittlere Höhe cm:</label>
+					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zFlechtenschichtHöheMit">Flechtenschicht mittlere Höhe cm:</label>
-					<input id="zFlechtenschichtHöheMit" name="zFlechtenschichtHöheMit" type="text" />
+					<input id="zFlechtenschichtHöheMit" name="zFlechtenschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKryptogamenschichtHöheMit">Kryptogamenschicht mittlere Höhe cm:</label>
-					<input id="zKryptogamenschichtHöheMit" name="zKryptogamenschichtHöheMit" type="text" />
+					<input id="zKryptogamenschichtHöheMit" name="zKryptogamenschichtHöheMit" type="number" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zBemerkungen">Bemerkungen:</label>
@@ -221,13 +221,18 @@
 			doc.OrtId = "{{id}}";
 			if ($("input#zDatum").val()!=""){
 				doc.zDatum = $("input#zDatum").val();
-			} else if (doc.zDatum!=null){
-				delete doc.zDatum;
+			} else {
+				MeldungEinzeilig("Sie müssen ein Datum erfassen");
 			}
 			if ($("input#zZeit").val()!=""){
 				doc.zZeit = $("input#zZeit").val();
-			} else if (doc.zZeit!=null){
-				delete doc.zZeit;
+			} else {
+				MeldungEinzeilig("Sie müssen eine Zeit erfassen");
+			}
+			if ($("input#zGenauigkeit").val()!=""){
+				doc.zGenauigkeit = $("input#zGenauigkeit").val();
+			} else if (doc.zGenauigkeit!=null){
+				delete doc.zGenauigkeit;
 			}
 			if ($("input#zDeckungAlgen").val()!=""){
 				doc.zDeckungAlgen = $("input#zDeckungAlgen").val();
@@ -289,8 +294,8 @@
 			} else if (doc.zDeckungVegetation!=null){
 				delete doc.zDeckungVegetation;
 			}
-			if ($("input#zDeckungDefinition").val()!=""){
-				doc.zDeckungDefinition = $("input#zDeckungDefinition").val();
+			if ($("[id$='zDeckungDefinition']").val()!=""){
+				doc.zDeckungDefinition = $("[id$='zDeckungDefinition']").val();
 			} else if (doc.zDeckungDefinition!=null){
 				delete doc.zDeckungDefinition;
 			}
