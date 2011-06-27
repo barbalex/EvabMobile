@@ -9,21 +9,22 @@
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script src="../../vendor/couchapp/loaderTemplate.js"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
-  	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
   	<script type="text/javascript">
-		$( document ).bind("mobileinit", function(){
+		$( document ).bind( "mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
 		});	
 	</script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
   </head>
   <body>
-	<div data-role="page" id="ArtNeuPage">
+	<div data-role="page" id="hArtEditPage">
 		<div data-role="header" data-position="fixed">
-			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
-			<h1>neue Art</h1>
+			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
+			<h1>Art</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -39,7 +40,7 @@
 					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
 					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
 					<li><a href="#" rel="external" id="hZeitLink">Zeit</a></li>
-					<li><a href="" rel="external" class="ui-btn-active" id="hArtListeLink" name=id="hArtListeLink">Art</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Art</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -47,7 +48,7 @@
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="aMeldungTyp" class="select">Typ der Meldung:</label>
-					<select id="aMeldungTyp" name="aMeldungTyp"  data-native-menu="false">
+					<select id="aMeldungTyp" name="aMeldungTyp"  data-native-menu="false" value="{{aMeldungTyp}}">
 						<option value="Feldbeobachtung">Feldbeobachtung</option>
 						<option value="Herbarbeleg">Herbarbeleg</option>
 						<option value="Literaturangabe">Literaturangabe</option>
@@ -55,49 +56,47 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="aArtGruppe" name="aArtGruppe" data-native-menu="false">
-						<option>bitte w&auml;hlen</option>
+					<select id="aArtGruppe" name="aArtGruppe" data-native-menu="false" value="{{aArtGruppe}}">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
-					<select id="aArtName" name="aArtName" data-icon="arrow-r"  data-native-menu="true">
-						<option></option>
+					<select id="aArtName" name="aArtName" data-icon="arrow-r"  data-native-menu="true" value="{{aArtName}}">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtId">Art-ID:</label>
-					<input id="aArtId" name="aArtId" type="text" />
+					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtNameUnsicher">Bestimmung unsicher?</label>
-					<select name="aArtNameUnsicher" id="aArtNameUnsicher" data-role="slider">
+					<select name="aArtNameUnsicher" id="aArtNameUnsicher" data-role="slider" value="{{aArtNameUnsicher}}">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtNameVerifiziertDurch">verifiziert durch:</label>
-					<input id="aArtNameVerifiziertDurch" name="aArtNameVerifiziertDurch" type="text" />
+					<input id="aArtNameVerifiziertDurch" name="aArtNameVerifiziertDurch" type="text" value="{{aArtNameVerifiziertDurch}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtNameBemerkungen">Bemerkungen zur Art:</label>
-					<textarea cols="40" rows="8" name="aArtNameBemerkungen" id="aArtNameBemerkungen"></textarea>
+					<textarea cols="40" rows="8" name="aArtNameBemerkungen" id="aArtNameBemerkungen" value="{{aArtNameBemerkungen}}">{{aArtNameBemerkungen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" type="text" />
+					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aVorhandensein">Ist Art vorhanden? (nein = Absenzmeldung!)</label>
-					<select name="aVorhandensein" id="aVorhandensein" data-role="slider">
+					<select name="aVorhandensein" id="aVorhandensein" data-role="slider" value="{{aVorhandensein}}">
 						<option value="ja">ja</option>
 						<option value="nein">nein</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aPopGrösseKlassiert" class="select">Populationsgrösse:</label>
-					<select id="aPopGrösseKlassiert" name="aPopGrösseKlassiert" data-native-menu="false">
+					<select id="aPopGrösseKlassiert" name="aPopGrösseKlassiert" data-native-menu="false" value="{{aPopGrösseKlassiert}}">
 						<option>(nur f&uuml;r Flora)</option>
 						<option value="<10 Ex.">&lt;10 Ex.</option>
 						<option value="11-25 Ex.">11-25 Ex.</option>
@@ -114,26 +113,29 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aMenge">Menge:</label>
-					<input id="aMenge" name="aMenge" type="text" />
+					<input id="aMenge" name="aMenge" type="text" value="{{aMenge}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aBemerkungen">Bemerkungen zur Beobachtung:</label>
-					<textarea cols="40" rows="8" name="aBemerkungen" id="aBemerkungen"></textarea>
+					<textarea cols="40" rows="8" name="aBemerkungen" id="aBemerkungen" value="{{aBemerkungen}}">{{aBemerkungen}}</textarea>
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+					<li><a href="#" id="SpeichernButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
+							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Art löschen?</p>
+				<a id="jaButton" name="hArtListeLink" href="#" data-role="button" rel="external">ja</a>
+				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 	</div>
- 	
- 	<div data-role="page" id="hArtNeuArtauswahl">
+
+	<div data-role="page" id="hArtEditArtauswahl">
 		<div data-role="header" data-position="fixed">
-			<a href="#ArtNeuPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
+			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
 			<h1>Art wählen</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
@@ -142,14 +144,14 @@
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
 		<div data-role="content">
-			<ul id="ArtlistehArtNeu" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			<ul id="Artliste" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
 		</div>
 	</div>
-
+ 
   </body>
   
   
@@ -169,58 +171,106 @@
 				}
 		});
 
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var beob;
-				var key;
-				for(i in data.rows)
-				{
-					beob = data.rows[i].value;
-					key = data.rows[i].key;
-					if (User == key) {
-						Autor = beob.Autor;
-						$("input#aAutor").val(Autor);
+		refreshArtGruppen("{{aArtGruppe}}");
+		refreshArtName("{{aArtName}}");
+
+		$("#SpeichernButton").tap(function(event) {                        //ALLE INFOS VON ZEIT, ORT, RAUM, PROJEKT SPEICHERN!!!!!
+			var docId = "{{id}}";
+			$db.openDoc(docId, {
+				success: function(doc) {
+					doc.Typ = "hArt";
+					doc.User = User;
+					doc.ProjektId = "{{ProjektId}}";
+					doc.RaumId = "{{RaumId}}";
+					doc.OrtId = "{{OrtId}}";
+					doc.ZeitId = "{{ZeitId}}";
+					if ($("select#aMeldungTyp").val()!=""){
+						doc.aMeldungTyp = $("select#aMeldungTyp").val();
+					} else if (doc.aMeldungTyp!=null){
+						delete doc.aMeldungTyp;
 					}
+					if ($("select#aArtGruppe").val()!=""){
+						doc.aArtGruppe = $("select#aArtGruppe").val();
+					} else if (doc.aArtGruppe!=null){
+						delete doc.aArtGruppe;
+					}
+					if ($("select#aArtName").val()!=""){
+						doc.aArtName = $("select#aArtName").val();
+					} else if (doc.aArtName!=null){
+						delete doc.aArtName;
+					}
+					if ($("input#aArtId").val()!=""){
+						doc.aArtId = $("input#aArtId").val();
+					} else if (doc.aArtId!=null){
+						delete doc.aArtId;
+					}
+					if ($("select#aArtNameUnsicher").val()!=""){
+						doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
+					} else if (doc.aArtNameUnsicher!=null){
+						delete doc.aArtNameUnsicher;
+					}
+					if ($("input#aArtNameVerifiziertDurch").val()!=""){
+						doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
+					} else if (doc.aArtNameVerifiziertDurch!=null){
+						delete doc.aArtNameVerifiziertDurch;
+					}
+					if ($("[id='aArtNameBemerkungen']").val()!=""){
+						doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
+					} else if (doc.aArtNameBemerkungen!=null){
+						delete doc.aArtNameBemerkungen;
+					}
+					if ($("input#aAutor").val()!=""){
+						doc.aAutor = $("input#aAutor").val();
+					} else if (doc.aAutor!=null){
+						delete doc.aAutor;
+					}
+					if ($("select#aPopGrösseKlassiert").val()!=""){
+						doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
+					} else if (doc.aPopGrösseKlassiert!=null){
+						delete doc.aPopGrösseKlassiert;
+					}
+					if ($("input#aMenge").val()!=""){
+						doc.aMenge = $("input#aMenge").val();
+					} else if (doc.aMenge!=null){
+						delete doc.aMenge;
+					}
+					if ($("select#aVorhandensein").val()!=""){
+						doc.aVorhandensein = $("select#aVorhandensein").val();
+					} else if (doc.aVorhandensein!=null){
+						delete doc.aVorhandensein;
+					}
+					if ($("[id='aBemerkungen']").val()!=""){
+						doc.aBemerkungen = $("[id='aBemerkungen']").val();
+					} else if (doc.aBemerkungen!=null){
+						delete doc.aBemerkungen;
+					}
+					$db.saveDoc(doc, {
+						success: function(data) {
+							MeldungEinzeilig("Art gespeichert");
+						},
+						error: function() {
+							MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
+						 }
+					});
 				}
-			}
+			});
 		});
 
-		$("select#aArtGruppe").empty();
-		var viewname = "evab/Artgruppen";
-		$db.view(viewname, {
-			success: function(data) {
-				var i;
-				var ListItem;
-				var ListItemContainer = "<option>bitte w&auml;hlen</option>";
-				var ArtGruppe;
-				for(i in data.rows)
-				{
-					ArtGruppe = data.rows[i].key;
-					ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
-					ListItemContainer = ListItemContainer + ListItem;
-				}
-				$("select#aArtGruppe").selectmenu();
-				$("select#aArtGruppe").append(ListItemContainer);
-				$("select#aArtGruppe").selectmenu("refresh");
-			}
-		});
-		
 		$("select#aArtGruppe").change(function(){
 			var ArtGruppe = $("select#aArtGruppe").val();
-			if (ArtGruppe != "bitte w&auml;hlen") {
+			if (ArtGruppe != "") {
 				$("select#aArtName").empty();
 				$("select#aArtName").append("<option>jetzt die Art w&auml;hlen</option>");
 				$("select#aArtName").val("jetzt die Art w&auml;hlen");
-				$("select#aArtName").selectmenu("refresh", true);
+				$("select#aArtName").selectmenu("refresh");
 			}
 		});
-
+		
 		$("select#aArtName").tap(function(event){
 			event.preventDefault();
 			var ArtGruppe = $("select#aArtGruppe").val();
-			if (ArtGruppe != "bitte w&auml;hlen") {
-				$.mobile.changePage("#hArtNeuArtauswahl", "slide", false, false);
+			if (ArtGruppe != "") {
+				$.mobile.changePage("#hArtEditArtauswahl", "slide", false, false);
 				ArtlisteAufbauen(ArtGruppe);
 			} else {
 				$("select#aArtName").empty();
@@ -229,101 +279,25 @@
 				$("select#aArtName").selectmenu("refresh");
 			}
 		});
-		
-		$("li").live("click", function(event) {
+
+		$('[name="ArtListItem"]').live("vclick", function(event) {
 			event.preventDefault();
-			var ArtBezeichnung = $(this).attr("id");
+			var ArtName = $(this).attr("id");
 			var ArtId = $(this).attr("artid");
-			var option = "<option value='" + ArtBezeichnung + "'>" + ArtBezeichnung + "</option>";
+			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
 			$("select#aArtName").empty();
 			$("select#aArtName").append(option);
-			$("select#aArtName").val(ArtBezeichnung);
+			$("input#aArtName").val(ArtName);
 			$("select#aArtName").selectmenu("refresh");
 			$("input#aArtId").val(ArtId);
-			$.mobile.changePage("#ArtNeuPage", "slide", true, false);
-			$("#ArtlistehArtNeu").empty();
+			$.mobile.changePage("#hArtEditPage", "slide", true, false);
+			$("#Artliste").empty();
 		});
 
-		$("#SpeichernButton").tap(function(event) {
-			event.preventDefault();
-			var doc = {};
-			doc.Typ = "hArt";
-			doc.User = User;
-			doc.ProjektId = "{{ProjektId}}"
-			doc.RaumId = "{{RaumId}}";
-			doc.OrtId = "{{OrtId}}";
-			doc.ZeitId = "{{id}}";
-			if ($("select#aMeldungTyp").val()!=""){
-				doc.aMeldungTyp = $("select#aMeldungTyp").val();
-			} else if (doc.aMeldungTyp!=null){
-				delete doc.aMeldungTyp;
-			}
-			if ($("select#aArtGruppe").val()!=""){
-				doc.aArtGruppe = $("select#aArtGruppe").val();
-			} else if (doc.aArtGruppe!=null){
-				delete doc.aArtGruppe;
-			}
-			if ($("select#aArtName").val()!=""){
-				doc.aArtName = $("select#aArtName").val();
-			} else if (doc.aArtName!=null){
-				delete doc.aArtName;
-			}
-			if ($("input#aArtId").val()!=""){
-				doc.aArtId = $("input#aArtId").val();
-			} else if (doc.aArtId!=null){
-				delete doc.aArtId;
-			}
-			if ($("select#aArtNameUnsicher").val()!=""){
-				doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
-			} else if (doc.aArtNameUnsicher!=null){
-				delete doc.aArtNameUnsicher;
-			}
-			if ($("input#aArtNameVerifiziertDurch").val()!=""){
-				doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
-			} else if (doc.aArtNameVerifiziertDurch!=null){
-				delete doc.aArtNameVerifiziertDurch;
-			}
-			if ($("[id='aArtNameBemerkungen']").val()!=""){
-				doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
-			} else if (doc.aArtNameBemerkungen!=null){
-				delete doc.aArtNameBemerkungen;
-			}
-			if ($("input#aAutor").val()!=""){
-				doc.aAutor = $("input#aAutor").val();
-			} else if (doc.aAutor!=null){
-				delete doc.aAutor;
-			}
-			if ($("select#aPopGrösseKlassiert").val()!=""){
-				doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
-			} else if (doc.aPopGrösseKlassiert!=null){
-				delete doc.aPopGrösseKlassiert;
-			}
-			if ($("input#aMenge").val()!=""){
-				doc.aMenge = $("input#aMenge").val();
-			} else if (doc.aMenge!=null){
-				delete doc.aMenge;
-			}
-			if ($("select#aVorhandensein").val()!=""){
-				doc.aVorhandensein = $("select#aVorhandensein").val();
-			} else if (doc.aVorhandensein!=null){
-				delete doc.aVorhandensein;
-			}
-			if ($("[id='aBemerkungen']").val()!=""){
-				doc.aBemerkungen = $("[id='aBemerkungen']").val();
-			} else if (doc.aBemerkungen!=null){
-				delete doc.aBemerkungen;
-			}
-			$db.saveDoc(doc, {
-				success: function(data) {
-					window.open("../hArtEdit/" + data.id, target="_self");
-					MeldungEinzeilig("Art gespeichert");
-				},
-				error: function() {
-					MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
-				 }
-			});
-			return false;
-		});
+		//Code für das Löschen-Popup
+		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hArtEdit/" + "{{id}}";
+		$("#jaButton").tap(handleDelete);
+		document.getElementById("jaButton").href = "../hArtListe/" + "{{ZeitId}}";
 
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
@@ -335,10 +309,11 @@
 		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{OrtId}}";
 
 		//Link zur Zeit in Navbar setzen
-		document.getElementById("hZeitLink").href = "../hZeitEdit/" + "{{id}}";
+		document.getElementById("hZeitLink").href = "../hZeitEdit/" + "{{ZeitId}}";
 
 		//Link zur ArtListe in Navbar setzen
-		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
+		var url = "../hArtListe/" + "{{ZeitId}}";
+		$("[name='hArtListeLink']").attr('href', url);
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -418,12 +393,36 @@
 					ListItemContainer = ListItemContainer + ListItem;
 				}
 				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#ArtlistehArtNeu").append(ListItemContainer);
-				$("#ArtlistehArtNeu").listview();
-				$("#ArtlistehArtNeu").listview("refresh");
+				$("#Artliste").append(ListItemContainer);
+				$("#Artliste").listview();
+				$("#Artliste").listview("refresh");
 			}
 		});
 	}
-	
+
+	function handleDelete(event)
+	{
+		var docId = "{{id}}";
+		var ZeitId = "{{ZeitId}}";
+		// First open doc based on ID in order to get full document
+		$db.openDoc(docId, {
+			success: function(document) {
+				// Then use the opened doc as reference to remove
+				$db.removeDoc(document, {
+					success: function() {
+						MeldungEinzeilig("Art gelöscht");
+						window.open("../hArtListe/" + ZeitId, target="_self");
+					},
+					error: function() {
+						MeldungEinzeilig("Die Art konnte nicht gelöscht werden");
+					}
+				});
+			},
+			error: function() {
+				MeldungEinzeilig("Eine Art mit der ID: " + docId + " wurde nicht gefunden");
+			}
+		});
+		return false;
+	}
   </script>
 </html>
