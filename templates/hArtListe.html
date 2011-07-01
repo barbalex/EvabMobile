@@ -100,7 +100,6 @@
 			{success: function(data) {
 				var i;
 				var anzArt = 0;
-				var User;
 				var Art;
 				var ZeitId = "{{id}}";
 				var externalPage;
@@ -123,13 +122,15 @@
 					{
 						Art = data.rows[i].value;
 						key = data.rows[i].key;
-						User = userCtx.name;
+						aArtGruppe = Art.aArtGruppe;
+						ImageLink = "../../Artgruppenbilder/" + aArtGruppe + ".png";
 						if (key[0] == User) {                   //nur eigene Zeiten anzeigen!
 							if(key[1] == ZeitId) {    		//nur Zeiten mit dieser OrtId anzeigen
 								var bArtName = key[2];
 								externalPage = "../../_show/hArtEdit/" + Art._id;
-								listItem = "<li id=\"" + Art._id + "\">" +
+								listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\">" +
 									"<a href=\"" + externalPage + "\" rel=\"external\">" +
+									"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 									"<h3>" + bArtName + "<\/h3>" +
 									"<\/a> <\/li>";
 								ListItemContainer = ListItemContainer + listItem;

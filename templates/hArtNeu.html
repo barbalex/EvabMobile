@@ -61,7 +61,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
-					<select id="aArtName" name="aArtName" data-icon="arrow-r"  data-native-menu="true">
+					<select id="aArtName" name="aArtName" data-icon="arrow-r" data-native-menu="true">
 						<option></option>
 					</select>
 				</div>
@@ -98,7 +98,7 @@
 				<div data-role="fieldcontain">
 					<label for="aPopGrösseKlassiert" class="select">Populationsgrösse:</label>
 					<select id="aPopGrösseKlassiert" name="aPopGrösseKlassiert" data-native-menu="false">
-						<option>(nur f&uuml;r Flora)</option>
+						<option></option>
 						<option value="<10 Ex.">&lt;10 Ex.</option>
 						<option value="11-25 Ex.">11-25 Ex.</option>
 						<option value="26-50 Ex.">26-50 Ex.</option>
@@ -157,9 +157,7 @@
 	function handleDocumentReady()
 	{
   		$db = $.couch.db("evab-ch_barbalex_evab");
-		
 		userCtx = null;
-		var User;
 		var Autor;
 		
 		$.couch.session({
@@ -209,10 +207,11 @@
 		$("select#aArtGruppe").change(function(){
 			var ArtGruppe = $("select#aArtGruppe").val();
 			if (ArtGruppe != "bitte w&auml;hlen") {
+				$("select#aArtName").selectmenu();
 				$("select#aArtName").empty();
 				$("select#aArtName").append("<option>jetzt die Art w&auml;hlen</option>");
 				$("select#aArtName").val("jetzt die Art w&auml;hlen");
-				$("select#aArtName").selectmenu("refresh", true);
+				$("select#aArtName").selectmenu("refresh");
 			}
 		});
 
@@ -232,12 +231,12 @@
 		
 		$("li").live("click", function(event) {
 			event.preventDefault();
-			var ArtBezeichnung = $(this).attr("id");
+			var ArtName = $(this).attr("id");
 			var ArtId = $(this).attr("artid");
-			var option = "<option value='" + ArtBezeichnung + "'>" + ArtBezeichnung + "</option>";
+			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
 			$("select#aArtName").empty();
 			$("select#aArtName").append(option);
-			$("select#aArtName").val(ArtBezeichnung);
+			$("select#aArtName").val(ArtName);
 			$("select#aArtName").selectmenu("refresh");
 			$("input#aArtId").val(ArtId);
 			$.mobile.changePage("#ArtNeuPage", "slide", true, false);
@@ -395,19 +394,19 @@
 				var ListItem;
 				var ListItemContainer = "";
 				var ArtName;
-				var ArtValue;
+				var Art;
 				var ArtId;
 				var HinweisVerwandschaft;
 				for(i in data.rows)
 				{
 					ArtName = data.rows[i].key;
-					ArtValue = data.rows[i].value;
-					ArtId = ArtValue.id;
-					if(ArtValue.HinweisVerwandschaft){
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					if(Art.HinweisVerwandschaft){
 						ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
 						"<a href=\"#\">" +
 						"<h3>" + ArtName + "<\/h3>" +
-						"<p>" + ArtValue.HinweisVerwandschaft + "<\/p>" +
+						"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
 						"<\/a> <\/li>";
 					}else{
 						ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +

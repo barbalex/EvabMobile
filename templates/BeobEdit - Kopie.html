@@ -6,14 +6,14 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
-  	<link rel="stylesheet" href="../../style/jquery.mobile-1.0a4.1.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
   	<script type="text/javascript">
-		$( document ).bind( "mobileinit", function(){
+		$(document).bind("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 		});	
 	</script>
@@ -31,13 +31,10 @@
 				}
 			});
 
-			refreshArtGruppen("{{bArtGruppe}}");
-			$("select#bArtGruppe").val("{{bArtGruppe}}");
-			$("select#bArtGruppe").selectmenu("refresh");
-			refreshArtName("{{bArtName}}");
+			refreshArtGruppen("{{aArtGruppe}}");
+			refreshArtName("{{aArtName}}");
 			
 			var docId = "{{id}}";
-			//document.getElementById("deleteButton").href = "../../_show/BeobDetail_delete/" + docId;     löste Fehler aus??!!
 			
 			$("#submitButton").tap(function(event) {
 				var docId = "{{id}}";
@@ -47,17 +44,17 @@
 						doc.Modus = "einfach";
 						doc.Typ = "Beobachtung";
 						doc.User = User;
-						doc.bArtGruppe = $("select#bArtGruppe").val();
-						doc.bArtName = $("select#bArtName").val();
-						if ($("input#bArtId").val() != ""){
-							doc.bArtId = $("input#bArtId").val();
-						} else if (doc.bArtId!=null){
-							delete doc.bArtId;
+						doc.aArtGruppe = $("select#aArtGruppe").val();
+						doc.aArtName = $("select#aArtName").val();
+						if ($("input#aArtId").val() != ""){
+							doc.aArtId = $("input#aArtId").val();
+						} else if (doc.aArtId!=null){
+							delete doc.aArtId;
 						}
-						if ($("input#bAutor").val()!=""){
-							doc.bAutor = $("input#bAutor").val();
-						} else if (doc.bAutor!=null){
-							delete doc.bAutor;
+						if ($("input#aAutor").val()!=""){
+							doc.aAutor = $("input#aAutor").val();
+						} else if (doc.aAutor!=null){
+							delete doc.aAutor;
 						}
 						if ($("input#oXKoord").val()!=""){
 							doc.oXKoord = $("input#oXKoord").val();
@@ -102,47 +99,47 @@
 				});
 			});	
 			
-			$("select#bArtGruppe").change(function(){
-				var ArtGruppe = $("select#bArtGruppe").val();
+			$("select#aArtGruppe").change(function(){
+				var ArtGruppe = $("select#aArtGruppe").val();
 				if (ArtGruppe != "") {
-					$("select#bArtName").empty();
-					$("select#bArtName").append("<option>jetzt die Art w&auml;hlen</option>");
-					$("select#bArtName").val("jetzt die Art w&auml;hlen");
-					$("select#bArtName").selectmenu("refresh");
+					$("select#aArtName").empty();
+					$("select#aArtName").append("<option>jetzt die Art w&auml;hlen</option>");
+					$("select#aArtName").val("jetzt die Art w&auml;hlen");
+					$("select#aArtName").selectmenu("refresh");
 				}
 			});
 			
-			$("select#bArtName").tap(function(event){
+			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				var ArtGruppe = $("select#bArtGruppe").val();
+				var ArtGruppe = $("select#aArtGruppe").val();
 				if (ArtGruppe != "") {
 					$.mobile.changePage("#Artauswahl", "slide", false, false);
 					ArtlisteAufbauen(ArtGruppe);
 				} else {
-					$("select#bArtName").empty();
-					$("select#bArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
-					$("select#bArtName").val("bitte Art-Gruppe w&auml;hlen!");
-					$("select#bArtName").selectmenu("refresh");
+					$("select#aArtName").empty();
+					$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
+					$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
+					$("select#aArtName").selectmenu("refresh");
 				}
 			});
 		
-			$('[name="ArtListItem"]').live("click", function(event) {
+			$('[name="ArtListItem"]').live("vclick", function(event) {
 				event.preventDefault();
 				var ArtName = $(this).attr("id");
 				var ArtId = $(this).attr("artid");
 				var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-				$("select#bArtName").empty();
-				$("select#bArtName").append(option);
-				$("input#bArtName").val(ArtName);
-				$("select#bArtName").selectmenu("refresh");
-				$("input#bArtId").val(ArtId);
-				$.mobile.changePage("#BeobDetailEditPage", "slide", true, false);
+				$("select#aArtName").empty();
+				$("select#aArtName").append(option);
+				$("input#aArtName").val(ArtName);
+				$("select#aArtName").selectmenu("refresh");
+				$("input#aArtId").val(ArtId);
+				$.mobile.changePage("#BeobEditPage", "slide", true, false);
 				$("#Artliste").empty();
 			});
 
 			$("#GeButton").tap(function(event) {
 				if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != ""){
-					$.mobile.changePage("#BeobDetailEditMap", "slide", false, false);
+					$.mobile.changePage("#BeobEditMap", "slide", false, false);
 				} else {
 					MeldungEinzeilig("Breiten- und Längengrad müssen erfasst sein");
 				}
@@ -154,7 +151,7 @@
 
 			var InfoWindowArray = [];
 
-			$('#BeobDetailEditMap').live("pagecreate", function() {
+			$('#BeobEditMap').live("pagecreate", function() {
 				var lat = $("input#oLatitudeDecDeg").val();
 				var lng = $("input#oLongitudeDecDeg").val();
 				var latlng = new google.maps.LatLng(lat, lng);
@@ -166,26 +163,26 @@
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 				google.maps.event.trigger(map,'resize');
-				var bArtGruppe = $("select#bArtGruppe").val();
-				var bArtName = $("select#bArtName").val();
-				var bAutor = $("input#bAutor").val();
+				var aArtGruppe = $("select#aArtGruppe").val();
+				var aArtName = $("select#aArtName").val();
+				var aAutor = $("input#aAutor").val();
 				var zDatum = $("input#zDatum").val();
 				var zZeit = $("input#zZeit").val();
-				var image = "../../Artgruppenbilder/" + bArtGruppe + ".png";
+				var image = "../../Artgruppenbilder/" + aArtGruppe + ".png";
 				var marker = new google.maps.Marker({
 					position: latlng, 
 				    map: map, 
-				    title: bArtName,
+				    title: aArtName,
 				    icon: image,
 					draggable: true
 				});
 				var contentString = '<div id="content">'+
 				    '<div id="siteNotice">'+
 				    '</div>'+
-				    '<h4 id="firstHeading" class="GmInfowindow">' + bArtName + '</h4>'+
+				    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
 				    '<div id="bodyContent" class="GmInfowindow">'+
-				    '<p>Art-Gruppe: ' + bArtGruppe + '</p>'+
-				    '<p>Autor: ' + bAutor + '</p>'+
+				    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
+				    '<p>Autor: ' + aAutor + '</p>'+
 				    '<p>Datum: ' + zDatum + '</p>'+
 				    '<p>Zeit: ' + zZeit + '</p>'+
 				    '</div>'+
@@ -193,7 +190,7 @@
 				var infowindow = new google.maps.InfoWindow({
 				    content: contentString
 				});
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'vclick', function() {
 				  infowindow.open(map,marker);
 				});
 				google.maps.event.addListener(marker, "dragend", function(event) {
@@ -219,7 +216,7 @@
 				    content: contentString
 				});
 				InfoWindowArray.push(infowindow);
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'vclick', function() {
 				  infowindow.open(map,marker);
 				});
 				$("#submitButton").trigger('tap');
@@ -237,7 +234,7 @@
 
 			//Code für das Löschen-Popup
 			var docId = "{{id}}";
-			var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/BeobDetail_edit/" + docId;
+			var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/Beobdit/" + docId;
 			document.getElementById("neinButton").href = url;
 			$("#jaButton").tap(handleDelete);
 		});
@@ -255,17 +252,16 @@
 			$db.saveDoc(document, {
 				success: function() {
 					MeldungEinzeilig("Beobachtung gespeichert");
-					//window.open("../../BeobListe.html", target="_self");
 				},
 				error: function() {
-					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.bArtName);
+					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.aArtName);
 				}
 			});
 		}
 		
-		function refreshArtGruppen(bArtGruppe)
+		function refreshArtGruppen(aArtGruppe)
 		{
-			$("select#bArtGruppe").empty();
+			$("select#aArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
 			$db.view(viewname, {
 				success: function(data) {
@@ -279,20 +275,22 @@
 						ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
 						ListItemContainer = ListItemContainer + ListItem;
 					}
-					$("select#bArtGruppe").append(ListItemContainer);
-					$("select#bArtGruppe").val(bArtGruppe);
-					$("select#bArtGruppe").selectmenu("refresh");
+					$("select#aArtGruppe").selectmenu();
+					$("select#aArtGruppe").append(ListItemContainer);
+					$("select#aArtGruppe").val(aArtGruppe);
+					$("select#aArtGruppe").selectmenu("refresh");
 				}
 			});
 		}
 		
-		function refreshArtName(bArtName)
+		function refreshArtName(aArtName)
 		{
-			$("select#bArtName").empty();
-			var startoption = "<option value='" + bArtName + "'>" + bArtName + "</option>";
-			$("select#bArtName").append(startoption);
-			$("select#bArtName").val(bArtName);
-			$("select#bArtName").selectmenu("refresh");
+			$("select#aArtName").selectmenu();
+			$("select#aArtName").empty();
+			var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
+			$("select#aArtName").append(startoption);
+			$("select#aArtName").val(aArtName);
+			$("select#aArtName").selectmenu("refresh");
 		}
 
 		function GetGeolocation(){
@@ -308,7 +306,8 @@
 					var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
 					var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
 					$("input#oXKoord").val(x);
-					$("input#oYKoord").val(y);         
+					$("input#oYKoord").val(y); 
+					MeldungEinzeilig('Positionsdaten wurden gesetzt');         
 	            }, 
 	            function(){ 
 	                MeldungEinzeilig('Keine Positionsdaten verfügbar');
@@ -332,7 +331,7 @@
 					{
 						ArtName = data.rows[i].key;
 						ArtValue = data.rows[i].value;
-						ArtId = ArtValue.ArtId;
+						ArtId = ArtValue.id;
 						if(ArtValue.HinweisVerwandschaft){
 							ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
 							"<a href=\"#\">" +
@@ -349,6 +348,7 @@
 					}
 					ListItemContainer = ListItemContainer + "<\/ul>";
 					$("#Artliste").append(ListItemContainer);
+					$("#Artliste").listview();
 					$("#Artliste").listview("refresh");
 				}
 			});
@@ -379,38 +379,39 @@
 	</script>
   </head>
   <body>
-  	<div data-role="page" id="BeobDetailEditPage">
+  	<div data-role="page" id="BeobEditPage">
   		<div data-role="header" data-position="fixed">
-  			<a href="../../BeobListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
+  			<a href="../../BeobListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
   		</div>
-		<div id="BeobDetailEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<form id="BeobDetailEditForm" action="#" method="get" data-identity="{{document}}"
+		<div id="BeobEditContent" data-role="content" data-theme="c" style="padding:0em;">
+			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
-					<label for="bArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="bArtGruppe" name="bArtGruppe" value="{{bArtGruppe}}"  data-native-menu="false">
+					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
+					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}"  data-native-menu="false">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bArtName" class="select">Art-Name:</label>
-					<select id="bArtName" name="bArtName" value="{{bArtName}}" data-icon="arrow-r">
+					<label for="aArtName" class="select">Art-Name:</label>
+					<select id="aArtName" name="aArtName" value="{{aArtName}}" data-icon="arrow-r">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bArtId">Art-ID:</label>
-					<input id="bArtId" name="bArtId" type="text" value="{{bArtId}}" />
+					<label for="aArtId">Art-ID:</label>
+					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="bAutor">Autor:</label>
-					<input id="bAutor" name="bAutor" type="text" value="{{bAutor}}" />
+					<label for="aAutor">Autor:</label>
+					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -431,7 +432,6 @@
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
 					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
-					<button type="submit" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left" data-role="button" data-theme="e">automatisch verorten</button>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
@@ -442,13 +442,14 @@
 					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timebox"}' value="{{zZeit}}" />
 				</div>
 				<div data-role="footer" data-position="fixed">
-					<div data-role="navbar" id="BeobDetailEditNavbar">
+					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Beobachtung löschen?</p>
 				<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
+							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
 						</ul>
 					</div><!-- /navbar -->
 				</div><!-- /footer -->
@@ -458,15 +459,16 @@
 
 	<div data-role="page" id="Artauswahl">
 		<div data-role="header" data-position="fixed">
-			<a href="#BeobDetailEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
+			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
 			<h1>Art wählen</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
 		<div data-role="content">
@@ -474,17 +476,18 @@
 		</div>
 	</div>
 
-	<div data-role="page" id="BeobDetailEditMap" style="width:100%; height:100%;">
+	<div data-role="page" id="BeobEditMap" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed">
-			<a href="#BeobDetailEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
+			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
 			<h1>Karte</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
 				<a id="NeuesKontoErstellen" href="../../Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="Feldliste" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/Feldliste" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
   			</div>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 

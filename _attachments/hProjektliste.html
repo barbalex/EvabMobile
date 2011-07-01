@@ -71,7 +71,6 @@
 			{success: function(data) {
 				var i;
 				var anzProj = 0;
-				var User;
 				var Proj;
 				var externalPage;
 				var listItem;
@@ -90,7 +89,6 @@
 					{
 						Proj = data.rows[i].value;
 						key = data.rows[i].key;
-						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
 							pName = key[1];
 							externalPage = "_show/hProjektEdit/" + Proj._id;

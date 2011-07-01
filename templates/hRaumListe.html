@@ -88,7 +88,6 @@
 			{success: function(data) {
 				var i;
 				var anzRaum = 0;
-				var User;
 				var Raum;
 				var ProjektId = "{{id}}";
 				var externalPage;
@@ -111,7 +110,6 @@
 					{
 						Raum = data.rows[i].value;
 						key = data.rows[i].key;
-						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Räume anzeigen!
 							if(key[1] == ProjektId) {    		//nur Räume mit dieser ProjektId anzeigen
 								rName = Raum.rName;

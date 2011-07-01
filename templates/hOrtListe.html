@@ -92,7 +92,6 @@
 			{success: function(data) {
 				var i;
 				var anzOrt = 0;
-				var User;
 				var Ort;
 				var RaumId = "{{id}}";
 				var externalPage;
@@ -115,7 +114,6 @@
 					{
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
-						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Orte anzeigen!
 							if(key[1] == RaumId) {    		//nur Orte mit dieser RaumId anzeigen
 								oName = Ort.oName;

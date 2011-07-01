@@ -96,7 +96,6 @@
 			{success: function(data) {
 				var i;
 				var anzZeit = 0;
-				var User;
 				var Zeit;
 				var OrtId = "{{id}}";
 				var externalPage;
@@ -119,7 +118,6 @@
 					{
 						Zeit = data.rows[i].value;
 						key = data.rows[i].key;
-						User = userCtx.name;
 						if (key[0] == User) {                   //nur eigene Zeiten anzeigen!
 							if(key[1] == OrtId) {    		//nur Zeiten mit dieser OrtId anzeigen
 								var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];

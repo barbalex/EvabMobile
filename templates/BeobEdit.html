@@ -23,7 +23,6 @@
 			// do stuff when DOM is ready
 			$db = $.couch.db("evab-ch_barbalex_evab");
 			userCtx = null;
-			var User;
 			$.couch.session({
 			success : function(r) {
 				var userCtx = r.userCtx;
@@ -161,7 +160,8 @@
 				    streetViewControl: false,
 				    mapTypeId: google.maps.MapTypeId.HYBRID
 				};
-				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+				var mapcanvas = $('#map_canvas');
+				var map = new google.maps.Map(mapcanvas[0],options);
 				google.maps.event.trigger(map,'resize');
 				var aArtGruppe = $("select#aArtGruppe").val();
 				var aArtName = $("select#aArtName").val();
