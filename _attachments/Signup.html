@@ -141,7 +141,10 @@
 		document.Typ = "User";
 		document.UserName = $('input[name=UserName]').val();
 		document.Autor = $("input#Autor").val();
-		document.Email = $("input#Email").val();
+		if ($("input#Email").val() != "") {
+			document.Email = $("input#Email").val();
+		}
+		document.Modus = "einfach";
 		$db.saveDoc(document);
 	}
   </script>

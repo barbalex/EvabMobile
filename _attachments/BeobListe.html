@@ -16,7 +16,7 @@
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
-				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">Konto bearbeiten</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
@@ -43,7 +43,7 @@
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
-				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">Konto bearbeiten</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
@@ -182,7 +182,7 @@
 						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
 					}
 					function makeListener(map, marker, contentString){
-						google.maps.event.addListener(marker, 'vclick', function() {
+						google.maps.event.addListener(marker, 'click', function() {
 							infowindow.setContent(contentString);
 							infowindow.open(map,marker);
 						});
@@ -214,6 +214,7 @@
 					}
 					
 					//$("#BeobListeHeader").text(anzBeob + " Beobachtungen");   //Header soll anzeigen, wieviele Beobachtungen erfasst wurden. Breaks jquery mobile style!
+					//$("#BeobListeHeader").page();
 
 					if (anzBeob == 0) {
 						$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
@@ -247,11 +248,26 @@
 				}
 			});
 		}
+	
+		//Link zum UserEdit in Menu setzen
+		var UserId;
+		$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var doc;
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					doc = data.rows[i].value;
+					if (key == User) {
+						UserId = doc._id;
+					}
+				}
+				var url = "_show/UserEdit/" + UserId;
+				$("[name='UserEditLink']").attr('href', url);
+			}
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	
   </script>
 </html>

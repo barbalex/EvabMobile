@@ -16,7 +16,7 @@
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
-				<a id="NeuesKontoErstellen" href="Signup.html" data-role="button" rel="external">neues Konto<br />erstellen</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">Konto bearbeiten</a>
 				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
@@ -41,18 +41,11 @@
 	function handleDocumentReady()
 	{
 		$db = $.couch.db("evab-ch_barbalex_evab");
-		AnmeldungPruefen();
-		refreshProjListe();
-	}
-	
-	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	function AnmeldungPruefen() {
 		userCtx = null;
 		$.couch.session({
 			success : function(r) {
 				userCtx = r.userCtx;
+				User = userCtx.name;
 				if (userCtx.name) {
 					//jetzt muss nichts gemacht werden
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
@@ -62,8 +55,30 @@
 				}
 			}
 		});
-	}
+		refreshProjListe();
 
+		//Link zum UserEdit in Menu setzen
+		var UserId;
+		$db.view("evab/User",
+				{success: function(data) {
+					var i;
+					var doc;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						doc = data.rows[i].value;
+						if (key == User) {
+							UserId = doc._id;
+						}
+					}
+					var url = "_show/UserEdit/" + UserId;
+					$("[name='UserEditLink']").attr('href', url);
+				}
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
   	function refreshProjListe()
 	{
 		$("#Projekte").empty();
@@ -77,7 +92,6 @@
 				var ListItemContainer = "";
 				for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
 					key = data.rows[i].key;
-					User = userCtx.name;
 					if (key[0] == User) {            //nur eigene Beobachtungen zählen!
 						anzProj = anzProj + 1;
 					}
