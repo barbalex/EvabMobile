@@ -34,14 +34,18 @@
 
 			//Modus managen
 			Modus = "{{Modus}}";
-			$("input[type='radio']").checkboxradio();
+			$("input[name='Modus']").checkboxradio();
 			$("input#{{Modus}}").attr("checked",true).checkboxradio("refresh");
 			$("input[name='Modus']").change(function(){
-				if (Modus == "einfach") {
-					Modus = "hierarchisch";
-				} else {
-					Modus = "einfach";
-				}
+				Modus = $(this).attr("id");
+			});
+
+			//Datenverwendung managen
+			Datenverwendung = "{{Datenverwendung}}";
+			$("input[name='Datenverwendung']").checkboxradio();
+			$("input#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
+			$("input[name='Datenverwendung']").change(function(){
+				Datenverwendung = $(this).attr("id");
 			});
 			
 			$("#submitButton").tap(function(event) {
@@ -56,6 +60,7 @@
 							delete doc.Email;
 						}
 						doc.Modus = Modus;
+						doc.Datenverwendung = Datenverwendung;
 						if ($("input#Autor").val()==""){
 							MeldungEinzeilig("Bitte Autor eingeben");
 						} else {
@@ -108,7 +113,7 @@
   	<div data-role="page" id="UserEditPage">
   		<div data-role="header" data-position="fixed">
   			<a href="../../BeobListe.html" data-rel="back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
-  			<h2>Benutzerprofil</h2>
+  			<h2>Benutzerkonto</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -141,6 +146,18 @@
 				         	<label for="hierarchisch">hierarchisch</label>
 				    </fieldset>
 				</div>
+				<div data-role="fieldcontain">
+				    <fieldset data-role="controlgroup">
+				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
+				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" />
+				         	<label for="Nein">nein (Standard)</label>
+				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
+				         	<label for="Ja">ja, ohne Einschränkung</label>
+				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
+				         	<label for="JaAber">ja aber kontrolliert und für Naturschutzzwecke*</label>
+				    </fieldset>
+				</div>
+				<p style="text-align: center">* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten</p>
 				<div data-role="footer" data-position="fixed">
 					<div data-role="navbar" id="UserEditNavbar">
 						<ul>

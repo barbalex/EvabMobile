@@ -6,7 +6,8 @@ function(doc, req) {
 		UserName: doc.UserName,
 		Autor: doc.Autor,
 		Email: doc.Email,
-		Modus: doc.Modus
+		Modus: doc.Modus,
+		Datenverwendung: doc.Datenverwendung
 	};
 	return Mustache.to_html(this.templates.UserEdit, stash);
 }
