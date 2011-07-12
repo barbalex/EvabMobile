@@ -87,9 +87,28 @@
 		$.couch.session({
 			success : function(r) {
 				var userCtx = r.userCtx;
+				User = userCtx.name;
 				if (userCtx.name) {
 					_replicate(name, pass);
-					window.open("BeobListe.html", target="_self");
+					var Modus;
+					$db.view("evab/User",
+						{success: function(data) {
+							var i;
+							var doc;
+							for(i in data.rows) {
+								key = data.rows[i].key;
+								doc = data.rows[i].value;
+								if (key == User) {
+									Modus = doc.Modus;
+								}
+							}
+							if (Modus == "hierarchisch"){
+								window.open("hProjektListe.html", target="_self");
+							} else {
+								window.open("BeobListe.html", target="_self");
+							}
+						}
+					});
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
 					MeldungEinzeilig("Oops, die Datenbank hat keine Benutzer!");
 				} else {
