@@ -255,10 +255,6 @@
 						$("[name='UserEditLink']").attr('href', url);
 					}
 			});
-
-			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-			contentHeight = $(window).height() - 43;
-			$("#map_canvas").css("height", contentHeight + "px");
 		});
 	</script>
 	<script type="text/javascript">
@@ -498,8 +494,8 @@
 		</div>
 	</div>
 
-	<div data-role="page" id="BeobEditMap" style="width:100%; height:100% !important;">
-		<div data-role="header" data-position="fixed">
+	<div data-role="page" id="BeobEditMap" style="width:100%; height:100%;">
+		<div data-role="header">
 			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
 			<h1>Karte</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>

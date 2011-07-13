@@ -99,10 +99,10 @@
 		{
 			$db.saveDoc(document, {
 				success: function() {
-					MeldungEinzeilig("Benutzerprofil gespeichert");
+					MeldungEinzeilig("Einstellungen gespeichert");
 				},
 				error: function() {
-					MeldungZweizeilig("Das Benutzerprofil konnte nicht gespeichert werden");
+					MeldungZweizeilig("Speichern fehlgeschlagen!");
 				}
 			});
 		}
@@ -113,11 +113,11 @@
   	<div data-role="page" id="UserEditPage">
   		<div data-role="header" data-position="fixed">
   			<a href="../../BeobListe.html" data-rel="back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
-  			<h2>Benutzerkonto</h2>
+  			<h2>Meine Einstellungen</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">Konto bearbeiten</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">Meine Einstellungen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
@@ -126,17 +126,20 @@
   		</div>
 		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
 			<p><span class="Feldbeschriftung">Benutzername: </span><span class="Feld">{{UserName}}</span><span> (kann nicht verändert werden)</span></p>
-			<p>EvAB mobile kennt nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
+			<p style="text-align: center">EvAB mobile kennt nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
+			<hr />
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
 					<label for="Autor">Autor*:</label>
 					<input id="Autor" name="Autor" type="text" value="{{Autor}}"/>
-					<p>Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
+					<p style="text-align: center">Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 				</div>
+				<hr />
 				<div data-role="fieldcontain">
 					<label for="Email">email-Adresse:</label>
 					<input id="Email" name="Email" type="email" value="{{Email}}"/>
 				</div>
+				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup" data-type="horizontal">
 				    	<legend>Ich will in diesem Modus erfassen:</legend>
@@ -146,6 +149,8 @@
 				         	<label for="hierarchisch">hierarchisch</label>
 				    </fieldset>
 				</div>
+				<p style="text-align: center">Im einfachen Modus können für alle Artengruppen dieselben Angaben in einer übersichtlichen Liste erfasst werden.<br />Im hierarchischen Modus stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit und Art</i> viele Felder zur Verfügung.<br />Auf Stufe Art stehen je nach Artgruppe spezifische Felder zur Verfügung.</p>
+				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
