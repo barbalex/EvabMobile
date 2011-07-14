@@ -50,7 +50,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtId">Art-ID:</label>
-					<input id="aArtId" name="aArtId" type="text" />
+					<input id="aArtId" name="aArtId" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				
 				<div data-role="fieldcontain">
@@ -59,27 +59,27 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" type="text" />
+					<input id="oXKoord" name="oXKoord" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" type="text" />
+					<input id="oYKoord" name="oYKoord" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLongitudeDecDeg">Längengrad:</label>
-					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" />
+					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLatitudeDecDeg">Breitengrad:</label>
-					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" />
+					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" />
+					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}'/>
+					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zZeit">Zeit:</label>
@@ -284,8 +284,10 @@
 			}
 			if ($("input#zDatum").val()!=""){
 				doc.zDatum = $("input#zDatum").val();
-			} else if (doc.zDatum!=null){
-				delete doc.zDatum;
+			} else {
+				MeldungEinzeilig("Bitte Datum eingeben");
+				document.getElementById("zDatum").focus();
+				return;
 			}
 			if ($("input#zZeit").val()!=""){
 				doc.zZeit = $("input#zZeit").val();

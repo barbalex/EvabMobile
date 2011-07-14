@@ -44,7 +44,7 @@
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="rName">Name:</label>
-					<input id="rName" name="rName" type="text" value="{{rName}}" />
+					<input id="rName" name="rName" type="text" value="{{rName}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="rBemerkungen">Bemerkungen:</label>
@@ -88,13 +88,13 @@
 					doc.Typ = "hRaum";
 					doc.User = User;
 					doc.ProjektId = "{{ProjektId}}";
-					doc.rName = $("input#rName").val();
-					doc.rBemerkungen = $("[id$='rBemerkungen']").val();
-					if ($("input#rName").val() != ""){
-						doc.rName = $("input#rName").val();
-					} else if (doc.rName!=null){
-						delete doc.rName;
+					var rName = $("input#rName").val();
+					if (rName == "") {
+						MeldungEinzeilig("Bitte Raumnamen eingeben");
+						document.getElementById("rName").focus();
+						return;
 					}
+					doc.rName = rName;
 					if ($("[id$='rBemerkungen']").val()!=""){
 						doc.rBemerkungen = $("[id$='rBemerkungen']").val();
 					} else if (doc.rBemerkungen!=null){
@@ -159,6 +159,7 @@
 
 	function handleDelete(event)
 		{
+			alert("handleDelete führt aus");
 			var docId = "{{id}}";
 			var ProjektId = "{{ProjektId}}";
 			// First open doc based on ID in order to get full document

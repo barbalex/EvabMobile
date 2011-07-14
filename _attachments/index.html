@@ -19,11 +19,11 @@
 			<form id="LoginForm" action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="UserName">Benutzername:</label>
-					<input id="UserName" name="UserName" type="text"/>
+					<input id="UserName" name="UserName" type="text" autofocus required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Passwort">Passwort:</label>
-					<input id="Passwort" name="Passwort" type="password"/>
+					<input id="Passwort" name="Passwort" type="password" required/>
 				</div>
 			</form>
 			<p style="text-align: center">Ihr Passwort wird verschlüsselt gespeichert. Im App wird es nicht einmal über das Internet geschickt.</p>
@@ -44,6 +44,9 @@
 	function handleDocumentReady()
 	{
 		$db = $.couch.db("evab-ch_barbalex_evab");
+		if (!("autofocus" in document.createElement("input"))) {
+	      document.getElementById("UserName").focus();                      //FUNKTIONIERT NICHT?
+	    }
 		
 		$("#SubmitButton").tap(function(event) {
 			var UserName = $('input[name=UserName]').val();

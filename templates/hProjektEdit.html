@@ -43,7 +43,7 @@
 			<form id="BeobNeuForm" action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
-					<input id="pName" name="pName" type="text" value="{{pName}}" />
+					<input id="pName" name="pName" type="text" value="{{pName}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="pBemerkungen">Bemerkungen:</label>
@@ -87,13 +87,13 @@
 				success: function(doc) {
 					doc.Typ = "hProjekt";
 					doc.User = User;
-					doc.pName = $("input#pName").val();
-					doc.pBemerkungen = $("[id$='pBemerkungen']").val();
-					if ($("input#pName").val() != ""){
-						doc.pName = $("input#pName").val();
-					} else if (doc.pName!=null){
-						delete doc.pName;
+					var pName = $("input#pName").val();
+					if (pName == "") {
+						MeldungEinzeilig("Bitte Projektnamen eingeben");
+						document.getElementById("pName").focus();
+						return;
 					}
+					doc.pName = pName;
 					if ($("[id$='pBemerkungen']").val()!=""){
 						doc.pBemerkungen = $("[id$='pBemerkungen']").val();
 					} else if (doc.pBemerkungen!=null){

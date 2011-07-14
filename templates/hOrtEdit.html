@@ -47,7 +47,7 @@
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
-					<input id="oName" name="oName" type="text" value="{{oName}}" />
+					<input id="oName" name="oName" type="text" value="{{oName}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -133,12 +133,13 @@
 					doc.User = User;
 					doc.ProjektId = "{{ProjektId}}";
 					doc.RaumId = "{{RaumId}}";
-					doc.oName = $("input#oName").val();     //MELDUNG, WENN KEIN NAME!
-					if ($("input#oName").val() != ""){
-						doc.oName = $("input#oName").val();
-					} else if (doc.oName!=null){
-						delete doc.oName;
+					var oName = $("input#oName").val();
+					if (oName == "") {
+						MeldungEinzeilig("Bitte Ortnamen eingeben");
+						document.getElementById("oName").focus();
+						return;
 					}
+					doc.oName = oName;
 					if ($("input#oXKoord").val()!=""){
 						doc.oXKoord = $("input#oXKoord").val();
 					} else if (doc.oXKoord!=null){

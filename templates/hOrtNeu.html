@@ -45,27 +45,27 @@
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
-					<input id="oName" name="oName" type="text" />
+					<input id="oName" name="oName" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" type="text" />
+					<input id="oXKoord" name="oXKoord" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" type="text" />
+					<input id="oYKoord" name="oYKoord" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLongitudeDecDeg">Längengrad:</label>
-					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" />
+					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLatitudeDecDeg">Breitengrad:</label>
-					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" />
+					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" />
+					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oBemerkungen">Bemerkungen:</label>
@@ -128,11 +128,13 @@
 			doc.User = User;
 			doc.ProjektId = "{{ProjektId}}"
 			doc.RaumId = "{{id}}";
-			if ($("input#oName").val() != ""){
-				doc.oName = $("input#oName").val();
-			} else if (doc.oName!=null){
-				delete doc.oName;     				//MELDUNG, WENN KEIN NAME!
+			var oName = $("input#oName").val();
+			if (oName == "") {
+				MeldungEinzeilig("Bitte Ortnamen eingeben");
+				document.getElementById("oName").focus();
+				return;
 			}
+			doc.oName = oName;
 			if ($("input#oXKoord").val()!=""){
 				doc.oXKoord = $("input#oXKoord").val();
 			} else if (doc.oXKoord!=null){

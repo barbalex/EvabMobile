@@ -1,5 +1,5 @@
 ﻿function(doc) {
   if(doc.Typ == 'Art' && doc.ArtGruppe == 'Moose'){
-		emit (doc.ArtnameL, doc);
+		emit (doc.ArtBezeichnung, doc);
 	}
 }

@@ -46,7 +46,7 @@
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' value="{{zDatum}}"/>
+					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zZeit">Zeit:</label>
@@ -217,16 +217,19 @@
 					doc.ProjektId = "{{ProjektId}}";
 					doc.RaumId = "{{RaumId}}";
 					doc.OrtId = "{{OrtId}}";
-					doc.oName = $("input#oName").val();     //MELDUNG, WENN KEIN NAME!
 					if ($("input#zDatum").val()!=""){
 						doc.zDatum = $("input#zDatum").val();
 					} else {
 						MeldungEinzeilig("Sie müssen ein Datum erfassen");
+						document.getElementById("zDatum").focus();
+						return;
 					}
 					if ($("input#zZeit").val()!=""){
 						doc.zZeit = $("input#zZeit").val();
 					} else {
-						MeldungEinzeilig("Sie müssen eine Zeit erfassen");
+						MeldungEinzeilig("Bitte Zeit erfassen");
+						document.getElementById("zZeit").focus();
+						return;
 					}
 					if ($("input#zGenauigkeit").val()!=""){
 						doc.zGenauigkeit = $("input#zGenauigkeit").val();

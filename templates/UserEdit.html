@@ -32,6 +32,9 @@
 			
 			var docId = "{{id}}";
 
+			$('#Benutzername').textinput();
+			$('#Benutzername').textinput('disable');
+
 			//Modus managen
 			Modus = "{{Modus}}";
 			$("input[name='Modus']").checkboxradio();
@@ -125,12 +128,16 @@
   			</div>
   		</div>
 		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<p><span class="Feldbeschriftung">Benutzername: </span><span class="Feld">{{UserName}}</span><span> (kann nicht verändert werden)</span></p>
-			<p style="text-align: center">EvAB mobile kennt nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
-			<hr />
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
-					<label for="Autor">Autor*:</label>
+					<label for="Benutzername">Benutzername:</label>
+					<input id="Benutzername" name="Benutzername" type="text" value="{{UserName}}"/>
+					<p style="text-align: center">Der Benutzername kann nicht verändert werden.</p>
+				</div>
+				<p style="text-align: center">EvAB mobile kennt nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
+				<hr />
+				<div data-role="fieldcontain">
+					<label for="Autor">Autor:</label>
 					<input id="Autor" name="Autor" type="text" value="{{Autor}}"/>
 					<p style="text-align: center">Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 				</div>
