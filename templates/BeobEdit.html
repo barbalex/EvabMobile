@@ -148,14 +148,31 @@
 				GetGeolocation();
 			});
 
+			//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
+			var markersArray = [];
 			var InfoWindowArray = [];
 
 			$('#BeobEditMap').live("pagecreate", function() {
-				var lat = $("input#oLatitudeDecDeg").val();
-				var lng = $("input#oLongitudeDecDeg").val();
+				var map;
+				var verorted;
+				if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != "") {
+					var lat = $("input#oLatitudeDecDeg").val();
+					var lng = $("input#oLongitudeDecDeg").val();
+					verorted = true;
+				} else {
+					var lat = 47.360566;
+					var lng = 8.542829;
+					verorted = false;
+				}
+				var ZoomLevel;
+				if (verorted == true) {
+					ZoomLevel = 15;
+				} else {
+					ZoomLevel = 12;
+				}
 				var latlng = new google.maps.LatLng(lat, lng);
 				var options = {
-				    zoom: 15,
+				    zoom: ZoomLevel,
 				    center: latlng,
 				    streetViewControl: false,
 				    mapTypeId: google.maps.MapTypeId.HYBRID
@@ -169,34 +186,60 @@
 				var zDatum = $("input#zDatum").val();
 				var zZeit = $("input#zZeit").val();
 				var image = "../../Artgruppenbilder/" + aArtGruppe + ".png";
+				if (verorted == true){
+					var marker = new google.maps.Marker({
+						position: latlng, 
+					    map: map, 
+					    title: aArtName,
+					    icon: image,
+						draggable: true
+					});
+					//Marker in Array speichern, damit er gelöscht werden kann
+					markersArray.push(marker); 
+					var contentString = '<div id="content">'+
+					    '<div id="siteNotice">'+
+					    '</div>'+
+					    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
+					    '<div id="bodyContent" class="GmInfowindow">'+
+					    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
+					    '<p>Autor: ' + aAutor + '</p>'+
+					    '<p>Datum: ' + zDatum + '</p>'+
+					    '<p>Zeit: ' + zZeit + '</p>'+
+					    '</div>'+
+					    '</div>';
+					var infowindow = new google.maps.InfoWindow({
+					    content: contentString
+					});
+					InfoWindowArray.push(infowindow);
+					google.maps.event.addListener(marker, 'click', function() {
+					  infowindow.open(map,marker);
+					});
+					google.maps.event.addListener(marker, "dragend", function(event) {
+						SetLocation(event.latLng, map, marker);
+					});
+				}
+				google.maps.event.addListener(map, 'click', function(event) {
+					placeMarker(event.latLng, map, marker, image, aArtName);
+				});
+			});
+
+			function placeMarker(location, map, marker, image, aArtName) {
+				//zuerst bisherigen Marker löschen
+				clearMarkers();
 				var marker = new google.maps.Marker({
-					position: latlng, 
-				    map: map, 
-				    title: aArtName,
-				    icon: image,
+			    	position: location, 
+			    	map: map,
+			    	title: aArtName,
+			    	icon: image,
 					draggable: true
 				});
-				var contentString = '<div id="content">'+
-				    '<div id="siteNotice">'+
-				    '</div>'+
-				    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
-				    '<div id="bodyContent" class="GmInfowindow">'+
-				    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
-				    '<p>Autor: ' + aAutor + '</p>'+
-				    '<p>Datum: ' + zDatum + '</p>'+
-				    '<p>Zeit: ' + zZeit + '</p>'+
-				    '</div>'+
-				    '</div>';
-				var infowindow = new google.maps.InfoWindow({
-				    content: contentString
-				});
-				google.maps.event.addListener(marker, 'click', function() {
-				  infowindow.open(map,marker);
-				});
+				//Marker in Array speichern, damit er gelöscht werden kann
+				markersArray.push(marker);
 				google.maps.event.addListener(marker, "dragend", function(event) {
 					SetLocation(event.latLng, map, marker);
 				});
-			});
+				SetLocation(location, map, marker);
+			}
 
 			function SetLocation(LatLng, map, marker) {
 				var lat = LatLng.lat();
@@ -223,7 +266,16 @@
 				//MeldungEinzeilig("Die Koordinaten wurden übernommen");
 			}
 
-			//alle InfoWindows löschen. SCHEINT NICHT ZU FUNKTIONIEREN
+			//alle Marker löschen
+			function clearMarkers() {
+				if (markersArray) {
+					for (i in markersArray) {
+				    	markersArray[i].setMap(null);
+				    }
+				}
+			}
+
+			//alle InfoWindows löschen
 			function clearInfoWindows() {
 				if (InfoWindowArray) {
 					for (i in InfoWindowArray) {
@@ -329,7 +381,7 @@
 					var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
 					$("input#oXKoord").val(x);
 					$("input#oYKoord").val(y); 
-					MeldungEinzeilig('Positionsdaten wurden gesetzt');         
+					MeldungEinzeilig('Koordinaten wurden gesetzt');         
 	            }, 
 	            function(){ 
 	                MeldungEinzeilig('Keine Positionsdaten verfügbar');
@@ -419,7 +471,7 @@
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}"  data-native-menu="false">
+					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}" data-native-menu="false">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
@@ -429,11 +481,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtId">Art-ID:</label>
-					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" />
+					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}"  placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" />
+					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -457,7 +509,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' value="{{zDatum}}" />
+					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zZeit">Zeit:</label>
@@ -470,7 +522,7 @@
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Beobachtung löschen?</p>
 				<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
-							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neu</a></li>
+							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
 							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
 						</ul>

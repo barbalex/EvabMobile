@@ -18,30 +18,53 @@
 		<div data-role="content">
 			<form id="Form" action="#" method="get">
 				<div data-role="fieldcontain">
-					<label for="UserName">Benutzername*:</label>
-					<input id="UserName" name="UserName" type="text"/>
+					<label for="UserName">Benutzername:</label>
+					<input id="UserName" name="UserName" type="text" placeholder="(erforderlich)" autofocus required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Passwort">Passwort*:</label>
-					<input id="Passwort" name="Passwort" type="password"/>
+					<label for="Passwort">Passwort:</label>
+					<input id="Passwort" name="Passwort" type="password" placeholder="(erforderlich)" required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Passwort2">Passwort bestätigen*:</label>
-					<input id="Passwort2" name="Passwort2" type="password"/>
+					<label for="Passwort2">Passwort bestätigen:</label>
+					<input id="Passwort2" name="Passwort2" type="password" placeholder="(erforderlich)" required/>
 				</div>
+				<p>Vorsicht: Benutzername und Passwort können später nicht mehr geändert werden!</p>
 				<p>Es wird eine verschlüsselte Version des Passworts gespeichert. Das Original kennt ausser Ihnen niemand.</p>
 				<hr />
 				<div data-role="fieldcontain">
-					<label for="Autor">Autor*:</label>
-					<input id="Autor" name="Autor" type="text"/>
+					<label for="Autor">Autor:</label>
+					<input id="Autor" name="Autor" type="text" placeholder="(erforderlich)" required/>
 					<p>Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
 					<label for="Email">email-Adresse:</label>
-					<input id="Email" name="Email" type="email"/>
+					<input id="Email" name="Email" type="email" placeholder="(fakultativ)"/>
 					<hr />
-					<p>Felder mit * sind obligatorisch</p>
+				<div data-role="fieldcontain">
+				    <fieldset data-role="controlgroup" data-type="horizontal">
+				    	<legend>Ich will in diesem Modus erfassen:</legend>
+				         	<input type="radio" name="Modus" id="einfach" value="einfach" checked="checked"/>
+				         	<label for="einfach">einfach</label>
+				         	<input type="radio" name="Modus" id="hierarchisch" value="hierarchisch"  />
+				         	<label for="hierarchisch">hierarchisch</label>
+				    </fieldset>
+				</div>
+				<p style="text-align: center">Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Angaben in einer übersichtlichen Liste.<br />Im hierarchischen Modus stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit und Art</i> viele Felder zur Verfügung.<br />Auf Stufe Art stehen für jede Artgruppe eigene Felder zur Verfügung.</p>
+				<hr />
+				<div data-role="fieldcontain">
+				    <fieldset data-role="controlgroup">
+				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
+				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" checked="checked"/>
+				         	<label for="Nein">nein (Standard)</label>
+				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
+				         	<label for="Ja">ja, ohne Einschränkung</label>
+				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
+				         	<label for="JaAber">ja aber kontrolliert und für Naturschutzzwecke*</label>
+				    </fieldset>
+				</div>
+				<p style="text-align: center">* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten</p>
 				</div>
 			</form>
 		</div>
@@ -80,6 +103,18 @@
 			} else {
 				signup();
 			}
+		});
+
+		//Modus managen
+		Modus = "einfach";
+		$("input[name='Modus']").change(function(){
+			Modus = $(this).attr("id");
+		});
+
+		//Datenverwendung managen
+		Datenverwendung = "Nein";
+		$("input[name='Datenverwendung']").change(function(){
+			Datenverwendung = $(this).attr("id");
 		});
 	}
 	
@@ -141,6 +176,8 @@
 		document.Typ = "User";
 		document.UserName = $('input[name=UserName]').val();
 		document.Autor = $("input#Autor").val();
+		doc.Modus = Modus;
+		doc.Datenverwendung = Datenverwendung;
 		if ($("input#Email").val() != "") {
 			document.Email = $("input#Email").val();
 		}

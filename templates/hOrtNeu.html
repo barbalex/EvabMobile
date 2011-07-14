@@ -327,6 +327,10 @@
 		$('#OrtNeuMap').live("pagehide", function() {
 			$("#OrtNeuMap").empty();
 		});
+
+		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+		contentHeight = $(window).height() - 43;
+		$("#map_canvas").css("height", contentHeight + "px");
 	}
 	
 	$(document).ready(handleDocumentReady);

@@ -144,6 +144,7 @@
 							beob = data.rows[i].value;
 							key = data.rows[i].key;
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+								var BeobId = beob._id;
 								var zDatum = beob.zDatum;
 								var zZeit = beob.zZeit;
 								var aArtGruppe = beob.aArtGruppe;
@@ -152,6 +153,7 @@
 								var aAutor = beob.aAutor;
 								var lat2 = beob.oLatitudeDecDeg;
 								var lng2 = beob.oLongitudeDecDeg;
+								var externalPage = "_show/BeobEdit/" + BeobId;
 								var latlng2 = new google.maps.LatLng(lat2, lng2);
 								var marker = new MarkerWithLabel({ 
 									map: map,
@@ -169,6 +171,7 @@
 								    '</div>'+
 								    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
 								    '<div id="bodyContent" class="GmInfowindow">'+
+								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
 								    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
 								    '<p>Autor: ' + aAutor + '</p>'+
 								    '<p>Datum: ' + zDatum + '</p>'+

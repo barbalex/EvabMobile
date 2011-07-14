@@ -55,7 +55,7 @@
 				
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" type="text" />
+					<input id="aAutor" name="aAutor" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -446,6 +446,10 @@
 					$("[name='UserEditLink']").attr('href', url);
 				}
 		});
+
+		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+		contentHeight = $(window).height() - 43;
+		$("#map_canvas").css("height", contentHeight + "px");
 	}
 	
 	$(document).ready(handleDocumentReady);
