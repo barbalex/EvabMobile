@@ -10,7 +10,7 @@
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="hOrtListePage">
   		<div data-role="header" data-position="fixed" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumLink" name="hRaumLink">zum Raum</a>
   			<h2>Orte</h2>
@@ -38,13 +38,36 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" id="hOrtNeuLink">neuer Ort</a></li>
+					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 
+	<div data-role="page" id="hOrtListeMapPage" style="width:100%; height:100%;">
+		<div data-role="header" data-position="fixed">
+			<a href="#hOrtListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück zur Ortliste</a>
+			<h1>Karte</h1>
+			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">Meine Einstellungen</a>
+				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+  			</div>
+		</div>
+		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
+			<div id="map_canvas" style="width:100%; height:100%;"></div>
+		</div>
+	</div>
+
   </body>
   <script src="../../vendor/couchapp/loaderTemplate.js"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="../../vendor/couchapp/markerclusterer.js"></script>
+  <script type="text/javascript" src="../../vendor/couchapp/markerwithlabel.js"></script>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady()
 	{
@@ -82,6 +105,104 @@
 					$("[name='UserEditLink']").attr('href', url);
 				}
 		});
+
+		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
+			$.mobile.changePage("#hOrtListeMapPage", "slide", false, true);
+		});
+
+		$('#hOrtListeMapPage').live("pagecreate", function() {
+			/*
+			zuerst Koordinaten holen, Karte darum zentrieren
+			dann in schleife alle marker setzen
+			listener schaffen
+			*/
+			var lat = 47.383333;
+			var lng = 8.533333;
+			if ( navigator.geolocation ) { 
+	        	navigator.geolocation.getCurrentPosition ( 
+	            function(position) {
+	            	lat = position.coords.latitude;
+	            	lng = position.coords.longitude;     
+	            }); 
+	        }
+			var latlng = new google.maps.LatLng(lat, lng);
+			var options = {
+			    zoom: 15,
+			    center: latlng,
+			    streetViewControl: false,
+			    mapTypeId: google.maps.MapTypeId.HYBRID
+			};
+			var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+			google.maps.event.trigger(map,'resize');
+			
+			//jetzt werden für alle Beobachtungen marker erstellt
+			$db.view("evab/hOrtListeLatLng",
+				{success: function(data) {
+					var i;
+					var anzOrt = 0;
+					var Ort;
+					var infowindow = new google.maps.InfoWindow();
+					for(i in data.rows) {                    //Orte zählen. Wenn noch keine: darauf hinweisen
+						key = data.rows[i].key;
+						if (key[0] == User) {            //nur eigene Orte zählen!
+							anzOrt = anzOrt + 1;
+						}
+					}
+					if (anzOrt == 0) {
+						MeldungEinzeilig("Es wurden noch keine Orte mit Breiten- und Längengrad erfasst");
+					} else {
+						var markers = [];
+						for(i in data.rows)                  //Liste aufbauen
+						{
+							Ort = data.rows[i].value;
+							key = data.rows[i].key;
+							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+								if (key[1]== "{{id}}") {				//nur Orte mit richtiger RaumId anzeigen
+									var oName = Ort.oName;
+									var oXKoord = Ort.oXKoord;
+									var oYKoord = Ort.oYKoord;
+									var lat2 = Ort.oLatitudeDecDeg;
+									var lng2 = Ort.oLongitudeDecDeg;
+									var latlng2 = new google.maps.LatLng(lat2, lng2);
+									var marker = new MarkerWithLabel({ 
+										map: map,
+										position: latlng2,  
+									    title: oName,
+									    labelContent: oName,
+									    labelAnchor: new google.maps.Point(22, 0),
+									    labelClass: "MapLabel", // the CSS class for the label
+										labelStyle: {opacity: 0.75}
+									});
+									markers.push(marker);
+									var contentString = '<div id="content">'+
+									    '<div id="siteNotice">'+
+									    '</div>'+
+									    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+									    '<div id="bodyContent" class="GmInfowindow">'+
+									    '<p>X-Koordinate: ' + oXKoord + '</p>'+
+									    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
+									    '</div>'+
+									    '</div>';
+									makeListener(map, marker, contentString);
+								}
+							}
+						}
+						var mcOptions = {maxZoom: 17};
+						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+					}
+					function makeListener(map, marker, contentString){
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.setContent(contentString);
+							infowindow.open(map,marker);
+						});
+					}
+				}
+			});
+		});
+
+		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+		contentHeight = $(window).height() - 43;
+		$("#map_canvas").css("height", contentHeight + "px");
 	}
 	
 	$(document).ready(handleDocumentReady);
