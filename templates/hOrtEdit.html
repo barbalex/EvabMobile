@@ -82,6 +82,7 @@
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Ort löschen?</p>
 				<a id="jaButton" name="hOrtListeLink" href="#" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+							<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hOrtNeuLink">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
 							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
 				</ul>
@@ -196,6 +197,9 @@
 		//Link zur OrtListe in Navbar setzen
 		var url = "../hOrtListe/" + "{{RaumId}}";
 		$("[name='hOrtListeLink']").attr('href', url);
+
+		//Link zum OrtNeu setzen
+		document.getElementById("hOrtNeuLink").href = "../hOrtNeu/" + "{{RaumId}}";
 
 		//Link zur Zeit in Navbar setzen
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";

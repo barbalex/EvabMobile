@@ -37,7 +37,7 @@
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
 					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink" name="hZeitListeLink">Zeit</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink" name="hZeitListeLink">Zeiten</a></li>
 					<li><a href="#" rel="external" id="hArtListeLink">&rArr; Art</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -185,6 +185,7 @@
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Zeitpunkt löschen?</p>
 				<a id="jaButton" name="hZeitListeLink" href="#" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hZeitNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -410,6 +411,9 @@
 		//Link zur ZeitListe in Navbar setzen
 		var url = "../hZeitListe/" + "{{OrtId}}";
 		$("[name='hZeitListeLink']").attr('href', url);
+
+		//Link zu ZeitNeu setzen
+		document.getElementById("hZeitNeuLink").href = "../hZeitNeu/" + "{{OrtId}}";
 
 		//Link zur Art in Navbar setzen
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";

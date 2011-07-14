@@ -59,6 +59,7 @@
 					<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Raum löschen?</p>
 				<a id="jaButton" href="#" data-role="button" rel="external" id="hRaumListeLink">ja</a>
 				<a id="neinButton" href="#" data-role="button" rel="external">nein</a></div></li>
+				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -123,6 +124,10 @@
 		//Link zur RaumListe in Navbar setzen
 		var url = "../hRaumListe/" + "{{ProjektId}}";
 		$("[name='hRaumListeLink']").attr('href', url);
+
+		//Link zum RaumNeu setzen
+		var url = "../hRaumNeu/" + "{{ProjektId}}";
+		$("[name='hRaumNeuLink']").attr('href', url);
 
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";

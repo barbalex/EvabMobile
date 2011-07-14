@@ -36,7 +36,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" id="hRaumNeuLink">neuer Raum</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" id="hRaumNeuLink" name="hRaumNeuLink">neuer Raum</a></li>
 				</ul>
 			</div>
 		</div>
@@ -56,7 +56,8 @@
 		$("[name='hProjektLink']").attr('href', url);
 
 		//Link zum RaumNeu in Navbar setzen
-		document.getElementById("hRaumNeuLink").href = "../hRaumNeu/" + "{{id}}";
+		var url = "../hRaumNeu/" + "{{id}}";
+		$("[name='hRaumNeuLink']").attr('href', url);
 
 		//Link zur RaumListe in Navbar setzen
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";

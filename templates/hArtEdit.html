@@ -40,7 +40,7 @@
 					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
 					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
 					<li><a href="#" rel="external" id="hZeitLink">Zeit</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Art</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -128,6 +128,7 @@
 							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Art löschen?</p>
 				<a id="jaButton" name="hArtListeLink" href="#" data-role="button" rel="external">ja</a>
 				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
+				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hArtNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -325,6 +326,9 @@
 		//Link zur ArtListe in Navbar setzen
 		var url = "../hArtListe/" + "{{ZeitId}}";
 		$("[name='hArtListeLink']").attr('href', url);
+
+		//Link zu ArtNeu setzen
+		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{ZeitId}}";
 
 		//Link zum UserEdit in Menu setzen
 		var UserId;
