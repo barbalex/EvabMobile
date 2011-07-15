@@ -172,17 +172,17 @@
 	}
 	
 	function UserInEvabSpeichern() {
-		var document = {};
-		document.Typ = "User";
-		document.UserName = $('input[name=UserName]').val();
-		document.Autor = $("input#Autor").val();
+		var doc = {};
+		doc.Typ = "User";
+		doc.UserName = $('input[name=UserName]').val();
+		doc.Autor = $("input#Autor").val();
 		doc.Modus = Modus;
 		doc.Datenverwendung = Datenverwendung;
 		if ($("input#Email").val() != "") {
-			document.Email = $("input#Email").val();
+			doc.Email = $("input#Email").val();
 		}
-		document.Modus = "einfach";
-		$db.saveDoc(document);
+		doc.Modus = "einfach";
+		$db.saveDoc(doc);
 	}
   </script>
 </html>

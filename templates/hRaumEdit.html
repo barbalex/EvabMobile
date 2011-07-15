@@ -56,10 +56,13 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
-					<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Raum löschen?</p>
-				<a id="jaButton" href="#" data-role="button" rel="external" id="hRaumListeLink">ja</a>
-				<a id="neinButton" href="#" data-role="button" rel="external">nein</a></div></li>
-				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
+					<li><a data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a>
+						<div>
+							<p class="PopupText">Diesen Raum löschen?</p>
+							<a id="jaLöschenButton" href="#" data-role="button" rel="external" id="hRaumListeLink">ja</a>
+							<a id="neinNichtLöschenButton" href="#" data-role="button">nein</a>
+						</div></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -114,9 +117,11 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hRaumEdit/" + "{{id}}";
-		$("#jaButton").tap(handleDelete);
-		document.getElementById("jaButton").href = "../hRaumListe/" + "{{ProjektId}}";
+		document.getElementById("neinNichtLöschenButton").href = "../hRaumEdit/" + "{{id}}";
+		document.getElementById("jaLöschenButton").href = "../hRaumListe/" + "{{ProjektId}}";
+		$('[id="jaLöschenButton"]').live("click", function() {
+			handleDelete();
+		});
 
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
@@ -164,7 +169,6 @@
 
 	function handleDelete(event)
 		{
-			alert("handleDelete führt aus");
 			var docId = "{{id}}";
 			var ProjektId = "{{ProjektId}}";
 			// First open doc based on ID in order to get full document

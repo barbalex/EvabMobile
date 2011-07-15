@@ -182,10 +182,13 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SpeichernButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diesen Zeitpunkt löschen?</p>
-				<a id="jaButton" name="hZeitListeLink" href="#" data-role="button" rel="external">ja</a>
-				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
-				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hZeitNeuLink">neu</a></li>
+					<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
+						<div>
+							<p class="PopupText">Diesen Zeitpunkt löschen?</p>
+							<a id="jaLöschenButton" href="#" data-role="button" rel="external">ja</a>
+							<a id="neinNichtLöschenButton" href="#" data-role="button" class="ui-btn-active">nein</a>
+						</div></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hZeitNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -395,9 +398,12 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hZeitEdit/" + "{{id}}";
-		$("#jaButton").tap(handleDelete);
-		document.getElementById("jaButton").href = "../hZeitListe/" + "{{OrtId}}";
+		document.getElementById("neinNichtLöschenButton").href = "../hZeitEdit/" + "{{id}}";
+		
+		document.getElementById("jaLöschenButton").href = "../hZeitListe/" + "{{OrtId}}";
+		$('[id="jaLöschenButton"]').live("click", function() {
+			handleDelete();
+		});
 
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";

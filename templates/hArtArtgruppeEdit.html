@@ -47,27 +47,20 @@
 		<div data-role="content">
 			<form action="#" method="get">
 				<div data-role="fieldcontain">
-					<label for="aMeldungTyp" class="select">Typ der Meldung:</label>
-					<select id="aMeldungTyp" name="aMeldungTyp"  data-native-menu="false" value="{{aMeldungTyp}}">
-						<option value="Feldbeobachtung">Feldbeobachtung</option>
-						<option value="Herbarbeleg">Herbarbeleg</option>
-						<option value="Literaturangabe">Literaturangabe</option>
-					</select>
-				</div>
-				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" data-native-menu="false" value="{{aArtGruppe}}">
 					</select>
 				</div>
+				<hr />				
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
 					<select id="aArtName" name="aArtName" data-icon="arrow-r"  data-native-menu="true" value="{{aArtName}}">
 					</select>
-				</div>
+					</div>
 				<div data-role="fieldcontain">
 					<label for="aArtId">Art-ID:</label>
 					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" placeholder="(wird automatisch gesetzt)"/>
-				</div>
+					</div>
 				<div data-role="fieldcontain">
 					<label for="aArtNameUnsicher">Bestimmung unsicher?</label>
 					<select name="aArtNameUnsicher" id="aArtNameUnsicher" data-role="slider" value="{{aArtNameUnsicher}}">
@@ -83,6 +76,14 @@
 					<label for="aArtNameBemerkungen">Bemerkungen zur Art:</label>
 					<textarea cols="40" rows="8" name="aArtNameBemerkungen" id="aArtNameBemerkungen" value="{{aArtNameBemerkungen}}">{{aArtNameBemerkungen}}</textarea>
 				</div>
+				<div data-role="fieldcontain">
+					<label for="aMeldungTyp" class="select">Typ der Meldung:</label>
+					<select id="aMeldungTyp" name="aMeldungTyp"  data-native-menu="false" value="{{aMeldungTyp}}">
+						<option value="Feldbeobachtung">Feldbeobachtung</option>
+						<option value="Herbarbeleg">Herbarbeleg</option>
+						<option value="Literaturangabe">Literaturangabe</option>
+					</select>
+				</div>								
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
 					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" required/>
@@ -125,10 +126,13 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SpeichernButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-							<li><a href="#" id="deleteButton" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a><div><p class="PopupText">Diese Art löschen?</p>
-				<a id="jaButton" name="hArtListeLink" href="#" data-role="button" rel="external">ja</a>
-				<a id="neinButton" href="#" data-role="button" class="ui-btn-active" rel="external">nein</a></div></li>
-				<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hArtNeuLink">neu</a></li>
+					<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
+						<div>
+							<p class="PopupText">Diese Art löschen?</p>
+							<a id="jaLöschenButton" href="#" data-role="button" rel="external">ja</a>
+							<a id="neinNichtLöschenButton" href="#" data-role="button">nein</a>
+						</div></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hArtNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -161,7 +165,6 @@
 	{
   		$db = $.couch.db("evab-ch_barbalex_evab");
 		userCtx = null;
-		var Autor;
 		
 		$.couch.session({
 			success : function(r) {
@@ -307,9 +310,11 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinButton").href = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/hArtEdit/" + "{{id}}";
-		$("#jaButton").tap(handleDelete);
-		document.getElementById("jaButton").href = "../hArtListe/" + "{{ZeitId}}";
+		document.getElementById("neinNichtLöschenButton").href = "../hArtArtgruppeEdit/" + "{{id}}";
+		document.getElementById("jaLöschenButton").href = "../hArtListe/" + "{{ZeitId}}";
+		$('[id="jaLöschenButton"]').live("click", function() {
+			handleDelete();
+		});
 
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
