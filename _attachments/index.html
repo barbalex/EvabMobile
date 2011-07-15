@@ -16,7 +16,7 @@
 		</div>
 		<div data-role="content">
 			<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
-			<form id="LoginForm" action="#" method="get">
+			<form id="LoginForm" action="#" method="get" autocomplete="on">
 				<div data-role="fieldcontain">
 					<label for="UserName">Benutzername:</label>
 					<input id="UserName" name="UserName" type="text" autofocus required/>
@@ -44,9 +44,9 @@
 	function handleDocumentReady()
 	{
 		$db = $.couch.db("evab-ch_barbalex_evab");
-		if (!("autofocus" in document.createElement("input"))) {
-	      document.getElementById("UserName").focus();                      //FUNKTIONIERT NICHT?
-	    }
+		//if (!("autofocus" in document.createElement("input"))) {
+	    //  document.getElementById("UserName").focus();                      //FUNKTIONIERT NICHT? Gibt sogar Fehler in Firebug
+	    //}
 		
 		$("#SubmitButton").tap(function(event) {
 			var UserName = $('input[name=UserName]').val();

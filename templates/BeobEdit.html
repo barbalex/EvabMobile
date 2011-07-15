@@ -281,10 +281,14 @@
 			}
 
 			//Code für das Löschen-Popup
-			var docId = "{{id}}";
-			var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/Beobdit/" + docId;
-			document.getElementById("neinButton").href = url;
-			$("#jaButton").tap(handleDelete);
+			//var docId = "{{id}}";
+			//var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/Beobdit/" + docId;
+			//document.getElementById("neinButton").href = url;
+			document.getElementById("neinNichtLöschenButton").href = "../_show/BeobEdit/" + "{{id}}";
+			document.getElementById("jaLöschenButton").href = "../../BeobListe.html";
+			$('[id="jaLöschenButton"]').live("click", function() {
+				handleDelete();
+			});
 
 			//Link zum UserEdit in Menu setzen
 			var UserId;
@@ -464,7 +468,7 @@
   			</div>
   		</div>
 		<div id="BeobEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
+			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}" data-native-menu="false">
@@ -515,11 +519,11 @@
 					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-							<li><a href="#" data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a>
+							<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
 								<div>
 									<p class="PopupText">Diese Beobachtung löschen?</p>
-									<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" rel="external">ja</a>
-									<a id="neinButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html" data-role="button" class="ui-btn-active" rel="external">nein</a>
+									<a id="jaLöschenButton" href="#" data-role="button" rel="external"/>ja</a>
+									<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
 								</div></li>
 							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>

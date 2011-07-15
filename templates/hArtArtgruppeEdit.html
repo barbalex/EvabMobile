@@ -45,7 +45,7 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get">
+			<form action="#" method="get" autocomplete="off">
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" data-native-menu="false" value="{{aArtGruppe}}">
@@ -189,7 +189,7 @@
 		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
 		$("select#aPopGrösseKlassiert").selectmenu("refresh");
 
-		$("#SpeichernButton").tap(function(event) {                        //ALLE INFOS VON ZEIT, ORT, RAUM, PROJEKT SPEICHERN!!!!!
+		$("#SpeichernButton").tap(function(event) {
 			var docId = "{{id}}";
 			$db.openDoc(docId, {
 				success: function(doc) {

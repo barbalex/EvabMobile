@@ -35,7 +35,7 @@
   			</div>
 		</div>
 		<div data-role="content">
-			<form id="BeobNeuForm" action="#" method="get">
+			<form id="BeobNeuForm" action="#" method="get" autocomplete="off">
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe"  data-native-menu="false">
@@ -306,7 +306,8 @@
 		});
 		
 		$("#GeButton").tap(function(event) {
-			$.mobile.changePage("#BeobNeuMap", "slide", true, true);
+			MeldungZweizeilig("Diese Funktion ist momentan abgeschaltet, da fehlerhaft", "Klicken Sie dazu nach dem Speichern auf 'Karte'");
+			//$.mobile.changePage("#BeobNeuMap", "slide", true, true);                    VORÜBERGEHEND ABGESCHALTET
 		});
 		
 		//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
