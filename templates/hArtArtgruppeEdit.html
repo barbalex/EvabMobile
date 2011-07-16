@@ -28,11 +28,11 @@
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">Meine Einstellungen</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
 				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
 				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
 				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">Einfacher Modus</a>
+				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">einfacher Modus</a>
   			</div>
   			<div data-role="navbar">
 				<ul>
@@ -48,19 +48,20 @@
 			<form action="#" method="get" autocomplete="off">
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="aArtGruppe" name="aArtGruppe" data-native-menu="false" value="{{aArtGruppe}}">
+					<select id="aArtGruppe" name="aArtGruppe" data-icon="arrow-r" data-native-menu="true" value="{{aArtGruppe}}">
 					</select>
 				</div>
 				<hr />				
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
-					<select id="aArtName" name="aArtName" data-icon="arrow-r"  data-native-menu="true" value="{{aArtName}}">
+					<select id="aArtName" name="aArtName" data-icon="arrow-r" data-native-menu="true" value="{{aArtName}}">
 					</select>
 					</div>
 				<div data-role="fieldcontain">
 					<label for="aArtId">Art-ID:</label>
 					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" placeholder="(wird automatisch gesetzt)"/>
-					</div>
+				</div>
+				<hr />
 				<div data-role="fieldcontain">
 					<label for="aArtNameUnsicher">Bestimmung unsicher?</label>
 					<select name="aArtNameUnsicher" id="aArtNameUnsicher" data-role="slider" value="{{aArtNameUnsicher}}">
@@ -77,13 +78,16 @@
 					<textarea cols="40" rows="8" name="aArtNameBemerkungen" id="aArtNameBemerkungen" value="{{aArtNameBemerkungen}}">{{aArtNameBemerkungen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="aMeldungTyp" class="select">Typ der Meldung:</label>
-					<select id="aMeldungTyp" name="aMeldungTyp"  data-native-menu="false" value="{{aMeldungTyp}}">
-						<option value="Feldbeobachtung">Feldbeobachtung</option>
-						<option value="Herbarbeleg">Herbarbeleg</option>
-						<option value="Literaturangabe">Literaturangabe</option>
-					</select>
-				</div>								
+				    <fieldset data-role="controlgroup">
+				    	<legend>Typ der Meldung:</legend>
+				         	<input type="radio" name="aMeldungTyp" id="Feldbeobachtung" value="Feldbeobachtung"/>
+				         	<label for="Feldbeobachtung">Feldbeobachtung</label>
+				         	<input type="radio" name="aMeldungTyp" id="Herbarbeleg" value="Herbarbeleg"  />
+				         	<label for="Herbarbeleg">Herbarbeleg</label>
+				         	<input type="radio" name="aMeldungTyp" id="Literaturangabe" value="Literaturangabe"  />
+				         	<label for="Literaturangabe">Literaturangabe</label>
+				    </fieldset>
+				</div>					
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
 					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" required/>
@@ -137,25 +141,6 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 	</div>
-
-	<div data-role="page" id="hArtEditArtauswahl">
-		<div data-role="header" data-position="fixed">
-			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
-			<h1>Art wählen</h1>
-			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">Meine Einstellungen</a>
-				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">Hierarchischer<br />Modus</a>
-  			</div>
-		</div>
-		<div data-role="content">
-			<ul id="Artliste" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
-		</div>
-	</div>
  
   </body>
   
@@ -174,9 +159,6 @@
 		});
 
 		//select-Felder aktualisieren
-		$("select#aMeldungTyp").selectmenu();
-		$("select#aMeldungTyp").val("{{aMeldungTyp}}");
-		$("select#aMeldungTyp").selectmenu("refresh");
 		refreshArtGruppen("{{aArtGruppe}}");
 		refreshArtName("{{aArtName}}");
 		$("select#aArtNameUnsicher").slider();
@@ -189,6 +171,71 @@
 		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
 		$("select#aPopGrösseKlassiert").selectmenu("refresh");
 
+		//aMeldungTyp managen
+		$("input[name='aMeldungTyp']").checkboxradio();
+
+		if ("{{aMeldungTyp}}"!=""){
+			aMeldungTyp = "{{aMeldungTyp}}";
+		} else {
+			aMeldungTyp = "Feldbeobachtung";
+		}
+		$("input#Feldbeobachtung").checkboxradio();
+		$("input#Herbarbeleg").checkboxradio();
+		$("input#Literaturangabe").checkboxradio();
+		//$("input#{{aMeldungTyp}}").attr("checked",true).checkboxradio("refresh");         AUSGESCHALTET WEIL FEHLER
+		$("input[name='aMeldungTyp']").change(function(){
+			aMeldungTyp = $(this).attr("id");
+		});
+
+		$("select#aArtGruppe").tap(function(event){
+			event.preventDefault();
+			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+			ArtgruppenlisteAufbauen();
+		});
+
+		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+			event.preventDefault();
+			var ArtGruppe = $(this).attr("id");
+			var option = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
+			$("select#aArtGruppe").empty();
+			$("select#aArtGruppe").append(option);
+			$("select#aArtGruppe").val(ArtGruppe);
+			$("select#aArtGruppe").selectmenu("refresh");
+			$("#ArtgruppenListe").empty();
+			$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(ArtGruppe);
+		});
+
+		$("select#aArtName").tap(function(event){
+			event.preventDefault();
+			var ArtGruppe = $("select#aArtGruppe").val();
+			if (ArtGruppe != "bitte w&auml;hlen") {
+				$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+				ArtlisteAufbauen(ArtGruppe);
+			} else {
+				alert("jetzt");
+				$("select#aArtName").selectmenu();
+				$("select#aArtName").empty();
+				$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
+				$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
+				$("select#aArtName").selectmenu("refresh");
+			}
+		});
+		
+		$("[name='ArtListItem']").live("click", function(event) {
+			event.preventDefault();
+			var ArtName = $(this).attr("id");
+			var ArtId = $(this).attr("artid");
+			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
+			$("select#aArtName").empty();
+			$("select#aArtName").append(option);
+			$("select#aArtName").val(ArtName);
+			$("select#aArtName").selectmenu("refresh");
+			$("input#aArtId").val(ArtId);
+			$.mobile.changePage("#hArtEditPage", "slide", true, false);
+			$("#ArtenListe").empty();
+		});
+
 		$("#SpeichernButton").tap(function(event) {
 			var docId = "{{id}}";
 			$db.openDoc(docId, {
@@ -199,11 +246,6 @@
 					doc.RaumId = "{{RaumId}}";
 					doc.OrtId = "{{OrtId}}";
 					doc.ZeitId = "{{ZeitId}}";
-					if ($("select#aMeldungTyp").val()!=""){
-						doc.aMeldungTyp = $("select#aMeldungTyp").val();
-					} else if (doc.aMeldungTyp!=null){
-						delete doc.aMeldungTyp;
-					}
 					if ($("select#aArtGruppe").val()!=""){
 						doc.aArtGruppe = $("select#aArtGruppe").val();
 					} else if (doc.aArtGruppe!=null){
@@ -234,6 +276,7 @@
 					} else if (doc.aArtNameBemerkungen!=null){
 						delete doc.aArtNameBemerkungen;
 					}
+					doc.aMeldungTyp = aMeldungTyp;
 					if ($("input#aAutor").val()!=""){
 						doc.aAutor = $("input#aAutor").val();
 					} else if (doc.aAutor!=null){
@@ -271,46 +314,8 @@
 			});
 		});
 
-		$("select#aArtGruppe").change(function(){
-			var ArtGruppe = $("select#aArtGruppe").val();
-			if (ArtGruppe != "") {
-				$("select#aArtName").empty();
-				$("select#aArtName").append("<option>jetzt die Art w&auml;hlen</option>");
-				$("select#aArtName").val("jetzt die Art w&auml;hlen");
-				$("select#aArtName").selectmenu("refresh");
-			}
-		});
-		
-		$("select#aArtName").tap(function(event){
-			event.preventDefault();
-			var ArtGruppe = $("select#aArtGruppe").val();
-			if (ArtGruppe != "") {
-				$.mobile.changePage("#hArtEditArtauswahl", "slide", false, false);
-				ArtlisteAufbauen(ArtGruppe);
-			} else {
-				$("select#aArtName").empty();
-				$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
-				$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
-				$("select#aArtName").selectmenu("refresh");
-			}
-		});
-
-		$('[name="ArtListItem"]').live("vclick", function(event) {
-			event.preventDefault();
-			var ArtName = $(this).attr("id");
-			var ArtId = $(this).attr("artid");
-			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-			$("select#aArtName").empty();
-			$("select#aArtName").append(option);
-			$("input#aArtName").val(ArtName);
-			$("select#aArtName").selectmenu("refresh");
-			$("input#aArtId").val(ArtId);
-			$.mobile.changePage("#hArtEditPage", "slide", true, false);
-			$("#Artliste").empty();
-		});
-
 		//Code für das Löschen-Popup
-		document.getElementById("neinNichtLöschenButton").href = "../hArtArtgruppeEdit/" + "{{id}}";
+		//document.getElementById("neinNichtLöschenButton").href = "../hArtArtgruppeEdit/" + "{{id}}";
 		document.getElementById("jaLöschenButton").href = "../hArtListe/" + "{{ZeitId}}";
 		$('[id="jaLöschenButton"]').live("click", function() {
 			handleDelete();
@@ -367,26 +372,12 @@
 
 	function refreshArtGruppen(aArtGruppe)
 	{
+		$("select#aArtGruppe").selectmenu();
 		$("select#aArtGruppe").empty();
-		var viewname = "evab/Artgruppen";
-		$db.view(viewname, {
-			success: function(data) {
-				var i;
-				var ListItem;
-				var ListItemContainer = "<option value=''></option>";
-				var ArtGruppe;
-				for(i in data.rows)
-				{
-					ArtGruppe = data.rows[i].key;
-					ListItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
-					ListItemContainer = ListItemContainer + ListItem;
-				}
-				$("select#aArtGruppe").selectmenu();
-				$("select#aArtGruppe").append(ListItemContainer);
-				$("select#aArtGruppe").val(aArtGruppe);
-				$("select#aArtGruppe").selectmenu("refresh");
-			}
-		});
+		var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
+		$("select#aArtGruppe").append(startoption);
+		$("select#aArtGruppe").val(aArtGruppe);
+		$("select#aArtGruppe").selectmenu("refresh");
 	}
 	
 	function refreshArtName(aArtName)
@@ -397,45 +388,6 @@
 		$("select#aArtName").append(startoption);
 		$("select#aArtName").val(aArtName);
 		$("select#aArtName").selectmenu("refresh");
-	}
-
-	function ArtlisteAufbauen(ArtGruppe)
-	{ 
-		var viewname = "evab/Artliste" + ArtGruppe;
-		$db.view(viewname, {
-			success: function(data) {
-				var i;
-				var ListItem;
-				var ListItemContainer = "";
-				var ArtName;
-				var ArtValue;
-				var ArtId;
-				var HinweisVerwandschaft;
-				for(i in data.rows)
-				{
-					ArtName = data.rows[i].key;
-					ArtValue = data.rows[i].value;
-					ArtId = ArtValue.id;
-					if(ArtValue.HinweisVerwandschaft){
-						ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
-						"<a href=\"#\">" +
-						"<h3>" + ArtName + "<\/h3>" +
-						"<p>" + ArtValue.HinweisVerwandschaft + "<\/p>" +
-						"<\/a> <\/li>";
-					}else{
-						ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
-						"<a href=\"#\">" +
-						"<h3>" + ArtName + "<\/h3>" +
-						"<\/a> <\/li>";
-					}
-					ListItemContainer = ListItemContainer + ListItem;
-				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Artliste").append(ListItemContainer);
-				$("#Artliste").listview();
-				$("#Artliste").listview("refresh");
-			}
-		});
 	}
 
 	function handleDelete(event)

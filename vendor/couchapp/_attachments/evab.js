@@ -152,7 +152,7 @@ function MeldungEinzeilig(ErsteZeile) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile +"</h1></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo( $.mobile.pageContainer )
-	    .delay( 2100 )
+	    .delay( 2500 )
 	    .fadeOut( 700, function(){
 	    	$(this).remove();
 		});
@@ -162,8 +162,73 @@ function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile + "<br>" + ZweiteZeile +"</h1></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo( $.mobile.pageContainer )
-	    .delay( 2100 )
+	    .delay( 2500 )
 	    .fadeOut( 700, function(){
 	    	$(this).remove();
 		});
 };
+
+function ArtgruppenlisteAufbauen()
+{ 
+	var viewname = "evab/Artgruppen";
+	$db.view(viewname, {
+		success: function(data) {
+			var i;
+			var ListItem;
+			var ListItemContainer = "";
+			var ArtGruppe;
+			for(i in data.rows)
+			{
+				ArtGruppe = data.rows[i].key;
+				ListItem = "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">" +
+				"<a href=\"#\">" +
+				"<h3>" + ArtGruppe + "<\/h3>" +
+				"<\/a> <\/li>";
+				ListItemContainer = ListItemContainer + ListItem;
+			}
+			ListItemContainer = ListItemContainer + "<\/ul>";
+			$("#ArtgruppenListe").append(ListItemContainer);
+			$("#ArtgruppenListe").listview();
+			$("#ArtgruppenListe").listview("refresh");
+		}
+	});
+}
+
+function ArtlisteAufbauen(ArtGruppe)
+{ 
+	var viewname = "evab/Artliste" + ArtGruppe;
+	$db.view(viewname, {
+		success: function(data) {
+			var i;
+			var ListItem;
+			var ListItemContainer = "";
+			var ArtName;
+			var Art;
+			var ArtId;
+			var HinweisVerwandschaft;
+			for(i in data.rows)
+			{
+				ArtName = data.rows[i].key;
+				Art = data.rows[i].value;
+				ArtId = Art._id;
+				if(Art.HinweisVerwandschaft){
+					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
+					"<a href=\"#\">" +
+					"<h3>" + ArtName + "<\/h3>" +
+					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
+					"<\/a> <\/li>";
+				}else{
+					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
+					"<a href=\"#\">" +
+					"<h3>" + ArtName + "<\/h3>" +
+					"<\/a> <\/li>";
+				}
+				ListItemContainer = ListItemContainer + ListItem;
+			}
+			ListItemContainer = ListItemContainer + "<\/ul>";
+			$("#ArtenListe").append(ListItemContainer);
+			$("#ArtenListe").listview();
+			$("#ArtenListe").listview("refresh");
+		}
+	});
+}
