@@ -11,9 +11,9 @@
   </head>
   <body>
   	<div data-role="page" id="hOrtListePage">
-  		<div data-role="header" data-position="fixed" data-backbtn="false">
+  		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumLink" name="hRaumLink">zum Raum</a>
-  			<h2>Orte</h2>
+  			<h2 class="hOrtListePageTitel">Orte</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -89,22 +89,7 @@
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-					var url = "../UserEdit/" + UserId;
-					$("[name='UserEditLink']").attr('href', url);
-				}
-		});
+		MenuUserEditLinkSetzenTemplate();
 
 		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
 			$.mobile.changePage("#hOrtListeMapPage", "slide", false, true);
@@ -148,6 +133,7 @@
 							anzOrt = anzOrt + 1;
 						}
 					}
+
 					if (anzOrt == 0) {
 						MeldungEinzeilig("Es wurden noch keine Orte mit Breiten- und Längengrad erfasst");
 					} else {
@@ -249,6 +235,14 @@
 						}
 					}
 				}
+
+				//Im Titel der Seite die Anzahl Orte anzeigen
+				var Titel2 = " Orte";
+				if (anzOrt==1){
+					Titel2 = " Ort";
+				}
+				$("#hOrtListePageHeader .hOrtListePageTitel").text( anzOrt + Titel2);
+
 				if (anzOrt == 0) {
 					$("#Orte").append("<li>Sie haben noch keinen Ort erfasst</li>");
 				} else {

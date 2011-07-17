@@ -232,3 +232,91 @@ function ArtlisteAufbauen(ArtGruppe)
 		}
 	});
 }
+
+function DatumZeitSetzen(){
+	var Datum = DatumNeu();
+	$("input#zDatum").val(Datum);
+	var Zeit = ZeitNeu();
+	$("input#zZeit").val(Zeit);
+}
+
+function GetGeolocation(){
+	if ( navigator.geolocation ) { 
+    navigator.geolocation.getCurrentPosition ( 
+        function(position) {
+        	var oLongitudeDecDeg = position.coords.longitude;
+			var oLatitudeDecDeg = position.coords.latitude;
+			var oLagegenauigkeit = position.coords.accuracy;
+			$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
+			$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
+			$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+			var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+			var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+			$("input#oXKoord").val(x);
+			$("input#oYKoord").val(y); 
+			MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
+        }, 
+        function(){ 
+            MeldungEinzeilig('Keine Positionsdaten erhalten');
+        }); 
+    }
+}
+
+function AutorHolen(){
+	$db.view("evab/User",
+		{success: function(data) {
+			var i;
+			var beob;
+			var key;
+			for(i in data.rows)
+			{
+				beob = data.rows[i].value;
+				key = data.rows[i].key;
+				if (User == key) {
+					Autor = beob.Autor;
+					$("input#aAutor").val(Autor);
+				}
+			}
+		}
+	});
+}
+
+function MenuUserEditLinkSetzen(){
+	//Link zum UserEdit in Menu setzen
+	var UserId;
+	$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var doc;
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					doc = data.rows[i].value;
+					if (key == User) {
+						UserId = doc._id;
+					}
+				}
+				var url = "_show/UserEdit/" + UserId;
+				$("[name='UserEditLink']").attr('href', url);
+			}
+	});
+}
+
+function MenuUserEditLinkSetzenTemplate(){
+	//Link zum UserEdit in Menu setzen
+	var UserId;
+	$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var doc;
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					doc = data.rows[i].value;
+					if (key == User) {
+						UserId = doc._id;
+					}
+				}
+				var url = "../../_show/UserEdit/" + UserId;
+				$("[name='UserEditLink']").attr('href', url);
+			}
+	});
+}

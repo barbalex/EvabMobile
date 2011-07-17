@@ -292,9 +292,6 @@
 			}
 
 			//Code für das Löschen-Popup
-			//var docId = "{{id}}";
-			//var url = "../../../../../evab-ch_barbalex_evab/_design/evab/_show/Beobdit/" + docId;
-			//document.getElementById("neinButton").href = url;
 			document.getElementById("neinNichtLöschenButton").href = "../_show/BeobEdit/" + "{{id}}";
 			document.getElementById("jaLöschenButton").href = "../../BeobListe.html";
 			$('[id="jaLöschenButton"]').live("click", function() {
@@ -302,22 +299,7 @@
 			});
 
 			//Link zum UserEdit in Menu setzen
-			var UserId;
-			$db.view("evab/User",
-					{success: function(data) {
-						var i;
-						var doc;
-						for(i in data.rows) {
-							key = data.rows[i].key;
-							doc = data.rows[i].value;
-							if (key == User) {
-								UserId = doc._id;
-							}
-						}
-						var url = "../UserEdit/" + UserId;
-						$("[name='UserEditLink']").attr('href', url);
-					}
-			});
+			MenuUserEditLinkSetzenTemplate();
 
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			contentHeight = $(window).height() - 43;
@@ -477,12 +459,7 @@
 					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-							<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
-								<div>
-									<p class="PopupText">Diese Beobachtung löschen?</p>
-									<a id="jaLöschenButton" href="#" data-role="button" rel="external"/>ja</a>
-									<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
-								</div></li>
+							<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left" data-sheet="LoeschenMenu">l&ouml;schen</a></li>
 							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
 							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
@@ -509,6 +486,14 @@
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0"> 
 			<div id="map_canvas" style="width:100%; height:100%"></div>
+		</div>
+	</div>
+
+	<div data-role="page" id="LöschenMenuPage">
+		<div id="LoeschenMenu">
+			<p class="PopupText">Diese Beobachtung l&ouml;schen?</p>
+			<a id="jaLöschenButton" href="#" data-role="button" rel="external"/>ja</a>
+			<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
 		</div>
 	</div>
 

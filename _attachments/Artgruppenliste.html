@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/main.css" type="text/css">
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
+  </head>
+  <body>
+	<div data-role="page" id="ArtgruppenlistePage">
+		<div data-role="header" data-position="fixed">
+			<a href="#hArtNeuPage" data-role="button" data-icon="arrow-l" data-rel="dialog" data-iconpos="notext">abbrechen</a>
+			<h1>Art-Gruppe wählen</h1>
+			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div>
+  				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
+				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
+				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
+				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
+				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
+  			</div>
+		</div>
+		<div data-role="content">
+			<ul id="ArtgruppenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+		</div>
+	</div>  	
+  </body>
+  <script src="vendor/couchapp/loader.js"></script>
+  <script type="text/javascript" charset="utf-8">;
+	function handleDocumentReady()
+	{
+		$db = $.couch.db("evab-ch_barbalex_evab");
+		
+		userCtx = null;
+		$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+		});
+
+		MenuUserEditLinkSetzen();
+	
+	}
+	
+	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  
+  </script>
+</html>

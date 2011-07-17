@@ -210,22 +210,7 @@
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "../UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-		});
+		MenuUserEditLinkSetzenTemplate();
 
 		$("#GeButton").tap(function(event) {
 			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != ""){

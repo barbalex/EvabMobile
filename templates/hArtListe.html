@@ -11,9 +11,9 @@
   </head>
   <body>
   	<div data-role="page">
-  		<div data-role="header" data-position="fixed" data-backbtn="false">
+  		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
-  			<h2>Art</h2>
+  			<h2 class="hArtListePageTitel">Art</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -74,22 +74,7 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "../UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-		});
+		MenuUserEditLinkSetzenTemplate();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -133,6 +118,14 @@
 						}
 					}
 				}
+
+				//Im Titel der Seite die Anzahl Arten anzeigen
+				var Titel2 = " Arten";
+				if (anzArt==1){
+					Titel2 = " Art";
+				}
+				$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
+
 				if (anzArt == 0) {
 					$("#Arten").append("<li>Sie haben noch keine Art erfasst</li>");
 				} else {

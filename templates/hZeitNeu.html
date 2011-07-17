@@ -22,7 +22,7 @@
 	<div data-role="page" id="ZeitNeuPage">
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">zur Zeit-Liste</a>
-			<h1>neuer Zeitpunkt</h1>
+			<h1>neue Zeit</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -383,10 +383,10 @@
 			$db.saveDoc(doc, {
 				success: function(data) {
 					window.open("../hZeitEdit/" + data.id, target="_self");
-					MeldungEinzeilig("Zeitpunkt gespeichert");
+					MeldungEinzeilig("Zeit gespeichert");
 				},
 				error: function() {
-					MeldungEinzeilig("Der Zeitpunkt konnte nicht gespeichert werden.");
+					MeldungEinzeilig("Die Zeit konnte nicht gespeichert werden.");
 				 }
 			});
 			return false;
@@ -405,22 +405,7 @@
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "../UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-		});
+		MenuUserEditLinkSetzenTemplate();
 	}
 	
 	$(document).ready(handleDocumentReady);

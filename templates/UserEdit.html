@@ -10,6 +10,7 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
+    <script src="../../vendor/couchapp/takeout.js" type="text/javascript"></script>
   	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
@@ -75,22 +76,7 @@
 			});	
 
 			//Link zum UserEdit in Menu setzen
-			var UserId;
-			$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-					var url = "../UserEdit/" + UserId;
-					$("[name='UserEditLink']").attr('href', url);
-				}
-			});
+			MenuUserEditLinkSetzenTemplate();
 		});
 	</script>
 	<script type="text/javascript">
@@ -106,6 +92,11 @@
 				}
 			});
 		}
+
+		//Link für lokale Installation managen
+		$(function() {
+            $('#takeout').takeout({linkText : "ja, herunterladen und installieren", localText : "EvAB mobile ist schon lokal installiert"});
+        });
 		
 	</script>
   </head>
@@ -124,6 +115,10 @@
   			</div>
   		</div>
 		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
+			<h5>EvAB mobile lokal installieren?</h5>
+		    <p style="text-align: center">Möchten Sie EvAB mobile lokal auf Ihrem Windows- oder Mac-Computer installieren?<br />Die Daten werden jeweils mit der Datenbank im Internet synchronisiert.</p>
+		    <div id="takeout" style="text-align: center"></div>
+		    <hr />
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
 					<label for="Benutzername">Benutzername:</label>

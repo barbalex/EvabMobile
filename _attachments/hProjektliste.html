@@ -11,8 +11,8 @@
   </head>
   <body>
   	<div data-role="page">
-  		<div id="ProjListeHeader" data-role="header" data-position="fixed" data-backbtn="false">
-  			<h2>Projekte</h2>
+  		<div id="hProjektListePageHeader" data-role="header" data-position="fixed" data-backbtn="false">
+  			<h2 class="hProjektListePageTitel">Projekte</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
@@ -58,22 +58,7 @@
 		refreshProjListe();
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-					var url = "_show/UserEdit/" + UserId;
-					$("[name='UserEditLink']").attr('href', url);
-				}
-		});
+		MenuUserEditLinkSetzen();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -96,6 +81,14 @@
 						anzProj = anzProj + 1;
 					}
 				}
+
+				//Im Titel der Seite die Anzahl Projekte anzeigen
+				var Titel2 = " Projekte";
+				if (anzProj==1){
+					Titel2 = " Projekt";
+				}
+				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
+
 				if (anzProj == 0) {
 					$("#Projekte").append("<li>Sie haben noch kein Projekt erfasst</li>");
 				} else {

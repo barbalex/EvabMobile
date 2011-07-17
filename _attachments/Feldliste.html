@@ -106,22 +106,7 @@
 		});
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "_show/UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-		});
+		MenuUserEditLinkSetzen();
 	}
 	
 	$(document).ready(handleDocumentReady);

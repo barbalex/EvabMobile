@@ -90,8 +90,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
-					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">auf Karte lokalisieren</a></li>
+					<li><a href="#" id="BeobNeuSpeichern" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
+					<li><a href="#" id="BeobNeuMapÖffnen" data-icon="star" data-iconpos="left">auf Karte lokalisieren</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -125,7 +125,6 @@
   		$db = $.couch.db("evab-ch_barbalex_evab");
 		
 		userCtx = null;
-		var Autor;
 		
 		$.couch.session({
 			success : function(r) {
@@ -134,29 +133,9 @@
 				}
 		});
 		
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var beob;
-				var key;
-				for(i in data.rows)
-				{
-					beob = data.rows[i].value;
-					key = data.rows[i].key;
-					if (User == key) {
-						Autor = beob.Autor;
-						$("input#aAutor").val(Autor);
-					}
-				}
-			}
-		});
-		
+		AutorHolen();
 		GetGeolocation();                   
-
-		var Datum = DatumNeu();
-		$("input#zDatum").val(Datum);
-		var Zeit = ZeitNeu();
-		$("input#zZeit").val(Zeit);
+		DatumZeitSetzen();
 
 		$("select#aArtGruppe").tap(function(event){
 			event.preventDefault();
@@ -207,7 +186,7 @@
 			$("#ArtenListe").empty();
 		});	
 
-		$("#SpeichernButton").tap(function(event) {
+		$("#BeobNeuSpeichern").tap(function(event) {
 			event.preventDefault();
 			var doc = {};
 			doc.Modus = "einfach";
@@ -273,7 +252,7 @@
 			return false;
 		});
 		
-		$("#GeButton").tap(function(event) {
+		$("#BeobNeuMapÖffnen").tap(function(event) {
 			MeldungZweizeilig("Diese Funktion ist momentan abgeschaltet, da fehlerhaft", "Klicken Sie dazu nach dem Speichern auf 'Karte'");
 			//$.mobile.changePage("#BeobNeuMap", "slide", true, true);                    VORÜBERGEHEND ABGESCHALTET
 		});
@@ -398,23 +377,7 @@
 			$("#BeobNeuMap").empty();
 		});
 
-		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-					var url = "_show/UserEdit/" + UserId;
-					$("[name='UserEditLink']").attr('href', url);
-				}
-		});
+		MenuUserEditLinkSetzen();
 
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
@@ -431,27 +394,5 @@
 		'headerFormat': 'YYYY-MM-DD',
 		'monthsOfYear': Monate
 	});
-
-	function GetGeolocation(){
-		if ( navigator.geolocation ) { 
-        navigator.geolocation.getCurrentPosition ( 
-            function(position) {
-            	var oLongitudeDecDeg = position.coords.longitude;
-				var oLatitudeDecDeg = position.coords.latitude;
-				var oLagegenauigkeit = position.coords.accuracy;
-				$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-				$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
-				$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-				var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-				var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-				$("input#oXKoord").val(x);
-				$("input#oYKoord").val(y); 
-				MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
-            }, 
-            function(){ 
-                MeldungEinzeilig('Keine Positionsdaten erhalten');
-            }); 
-        }
-	}
   </script>
 </html>

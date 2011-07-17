@@ -10,9 +10,9 @@
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   </head>
   <body>
-  	<div data-role="page" id="BeobListe">
-  		<div id="BeobListeHeader" data-role="header" data-position="fixed" data-backbtn="false">
-  			<h2>Beobachtungen</h2>
+  	<div data-role="page" id="BeobListePage">
+  		<div id="BeobListePageHeader" data-role="header" data-position="fixed" data-backbtn="false">
+  			<h2 class="BeobListePageTitel">Beobachtungen</h2>
   			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
@@ -29,8 +29,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
-					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
+					<li><a id="NeueBeobLink" href="BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
+					<li><a href="#" id="BeobListeMapÖffnen" data-icon="star" data-iconpos="left">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -38,7 +38,7 @@
 
 	<div data-role="page" id="BeobListeMap" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed">
-			<a href="#BeobListe" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
+			<a href="#BeobListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
 			<h1>Karte</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
@@ -86,7 +86,7 @@
 			MeldungEinzeilig("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
 		});
 
-		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
+		$("#BeobListeMapÖffnen").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
 			$.mobile.changePage("#BeobListeMap", "slide", false, true);
 		});
 
@@ -215,9 +215,13 @@
 							anzBeob = anzBeob + 1;
 						}
 					}
-					
-					//$("#BeobListeHeader").text(anzBeob + " Beobachtungen");   //Header soll anzeigen, wieviele Beobachtungen erfasst wurden. Breaks jquery mobile style!
-					//$("#BeobListeHeader").page();
+
+					//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+					var Titel2 = " Beobachtungen";
+					if (anzBeob==1){
+						Titel2 = " Beobachtung";
+					}
+					$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 					if (anzBeob == 0) {
 						$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
@@ -269,6 +273,250 @@
 				$("[name='UserEditLink']").attr('href', url);
 			}
 		});
+
+		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+		contentHeight = $(window).height() - 43;
+		$("#map_canvas").css("height", contentHeight + "px");
+
+		//Neue Beobachtung managen
+		$("#NeueBeobLink").live("click", function(event){
+			event.preventDefault();
+			$.mobile.changePage("Artgruppenliste.html", "slide", true, false);
+			ArtgruppenlisteAufbauen();
+		});
+
+		var ArtGruppe;
+
+		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+			event.preventDefault();
+			ArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(ArtGruppe);
+		});
+		
+		$("[name='ArtListItem']").live("click", function(event) {
+			event.preventDefault();
+			ArtName = $(this).attr("id");
+			ArtId = $(this).attr("artid");
+			$.mobile.changePage("BeobNeu.html", "slide", true, false);
+			alert("ArtGruppe = " + ArtGruppe);
+			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
+			$("select#aArtName").empty();
+			$("select#aArtName").append(option);
+			$("select#aArtName").val(ArtName);
+			$("select#aArtName").selectmenu("refresh");
+			$("input#aArtId").val(ArtId);
+			option = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
+			$("select#aArtGruppe").empty();
+			$("select#aArtGruppe").append(option);
+			$("select#aArtGruppe").val(ArtGruppe);
+			$("select#aArtGruppe").selectmenu("refresh");
+			GetGeolocation();
+			var Datum = DatumNeu();
+			$("input#zDatum").val(Datum);
+			var Zeit = ZeitNeu();
+			$("input#zZeit").val(Zeit);
+			//DatumZeitSetzen();
+			AutorHolen();
+			$("#ArtgruppenListe").empty();
+			$("#ArtenListe").empty();
+			MenuUserEditLinkSetzen();
+			$("#BeobNeuPage").page();
+		});	
+
+		$("#BeobNeuSpeichern").tap(function(event) {
+			event.preventDefault();
+			var doc = {};
+			doc.Modus = "einfach";
+			doc.Typ = "Beobachtung";
+			doc.User = User;
+			doc.aArtGruppe = $("select#aArtGruppe").val();
+			doc.aArtName = $("select#aArtName").val();
+			if ($("input#aArtId").val() != ""){
+				doc.aArtId = $("input#aArtId").val();
+			} else if (doc.aArtId!=null){
+				delete doc.aArtId;
+			}
+			if ($("input#aAutor").val()!=""){
+				doc.aAutor = $("input#aAutor").val();
+			} else if (doc.aAutor!=null){
+				delete doc.aAutor;
+			}
+			if ($("input#oXKoord").val()!=""){
+				doc.oXKoord = $("input#oXKoord").val();
+			} else if (doc.oXKoord!=null){
+				delete doc.oXKoord;
+			}
+			if ($("input#oYKoord").val()!=""){
+				doc.oYKoord = $("input#oYKoord").val();
+			} else if (doc.oYKoord!=null){
+				delete doc.oYKoord;
+			}
+			if ($("input#oLongitudeDecDeg").val()!=""){
+				doc.oLongitudeDecDeg = $("input#oLongitudeDecDeg").val();
+			} else if (doc.oLongitudeDecDeg!=null){
+				delete doc.oLongitudeDecDeg;
+			}
+			if ($("input#oLatitudeDecDeg").val()!=""){
+				doc.oLatitudeDecDeg = $("input#oLatitudeDecDeg").val();
+			} else if (doc.oLatitudeDecDeg!=null){
+				delete doc.oLatitudeDecDeg;
+			}
+			if ($("input#oLagegenauigkeit").val()!=""){
+				doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
+			} else if (doc.oLagegenauigkeit!=null){
+				delete doc.oLagegenauigkeit;
+			}
+			if ($("input#zDatum").val()!=""){
+				doc.zDatum = $("input#zDatum").val();
+			} else {
+				MeldungEinzeilig("Bitte Datum eingeben");
+				document.getElementById("zDatum").focus();
+				return;
+			}
+			if ($("input#zZeit").val()!=""){
+				doc.zZeit = $("input#zZeit").val();
+			} else if (doc.zZeit!=null){
+				delete doc.zZeit;
+			}
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("_show/BeobEdit/" + data.id, target="_self");
+				},
+				error: function() {
+					MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
+				 }
+			});
+			return false;
+		});
+		
+		$("#BeobNeuMapÖffnen").tap(function(event) {
+			event.preventDefault();
+			MeldungZweizeilig("Diese Funktion ist momentan abgeschaltet, da fehlerhaft", "Klicken Sie dazu nach dem Speichern auf 'Karte'");
+			//$.mobile.changePage("#BeobNeuMap", "slide", true, true);                    VORÜBERGEHEND ABGESCHALTET
+		});
+		
+		//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
+		var markersArray = [];
+		var InfoWindowArray = [];
+
+		$('#BeobNeuMap').live("pagecreate", function() {
+			var map;
+			var verorted;
+			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != "") {
+				var lat = $("input#oLatitudeDecDeg").val();
+				var lng = $("input#oLongitudeDecDeg").val();
+				verorted = true;
+			} else {
+				var lat = 47.360566;
+				var lng = 8.542829;
+				verorted = false;
+			}
+			var latlng = new google.maps.LatLng(lat, lng);
+			var ZoomLevel;
+			if (verorted == true) {
+				ZoomLevel = 15;
+			} else {
+				ZoomLevel = 12;
+			}
+			var options = {
+			    zoom: ZoomLevel,
+			    center: latlng,
+			    streetViewControl: false,
+			    mapTypeId: google.maps.MapTypeId.HYBRID
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"),options);
+			google.maps.event.trigger(map,'resize');
+			if (verorted == true){
+				var marker = new google.maps.Marker({
+					position: latlng,
+					map: map,
+					draggable: true
+				});
+				//Marker in Array speichern, damit er gelöscht werden kann
+				markersArray.push(marker);  
+    			var contentString = '<div id="content"><div id="bodyContent">'+
+									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
+									'</div></div>';
+				var infowindow = new google.maps.InfoWindow({
+				    content: contentString
+				});
+				InfoWindowArray.push(infowindow);
+				google.maps.event.addListener(marker, 'click', function() {
+				  infowindow.open(map,marker);
+				});
+				google.maps.event.addListener(marker, "dragend", function(event) {
+					SetLocation(event.latLng, map, marker);  
+				});
+			}
+			google.maps.event.addListener(map, 'click', function(event) {
+				placeMarker(event.latLng, map, marker);
+			});
+		});
+
+		function placeMarker(location, map, marker) {
+			//zuerst bisherigen Marker löschen
+			clearMarkers();
+			var marker = new google.maps.Marker({
+		    	position: location, 
+		    	map: map,
+				draggable: true
+			});
+			//Marker in Array speichern, damit er gelöscht werden kann
+			markersArray.push(marker);
+			google.maps.event.addListener(marker, "dragend", function(event) {
+				SetLocation(event.latLng, map, marker);
+			});
+			SetLocation(location, map, marker);
+		}
+
+		function SetLocation(LatLng, map, marker) {
+			var lat = LatLng.lat();
+			var lng = LatLng.lng();
+			$("input#oLatitudeDecDeg").val(lat);
+			$("input#oLongitudeDecDeg").val(lng);
+			var x = DdInChX(lat, lng);
+			var y = DdInChY(lat, lng);
+			$("input#oXKoord").val(x);
+			$("input#oYKoord").val(y);
+			$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
+			clearInfoWindows();
+			var contentString = '<div id="content"><div id="bodyContent">'+
+							'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
+							'</div></div>';
+			var infowindow = new google.maps.InfoWindow({
+			    content: contentString
+			});
+			InfoWindowArray.push(infowindow);
+			google.maps.event.addListener(marker, 'click', function() {
+			  infowindow.open(map,marker);
+			});
+			MeldungEinzeilig("Die Koordinaten wurden übernommen");
+		}
+
+		//alle Marker löschen
+		function clearMarkers() {
+			if (markersArray) {
+				for (i in markersArray) {
+			    	markersArray[i].setMap(null);
+			    }
+			}
+		}
+
+		//alle InfoWindows löschen
+		function clearInfoWindows() {
+			if (InfoWindowArray) {
+				for (i in InfoWindowArray) {
+			    	InfoWindowArray[i].setMap(null);
+			    }
+			}
+		}
+		
+		$('#BeobNeuMap').live("pagehide", function() {
+			$("#BeobNeuMap").empty();
+		});
+
+		
 
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;

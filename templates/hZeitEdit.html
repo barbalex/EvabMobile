@@ -22,7 +22,7 @@
 	<div data-role="page" id="ZeitEditPage">
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">zur Zeit-Liste</a>
-			<h1>Zeitpunkt</h1>
+			<h1>Zeit</h1>
 			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div>
   				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
@@ -184,7 +184,7 @@
 					<li><a href="#" id="SpeichernButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
 					<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
 						<div>
-							<p class="PopupText">Diesen Zeitpunkt löschen?</p>
+							<p class="PopupText">Diese Zeit löschen?</p>
 							<a id="jaLöschenButton" href="#" data-role="button" rel="external">ja</a>
 							<a id="neinNichtLöschenButton" href="#" data-role="button" class="ui-btn-active">nein</a>
 						</div></li>
@@ -387,10 +387,10 @@
 					}
 					$db.saveDoc(doc, {
 						success: function(data) {
-							MeldungEinzeilig("Zeitpunkt gespeichert");
+							MeldungEinzeilig("Zeit gespeichert");
 						},
 						error: function() {
-							MeldungEinzeilig("Der Zeitpunkt konnte nicht gespeichert werden.");
+							MeldungEinzeilig("Die Zeit konnte nicht gespeichert werden.");
 						 }
 					});
 				}
@@ -425,22 +425,7 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "../UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-		});
+		MenuUserEditLinkSetzenTemplate();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -464,16 +449,16 @@
 				// Then use the opened doc as reference to remove
 				$db.removeDoc(document, {
 					success: function() {
-						MeldungEinzeilig("Zeitpunkt gelöscht");
+						MeldungEinzeilig("Zeit gelöscht");
 						window.open("../hZeitListe/" + OrtId, target="_self");
 					},
 					error: function() {
-						MeldungEinzeilig("Der Zeitpunkt konnte nicht gelöscht werden");
+						MeldungEinzeilig("Die Zeit konnte nicht gelöscht werden");
 					}
 				});
 			},
 			error: function() {
-				MeldungEinzeilig("Ein Zeitpunkt mit der ID: " + docId + " wurde nicht gefunden");
+				MeldungEinzeilig("Eine Zeit mit der ID: " + docId + " wurde nicht gefunden");
 			}
 		});
 		return false;
