@@ -257,6 +257,7 @@
 				$(this).simpledialog({
 					'mode' : 'bool',
 			    	'prompt' : 'Beobachtung löschen?',
+			    	'forceInput': 'false',
 			    	'buttons' : {
 					 	'ja': {
 					      	click: function () {
@@ -482,7 +483,7 @@
 					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
-							<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus">l&ouml;schen</a></li>
+							<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 							<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
 							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
