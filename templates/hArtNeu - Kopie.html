@@ -71,7 +71,22 @@
 		});
 
 		ZeitId = "{{id}}";
-		
+
+		$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var beob;
+				var key;
+				for(i in data.rows)
+				{
+					beob = data.rows[i].value;
+					key = data.rows[i].key;
+					if (User == key) {
+						aAutor = beob.Autor;
+					}
+				}
+			}
+		});
 
 		$("select#aArtGruppe").tap(function(event){
 			event.preventDefault();
@@ -81,7 +96,7 @@
 
 		$("[name='ArtgruppenListItem']").live("click", function(event) {        
 			event.preventDefault();
-			var aArtGruppe = $(this).attr("id");
+			aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", "slide", true, false);
 			ArtlisteAufbauen(aArtGruppe);
 			$("#ArtgruppenListe").empty();
@@ -89,11 +104,10 @@
 		
 		$("[name='ArtListItem']").live("click", function(event) {
 			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("id");
-			var aArtId = $(this).attr("artid");
+			aArtName = $(this).attr("id");
+			aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			speichern(aArtGruppe, aArtName, aArtId);
+			speichern();
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -121,7 +135,7 @@
 
   <script type="text/javascript" charset="utf-8">	
 
-	function speichern(aArtGruppe, aArtName, aArtId){
+	function speichern(){
 		var doc = {};
 		doc.Typ = "hArt";
 		doc.User = User;
@@ -129,17 +143,10 @@
 		doc.RaumId = "{{RaumId}}";
 		doc.OrtId = "{{OrtId}}";
 		doc.ZeitId = ZeitId;
-		alert("aArtGruppe = " + aArtGruppe);
 		doc.aArtGruppe = aArtGruppe;
-		alert("aArtName = " + aArtName);
 		doc.aArtName = aArtName;
-		alert("aArtId = " + aArtId);
 		doc.aArtId = aArtId;
-		var aAutor = AutorHolen();
-		alert("hArtNeu: aAutor = " + aAutor);
-		if (aAutor != ""){
-			doc.aAutor = aAutor;
-		}
+		doc.aAutor = aAutor;
 		$db.saveDoc(doc, {
 			success: function(data) {
 				window.open("_show/hArtArtgruppeEdit/" + data.id, target="_self");
@@ -149,11 +156,6 @@
 				MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
 			 }
 		});
-	}
-
-	function SpeichernManagen(aArtGruppe, aArtName, aArtId){
-		var aAutor = AutorHolen();
-		speichern(aArtGruppe, aArtName, aArtId, aAutor);
 	}
 	
   </script>

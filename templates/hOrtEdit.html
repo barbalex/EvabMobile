@@ -78,16 +78,16 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-					<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
+					<li><a href="#" id="SpeichernButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+					<li><a data-role="actionsheet" data-icon="minus">löschen</a>
 						<div>
 							<p class="PopupText">Diesen Ort löschen?</p>
-							<a id="jaLöschenButton" href="#" data-role="button" rel="external">ja</a>
+							<a id="jaLöschenButton" href="#" data-role="button">ja</a>
 							<a id="neinNichtLöschenButton" href="#" data-role="button">nein</a>
 						</div></li>
-					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hOrtNeuLink">neu</a></li>
-					<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
-					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink">neu</a></li>
+					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
+					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -187,8 +187,6 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinNichtLöschenButton").href = "../hOrtEdit/" + "{{id}}";
-		document.getElementById("jaLöschenButton").href = "../hOrtListe/" + "{{RaumId}}";
 		$('[id="jaLöschenButton"]').live("click", function() {
 			handleDelete();
 		});

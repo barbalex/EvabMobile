@@ -18,24 +18,32 @@
 		});	
 	</script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    	<script type="text/javascript">
-			$(document).ready(function(){
-				// do stuff when DOM is ready
-				$db = $.couch.db("evab-ch_barbalex_evab");
-				userCtx = null;
-				$.couch.session({
-				success : function(r) {
-					var userCtx = r.userCtx;
-					User = userCtx.name;
-					}
-				});
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.url.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			// do stuff when DOM is ready
+			$db = $.couch.db("evab-ch_barbalex_evab");
+			userCtx = null;
+			$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+			});
 
-				refreshArtGruppen("{{aArtGruppe}}");
-				refreshArtName("{{aArtName}}");
-				
-				var docId = "{{id}}";
+			refreshArtGruppen("{{aArtGruppe}}");
+			refreshArtName("{{aArtName}}");
+			
+			var docId = "{{id}}";
 
-				$("select#aArtGruppe").tap(function(event){
+			var Status = $.url().param("Status");
+			if (Status == "neu"){
+				AutorSetzen();
+				GetGeolocation();                   
+				DatumZeitSetzen();
+			}
+
+			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
 				$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
 				ArtgruppenlisteAufbauen();
@@ -50,7 +58,7 @@
 				$("select#aArtGruppe").val(ArtGruppe);
 				$("select#aArtGruppe").selectmenu("refresh");
 				$("#ArtgruppenListe").empty();
-				$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+				$.mobile.changePage("Artenliste.html", "slide", true, false);
 				ArtlisteAufbauen(ArtGruppe);
 			});
 
@@ -292,8 +300,6 @@
 			}
 
 			//Code für das Löschen-Popup
-			document.getElementById("neinNichtLöschenButton").href = "../_show/BeobEdit/" + "{{id}}";
-			document.getElementById("jaLöschenButton").href = "../../BeobListe.html";
 			$('[id="jaLöschenButton"]').live("click", function() {
 				handleDelete();
 			});
@@ -377,7 +383,8 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html", target = '_self');
+							//window.open("../../../../../evab-ch_barbalex_evab/_design/evab/BeobListe.html", target = '_self');
+							window.open("../../BeobListe.html", target = '_self');
 						},
 						error: function() {
 							MeldungEinzeilig("Die Beobachtung mit der ID: " + docId + " konnte nicht gelöscht werden");
@@ -458,11 +465,16 @@
 				<div data-role="footer" data-position="fixed">
 					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
-							<li><a href="#" id="submitButton" data-icon="check" data-iconpos="left" class="ui-btn-active">speichern</a></li>
-							<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left" data-sheet="LoeschenMenu">l&ouml;schen</a></li>
-							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external">neu</a></li>
-							<li><a href="#" id="GeButton" data-icon="star" data-iconpos="left">Karte</a></li>
-							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location" data-iconpos="left">verorten</a></li>
+							<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+							<li><a data-role="actionsheet" data-icon="minus">l&ouml;schen</a>
+								<div>
+									<p class="PopupText">Diese Beobachtung l&ouml;schen?</p>
+									<a id="jaLöschenButton" href="#" data-role="button"/>ja</a>
+									<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
+								</div></li>
+							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" rel="external">neu</a></li>
+							<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
+							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
 						</ul>
 					</div><!-- /navbar -->
 				</div><!-- /footer -->
@@ -486,14 +498,6 @@
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0"> 
 			<div id="map_canvas" style="width:100%; height:100%"></div>
-		</div>
-	</div>
-
-	<div data-role="page" id="LöschenMenuPage">
-		<div id="LoeschenMenu">
-			<p class="PopupText">Diese Beobachtung l&ouml;schen?</p>
-			<a id="jaLöschenButton" href="#" data-role="button" rel="external"/>ja</a>
-			<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
 		</div>
 	</div>
 

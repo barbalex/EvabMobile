@@ -39,7 +39,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
 				</ul>
 			</div>
 		</div>
@@ -139,7 +139,7 @@
 							if(key[1] == ZeitId) {    		//nur Zeiten mit dieser OrtId anzeigen
 								var bArtName = key[2];
 								externalPage = "../../_show/hArtArtgruppeEdit/" + Art._id;
-								listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\">" +
+								listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
 									"<a href=\"" + externalPage + "\" rel=\"external\">" +
 									"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 									"<h3>" + bArtName + "<\/h3>" +

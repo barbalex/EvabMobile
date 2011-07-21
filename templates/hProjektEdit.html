@@ -40,7 +40,7 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form id="BeobNeuForm" action="#" method="get" autocomplete="off">
+			<form id="BeobNeuForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
 					<input id="pName" name="pName" type="text" value="{{pName}}" required/>
@@ -54,14 +54,14 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
-					<li><a data-role="actionsheet" data-icon="minus" data-iconpos="left">löschen</a>
+					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check">speichern</a></li>
+					<li><a data-role="actionsheet" data-icon="minus">löschen</a>
 						<div>
 							<p class="PopupText">Dieses Projekt löschen?</p>
-							<a id="jaLöschenButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/hProjektListe.html" data-role="button" rel="external">ja</a>
+							<a id="jaLöschenButton" href="#" data-role="button">ja</a>
 							<a id="neinLöschenButton" href="#" data-role="button">nein</a>
 						</div></li>
-				<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" >neu</a></li>
+				<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" >neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -116,8 +116,6 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinLöschenButton").href = "../hProjektEdit/" + "{{id}}";
-		document.getElementById("jaLöschenButton").href = "../../hProjektListe.html";
 		$('[id="jaLöschenButton"]').live("click", function() {
 			handleDelete();
 		});
@@ -149,7 +147,7 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/hProjektListe.html", target = '_self');
+							window.open("../../hProjektListe.html", target = '_self');
 						},
 						error: function() {
 							MeldungEinzeilig("Das Projekt mit der ID: " + docId + " konnte nicht gelöscht werden");

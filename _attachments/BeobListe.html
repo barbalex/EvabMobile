@@ -29,8 +29,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a id="NeueBeobLink" href="BeobNeu.html" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
-					<li><a href="#" id="BeobListeMapÖffnen" data-icon="star" data-iconpos="left">Karte</a></li>
+					<li><a id="NeueBeobLink" href="BeobNeu.html" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
+					<li><a href="#" id="BeobListeMapÖffnen" data-icon="star">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -121,13 +121,7 @@
 					var i;
 					var anzBeob = 0;
 					var beob;
-					var zDatum;
-					var zZeit;
-					var aArtGruppe;
 					var image;
-					var aArtName;
-					var aAutor;
-					var UserZeit;
 					var infowindow = new google.maps.InfoWindow();
 					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
 						key = data.rows[i].key;
@@ -145,12 +139,12 @@
 							key = data.rows[i].key;
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
 								var BeobId = beob._id;
-								var zDatum = beob.zDatum;
-								var zZeit = beob.zZeit;
-								var aArtGruppe = beob.aArtGruppe;
+								var Datum = beob.zDatum;
+								var Zeit = beob.zZeit;
+								var ArtGruppe = beob.aArtGruppe;
 								var image = "Artgruppenbilder/" + aArtGruppe + ".png";
-								var aArtName = beob.aArtName;
-								var aAutor = beob.aAutor;
+								var ArtName = beob.aArtName;
+								var Autor = beob.aAutor;
 								var lat2 = beob.oLatitudeDecDeg;
 								var lng2 = beob.oLongitudeDecDeg;
 								var externalPage = "_show/BeobEdit/" + BeobId;
@@ -158,9 +152,9 @@
 								var marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,  
-								    title: aArtName,
+								    title: ArtName,
 								    icon: image,
-								    labelContent: aArtName,
+								    labelContent: ArtName,
 								    labelAnchor: new google.maps.Point(22, 0),
 								    labelClass: "MapLabel", // the CSS class for the label
 									labelStyle: {opacity: 0.75}
@@ -169,13 +163,13 @@
 								var contentString = '<div id="content">'+
 								    '<div id="siteNotice">'+
 								    '</div>'+
-								    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
+								    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
 								    '<div id="bodyContent" class="GmInfowindow">'+
 								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-								    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
-								    '<p>Autor: ' + aAutor + '</p>'+
-								    '<p>Datum: ' + zDatum + '</p>'+
-								    '<p>Zeit: ' + zZeit + '</p>'+
+								    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
+								    '<p>Autor: ' + Autor + '</p>'+
+								    '<p>Datum: ' + Datum + '</p>'+
+								    '<p>Zeit: ' + Zeit + '</p>'+
 								    '</div>'+
 								    '</div>';
 								makeListener(map, marker, contentString);
@@ -202,13 +196,7 @@
 					var i;
 					var anzBeob = 0;
 					var beob;
-					var zDatum;
-					var zZeit;
-					var aArtName;
-					var externalPage;
-					var listItem;
 					var ListItemContainer = "";
-					var UserZeit;
 					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
 						key = data.rows[i].key;
 						if (key[0] == User) {            //nur eigene Beobachtungen zählen!
@@ -232,17 +220,17 @@
 							beob = data.rows[i].value;
 							key = data.rows[i].key;
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-								zDatum = beob.zDatum;
-								zZeit = beob.zZeit;
-								aArtGruppe = beob.aArtGruppe;
-								ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
-								aArtName = beob.aArtName;
-								externalPage = "_show/BeobEdit/" + beob._id;
-								listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
+								var Datum = beob.zDatum;
+								var Zeit = beob.zZeit;
+								var ArtGruppe = beob.aArtGruppe;
+								ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
+								var ArtName = beob.aArtName;
+								var externalPage = "_show/BeobEdit/" + beob._id;
+								var listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
 									"<a href=\"" + externalPage + "\" rel=\"external\">" +
 									"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-									"<h3 class=\"aArtName\">" + aArtName + "<\/h3>" +
-									"<p class=\"zZeit\">" + zDatum + "&nbsp; &nbsp;" + zZeit + "<\/p>" +
+									"<h3 class=\"aArtName\">" + ArtName + "<\/h3>" +
+									"<p class=\"zZeit\">" + Datum + "&nbsp; &nbsp;" + Zeit + "<\/p>" +
 									"<\/a> <\/li>";
 								ListItemContainer = ListItemContainer + listItem;
 							}
@@ -285,244 +273,44 @@
 			ArtgruppenlisteAufbauen();
 		});
 
-		var ArtGruppe;
-
 		$("[name='ArtgruppenListItem']").live("click", function(event) {        
 			event.preventDefault();
-			ArtGruppe = $(this).attr("id");
+			var aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(ArtGruppe);
+			ArtlisteAufbauen(aArtGruppe);
+			$("#ArtgruppenListe").empty();
 		});
 		
 		$("[name='ArtListItem']").live("click", function(event) {
 			event.preventDefault();
-			ArtName = $(this).attr("id");
-			ArtId = $(this).attr("artid");
-			$.mobile.changePage("BeobNeu.html", "slide", true, false);
-			alert("ArtGruppe = " + ArtGruppe);
-			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-			$("select#aArtName").empty();
-			$("select#aArtName").append(option);
-			$("select#aArtName").val(ArtName);
-			$("select#aArtName").selectmenu("refresh");
-			$("input#aArtId").val(ArtId);
-			option = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
-			$("select#aArtGruppe").empty();
-			$("select#aArtGruppe").append(option);
-			$("select#aArtGruppe").val(ArtGruppe);
-			$("select#aArtGruppe").selectmenu("refresh");
-			GetGeolocation();
-			var Datum = DatumNeu();
-			$("input#zDatum").val(Datum);
-			var Zeit = ZeitNeu();
-			$("input#zZeit").val(Zeit);
-			//DatumZeitSetzen();
-			AutorHolen();
-			$("#ArtgruppenListe").empty();
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("id");
+			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			MenuUserEditLinkSetzen();
-			$("#BeobNeuPage").page();
+			BeobNeuSpeichern(aArtGruppe, aArtName, aArtId);
 		});	
-
-		$("#BeobNeuSpeichern").tap(function(event) {
-			event.preventDefault();
-			var doc = {};
-			doc.Modus = "einfach";
-			doc.Typ = "Beobachtung";
-			doc.User = User;
-			doc.aArtGruppe = $("select#aArtGruppe").val();
-			doc.aArtName = $("select#aArtName").val();
-			if ($("input#aArtId").val() != ""){
-				doc.aArtId = $("input#aArtId").val();
-			} else if (doc.aArtId!=null){
-				delete doc.aArtId;
-			}
-			if ($("input#aAutor").val()!=""){
-				doc.aAutor = $("input#aAutor").val();
-			} else if (doc.aAutor!=null){
-				delete doc.aAutor;
-			}
-			if ($("input#oXKoord").val()!=""){
-				doc.oXKoord = $("input#oXKoord").val();
-			} else if (doc.oXKoord!=null){
-				delete doc.oXKoord;
-			}
-			if ($("input#oYKoord").val()!=""){
-				doc.oYKoord = $("input#oYKoord").val();
-			} else if (doc.oYKoord!=null){
-				delete doc.oYKoord;
-			}
-			if ($("input#oLongitudeDecDeg").val()!=""){
-				doc.oLongitudeDecDeg = $("input#oLongitudeDecDeg").val();
-			} else if (doc.oLongitudeDecDeg!=null){
-				delete doc.oLongitudeDecDeg;
-			}
-			if ($("input#oLatitudeDecDeg").val()!=""){
-				doc.oLatitudeDecDeg = $("input#oLatitudeDecDeg").val();
-			} else if (doc.oLatitudeDecDeg!=null){
-				delete doc.oLatitudeDecDeg;
-			}
-			if ($("input#oLagegenauigkeit").val()!=""){
-				doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
-			} else if (doc.oLagegenauigkeit!=null){
-				delete doc.oLagegenauigkeit;
-			}
-			if ($("input#zDatum").val()!=""){
-				doc.zDatum = $("input#zDatum").val();
-			} else {
-				MeldungEinzeilig("Bitte Datum eingeben");
-				document.getElementById("zDatum").focus();
-				return;
-			}
-			if ($("input#zZeit").val()!=""){
-				doc.zZeit = $("input#zZeit").val();
-			} else if (doc.zZeit!=null){
-				delete doc.zZeit;
-			}
-			$db.saveDoc(doc, {
-				success: function(data) {
-					window.open("_show/BeobEdit/" + data.id, target="_self");
-				},
-				error: function() {
-					MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
-				 }
-			});
-			return false;
-		});
-		
-		$("#BeobNeuMapÖffnen").tap(function(event) {
-			event.preventDefault();
-			MeldungZweizeilig("Diese Funktion ist momentan abgeschaltet, da fehlerhaft", "Klicken Sie dazu nach dem Speichern auf 'Karte'");
-			//$.mobile.changePage("#BeobNeuMap", "slide", true, true);                    VORÜBERGEHEND ABGESCHALTET
-		});
-		
-		//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
-		var markersArray = [];
-		var InfoWindowArray = [];
-
-		$('#BeobNeuMap').live("pagecreate", function() {
-			var map;
-			var verorted;
-			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != "") {
-				var lat = $("input#oLatitudeDecDeg").val();
-				var lng = $("input#oLongitudeDecDeg").val();
-				verorted = true;
-			} else {
-				var lat = 47.360566;
-				var lng = 8.542829;
-				verorted = false;
-			}
-			var latlng = new google.maps.LatLng(lat, lng);
-			var ZoomLevel;
-			if (verorted == true) {
-				ZoomLevel = 15;
-			} else {
-				ZoomLevel = 12;
-			}
-			var options = {
-			    zoom: ZoomLevel,
-			    center: latlng,
-			    streetViewControl: false,
-			    mapTypeId: google.maps.MapTypeId.HYBRID
-			};
-			map = new google.maps.Map(document.getElementById("map_canvas"),options);
-			google.maps.event.trigger(map,'resize');
-			if (verorted == true){
-				var marker = new google.maps.Marker({
-					position: latlng,
-					map: map,
-					draggable: true
-				});
-				//Marker in Array speichern, damit er gelöscht werden kann
-				markersArray.push(marker);  
-    			var contentString = '<div id="content"><div id="bodyContent">'+
-									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
-									'</div></div>';
-				var infowindow = new google.maps.InfoWindow({
-				    content: contentString
-				});
-				InfoWindowArray.push(infowindow);
-				google.maps.event.addListener(marker, 'click', function() {
-				  infowindow.open(map,marker);
-				});
-				google.maps.event.addListener(marker, "dragend", function(event) {
-					SetLocation(event.latLng, map, marker);  
-				});
-			}
-			google.maps.event.addListener(map, 'click', function(event) {
-				placeMarker(event.latLng, map, marker);
-			});
-		});
-
-		function placeMarker(location, map, marker) {
-			//zuerst bisherigen Marker löschen
-			clearMarkers();
-			var marker = new google.maps.Marker({
-		    	position: location, 
-		    	map: map,
-				draggable: true
-			});
-			//Marker in Array speichern, damit er gelöscht werden kann
-			markersArray.push(marker);
-			google.maps.event.addListener(marker, "dragend", function(event) {
-				SetLocation(event.latLng, map, marker);
-			});
-			SetLocation(location, map, marker);
-		}
-
-		function SetLocation(LatLng, map, marker) {
-			var lat = LatLng.lat();
-			var lng = LatLng.lng();
-			$("input#oLatitudeDecDeg").val(lat);
-			$("input#oLongitudeDecDeg").val(lng);
-			var x = DdInChX(lat, lng);
-			var y = DdInChY(lat, lng);
-			$("input#oXKoord").val(x);
-			$("input#oYKoord").val(y);
-			$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
-			clearInfoWindows();
-			var contentString = '<div id="content"><div id="bodyContent">'+
-							'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
-							'</div></div>';
-			var infowindow = new google.maps.InfoWindow({
-			    content: contentString
-			});
-			InfoWindowArray.push(infowindow);
-			google.maps.event.addListener(marker, 'click', function() {
-			  infowindow.open(map,marker);
-			});
-			MeldungEinzeilig("Die Koordinaten wurden übernommen");
-		}
-
-		//alle Marker löschen
-		function clearMarkers() {
-			if (markersArray) {
-				for (i in markersArray) {
-			    	markersArray[i].setMap(null);
-			    }
-			}
-		}
-
-		//alle InfoWindows löschen
-		function clearInfoWindows() {
-			if (InfoWindowArray) {
-				for (i in InfoWindowArray) {
-			    	InfoWindowArray[i].setMap(null);
-			    }
-			}
-		}
-		
-		$('#BeobNeuMap').live("pagehide", function() {
-			$("#BeobNeuMap").empty();
-		});
-
-		
-
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
 	}
 	
 	$(document).ready(handleDocumentReady);
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+
+	function BeobNeuSpeichern(aArtGruppe, aArtName, aArtId){
+		var doc = {};
+		doc.Modus = "einfach";
+		doc.Typ = "Beobachtung";
+		doc.User = User;
+		doc.aArtGruppe = aArtGruppe;
+		doc.aArtName = aArtName;
+		doc.aArtId = aArtId;
+		$db.saveDoc(doc, {
+			success: function(data) {
+				window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+			},
+			error: function() {
+				MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
+			 }
+		});
+	}
   </script>
 </html>

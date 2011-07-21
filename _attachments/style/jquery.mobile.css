@@ -1,6 +1,6 @@
 /*!
  * jQuery Mobile v Git Build
- * Git Info SHA1: 3a3152dc72d01738660764278f3f2278ca15b269 Date: Sun Jul 10 23:18:02 2011 -0700
+ * Git Info SHA1: baa14e3e4786373daac09d1a023da8eb45b36be9 Date: Wed Jul 20 11:38:02 2011 -0700
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -11,7 +11,6 @@
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
 */
 
 
@@ -984,7 +983,6 @@ a.ui-link-inherit {
 * jQuery Mobile Framework
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
-* Note: Code is in draft form and is subject to change 
 */
 
 /* some unsets - more probably needed */
@@ -1381,7 +1379,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 .ui-btn:focus, .ui-btn:active { outline: none; }
 .ui-header .ui-btn, .ui-footer .ui-btn, .ui-bar .ui-btn { display: inline-block; font-size: 13px; margin: 0; }
 .ui-btn-inline { display: inline-block; }
-.ui-btn-inner { padding: .6em 25px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; position: relative; }
+.ui-btn-inner { padding: .6em 25px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; position: relative; zoom: 1; }
 .ui-header .ui-btn-inner, .ui-footer .ui-btn-inner, .ui-bar .ui-btn-inner { padding: .4em 8px .5em; }
 .ui-btn-icon-notext { display: inline-block; width: 20px; height: 20px; padding: 2px 1px 2px 3px; text-indent: -9999px; }
 .ui-btn-icon-notext .ui-btn-inner { padding: 0; }

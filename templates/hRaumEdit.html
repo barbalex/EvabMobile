@@ -55,14 +55,14 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check" data-iconpos="left">speichern</a></li>
-					<li><a data-icon="minus" data-iconpos="left" rel="external" data-role="actionsheet">löschen</a>
+					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check">speichern</a></li>
+					<li><a data-icon="minus" rel="external" data-role="actionsheet">löschen</a>
 						<div>
 							<p class="PopupText">Diesen Raum löschen?</p>
-							<a id="jaLöschenButton" href="#" data-role="button" rel="external" id="hRaumListeLink">ja</a>
+							<a id="jaLöschenButton" href="#" data-role="button" id="hRaumListeLink">ja</a>
 							<a id="neinNichtLöschenButton" href="#" data-role="button">nein</a>
 						</div></li>
-					<li><a href="#" data-transition="slideup" data-icon="plus" data-iconpos="left" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -117,8 +117,6 @@
 		});
 
 		//Code für das Löschen-Popup
-		document.getElementById("neinNichtLöschenButton").href = "../hRaumEdit/" + "{{id}}";
-		document.getElementById("jaLöschenButton").href = "../hRaumListe/" + "{{ProjektId}}";
 		$('[id="jaLöschenButton"]').live("click", function() {
 			handleDelete();
 		});

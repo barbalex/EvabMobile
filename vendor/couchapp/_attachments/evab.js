@@ -212,13 +212,13 @@ function ArtlisteAufbauen(ArtGruppe)
 				Art = data.rows[i].value;
 				ArtId = Art._id;
 				if(Art.HinweisVerwandschaft){
-					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
+					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtName + "<\/h3>" +
 					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
 					"<\/a> <\/li>";
 				}else{
-					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\">" +
+					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtName + "<\/h3>" +
 					"<\/a> <\/li>";
@@ -240,7 +240,13 @@ function DatumZeitSetzen(){
 	$("input#zZeit").val(Zeit);
 }
 
+function DatumZeitHolen(){
+	zDatum = DatumNeu();
+	zZeit = ZeitNeu();
+}
+
 function GetGeolocation(){
+	//ÜBERALL DURCH KOORDINATENHOLEN ERSETHEN!!!!!!!!!!!!!!!!!!!
 	if ( navigator.geolocation ) { 
     navigator.geolocation.getCurrentPosition ( 
         function(position) {
@@ -262,6 +268,24 @@ function GetGeolocation(){
     }
 }
 
+function KoordinatenHolen(){
+	if ( navigator.geolocation ) { 
+    navigator.geolocation.getCurrentPosition ( 
+        function(position) {
+        	oLongitudeDecDeg = position.coords.longitude;
+			oLatitudeDecDeg = position.coords.latitude;
+			oLagegenauigkeit = position.coords.accuracy;
+			oXKoord = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+			oYKoord = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+			return(oLongitudeDecDeg, oLatitudeDecDeg, oLagegenauigkeit, oXKoord, oYKoord);
+			MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
+        }, 
+        function(){ 
+            MeldungEinzeilig('Keine Positionsdaten erhalten');
+        }); 
+    }
+}
+
 function AutorHolen(){
 	$db.view("evab/User",
 		{success: function(data) {
@@ -273,8 +297,30 @@ function AutorHolen(){
 				beob = data.rows[i].value;
 				key = data.rows[i].key;
 				if (User == key) {
-					Autor = beob.Autor;
-					$("input#aAutor").val(Autor);
+					var aAutor = beob.Autor;
+					//$("input#aAutor").val(Autor);
+					alert("AutorHolen: aAutor = " + aAutor);
+					return(aAutor);
+				}
+			}
+		}
+	});
+}
+
+function AutorSetzen(){
+	$db.view("evab/User",
+		{success: function(data) {
+			var i;
+			var beob;
+			var key;
+			for(i in data.rows)
+			{
+				beob = data.rows[i].value;
+				key = data.rows[i].key;
+				if (User == key) {
+					var aAutor = beob.Autor;
+					$("input#aAutor").val(aAutor);
+					break;
 				}
 			}
 		}
