@@ -50,16 +50,11 @@
 					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" data-icon="arrow-r" data-native-menu="true" value="{{aArtGruppe}}">
 					</select>
-				</div>
-				<hr />				
+				</div>			
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
 					<select id="aArtName" name="aArtName" data-icon="arrow-r" data-native-menu="true" value="{{aArtName}}">
 					</select>
-					</div>
-				<div data-role="fieldcontain">
-					<label for="aArtId">Art-ID:</label>
-					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
@@ -158,6 +153,8 @@
 				}
 		});
 
+		aArtId = "{{aArtId}}";
+
 		//select-Felder aktualisieren
 		refreshArtGruppen("{{aArtGruppe}}");
 		refreshArtName("{{aArtName}}");
@@ -225,13 +222,12 @@
 		$("[name='ArtListItem']").live("click", function(event) {
 			event.preventDefault();
 			var ArtName = $(this).attr("id");
-			var ArtId = $(this).attr("artid");
+			aArtId = $(this).attr("artid");
 			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
 			$("select#aArtName").empty();
 			$("select#aArtName").append(option);
 			$("select#aArtName").val(ArtName);
 			$("select#aArtName").selectmenu("refresh");
-			$("input#aArtId").val(ArtId);
 			$.mobile.changePage("#hArtEditPage", "slide", true, false);
 			$("#ArtenListe").empty();
 		});
@@ -256,9 +252,9 @@
 					} else if (doc.aArtName!=null){
 						delete doc.aArtName;
 					}
-					if ($("input#aArtId").val()!=""){
-						doc.aArtId = $("input#aArtId").val();
-					} else if (doc.aArtId!=null){
+					if (aArtId != ""){
+						doc.aArtId = aArtId;
+					} else if (doc.aArtId != null){
 						delete doc.aArtId;
 					}
 					if ($("select#aArtNameUnsicher").val()!=""){

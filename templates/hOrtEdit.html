@@ -58,14 +58,6 @@
 					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oLongitudeDecDeg">Längengrad:</label>
-					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" value="{{oLongitudeDecDeg}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="oLatitudeDecDeg">Breitengrad:</label>
-					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" value="{{oLatitudeDecDeg}}" />
-				</div>
-				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
 					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
 				</div>
@@ -120,7 +112,10 @@
 	{
   		$db = $.couch.db("evab-ch_barbalex_evab");
 		userCtx = null;
+		
 		var Autor;
+		oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
+		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 		
 		$.couch.session({
 			success : function(r) {
@@ -154,14 +149,14 @@
 					} else if (doc.oYKoord!=null){
 						delete doc.oYKoord;
 					}
-					if ($("input#oLongitudeDecDeg").val()!=""){
-						doc.oLongitudeDecDeg = $("input#oLongitudeDecDeg").val();
-					} else if (doc.oLongitudeDecDeg!=null){
+					if (oLongitudeDecDeg != ""){
+						doc.oLongitudeDecDeg = oLongitudeDecDeg;
+					} else if (doc.oLongitudeDecDeg != null){
 						delete doc.oLongitudeDecDeg;
 					}
-					if ($("input#oLatitudeDecDeg").val()!=""){
-						doc.oLatitudeDecDeg = $("input#oLatitudeDecDeg").val();
-					} else if (doc.oLatitudeDecDeg!=null){
+					if (oLatitudeDecDeg != ""){
+						doc.oLatitudeDecDeg = oLatitudeDecDeg;
+					} else if (doc.oLatitudeDecDeg != null){
 						delete doc.oLatitudeDecDeg;
 					}
 					if ($("input#oLagegenauigkeit").val()!=""){
@@ -210,12 +205,9 @@
 		//Link zum UserEdit in Menu setzen
 		MenuUserEditLinkSetzenTemplate();
 
+		//Karte managen
 		$("#GeButton").tap(function(event) {
-			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != ""){
-				$.mobile.changePage("#OrtEditMap", "slide", false, false);
-			} else {
-				MeldungEinzeilig("Breiten- und Längengrad müssen erfasst sein");
-			}
+			$.mobile.changePage("#OrtEditMap", "slide", false, false);
 		});
 
 		$("#GetGeolocationButton").tap(function(){
@@ -229,9 +221,9 @@
 		$('#OrtEditMap').live("pagecreate", function() {
 			var map;
 			var verorted;
-			if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != "") {
-				var lat = $("input#oLatitudeDecDeg").val();
-				var lng = $("input#oLongitudeDecDeg").val();
+			if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
+				var lat = oLatitudeDecDeg;
+				var lng = oLongitudeDecDeg;
 				verorted = true;
 			} else {
 				var lat = 47.360566;
@@ -302,8 +294,8 @@
 		function SetLocation(LatLng, map, marker) {
 			var lat = LatLng.lat();
 			var lng = LatLng.lng();
-			$("input#oLatitudeDecDeg").val(lat);
-			$("input#oLongitudeDecDeg").val(lng);
+			oLatitudeDecDeg = lat;
+			oLongitudeDecDeg = lng;
 			var x = DdInChX(lat, lng);
 			var y = DdInChY(lat, lng);
 			$("input#oXKoord").val(x);
@@ -387,11 +379,9 @@
 		if (navigator.geolocation) { 
 	    navigator.geolocation.getCurrentPosition ( 
 	        function(position) {
-	            var oLongitudeDecDeg = position.coords.longitude;
-				var oLatitudeDecDeg = position.coords.latitude;
+	            oLongitudeDecDeg = position.coords.longitude;
+				oLatitudeDecDeg = position.coords.latitude;
 				var oLagegenauigkeit = position.coords.accuracy;
-				$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-				$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
 				$("input#oLagegenauigkeit").val(oLagegenauigkeit);
 				var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
 				var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);

@@ -168,7 +168,9 @@ function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
 		});
 };
 
-function ArtgruppenlisteAufbauen()
+function ArtgruppenlisteAufbauen(Status)
+//ArtgruppenListe in Artgruppenliste.html wird aufgebaut
+//Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
 { 
 	var viewname = "evab/Artgruppen";
 	$db.view(viewname, {
@@ -180,7 +182,7 @@ function ArtgruppenlisteAufbauen()
 			for(i in data.rows)
 			{
 				ArtGruppe = data.rows[i].key;
-				ListItem = "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">" +
+				ListItem = "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">" +
 				"<a href=\"#\">" +
 				"<h3>" + ArtGruppe + "<\/h3>" +
 				"<\/a> <\/li>";
@@ -194,7 +196,9 @@ function ArtgruppenlisteAufbauen()
 	});
 }
 
-function ArtlisteAufbauen(ArtGruppe)
+function ArtlisteAufbauen(ArtGruppe, Status)
+//ArtenListe in Artenliste.html wird aufgebaut
+//Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
 { 
 	var viewname = "evab/Artliste" + ArtGruppe;
 	$db.view(viewname, {
@@ -212,13 +216,13 @@ function ArtlisteAufbauen(ArtGruppe)
 				Art = data.rows[i].value;
 				ArtId = Art._id;
 				if(Art.HinweisVerwandschaft){
-					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItem = "<li name=\"ArtListItem" + Status + "\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtName + "<\/h3>" +
 					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
 					"<\/a> <\/li>";
 				}else{
-					ListItem = "<li name=\"ArtListItem\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItem = "<li name=\"ArtListItem" + Status + "\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtName + "<\/h3>" +
 					"<\/a> <\/li>";
@@ -230,6 +234,26 @@ function ArtlisteAufbauen(ArtGruppe)
 			$("#ArtenListe").listview();
 			$("#ArtenListe").listview("refresh");
 		}
+	});
+}
+
+function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
+//Neue Beobachtungen werden gespeichert
+//ausgelöst auch BeobListe.html oder BeobEdit.html
+	var doc = {};
+	doc.Modus = "einfach";
+	doc.Typ = "Beobachtung";
+	doc.User = User;
+	doc.aArtGruppe = aArtGruppe;
+	doc.aArtName = aArtName;
+	doc.aArtId = aArtId;
+	$db.saveDoc(doc, {
+		success: function(data) {
+			window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+		},
+		error: function() {
+			MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
+		 }
 	});
 }
 

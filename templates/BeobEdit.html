@@ -9,16 +9,17 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
+  	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 		});	
 	</script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.url.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			// do stuff when DOM is ready
@@ -31,128 +32,81 @@
 				}
 			});
 
-			refreshArtGruppen("{{aArtGruppe}}");
+			refreshArtGruppe("{{aArtGruppe}}");
 			refreshArtName("{{aArtName}}");
 			
-			var docId = "{{id}}";
+			docId = "{{id}}";
+			aArtGruppe = "{{aArtGruppe}}";
+			aArtName = "{{aArtName}}";
+			aArtId = "{{aArtId}}";
+			oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
+			oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
-			var Status = $.url().param("Status");
+			var Status = get_url_param("Status");
 			if (Status == "neu"){
 				AutorSetzen();
 				GetGeolocation();                   
 				DatumZeitSetzen();
 			}
 
+			//Neue Beobachtung erfassen
+			$("#NeueBeobLink").live("click", function(event){
+				event.preventDefault();
+				$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+				ArtgruppenlisteAufbauen("Neu");
+			});
+
+			$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
+				event.preventDefault();
+				var ArtGruppe = $(this).attr("id");
+				$.mobile.changePage("Artenliste.html", "slide", true, false);
+				ArtlisteAufbauen(ArtGruppe, "Neu");
+				$("#ArtgruppenListe").empty();
+			});
+			
+			$("[name='ArtListItemNeu']").live("click", function(event) {
+				event.preventDefault();
+				var ArtGruppe = $(this).attr("aArtGruppe");
+				var ArtName = $(this).attr("id");
+				var ArtId = $(this).attr("artid");
+				$("#ArtenListe").empty();
+				BeobNeuSpeichern(User, ArtGruppe, ArtName, ArtId);
+			});
+
+			//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
 				$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
-				ArtgruppenlisteAufbauen();
+				ArtgruppenlisteAufbauen("Edit");
 			});
 
-			$("[name='ArtgruppenListItem']").live("click", function(event) {        
+			$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 				event.preventDefault();
-				var ArtGruppe = $(this).attr("id");
-				var option = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
-				$("select#aArtGruppe").empty();
-				$("select#aArtGruppe").append(option);
-				$("select#aArtGruppe").val(ArtGruppe);
-				$("select#aArtGruppe").selectmenu("refresh");
-				$("#ArtgruppenListe").empty();
+				aArtGruppe = $(this).attr("id");
 				$.mobile.changePage("Artenliste.html", "slide", true, false);
-				ArtlisteAufbauen(ArtGruppe);
+				ArtlisteAufbauen(aArtGruppe, "Edit");
+				$("#ArtgruppenListe").empty();
+			});
+			
+			$("[name='ArtListItemEdit']").live("click", function(event) {
+				event.preventDefault();
+				aArtGruppe = $(this).attr("aArtGruppe");
+				aArtName = $(this).attr("id");
+				aArtId = $(this).attr("artid");
+				BeobSpeichern("", "ja", "nein");
+				$("#ArtenListe").empty();
 			});
 
+			//Editieren von Beobachtungen managen, ausgehend von ArtName
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				var ArtGruppe = $("select#aArtGruppe").val();
-				if (ArtGruppe != "bitte w&auml;hlen") {
-					$.mobile.changePage("../../Artenliste.html", "slide", true, false);
-					ArtlisteAufbauen(ArtGruppe);
-				} else {
-					alert("jetzt");
-					$("select#aArtName").selectmenu();
-					$("select#aArtName").empty();
-					$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
-					$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
-					$("select#aArtName").selectmenu("refresh");
-				}
+				$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+				ArtlisteAufbauen(aArtGruppe, "Edit");
 			});
 			
-			$("[name='ArtListItem']").live("click", function(event) {
-				event.preventDefault();
-				var ArtName = $(this).attr("id");
-				var ArtId = $(this).attr("artid");
-				var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-				$("select#aArtName").empty();
-				$("select#aArtName").append(option);
-				$("select#aArtName").val(ArtName);
-				$("select#aArtName").selectmenu("refresh");
-				$("input#aArtId").val(ArtId);
-				$.mobile.changePage("#BeobEditPage", "slide", true, false);
-				$("#ArtenListe").empty();
-			});	
-			
+			//Erfassungen speichern
 			$("#submitButton").tap(function(event) {
-				var docId = "{{id}}";
-				$db.openDoc(docId, {
-					success: function(doc) {
-						//to do: for every field ...  dynamisch definieren!
-						doc.Modus = "einfach";
-						doc.Typ = "Beobachtung";
-						doc.User = User;
-						doc.aArtGruppe = $("select#aArtGruppe").val();
-						doc.aArtName = $("select#aArtName").val();
-						if ($("input#aArtId").val() != ""){
-							doc.aArtId = $("input#aArtId").val();
-						} else if (doc.aArtId!=null){
-							delete doc.aArtId;
-						}
-						if ($("input#aAutor").val()!=""){
-							doc.aAutor = $("input#aAutor").val();
-						} else if (doc.aAutor!=null){
-							delete doc.aAutor;
-						}
-						if ($("input#oXKoord").val()!=""){
-							doc.oXKoord = $("input#oXKoord").val();
-						} else if (doc.oXKoord!=null){
-							delete doc.oXKoord;
-						}
-						if ($("input#oYKoord").val()!=""){
-							doc.oYKoord = $("input#oYKoord").val();
-						} else if (doc.oYKoord!=null){
-							delete doc.oYKoord;
-						}
-						if ($("input#oLongitudeDecDeg").val()!=""){
-							doc.oLongitudeDecDeg = $("input#oLongitudeDecDeg").val();
-						} else if (doc.oLongitudeDecDeg!=null){
-							delete doc.oLongitudeDecDeg;
-						}
-						if ($("input#oLatitudeDecDeg").val()!=""){
-							doc.oLatitudeDecDeg = $("input#oLatitudeDecDeg").val();
-						} else if (doc.oLatitudeDecDeg!=null){
-							delete doc.oLatitudeDecDeg;
-						}
-						if ($("input#oLagegenauigkeit").val()!=""){
-							doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
-						} else if (doc.oLagegenauigkeit!=null){
-							delete doc.oLagegenauigkeit;
-						}
-						if ($("input#zDatum").val()!=""){
-							doc.zDatum = $("input#zDatum").val();
-						} else if (doc.zDatum!=null){
-							delete doc.zDatum;
-						}
-						if ($("input#zZeit").val()!=""){
-							doc.zZeit = $("input#zZeit").val();
-						} else if (doc.zZeit!=null){
-							delete doc.zZeit;
-						}
-						saveDocument(doc);
-					},
-					error: function() {
-						MeldungZweizeilig("Diese Beobachtung kann nicht geöffnet werden:", docId);
-					}
-				});
+				BeobSpeichern("../../", "ja", "ja");
 			});	
 			
 			$("#GeButton").tap(function(event) {
@@ -170,9 +124,9 @@
 			$('#BeobEditMap').live("pagecreate", function() {
 				var map;
 				var verorted;
-				if ($("input#oLatitudeDecDeg").val() != "" && $("input#oLongitudeDecDeg").val() != "") {
-					var lat = $("input#oLatitudeDecDeg").val();
-					var lng = $("input#oLongitudeDecDeg").val();
+				if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
+					var lat = oLatitudeDecDeg;
+					var lng = oLongitudeDecDeg;
 					verorted = true;
 				} else {
 					var lat = 47.360566;
@@ -259,8 +213,8 @@
 			function SetLocation(LatLng, map, marker) {
 				var lat = LatLng.lat();
 				var lng = LatLng.lng();
-				$("input#oLatitudeDecDeg").val(lat);
-				$("input#oLongitudeDecDeg").val(lng);
+				oLatitudeDecDeg = lat;
+				oLongitudeDecDeg = lng;
 				var x = DdInChX(lat, lng);
 				var y = DdInChY(lat, lng);
 				$("input#oXKoord").val(x);
@@ -277,8 +231,7 @@
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
-				$("#submitButton").trigger('tap');
-				//MeldungEinzeilig("Die Koordinaten wurden übernommen");
+				BeobSpeichern("../../", "nein", "ja");
 			}
 
 			//alle Marker löschen
@@ -299,10 +252,28 @@
 				}
 			}
 
-			//Code für das Löschen-Popup
-			$('[id="jaLöschenButton"]').live("click", function() {
-				handleDelete();
-			});
+			//Code für den Löschen-Dialog
+			$('#LöschenDialogLink').live('click', function() {
+				$(this).simpledialog({
+					'mode' : 'bool',
+			    	'prompt' : 'Beobachtung löschen?',
+			    	'buttons' : {
+					 	'ja': {
+					      	click: function () {
+					        	$('#dialogoutput').text('ja');
+					        	handleDelete();
+			        		},
+			        		icon: "delete",
+			        		theme: "c"
+			      		},
+			      		'nein': {
+			        		click: function () {
+			          			$('#dialogoutput').text('nein');
+			        		}
+			      		}
+			    	}
+			  	})
+			})
 
 			//Link zum UserEdit in Menu setzen
 			MenuUserEditLinkSetzenTemplate();
@@ -319,20 +290,8 @@
 			'headerFormat': 'YYYY-MM-DD',
 			'monthsOfYear': Monate
 		});
-	
-		function saveDocument(document)
-		{
-			$db.saveDoc(document, {
-				success: function() {
-					MeldungEinzeilig("Beobachtung gespeichert");
-				},
-				error: function() {
-					MeldungZweizeilig("Diese Beobachtung konnte nicht gespeichert werden:", document._id + ", " + document.aArtName);
-				}
-			});
-		}
 		
-		function refreshArtGruppen(aArtGruppe)
+		function refreshArtGruppe(aArtGruppe)
 		{
 			$("select#aArtGruppe").selectmenu();
 			$("select#aArtGruppe").empty();
@@ -356,11 +315,9 @@
 			if (navigator.geolocation) { 
 	        navigator.geolocation.getCurrentPosition ( 
 	            function(position) {
-	                var oLongitudeDecDeg = position.coords.longitude;
-					var oLatitudeDecDeg = position.coords.latitude;
+	                oLongitudeDecDeg = position.coords.longitude;
+					oLatitudeDecDeg = position.coords.latitude;
 					var oLagegenauigkeit = position.coords.accuracy;
-					$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-					$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
 					$("input#oLagegenauigkeit").val(oLagegenauigkeit);
 					var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
 					var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
@@ -373,10 +330,82 @@
 	            }); 
 	        }
 		}
+
+		function BeobSpeichern(Pfad, BeobEditAufrufen, melden){
+			$db.openDoc(docId, {
+				success: function(doc) {
+					doc.Modus = "einfach";
+					doc.Typ = "Beobachtung";
+					doc.User = User;
+					doc.aArtGruppe = aArtGruppe;
+					doc.aArtName = aArtName;
+					if (aArtId != ""){
+						doc.aArtId = aArtId;
+					} else if (doc.aArtId != null){
+						delete doc.aArtId;
+					}
+					if ($("input#aAutor").val()!=""){
+						doc.aAutor = $("input#aAutor").val();
+					} else if (doc.aAutor!=null){
+						delete doc.aAutor;
+					}
+					if ($("input#oXKoord").val()!=""){
+						doc.oXKoord = $("input#oXKoord").val();
+					} else if (doc.oXKoord!=null){
+						delete doc.oXKoord;
+					}
+					if ($("input#oYKoord").val()!=""){
+						doc.oYKoord = $("input#oYKoord").val();
+					} else if (doc.oYKoord!=null){
+						delete doc.oYKoord;
+					}
+					if (oLongitudeDecDeg != ""){
+						doc.oLongitudeDecDeg = oLongitudeDecDeg;
+					} else if (doc.oLongitudeDecDeg != null){
+						delete doc.oLongitudeDecDeg;
+					}
+					if (oLatitudeDecDeg != ""){
+						doc.oLatitudeDecDeg = oLatitudeDecDeg;
+					} else if (doc.oLatitudeDecDeg != null){
+						delete doc.oLatitudeDecDeg;
+					}
+					if ($("input#oLagegenauigkeit").val()!=""){
+						doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
+					} else if (doc.oLagegenauigkeit!=null){
+						delete doc.oLagegenauigkeit;
+					}
+					if ($("input#zDatum").val()!=""){
+						doc.zDatum = $("input#zDatum").val();
+					} else if (doc.zDatum!=null){
+						delete doc.zDatum;
+					}
+					if ($("input#zZeit").val()!=""){
+						doc.zZeit = $("input#zZeit").val();
+					} else if (doc.zZeit!=null){
+						delete doc.zZeit;
+					}
+					$db.saveDoc(doc, {
+						success: function(data) {
+							if (BeobEditAufrufen == "ja"){
+								window.open(Pfad + "_show/BeobEdit/" + data.id, target="_self");
+							}
+							if (melden == "ja"){
+								MeldungEinzeilig("Beobachtung gespeichert");
+							}
+						},
+						error: function() {
+							MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
+						 }
+					});
+				},
+				error: function() {
+					MeldungZweizeilig("Diese Beobachtung kann nicht geöffnet werden:", docId);
+				}
+			});
+		}
 		
 		function handleDelete(event)
 		{
-			var docId = "{{id}}";
 			// First open doc based on ID in order to get full document
 			$db.openDoc(docId, {
 				success: function(document) {
@@ -395,8 +424,7 @@
 					MeldungEinzeilig("Eine Beobachtung mit der ID: " + docId + " wurde nicht gefunden");
 				}
 			});
-			return false;
-		}	
+		}
 	</script>
   </head>
   <body>
@@ -423,12 +451,8 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtName" class="select">Art-Name:</label>
-					<select id="aArtName" name="aArtName" value="{{aArtName}}" data-icon="arrow-r">
+					<select id="aArtName" name="aArtName" value="{{aArtName}}" data-icon="arrow-r" data-native-menu="true">
 					</select>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aArtId">Art-ID:</label>
-					<input id="aArtId" name="aArtId" type="text" value="{{aArtId}}"  placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
@@ -441,14 +465,6 @@
 				<div data-role="fieldcontain">
 					<label for="oYKoord">Y-Koordinate:</label>
 					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="oLongitudeDecDeg">Längengrad:</label>
-					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" value="{{oLongitudeDecDeg}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="oLatitudeDecDeg">Breitengrad:</label>
-					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" value="{{oLatitudeDecDeg}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
@@ -466,13 +482,8 @@
 					<div data-role="navbar" id="BeobEditNavbar">
 						<ul>
 							<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
-							<li><a data-role="actionsheet" data-icon="minus">l&ouml;schen</a>
-								<div>
-									<p class="PopupText">Diese Beobachtung l&ouml;schen?</p>
-									<a id="jaLöschenButton" href="#" data-role="button"/>ja</a>
-									<a id="neinNichtLöschenButton" href="#" data-role="button"/>nein</a>
-								</div></li>
-							<li><a href="../../BeobNeu.html" data-transition="slideup" data-icon="plus" rel="external">neu</a></li>
+							<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus">l&ouml;schen</a></li>
+							<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>
 							<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
 							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
 						</ul>

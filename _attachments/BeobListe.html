@@ -142,7 +142,7 @@
 								var Datum = beob.zDatum;
 								var Zeit = beob.zZeit;
 								var ArtGruppe = beob.aArtGruppe;
-								var image = "Artgruppenbilder/" + aArtGruppe + ".png";
+								var image = "Artgruppenbilder/" + ArtGruppe + ".png";
 								var ArtName = beob.aArtName;
 								var Autor = beob.aAutor;
 								var lat2 = beob.oLatitudeDecDeg;
@@ -270,24 +270,24 @@
 		$("#NeueBeobLink").live("click", function(event){
 			event.preventDefault();
 			$.mobile.changePage("Artgruppenliste.html", "slide", true, false);
-			ArtgruppenlisteAufbauen();
+			ArtgruppenlisteAufbauen("Neu");
 		});
 
-		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe);
+			ArtlisteAufbauen(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
 		
-		$("[name='ArtListItem']").live("click", function(event) {
+		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("aArtGruppe");
 			var aArtName = $(this).attr("id");
 			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			BeobNeuSpeichern(aArtGruppe, aArtName, aArtId);
+			BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId);
 		});	
 	}
 	
@@ -295,22 +295,5 @@
   </script>
   <script type="text/javascript" charset="utf-8">	
 
-	function BeobNeuSpeichern(aArtGruppe, aArtName, aArtId){
-		var doc = {};
-		doc.Modus = "einfach";
-		doc.Typ = "Beobachtung";
-		doc.User = User;
-		doc.aArtGruppe = aArtGruppe;
-		doc.aArtName = aArtName;
-		doc.aArtId = aArtId;
-		$db.saveDoc(doc, {
-			success: function(data) {
-				window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
-			},
-			error: function() {
-				MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
-			 }
-		});
-	}
   </script>
 </html>
