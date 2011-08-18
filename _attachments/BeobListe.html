@@ -289,6 +289,11 @@
 			$("#ArtenListe").empty();
 			BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId);
 		});	
+
+		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
+		$(document).bind("mobileinit", function(){
+			defaultDialogTransition = none;
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

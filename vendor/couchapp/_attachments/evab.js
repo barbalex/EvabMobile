@@ -257,6 +257,29 @@ function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
 	});
 }
 
+function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aArtGruppe, aArtName, aArtId){
+//Neue hierarchische Beobachtungen werden gespeichert
+//ausgelöst durch hArtListe.html oder hArtArtgruppeEdit.html
+	var doc = {};
+	doc.Typ = "hArt";
+	doc.User = User;
+	doc.ProjektId = ProjektId;
+	doc.RaumId = RaumId;
+	doc.OrtId = OrtId;
+	doc.ZeitId = ZeitId;
+	doc.aArtGruppe = aArtGruppe;
+	doc.aArtName = aArtName;
+	doc.aArtId = aArtId;
+	$db.saveDoc(doc, {
+		success: function(data) {
+			window.open("_show/hArtArtgruppeEdit/" + data.id + "?Status=neu", target="_self");
+		},
+		error: function() {
+			MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
+		 }
+	});
+}
+
 function DatumZeitSetzen(){
 	var Datum = DatumNeu();
 	$("input#zDatum").val(Datum);

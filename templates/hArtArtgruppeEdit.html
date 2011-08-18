@@ -155,6 +155,11 @@
 
 		aArtId = "{{aArtId}}";
 
+		var Status = get_url_param("Status");
+		if (Status == "neu"){
+			AutorSetzen();
+		}
+
 		//select-Felder aktualisieren
 		refreshArtGruppen("{{aArtGruppe}}");
 		refreshArtName("{{aArtName}}");

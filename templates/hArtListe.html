@@ -67,14 +67,40 @@
 		var url = "../hZeitEdit/" + "{{id}}";
 		$("[name='hZeitLink']").attr('href', url);
 
-		//Link zu ArtNeu in Navbar setzen
-		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{id}}";
-
 		//Link zur ArtListe in Navbar setzen
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Link zum UserEdit in Menu setzen
 		MenuUserEditLinkSetzenTemplate();
+
+		//Neue Beobachtung managen
+		$("#hArtNeuLink").live("click", function(event){
+			event.preventDefault();
+			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+			ArtgruppenlisteAufbauen("Neu");
+		});
+
+		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(aArtGruppe, "Neu");
+			$("#ArtgruppenListe").empty();
+		});
+		
+		$("[name='ArtListItemNeu']").live("click", function(event) {
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("id");
+			var aArtId = $(this).attr("artid");
+			$("#ArtenListe").empty();
+			BeobNeuSpeichernHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{id}}", User, aArtGruppe, aArtName, aArtId);
+		});	
+
+		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
+		$(document).bind("mobileinit", function(){
+			defaultDialogTransition = none;
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
