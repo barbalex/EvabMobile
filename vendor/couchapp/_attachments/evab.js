@@ -270,6 +270,7 @@ function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aA
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtName;
 	doc.aArtId = aArtId;
+	doc.aMeldungTyp = "Feldbeobachtung";
 	$db.saveDoc(doc, {
 		success: function(data) {
 			window.open("_show/hArtArtgruppeEdit/" + data.id + "?Status=neu", target="_self");

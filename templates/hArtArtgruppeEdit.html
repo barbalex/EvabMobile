@@ -154,6 +154,9 @@
 		});
 
 		aArtId = "{{aArtId}}";
+		aArtGruppe = "{{aArtGruppe}}";
+		aArtName = "{{aArtName}}";
+		aArtId = "{{aArtId}}";
 
 		var Status = get_url_param("Status");
 		if (Status == "neu"){
@@ -189,130 +192,64 @@
 			aMeldungTyp = $(this).attr("id");
 		});
 
+		//Neue Beobachtung managen
+		$("#hArtNeuLink").live("click", function(event){
+			event.preventDefault();
+			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+			ArtgruppenlisteAufbauen("Neu");
+		});
+
+		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(aArtGruppe, "Neu");
+			$("#ArtgruppenListe").empty();
+		});
+		
+		$("[name='ArtListItemNeu']").live("click", function(event) {
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("id");
+			var aArtId = $(this).attr("artid");
+			$("#ArtenListe").empty();
+			BeobNeuSpeichernHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
+		});	
+
+		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 		$("select#aArtGruppe").tap(function(event){
 			event.preventDefault();
 			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
-			ArtgruppenlisteAufbauen();
+			ArtgruppenlisteAufbauen("Edit");
 		});
 
-		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
-			var ArtGruppe = $(this).attr("id");
-			var option = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
-			$("select#aArtGruppe").empty();
-			$("select#aArtGruppe").append(option);
-			$("select#aArtGruppe").val(ArtGruppe);
-			$("select#aArtGruppe").selectmenu("refresh");
+			aArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(aArtGruppe, "Edit");
 			$("#ArtgruppenListe").empty();
-			$.mobile.changePage("../../Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(ArtGruppe);
-		});
-
-		$("select#aArtName").tap(function(event){
-			event.preventDefault();
-			var ArtGruppe = $("select#aArtGruppe").val();
-			if (ArtGruppe != "bitte w&auml;hlen") {
-				$.mobile.changePage("../../Artenliste.html", "slide", true, false);
-				ArtlisteAufbauen(ArtGruppe);
-			} else {
-				alert("jetzt");
-				$("select#aArtName").selectmenu();
-				$("select#aArtName").empty();
-				$("select#aArtName").append("<option>bitte Art-Gruppe w&auml;hlen!</option>");
-				$("select#aArtName").val("bitte Art-Gruppe w&auml;hlen!");
-				$("select#aArtName").selectmenu("refresh");
-			}
 		});
 		
-		$("[name='ArtListItem']").live("click", function(event) {
+		$("[name='ArtListItemEdit']").live("click", function(event) {
 			event.preventDefault();
-			var ArtName = $(this).attr("id");
+			aArtGruppe = $(this).attr("aArtGruppe");
+			aArtName = $(this).attr("id");
 			aArtId = $(this).attr("artid");
-			var option = "<option value='" + ArtName + "'>" + ArtName + "</option>";
-			$("select#aArtName").empty();
-			$("select#aArtName").append(option);
-			$("select#aArtName").val(ArtName);
-			$("select#aArtName").selectmenu("refresh");
-			$.mobile.changePage("#hArtEditPage", "slide", true, false);
+			BeobSpeichern("", "ja", "nein");
 			$("#ArtenListe").empty();
 		});
 
+		//Editieren von Beobachtungen managen, ausgehend von ArtName
+		$("select#aArtName").tap(function(event){
+			event.preventDefault();
+			$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(aArtGruppe, "Edit");
+		});
+
+		//Erfassungen speichern
 		$("#SpeichernButton").tap(function(event) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "hArt";
-					doc.User = User;
-					doc.ProjektId = "{{ProjektId}}";
-					doc.RaumId = "{{RaumId}}";
-					doc.OrtId = "{{OrtId}}";
-					doc.ZeitId = "{{ZeitId}}";
-					if ($("select#aArtGruppe").val()!=""){
-						doc.aArtGruppe = $("select#aArtGruppe").val();
-					} else if (doc.aArtGruppe!=null){
-						delete doc.aArtGruppe;
-					}
-					if ($("select#aArtName").val()!=""){
-						doc.aArtName = $("select#aArtName").val();
-					} else if (doc.aArtName!=null){
-						delete doc.aArtName;
-					}
-					if (aArtId != ""){
-						doc.aArtId = aArtId;
-					} else if (doc.aArtId != null){
-						delete doc.aArtId;
-					}
-					if ($("select#aArtNameUnsicher").val()!=""){
-						doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
-					} else if (doc.aArtNameUnsicher!=null){
-						delete doc.aArtNameUnsicher;
-					}
-					if ($("input#aArtNameVerifiziertDurch").val()!=""){
-						doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
-					} else if (doc.aArtNameVerifiziertDurch!=null){
-						delete doc.aArtNameVerifiziertDurch;
-					}
-					if ($("[id='aArtNameBemerkungen']").val()!=""){
-						doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
-					} else if (doc.aArtNameBemerkungen!=null){
-						delete doc.aArtNameBemerkungen;
-					}
-					doc.aMeldungTyp = aMeldungTyp;
-					if ($("input#aAutor").val()!=""){
-						doc.aAutor = $("input#aAutor").val();
-					} else if (doc.aAutor!=null){
-						delete doc.aAutor;
-					}
-					if ($("select#aVorhandensein").val()!=""){
-						doc.aVorhandensein = $("select#aVorhandensein").val();
-					} else if (doc.aVorhandensein!=null){
-						delete doc.aVorhandensein;
-					}
-					if ($("select#aPopGrösseKlassiert").val()!=""){
-						doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
-					} else if (doc.aPopGrösseKlassiert!=null){
-						delete doc.aPopGrösseKlassiert;
-					}
-					if ($("input#aMenge").val()!=""){
-						doc.aMenge = $("input#aMenge").val();
-					} else if (doc.aMenge!=null){
-						delete doc.aMenge;
-					}
-					if ($("[id='aBemerkungen']").val()!=""){
-						doc.aBemerkungen = $("[id='aBemerkungen']").val();
-					} else if (doc.aBemerkungen!=null){
-						delete doc.aBemerkungen;
-					}
-					$db.saveDoc(doc, {
-						success: function(data) {
-							MeldungEinzeilig("Art gespeichert");
-						},
-						error: function() {
-							MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
-						 }
-					});
-				}
-			});
+			BeobSpeichern("../../", "ja", "ja");
 		});
 
 		//Code für das Löschen-Popup
@@ -397,6 +334,84 @@
 			}
 		});
 		return false;
+	}
+
+	function BeobSpeichern(Pfad, BeobEditAufrufen, melden){
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hArt";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				doc.RaumId = "{{RaumId}}";
+				doc.OrtId = "{{OrtId}}";
+				doc.ZeitId = "{{ZeitId}}";
+				doc.aArtGruppe = aArtGruppe;
+				doc.aArtName = aArtName;
+				if (aArtId != ""){
+					doc.aArtId = aArtId;
+				} else if (doc.aArtId != null){
+					delete doc.aArtId;
+				}
+				if ($("select#aArtNameUnsicher").val()!=""){
+					doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
+				} else if (doc.aArtNameUnsicher!=null){
+					delete doc.aArtNameUnsicher;
+				}
+				if ($("input#aArtNameVerifiziertDurch").val()!=""){
+					doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
+				} else if (doc.aArtNameVerifiziertDurch!=null){
+					delete doc.aArtNameVerifiziertDurch;
+				}
+				if ($("[id='aArtNameBemerkungen']").val()!=""){
+					doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
+				} else if (doc.aArtNameBemerkungen!=null){
+					delete doc.aArtNameBemerkungen;
+				}
+				doc.aMeldungTyp = aMeldungTyp;
+				if ($("input#aAutor").val()!=""){
+					doc.aAutor = $("input#aAutor").val();
+				} else if (doc.aAutor!=null){
+					delete doc.aAutor;
+				}
+				if ($("select#aVorhandensein").val()!=""){
+					doc.aVorhandensein = $("select#aVorhandensein").val();
+				} else if (doc.aVorhandensein!=null){
+					delete doc.aVorhandensein;
+				}
+				if ($("select#aPopGrösseKlassiert").val()!=""){
+					doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
+				} else if (doc.aPopGrösseKlassiert!=null){
+					delete doc.aPopGrösseKlassiert;
+				}
+				if ($("input#aMenge").val()!=""){
+					doc.aMenge = $("input#aMenge").val();
+				} else if (doc.aMenge!=null){
+					delete doc.aMenge;
+				}
+				if ($("[id='aBemerkungen']").val()!=""){
+					doc.aBemerkungen = $("[id='aBemerkungen']").val();
+				} else if (doc.aBemerkungen!=null){
+					delete doc.aBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					success: function(data) {
+						if (BeobEditAufrufen == "ja"){
+							window.open(Pfad + "_show/hArtArtgruppeEdit/" + data.id, target="_self");
+						}
+						if (melden == "ja"){
+							MeldungEinzeilig("Art gespeichert");
+						}
+					},
+					error: function() {
+						MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
+					 }
+				});
+			},
+			error: function() {
+				MeldungZweizeilig("Diese Art kann nicht geöffnet werden:", docId);
+			}
+		});
 	}
   </script>
 </html>
