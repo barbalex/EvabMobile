@@ -1,6 +1,5 @@
 /*!
- * jQuery Mobile v Git Build
- * Git Info SHA1: baa14e3e4786373daac09d1a023da8eb45b36be9 Date: Wed Jul 20 11:38:02 2011 -0700
+ * jQuery Mobile v1.0b2
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -1497,7 +1496,7 @@ Built by David Kaneda and maintained by Jonathan Stark.
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) or GPL (GPL-LICENSE.txt) licenses.
 */
-.ui-field-contain { background: none; padding: 1.5em 0; margin: 0; border-bottom-width: 1px; overflow: visible; }
+.ui-field-contain { padding: 1.5em 0; margin: 0; border-bottom-width: 1px; overflow: visible; }
 .ui-field-contain:first-child { border-top-width: 0; }
 @media all and (min-width: 450px){
 	.ui-field-contain { border-width: 0; padding: 0; margin: 1em 0; }
