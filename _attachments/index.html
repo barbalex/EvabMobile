@@ -58,6 +58,14 @@
 			submitEinloggen();
 			}
 		});
+
+		//Reaktion auf Enter-Taste
+		$("#Passwort").live("keydown", function(e) {
+			if (e.keyCode === 13) {
+		    	$("#SubmitButton").trigger('tap');
+		    	e.preventDefault();
+		  	}
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -119,6 +127,7 @@
 			}
 		});
 	}
+	
 
 	function _replicate(name, pass){
 		//$.couch.replicate("http://barbalex:dLhdMg12@barbalex.couchone.com/evab", "http://ch_barbalex_evab:123@127.0.0.1:5984/evab-ch_barbalex_evab",{continuous:true});
