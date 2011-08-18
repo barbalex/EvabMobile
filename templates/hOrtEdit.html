@@ -337,6 +337,11 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
+
+		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
+		$(document).bind("mobileinit", function(){
+			defaultDialogTransition = none;
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

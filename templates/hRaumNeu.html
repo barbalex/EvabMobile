@@ -117,6 +117,11 @@
 
 		//Link zum UserEdit in Menu setzen
 		MenuUserEditLinkSetzenTemplate();
+
+		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
+		$(document).bind("mobileinit", function(){
+			defaultDialogTransition = none;
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
