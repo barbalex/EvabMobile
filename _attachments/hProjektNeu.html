@@ -8,8 +8,9 @@
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script src="vendor/couchapp/loader.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
   	<script type="text/javascript">
 		$( document ).bind( "mobileinit", function(){
@@ -23,15 +24,7 @@
 		<div data-role="header" data-position="fixed">
 			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>neues Projekt</h1>
-			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
-				<a id="BeobExp" href="../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="EModus" href="BeobListe.html" data-role="button" rel="external">einfacher Modus</a>
-  			</div>
+			<a href='#' id='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content">
 			<form id="BeobNeuForm" action="#" method="get" autocomplete="off">
@@ -105,8 +98,26 @@
 			return false;
 		});
 
-		//Link zum UserEdit in Menu setzen
-		MenuUserEditLinkSetzen();
+		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+		var UserId;
+		$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var doc;
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					doc = data.rows[i].value;
+					if (key == User) {
+						UserId = doc._id;
+					}
+				}
+			}
+		});
+
+		//Menu aufbauen
+		$('#Menu').live('click', function(){
+			MenuAufbauenHierarchisch(this, User, UserId, "");
+		});
 
 		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
 		$(document).bind("mobileinit", function(){

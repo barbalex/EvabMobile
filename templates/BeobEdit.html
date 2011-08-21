@@ -8,12 +8,10 @@
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
-  	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script type="text/javascript">
 		$(document).bind("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
@@ -252,7 +250,7 @@
 				}
 			}
 
-			//Code für den Löschen-Dialog
+			//Code für den Beobachtung-Löschen-Dialog
 			$('#LöschenDialogLink').live('click', function() {
 				$(this).simpledialog({
 					'mode' : 'bool',
@@ -274,10 +272,28 @@
 			      		}
 			    	}
 			  	})
-			})
+			});
 
-			//Link zum UserEdit in Menu setzen
-			MenuUserEditLinkSetzenTemplate();
+			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+			var UserId;
+			$db.view("evab/User",
+				{success: function(data) {
+					var i;
+					var doc;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						doc = data.rows[i].value;
+						if (key == User) {
+							UserId = doc._id;
+						}
+					}
+				}
+			});
+
+			//Menu aufbauen
+			$("[name='Menu']").live('click', function(){
+				MenuAufbauen(this, User, UserId, "../../");
+			});
 
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			contentHeight = $(window).height() - 43;
@@ -438,15 +454,7 @@
   		<div data-role="header" data-position="fixed">
   			<a href="../../BeobListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
-  			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
-				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">hierarchischer<br />Modus</a>
-  			</div>
+  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="BeobEditContent" data-role="content" data-theme="c" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
@@ -484,18 +492,18 @@
 					<label for="zZeit">Zeit:</label>
 					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timebox"}' value="{{zZeit}}" />
 				</div>
-				<div data-role="footer" data-position="fixed">
-					<div data-role="navbar" id="BeobEditNavbar">
-						<ul>
-							<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
-							<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-							<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>
-							<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
-							<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
-						</ul>
-					</div><!-- /navbar -->
-				</div><!-- /footer -->
 			</form>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar" id="BeobEditNavbar">
+					<ul>
+						<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+						<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+						<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>
+						<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
+						<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
 		</div>
 	</div>
 
@@ -503,15 +511,7 @@
 		<div data-role="header" data-position="fixed">
 			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" >abbrechen</a>
 			<h1>Karte</h1>
-			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
-				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="hModus" href="../../hProjektListe.html" data-role="button" rel="external">hierarchischer<br />Modus</a>
-  			</div>
+			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0"> 
 			<div id="map_canvas" style="width:100%; height:100%"></div>

@@ -7,7 +7,7 @@
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
     <script src="../../vendor/couchapp/loaderTemplate.js" type="text/javascript"></script>
     <script type="text/javascript">
 		$(document).ready(function(){
@@ -125,12 +125,50 @@
 				}
 			});
 
-			//für Löschmenu
-			document.getElementById("neinButton").href = "../../../../../evab/_design/evab/_show/Feld_edit/" + "{{id}}";
-			$("#jaButton").tap(handleDelete);
+			//Code für den Art-Löschen-Dialog
+		$('#LöschenDialogLink').live('click', function() {
+			$(this).simpledialog({
+				'mode' : 'bool',
+		    	'prompt' : 'Dieses Feld löschen?',
+		    	'forceInput': 'false',
+		    	'buttons' : {
+				 	'ja': {
+				      	click: function () {
+				        	$('#dialogoutput').text('ja');
+				        	handleDelete();
+		        		},
+		        		icon: "delete",
+		        		theme: "c"
+		      		},
+		      		'nein': {
+		        		click: function () {
+		          			$('#dialogoutput').text('nein');
+		        		}
+		      		}
+		    	}
+		  	})
+		});
 
-			//Link zum UserEdit in Menu setzen
-			MenuUserEditLinkSetzenTemplate();
+			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+			var UserId;
+			$db.view("evab/User",
+				{success: function(data) {
+					var i;
+					var doc;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						doc = data.rows[i].value;
+						if (key == User) {
+							UserId = doc._id;
+						}
+					}
+				}
+			});
+
+			//Menu aufbauen
+			$("[name='Menu']").live('click', function(){
+				MenuAufbauenAusArtListe(this, User, UserId, "../../");
+			});
 
 			//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
 			$(document).bind("mobileinit", function(){
@@ -223,14 +261,7 @@
   		<div data-role="header" data-position="fixed">
   			<a href="../../FeldListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2>Datenfelder</h2>
-  			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
-				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-  			</div>
+  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
@@ -328,12 +359,7 @@
 					</select>
 				</div>
 				<button type="submit" id="submitButton" data-icon="check" data-theme="b">speichern</button>
-				<a data-icon="minus" class="ui-btn-right" data-role="actionsheet">löschen</a>
-				<div>
-					<p>Wollen Sie das Feld "{{FeldBeschriftung}}" der Tabelle "{{Tabelle}}" wirklich löschen?</p>
-					<a id="jaButton" href="../../../../../evab-ch_barbalex_evab/_design/evab/FeldListe.html" data-role="button" rel="external">ja</a>
-					<a id="neinButton" href="#" data-role="button" rel="external">nein</a>
-				</div>
+				<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 			</form>
 		</div>
 	</div>

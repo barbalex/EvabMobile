@@ -8,7 +8,7 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/jquery.mobile.actionsheet.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script src="../../vendor/couchapp/loaderTemplate.js"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
   	<script type="text/javascript">
@@ -23,15 +23,7 @@
 		<div data-role="header" data-position="fixed">
 			<a href="../../hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
-			<a data-role="actionsheet" data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div>
-  				<a id="NeuAnmelden" href="../../index.html" data-role="button" rel="external">neu anmelden</a>
-				<a name="UserEditLink" href="#" data-role="button" rel="external">meine Einstellungen</a>
-				<a id="BeobExp" href="../../../evab/_list/BeobExport/BeobListe?user=barbalex" data-role="button" rel="external">Beobachtungen<br />exportieren (CSV)</a>
-				<a id="FeldListe" href="../../FeldListe.html" data-role="button" rel="external">Datenfelder<br />verwalten</a>
-				<a id="FeldExp" href="../../../evab/_list/FeldExport/FeldListe" data-role="button" rel="external">Datenfelder<br />exportieren (CSV)</a>
-				<a id="EModus" href="../../BeobListe.html" data-role="button" rel="external">einfacher Modus</a>
-  			</div>
+			<a href='#' id='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="../../hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
@@ -55,12 +47,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check">speichern</a></li>
-					<li><a data-role="actionsheet" data-icon="minus">löschen</a>
-						<div>
-							<p class="PopupText">Dieses Projekt löschen?</p>
-							<a id="jaLöschenButton" href="#" data-role="button">ja</a>
-							<a id="neinLöschenButton" href="#" data-role="button">nein</a>
-						</div></li>
+					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" >neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -115,16 +102,53 @@
 			});
 		});
 
-		//Code für das Löschen-Popup
-		$('[id="jaLöschenButton"]').live("click", function() {
-			handleDelete();
-		});
-
 		//Link zur Raumliste in Navbar setzen
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
-		//Link zum UserEdit in Menu setzen
-		MenuUserEditLinkSetzenTemplate();
+		//Code für den Projekt-Löschen-Dialog
+		$('#LöschenDialogLink').live('click', function() {
+			$(this).simpledialog({
+				'mode' : 'bool',
+		    	'prompt' : 'Dieses Projekt löschen?',
+		    	'forceInput': 'false',
+		    	'buttons' : {
+				 	'ja': {
+				      	click: function () {
+				        	$('#dialogoutput').text('ja');
+				        	handleDelete();
+		        		},
+		        		icon: "delete",
+		        		theme: "c"
+		      		},
+		      		'nein': {
+		        		click: function () {
+		          			$('#dialogoutput').text('nein');
+		        		}
+		      		}
+		    	}
+		  	})
+		});
+
+		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+		var UserId;
+		$db.view("evab/User",
+			{success: function(data) {
+				var i;
+				var doc;
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					doc = data.rows[i].value;
+					if (key == User) {
+						UserId = doc._id;
+					}
+				}
+			}
+		});
+
+		//Menu aufbauen
+		$('#Menu').live('click', function(){
+			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		});
 
 		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
 		$(document).bind("mobileinit", function(){

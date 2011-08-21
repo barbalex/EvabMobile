@@ -19,6 +19,5 @@ couchapp_load([
   "vendor/couchapp/jquery.evently.js",
   "vendor/couchapp/jquery.mobile.js",
   "vendor/couchapp/phonegap.js",
-  "vendor/couchapp/jquery.mobile.actionsheet.js",
   "vendor/couchapp/evab.js"
 ]);

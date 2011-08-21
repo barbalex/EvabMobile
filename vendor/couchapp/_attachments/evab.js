@@ -375,42 +375,169 @@ function AutorSetzen(){
 	});
 }
 
-function MenuUserEditLinkSetzen(){
-	//Link zum UserEdit in Menu setzen
-	var UserId;
-	$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "_show/UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-	});
+function MenuAufbauen(thiz, User, UserId, Pfad){
+	//Code um Menü aufzubauen
+	$(thiz).simpledialog({
+		'mode' : 'bool',
+		'prompt' : 'Menü',
+    	'buttons' : {
+		 	'neu anmelden': {
+		      	click: function () {
+		        	window.open(Pfad + "index.html");
+        		},
+        		theme: "a",
+        		icon: "home"
+      		},
+      		'meine Einstellungen': {
+		      	click: function () {
+		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+        		},
+        		theme: "a",
+        		icon: "gear"
+      		},
+      		'Beobachtungen exportieren': {
+		      	click: function () {
+		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
+		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'Datenfelder verwalten': {
+		      	click: function () {
+		        	window.open(Pfad + "FeldListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "grid"
+      		},
+      		'Datenfelder exportieren': {
+		      	click: function () {
+		        	window.open(Pfad + "_list/FeldExport/FeldListe");
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'hierarchischer Modus': {
+		      	click: function () {
+		        	window.open(Pfad + "hProjektListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "check"
+      		},
+      		'schliessen': {
+                click: function () { return true; },
+                icon: "back",
+                theme: "c"
+            }
+    	}
+  	})
 }
 
-function MenuUserEditLinkSetzenTemplate(){
-	//Link zum UserEdit in Menu setzen
-	var UserId;
-	$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-				var url = "../../_show/UserEdit/" + UserId;
-				$("[name='UserEditLink']").attr('href', url);
-			}
-	});
+function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
+	//Code um Menü aufzubauen
+	$(thiz).simpledialog({
+		'mode' : 'bool',
+		'prompt' : 'Menü',
+    	'buttons' : {
+		 	'neu anmelden': {
+		      	click: function () {
+		        	window.open(Pfad + "index.html");
+        		},
+        		theme: "a",
+        		icon: "home"
+      		},
+      		'meine Einstellungen': {
+		      	click: function () {
+		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+        		},
+        		theme: "a",
+        		icon: "gear"
+      		},
+      		'Beobachtungen exportieren': {
+		      	click: function () {
+		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
+		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'Datenfelder verwalten': {
+		      	click: function () {
+		        	window.open(Pfad + "FeldListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "grid"
+      		},
+      		'Datenfelder exportieren': {
+		      	click: function () {
+		        	window.open(Pfad + "_list/FeldExport/FeldListe");
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'einfacher Modus': {
+		      	click: function () {
+		        	window.open(Pfad + "BeobListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "check"
+      		},
+      		'schliessen': {
+                click: function () { return true; },
+                icon: "back",
+                theme: "c"
+            }
+    	}
+  	})
+}
+
+function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
+	//Code um Menü aufzubauen
+	$(thiz).simpledialog({
+		'mode' : 'bool',
+		'prompt' : 'Menü',
+    	'buttons' : {
+		 	'neu anmelden': {
+		      	click: function () {
+		        	window.open(Pfad + "index.html");
+        		},
+        		theme: "a",
+        		icon: "home"
+      		},
+      		'meine Einstellungen': {
+		      	click: function () {
+		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+        		},
+        		theme: "a",
+        		icon: "gear"
+      		},
+      		'Beobachtungen exportieren': {
+		      	click: function () {
+		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
+		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'Datenfelder verwalten': {
+		      	click: function () {
+		        	window.open(Pfad + "FeldListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "grid"
+      		},
+      		'Datenfelder exportieren': {
+		      	click: function () {
+		        	window.open(Pfad + "_list/FeldExport/FeldListe");
+        		},
+        		theme: "a",
+        		icon: "arrow-r"
+      		},
+      		'schliessen': {
+                click: function () { return true; },
+                icon: "back",
+                theme: "c"
+            }
+    	}
+  	})
 }
