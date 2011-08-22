@@ -390,7 +390,8 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
         		},
         		theme: "a",
         		icon: "gear"
@@ -448,7 +449,8 @@ function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
         		},
         		theme: "a",
         		icon: "gear"
@@ -506,7 +508,8 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
+		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
         		},
         		theme: "a",
         		icon: "gear"

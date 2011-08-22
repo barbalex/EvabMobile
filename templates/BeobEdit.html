@@ -121,7 +121,7 @@
 				aArtGruppe = $(this).attr("aArtGruppe");
 				aArtName = $(this).attr("id");
 				aArtId = $(this).attr("artid");
-				BeobSpeichern("", "ja", "nein");
+				speichern("", "ja", "nein");
 				$("#ArtenListe").empty();
 			});
 
@@ -131,11 +131,27 @@
 				$.mobile.changePage("../../Artenliste.html", "slide", true, false);
 				ArtlisteAufbauen(aArtGruppe, "Edit");
 			});
-			
-			//Erfassungen speichern
-			$("#submitButton").tap(function(event) {
-				BeobSpeichern("../../", "ja", "ja");
-			});	
+
+			//Für jedes Feld bei Änderung speichern
+			$("#aAutor").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+			$("#oXKoord").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+			$("#oYKoord").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+			$("#oLagegenauigkeit").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+			$("#zDatum").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+			$("#zZeit").change(function(){
+				speichern("../../", "nein", "nein");
+			});
+
 			
 			$("#GeButton").tap(function(event) {
 				$.mobile.changePage("#BeobEditMap", "slide", false, false);
@@ -259,7 +275,7 @@
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
-				BeobSpeichern("../../", "nein", "ja");
+				speichern("../../", "nein", "ja");
 			}
 
 			//alle Marker löschen
@@ -383,7 +399,7 @@
 	        }
 		}
 
-		function BeobSpeichern(Pfad, BeobEditAufrufen, melden){
+		function speichern(Pfad, BeobEditAufrufen, melden){
 			$db.openDoc(docId, {
 				success: function(doc) {
 					doc.Modus = "einfach";
@@ -526,11 +542,10 @@
 			<div data-role="footer" data-position="fixed">
 				<div data-role="navbar" id="BeobEditNavbar">
 					<ul>
-						<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+						<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>					
 						<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-						<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus">neu</a></li>
+						<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>						
 						<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
-						<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
 					</ul>
 				</div><!-- /navbar -->
 			</div><!-- /footer -->

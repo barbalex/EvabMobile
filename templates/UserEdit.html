@@ -74,29 +74,7 @@
 			});
 			
 			$("#submitButton").tap(function(event) {
-				//var docId = "{{id}}";
-				$db.openDoc(docId, {
-					success: function(doc) {
-						doc.Typ = "User";
-						doc.UserName = "{{UserName}}";
-						if ($("input#Email").val()!=""){
-							doc.Email = $("input#Email").val();
-						} else if (doc.Email!=null){
-							delete doc.Email;
-						}
-						doc.Modus = Modus;
-						doc.Datenverwendung = Datenverwendung;
-						if ($("input#Autor").val()==""){
-							MeldungEinzeilig("Bitte Autor eingeben");
-						} else {
-							doc.Autor = $("input#Autor").val();
-							saveDocument(doc);
-						}
-					},
-					error: function() {
-						MeldungZweizeilig("Dieser User kann nicht geöffnet werden:", docId);
-					}
-				});
+				speichern();
 			});	
 
 			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
@@ -127,23 +105,43 @@
 		});
 	</script>
 	<script type="text/javascript">
-	
-		function saveDocument(document)
-		{
-			$db.saveDoc(document, {
-				success: function() {
-					MeldungEinzeilig("Einstellungen gespeichert");
-				},
-				error: function() {
-					MeldungZweizeilig("Speichern fehlgeschlagen!");
-				}
-			});
-		}
 
 		//Link für lokale Installation managen
 		$(function() {
             $('#takeout').takeout({linkText : "ja, herunterladen und installieren", localText : "EvAB mobile ist schon lokal installiert"});
         });
+
+        function speichern(){
+        	$db.openDoc(docId, {
+				success: function(doc) {
+					doc.Typ = "User";
+					doc.UserName = "{{UserName}}";
+					if ($("input#Email").val()!=""){
+						doc.Email = $("input#Email").val();
+					} else if (doc.Email!=null){
+						delete doc.Email;
+					}
+					doc.Modus = Modus;
+					doc.Datenverwendung = Datenverwendung;
+					if ($("input#Autor").val()==""){
+						MeldungEinzeilig("Bitte Autor eingeben");
+					} else {
+						doc.Autor = $("input#Autor").val();
+						$db.saveDoc(doc, {
+							success: function() {
+								MeldungEinzeilig("Einstellungen gespeichert");
+							},
+							error: function() {
+								MeldungZweizeilig("Speichern fehlgeschlagen!");
+							}
+						});
+					}
+				},
+				error: function() {
+					MeldungZweizeilig("Dieser User kann nicht geöffnet werden:", docId);
+				}
+			});
+        }
 		
 	</script>
   </head>

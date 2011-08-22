@@ -145,9 +145,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink">neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -252,7 +251,7 @@
 			aArtGruppe = $(this).attr("aArtGruppe");
 			aArtName = $(this).attr("id");
 			aArtId = $(this).attr("artid");
-			BeobSpeichern("", "ja", "nein");
+			speichern("");
 			$("#ArtenListe").empty();
 		});
 
@@ -263,9 +262,33 @@
 			ArtlisteAufbauen(aArtGruppe, "Edit");
 		});
 
-		//Erfassungen speichern
-		$("#SpeichernButton").tap(function(event) {
-			BeobSpeichern("../../", "ja", "ja");
+		//Für jedes Feld bei Änderung speichern
+		$("#aArtNameUnsicher").change(function(){
+			speichern("../../");
+		});
+		$("#aArtNameVerifiziertDurch").change(function(){
+			speichern("../../");
+		});
+		$("#aArtNameBemerkungen").change(function(){
+			speichern("../../");
+		});
+		$("#aMeldungTyp").change(function(){                 //klappt nicht, WIE MACHEN????
+			speichern("../../");
+		});
+		$("#aAutor").change(function(){
+			speichern("../../");
+		});
+		$("#aVorhandensein").change(function(){
+			speichern("../../");
+		});
+		$("#aPopGrösseKlassiert").change(function(){
+			speichern("../../");
+		});
+		$("#aMenge").change(function(){
+			speichern("../../");
+		});
+		$("#aBemerkungen").change(function(){
+			speichern("../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -394,7 +417,7 @@
 		return false;
 	}
 
-	function BeobSpeichern(Pfad, BeobEditAufrufen, melden){
+	function speichern(Pfad){
 		var docId = "{{id}}";
 		$db.openDoc(docId, {
 			success: function(doc) {
@@ -426,7 +449,7 @@
 				} else if (doc.aArtNameBemerkungen!=null){
 					delete doc.aArtNameBemerkungen;
 				}
-				doc.aMeldungTyp = aMeldungTyp;
+				doc.aMeldungTyp = aMeldungTyp;                                   //KLAPPT DAS?
 				if ($("input#aAutor").val()!=""){
 					doc.aAutor = $("input#aAutor").val();
 				} else if (doc.aAutor!=null){
@@ -454,12 +477,7 @@
 				}
 				$db.saveDoc(doc, {
 					success: function(data) {
-						if (BeobEditAufrufen == "ja"){
-							window.open(Pfad + "_show/hArtArtgruppeEdit/" + data.id, target="_self");
-						}
-						if (melden == "ja"){
-							MeldungEinzeilig("Art gespeichert");
-						}
+						window.open(Pfad + "_show/hArtArtgruppeEdit/" + data.id, target="_self");
 					},
 					error: function() {
 						MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
