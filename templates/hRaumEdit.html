@@ -2,7 +2,8 @@
 <html>
   <head>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
-  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
@@ -67,9 +68,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check">speichern</a></li>
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
+					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -92,35 +92,12 @@
 				}
 		});
 
-		$("#SpeichernButton").tap(function(event) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "hRaum";
-					doc.User = User;
-					doc.ProjektId = "{{ProjektId}}";
-					var rName = $("input#rName").val();
-					if (rName == "") {
-						MeldungEinzeilig("Bitte Raumnamen eingeben");
-						document.getElementById("rName").focus();
-						return;
-					}
-					doc.rName = rName;
-					if ($("[id$='rBemerkungen']").val()!=""){
-						doc.rBemerkungen = $("[id$='rBemerkungen']").val();
-					} else if (doc.rBemerkungen!=null){
-						delete doc.rBemerkungen;
-					}
-					$db.saveDoc(doc, {
-						success: function(data) {
-							MeldungEinzeilig("Raum gespeichert");
-						},
-						error: function() {
-							MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
-						 }
-					});
-				}
-			});
+		//Für jedes Feld bei Änderung speichern
+		$("#rName").change(function(){
+			speichern();
+		});
+		$("#rBemerkungen").change(function(){
+			speichern();
 		});
 
 		//Code für den Raum-Löschen-Dialog
@@ -192,29 +169,58 @@
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function handleDelete(event)
-		{
-			var docId = "{{id}}";
-			var ProjektId = "{{ProjektId}}";
-			// First open doc based on ID in order to get full document
-			$db.openDoc(docId, {
-				success: function(document) {
-					// Then use the opened doc as reference to remove
-					$db.removeDoc(document, {
-						success: function() {
-							MeldungEinzeilig("Raum gelöscht");
-							window.open("../hRaumListe/" + ProjektId, target="_self");
-						},
-						error: function() {
-							MeldungEinzeilig("Der Raum mit der ID: " + docId + " konnte nicht gelöscht werden");
-						}
-					});
-				},
-				error: function() {
-					MeldungEinzeilig("Ein Raum mit der ID: " + docId + " wurde nicht gefunden");
+	function handleDelete(event){
+		var docId = "{{id}}";
+		var ProjektId = "{{ProjektId}}";
+		// First open doc based on ID in order to get full document
+		$db.openDoc(docId, {
+			success: function(document) {
+				// Then use the opened doc as reference to remove
+				$db.removeDoc(document, {
+					success: function() {
+						MeldungEinzeilig("Raum gelöscht");
+						window.open("../hRaumListe/" + ProjektId, target="_self");
+					},
+					error: function() {
+						MeldungEinzeilig("Der Raum mit der ID: " + docId + " konnte nicht gelöscht werden");
+					}
+				});
+			},
+			error: function() {
+				MeldungEinzeilig("Ein Raum mit der ID: " + docId + " wurde nicht gefunden");
+			}
+		});
+		return false;
+	}
+	function speichern(){
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hRaum";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				var rName = $("input#rName").val();
+				if (rName == "") {
+					MeldungEinzeilig("Bitte Raumnamen eingeben");
+					document.getElementById("rName").focus();
+					return;
 				}
-			});
-			return false;
-		}
+				doc.rName = rName;
+				if ($("[id$='rBemerkungen']").val()!=""){
+					doc.rBemerkungen = $("[id$='rBemerkungen']").val();
+				} else if (doc.rBemerkungen!=null){
+					delete doc.rBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					success: function(data) {
+						//MeldungEinzeilig("Raum gespeichert");
+					},
+					error: function() {
+						MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
+					 }
+				});
+			}
+		});
+	}
   </script>
 </html>

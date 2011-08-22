@@ -2,7 +2,8 @@
 <html>
   <head>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
-  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
@@ -154,7 +155,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKrautschichtHöheMax">Krautschicht max. Höhe cm:</label>
-					<input id="zKrautschichtHöheMax" name="zKrautschichtHöheMax" type="tenumberxt" value="{{zKrautschichtHöheMax}}"/>
+					<input id="zKrautschichtHöheMax" name="zKrautschichtHöheMax" type="number" value="{{zKrautschichtHöheMax}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zKrautschichtHöheMin">Krautschicht min. Höhe cm:</label>
@@ -178,11 +179,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zMoosschichtHöheMit">Moosschicht mittlere Höhe cm:</label>
-					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="number" value="{{zMoosschichtHöheMit}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zMoosschichtHöheMit">Moosschicht mittlere Höhe cm:</label>
-					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="tnumberext" value="{{zMoosschichtHöheMit}}"/>
+					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="number" value="{{zMoosschichtHöheMit}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zFlechtenschichtHöheMit">Flechtenschicht mittlere Höhe cm:</label>
@@ -201,9 +198,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" data-icon="check" class="ui-btn-active">speichern</a></li>
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink">neu</a></li>
+					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -227,189 +223,102 @@
 				}
 		});
 
-		$("#SpeichernButton").tap(function(event) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "hZeit";
-					doc.User = User;
-					doc.ProjektId = "{{ProjektId}}";
-					doc.RaumId = "{{RaumId}}";
-					doc.OrtId = "{{OrtId}}";
-					if ($("input#zDatum").val()!=""){
-						doc.zDatum = $("input#zDatum").val();
-					} else {
-						MeldungEinzeilig("Sie müssen ein Datum erfassen");
-						document.getElementById("zDatum").focus();
-						return;
-					}
-					if ($("input#zZeit").val()!=""){
-						doc.zZeit = $("input#zZeit").val();
-					} else {
-						MeldungEinzeilig("Bitte Zeit erfassen");
-						document.getElementById("zZeit").focus();
-						return;
-					}
-					if ($("input#zGenauigkeit").val()!=""){
-						doc.zGenauigkeit = $("input#zGenauigkeit").val();
-					} else if (doc.zGenauigkeit!=null){
-						delete doc.zGenauigkeit;
-					}
-					if ($("input#zDeckungAlgen").val()!=""){
-						doc.zDeckungAlgen = $("input#zDeckungAlgen").val();
-					} else if (doc.zDeckungAlgen!=null){
-						delete doc.zDeckungAlgen;
-					}
-					if ($("input#zDeckungBäume").val()!=""){
-						doc.zDeckungBäume = $("input#zDeckungBäume").val();
-					} else if (doc.zDeckungBäume!=null){
-						delete doc.zDeckungBäume;
-					}
-					if ($("input#zDeckungSträucher").val()!=""){
-						doc.zDeckungSträucher = $("input#zDeckungSträucher").val();
-					} else if (doc.zDeckungSträucher!=null){
-						delete doc.zDeckungSträucher;
-					}
-					if ($("input#zDeckungKryptogamen").val()!=""){
-						doc.zDeckungKryptogamen = $("input#zDeckungKryptogamen").val();
-					} else if (doc.zDeckungKryptogamen!=null){
-						delete doc.zDeckungKryptogamen;
-					}
-					if ($("input#zDeckungWasser").val()!=""){
-						doc.zDeckungWasser = $("input#zDeckungWasser").val();
-					} else if (doc.zDeckungWasser!=null){
-						delete doc.zDeckungWasser;
-					}
-					if ($("input#zDeckungKräuter").val()!=""){
-						doc.zDeckungKräuter = $("input#zDeckungKräuter").val();
-					} else if (doc.zDeckungKräuter!=null){
-						delete doc.zDeckungKräuter;
-					}
-					if ($("input#zDeckungFlechten").val()!=""){
-						doc.zDeckungFlechten = $("input#zDeckungFlechten").val();
-					} else if (doc.zDeckungFlechten!=null){
-						delete doc.zDeckungFlechten;
-					}
-					if ($("input#zDeckungStreu").val()!=""){
-						doc.zDeckungStreu = $("input#zDeckungStreu").val();
-					} else if (doc.zDeckungStreu!=null){
-						delete doc.zDeckungStreu;
-					}
-					if ($("input#zDeckungMoos").val()!=""){
-						doc.zDeckungMoos = $("input#zDeckungMoos").val();
-					} else if (doc.zDeckungMoos!=null){
-						delete doc.zDeckungMoos;
-					}
-					if ($("input#zDeckungGestein").val()!=""){
-						doc.zDeckungGestein = $("input#zDeckungGestein").val();
-					} else if (doc.zDeckungGestein!=null){
-						delete doc.zDeckungGestein;
-					}
-					if ($("input#zDeckungBoden").val()!=""){
-						doc.zDeckungBoden = $("input#zDeckungBoden").val();
-					} else if (doc.zDeckungBoden!=null){
-						delete doc.zDeckungBoden;
-					}
-					if ($("input#zDeckungVegetation").val()!=""){
-						doc.zDeckungVegetation = $("input#zDeckungVegetation").val();
-					} else if (doc.zDeckungVegetation!=null){
-						delete doc.zDeckungVegetation;
-					}
-					if ($("[id$='zDeckungDefinition']").val()!=""){
-						doc.zDeckungDefinition = $("[id$='zDeckungDefinition']").val();
-					} else if (doc.zDeckungDefinition!=null){
-						delete doc.zDeckungDefinition;
-					}
-					if ($("input#zBaumschichtHöheMax").val()!=""){
-						doc.zBaumschichtHöheMax = $("input#zBaumschichtHöheMax").val();
-					} else if (doc.zBaumschichtHöheMax!=null){
-						delete doc.zBaumschichtHöheMax;
-					}
-					if ($("input#zBaumschichtHöheMin").val()!=""){
-						doc.zBaumschichtHöheMin = $("input#zBaumschichtHöheMin").val();
-					} else if (doc.zBaumschichtHöheMin!=null){
-						delete doc.zBaumschichtHöheMin;
-					}
-					if ($("input#zBaumschichtHöheMit").val()!=""){
-						doc.zBaumschichtHöheMit = $("input#zBaumschichtHöheMit").val();
-					} else if (doc.zBaumschichtHöheMit!=null){
-						delete doc.zBaumschichtHöheMit;
-					}
-					if ($("input#zStrauchschichtHöheMax").val()!=""){
-						doc.zStrauchschichtHöheMax = $("input#zStrauchschichtHöheMax").val();
-					} else if (doc.zStrauchschichtHöheMax!=null){
-						delete doc.zStrauchschichtHöheMax;
-					}
-					if ($("input#zStrauchschichtHöheMin").val()!=""){
-						doc.zStrauchschichtHöheMin = $("input#zStrauchschichtHöheMin").val();
-					} else if (doc.zStrauchschichtHöheMin!=null){
-						delete doc.zStrauchschichtHöheMin;
-					}
-					if ($("input#zStrauchschichtHöheMit").val()!=""){
-						doc.zStrauchschichtHöheMit = $("input#zStrauchschichtHöheMit").val();
-					} else if (doc.zStrauchschichtHöheMit!=null){
-						delete doc.zStrauchschichtHöheMit;
-					}
-					if ($("input#zKrautschichtHöheMax").val()!=""){
-						doc.zKrautschichtHöheMax = $("input#zKrautschichtHöheMax").val();
-					} else if (doc.zKrautschichtHöheMax!=null){
-						delete doc.zKrautschichtHöheMax;
-					}
-					if ($("input#zKrautschichtHöheMin").val()!=""){
-						doc.zKrautschichtHöheMin = $("input#zKrautschichtHöheMin").val();
-					} else if (doc.zKrautschichtHöheMin!=null){
-						delete doc.zKrautschichtHöheMin;
-					}
-					if ($("input#zKrautschichtHöheMit").val()!=""){
-						doc.zKrautschichtHöheMit = $("input#zKrautschichtHöheMit").val();
-					} else if (doc.zKrautschichtHöheMit!=null){
-						delete doc.zKrautschichtHöheMit;
-					}
-					if ($("input#zVegHöheMax").val()!=""){
-						doc.zVegHöheMax = $("input#zVegHöheMax").val();
-					} else if (doc.zVegHöheMax!=null){
-						delete doc.zVegHöheMax;
-					}
-					if ($("input#zVegHöheMin").val()!=""){
-						doc.zVegHöheMin = $("input#zVegHöheMin").val();
-					} else if (doc.zVegHöheMin!=null){
-						delete doc.zVegHöheMin;
-					}
-					if ($("input#zVegHöheMit").val()!=""){
-						doc.zVegHöheMit = $("input#zVegHöheMit").val();
-					} else if (doc.zVegHöheMit!=null){
-						delete doc.zVegHöheMit;
-					}
-					if ($("input#zMoosschichtHöheMit").val()!=""){
-						doc.zMoosschichtHöheMit = $("input#zMoosschichtHöheMit").val();
-					} else if (doc.zMoosschichtHöheMit!=null){
-						delete doc.zMoosschichtHöheMit;
-					}
-					if ($("input#zFlechtenschichtHöheMit").val()!=""){
-						doc.zFlechtenschichtHöheMit = $("input#zFlechtenschichtHöheMit").val();
-					} else if (doc.zFlechtenschichtHöheMit!=null){
-						delete doc.zFlechtenschichtHöheMit;
-					}
-					if ($("input#zKryptogamenschichtHöheMit").val()!=""){
-						doc.zKryptogamenschichtHöheMit = $("input#zKryptogamenschichtHöheMit").val();
-					} else if (doc.zKryptogamenschichtHöheMit!=null){
-						delete doc.zKryptogamenschichtHöheMit;
-					}
-					if ($("[id$='zBemerkungen']").val()!=""){
-						doc.zBemerkungen = $("[id$='zBemerkungen']").val();
-					} else if (doc.zBemerkungen!=null){
-						delete doc.zBemerkungen;
-					}
-					$db.saveDoc(doc, {
-						success: function(data) {
-							MeldungEinzeilig("Zeit gespeichert");
-						},
-						error: function() {
-							MeldungEinzeilig("Die Zeit konnte nicht gespeichert werden.");
-						 }
-					});
-				}
-			});
+		//Für jedes Feld bei Änderung speichern
+		$("#zDatum").change(function(){
+			speichern();
+		});
+		$("#zZeit").change(function(){
+			speichern();
+		});
+		$("#zGenauigkeit").change(function(){
+			speichern();
+		});
+		$("#zDeckungDefinition").change(function(){
+			speichern();
+		});
+		$("#zDeckungAlgen").change(function(){
+			speichern();
+		});
+		$("#zDeckungBäume").change(function(){
+			speichern();
+		});
+		$("#zDeckungSträucher").change(function(){
+			speichern();
+		});
+		$("#zDeckungKryptogamen").change(function(){
+			speichern();
+		});
+		$("#zDeckungWasser").change(function(){
+			speichern();
+		});
+		$("#zDeckungKräuter").change(function(){
+			speichern();
+		});
+		$("#zDeckungFlechten").change(function(){
+			speichern();
+		});
+		$("#zDeckungStreu").change(function(){
+			speichern();
+		});
+		$("#zDeckungMoos").change(function(){
+			speichern();
+		});
+		$("#zDeckungGestein").change(function(){
+			speichern();
+		});
+		$("#zDeckungBoden").change(function(){
+			speichern();
+		});
+		$("#zDeckungVegetation").change(function(){
+			speichern();
+		});
+		$("#zBaumschichtHöheMax").change(function(){
+			speichern();
+		});
+		$("#zBaumschichtHöheMin").change(function(){
+			speichern();
+		});
+		$("#zBaumschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zStrauchschichtHöheMax").change(function(){
+			speichern();
+		});
+		$("#zStrauchschichtHöheMin").change(function(){
+			speichern();
+		});
+		$("#zStrauchschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zKrautschichtHöheMax").change(function(){
+			speichern();
+		});
+		$("#zKrautschichtHöheMin").change(function(){
+			speichern();
+		});
+		$("#zKrautschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zVegHöheMax").change(function(){
+			speichern();
+		});
+		$("#zVegHöheMin").change(function(){
+			speichern();
+		});
+		$("#zVegHöheMit").change(function(){
+			speichern();
+		});
+		$("#zMoosschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zFlechtenschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zKryptogamenschichtHöheMit").change(function(){
+			speichern();
+		});
+		$("#zBemerkungen").change(function(){
+			speichern();
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -425,8 +334,26 @@
 		var url = "../hZeitListe/" + "{{OrtId}}";
 		$("[name='hZeitListeLink']").attr('href', url);
 
-		//Link zu ZeitNeu setzen
-		document.getElementById("hZeitNeuLink").href = "../hZeitNeu/" + "{{OrtId}}";
+		//Neue Zeit erstellen
+		$('#hZeitNeuLink').live('click', function(event){
+			event.preventDefault();
+			var doc = {};
+			doc.Typ = "hZeit";
+			doc.User = User;
+			doc.ProjektId = "{{ProjektId}}"
+			doc.RaumId = "{{RaumId}}";
+			doc.OrtId = "{{id}}";
+			doc.zDatum = DatumNeu();
+			doc.zZeit = ZeitNeu();
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("../hZeitEdit/" + data.id, target="_self");
+				},
+				error: function() {
+					MeldungEinzeilig("Die neue Zeit konnte nicht gespeichert werden.");
+				 }
+			});
+		});
 
 		//Link zur Art in Navbar setzen
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
@@ -493,8 +420,7 @@
 		'monthsOfYear': Monate
 	});
 
-	function handleDelete(event)
-	{
+	function handleDelete(event){
 		var docId = "{{id}}";
 		var OrtId = "{{OrtId}}";
 		// First open doc based on ID in order to get full document
@@ -516,6 +442,191 @@
 			}
 		});
 		return false;
+	}
+
+	function speichern(){
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hZeit";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				doc.RaumId = "{{RaumId}}";
+				doc.OrtId = "{{OrtId}}";
+				if ($("input#zDatum").val()!=""){
+					doc.zDatum = $("input#zDatum").val();
+				} else {
+					MeldungEinzeilig("Sie müssen ein Datum erfassen");
+					document.getElementById("zDatum").focus();
+					return;
+				}
+				if ($("input#zZeit").val()!=""){
+					doc.zZeit = $("input#zZeit").val();
+				} else {
+					MeldungEinzeilig("Bitte Zeit erfassen");
+					document.getElementById("zZeit").focus();
+					return;
+				}
+				if ($("input#zGenauigkeit").val()!=""){
+					doc.zGenauigkeit = $("input#zGenauigkeit").val();
+				} else if (doc.zGenauigkeit!=null){
+					delete doc.zGenauigkeit;
+				}
+				if ($("input#zDeckungAlgen").val()!=""){
+					doc.zDeckungAlgen = $("input#zDeckungAlgen").val();
+				} else if (doc.zDeckungAlgen!=null){
+					delete doc.zDeckungAlgen;
+				}
+				if ($("input#zDeckungBäume").val()!=""){
+					doc.zDeckungBäume = $("input#zDeckungBäume").val();
+				} else if (doc.zDeckungBäume!=null){
+					delete doc.zDeckungBäume;
+				}
+				if ($("input#zDeckungSträucher").val()!=""){
+					doc.zDeckungSträucher = $("input#zDeckungSträucher").val();
+				} else if (doc.zDeckungSträucher!=null){
+					delete doc.zDeckungSträucher;
+				}
+				if ($("input#zDeckungKryptogamen").val()!=""){
+					doc.zDeckungKryptogamen = $("input#zDeckungKryptogamen").val();
+				} else if (doc.zDeckungKryptogamen!=null){
+					delete doc.zDeckungKryptogamen;
+				}
+				if ($("input#zDeckungWasser").val()!=""){
+					doc.zDeckungWasser = $("input#zDeckungWasser").val();
+				} else if (doc.zDeckungWasser!=null){
+					delete doc.zDeckungWasser;
+				}
+				if ($("input#zDeckungKräuter").val()!=""){
+					doc.zDeckungKräuter = $("input#zDeckungKräuter").val();
+				} else if (doc.zDeckungKräuter!=null){
+					delete doc.zDeckungKräuter;
+				}
+				if ($("input#zDeckungFlechten").val()!=""){
+					doc.zDeckungFlechten = $("input#zDeckungFlechten").val();
+				} else if (doc.zDeckungFlechten!=null){
+					delete doc.zDeckungFlechten;
+				}
+				if ($("input#zDeckungStreu").val()!=""){
+					doc.zDeckungStreu = $("input#zDeckungStreu").val();
+				} else if (doc.zDeckungStreu!=null){
+					delete doc.zDeckungStreu;
+				}
+				if ($("input#zDeckungMoos").val()!=""){
+					doc.zDeckungMoos = $("input#zDeckungMoos").val();
+				} else if (doc.zDeckungMoos!=null){
+					delete doc.zDeckungMoos;
+				}
+				if ($("input#zDeckungGestein").val()!=""){
+					doc.zDeckungGestein = $("input#zDeckungGestein").val();
+				} else if (doc.zDeckungGestein!=null){
+					delete doc.zDeckungGestein;
+				}
+				if ($("input#zDeckungBoden").val()!=""){
+					doc.zDeckungBoden = $("input#zDeckungBoden").val();
+				} else if (doc.zDeckungBoden!=null){
+					delete doc.zDeckungBoden;
+				}
+				if ($("input#zDeckungVegetation").val()!=""){
+					doc.zDeckungVegetation = $("input#zDeckungVegetation").val();
+				} else if (doc.zDeckungVegetation!=null){
+					delete doc.zDeckungVegetation;
+				}
+				if ($("[id$='zDeckungDefinition']").val()!=""){
+					doc.zDeckungDefinition = $("[id$='zDeckungDefinition']").val();
+				} else if (doc.zDeckungDefinition!=null){
+					delete doc.zDeckungDefinition;
+				}
+				if ($("input#zBaumschichtHöheMax").val()!=""){
+					doc.zBaumschichtHöheMax = $("input#zBaumschichtHöheMax").val();
+				} else if (doc.zBaumschichtHöheMax!=null){
+					delete doc.zBaumschichtHöheMax;
+				}
+				if ($("input#zBaumschichtHöheMin").val()!=""){
+					doc.zBaumschichtHöheMin = $("input#zBaumschichtHöheMin").val();
+				} else if (doc.zBaumschichtHöheMin!=null){
+					delete doc.zBaumschichtHöheMin;
+				}
+				if ($("input#zBaumschichtHöheMit").val()!=""){
+					doc.zBaumschichtHöheMit = $("input#zBaumschichtHöheMit").val();
+				} else if (doc.zBaumschichtHöheMit!=null){
+					delete doc.zBaumschichtHöheMit;
+				}
+				if ($("input#zStrauchschichtHöheMax").val()!=""){
+					doc.zStrauchschichtHöheMax = $("input#zStrauchschichtHöheMax").val();
+				} else if (doc.zStrauchschichtHöheMax!=null){
+					delete doc.zStrauchschichtHöheMax;
+				}
+				if ($("input#zStrauchschichtHöheMin").val()!=""){
+					doc.zStrauchschichtHöheMin = $("input#zStrauchschichtHöheMin").val();
+				} else if (doc.zStrauchschichtHöheMin!=null){
+					delete doc.zStrauchschichtHöheMin;
+				}
+				if ($("input#zStrauchschichtHöheMit").val()!=""){
+					doc.zStrauchschichtHöheMit = $("input#zStrauchschichtHöheMit").val();
+				} else if (doc.zStrauchschichtHöheMit!=null){
+					delete doc.zStrauchschichtHöheMit;
+				}
+				if ($("input#zKrautschichtHöheMax").val()!=""){
+					doc.zKrautschichtHöheMax = $("input#zKrautschichtHöheMax").val();
+				} else if (doc.zKrautschichtHöheMax!=null){
+					delete doc.zKrautschichtHöheMax;
+				}
+				if ($("input#zKrautschichtHöheMin").val()!=""){
+					doc.zKrautschichtHöheMin = $("input#zKrautschichtHöheMin").val();
+				} else if (doc.zKrautschichtHöheMin!=null){
+					delete doc.zKrautschichtHöheMin;
+				}
+				if ($("input#zKrautschichtHöheMit").val()!=""){
+					doc.zKrautschichtHöheMit = $("input#zKrautschichtHöheMit").val();
+				} else if (doc.zKrautschichtHöheMit!=null){
+					delete doc.zKrautschichtHöheMit;
+				}
+				if ($("input#zVegHöheMax").val()!=""){
+					doc.zVegHöheMax = $("input#zVegHöheMax").val();
+				} else if (doc.zVegHöheMax!=null){
+					delete doc.zVegHöheMax;
+				}
+				if ($("input#zVegHöheMin").val()!=""){
+					doc.zVegHöheMin = $("input#zVegHöheMin").val();
+				} else if (doc.zVegHöheMin!=null){
+					delete doc.zVegHöheMin;
+				}
+				if ($("input#zVegHöheMit").val()!=""){
+					doc.zVegHöheMit = $("input#zVegHöheMit").val();
+				} else if (doc.zVegHöheMit!=null){
+					delete doc.zVegHöheMit;
+				}
+				if ($("input#zMoosschichtHöheMit").val()!=""){
+					doc.zMoosschichtHöheMit = $("input#zMoosschichtHöheMit").val();
+				} else if (doc.zMoosschichtHöheMit!=null){
+					delete doc.zMoosschichtHöheMit;
+				}
+				if ($("input#zFlechtenschichtHöheMit").val()!=""){
+					doc.zFlechtenschichtHöheMit = $("input#zFlechtenschichtHöheMit").val();
+				} else if (doc.zFlechtenschichtHöheMit!=null){
+					delete doc.zFlechtenschichtHöheMit;
+				}
+				if ($("input#zKryptogamenschichtHöheMit").val()!=""){
+					doc.zKryptogamenschichtHöheMit = $("input#zKryptogamenschichtHöheMit").val();
+				} else if (doc.zKryptogamenschichtHöheMit!=null){
+					delete doc.zKryptogamenschichtHöheMit;
+				}
+				if ($("[id$='zBemerkungen']").val()!=""){
+					doc.zBemerkungen = $("[id$='zBemerkungen']").val();
+				} else if (doc.zBemerkungen!=null){
+					delete doc.zBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					success: function(data) {
+						MeldungEinzeilig("Zeit gespeichert");
+					},
+					error: function() {
+						MeldungEinzeilig("Die Zeit konnte nicht gespeichert werden.");
+					 }
+				});
+			}
+		});
 	}
   </script>
 </html>

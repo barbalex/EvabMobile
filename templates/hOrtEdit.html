@@ -2,7 +2,8 @@
 <html>
   <head>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
-  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
@@ -82,11 +83,10 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" data-icon="check" class="ui-btn-active">speichern</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink">neu</a></li>
+					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
-					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -123,61 +123,21 @@
 				}
 		});
 
-		$("#SpeichernButton").tap(function(event) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "hOrt";
-					doc.User = User;
-					doc.ProjektId = "{{ProjektId}}";
-					doc.RaumId = "{{RaumId}}";
-					var oName = $("input#oName").val();
-					if (oName == "") {
-						MeldungEinzeilig("Bitte Ortnamen eingeben");
-						document.getElementById("oName").focus();
-						return;
-					}
-					doc.oName = oName;
-					if ($("input#oXKoord").val()!=""){
-						doc.oXKoord = $("input#oXKoord").val();
-					} else if (doc.oXKoord!=null){
-						delete doc.oXKoord;
-					}
-					if ($("input#oYKoord").val()!=""){
-						doc.oYKoord = $("input#oYKoord").val();
-					} else if (doc.oYKoord!=null){
-						delete doc.oYKoord;
-					}
-					if (oLongitudeDecDeg != ""){
-						doc.oLongitudeDecDeg = oLongitudeDecDeg;
-					} else if (doc.oLongitudeDecDeg != null){
-						delete doc.oLongitudeDecDeg;
-					}
-					if (oLatitudeDecDeg != ""){
-						doc.oLatitudeDecDeg = oLatitudeDecDeg;
-					} else if (doc.oLatitudeDecDeg != null){
-						delete doc.oLatitudeDecDeg;
-					}
-					if ($("input#oLagegenauigkeit").val()!=""){
-						doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
-					} else if (doc.oLagegenauigkeit!=null){
-						delete doc.oLagegenauigkeit;
-					}
-					if ($("[id$='oBemerkungen']").val()!=""){
-						doc.oBemerkungen = $("[id$='oBemerkungen']").val();
-					} else if (doc.oBemerkungen!=null){
-						delete doc.oBemerkungen;
-					}
-					$db.saveDoc(doc, {
-						success: function(data) {
-							MeldungEinzeilig("Ort gespeichert");
-						},
-						error: function() {
-							MeldungEinzeilig("Der Ort konnte nicht gespeichert werden.");
-						 }
-					});
-				}
-			});
+		//Für jedes Feld bei Änderung speichern
+		$("#oName").change(function(){
+			speichern();
+		});
+		$("#oXKoord").change(function(){
+			speichern();
+		});
+		$("#oYKoord").change(function(){
+			speichern();
+		});
+		$("#oLagegenauigkeit").change(function(){
+			speichern();
+		});
+		$("#oBemerkungen").change(function(){
+			speichern();
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -427,6 +387,62 @@
 	            MeldungEinzeilig('Keine Positionsdaten verfügbar');
 	        }); 
 	    }
+	}
+	function speichern(){
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hOrt";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				doc.RaumId = "{{RaumId}}";
+				var oName = $("input#oName").val();
+				if (oName == "") {
+					MeldungEinzeilig("Bitte Ortnamen eingeben");
+					document.getElementById("oName").focus();
+					return;
+				}
+				doc.oName = oName;
+				if ($("input#oXKoord").val()!=""){
+					doc.oXKoord = $("input#oXKoord").val();
+				} else if (doc.oXKoord!=null){
+					delete doc.oXKoord;
+				}
+				if ($("input#oYKoord").val()!=""){
+					doc.oYKoord = $("input#oYKoord").val();
+				} else if (doc.oYKoord!=null){
+					delete doc.oYKoord;
+				}
+				if (oLongitudeDecDeg != ""){
+					doc.oLongitudeDecDeg = oLongitudeDecDeg;
+				} else if (doc.oLongitudeDecDeg != null){
+					delete doc.oLongitudeDecDeg;
+				}
+				if (oLatitudeDecDeg != ""){
+					doc.oLatitudeDecDeg = oLatitudeDecDeg;
+				} else if (doc.oLatitudeDecDeg != null){
+					delete doc.oLatitudeDecDeg;
+				}
+				if ($("input#oLagegenauigkeit").val()!=""){
+					doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
+				} else if (doc.oLagegenauigkeit!=null){
+					delete doc.oLagegenauigkeit;
+				}
+				if ($("[id$='oBemerkungen']").val()!=""){
+					doc.oBemerkungen = $("[id$='oBemerkungen']").val();
+				} else if (doc.oBemerkungen!=null){
+					delete doc.oBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					success: function(data) {
+						MeldungEinzeilig("Ort gespeichert");
+					},
+					error: function() {
+						MeldungEinzeilig("Der Ort konnte nicht gespeichert werden.");
+					 }
+				});
+			}
+		});
 	}
   </script>
 </html>

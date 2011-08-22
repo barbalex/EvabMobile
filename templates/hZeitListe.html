@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
@@ -83,8 +84,26 @@
 		var url = "../hOrtEdit/" + "{{id}}";
 		$("[name='hOrtLink']").attr('href', url);
 
-		//Link zu ZeitNeu in Navbar setzen
-		document.getElementById("hZeitNeuLink").href = "../hZeitNeu/" + "{{id}}";
+		//Neue Zeit erstellen
+		$('#hZeitNeuLink').live('click', function(event){
+			event.preventDefault();
+			var doc = {};
+			doc.Typ = "hZeit";
+			doc.User = User;
+			doc.ProjektId = "{{ProjektId}}"
+			doc.RaumId = "{{RaumId}}";
+			doc.OrtId = "{{id}}";
+			doc.zDatum = DatumNeu();
+			doc.zZeit = ZeitNeu();
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("../hZeitEdit/" + data.id, target="_self");
+				},
+				error: function() {
+					MeldungEinzeilig("Die neue Zeit konnte nicht gespeichert werden.");
+				 }
+			});
+		});
 
 		//Link zur OrtListe in Navbar setzen
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";

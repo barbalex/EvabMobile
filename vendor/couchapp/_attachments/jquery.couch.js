@@ -27,7 +27,7 @@
       alert("creating a user doc requires sha1.js to be loaded in the page");
       return;
     }
-    var user_prefix = "org.couchdb.user:";
+    var user_prefix = "ch.barbalex.evab.user:";
     user_doc._id = user_doc._id || user_prefix + user_doc.name;
     if (new_password) {
       // handle the password crypto

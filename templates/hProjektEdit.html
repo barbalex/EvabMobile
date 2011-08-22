@@ -2,7 +2,8 @@
 <html>
   <head>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
-  	<META http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
@@ -66,9 +67,8 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SpeichernButton" class="ui-btn-active" data-icon="check">speichern</a></li>
+					<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-				<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" >neu</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -92,34 +92,12 @@
 				}
 		});
 
-		$("#SpeichernButton").tap(function(event) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "hProjekt";
-					doc.User = User;
-					var pName = $("input#pName").val();
-					if (pName == "") {
-						MeldungEinzeilig("Bitte Projektnamen eingeben");
-						document.getElementById("pName").focus();
-						return;
-					}
-					doc.pName = pName;
-					if ($("[id$='pBemerkungen']").val()!=""){
-						doc.pBemerkungen = $("[id$='pBemerkungen']").val();
-					} else if (doc.pBemerkungen!=null){
-						delete doc.pBemerkungen;
-					}
-					$db.saveDoc(doc, {
-						success: function(data) {
-							MeldungEinzeilig("Projekt gespeichert");
-						},
-						error: function() {
-							MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
-						 }
-					});
-				}
-			});
+		//Für jedes Feld bei Änderung speichern
+		$("#pName").change(function(){
+			speichern();
+		});
+		$("#pBemerkungen").change(function(){
+			speichern();
 		});
 
 		//Link zur Raumliste in Navbar setzen
@@ -180,27 +158,52 @@
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function handleDelete(event)
-		{
-			var docId = "{{id}}";
-			// First open doc based on ID in order to get full document
-			$db.openDoc(docId, {
-				success: function(document) {
-					// Then use the opened doc as reference to remove
-					$db.removeDoc(document, {
-						success: function() {
-							window.open("../../hProjektListe.html", target = '_self');
-						},
-						error: function() {
-							MeldungEinzeilig("Das Projekt mit der ID: " + docId + " konnte nicht gelöscht werden");
-						}
-					});
-				},
-				error: function() {
-					MeldungEinzeilig("Ein Projekt mit der ID: " + docId + " wurde nicht gefunden");
+	function handleDelete(event){
+		var docId = "{{id}}";
+		// First open doc based on ID in order to get full document
+		$db.openDoc(docId, {
+			success: function(document) {
+				// Then use the opened doc as reference to remove
+				$db.removeDoc(document, {
+					success: function() {
+						window.open("../../hProjektListe.html", target = '_self');
+					},
+					error: function() {
+						MeldungEinzeilig("Das Projekt mit der ID: " + docId + " konnte nicht gelöscht werden");
+					}
+				});
+			},
+			error: function() {
+				MeldungEinzeilig("Ein Projekt mit der ID: " + docId + " wurde nicht gefunden");
+			}
+		});
+		return false;
+	}
+	function speichern(){
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hProjekt";
+				doc.User = User;
+				var pName = $("input#pName").val();
+				if (pName == "") {
+					MeldungEinzeilig("Bitte Projektnamen eingeben");
+					document.getElementById("pName").focus();
+					return;
 				}
-			});
-			return false;
-		}
+				doc.pName = pName;
+				if ($("[id$='pBemerkungen']").val()!=""){
+					doc.pBemerkungen = $("[id$='pBemerkungen']").val();
+				} else if (doc.pBemerkungen!=null){
+					delete doc.pBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					error: function() {
+						MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
+					 }
+				});
+			}
+		});
+	}
   </script>
 </html>
