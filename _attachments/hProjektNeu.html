@@ -7,17 +7,15 @@
   	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-	<script src="vendor/couchapp/loader.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-  	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-  	<script type="text/javascript">
-		$( document ).bind( "mobileinit", function(){
-			$.mobile.page.prototype.options.degradeInputs.date = 'text';
-			$.mobile.selectmenu.prototype.options.nativeMenu = false;
-		});	
-	</script>
   </head>
   <body>
 	<div data-role="page">
@@ -126,14 +124,5 @@
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-
-  <script type="text/javascript" charset="utf-8">	
-	Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
-		'dateFormat': 'YYYY-MM-DD',
-		'headerFormat': 'YYYY-MM-DD',
-		'monthsOfYear': Monate
-	});
   </script>
 </html>

@@ -7,6 +7,14 @@
   	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>  	
   	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
   </head>
   <body>
@@ -38,7 +46,6 @@
 		</div><!-- /footer -->
 	</div>
   </body>
-  <script src="vendor/couchapp/loader.js"></script>
   <script type="text/javascript" charset="utf-8">;
 	function handleDocumentReady()
 	{
@@ -83,8 +90,6 @@
   	}
 	
 	function einloggen(name, pass) {
-  		//var elem = $(this);
-  		
 		$.couch.login({
 			name : name,
 			password : pass,
@@ -98,7 +103,7 @@
 	}
 	
 	function _init(name, pass) {
-		$$(this).userCtx = null;
+		//$$(this).userCtx = null;
 		$.couch.session({
 			success : function(r) {
 				var userCtx = r.userCtx;

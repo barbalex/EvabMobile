@@ -383,7 +383,7 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
     	'buttons' : {
 		 	'neu anmelden': {
 		      	click: function () {
-		        	window.open(Pfad + "index.html");
+		        	window.open(Pfad + "index.html", target="_self");
         		},
         		theme: "a",
         		icon: "home"
@@ -441,7 +441,7 @@ function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
     	'buttons' : {
 		 	'neu anmelden': {
 		      	click: function () {
-		        	window.open(Pfad + "index.html");
+		        	window.open(Pfad + "index.html", target="_self");
         		},
         		theme: "a",
         		icon: "home"
@@ -499,7 +499,7 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
     	'buttons' : {
 		 	'neu anmelden': {
 		      	click: function () {
-		        	window.open(Pfad + "index.html");
+		        	window.open(Pfad + "index.html", target="_self");
         		},
         		theme: "a",
         		icon: "home"
