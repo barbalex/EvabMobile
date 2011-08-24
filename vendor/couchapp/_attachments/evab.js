@@ -398,8 +398,7 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
       		},
       		'Beobachtungen exportieren': {
 		      	click: function () {
-		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
-		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -458,7 +457,7 @@ function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
       		'Beobachtungen exportieren': {
 		      	click: function () {
 		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
-		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -517,7 +516,7 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
       		'Beobachtungen exportieren': {
 		      	click: function () {
 		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
-		        	window.open(Pfad + "_list/BeobExport/BeobListe?user=" + User);
+		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
         		},
         		theme: "a",
         		icon: "arrow-r"
