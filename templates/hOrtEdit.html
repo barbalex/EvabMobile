@@ -381,7 +381,8 @@
 				var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
 				$("input#oXKoord").val(x);
 				$("input#oYKoord").val(y);  
-				MeldungEinzeilig('Koordinaten wurden gesetzt');       
+				MeldungEinzeilig('Koordinaten wurden gesetzt'); 
+				speichern();
 	        }, 
 	        function(){ 
 	            MeldungEinzeilig('Keine Positionsdaten verfügbar');

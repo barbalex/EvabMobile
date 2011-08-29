@@ -417,6 +417,8 @@
 		return false;
 	}
 
+	//Speichert alle Daten
+	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
 	function speichern(Pfad){
 		var docId = "{{id}}";
 		$db.openDoc(docId, {

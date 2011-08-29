@@ -86,7 +86,6 @@ function DdInWgs84LaengeSec(Laenge){
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
 function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-
   // Converts degrees dec to sex
   lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
   lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
@@ -106,7 +105,6 @@ function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 }
 
 function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-
   // Converts degrees dec to sex
   lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
   lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
@@ -168,10 +166,9 @@ function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
 		});
 };
 
-function ArtgruppenlisteAufbauen(Status)
 //ArtgruppenListe in Artgruppenliste.html wird aufgebaut
 //Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
-{ 
+function ArtgruppenlisteAufbauen(Status){ 
 	var viewname = "evab/Artgruppen";
 	$db.view(viewname, {
 		success: function(data) {
@@ -239,7 +236,7 @@ function ArtlisteAufbauen(ArtGruppe, Status)
 
 function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
 //Neue Beobachtungen werden gespeichert
-//ausgelöst auch BeobListe.html oder BeobEdit.html
+//ausgelöst durch BeobListe.html oder BeobEdit.html
 	var doc = {};
 	doc.Modus = "einfach";
 	doc.Typ = "Beobachtung";
@@ -247,9 +244,13 @@ function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtName;
 	doc.aArtId = aArtId;
+	doc.zDatum = DatumNeu();
+	doc.zZeit = ZeitNeu();
 	$db.saveDoc(doc, {
 		success: function(data) {
+			//$.mobile.changePage("_show/BeobEdit/" + data.id + "?Status=neu");     Nicht so öffnen: Div. Code müsste dann in BeobListe verschoben werden... würde unübersichtlich
 			window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+			refreshBeobListe("");
 		},
 		error: function() {
 			MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
@@ -346,8 +347,6 @@ function AutorHolen(){
 				key = data.rows[i].key;
 				if (User == key) {
 					var aAutor = beob.Autor;
-					//$("input#aAutor").val(Autor);
-					alert("AutorHolen: aAutor = " + aAutor);
 					return(aAutor);
 				}
 			}
@@ -375,6 +374,7 @@ function AutorSetzen(){
 	});
 }
 
+//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/_attachments
 function MenuAufbauen(thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
@@ -433,6 +433,7 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
   	})
 }
 
+//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
@@ -492,6 +493,7 @@ function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
   	})
 }
 
+//Menü aufbauen. Wird aufgerufen von Formularen, die wie ArtListe.html einfach oder hierarchisch sein können
 function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
@@ -542,4 +544,61 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
             }
     	}
   	})
+}
+
+//BeobListe in BeobList.html erneuern. Wird aufgerufen von: BeobListe.html, BeobEdit.html
+//Pfad muss mitgegeben werden, weil sonst beim Aufruf von BeobEdit der Pfad zu den Bildern nicht klappt...
+function refreshBeobListe(Pfad) {
+	$("#beobachtungen").empty();
+	$db.view("evab/BeobListe",
+		{success: function(data) {
+			var i;
+			var anzBeob = 0;
+			var beob;
+			var ListItemContainer = "";
+			for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+				key = data.rows[i].key;
+				if (key[0] == User) {            //nur eigene Beobachtungen zählen!
+					anzBeob = anzBeob + 1;
+				}
+			}
+
+			//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+			var Titel2 = " Beobachtungen";
+			if (anzBeob==1){
+				Titel2 = " Beobachtung";
+			}
+			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
+
+			if (anzBeob == 0) {
+				$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
+			} else {
+				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
+				for(i in data.rows)                  //Liste aufbauen
+				{
+					beob = data.rows[i].value;
+					key = data.rows[i].key;
+					if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+						var Datum = beob.zDatum;
+						var Zeit = beob.zZeit;
+						var ArtGruppe = beob.aArtGruppe;
+						ImageLink = Pfad + "Artgruppenbilder/" + ArtGruppe + ".png";
+						var ArtName = beob.aArtName;
+						var externalPage = "_show/BeobEdit/" + beob._id;
+						var listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
+							"<a href=\"" + externalPage + "\" rel=\"external\">" +
+							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+							"<h3 class=\"aArtName\">" + ArtName + "<\/h3>" +
+							"<p class=\"zZeit\">" + Datum + "&nbsp; &nbsp;" + Zeit + "<\/p>" +
+							"<\/a> <\/li>";
+						ListItemContainer = ListItemContainer + listItem;
+					}
+				}
+			}
+			ListItemContainer = ListItemContainer + "<\/ul>";
+			$("#beobachtungen").append(ListItemContainer);
+			$("#beobachtungen").listview();
+			$("#beobachtungen").listview("refresh");
+		}
+	});
 }

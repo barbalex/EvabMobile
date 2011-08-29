@@ -9,9 +9,6 @@
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript">
 	//customize jQuery Mobile to let IE7+ in (Mobile IE)
 	//run this script after jQuery loads, but before jQuery Mobile loads				
@@ -32,6 +29,9 @@
 			});
 		});
 	</script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -71,10 +71,10 @@
 	function handleDocumentReady()
 	{
 		$db = $.couch.db("evab-ch_barbalex_evab");
-		//if (!("autofocus" in document.createElement("input"))) {
-	    //  document.getElementById("UserName").focus();                      //FUNKTIONIERT NICHT? Gibt sogar Fehler in Firebug
-	    //}
-		
+		/*if (!("autofocus" in document.createElement("input"))) {                   hat null Wirkung!
+	      document.getElementById("UserName").focus();
+	    }*/
+
 		$("#SubmitButton").tap(function(event) {
 			var UserName = $('input[name=UserName]').val();
 			var Passwort = $('input[name=Passwort]').val();
@@ -83,7 +83,7 @@
 			} else if (Passwort==""){
 				MeldungEinzeilig("Bitte Passwort eingeben");
 			} else {
-			submitEinloggen();
+				submitEinloggen();
 			}
 		});
 

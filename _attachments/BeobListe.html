@@ -10,9 +10,6 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript">
 	//customize jQuery Mobile to let IE7+ in (Mobile IE)
 	//run this script after jQuery loads, but before jQuery Mobile loads				
@@ -33,6 +30,9 @@
 			});
 		});
 	</script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -90,7 +90,7 @@
 				}
 			}
 		});
-		refreshBeobListe();
+		refreshBeobListe("");
 
 		$('li').bind('taphold', function(event){
 			var that = this;
@@ -199,62 +199,6 @@
 				}
 			});
 		});
-
-		function refreshBeobListe()
-		{
-			$("#beobachtungen").empty();
-			$db.view("evab/BeobListe",
-				{success: function(data) {
-					var i;
-					var anzBeob = 0;
-					var beob;
-					var ListItemContainer = "";
-					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-						key = data.rows[i].key;
-						if (key[0] == User) {            //nur eigene Beobachtungen zählen!
-							anzBeob = anzBeob + 1;
-						}
-					}
-
-					//Im Titel der Seite die Anzahl Beobachtungen anzeigen
-					var Titel2 = " Beobachtungen";
-					if (anzBeob==1){
-						Titel2 = " Beobachtung";
-					}
-					$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
-
-					if (anzBeob == 0) {
-						$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
-					} else {
-						data.rows.reverse();                 //zuletzt erfasste sind zuoberst
-						for(i in data.rows)                  //Liste aufbauen
-						{
-							beob = data.rows[i].value;
-							key = data.rows[i].key;
-							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-								var Datum = beob.zDatum;
-								var Zeit = beob.zZeit;
-								var ArtGruppe = beob.aArtGruppe;
-								ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-								var ArtName = beob.aArtName;
-								var externalPage = "_show/BeobEdit/" + beob._id;
-								var listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
-									"<a href=\"" + externalPage + "\" rel=\"external\">" +
-									"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-									"<h3 class=\"aArtName\">" + ArtName + "<\/h3>" +
-									"<p class=\"zZeit\">" + Datum + "&nbsp; &nbsp;" + Zeit + "<\/p>" +
-									"<\/a> <\/li>";
-								ListItemContainer = ListItemContainer + listItem;
-							}
-						}
-					}
-					ListItemContainer = ListItemContainer + "<\/ul>";
-					$("#beobachtungen").append(ListItemContainer);
-					$("#beobachtungen").listview();
-					$("#beobachtungen").listview("refresh");
-				}
-			});
-		}
 	
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
 		var UserId;
@@ -312,8 +256,5 @@
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-
   </script>
 </html>
