@@ -1,5 +1,6 @@
 /*!
- * jQuery Mobile v1.0b2
+ * jQuery Mobile v Git Build
+ * Git Info SHA1: 04190fc8da18c12f4f001a769ab94d889f497010 Date: Thu Sep 1 04:16:14 2011 -0700
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -666,8 +667,11 @@ a.ui-link-inherit {
 	-webkit-border-radius: 				.6em;
 	border-radius: 						.6em;
 }
-
-
+.ui-corner-none {
+	-moz-border-radius: 				   0;
+	-webkit-border-radius: 				   0;
+	border-radius: 						   0;
+}
 
 /* Interaction cues
 -----------------------------------------------------------------------------------------------------------*/
@@ -811,6 +815,7 @@ a.ui-link-inherit {
 .ui-icon-radio-off {
 	background-color: transparent;	
 }
+.ui-icon-checkbox-on,
 .ui-checkbox-on .ui-icon,
 .ui-radio-on .ui-icon {
 	background-color: #4596ce; /* NOTE: this hex should match the active state color. It's repeated here for cascade */
@@ -1578,9 +1583,12 @@ ol.ui-listview .ui-li-jsnumbering:before { content: "" !important; } /* to avoid
 .ui-listview-inset .ui-li { border-right-width: 1px; border-left-width: 1px; }
 .ui-li:last-child, .ui-li.ui-field-contain:last-child { border-bottom-width: 1px; }
 .ui-li>.ui-btn-inner { display: block; position: relative; padding: 0; }
-.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li { padding: .7em 75px .7em 15px; display: block; }
+.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li { padding: .7em 15px .7em 15px; display: block; }
 .ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb  { min-height: 60px; padding-left: 100px; }
 .ui-li-has-icon .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-icon {  min-height: 20px; padding-left: 40px; }
+.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-count { padding-right: 45px; }
+.ui-li-has-arrow .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow { padding-right: 30px; }
+.ui-li-has-arrow.ui-li-has-count .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-arrow.ui-li-has-count { padding-right: 75px; }
 .ui-li-heading { font-size: 16px; font-weight: bold; display: block; margin: .6em 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;  }
 .ui-li-desc {  font-size: 12px; font-weight: normal; display: block; margin: -.5em 0 .6em; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 .ui-li-thumb, .ui-li-icon { position: absolute; left: 1px; top: 0; max-height: 80px; max-width: 80px; }

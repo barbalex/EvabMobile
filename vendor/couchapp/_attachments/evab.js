@@ -260,7 +260,7 @@ function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
 
 function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aArtGruppe, aArtName, aArtId){
 //Neue hierarchische Beobachtungen werden gespeichert
-//ausgelöst durch hArtListe.html oder hArtArtgruppeEdit.html
+//ausgelöst durch hArtListe.html oder hArtEdit.html
 	var doc = {};
 	doc.Typ = "hArt";
 	doc.User = User;
@@ -274,7 +274,7 @@ function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aA
 	doc.aMeldungTyp = "Feldbeobachtung";
 	$db.saveDoc(doc, {
 		success: function(data) {
-			window.open("_show/hArtArtgruppeEdit/" + data.id + "?Status=neu", target="_self");
+			window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
 			MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");

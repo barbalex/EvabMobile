@@ -89,5 +89,5 @@ function(doc, req) {
 		aStichprobennummer: doc.aStichprobennummer,
 		aBemerkungen: doc.aBemerkungen
 	};
-	return Mustache.to_html(this.templates.hArtArtgruppeEdit, stash);
+	return Mustache.to_html(this.templates.hArtEdit, stash);
 }
