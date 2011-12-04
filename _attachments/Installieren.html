@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>	
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+    <script type="text/javascript" src="vendor/couchapp/takeout.js"></script>
+  </head>
+  <body>
+  	<div data-role="page">
+  		<div data-role="header" data-position="fixed">
+  			<a href="BeobListe.html" data-rel="back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
+  			<h2>lokal installieren</h2>
+  		</div>
+		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
+			<p>EvAB mobile ist nicht nur eine Webseite. Es kann auch lokal auf Ihrem PC, Handy oder Tablett als "App" installiert werden (Windows, Mac, Android, iOS).<br /><br />
+			Ihre Daten werden lokal gespeichert und immer, wenn eine Internetverbindung besteht, mit der Datenbank im Internet synchronisiert.</p>
+			<p><b>Lohnt sich eine lokale Installation?</b> Sie profitieren von diesen Vorteilen:</p>
+			<ul>
+				<li>Sie haben Ihre Daten physisch im Griff</li>
+				<li>Im Notfall gibt es immer eine Sicherungskopie</li>
+				<li>Arbeiten Sie im Feld ohne Internetverbindung? Kein Problem. Bloss die Luftbilder werden nicht angezeigt</li>
+				<li>Auf Mobilgeräten schonen Sie Ihren Akku</li>
+				<li>Das App läuft schneller und flüssiger</li>
+				<li>Ökobüros mit eigenem GIS können direkt auf die aktuellen Daten zugreifen - schon während der Feldarbeit! Na ja, vorläufig ist das Theorie - die Schnittstelle muss noch entwickelt werden</li>
+			</ul>
+			<hr />
+			<h4>Ich will das App installieren:</h4>
+		    <a href="../takeout/_show/takeout.jnlp/_design/takeout-settings.jnlp" target="_blank">Auf Windows XP, Vista, 7 oder einem Mac</a><br />Hinweise:
+		    <ul>
+				<li>Java wird vorausgesetzt</li>
+				<li>Die App wird in Ihrem Homeverzeichnis unter .couchapptakeout installiert</li>
+			</ul>
+		    <br />
+		    <p>Auf Android oder iOS (in Entwicklung, folgt später)</p>
+		    <hr />
+		</div>
+	</div>
+
+  </body>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			// do stuff when DOM is ready
+			$db = $.couch.db("evab");
+			
+			User = "";
+
+			userCtx = null;
+			$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+			});
+			
+			/*
+			$.ajax({
+			    url: '/_session?callback=',
+			    dataType: 'json',
+			    async: false,
+			    success: function(session){
+			        User = session.userCtx.name;
+			    }
+			});
+			*/
+		});
+	</script>
+  
+</html>

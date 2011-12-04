@@ -1,14 +1,14 @@
 function(head, req) {
 	var row;
 	start({
-  		  "headers": {
-    	    		"Content-Type": "text/csv",
-			"Content-disposition": "attachment;filename=Felddefinitionen.csv",
+  		"headers": {
+    	    "Content-Type": "text/csv",
+			"Content-disposition": "attachment;filename=FelddefinitionenEvabMobile.csv",
 			"Accept-Charset": "utf-8"
-		  }
+		}
 	});
-	send('Tabelle, FeldName, Reihenfolge, FeldBeschriftung, FeldBeschreibung, RolleModusEinfach, Formularelement, FormElementTyp, FeldNameEvab, FeldNameZdsf, FeldNameCscf, ArtGruppe \n');
+	send('Tabelle\tFeldName\tReihenfolge\tFeldBeschriftung\tFeldBeschreibung\tRolleModusEinfach\tFormularelement\tFormElementTyp\tFeldNameEvab\tFeldNameZdsf\tFeldNameCscf\tArtGruppe\n');
 	while(row = getRow()) {
-		send('"' + row.value.Tabelle + '", "' + row.value.FeldName + '", "' + row.value.Reihenfolge + '", "' + row.value.FeldBeschriftung + '", "' + row.value.FeldBeschreibung + '", "' + row.value.RolleModusEinfach + '", "' + row.value.Formularelement + '", "' + row.value.FormElementTyp + '", "' + row.value.FeldNameEvab + '", "' + row.value.FeldNameZdsf + '", "' + row.value.FeldNameCscf + '", "' + row.value.ArtGruppe + '" \n');
+		send('"' + row.value.Tabelle + '"\t"' + row.value.FeldName + '"\t"' + row.value.Reihenfolge + '"\t"' + row.value.FeldBeschriftung + '"\t"' + row.value.FeldBeschreibung + '"\t"' + row.value.RolleModusEinfach + '"\t"' + row.value.Formularelement + '"\t"' + row.value.FormElementTyp + '"\t"' + row.value.FeldNameEvab + '"\t"' + row.value.FeldNameZdsf + '"\t"' + row.value.FeldNameCscf + '"\t"' + row.value.ArtGruppe + '" \n');
 	}
 }

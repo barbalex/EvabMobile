@@ -5,30 +5,15 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
+	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
 		});
-	</script>
+    </script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
@@ -47,7 +32,7 @@
 			<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
 			<form id="LoginForm" action="#" method="get" autocomplete="on">
 				<div data-role="fieldcontain">
-					<label for="UserName">Benutzername:</label>
+					<label for="UserName">Name:</label>
 					<input id="UserName" name="UserName" type="text" autofocus required/>
 				</div>
 				<div data-role="fieldcontain">
@@ -56,6 +41,9 @@
 				</div>
 			</form>
 			<p style="text-align: center">Sie sehen nur die eigenen Beobachtungen. Darum brauchen Sie ein Konto.</p>
+			<p style="text-align: center">Diese App ist in Entwicklung. Vorläufig können Sie gerne mit Name "z" und Passwort "z" anmelden und alles ausprobieren.<br>Ihre Daten werden aber vor der Veröffentlichung gelöscht!</p>
+			<p style="text-align: center">Ich freue mich über Rückmeldungen: <a href="mailto:alex.barbalex@gmail.com">email senden</a></p>
+			<p style="text-align: center"><a href="http://www.barbalex.ch/news/latest/evabmobile/">mehr Infos hier</a></p>
 		</div>
 		<div data-role="footer">
 			<div data-role="navbar">
@@ -68,9 +56,8 @@
 	</div>
   </body>
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
 		/*if (!("autofocus" in document.createElement("input"))) {                   hat null Wirkung!
 	      document.getElementById("UserName").focus();
 	    }*/
@@ -79,11 +66,11 @@
 			var UserName = $('input[name=UserName]').val();
 			var Passwort = $('input[name=Passwort]').val();
 			if (UserName == "") {
-				MeldungEinzeilig("Bitte Benutzernamen eingeben");
+				melde("Bitte Benutzernamen eingeben");
 			} else if (Passwort==""){
-				MeldungEinzeilig("Bitte Passwort eingeben");
+				melde("Bitte Passwort eingeben");
 			} else {
-				submitEinloggen();
+				meldeUserAn();
 			}
 		});
 
@@ -94,75 +81,63 @@
 		    	e.preventDefault();
 		  	}
 		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
   </script>
   <script type="text/javascript" charset="utf-8">	
-  	function submitEinloggen() {
-  		var name = $('input[name=UserName]').val();
-		var pass = $('input[name=Passwort]').val();
-		einloggen(name, pass);
-  	}
-	
-	function einloggen(name, pass) {
+	function meldeUserAn() {
+		var UserName = $('input[name=UserName]').val();
+		var Passwort = $('input[name=Passwort]').val();
 		$.couch.login({
-			name : name,
-			password : pass,
+			name : UserName,
+			password : Passwort,
 			success : function(r) {
-				_init(name, pass);
+				authentifiziereUser();
 			},
 			error: function() {
-				MeldungZweizeilig("Die Anmeldung ist gescheitert.", "Sie müssen ev. ein Konto erstellen.");
+				melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
 			}
 		});      
 	}
 	
-	function _init(name, pass) {
-		//$$(this).userCtx = null;
+	function authentifiziereUser() {
 		$.couch.session({
 			success : function(r) {
 				var userCtx = r.userCtx;
 				User = userCtx.name;
 				if (userCtx.name) {
-					_replicate(name, pass);
-					var Modus;
-					$db.view("evab/User",
-						{success: function(data) {
-							var i;
-							var doc;
-							for(i in data.rows) {
-								key = data.rows[i].key;
-								doc = data.rows[i].value;
-								if (key == User) {
-									Modus = doc.Modus;
-								}
-							}
-							if (Modus == "hierarchisch"){
-								window.open("hProjektListe.html", target="_self");
-							} else {
-								window.open("BeobListe.html", target="_self");
-							}
-						}
-					});
+					öffneStartseite(User);
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("Oops, die Datenbank hat keine Benutzer!");
+					melde("Oops, die Datenbank hat keine Benutzer!");
 				} else {
-					MeldungEinzeilig("Sie konnten nicht eingeloggt werden");
+					melde("Sie konnten nicht eingeloggt werden");
 				}
 			}
 		});
 	}
-	
+
+	function öffneStartseite(User) {
+		//_replicate(name, pass);
+		var Modus;
+		$db.view('evab/User?key="' + User + '"', {
+			success: function(data) {
+				var doc;
+				doc = data.rows[0].value;
+				Modus = doc.Modus || "einfach";
+				UserId = doc._id;
+				if (Modus == "hierarchisch"){
+					window.open("hProjektListe.html", target="_self");
+				} else {
+					window.open("BeobListe.html", target="_self");
+				}
+			}
+		});
+	}
 
 	function _replicate(name, pass){
-		//$.couch.replicate("http://barbalex:dLhdMg12@barbalex.couchone.com/evab", "http://ch_barbalex_evab:123@127.0.0.1:5984/evab-ch_barbalex_evab",{continuous:true});
-		//$.couch.replicate("http://ch_barbalex_evab:123@127.0.0.1:5984/evab-ch_barbalex_evab", "http://barbalex:dLhdMg12@barbalex.couchone.com/evab",{continuous:true});
+		//$.couch.replicate("http://barbalex:dLhdMg12@barbalex.couchone.com/evab", "http://ch_barbalex_evab:123@127.0.0.1:5984/evab",{continuous:true});
+		//$.couch.replicate("http://ch_barbalex_evab:123@127.0.0.1:5984/evab", "http://barbalex:dLhdMg12@barbalex.couchone.com/evab",{continuous:true});
 	}
   </script>
 </html>

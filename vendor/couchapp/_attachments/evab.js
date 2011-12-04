@@ -2,7 +2,7 @@
 Diese Funktionen werden in evab auf mehreren Seiten benutzt
 */
 
-function DatumNeu(){                               
+function erstelleNeuesDatum(){                               
 	var jetzt = new Date();
 	var Jahr = jetzt.getFullYear();
 	var Mnt = jetzt.getMonth()+1;
@@ -13,7 +13,7 @@ function DatumNeu(){
 	return Datum;
 };
 
-function ZeitNeu(){                               
+function erstelleNeueUhrzeit(){                               
 	var jetzt = new Date();
 	var Std = jetzt.getHours();
 	var StdAusgabe = ((Std < 10) ? "0" + Std : Std);
@@ -146,18 +146,8 @@ function DdInChY(Breite, Laenge){
 	return y;
 };
 
-function MeldungEinzeilig(ErsteZeile) {
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile +"</h1></div>")
-	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
-	    .appendTo( $.mobile.pageContainer )
-	    .delay( 2500 )
-	    .fadeOut( 700, function(){
-	    	$(this).remove();
-		});
-};
-
-function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + ErsteZeile + "<br>" + ZweiteZeile +"</h1></div>")
+function melde(Meldung) {
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + Meldung +"</h1></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo( $.mobile.pageContainer )
 	    .delay( 2500 )
@@ -167,74 +157,67 @@ function MeldungZweizeilig(ErsteZeile, ZweiteZeile) {
 };
 
 //ArtgruppenListe in Artgruppenliste.html wird aufgebaut
-//Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
-function ArtgruppenlisteAufbauen(Status){ 
+//Status ist Neu oder Edit, damit BeobListe.html und hArtListe.html (Neu) bzw. BeobEdit.html und hArtEdit.html individuell reagieren können
+function erstelleArtgruppenliste(Status) { 
 	var viewname = "evab/Artgruppen";
 	$db.view(viewname, {
 		success: function(data) {
 			var i;
-			var ListItem;
 			var ListItemContainer = "";
 			var ArtGruppe;
-			for(i in data.rows)
-			{
+			for(i in data.rows) {
 				ArtGruppe = data.rows[i].key;
-				ListItem = "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">" +
+				ListItemContainer += "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">" +
 				"<a href=\"#\">" +
 				"<h3>" + ArtGruppe + "<\/h3>" +
 				"<\/a> <\/li>";
-				ListItemContainer = ListItemContainer + ListItem;
 			}
-			ListItemContainer = ListItemContainer + "<\/ul>";
-			$("#ArtgruppenListe").append(ListItemContainer);
+			ListItemContainer += "<\/ul>";
+			$("#ArtgruppenListe").html(ListItemContainer);
 			$("#ArtgruppenListe").listview();
 			$("#ArtgruppenListe").listview("refresh");
 		}
 	});
 }
 
-function ArtlisteAufbauen(ArtGruppe, Status)
 //ArtenListe in Artenliste.html wird aufgebaut
 //Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
-{ 
+function erstelleArtliste(ArtGruppe, Status) { 
 	var viewname = "evab/Artliste" + ArtGruppe;
 	$db.view(viewname, {
 		success: function(data) {
 			var i;
-			var ListItem;
 			var ListItemContainer = "";
-			var ArtName;
+			var ArtBezeichnung;
 			var Art;
 			var ArtId;
 			var HinweisVerwandschaft;
-			for(i in data.rows)
-			{
-				ArtName = data.rows[i].key;
+			for(i in data.rows) {
+				ArtBezeichnung = data.rows[i].key;
 				Art = data.rows[i].value;
 				ArtId = Art._id;
 				if(Art.HinweisVerwandschaft){
-					ListItem = "<li name=\"ArtListItem" + Status + "\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<h3>" + ArtName + "<\/h3>" +
+					"<h3>" + ArtBezeichnung + "<\/h3>" +
 					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
 					"<\/a> <\/li>";
 				}else{
-					ListItem = "<li name=\"ArtListItem" + Status + "\" id=\"" + ArtName + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<h3>" + ArtName + "<\/h3>" +
+					"<h3>" + ArtBezeichnung + "<\/h3>" +
 					"<\/a> <\/li>";
 				}
-				ListItemContainer = ListItemContainer + ListItem;
 			}
-			ListItemContainer = ListItemContainer + "<\/ul>";
-			$("#ArtenListe").append(ListItemContainer);
+			ListItemContainer += "<\/ul>";
+			$("#ArtenListe").html(ListItemContainer);
 			$("#ArtenListe").listview();
 			$("#ArtenListe").listview("refresh");
 		}
 	});
 }
 
-function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
+function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html oder BeobEdit.html
 	var doc = {};
@@ -242,23 +225,23 @@ function BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId){
 	doc.Typ = "Beobachtung";
 	doc.User = User;
 	doc.aArtGruppe = aArtGruppe;
-	doc.aArtName = aArtName;
+	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = aArtId;
-	doc.zDatum = DatumNeu();
-	doc.zZeit = ZeitNeu();
+	doc.zDatum = erstelleNeuesDatum();          //GEHT DAS AUF MOBILGERÄTEN ZU LANGE?????????????
+	doc.zZeit = erstelleNeueUhrzeit();
 	$db.saveDoc(doc, {
 		success: function(data) {
-			//$.mobile.changePage("_show/BeobEdit/" + data.id + "?Status=neu");     Nicht so öffnen: Div. Code müsste dann in BeobListe verschoben werden... würde unübersichtlich
+			//$.mobile.changePage(Pfad + "_show/BeobEdit/" + data.id + "?Status=neu", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
-			refreshBeobListe("");
+			//$("#BeobEditPage").page();
 		},
 		error: function() {
-			MeldungEinzeilig("Die Beobachtung konnte nicht gespeichert werden.");
-		 }
+			melde("Die Beobachtung konnte nicht gespeichert werden.");
+		}
 	});
 }
 
-function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aArtGruppe, aArtName, aArtId){
+function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aArtGruppe, aArtName, aArtId) {
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 	var doc = {};
@@ -277,110 +260,36 @@ function BeobNeuSpeichernHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aA
 			window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
-			MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
-		 }
-	});
-}
-
-function DatumZeitSetzen(){
-	var Datum = DatumNeu();
-	$("input#zDatum").val(Datum);
-	var Zeit = ZeitNeu();
-	$("input#zZeit").val(Zeit);
-}
-
-function DatumZeitHolen(){
-	zDatum = DatumNeu();
-	zZeit = ZeitNeu();
-}
-
-function GetGeolocation(){
-	//ÜBERALL DURCH KOORDINATENHOLEN ERSETHEN!!!!!!!!!!!!!!!!!!!
-	if ( navigator.geolocation ) { 
-    navigator.geolocation.getCurrentPosition ( 
-        function(position) {
-        	var oLongitudeDecDeg = position.coords.longitude;
-			var oLatitudeDecDeg = position.coords.latitude;
-			var oLagegenauigkeit = position.coords.accuracy;
-			$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-			$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
-			$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-			var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-			var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-			$("input#oXKoord").val(x);
-			$("input#oYKoord").val(y); 
-			MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
-        }, 
-        function(){ 
-            MeldungEinzeilig('Keine Positionsdaten erhalten');
-        }); 
-    }
-}
-
-function KoordinatenHolen(){
-	if ( navigator.geolocation ) { 
-    navigator.geolocation.getCurrentPosition ( 
-        function(position) {
-        	oLongitudeDecDeg = position.coords.longitude;
-			oLatitudeDecDeg = position.coords.latitude;
-			oLagegenauigkeit = position.coords.accuracy;
-			oXKoord = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-			oYKoord = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-			return(oLongitudeDecDeg, oLatitudeDecDeg, oLagegenauigkeit, oXKoord, oYKoord);
-			MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
-        }, 
-        function(){ 
-            MeldungEinzeilig('Keine Positionsdaten erhalten');
-        }); 
-    }
-}
-
-function AutorHolen(){
-	$db.view("evab/User",
-		{success: function(data) {
-			var i;
-			var beob;
-			var key;
-			for(i in data.rows)
-			{
-				beob = data.rows[i].value;
-				key = data.rows[i].key;
-				if (User == key) {
-					var aAutor = beob.Autor;
-					return(aAutor);
-				}
-			}
+			melde("Die Art konnte nicht gespeichert werden.");
 		}
 	});
 }
 
-function AutorSetzen(){
-	$db.view("evab/User",
-		{success: function(data) {
-			var i;
-			var beob;
-			var key;
-			for(i in data.rows)
-			{
-				beob = data.rows[i].value;
-				key = data.rows[i].key;
-				if (User == key) {
-					var aAutor = beob.Autor;
-					$("input#aAutor").val(aAutor);
-					break;
-				}
-			}
+function setzeAutor() {
+	$db.view('evab/User?key="' + User + '"', {
+		success: function(data) {
+			var doc;
+			doc = data.rows[0].value;
+			var aAutor = doc.Autor;
+			$("input#aAutor").val(aAutor);
 		}
 	});
 }
 
 //Menü aufbauen. Wird aufgerufen von allen Formularen in evab/_attachments
-function MenuAufbauen(thiz, User, UserId, Pfad){
+function erstelleMenu(thiz, User, UserId, Pfad) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
 		'prompt' : 'Menü',
     	'buttons' : {
+		 	'hierarchischer Modus': {
+		      	click: function () {
+		        	window.open(Pfad + "hProjektListe.html", target="_self");
+        		},
+        		theme: "a",
+        		icon: "check"
+      		},
 		 	'neu anmelden': {
 		      	click: function () {
 		        	window.open(Pfad + "index.html", target="_self");
@@ -390,8 +299,14 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
 		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+        		},
+        		theme: "a",
+        		icon: "gear"
+      		},
+      		'lokal installieren': {
+		      	click: function () {
+		        	window.open(Pfad + "Installieren.html", target="_self");
         		},
         		theme: "a",
         		icon: "gear"
@@ -409,20 +324,6 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
         		},
         		theme: "a",
         		icon: "grid"
-      		},
-      		'Datenfelder exportieren': {
-		      	click: function () {
-		        	window.open(Pfad + "_list/FeldExport/FeldListe");
-        		},
-        		theme: "a",
-        		icon: "arrow-r"
-      		},
-      		'hierarchischer Modus': {
-		      	click: function () {
-		        	window.open(Pfad + "hProjektListe.html", target="_self");
-        		},
-        		theme: "a",
-        		icon: "check"
       		},
       		'schliessen': {
                 click: function () { return true; },
@@ -434,73 +335,20 @@ function MenuAufbauen(thiz, User, UserId, Pfad){
 }
 
 //Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-function MenuAufbauenHierarchisch(thiz, User, UserId, Pfad){
+function erstelleMenuHierarchisch(thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
 		'prompt' : 'Menü',
     	'buttons' : {
-		 	'neu anmelden': {
-		      	click: function () {
-		        	window.open(Pfad + "index.html", target="_self");
-        		},
-        		theme: "a",
-        		icon: "home"
-      		},
-      		'meine Einstellungen': {
-		      	click: function () {
-		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
-		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
-        		},
-        		theme: "a",
-        		icon: "gear"
-      		},
-      		'Beobachtungen exportieren': {
-		      	click: function () {
-		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
-		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
-        		},
-        		theme: "a",
-        		icon: "arrow-r"
-      		},
-      		'Datenfelder verwalten': {
-		      	click: function () {
-		        	window.open(Pfad + "FeldListe.html", target="_self");
-        		},
-        		theme: "a",
-        		icon: "grid"
-      		},
-      		'Datenfelder exportieren': {
-		      	click: function () {
-		        	window.open(Pfad + "_list/FeldExport/FeldListe");
-        		},
-        		theme: "a",
-        		icon: "arrow-r"
-      		},
-      		'einfacher Modus': {
+		 	'einfacher Modus': {
 		      	click: function () {
 		        	window.open(Pfad + "BeobListe.html", target="_self");
         		},
         		theme: "a",
         		icon: "check"
       		},
-      		'schliessen': {
-                click: function () { return true; },
-                icon: "back",
-                theme: "c"
-            }
-    	}
-  	})
-}
-
-//Menü aufbauen. Wird aufgerufen von Formularen, die wie ArtListe.html einfach oder hierarchisch sein können
-function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
-	//Code um Menü aufzubauen
-	$(thiz).simpledialog({
-		'mode' : 'bool',
-		'prompt' : 'Menü',
-    	'buttons' : {
-		 	'neu anmelden': {
+      		'neu anmelden': {
 		      	click: function () {
 		        	window.open(Pfad + "index.html", target="_self");
         		},
@@ -509,16 +357,21 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	//$.mobile.changePage(Pfad + "_show/UserEdit/" + UserId, {transition: "none"});
 		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+        		},
+        		theme: "a",
+        		icon: "gear"
+      		},
+      		'lokal installieren': {
+		      	click: function () {
+		        	window.open(Pfad + "Installieren.html", target="_self");
         		},
         		theme: "a",
         		icon: "gear"
       		},
       		'Beobachtungen exportieren': {
 		      	click: function () {
-		      		//$.mobile.changePage(Pfad + "../evab/_list/BeobExport/BeobListe?user=" + User, {transition: "none"});  klappt nicht
-		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
+		        	window.open(Pfad + '_list/BeobExportHierarchisch/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -530,6 +383,22 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
         		theme: "a",
         		icon: "grid"
       		},
+      		'schliessen': {
+                click: function () { return true; },
+                icon: "back",
+                theme: "c"
+            }
+    	}
+  	})
+}
+
+//Menü aufbauen. Wird aufgerufen von Feldliste.html, FeldEdit.html und FeldRead.html
+function erstelleMenuFürFelder(thiz, Pfad) {
+	//Code um Menü aufzubauen
+	$(thiz).simpledialog({
+		'mode' : 'bool',
+		'prompt' : 'Menü',
+    	'buttons' : {
       		'Datenfelder exportieren': {
 		      	click: function () {
 		        	window.open(Pfad + "_list/FeldExport/FeldListe");
@@ -546,59 +415,447 @@ function MenuAufbauenAusArtListe(thiz, User, UserId, Pfad){
   	})
 }
 
-//BeobListe in BeobList.html erneuern. Wird aufgerufen von: BeobListe.html, BeobEdit.html
+//BeobListe in BeobList.html vollständig neu aufbauen. Wird aufgerufen von: BeobListe.html, BeobEdit.html
 //Pfad muss mitgegeben werden, weil sonst beim Aufruf von BeobEdit der Pfad zu den Bildern nicht klappt...
-function refreshBeobListe(Pfad) {
+function aktualisiereBeobListe(Pfad, User) {
 	$("#beobachtungen").empty();
-	$db.view("evab/BeobListe",
-		{success: function(data) {
+	$db.view('evab/BeobListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+		success: function(data) {
 			var i;
 			var anzBeob = 0;
 			var beob;
 			var ListItemContainer = "";
-			for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-				key = data.rows[i].key;
-				if (key[0] == User) {            //nur eigene Beobachtungen zählen!
-					anzBeob = anzBeob + 1;
-				}
+			for(i in data.rows) {                    //Beobachtungen zählen
+				anzBeob += 1;
 			}
 
-			//Im Titel der Seite die Anzahl Beobachtungen anzeigen
-			var Titel2 = " Beobachtungen";
-			if (anzBeob==1){
+			var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+			if (anzBeob == 1) {
 				Titel2 = " Beobachtung";
 			}
 			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 			if (anzBeob == 0) {
-				$("#beobachtungen").append("<li>Sie haben noch keine Beobachtung erfasst</li>");
+				$("#beobachtungen").html("<li>Sie haben noch keine Beobachtung erfasst</li>");
 			} else {
 				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
-				for(i in data.rows)                  //Liste aufbauen
-				{
+				for(i in data.rows) {                //Liste aufbauen
 					beob = data.rows[i].value;
 					key = data.rows[i].key;
-					if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-						var Datum = beob.zDatum;
-						var Zeit = beob.zZeit;
-						var ArtGruppe = beob.aArtGruppe;
-						ImageLink = Pfad + "Artgruppenbilder/" + ArtGruppe + ".png";
-						var ArtName = beob.aArtName;
-						var externalPage = "_show/BeobEdit/" + beob._id;
-						var listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + beob._id + "\">" +
-							"<a href=\"" + externalPage + "\" rel=\"external\">" +
-							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-							"<h3 class=\"aArtName\">" + ArtName + "<\/h3>" +
-							"<p class=\"zZeit\">" + Datum + "&nbsp; &nbsp;" + Zeit + "<\/p>" +
-							"<\/a> <\/li>";
-						ListItemContainer = ListItemContainer + listItem;
-					}
+					var Datum = beob.zDatum;
+					var Zeit = beob.zZeit;
+					var ArtGruppe = beob.aArtGruppe;
+					var ImageLink = Pfad + "Artgruppenbilder/" + ArtGruppe + ".png";
+					var ArtName = beob.aArtName;
+					var externalPage = "_show/BeobEdit/" + beob._id;
+					ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+					ListItemContainer += beob._id;
+					ListItemContainer += "\"><a href=\"",
+					ListItemContainer += externalPage;
+					ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+					ListItemContainer += ImageLink;
+					ListItemContainer += "\" /><h3 class=\"aArtName\">";
+					ListItemContainer += ArtName;
+					ListItemContainer += "<\/h3><p class=\"zZeit\">";
+					ListItemContainer += Datum;
+					ListItemContainer += "&nbsp; &nbsp;";
+					ListItemContainer += Zeit;
+					ListItemContainer += "<\/p><\/a> <\/li>";
 				}
 			}
-			ListItemContainer = ListItemContainer + "<\/ul>";
-			$("#beobachtungen").append(ListItemContainer);
+			ListItemContainer += "<\/ul>";
+			$("#beobachtungen").html(ListItemContainer);
 			$("#beobachtungen").listview();
 			$("#beobachtungen").listview("refresh");
 		}
 	});
 }
+
+function erstelleNeueZeit(User, ProjektId, RaumId, OrtId) {
+	var doc = {};
+	doc.Typ = "hZeit";
+	doc.User = User;
+	doc.ProjektId = ProjektId;
+	doc.RaumId = RaumId;
+	doc.OrtId = OrtId;
+	doc.zDatum = erstelleNeuesDatum();
+	doc.zZeit = erstelleNeueUhrzeit();
+	$db.saveDoc(doc, {
+		success: function(data) {
+			window.open("../hZeitEdit/" + data.id, target="_self");
+		},
+		error: function() {
+			melde("Fehler: neue Zeit nicht gespeichert.");
+		}
+	});
+}
+
+function holeUserId(User) {
+	$db.view('evab/User?key="' + User + '"', {
+		success: function(data) {
+			var doc;
+			doc = data.rows[0].value;
+			UserId = doc._id;
+			return UserId;
+		}
+	});
+}
+
+function löscheDokument(DocId) {
+	return $db.openDoc(DocId, {
+		success: function(document) {
+			$db.removeDoc(document, {
+				success: function(document) {
+					return true;
+				},
+				error: function(document) {
+					return false;
+				}
+			});
+		},
+		error: function(document) {
+			return false;
+		}
+	});
+}
+
+Function.prototype.andThen=function(g) {
+  var f=this;
+  return function() {
+    f();g();
+  }
+};
+
+function Manager() {
+  this.callback=function () {}; // do nothing
+  this.registerCallback=function(callbackFunction) {
+    this.callback=(this.callback).andThen(callbackFunction);
+  }
+}
+
+//generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
+//Mitgeben: id der Art, Artgruppe, Artname
+function erstelle_hArtEdit(ID, aArtGruppe, aArtName) {
+	$("#hArtEditForm").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeArt', {
+		success: function(data) {
+			var Feldliste = data;
+			//Holt die Beobachtung mit der id "ID" aus der DB
+			$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
+				success: function(data) {
+					var Beobachtung = data.rows[0].value;
+					//alert("Beobachtung = " + Beobachtung);
+					var HtmlContainer3 = generiereHtmlFuerhArtEditForm (aArtGruppe, Feldliste, Beobachtung);
+					var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
+					var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
+					var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
+					$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
+				},
+				error: function() {
+				}
+			});
+		},
+		error: function() {
+		}
+	});
+}
+
+//generiert das Html für das Formular in hArtEdit.html
+//erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt; HtmlContainer mit dessen aktuellen Stand
+//der HtmlContainer wird ergänzt und zurück gegeben
+function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		FeldWert = (eval("Beobachtung." + FeldName) || "");
+		//alert("FeldName, FeldWert = " + FeldName + ", " + FeldWert);
+		FeldBeschriftung = Feld.FeldBeschriftung;
+		Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+		ListItem = "";
+		if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
+			switch(Feld.Formularelement) {
+				case "textinput": 	
+					ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert);
+					break;
+				case "textarea":
+					ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
+					break;
+				case "toggleswitch":
+					ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+					break;
+				case "checkbox":
+					ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+					break;
+				case "selectmenu":
+					ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
+					break;
+				case "slider":
+					SliderMinimum = Feld.SliderMinimum || 0;
+					SliderMaximum = Feld.SliderMaximum || 100;
+					ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
+					break;
+				case "radio":
+					ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+					break;
+			}
+		}
+		HtmlContainer += ListItem;
+		//Feld = {};
+	}
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für aArtGruppe
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerArtgruppe(aArtGruppe) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtGruppe' class='select'>Artgruppe:</label>\n\t";
+	HtmlContainer += "<select name='aArtGruppe' id='aArtGruppe' data-icon='arrow-r' data-native-menu='true' value='";
+	HtmlContainer += aArtGruppe;
+	HtmlContainer += "'>\n\t\t<option value='"
+	HtmlContainer += aArtGruppe;
+	HtmlContainer += "'>";
+	HtmlContainer += aArtGruppe;
+	HtmlContainer += "</option>\n\t</select>\n</div>\n";
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für aArtName
+//wird von erstelle_hArtEdit aufgerufen
+//bekommt HtmlContainer, ergänzt ihn und gibt ihn zurück
+function generiereHtmlFuerArtname(aArtName) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtName' class='select'>Artname:</label>\n\t";
+	HtmlContainer += "<select name='aArtName' id='aArtName' data-icon='arrow-r' data-native-menu='true' value='";
+	HtmlContainer += aArtName;
+	HtmlContainer += "'>\n\t\t<option value='";
+	HtmlContainer += aArtName;
+	HtmlContainer += "'>";
+	HtmlContainer += aArtName;
+	HtmlContainer += "</option>\n\t</select>\n</div>\n<hr />";
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Textinputs
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert) {
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '">';
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += ':</label>\n\t<input id="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '" name="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '" type="text" value="';
+	HtmlContainer += FeldWert;
+	HtmlContainer += '"/>\n</div>';
+	return HtmlContainer;		
+}
+
+//generiert den html-Inhalt für Slider
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '">';
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += ':</label>\n\t<input x="y" type="range" name="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '" id="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '" value="';
+	HtmlContainer += FeldWert;
+	HtmlContainer += '" min="';
+	HtmlContainer += SliderMinimum;
+	HtmlContainer += '" max="';
+	HtmlContainer += SliderMaximum;
+	HtmlContainer += '"/>\n</div>';
+	return HtmlContainer;	
+}
+
+//generiert den html-Inhalt für Textarea
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '">';
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += ':</label>\n\t<textarea id="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '" name="';
+	HtmlContainer += FeldName;
+	HtmlContainer += '">';
+	HtmlContainer += FeldWert;
+	HtmlContainer += '</textarea>\n</div>';
+	return HtmlContainer;		
+}
+
+//generiert den html-Inhalt für Toggleswitch
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "'>";
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += "</label>\n\t<select name='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' id='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' data-role='slider' value='";
+	HtmlContainer += FeldWert;
+	HtmlContainer += "'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Checkbox
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += "</legend>";
+	HtmlContainer += generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += "\n\t</fieldset>\n</div>";
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Optionen von Checkbox
+//wird von generiereHtmlFuerCheckbox aufgerufen
+function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
+	var i;
+	var HtmlContainer = "";
+	for(i in Optionen) {
+		var Option = Optionen[i];
+		var ListItem = "\n\t\t\t<label for='";
+		ListItem += Option;
+		ListItem += "'>";
+		ListItem += Option;
+		ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
+		ListItem += FeldName;
+		ListItem += "' id='";
+		ListItem += Option;
+		ListItem += "' value='";
+		ListItem += FeldWert;
+		ListItem += "' class='custom'";
+		if(FeldWert.indexOf(Optionen)>=0){
+			ListItem += " checked='checked'";
+		}
+		ListItem += "/>";
+		HtmlContainer += ListItem;
+	}
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Radio
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += "</legend>";
+	HtmlContainer += generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += "\n\t</fieldset>\n</div>";
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Optionen von Radio
+//wird von generiereHtmlFuerRadio aufgerufen
+function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
+	var i;
+	var HtmlContainer = "";
+	for(i in Optionen) {
+		var Option = Optionen[i];
+		var ListItem = "\n\t\t\t<label for='";
+		ListItem += Option;
+		ListItem += "'>";
+		ListItem += Option;
+		ListItem += "</label>\n\t\t\t<input type='radio' name='";
+		ListItem += FeldName;
+		ListItem += "' id='";
+		ListItem += Option;
+		ListItem += "' value='";
+		ListItem += FeldWert;
+		if(FeldWert.indexOf(Optionen)>=0){
+			ListItem += " checked='checked'";
+		}
+		ListItem += "'/>";
+		HtmlContainer += ListItem;
+	}
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Selectmenus
+//wird von erstelle_hArtEdit aufgerufen
+function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' class='select'>";
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += "</label>\n\t<select name='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' id='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' data-native-menu='false'>";
+	HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += "\n\t</select>\n</div>";
+	return HtmlContainer;	
+}
+
+//generiert den html-Inhalt für Optionen von Selectmenu
+//wird von generiereHtmlFuerSelectmenu aufgerufen
+function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
+	var i;
+	var HtmlContainer = "\n\t\t<option value=''>Kein Eintrag</option>";
+	for(i in Optionen) {
+		var Option = Optionen[i];
+		var ListItem = "\n\t\t<option value='";
+		ListItem += Option;
+		if(FeldWert.indexOf(Optionen)>=0){
+			ListItem += " checked='checked'";
+		}
+		ListItem += "'>";
+		ListItem += Option;
+		ListItem += "</option>";
+		HtmlContainer += ListItem;
+	}
+	return HtmlContainer;
+}
+
+(function($) {
+    // friendly helper http://tinyurl.com/6aow6yn
+    //Läuft durch alle Felder im Formular
+    //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
+    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+        	if (this.value != "") {
+	            if (o[this.name]) {
+	                if (!o[this.name].push) {
+	                    o[this.name] = [o[this.name]];
+	                }
+	                o[this.name].push(this.value);
+	            } else {
+	                o[this.name] = this.value;
+	            }
+	   		}
+        });
+        return o;
+    };
+})(jQuery);
+
+//Codeausführung für Anzahl Millisekunden unterbrechen
+//Quelle: http://www.sean.co.uk/a/webdesign/javascriptdelay.shtm
+//grauenhafte Methode - blockiert die CPU!!
+function warte(ms) {
+	ms += new Date().getTime();
+	while (new Date() < ms){}
+} 

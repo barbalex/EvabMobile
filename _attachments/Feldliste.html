@@ -5,34 +5,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -40,9 +26,9 @@
   </head>
   <body>
   	<div data-role="page" id="FeldListePage">
-  		<div data-role="header" data-position="fixed">
+  		<div id="FeldListePageHeader" data-role="header" data-position="fixed">
   			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
-  			<h2>Feldliste</h2>
+  			<h2 class="FeldListePageTitel">Felder</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div data-role="content">
@@ -51,54 +37,42 @@
 	</div>
   </body>
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
 		
 		userCtx = null;
 		IsAdmin = "nichts";
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name;
-				if (userCtx.roles.indexOf("_admin") != -1) {
-					IsAdmin = true;
-				} else {
-					IsAdmin = false;
-				}
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("index.html", target="_self");
-				}
-			}
-		});
+		User = "";
+		var Pfad = "";
 		
-		//FeldListe refreshen
-		$("#FeldListe").empty();
-		$db.view("evab/FeldListe",
-			{success: function(data) {
+		prüfeAnmeldung(Pfad);
+		
+		//FeldListe aufbauen
+		//$("#FeldListe").empty();
+		$db.view("evab/FeldListe", {
+			success: function(data) {
 				var i;                      //prüfen, ob alle benutzt
 				var Feld;
 				var ImageLink;
 				var externalPage;
-				var listItem;
 				var ListItemContainer = "";
-				for(i in data.rows)                  //Liste aufbauen
-				{
+
+				var anzFelder = 0;            //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+				for(i in data.rows) {                    //Felder zählen
+					anzFelder += 1;
+				}
+				$("#FeldListePageHeader .FeldListePageTitel").text(anzFelder + " Felder");
+
+				for(i in data.rows) {                 //Liste aufbauen
 					Feld = data.rows[i].value;
 					var Typ = Feld.Typ;
 					var Tabelle = Feld.Tabelle;
 					var FeldName = Feld.FeldName;
 					var Reihenfolge = Feld.Reihenfolge;
 					var FeldBeschriftung = Feld.FeldBeschriftung;
-					var FeldBeschreibung;
+					var FeldBeschreibung ="";
 					if (Feld.FeldBeschreibung){
 						FeldBeschreibung = Feld.FeldBeschreibung;
-					} else {
-						FeldBeschreibung = "";
 					}
 					var RolleModusEinfach = Feld.RolleModusEinfach;
 					var FeldNameEvab = Feld.FeldNameEvab;
@@ -111,48 +85,52 @@
 					} else {
 						externalPage = "_show/FeldEdit/" + Feld._id;
 					}
-					listItem = "<li class=\"Feld ui-li-has-thumb\">" +
+					ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 						"<a href='" + externalPage + "' rel='external'>" +
 						"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 						"<h2>" + Tabelle + ': ' + FeldBeschriftung + "<\/h2>" +
 						"<p>" + FeldBeschreibung + "</p>"
 						"<\/a><\/li>";
-					ListItemContainer = ListItemContainer + listItem;
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#FeldListe").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#FeldListe").html(ListItemContainer);
 				$("#FeldListe").listview();
 				$("#FeldListe").listview("refresh");
 			}
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function(){
-			MenuAufbauenAusArtListe(this, User, UserId, "");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+			erstelleMenuFürFelder(this, "");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if (session.userCtx.roles.indexOf("_admin") != -1) {
+					IsAdmin = true;
+				} else {
+					IsAdmin = false;
+				}
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 </html>

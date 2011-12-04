@@ -5,35 +5,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -53,21 +38,21 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form id="BeobNeuForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
+			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
 					<input id="pName" name="pName" type="text" value="{{pName}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="pBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="pBemerkungen" id="pBemerkungen">{{pBemerkungen}}</textarea>
+					<textarea name="pBemerkungen" id="pBemerkungen">{{pBemerkungen}}</textarea>
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external">neu</a></li>
+					<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -78,26 +63,17 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
+
+		var Pfad = "../../";
+		User = "";
 		
-		userCtx = null;
-		var Autor;
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
+		prüfeAnmeldung(Pfad);
 
 		//Für jedes Feld bei Änderung speichern
-		$("#pName").change(function(){
-			speichern();
-		});
-		$("#pBemerkungen").change(function(){
-			speichern();
+		$("[name^='p']").change(function() {
+			speichern("../../");
 		});
 
 		//Link zur Raumliste in Navbar setzen
@@ -111,15 +87,15 @@
 		    	'forceInput': 'false',
 		    	'buttons' : {
 				 	'ja': {
-				      	click: function () {
+				      	click: function() {
 				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
+				        	löscheProjekt();
 		        		},
 		        		icon: "delete",
 		        		theme: "c"
 		      		},
 		      		'nein': {
-		        		click: function () {
+		        		click: function() {
 		          			$('#dialogoutput').text('nein');
 		        		}
 		      		}
@@ -128,37 +104,38 @@
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+		$('#Menu').live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function handleDelete(event){
+	/*
+	function löscheProjekt(event) {
 		var docId = "{{id}}";
 		// First open doc based on ID in order to get full document
 		$db.openDoc(docId, {
@@ -166,40 +143,188 @@
 				// Then use the opened doc as reference to remove
 				$db.removeDoc(document, {
 					success: function() {
-						window.open("../../hProjektListe.html", target = '_self');
+						window.open('../../hProjektListe.html', target = '_self');
 					},
 					error: function() {
-						MeldungEinzeilig("Das Projekt mit der ID: " + docId + " konnte nicht gelöscht werden");
+						melde("Das Projekt mit der ID: " + docId + " konnte nicht gelöscht werden");
 					}
 				});
 			},
 			error: function() {
-				MeldungEinzeilig("Ein Projekt mit der ID: " + docId + " wurde nicht gefunden");
+				melde("Ein Projekt mit der ID: " + docId + " wurde nicht gefunden");
 			}
 		});
 		return false;
+	}*/
+
+	function löscheProjekt() {
+		var ProjektId = "{{id}}";
+		var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
+		var Rückmeldung;
+		ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
+		if (ArtenGelöscht == false) {
+			melde("Fehler: Zugehörige Arten nicht gelöscht");
+			return false;
+		} else {
+			Rückmeldung = "zugehörige Arten gelöscht";
+			ZeitenGelöscht = löscheZeitenVonProjekt(ProjektId);
+			if (ZeitenGelöscht == false) {
+				Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
+				melde(Rückmeldung);
+				return false;
+			} else {
+				Rückmeldung += "\rzugehörige Zeiten gelöscht";
+				OrteGelöscht = löscheOrteVonProjekt(ProjektId);
+				if (OrteGelöscht == false) {
+					Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
+					melde(Rückmeldung);
+					return false;
+				} else {
+					Rückmeldung += "\rzugehörige Orte gelöscht";
+					RäumeGelöscht = löscheRäumeVonProjekt(ProjektId);
+					if (RäumeGelöscht == false) {
+						Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
+						melde(Rückmeldung);
+						return false;
+					} else {
+						Rückmeldung += "\rzugehörige Räume gelöscht";
+						// First open doc based on ID in order to get full document
+						return $db.openDoc(ProjektId, {
+							success: function(document) {
+								// lösche Projekt
+								return $db.removeDoc(document, {
+									success: function() {
+										Rückmeldung += "\rProjekt gelöscht";
+										melde(Rückmeldung);
+										setTimeout("window.open('../../hProjektListe.html', target = '_self')", 1400);
+										return true;
+									},
+									error: function() {
+										Rückmeldung += "\rFehler: Projekt nicht gelöscht";
+										melde(Rückmeldung);
+										return false;
+									}
+								});
+							},
+							error: function() {
+								Rückmeldung += "\rFehler: Projekt nicht gelöscht";
+								melde(Rückmeldung);
+								return false;
+							}
+						});
+					}
+
+				}
+
+			}
+		}
 	}
-	function speichern(){
+
+	//lösche alle einem Projekt zugeordneten Räume
+	function löscheRäumeVonProjekt(ProjektId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var RaumId;
+				for(i in data.rows) {
+					RaumId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(RaumId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	//lösche alle einem Projekt zugeordneten Orte
+	function löscheOrteVonProjekt(ProjektId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var OrtId;
+				for(i in data.rows) {
+					OrtId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(OrtId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}	
+
+	//lösche alle einem Projekt zugeordneten Zeiten
+	function löscheZeitenVonProjekt(ProjektId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ZeitId;
+				for(i in data.rows) {
+					ZeitId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ZeitId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	//lösche alle einem Projekt zugeordneten Arten
+	function löscheArtenVonProjekt(ProjektId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ArtId;
+				for(i in data.rows) {
+					ArtId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ArtId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	function speichern() {
+		var hProjekt = {};
 		var docId = "{{id}}";
+		hProjekt = $("#hProjektEditForm").serializeObject();
+		hProjekt.Typ = "hProjekt";
+		hProjekt.User = User;
+		hProjekt._id = docId;
 		$db.openDoc(docId, {
 			success: function(doc) {
-				doc.Typ = "hProjekt";
-				doc.User = User;
-				var pName = $("input#pName").val();
-				if (pName == "") {
-					MeldungEinzeilig("Bitte Projektnamen eingeben");
-					document.getElementById("pName").focus();
-					return;
-				}
-				doc.pName = pName;
-				if ($("[id$='pBemerkungen']").val()!=""){
-					doc.pBemerkungen = $("[id$='pBemerkungen']").val();
-				} else if (doc.pBemerkungen!=null){
-					delete doc.pBemerkungen;
-				}
-				$db.saveDoc(doc, {
+				hProjekt._rev = doc._rev;
+				$db.saveDoc(hProjekt, {
 					error: function() {
-						MeldungEinzeilig("Das Projekt konnte nicht gespeichert werden.");
+						melde("Fehler: Projekt nicht gespeichert");
 					 }
 				});
 			}

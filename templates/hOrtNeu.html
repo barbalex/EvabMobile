@@ -5,35 +5,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -56,7 +41,7 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get">
+			<form action="#" method="get" id="hOrtNeuForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
 					<input id="oName" name="oName" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
@@ -70,20 +55,12 @@
 					<input id="oYKoord" name="oYKoord" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oLongitudeDecDeg">Längengrad:</label>
-					<input id="oLongitudeDecDeg" name="oLongitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="oLatitudeDecDeg">Breitengrad:</label>
-					<input id="oLatitudeDecDeg" name="oLatitudeDecDeg" type="text" placeholder="(wird automatisch gesetzt)"/>
-				</div>
-				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
 					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" placeholder="(wird automatisch gesetzt)"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="oBemerkungen" id="oBemerkungen"></textarea>
+					<textarea name="oBemerkungen" id="oBemerkungen"></textarea>
 				</div>
 			</form>
 		</div>
@@ -111,23 +88,22 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
-		var Autor;
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
 
+		var Pfad = "../../";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+
+		//Lat Lng erhalten Sie den Wert ""
+		//Für den Fall, dass kein Ort erhalten wird!
+		oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
+		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 		GetGeolocation(); 
 
 		//Für obligatorisches Feld bei Änderung speichern
-		$("#oName").change(function(){
+		$("#oName").change(function() {
 			speichern();
 		});
 
@@ -141,24 +117,11 @@
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
 		$("#GeButton").tap(function(event) {
@@ -196,7 +159,7 @@
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"),options);
 			google.maps.event.trigger(map,'resize');
-			if (verorted == true){
+			if (verorted == true) {
 				var marker = new google.maps.Marker({
 					position: latlng,
 					map: map,
@@ -260,7 +223,7 @@
 			google.maps.event.addListener(marker, 'click', function() {
 			  infowindow.open(map,marker);
 			});
-			MeldungEinzeilig("Die Koordinaten wurden übernommen");
+			melde("Die Koordinaten wurden übernommen");
 		}
 
 		//alle Marker löschen
@@ -288,23 +251,36 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function GetGeolocation(){
-		if ( navigator.geolocation ) { 
+	function GetGeolocation() {
+		if (navigator.geolocation) { 
         navigator.geolocation.getCurrentPosition ( 
             function(position) {
-            	var oLongitudeDecDeg = position.coords.longitude;
-				var oLatitudeDecDeg = position.coords.latitude;
+            	oLongitudeDecDeg = position.coords.longitude;
+				oLatitudeDecDeg = position.coords.latitude;
 				var oLagegenauigkeit = position.coords.accuracy;
 				$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
 				$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
@@ -313,63 +289,33 @@
 				var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
 				$("input#oXKoord").val(x);
 				$("input#oYKoord").val(y); 
-				MeldungEinzeilig("Die Koordinaten wurden gesetzt");    
+				melde("Die Koordinaten wurden gesetzt");    
             }, 
-            function(){ 
-                MeldungEinzeilig('Keine Positionsdaten erhalten');
+            function() { 
+                melde('Keine Positionsdaten erhalten');
             }); 
         }
 	}
-	function speichern(){
-		var doc = {};
-		doc.Typ = "hOrt";
-		doc.User = User;
-		doc.ProjektId = "{{ProjektId}}"
-		doc.RaumId = "{{id}}";
-		var oName = $("input#oName").val();
-		if (oName == "") {
-			MeldungEinzeilig("Bitte Ortnamen eingeben");
-			document.getElementById("oName").focus();
-			return;
+
+	function speichern() {
+		var hOrt = {};
+		hOrt = $("#hOrtNeuForm").serializeObject();
+		hOrt.Typ = "hOrt";
+		hOrt.User = User;
+		hOrt.ProjektId = "{{ProjektId}}";
+		hOrt.RaumId = "{{id}}";
+		//Längen- und Breitengrad sind in keinem Feld dargestellt
+		//sie müssen aus ihren Variabeln gespeichert werden
+		if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
+			hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
+			hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
 		}
-		doc.oName = oName;
-		if ($("input#oXKoord").val()!=""){
-			doc.oXKoord = $("input#oXKoord").val();
-		} else if (doc.oXKoord!=null){
-			delete doc.oXKoord;
-		}
-		if ($("input#oYKoord").val()!=""){
-			doc.oYKoord = $("input#oYKoord").val();
-		} else if (doc.oYKoord!=null){
-			delete doc.oYKoord;
-		}
-		if ($("input#oLongitudeDecDeg").val()!=""){
-			doc.oLongitudeDecDeg = $("input#oLongitudeDecDeg").val();
-		} else if (doc.oLongitudeDecDeg!=null){
-			delete doc.oLongitudeDecDeg;
-		}
-		if ($("input#oLatitudeDecDeg").val()!=""){
-			doc.oLatitudeDecDeg = $("input#oLatitudeDecDeg").val();
-		} else if (doc.oLatitudeDecDeg!=null){
-			delete doc.oLatitudeDecDeg;
-		}
-		if ($("input#oLagegenauigkeit").val()!=""){
-			doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
-		} else if (doc.oLagegenauigkeit!=null){
-			delete doc.oLagegenauigkeit;
-		}
-		if ($("[id$='oBemerkungen']").val()!=""){
-			doc.oBemerkungen = $("[id$='oBemerkungen']").val();
-		} else if (doc.oBemerkungen!=null){
-			delete doc.oBemerkungen;
-		}
-		$db.saveDoc(doc, {
+		$db.saveDoc(hOrt, {
 			success: function(data) {
 				window.open("../hOrtEdit/" + data.id, target="_self");
-				//MeldungEinzeilig("Ort gespeichert");
 			},
 			error: function() {
-				MeldungEinzeilig("Der Ort konnte nicht gespeichert werden.");
+				melde("Fehler: Ort nicht gespeichert");
 			 }
 		});
 	}

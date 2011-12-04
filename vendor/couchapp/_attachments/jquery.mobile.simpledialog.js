@@ -22,8 +22,12 @@
 		isOpen: false,
 		blankMode: false,
 		fullHTML: null,
+		subTitle: false,
 		inputPassword: false,
 		
+		left: undefined,
+		top: undefined,
+	     	    
 		useDialogForceTrue: false,
 		useDialogForceFalse: false,
 		useDialog: false,
@@ -34,8 +38,32 @@
 		butObj: [],
 		debug: false
 	},
+	_orientChange: function(e) {
+		var self = $(e.currentTarget).data('simpledialog');
+			o = self.options,
+			docWinWidth = $(document).width(),
+			docWinHeightOffset = $(window).scrollTop(),
+			docWinHeight = $(window).height(),
+			pickWinHeight = self.pickerContent.outerHeight(),
+			pickWinWidth = self.pickerContent.innerWidth(),
+			
+			pickWinTop = (parseFloat(o.top)+10000) ? parseFloat(o.top) : (docWinHeightOffset + ( docWinHeight / 2 )- ( pickWinHeight / 2)),
+			pickWinLeft = (parseFloat(o.left)+10000) ? parseFloat(o.left) : (( docWinWidth / 2) - ( pickWinWidth / 2));
+					
+		if ( (pickWinHeight + pickWinTop) > $(document).height() ) {
+			pickWinTop = $(document).height() - (pickWinHeight + 2);
+		}
+		if ( pickWinTop < 45 ) { pickWinTop = 45; }
+		
+		e.stopPropagation();
+		if ( ! self.pickerContent.is(':visible') || o.useDialog === true ) { 
+			return false;  // Not open, or in a dialog (let jQM do it)
+		} else {
+			self.pickerContent.css({'top': pickWinTop, 'left': pickWinLeft});
+		}
+	},
 	open: function() {
-		if ( this.options.isOpen ) { return true; }
+		if ( this.pickPage.is(':visible') ) { return false; }
 		
 		var self = this,
 			o = this.options,
@@ -45,8 +73,8 @@
 			pickWinHeight = self.pickerContent.outerHeight(),
 			pickWinWidth = self.pickerContent.innerWidth(),
 			
-			pickWinTop = docWinHeightOffset + ( docWinHeight / 2 )- ( pickWinHeight / 2),
-			pickWinLeft = ( docWinWidth / 2) - ( pickWinWidth / 2);
+			pickWinTop = (parseFloat(o.top)+10000) ? parseFloat(o.top) : (docWinHeightOffset + ( docWinHeight / 2 )- ( pickWinHeight / 2)),
+			pickWinLeft = (parseFloat(o.left)+10000) ? parseFloat(o.left) : (( docWinWidth / 2) - ( pickWinWidth / 2));
 					
 		if ( (pickWinHeight + pickWinTop) > $(document).height() ) {
 			pickWinTop = $(document).height() - (pickWinHeight + 2);
@@ -121,7 +149,7 @@
 						.page().css('minHeight', '0px').css('zIndex', o.zindex).addClass('pop'),
 				pickPageContent = pickPage.find( ".ui-content" );
 				
-			pickPage.find( ".ui-header a").bind('vclick', function(e) {
+			pickPage.find( ".ui-header a").bind('click', function(e) {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				self.close();
@@ -142,6 +170,18 @@
 			
 			self._buildPage();
 			self.options.isInit = true;
+			
+			$(document).bind('orientationchange', function(e) { caller.trigger('orientationchange'); });
+		
+			caller.bind('orientationchange', self._orientChange);
+		}
+	},
+	refresh: function() {
+		if ( !this.options.mode === "blank" ) { 
+			return false; 
+		} else {
+			this.pickerContent.html(this.options.fullHTML);
+			this.pickerContent.trigger('create');
 		}
 	},
 	_init: function() {
@@ -166,14 +206,18 @@
 				pickerHeader.parent().html();
 			}
 			
+			if ( o.subTitle !== false ) {
+				$("<p class='ui-simpledialog-subtitle'>"+o.subTitle+"<p>").appendTo(pickerContent);
+			}
+			
 			if ( o.mode === 'string' ) {
 				pickerInput = $("<div class='ui-simpledialog-controls'><input class='ui-simpledialog-input ui-input-text ui-shadow-inset ui-corner-all ui-body-"+o.pickPageInputTheme+"' type='"+((o.inputPassword===true)?"password":"text")+"' name='pickin' /></div>")
 					.bind('keyup', function(event) {
 						if ( event.keyCode === 13 && o.enterToTrigger !== false )  {
-							o.butObj[o.enterToTrigger].trigger('vclick');
+							o.butObj[o.enterToTrigger].trigger('click');
 						}
 						if ( event.keyCode === 27 && o.escToTrigger !== false )  {
-							o.butObj[o.escToTrigger].trigger('vclick');
+							o.butObj[o.escToTrigger].trigger('click');
 						}
 					})
 					.appendTo(pickerContent);
@@ -193,10 +237,11 @@
 					.appendTo(pickerChoice)
 					.buttonMarkup({theme: props.theme, icon: props.icon, iconpos: props.iconpos, corners: true, shadow: true})
 					.unbind("vclick").unbind("click")
-					.bind("vclick", function() {
+					.bind("click", function() {
 						if ( o.mode === 'string' ) { self.caller.attr('data-string', pickerInput.find('input').val()); }
-						props.click.apply(self.element[0], arguments);
-						self.close();
+						var val = props.click.apply(self.element[0], arguments);
+						if(val !== false)
+							self.close();
 					})
 				);
 			});
@@ -209,7 +254,7 @@
 		screen = $("<div>", {'class':'ui-simpledialog-screen ui-simpledialog-hidden'})
 			.css({'z-index': o.zindex-1})
 			.appendTo(self.thisPage)
-			.bind("vclick", function(event){
+			.bind("click", function(event){
 				if ( !o.forceInput ) {
 					self.close();
 				}

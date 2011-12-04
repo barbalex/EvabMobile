@@ -4,36 +4,21 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+  	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -86,8 +71,13 @@
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady()
 	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
-		AnmeldungPruefen();
+		$db = $.couch.db("evab");
+		
+		var Pfad = "../../";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+		
 		refreshOrtListe();
 
 		//Link zum Projekt in Navbar setzen
@@ -104,24 +94,11 @@
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
 		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
@@ -153,66 +130,58 @@
 			var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 			google.maps.event.trigger(map,'resize');
 			
-			//jetzt werden für alle Beobachtungen marker erstellt
-			$db.view("evab/hOrtListeLatLng",
+			//jetzt für alle Orte dieses Users in diesem Raum marker erstellen
+			var RaumId = "{{id}}";
+			$db.view('evab/hOrtListeLatLng?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]',
 				{success: function(data) {
 					var i;
 					var anzOrt = 0;
 					var Ort;
 					var infowindow = new google.maps.InfoWindow();
 					for(i in data.rows) {                    //Orte zählen. Wenn noch keine: darauf hinweisen
-						key = data.rows[i].key;
-						if (key[0] == User) {            //nur eigene Orte zählen!
-							anzOrt = anzOrt + 1;
-						}
+						anzOrt += 1;
 					}
-
 					if (anzOrt == 0) {
-						MeldungEinzeilig("Es wurden noch keine Orte mit Breiten- und Längengrad erfasst");
+						melde("Es wurden noch keine Orte mit Koordinaten erfasst");
 					} else {
 						var markers = [];
-						for(i in data.rows)                  //Liste aufbauen
-						{
+						for(i in data.rows) {               //Liste aufbauen
 							Ort = data.rows[i].value;
 							key = data.rows[i].key;
-							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-								if (key[1]== "{{id}}") {			//nur Orte mit richtiger RaumId anzeigen
-									var OrtId = Ort._id;
-									var oName = Ort.oName;
-									var oXKoord = Ort.oXKoord;
-									var oYKoord = Ort.oYKoord;
-									var lat2 = Ort.oLatitudeDecDeg;
-									var lng2 = Ort.oLongitudeDecDeg;
-									var externalPage = "../../_show/hOrtEdit/" + OrtId;
-									var latlng2 = new google.maps.LatLng(lat2, lng2);
-									var marker = new MarkerWithLabel({ 
-										map: map,
-										position: latlng2,  
-									    title: oName,
-									    labelContent: oName,
-									    labelAnchor: new google.maps.Point(22, 0),
-									    labelClass: "MapLabel", // the CSS class for the label
-										labelStyle: {opacity: 0.75}
-									});
-									markers.push(marker);
-									var contentString = '<div id="content">'+
-									    '<div id="siteNotice">'+
-									    '</div>'+
-									    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-									    '<div id="bodyContent" class="GmInfowindow">'+
-									    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-									    '<p>X-Koordinate: ' + oXKoord + '</p>'+
-									    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-									    '</div>'+
-									    '</div>';
-									makeListener(map, marker, contentString);
-								}
-							}
+							var OrtId = Ort._id;
+							var oName = Ort.oName;
+							var oXKoord = Ort.oXKoord;
+							var oYKoord = Ort.oYKoord;
+							var lat2 = Ort.oLatitudeDecDeg;
+							var lng2 = Ort.oLongitudeDecDeg;
+							var externalPage = "../../_show/hOrtEdit/" + OrtId;
+							var latlng2 = new google.maps.LatLng(lat2, lng2);
+							var marker = new MarkerWithLabel({ 
+								map: map,
+								position: latlng2,  
+							    title: oName,
+							    labelContent: oName,
+							    labelAnchor: new google.maps.Point(22, 0),
+							    labelClass: "MapLabel", // the CSS class for the label
+								labelStyle: {opacity: 0.75}
+							});
+							markers.push(marker);
+							var contentString = '<div id="content">'+
+							    '<div id="siteNotice">'+
+							    '</div>'+
+							    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+							    '<div id="bodyContent" class="GmInfowindow">'+
+							    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+							    '<p>X-Koordinate: ' + oXKoord + '</p>'+
+							    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
+							    '</div>'+
+							    '</div>';
+							makeListener(map, marker, contentString);
 						}
 						var mcOptions = {maxZoom: 17};
 						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
 					}
-					function makeListener(map, marker, contentString){
+					function makeListener(map, marker, contentString) {
 						google.maps.event.addListener(marker, 'click', function() {
 							infowindow.setContent(contentString);
 							infowindow.open(map,marker);
@@ -225,80 +194,62 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	function AnmeldungPruefen() {
-		userCtx = null;
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name;
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("../../index.html", target="_self");
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
 				}
-			}
+		    }
 		});
 	}
-
-  	function refreshOrtListe()
-	{
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	function refreshOrtListe() {
 		$("#Orte").empty();
-		$db.view("evab/hOrtListe",
-			{success: function(data) {
+		var RaumId = "{{id}}";
+		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
+			success: function(data) {
 				var i;
 				var anzOrt = 0;
 				var Ort;
-				var RaumId = "{{id}}";
 				var externalPage;
 				var listItem;
 				var ListItemContainer = "";
 				for(i in data.rows) {                    //Orte zählen. Wenn noch keine: darauf hinweisen
-					key = data.rows[i].key;
-					if (key[0] == User) {            //nur eigene Orte zählen!
-						
-						if(key[1] == RaumId) {    //nur Orte mit dieser RaumId zählen
-							anzOrt = anzOrt + 1;
-						}
-					}
+					anzOrt += 1;
 				}
-
-				//Im Titel der Seite die Anzahl Orte anzeigen
-				var Titel2 = " Orte";
-				if (anzOrt==1){
+				var Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
+				if (anzOrt == 1){
 					Titel2 = " Ort";
 				}
-				$("#hOrtListePageHeader .hOrtListePageTitel").text( anzOrt + Titel2);
+				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
 					$("#Orte").append("<li>Sie haben noch keinen Ort erfasst</li>");
 				} else {
-					for(i in data.rows)                  //Liste aufbauen
-					{
+					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
-						if (key[0] == User) {                   //nur eigene Orte anzeigen!
-							if(key[1] == RaumId) {    		//nur Orte mit dieser RaumId anzeigen
-								oName = Ort.oName;
-								externalPage = "../../_show/hOrtEdit/" + Ort._id;
-								listItem = "<li id=\"" + Ort._id + "\">" +
-									"<a href=\"" + externalPage + "\" rel=\"external\">" +
-									"<h3>" + oName + "<\/h3>" +
-									"<\/a> <\/li>";
-								ListItemContainer = ListItemContainer + listItem;
-							}
-						}
+						oName = Ort.oName;
+						externalPage = "../../_show/hOrtEdit/" + Ort._id;
+						listItem = "<li id=\"" + Ort._id + "\">" +
+							"<a href=\"" + externalPage + "\" rel=\"external\">" +
+							"<h3>" + oName + "<\/h3>" +
+							"<\/a> <\/li>";
+						ListItemContainer = ListItemContainer + listItem;
 					}
 				}
 				ListItemContainer = ListItemContainer + "<\/ul>";

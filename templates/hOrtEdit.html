@@ -5,36 +5,21 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!';
+			$.mobile.defaultPageTransition  = 'none';
+		});
+	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -57,7 +42,7 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get" autocomplete="off">
+			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
 					<input id="oName" name="oName" type="text" value="{{oName}}" required/>
@@ -76,14 +61,14 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="oBemerkungen" id="oBemerkungen">{{oBemerkungen}}</textarea>
+					<textarea name="oBemerkungen" id="oBemerkungen">{{oBemerkungen}}</textarea>
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink">neu</a></li>				
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
@@ -107,37 +92,21 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
+
+		var Pfad = "../../";
+		User = "";
 		
-		var Autor;
+		prüfeAnmeldung(Pfad);
+
+		//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 		oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
 		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
 
 		//Für jedes Feld bei Änderung speichern
-		$("#oName").change(function(){
-			speichern();
-		});
-		$("#oXKoord").change(function(){
-			speichern();
-		});
-		$("#oYKoord").change(function(){
-			speichern();
-		});
-		$("#oLagegenauigkeit").change(function(){
-			speichern();
-		});
-		$("#oBemerkungen").change(function(){
-			speichern();
+		$("[name^='o']").change(function() {
+			speichern("KeineMeldung");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -158,21 +127,22 @@
 
 		//Code für den Ort-Löschen-Dialog
 		$('#LöschenDialogLink').live('click', function() {
+			var AnzZeiten;
 			$(this).simpledialog({
 				'mode' : 'bool',
-		    	'prompt' : 'Diesen Ort löschen?',
+		    	'prompt' : 'Ort sammt<br>Zeiten und Arten<br>löschen?',
 		    	'forceInput': 'false',
 		    	'buttons' : {
 				 	'ja': {
-				      	click: function () {
+				      	click: function() {
 				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
+				        	löscheOrt();
 		        		},
 		        		icon: "delete",
 		        		theme: "c"
 		      		},
 		      		'nein': {
-		        		click: function () {
+		        		click: function() {
 		          			$('#dialogoutput').text('nein');
 		        		}
 		      		}
@@ -181,24 +151,11 @@
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
 		//Karte managen
@@ -206,7 +163,7 @@
 			$.mobile.changePage("#OrtEditMap", "slide", false, false);
 		});
 
-		$("#GetGeolocationButton").tap(function(){
+		$("#GetGeolocationButton").tap(function() {
 			GetGeolocation();
 		});
 
@@ -308,8 +265,7 @@
 			google.maps.event.addListener(marker, 'click', function() {
 			  infowindow.open(map,marker);
 			});
-			$("#SpeichernButton").trigger('tap');
-			//MeldungEinzeilig("Die Koordinaten wurden übernommen");
+			speichern("Koordinaten gespeichert");
 		}
 
 		//alle Marker löschen
@@ -333,113 +289,227 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function handleDelete(event)
-	{
-		var docId = "{{id}}";
+	/*
+	function löscheOrt() {
+		var OrtId = "{{id}}";
 		var RaumId = "{{RaumId}}";
 		// First open doc based on ID in order to get full document
-		$db.openDoc(docId, {
+		$db.openDoc(OrtId, {
 			success: function(document) {
-				// Then use the opened doc as reference to remove
 				$db.removeDoc(document, {
 					success: function() {
-						MeldungEinzeilig("Ort gelöscht");
-						window.open("../hOrtListe/" + RaumId, target="_self");
+						melde('Ort gelöscht');
+						setTimeout("löscheArtenVonOrt('" + OrtId + "')", 1400);
+						setTimeout("löscheZeitenVonOrt('" + OrtId + "')", 2800);
+						setTimeout("window.open('../hOrtListe/" + RaumId + "', target='_self')", 4200);
 					},
 					error: function() {
-						MeldungEinzeilig("Der Ort mit der ID: " + docId + " konnte nicht gelöscht werden");
+						melde("Fehler: Der Ort konnte nicht gelöscht werden");
 					}
 				});
 			},
 			error: function() {
-				MeldungEinzeilig("Ein Ort mit der ID: " + docId + " wurde nicht gefunden");
+				melde("Fehler: Der Ort konnte nicht gelöscht werden");
 			}
 		});
-		return false;
-	}
-
-	function GetGeolocation(){
-		if (navigator.geolocation) { 
-	    navigator.geolocation.getCurrentPosition ( 
-	        function(position) {
-	            oLongitudeDecDeg = position.coords.longitude;
-				oLatitudeDecDeg = position.coords.latitude;
-				var oLagegenauigkeit = position.coords.accuracy;
-				$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-				var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-				var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-				$("input#oXKoord").val(x);
-				$("input#oYKoord").val(y);  
-				MeldungEinzeilig('Koordinaten wurden gesetzt'); 
-				speichern();
-	        }, 
-	        function(){ 
-	            MeldungEinzeilig('Keine Positionsdaten verfügbar');
-	        }); 
-	    }
-	}
-	function speichern(){
-		var docId = "{{id}}";
-		$db.openDoc(docId, {
-			success: function(doc) {
-				doc.Typ = "hOrt";
-				doc.User = User;
-				doc.ProjektId = "{{ProjektId}}";
-				doc.RaumId = "{{RaumId}}";
-				var oName = $("input#oName").val();
-				if (oName == "") {
-					MeldungEinzeilig("Bitte Ortnamen eingeben");
-					document.getElementById("oName").focus();
-					return;
+	}*/
+	
+	function löscheOrt() {
+		var OrtId = "{{id}}";
+		var RaumId = "{{RaumId}}";
+		var ArtenGelöscht, ZeitenGelöscht;
+		var Rückmeldung;
+		ArtenGelöscht = löscheArtenVonOrt(OrtId);
+		if (ArtenGelöscht != 0 && ArtenGelöscht == false) {
+			melde("Fehler: Zugehörige Arten nicht gelöscht");
+			return false;
+		} else {
+			if (ArtenGelöscht >= 0) {
+				Rückmeldung = ArtenGelöscht + " zugehörige Arten gelöscht";
+			} else {
+				Rückmeldung = "zugehörige Arten gelöscht";
+			}
+			ZeitenGelöscht = löscheZeitenVonOrt(OrtId);
+			if (ZeitenGelöscht != 0 && ZeitenGelöscht == false) {
+				Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
+				melde(Rückmeldung);
+				return false;
+			} else {
+				if (ZeitenGelöscht >= 0) {
+					Rückmeldung += "\r" + ZeitenGelöscht + " zugehörige Zeiten gelöscht";
+				} else {
+					Rückmeldung += "\rzugehörige Zeiten gelöscht";
 				}
-				doc.oName = oName;
-				if ($("input#oXKoord").val()!=""){
-					doc.oXKoord = $("input#oXKoord").val();
-				} else if (doc.oXKoord!=null){
-					delete doc.oXKoord;
-				}
-				if ($("input#oYKoord").val()!=""){
-					doc.oYKoord = $("input#oYKoord").val();
-				} else if (doc.oYKoord!=null){
-					delete doc.oYKoord;
-				}
-				if (oLongitudeDecDeg != ""){
-					doc.oLongitudeDecDeg = oLongitudeDecDeg;
-				} else if (doc.oLongitudeDecDeg != null){
-					delete doc.oLongitudeDecDeg;
-				}
-				if (oLatitudeDecDeg != ""){
-					doc.oLatitudeDecDeg = oLatitudeDecDeg;
-				} else if (doc.oLatitudeDecDeg != null){
-					delete doc.oLatitudeDecDeg;
-				}
-				if ($("input#oLagegenauigkeit").val()!=""){
-					doc.oLagegenauigkeit = $("input#oLagegenauigkeit").val();
-				} else if (doc.oLagegenauigkeit!=null){
-					delete doc.oLagegenauigkeit;
-				}
-				if ($("[id$='oBemerkungen']").val()!=""){
-					doc.oBemerkungen = $("[id$='oBemerkungen']").val();
-				} else if (doc.oBemerkungen!=null){
-					delete doc.oBemerkungen;
-				}
-				$db.saveDoc(doc, {
-					success: function(data) {
-						MeldungEinzeilig("Ort gespeichert");
+				// First open doc based on ID in order to get full document
+				return $db.openDoc(OrtId, {
+					success: function(document) {
+						// lösche Ort
+						return $db.removeDoc(document, {
+							success: function() {
+								Rückmeldung += "\rOrt gelöscht";
+								melde(Rückmeldung);
+								setTimeout("window.open('../hOrtListe/" + RaumId + "', target='_self')", 1400);
+								return true;
+							},
+							error: function() {
+								Rückmeldung += "\rFehler: Ort nicht gelöscht";
+								melde(Rückmeldung);
+								return false;
+							}
+						});
 					},
 					error: function() {
-						MeldungEinzeilig("Der Ort konnte nicht gespeichert werden.");
+						Rückmeldung += "\rFehler: Ort nicht gelöscht";
+						melde(Rückmeldung);
+						return false;
+					}
+				});
+			}
+		}
+	}
+	
+	//lösche alle einem Ort zugeordnete Arten
+	function löscheArtenVonOrt(OrtId) { 
+		var AnzArtenGelöscht = 0; 
+		var DokumentGelöscht;
+		var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ArtId;
+				for(i in data.rows) {
+					ArtId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ArtId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+					AnzArtenGelöscht += 1;
+				}
+				return AnzArtenGelöscht;          //WIESE KLAPPT DAS NICHT?
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	//lösche alle einem Ort zugeordnete Zeiten
+	function löscheZeitenVonOrt(OrtId) { 
+		var AnzZeitenGelöscht = 0;
+		var DokumentGelöscht;
+		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ZeitId;
+				for(i in data.rows) {
+					ZeitId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ZeitId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+					AnzZeitenGelöscht += 1;
+				}
+				return AnzZeitenGelöscht;            //WIESE KLAPPT DAS NICHT?
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
+	//und gib diesen Wert zurück
+	function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
+		var OrtId = "{{id}}";
+		var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
+		var AnzahlZeiten = 0;
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				for(i in data.rows) {
+					AnzahlZeiten = data.rows[i].value;
+				}
+				return AnzahlZeiten;
+			},
+			error: function() {
+				return AnzahlZeiten;
+			}
+		});
+		return AnzahlZeiten;
+	}
+
+	function GetGeolocation() {
+		if (navigator.geolocation) { 
+		    navigator.geolocation.getCurrentPosition (    //geolocation.watchPosition verwenden?
+		        function(position) {
+		            oLongitudeDecDeg = position.coords.longitude;
+					oLatitudeDecDeg = position.coords.latitude;
+					var oLagegenauigkeit = position.coords.accuracy;
+					$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+					var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+					var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+					$("input#oXKoord").val(x);
+					$("input#oYKoord").val(y);  
+					speichern("Koordinaten gespeichert");
+		        }, 
+		        function(error) {
+		            melde('Keine Positionsdaten verfügbar');
+		        },
+		        {enableHighAccuracy: true, maximumAge: 5000, timeout: 30000});
+	    }
+	}
+
+	function speichern(Meldung) {
+		var hOrt = {};
+		var docId = "{{id}}";
+		hOrt = $("#hOrtEditForm").serializeObject();
+		hOrt.Typ = "hOrt";
+		hOrt.User = User;
+		hOrt._id = docId;
+		hOrt.ProjektId = "{{ProjektId}}";
+		hOrt.RaumId = "{{RaumId}}";
+		//Längen- und Breitengrad sind in keinem Feld dargestellt
+		//sie müssen aus ihren Variabeln gespeichert werden
+		if (oLatitudeDecDeg && oLatitudeDecDeg != "" && oLongitudeDecDeg && oLongitudeDecDeg != "") {
+			hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
+			hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
+		}
+		$db.openDoc(docId, {
+			success: function(doc) {
+				hOrt._rev = doc._rev;
+				$db.saveDoc(hOrt, {
+					success: function() {
+						if (Meldung && Meldung != "KeineMeldung") {
+							melde(Meldung);
+						}
+					},
+					error: function() {
+						melde("Fehler: Ort nicht gespeichert");
 					 }
 				});
 			}

@@ -5,65 +5,47 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
     <script type="text/javascript">
 		$(document).ready(function(){
-			$db = $.couch.db("evab-ch_barbalex_evab");
-			userCtx = null;
-			$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-			});
+			$db = $.couch.db("evab");
+			
+			var Pfad = "../../";
+			User = "";
+		
+			prüfeAnmeldung(Pfad);
 			
 			var UserFeldDocId;
 			
 			//User-Felder setzen
-			var viewname = "evab/UserFeld";
+			var viewname = 'evab/UserFeld?startkey=["' + User + '"]&endkey=["' + User + '",{}]';
 			$db.view(viewname, {
 				success: function(data) {
 					var i;
+					var key;
+					var row;
 					var Feld = "{{FeldName}}";
-					var UserFeld = User + Feld;
-					var UserFeldVonView;
-					for(i in data.rows)
-					{
-						UserFeldVonView = data.rows[i].key;
-						var row = data.rows[i].value;
-						if(UserFeldVonView == UserFeld){
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						row = data.rows[i].value;
+						if(key[1] == Feld){
 							UserFeldDocId = row._id;
 							$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
 							$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
@@ -77,10 +59,11 @@
 				}
 			});
 			
+			//ArtGruppe managen
 			ArtGruppeAufbauen();
-			$("select#ArtGruppe").val('{{ArtGruppe}}');
-			$("select#ArtGruppe").selectmenu();
-			$("select#ArtGruppe").selectmenu("refresh");
+			ArtGruppenWerte = "{{ArtGruppe}}";
+			$("input[name='ArtGruppe']").checkboxradio();
+			$("input[name='ArtGruppe']").attr("checked",true).checkboxradio("refresh");
 			
 			$("select#Tabelle").val("{{Tabelle}}");
 			$("select#Tabelle").selectmenu();
@@ -98,31 +81,15 @@
 			$("select#FormElementTyp").selectmenu();
 			$("select#FormElementTyp").selectmenu("refresh");
 			
-			var docId = "{{id}}";
+			
+			
+
 			$("#submitButton").tap(function(event) {
-				var docId = "{{id}}";
-				$db.openDoc(docId, {
-					success: function(document) {
-						document.Typ = "Feld";
-						document.User = User;
-						document.Tabelle = $("select#Tabelle").val();
-						document.FeldName = $("input#FeldName").val();
-						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
-						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
-						document.Reihenfolge = parseInt($("input#Reihenfolge").val());
-						document.FeldNameEvab = $("input#FeldNameEvab").val();
-						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
-						document.FeldNameCscf = $("input#FeldNameCscf").val();
-						document.RolleModusEinfach = $("select#RolleModusEinfach").val();
-						document.Formularelement = $("select#Formularelement").val();
-						document.FormElementTyp = $("select#FormElementTyp").val();
-						document.ArtGruppe = $("select#ArtGruppe").val();
-						saveDocument(document);
-					},
-					error: function() {
-						MeldungEinzeilig("Dieses Dokument kann nicht geöffnet werden: " + docId);
-					}
-				});
+				speichereFeld();
+			});
+			$("input[name='ArtGruppe']").change(function() {
+				ArtGruppenWerte = $(this).attr("id");
+				speichereFeld();
 			});
 			
 			$("#submitUserFeldButton").tap(function(event) {
@@ -139,7 +106,7 @@
 							saveUserFeld(document);
 						},
 						error: function() {
-							MeldungEinzeilig("Fehler beim Speichern");
+							melde("Fehler beim Speichern");
 						}
 					});
 				} else {
@@ -154,115 +121,122 @@
 				}
 			});
 
-			//Code für den Art-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
-			$(this).simpledialog({
-				'mode' : 'bool',
-		    	'prompt' : 'Dieses Feld löschen?',
-		    	'forceInput': 'false',
-		    	'buttons' : {
-				 	'ja': {
-				      	click: function () {
-				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
-		        		},
-		        		icon: "delete",
-		        		theme: "c"
-		      		},
-		      		'nein': {
-		        		click: function () {
-		          			$('#dialogoutput').text('nein');
-		        		}
-		      		}
-		    	}
-		  	})
-		});
+			//Code für den Feld-Löschen-Dialog
+			$('#LöschenDialogLink').live('click', function() {
+				$(this).simpledialog({
+					'mode' : 'bool',
+			    	'prompt' : 'Dieses Feld löschen?',
+			    	'forceInput': 'false',
+			    	'buttons' : {
+					 	'ja': {
+					      	click: function () {
+					        	$('#dialogoutput').text('ja');
+					        	löscheFeld();
+			        		},
+			        		icon: "delete",
+			        		theme: "c"
+			      		},
+			      		'nein': {
+			        		click: function () {
+			          			$('#dialogoutput').text('nein');
+			        		}
+			      		}
+			    	}
+			  	})
+			});
 
 			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-			var UserId;
-			$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-				}
-			});
+			UserId = holeUserId(User);
 
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
-				MenuAufbauenAusArtListe(this, User, UserId, "../../");
-			});
-
-			//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-			$(document).bind("mobileinit", function(){
-				defaultDialogTransition = none;
+				erstelleMenuFürFelder(this, "../../");
 			});
 		});
 	</script>
 	<script type="text/javascript">
-		function saveDocument(document)
-		{
+		function speichereFeld() {
+			var docId = "{{id}}";
+				$db.openDoc(docId, {
+					success: function(document) {
+						document.Typ = "Feld";
+						document.User = User;
+						document.Tabelle = $("select#Tabelle").val();
+						document.FeldName = $("input#FeldName").val();
+						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
+						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
+						document.Reihenfolge = parseInt($("input#Reihenfolge").val());
+						document.FeldNameEvab = $("input#FeldNameEvab").val();
+						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
+						document.FeldNameCscf = $("input#FeldNameCscf").val();
+						document.RolleModusEinfach = $("select#RolleModusEinfach").val();
+						document.Formularelement = $("select#Formularelement").val();
+						document.FormElementTyp = $("select#FormElementTyp").val();
+						document.ArtGruppe = ArtGruppenWerte;
+						saveDocument(document);
+					},
+					error: function() {
+						melde("Fehler: Feld nicht gespeichert");
+					}
+				});
+		}
+
+		function saveDocument(document) {
 			$db.saveDoc(document, {
 				success: function() {
-					MeldungEinzeilig("gespeichert");
+					melde("Feld gespeichert");
 				},
 				error: function() {
-					MeldungEinzeilig("Diese Beobachtung kann nicht gespeichert werden: " + document._id + ", " + document.bArtName);
+					melde("Fehler: Feld nicht gespeichert");
 				}
 			});
 		}
 		
-		function saveUserFeld(document)
-		{
+		function saveUserFeld(document) {
 			$db.saveDoc(document, {
 				success: function() {
-					MeldungEinzeilig("gespeichert");
+					melde("Einstellungen gespeichert");
 				},
 				error: function() {
-					MeldungEinzeilig("Speichern misslungen");
+					melde("Fehler: Einstellungen nicht gespeichert");
 				}
 			});
 		}
 		
-		function ArtGruppeAufbauen()
-		{
+		function ArtGruppeAufbauen() {
 			$("select#ArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
 			$db.view(viewname, {
-				success: function( data ) {
+				success: function(data) {
 					var i;
 					var ArtGruppe;
-					var ArtGruppenWerte;
+					var ArtGruppenWerte = [];
 					ArtGruppenWerte = '{{ArtGruppe}}';
+					var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
 					var listItem;
-					var ListItemContainer = "<option value=''>Artgruppen w&auml;hlen</option>";
-					for(i in data.rows)
-					{
+					for(i in data.rows) {
 						ArtGruppe = data.rows[i].key;
-						if(ArtGruppenWerte.indexOf(ArtGruppe)!=-1){      //Was passiert, wenn ArtGruppenWerte nicht existiert?
-							listItem = "<option value='" + ArtGruppe + "' selected='selected'>" + ArtGruppe + "</option>";
-						} else {
-							listItem = "<option value='" + ArtGruppe + "'>" + ArtGruppe + "</option>";
+						listItem = "<input type='checkbox' name='ArtGruppe' id='";
+						listItem += ArtGruppe;
+						listItem += "' class='custom'";
+						if(ArtGruppe.indexOf(ArtGruppenWerte)>=0){
+							listItem += " checked='checked'";
 						}
-						ListItemContainer = ListItemContainer + listItem;
+						listItem += "/>\n<label for='";
+						listItem += ArtGruppe;
+						listItem += "'>";
+						listItem += ArtGruppe;
+						listItem += "</label>";
+						ListItemContainer += listItem;
 					}
-					$("select#ArtGruppe").append(ListItemContainer);
-					$("select#ArtGruppe").val('{{ArtGruppe}}');
-					$("select#ArtGruppe").selectmenu();
-					$("select#ArtGruppe").selectmenu("refresh");
+					ListItemContainer += "\n</fieldset>"
+					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 				}
 			});
 			
 		}
 
-		function handleDelete(event)
-		{
+		function löscheFeld(event) {
 			var docId = "{{id}}";
 			// First open doc based on ID in order to get full document
 			$db.openDoc(docId, {
@@ -270,19 +244,37 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							window.open("../../../../../evab-ch_barbalex_evab/_design/evab/FeldListe.html", target = '_self');
+							window.open(Pfad + "FeldListe.html", target = '_self');
 						},
 						error: function() {
-							MeldungEinzeilig("Das Feld mit der ID: " + docId + " konnte nicht gelöscht werden");
+							melde("Fehler: Löschen gescheitert");
 						}
 					});
 				},
 				error: function() {
-					MeldungEinzeilig("Ein Feld mit der ID: " + docId + " wurde nicht gefunden");
+					melde("Fehler: Löschen gescheitert");
 				}
 			});
 			return false;
 		}
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
 	</script>
   </head>
   <body>
@@ -320,7 +312,7 @@
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain">
 					<label for="Tabelle" class="select">Tabelle:</label>
-					<select id="Tabelle" name="Tabelle" value="{{Tabelle}}" data-native-menu="true">
+					<select id="Tabelle" name="Tabelle">
 						<option value="Art">Art</option>
 						<option value="Zeit">Zeit</option>
 						<option value="Ort">Ort</option>
@@ -370,8 +362,10 @@
 						<option value="textinput">textinput</option>
 						<option value="textarea">textarea</option>
 						<option value="toggleswitch">toggleswitch</option>
+						<option value="toggleswitch">checkbox</option>
 						<option value="selectmenu">selectmenu</option>
-						<option value="multipleselect">multipleselect</option>
+						<option value="multipleselect">slider</option>
+						<option value="multipleselect">radio</option>
 					</select>
 				</div>
 				<div data-role="fieldcontain">
@@ -382,13 +376,10 @@
 						<option value="date">date</option>
 					</select>
 				</div>
-				<div data-role="fieldcontain">
-					<label for="ArtGruppe" class="select">Art-Gruppen:</label>
-					<select id="ArtGruppe" name="ArtGruppe" value='{{ArtGruppe}}' multiple="multiple" data-native-menu="true">
-					</select>
+				<div data-role="fieldcontain" id="Artgruppenliste">
 				</div>
 				<button type="submit" id="submitButton" data-icon="check" data-theme="b">speichern</button>
-				<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+				<a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a>
 			</form>
 		</div>
 	</div>

@@ -22,11 +22,12 @@ ZIELE
 5. die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
 
 PROJEKTIDEE
-- Eine Mobil-App ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld
-- Eine Website ermöglicht (später) die weitere Bearbeitung, Auswertung und den Export derselben Daten
-- Damit Felderfassungen unabhängig vom Mobilnetz möglich sind, werden die Daten in einer CouchDb gespeichert
-- CouchDb ermöglicht es auch, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
-- Für die Mobil-App wird jQuery mobile und Phonegap verwendet. Damit sollte das App für möglichst viele Geräte verfügbar sein
+- Eine Mobil-App ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
+- Für die Mobil-App wird jQuery mobile und Phonegap verwendet. Damit sollte es für möglichst viele Geräte entwickelt werden können
+- Die App steht auch als Website zur Verfügung
+- Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert werden und jederzeit synchronisiert
+- CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
+
 
 HILFE ERWÜNSCHT
 Ich bin Biologe. Mit Access-Datenbanken habe ich viel Erfahrung, auch mit deren Programmierung mit Visual Basic. Was JavaScript, jQuery, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!

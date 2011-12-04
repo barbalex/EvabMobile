@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
+  	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
+	<script type="text/javascript">
+	//customize jQuery Mobile to let IE7+ in (Mobile IE)
+	//run this script after jQuery loads, but before jQuery Mobile loads				
+		$(document).bind("mobileinit", function() {
+			$.extend(  $.mobile , {	
+			//extend gradeA qualifier to include IE7+
+				gradeA: function(){    	
+			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
+					var ie = (function() {
+					    var v = 3, div = document.createElement('div'), a = div.all || [];
+					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
+					    return v > 4 ? v : !v;
+					}());
+			    	
+			    	//must either support media queries or be IE7+
+			    	return $.support.mediaquery || (ie && ie >= 7);
+			    }
+			});
+			//$.mobile.initializePage = "false";
+		});
+		/*$(document).bind("pageInit", function() {
+			//handleDocumentReady();
+		});*/
+		/*$(document).bind("pagebeforechange", function(event, data) {
+			event.preventDefault();
+	  		var url = document.URL;
+	  		//var options = data.options;
+	  		$db = $.couch.db("EvAB");
+
+			aArtGruppe = "{{aArtGruppe}}";
+			ArtId = "{{id}}"
+
+			erstelle_hArtEdit(aArtGruppe, ArtId, url);
+	  	});*/
+	</script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+  	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
+  	<script type="text/javascript">
+		$( document ).bind( "mobileinit", function(){
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+		});	
+	</script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  </head>
+  <body>
+	<div data-role="page" id="hArtEditPage">
+		<div data-role="header" data-position="fixed">
+			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
+			<h1>Art</h1>
+			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
+					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
+					<li><a href="#" rel="external" id="hZeitLink">Zeit</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Arten</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div>
+		<div data-role="content">
+			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
+			</form>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
+	</div>
+ 
+  </body>
+  
+  
+  <script type="text/javascript" charset="utf-8">;
+  	
+
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "../../";
+		User = "";
+		aArtId = "{{aArtId}}";
+		aArtGruppe = "{{aArtGruppe}}";
+		aArtName = "{{aArtName}}";
+		aArtId = "{{aArtId}}";
+
+		erstelle_hArtEdit(aArtGruppe, aArtId);
+
+		prüfeAnmeldung(Pfad);
+
+		//$.mobile.initializePage();                   //experimentell!
+
+		var Status = get_url_param("Status");
+		if (Status == "neu") {
+			setzeAutor();
+		}
+
+		//select-Felder aktualisieren
+		refreshArtGruppen("{{aArtGruppe}}");
+		refreshArtName("{{aArtName}}");
+		$("select#aArtNameUnsicher").slider();
+		$("select#aArtNameUnsicher").val("{{aArtNameUnsicher}}");
+		$("select#aArtNameUnsicher").slider("refresh");
+		$("select#aVorhandensein").slider();
+		$("select#aVorhandensein").val("{{aVorhandensein}}");
+		$("select#aVorhandensein").slider("refresh");
+		$("select#aPopGrösseKlassiert").selectmenu();
+		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
+		$("select#aPopGrösseKlassiert").selectmenu("refresh");
+
+		//aMeldungTyp managen
+		aMeldungTyp = "{{aMeldungTyp}}";
+		$("input[name='aMeldungTyp']").checkboxradio();
+		$("input[name='aMeldungTyp']").attr("checked",true).checkboxradio("refresh");
+		$("input[name='aMeldungTyp']").change(function() {
+			aMeldungTyp = $(this).attr("id");
+			speichern("../../");
+		});
+
+		//Neue Beobachtung managen
+		$("#hArtNeuLink").live("click", function(event) {
+			event.preventDefault();
+			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+			erstelleArtgruppenliste("Neu");
+		});
+
+		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			erstelleArtliste(aArtGruppe, "Neu");
+			$("#ArtgruppenListe").empty();
+		});
+		
+		$("[name='ArtListItemNeu']").live("click", function(event) {
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("ArtBezeichnung");
+			var aArtId = $(this).attr("artid");
+			$("#ArtenListe").empty();
+			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
+		});	
+
+		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
+		$("select#aArtGruppe").tap(function(event) {
+			event.preventDefault();
+			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
+			erstelleArtgruppenliste("Edit");
+		});
+
+		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
+			event.preventDefault();
+			aArtGruppe = $(this).attr("id");
+			$.mobile.changePage("Artenliste.html", "slide", true, false);
+			erstelleArtliste(aArtGruppe, "Edit");
+			$("#ArtgruppenListe").empty();
+		});
+		
+		$("[name='ArtListItemEdit']").live("click", function(event) {
+			event.preventDefault();
+			aArtGruppe = $(this).attr("aArtGruppe");
+			aArtName = $(this).attr("id");
+			aArtId = $(this).attr("artid");
+			speichern("");
+			$("#ArtenListe").empty();
+		});
+
+		//Editieren von Beobachtungen managen, ausgehend von ArtName
+		$("select#aArtName").tap(function(event) {
+			event.preventDefault();
+			$.mobile.changePage("../../Artenliste.html", "slide", true, false);
+			ArtlisteAufbauen(aArtGruppe, "Edit");
+		});
+
+		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
+		//aMeldungTyp ist oben schon gemacht
+		
+
+		$("[name^='a']").change(function() {
+			speichern("../../");
+		});
+		/*
+		$("#aMeldungTyp").change(function() {
+			speichern("../../");
+		});
+		$("#aArtNameUnsicher").change(function() {
+			speichern("../../");
+		});
+		$("#aArtNameVerifiziertDurch").change(function() {
+			speichern("../../");
+		});
+		$("#aArtNameBemerkungen").change(function() {
+			speichern("../../");
+		});
+		$("#aAutor").change(function() {
+			speichern("../../");
+		});
+		$("#aPopGrösseKlassiert").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge1Anzahl").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge1Einheit").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge1Genauigkeit").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge2Anzahl").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge2Einheit").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge2Genauigkeit").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge3Anzahl").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge3Einheit").change(function() {
+			speichern("../../");
+		});
+		$("#aMenge3Genauigkeit").change(function() {
+			speichern("../../");
+		});
+		$("#aDeckungKlassiertZdsf").change(function() {
+			speichern("../../");
+		});
+		$("#aDeckungGesamt").change(function() {
+			speichern("../../");
+		});
+		$("#aDeckungKlassiertFns").change(function() {
+			speichern("../../");
+		});
+		$("#aVegetationsschicht").change(function() {
+			speichern("../../");
+		});
+		$("#aVerteilung").change(function() {
+			speichern("../../");
+		});
+		$("#aVerteilung2").change(function() {
+			speichern("../../");
+		});
+		$("#aAufnahmemethode").change(function() {
+			speichern("../../");
+		});
+		$("#aVorhandensein").change(function() {
+			speichern("../../");
+		});
+		$("#aHerkunft").change(function() {
+			speichern("../../");
+		});
+		$("#aHerkunftQuelle").change(function() {
+			speichern("../../");
+		});
+		$("#aHerkunftBem").change(function() {
+			speichern("../../");
+		});
+		$("#aBedrohung").change(function() {
+			speichern("../../");
+		});
+		$("#aMassnahmen").change(function() {
+			speichern("../../");
+		});
+		$("#aPhänologie").change(function() {
+			speichern("../../");
+		});
+		$("#aPflanzengrösse").change(function() {
+			speichern("../../");
+		});
+		$("#aVitalität").change(function() {
+			speichern("../../");
+		});
+		$("#aLiteratur").change(function() {
+			speichern("../../");
+		});
+		$("#aLitZitiert").change(function() {
+			speichern("../../");
+		});
+		$("#aBelegArt").change(function() {
+			speichern("../../");
+		});
+		$("#aBelegStandort").change(function() {
+			speichern("../../");
+		});
+		$("#aBelegNr").change(function() {
+			speichern("../../");
+		});
+		$("#aHerbarUrsprung").change(function() {
+			speichern("../../");
+		});
+		$("#aWeltenHerbar").change(function() {
+			speichern("../../");
+		});
+		$("#aNeophytBekämpft").change(function() {
+			speichern("../../");
+		});
+		$("#aNeopBekDatum").change(function() {
+			speichern("../../");
+		});
+		$("#aNeopBekArt").change(function() {
+			speichern("../../");
+		});
+		$("#aNeopBekFläche").change(function() {
+			speichern("../../");
+		});
+		$("#aNeopBekBem").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivNr1").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivNr2").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivNr3").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivNr4").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivNr5").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivText1").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivText2").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivText3").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivText4").change(function() {
+			speichern("../../");
+		});
+		$("#aIndivText5").change(function() {
+			speichern("../../");
+		});
+		$("#aIndDef").change(function() {
+			speichern("../../");
+		});
+		$("#aAduAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aHäufKlasse").change(function() {
+			speichern("../../");
+		});
+		$("#aWeibchenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aArbeiterinnenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aMännchenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aRufendeAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aPuppenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aJuvenileAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aLarvenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aSubadulteAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aPaarungenAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aTandemsAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aWeibchenEierlegendAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aEierAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aNesterAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aGehäuse").change(function() {
+			speichern("../../");
+		});
+		$("#aExuvienAnz").change(function() {
+			speichern("../../");
+		});
+		$("#aBestimmungsmethode").change(function() {
+			speichern("../../");
+		});
+		$("#aBeobachtungsmethode").change(function() {
+			speichern("../../");
+		});
+		$("#aReproduktionsstatus").change(function() {
+			speichern("../../");
+		});
+		$("#aStichprobennummer").change(function() {
+			speichern("../../");
+		});
+		$("#aBemerkungen").change(function() {
+			speichern("../../");
+		});*/
+
+		//Link zum Projekt in Navbar setzen
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+
+		//Link zum Raum in Navbar setzen
+		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{RaumId}}";
+
+		//Link zum Ort in Navbar setzen
+		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{OrtId}}";
+
+		//Link zur Zeit in Navbar setzen
+		document.getElementById("hZeitLink").href = "../hZeitEdit/" + "{{ZeitId}}";
+
+		//Link zur ArtListe in Navbar setzen
+		var url = "../hArtListe/" + "{{ZeitId}}";
+		$("[name='hArtListeLink']").attr('href', url);
+
+		//Link zu ArtNeu setzen
+		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{ZeitId}}";
+
+		//Code für den Art-Löschen-Dialog
+		$('#LöschenDialogLink').live('click', function() {
+			$(this).simpledialog({
+				'mode' : 'bool',
+		    	'prompt' : 'Diese Art löschen?',
+		    	'forceInput': 'false',
+		    	'buttons' : {
+				 	'ja': {
+				      	click: function() {
+				        	$('#dialogoutput').text('ja');
+				        	löscheBeobachtung();
+		        		},
+		        		icon: "delete",
+		        		theme: "c"
+		      		},
+		      		'nein': {
+		        		click: function() {
+		          			$('#dialogoutput').text('nein');
+		        		}
+		      		}
+		    	}
+		  	})
+		});
+
+		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+		UserId = holeUserId(User);
+
+		//Menu aufbauen
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
+		});
+
+		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
+		$(document).bind("mobileinit", function() {
+			defaultDialogTransition = none;
+		});
+
+		alert("Hier wird für Sie gebaut!\nDiese Seite soll je nach Artgruppe dynamisch aufgebaut werden.\nSchauen Sie wieder mal vorbei.");
+		//$("#hArtEditPage").refresh();
+		$("#hArtEditForm").trigger("refresh");
+	}
+	
+	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
+  </script>
+
+  <script type="text/javascript" charset="utf-8">	
+	Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
+  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
+		'dateFormat': 'YYYY-MM-DD',
+		'headerFormat': 'YYYY-MM-DD',
+		'monthsOfYear': Monate
+	});
+
+	function refreshArtGruppen(aArtGruppe) {
+		$("select#aArtGruppe").selectmenu();
+		$("select#aArtGruppe").empty();
+		var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
+		$("select#aArtGruppe").append(startoption);
+		$("select#aArtGruppe").val(aArtGruppe);
+		$("select#aArtGruppe").selectmenu("refresh");
+	}
+	
+	function refreshArtName(aArtName) {
+		$("select#aArtName").selectmenu();
+		$("select#aArtName").empty();
+		var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
+		$("select#aArtName").append(startoption);
+		$("select#aArtName").val(aArtName);
+		$("select#aArtName").selectmenu("refresh");
+	}
+
+	function löscheBeobachtung(event) {
+		var docId = "{{id}}";
+		var ZeitId = "{{ZeitId}}";
+		// First open doc based on ID in order to get full document
+		$db.openDoc(docId, {
+			success: function(document) {
+				// Then use the opened doc as reference to remove
+				$db.removeDoc(document, {
+					success: function() {
+						melde("Art gelöscht");
+						window.open("../hArtListe/" + ZeitId, target="_self");
+					},
+					error: function() {
+						melde("Die Art konnte nicht gelöscht werden");
+					}
+				});
+			},
+			error: function() {
+				melde("Die Art konnte nicht gelöscht werden");
+			}
+		});
+		return false;
+	}
+
+	//Speichert alle Daten
+	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
+	//mithilfe des FeldNamens wird das Formularelement nachgeschaut
+	function speichern(Pfad) {
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				//zuerst immer selbe Felder in Objekt schreiben
+				doc.Typ = "hArt";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				doc.RaumId = "{{RaumId}}";
+				doc.OrtId = "{{OrtId}}";
+				doc.ZeitId = "{{ZeitId}}";
+				doc.aArtGruppe = aArtGruppe;
+				doc.aArtName = aArtName;
+				var FeldName;
+				var Formularelement;
+				var FeldWert;
+				var FeldSelector;
+				doc.aArtId = aArtId;
+				//jetzt die artgruppenspezifischen
+				$db.view('evab/FeldFormularelementVonName?startkey=["Art"]&endkey=["Art",{},{},{}]', {
+					success: function(data) {
+						var i;
+						for(i in data.rows) {
+							FeldName = data.rows[i].key[2];
+							Formularelement = data.rows[i].key[3];
+							FeldWert = eval("doc." + FeldName);
+							switch (Formularelement) {
+								case ("textinput" || "toggleswitch" || "selectmenu") && (FeldName != "aArtId")://aArtId soll nicht angezeigt werden
+									FeldSelector = "select#" + FeldName + '"';
+									if ($(FeldSelector).val()!="") {
+										FeldWert = $(FeldSelector).val();
+									} else if (FeldWert!=null) {
+										delete FeldWert;
+									}
+									break;
+								case "textarea":
+									FeldSelector = "\"[id='" + FeldName + "']\"";
+									if ($(FeldSelector).val()!="") {
+										FeldWert = $(FeldSelector).val();
+									} else if (FeldWert!=null) {
+										delete FeldWert;
+									}
+									break;
+								case "checkboxradio":
+									FeldWert = eval(FeldName);
+									break;
+								case "multipleselect":
+									//DAS MUSS NOCH GEMACHT WERDEN!
+									break;
+							}
+						}
+					}
+				});
+				//jetzt Objekt speichern
+				$db.saveDoc(doc, {
+					success: function(data) {
+						//melde("Art gespeichert");
+					},
+					error: function() {
+						melde("Fehler: Art wurde nicht gespeichert");
+					 }
+				});
+			},
+			error: function() {
+				melde("Fehler: Art wurde nicht gespeichert");
+			}
+		});
+	}
+	/*
+	//Speichert alle Daten
+	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
+	function speichern(Pfad) {
+		var docId = "{{id}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				doc.Typ = "hArt";
+				doc.User = User;
+				doc.ProjektId = "{{ProjektId}}";
+				doc.RaumId = "{{RaumId}}";
+				doc.OrtId = "{{OrtId}}";
+				doc.ZeitId = "{{ZeitId}}";
+				doc.aArtGruppe = aArtGruppe;
+				doc.aArtName = aArtName;
+				if (aArtId != "") {
+					doc.aArtId = aArtId;
+				} else if (doc.aArtId != null){
+					delete doc.aArtId;
+				}
+				if ($("select#aArtNameUnsicher").val()!="") {
+					doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
+				} else if (doc.aArtNameUnsicher!=null) {
+					delete doc.aArtNameUnsicher;
+				}
+				if ($("input#aArtNameVerifiziertDurch").val()!="") {
+					doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
+				} else if (doc.aArtNameVerifiziertDurch!=null) {
+					delete doc.aArtNameVerifiziertDurch;
+				}
+				if ($("[id='aArtNameBemerkungen']").val()!="") {
+					doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
+				} else if (doc.aArtNameBemerkungen!=null) {
+					delete doc.aArtNameBemerkungen;
+				}
+				doc.aMeldungTyp = aMeldungTyp;
+				if ($("input#aAutor").val()!="") {
+					doc.aAutor = $("input#aAutor").val();
+				} else if (doc.aAutor!=null) {
+					delete doc.aAutor;
+				}
+				if ($("select#aVorhandensein").val()!="") {
+					doc.aVorhandensein = $("select#aVorhandensein").val();
+				} else if (doc.aVorhandensein!=null) {
+					delete doc.aVorhandensein;
+				}
+				if ($("select#aPopGrösseKlassiert").val()!="") {
+					doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
+				} else if (doc.aPopGrösseKlassiert!=null) {
+					delete doc.aPopGrösseKlassiert;
+				}
+				if ($("input#aMenge").val()!="") {
+					doc.aMenge = $("input#aMenge").val();
+				} else if (doc.aMenge!=null) {
+					delete doc.aMenge;
+				}
+				if ($("[id='aBemerkungen']").val()!="") {
+					doc.aBemerkungen = $("[id='aBemerkungen']").val();
+				} else if (doc.aBemerkungen!=null) {
+					delete doc.aBemerkungen;
+				}
+				$db.saveDoc(doc, {
+					success: function(data) {
+						//melde("Art gespeichert");
+					},
+					error: function() {
+						melde("Fehler: Art wurde nicht gespeichert");
+					 }
+				});
+			},
+			error: function() {
+				melde("Fehler: Art wurde nicht gespeichert");
+			}
+		});
+	}*/
+  </script>
+</html>

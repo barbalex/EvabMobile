@@ -5,48 +5,29 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!';
+			$.mobile.defaultPageTransition  = 'none';
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false; 
+		});
+    </script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
-  	<script type="text/javascript">
-		$( document ).bind( "mobileinit", function(){
-			$.mobile.page.prototype.options.degradeInputs.date = 'text';
-			$.mobile.selectmenu.prototype.options.nativeMenu = false;
-		});	
-	</script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
   </head>
   <body>
@@ -66,86 +47,14 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get" autocomplete="off">
-				<div data-role="fieldcontain">
-					<label for="aArtGruppe" class="select">Art-Gruppe:</label>
-					<select id="aArtGruppe" name="aArtGruppe" data-icon="arrow-r" data-native-menu="true" value="{{aArtGruppe}}">
-					</select>
-				</div>			
-				<div data-role="fieldcontain">
-					<label for="aArtName" class="select">Art-Name:</label>
-					<select id="aArtName" name="aArtName" data-icon="arrow-r" data-native-menu="true" value="{{aArtName}}">
-					</select>
-				</div>
-				<hr />
-				<div data-role="fieldcontain">
-					<label for="aArtNameUnsicher">Bestimmung unsicher?</label>
-					<select name="aArtNameUnsicher" id="aArtNameUnsicher" data-role="slider" value="{{aArtNameUnsicher}}">
-						<option value="nein">nein</option>
-						<option value="ja">ja</option>
-					</select> 
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aArtNameVerifiziertDurch">verifiziert durch:</label>
-					<input id="aArtNameVerifiziertDurch" name="aArtNameVerifiziertDurch" type="text" value="{{aArtNameVerifiziertDurch}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aArtNameBemerkungen">Bemerkungen zur Art:</label>
-					<textarea cols="40" rows="8" name="aArtNameBemerkungen" id="aArtNameBemerkungen" value="{{aArtNameBemerkungen}}">{{aArtNameBemerkungen}}</textarea>
-				</div>
-				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
-				    	<legend>Typ der Meldung:</legend>
-				         	<input type="radio" name="aMeldungTyp" id="Feldbeobachtung" value="Feldbeobachtung"/>
-				         	<label for="Feldbeobachtung">Feldbeobachtung</label>
-				         	<input type="radio" name="aMeldungTyp" id="Herbarbeleg" value="Herbarbeleg"  />
-				         	<label for="Herbarbeleg">Herbarbeleg</label>
-				         	<input type="radio" name="aMeldungTyp" id="Literaturangabe" value="Literaturangabe"  />
-				         	<label for="Literaturangabe">Literaturangabe</label>
-				    </fieldset>
-				</div>					
-				<div data-role="fieldcontain">
-					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" required/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aVorhandensein">Ist Art vorhanden? (nein = Absenzmeldung!)</label>
-					<select name="aVorhandensein" id="aVorhandensein" data-role="slider" value="{{aVorhandensein}}">
-						<option value="ja">ja</option>
-						<option value="nein">nein</option>
-					</select> 
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aPopGrösseKlassiert" class="select">Populationsgrösse:</label>
-					<select id="aPopGrösseKlassiert" name="aPopGrösseKlassiert" data-native-menu="false" value="{{aPopGrösseKlassiert}}">
-						<option>(nur f&uuml;r Flora)</option>
-						<option value="<10 Ex.">&lt;10 Ex.</option>
-						<option value="11-25 Ex.">11-25 Ex.</option>
-						<option value="26-50 Ex.">26-50 Ex.</option>
-						<option value="51-100 Ex.">51-100 Ex.</option>
-						<option value="101-200 Ex.">101-200 Ex.</option>
-						<option value="200-500 Ex.">200-500 Ex.</option>
-						<option value="500-1'000 Ex.">500-1'000 Ex.</option>
-						<option value="1'000-2'500 Ex.">1'000-2'500 Ex.</option>
-						<option value="2'500-5'000 Ex.">2'500-5'000 Ex.</option>
-						<option value="5'000-10'000 Ex.">5'000-10'000 Ex.</option>
-						<option value=">10'000 Ex.">&gt;10'000 Ex.</option>
-					</select>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aMenge">Menge:</label>
-					<input id="aMenge" name="aMenge" type="text" value="{{aMenge}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="aBemerkungen">Bemerkungen zur Beobachtung:</label>
-					<textarea cols="40" rows="8" name="aBemerkungen" id="aBemerkungen" value="{{aBemerkungen}}">{{aBemerkungen}}</textarea>
-				</div>
+			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
 			</form>
+			<p style="text-align: center">Hier wird für Sie gebaut!<br>Diese Seite soll je nach Artgruppe dynamisch aufgebaut werden.<br>Schauen Sie wieder mal vorbei.</p>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink">neu</a></li>				
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -156,28 +65,28 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
 
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "../../";
+		User = "";
 		aArtId = "{{aArtId}}";
 		aArtGruppe = "{{aArtGruppe}}";
 		aArtName = "{{aArtName}}";
 		aArtId = "{{aArtId}}";
+		ID = "{{id}}";
+
+		erstelle_hArtEdit(ID, aArtGruppe, aArtName);	
+		prüfeAnmeldung(Pfad);
+
+		//$.mobile.initializePage();                   //experimentell!
 
 		var Status = get_url_param("Status");
-		if (Status == "neu"){
-			AutorSetzen();
+		if (Status == "neu") {
+			setzeAutor();
 		}
-
+		/*
 		//select-Felder aktualisieren
 		refreshArtGruppen("{{aArtGruppe}}");
 		refreshArtName("{{aArtName}}");
@@ -190,59 +99,52 @@
 		$("select#aPopGrösseKlassiert").selectmenu();
 		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
 		$("select#aPopGrösseKlassiert").selectmenu("refresh");
-
+		*/
 		//aMeldungTyp managen
+		aMeldungTyp = "{{aMeldungTyp}}";
 		$("input[name='aMeldungTyp']").checkboxradio();
-
-		if ("{{aMeldungTyp}}"!=""){
-			aMeldungTyp = "{{aMeldungTyp}}";
-		} else {
-			aMeldungTyp = "Feldbeobachtung";
-		}
-		$("input#Feldbeobachtung").checkboxradio();
-		$("input#Herbarbeleg").checkboxradio();
-		$("input#Literaturangabe").checkboxradio();
-		//$("input#{{aMeldungTyp}}").attr("checked",true).checkboxradio("refresh");         AUSGESCHALTET WEIL FEHLER
-		$("input[name='aMeldungTyp']").change(function(){
+		$("input[name='aMeldungTyp']").attr("checked",true).checkboxradio("refresh");
+		$("input[name='aMeldungTyp']").change(function() {
 			aMeldungTyp = $(this).attr("id");
+			speichern("../../");
 		});
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").live("click", function(event){
+		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
-			ArtgruppenlisteAufbauen("Neu");
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe, "Neu");
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("id");
+			var aArtName = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			BeobNeuSpeichernHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
+			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
 		});	
 
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-		$("select#aArtGruppe").tap(function(event){
+		$("select#aArtGruppe").tap(function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
-			ArtgruppenlisteAufbauen("Edit");
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtgruppenliste("Edit");
 		});
 
 		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
 			aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe, "Edit");
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtliste(aArtGruppe, "Edit");
 			$("#ArtgruppenListe").empty();
 		});
 		
@@ -256,39 +158,19 @@
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
-		$("select#aArtName").tap(function(event){
+		$("select#aArtName").tap(function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe, "Edit");
+			$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtliste(aArtGruppe, "Edit");
 		});
 
-		//Für jedes Feld bei Änderung speichern
-		$("#aArtNameUnsicher").change(function(){
-			speichern("../../");
-		});
-		$("#aArtNameVerifiziertDurch").change(function(){
-			speichern("../../");
-		});
-		$("#aArtNameBemerkungen").change(function(){
-			speichern("../../");
-		});
-		$("#aMeldungTyp").change(function(){                 //klappt nicht, WIE MACHEN????
-			speichern("../../");
-		});
-		$("#aAutor").change(function(){
-			speichern("../../");
-		});
-		$("#aVorhandensein").change(function(){
-			speichern("../../");
-		});
-		$("#aPopGrösseKlassiert").change(function(){
-			speichern("../../");
-		});
-		$("#aMenge").change(function(){
-			speichern("../../");
-		});
-		$("#aBemerkungen").change(function(){
-			speichern("../../");
+		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
+		//aMeldungTyp ist oben schon gemacht
+		$("[name^='a']").change(function() {
+			warte(300);   
+			//anders lösen - warte blockiert CPU!
+			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird
+			speichern('../../');
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -318,15 +200,15 @@
 		    	'forceInput': 'false',
 		    	'buttons' : {
 				 	'ja': {
-				      	click: function () {
+				      	click: function() {
 				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
+				        	löscheBeobachtung();
 		        		},
 		        		icon: "delete",
 		        		theme: "c"
 		      		},
 		      		'nein': {
-		        		click: function () {
+		        		click: function() {
 		          			$('#dialogoutput').text('nein');
 		        		}
 		      		}
@@ -335,33 +217,36 @@
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
+		//$("#hArtEditPage").trigger("refresh");    offenbar nicht nötig
+		//$("#hArtEditForm").trigger("refresh");
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
@@ -372,28 +257,25 @@
 		'monthsOfYear': Monate
 	});
 
-	function refreshArtGruppen(aArtGruppe)
-	{
-		$("select#aArtGruppe").selectmenu();
-		$("select#aArtGruppe").empty();
-		var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
-		$("select#aArtGruppe").append(startoption);
+	function refreshArtGruppen(aArtGruppe) {
+		//$("select#aArtGruppe").selectmenu();
+		//$("select#aArtGruppe").empty();
+		//var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
+		//$("select#aArtGruppe").append(startoption);
 		$("select#aArtGruppe").val(aArtGruppe);
 		$("select#aArtGruppe").selectmenu("refresh");
 	}
 	
-	function refreshArtName(aArtName)
-	{
-		$("select#aArtName").selectmenu();
-		$("select#aArtName").empty();
-		var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
-		$("select#aArtName").append(startoption);
+	function refreshArtName(aArtName) {
+		//$("select#aArtName").selectmenu();
+		//$("select#aArtName").empty();
+		//var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
+		//$("select#aArtName").append(startoption);
 		$("select#aArtName").val(aArtName);
 		$("select#aArtName").selectmenu("refresh");
 	}
 
-	function handleDelete(event)
-	{
+	function löscheBeobachtung(event) {
 		var docId = "{{id}}";
 		var ZeitId = "{{ZeitId}}";
 		// First open doc based on ID in order to get full document
@@ -402,16 +284,16 @@
 				// Then use the opened doc as reference to remove
 				$db.removeDoc(document, {
 					success: function() {
-						MeldungEinzeilig("Art gelöscht");
+						melde("Art gelöscht");
 						window.open("../hArtListe/" + ZeitId, target="_self");
 					},
 					error: function() {
-						MeldungEinzeilig("Die Art konnte nicht gelöscht werden");
+						melde("Fehler: Art nicht gelöscht");
 					}
 				});
 			},
 			error: function() {
-				MeldungEinzeilig("Eine Art mit der ID: " + docId + " wurde nicht gefunden");
+				melde("Fehler: Art nicht gelöscht");
 			}
 		});
 		return false;
@@ -419,7 +301,36 @@
 
 	//Speichert alle Daten
 	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
-	function speichern(Pfad){
+	function speichern() {
+		var hArt = {};
+		var docId = "{{id}}";
+		hArt = $("#hArtEditForm").serializeObject();
+		hArt.Typ = "hArt";
+		hArt.User = User;
+		hArt._id = docId;
+		hArt.ProjektId = "{{ProjektId}}";
+		hArt.RaumId = "{{RaumId}}";
+		hArt.OrtId = "{{OrtId}}";
+		hArt.ZeitId = "{{ZeitId}}";
+		$db.openDoc(docId, {
+			success: function(doc) {
+				hArt._rev = doc._rev;
+				$db.saveDoc(hArt, {
+					success: function() {
+
+					},
+					error: function() {
+						melde("Fehler: Art nicht gespeichert");
+					 }
+				});
+			}
+		});
+	}
+	
+	/*
+	//Speichert alle Daten
+	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
+	function speichern(Pfad) {
 		var docId = "{{id}}";
 		$db.openDoc(docId, {
 			success: function(doc) {
@@ -431,65 +342,65 @@
 				doc.ZeitId = "{{ZeitId}}";
 				doc.aArtGruppe = aArtGruppe;
 				doc.aArtName = aArtName;
-				if (aArtId != ""){
+				if (aArtId != "") {
 					doc.aArtId = aArtId;
 				} else if (doc.aArtId != null){
 					delete doc.aArtId;
 				}
-				if ($("select#aArtNameUnsicher").val()!=""){
+				if ($("select#aArtNameUnsicher").val()!="") {
 					doc.aArtNameUnsicher = $("select#aArtNameUnsicher").val();
-				} else if (doc.aArtNameUnsicher!=null){
+				} else if (doc.aArtNameUnsicher!=null) {
 					delete doc.aArtNameUnsicher;
 				}
-				if ($("input#aArtNameVerifiziertDurch").val()!=""){
+				if ($("input#aArtNameVerifiziertDurch").val()!="") {
 					doc.aArtNameVerifiziertDurch = $("input#aArtNameVerifiziertDurch").val();
-				} else if (doc.aArtNameVerifiziertDurch!=null){
+				} else if (doc.aArtNameVerifiziertDurch!=null) {
 					delete doc.aArtNameVerifiziertDurch;
 				}
-				if ($("[id='aArtNameBemerkungen']").val()!=""){
+				if ($("[id='aArtNameBemerkungen']").val()!="") {
 					doc.aArtNameBemerkungen = $("[id='aArtNameBemerkungen']").val();
-				} else if (doc.aArtNameBemerkungen!=null){
+				} else if (doc.aArtNameBemerkungen!=null) {
 					delete doc.aArtNameBemerkungen;
 				}
-				doc.aMeldungTyp = aMeldungTyp;                                   //KLAPPT DAS?
-				if ($("input#aAutor").val()!=""){
+				doc.aMeldungTyp = aMeldungTyp;
+				if ($("input#aAutor").val()!="") {
 					doc.aAutor = $("input#aAutor").val();
-				} else if (doc.aAutor!=null){
+				} else if (doc.aAutor!=null) {
 					delete doc.aAutor;
 				}
-				if ($("select#aVorhandensein").val()!=""){
+				if ($("select#aVorhandensein").val()!="") {
 					doc.aVorhandensein = $("select#aVorhandensein").val();
-				} else if (doc.aVorhandensein!=null){
+				} else if (doc.aVorhandensein!=null) {
 					delete doc.aVorhandensein;
 				}
-				if ($("select#aPopGrösseKlassiert").val()!=""){
+				if ($("select#aPopGrösseKlassiert").val()!="") {
 					doc.aPopGrösseKlassiert = $("select#aPopGrösseKlassiert").val();
-				} else if (doc.aPopGrösseKlassiert!=null){
+				} else if (doc.aPopGrösseKlassiert!=null) {
 					delete doc.aPopGrösseKlassiert;
 				}
-				if ($("input#aMenge").val()!=""){
+				if ($("input#aMenge").val()!="") {
 					doc.aMenge = $("input#aMenge").val();
-				} else if (doc.aMenge!=null){
+				} else if (doc.aMenge!=null) {
 					delete doc.aMenge;
 				}
-				if ($("[id='aBemerkungen']").val()!=""){
+				if ($("[id='aBemerkungen']").val()!="") {
 					doc.aBemerkungen = $("[id='aBemerkungen']").val();
-				} else if (doc.aBemerkungen!=null){
+				} else if (doc.aBemerkungen!=null) {
 					delete doc.aBemerkungen;
 				}
 				$db.saveDoc(doc, {
 					success: function(data) {
-						window.open(Pfad + "_show/hArtEdit/" + data.id, target="_self");
+						//melde("Art gespeichert");
 					},
 					error: function() {
-						MeldungEinzeilig("Die Art konnte nicht gespeichert werden.");
+						melde("Fehler: Art wurde nicht gespeichert");
 					 }
 				});
 			},
 			error: function() {
-				MeldungZweizeilig("Diese Art kann nicht geöffnet werden:", docId);
+				melde("Fehler: Art wurde nicht gespeichert");
 			}
 		});
-	}
+	}*/
   </script>
 </html>

@@ -4,36 +4,21 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -69,10 +54,14 @@
 
   </body>
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
-		AnmeldungPruefen();
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "../../";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+		
 		refreshArtListe();
 
 		//Link zum Projekt in Navbar setzen
@@ -92,100 +81,75 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").live("click", function(event){
+		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", "slide", true, false);
-			ArtgruppenlisteAufbauen("Neu");
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe, "Neu");
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("id");
+			var aArtName = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			BeobNeuSpeichernHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{id}}", User, aArtGruppe, aArtName, aArtId);
+			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{id}}", User, aArtGruppe, aArtName, aArtId);
 		});	
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	function AnmeldungPruefen() {
-		userCtx = null;
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name;
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("../../index.html", target="_self");
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
 				}
-			}
+		    }
 		});
 	}
-
-  	function refreshArtListe()
-	{
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	function refreshArtListe() {
 		$("#Arten").empty();
-		$db.view("evab/hArtListe",
-			{success: function(data) {
+		var ZeitId = "{{id}}";
+		$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
+			success: function(data) {
 				var i;
 				var anzArt = 0;
 				var Art;
-				var ZeitId = "{{id}}";
 				var externalPage;
 				var listItem;
 				var ListItemContainer = "";
 				for(i in data.rows) {                    //Arten zählen. Wenn noch keine: darauf hinweisen
-					key = data.rows[i].key;
-					if (key[0] == User) {            //nur eigene Arten zählen!
-						
-						if(key[1] == ZeitId) {    //nur Arten mit dieser ZeitId zählen
-							anzArt = anzArt + 1;
-						}
-					}
+					anzArt += 1;
 				}
 
-				//Im Titel der Seite die Anzahl Arten anzeigen
-				var Titel2 = " Arten";
+				var Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
 				if (anzArt==1){
 					Titel2 = " Art";
 				}
@@ -194,28 +158,23 @@
 				if (anzArt == 0) {
 					$("#Arten").append("<li>Sie haben noch keine Art erfasst</li>");
 				} else {
-					for(i in data.rows)                  //Liste aufbauen
-					{
+					for(i in data.rows) {                //Liste aufbauen
 						Art = data.rows[i].value;
 						key = data.rows[i].key;
 						aArtGruppe = Art.aArtGruppe;
 						ImageLink = "../../Artgruppenbilder/" + aArtGruppe + ".png";
-						if (key[0] == User) {                   //nur eigene Zeiten anzeigen!
-							if(key[1] == ZeitId) {    		//nur Zeiten mit dieser OrtId anzeigen
-								var bArtName = key[2];
-								externalPage = "../../_show/hArtEdit/" + Art._id;
-								listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
-									"<a href=\"" + externalPage + "\" rel=\"external\">" +
-									"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-									"<h3>" + bArtName + "<\/h3>" +
-									"<\/a> <\/li>";
-								ListItemContainer = ListItemContainer + listItem;
-							}
-						}
+						var bArtName = key[2];
+						externalPage = "../../_show/hArtEdit/" + Art._id;
+						listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+							"<a href=\"" + externalPage + "\" rel=\"external\">" +
+							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+							"<h3>" + bArtName + "<\/h3>" +
+							"<\/a> <\/li>";
+						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Arten").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#Arten").html(ListItemContainer);
 				$("#Arten").listview();
 				$("#Arten").listview("refresh");
 			}

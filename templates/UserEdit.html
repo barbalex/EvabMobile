@@ -5,170 +5,45 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-    <script type="text/javascript" src="../../vendor/couchapp/takeout.js"></script>
-    	<script type="text/javascript">
-		$(document).ready(function(){
-			// do stuff when DOM is ready
-			$db = $.couch.db("evab-ch_barbalex_evab");
-			userCtx = null;
-			$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-			});
-			
-			var docId = "{{id}}";
-
-			$('#Benutzername').textinput();
-			$('#Benutzername').textinput('disable');
-
-			//Modus managen
-			Modus = "{{Modus}}";
-			$("input[name='Modus']").checkboxradio();
-			$("input#{{Modus}}").attr("checked",true).checkboxradio("refresh");
-			$("input[name='Modus']").change(function(){
-				Modus = $(this).attr("id");
-			});
-
-			//Datenverwendung managen
-			Datenverwendung = "{{Datenverwendung}}";
-			$("input[name='Datenverwendung']").checkboxradio();
-			$("input#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
-			$("input[name='Datenverwendung']").change(function(){
-				Datenverwendung = $(this).attr("id");
-			});
-			
-			$("#submitButton").tap(function(event) {
-				speichern();
-			});	
-
-			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-			var UserId;
-			$db.view("evab/User",
-				{success: function(data) {
-					var i;
-					var doc;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						doc = data.rows[i].value;
-						if (key == User) {
-							UserId = doc._id;
-						}
-					}
-				}
-			});
-
-			//Menu aufbauen
-			$("[name='Menu']").live('click', function(){
-				MenuAufbauenAusArtListe(this, User, UserId, "../../");
-			});
-
-			//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-			$(document).bind("mobileinit", function(){
-				defaultDialogTransition = none;
-			});
-		});
-	</script>
-	<script type="text/javascript">
-
-		//Link für lokale Installation managen
-		$(function() {
-            $('#takeout').takeout({linkText : "ja, herunterladen und installieren", localText : "EvAB mobile ist schon lokal installiert"});
-        });
-
-        function speichern(){
-        	$db.openDoc(docId, {
-				success: function(doc) {
-					doc.Typ = "User";
-					doc.UserName = "{{UserName}}";
-					if ($("input#Email").val()!=""){
-						doc.Email = $("input#Email").val();
-					} else if (doc.Email!=null){
-						delete doc.Email;
-					}
-					doc.Modus = Modus;
-					doc.Datenverwendung = Datenverwendung;
-					if ($("input#Autor").val()==""){
-						MeldungEinzeilig("Bitte Autor eingeben");
-					} else {
-						doc.Autor = $("input#Autor").val();
-						$db.saveDoc(doc, {
-							success: function() {
-								MeldungEinzeilig("Einstellungen gespeichert");
-							},
-							error: function() {
-								MeldungZweizeilig("Speichern fehlgeschlagen!");
-							}
-						});
-					}
-				},
-				error: function() {
-					MeldungZweizeilig("Dieser User kann nicht geöffnet werden:", docId);
-				}
-			});
-        }
-		
-	</script>
   </head>
   <body>
-  	<div data-role="page" id="UserEditPage">
+  	<div data-role="page">
   		<div data-role="header" data-position="fixed">
   			<a href="../../BeobListe.html" data-rel="back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>meine Einstellungen</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<h5>EvAB mobile lokal installieren?</h5>
-		    <p style="text-align: center">Möchten Sie EvAB mobile lokal auf Ihrem Windows- oder Mac-Computer installieren?<br />Die Daten werden jeweils mit der Datenbank im Internet synchronisiert.</p>
-		    <div id="takeout" style="text-align: center"></div>
-		    <hr />
-			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}"
+			<form id="UserEditForm" action="#" method="get" data-identity="{{document}}"
 				<div data-role="fieldcontain">
 					<label for="Benutzername">Benutzername:</label>
 					<input id="Benutzername" name="Benutzername" type="text" value="{{UserName}}"/>
-					<p style="text-align: center">Der Benutzername kann nicht verändert werden.</p>
+					<p>Der Benutzername kann nicht verändert werden.<br />
+					EvAB mobile speichert nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
 				</div>
-				<p style="text-align: center">EvAB mobile kennt nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
 				<hr />
 				<div data-role="fieldcontain">
 					<label for="Autor">Autor:</label>
 					<input id="Autor" name="Autor" type="text" value="{{Autor}}" placeholder="(erforderlich)" required/>
-					<p style="text-align: center">Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
+					<p>Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
@@ -177,38 +52,122 @@
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup" data-type="horizontal">
+				    <fieldset data-role="controlgroup">
 				    	<legend>Ich will in diesem Modus erfassen:</legend>
 				         	<input type="radio" name="Modus" id="einfach" value="einfach" />
 				         	<label for="einfach">einfach</label>
-				         	<input type="radio" name="Modus" id="hierarchisch" value="hierarchisch"  />
+				         	<input type="radio" name="Modus" id="hierarchisch" value="hierarchisch"/>
 				         	<label for="hierarchisch">hierarchisch</label>
 				    </fieldset>
 				</div>
-				<p style="text-align: center">Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Felder in einer übersichtlichen Liste.<br />Im hierarchischen Modus stehen in fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit und Art</i> viele Felder zur Verfügung.<br />Auf Stufe Art sind die Felder Artguppen-spezifisch.</p>
+				<p>Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Informationen in einer übersichtlichen Liste.<br />Vorteile: 1. einfach 2. übersichtlich 3. geeignet für die Erfassung von Einzel- oder Gelegenheitsbeobachtungen.<br /><br />Der hierarchische Modus ist für Experten und "Poweruser" gedacht: Hier stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit</i> und <i>Art</i> viele Felder zur Verfügung.<br />Vorteile: 1. Es können Artgruppen-spezifische Informationen erfasst werden. 2. Effizienter, wenn am selben Ort viele Beobachtungen erfasst werden (z.B. für Vegetationsaufnahmen).</p>
 				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" />
-				         	<label for="Nein">nein (Standard)</label>
+				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
+				         	<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
 				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
 				         	<label for="Ja">ja, ohne Einschränkung</label>
-				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
-				         	<label for="JaAber">ja aber kontrolliert und für Naturschutzzwecke*</label>
+				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" />
+				         	<label for="Nein">nein</label>
 				    </fieldset>
 				</div>
-				<p style="text-align: center">* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Möchten Sie den Artenschutz unterstützen? Dann wählen Sie diese Option!</p>
-				<div data-role="footer" data-position="fixed">
-					<div data-role="navbar" id="UserEditNavbar">
-						<ul>
-							<li><a href="#" id="submitButton" data-icon="check" class="ui-btn-active">speichern</a></li>
-						</ul>
-					</div><!-- /navbar -->
-				</div><!-- /footer -->
+				<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
 			</form>
 		</div>
 	</div>
 
   </body>
+    <script type="text/javascript">
+		$(document).ready(function() {
+
+			$db = $.couch.db("evab");
+			
+			User = "";
+
+			userCtx = null;
+			$.couch.session({
+			success : function(r) {
+				var userCtx = r.userCtx;
+				User = userCtx.name;
+				}
+			});
+			
+			/*
+			$.ajax({
+			    url: '/_session?callback=',
+			    dataType: 'json',
+			    async: false,
+			    success: function(session){
+			        User = session.userCtx.name;
+			    }
+			});
+			*/
+			
+			//Feld Benutzername deaktivieren
+			$('#Benutzername').textinput();
+			$('#Benutzername').textinput('disable');
+
+			//Modus managen
+			var Modus = "{{Modus}}";
+			$("input[name='Modus']").checkboxradio();
+			$("input#{{Modus}}").attr("checked",true).checkboxradio("refresh");
+			$("input[name='Modus']").change(function(){
+				Modus = $(this).attr("id");
+				speichern(Modus);
+			});
+
+			//Datenverwendung managen
+			Datenverwendung = "{{Datenverwendung}}";
+			$("input[name='Datenverwendung']").checkboxradio();
+			$("input#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
+			$("input[name='Datenverwendung']").change(function(){
+				Datenverwendung = $(this).attr("id");
+				speichern(Modus);
+			});
+			
+			$("#submitButton").tap(function(event) {
+				speichern();
+			});	
+
+			//jedes Feld bei Änderung speichern
+			//Modus und Datenverwendung wurden oben gespeichert
+			$("#Autor").change(function(){
+				speichern(Modus);
+			});
+			$("#Email").change(function(){
+				speichern(Modus);
+			});
+		});
+	</script>
+	<script type="text/javascript">
+
+		function speichern(Modus) {
+			if ($("input#Autor").val() == ""){
+				melde("Bitte Autor eingeben");
+				return;
+			}
+			var Userr = {};
+			var docId = "{{id}}";
+			Userr = $("#UserEditForm").serializeObject();
+			Userr.Typ = "User";
+			Userr.UserName = "{{UserName}}";
+			Userr._id = docId;
+			Userr.Modus = Modus;
+			Userr.Datenverwendung = Datenverwendung;
+			$db.openDoc(docId, {
+				success: function(doc) {
+					Userr._rev = doc._rev;
+					$db.saveDoc(Userr, {
+						error: function() {
+							melde("Fehler: User nicht gespeichert");
+						 }
+					});
+				}
+			});
+		}
+		
+	</script>
+  
 </html>

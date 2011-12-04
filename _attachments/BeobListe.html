@@ -4,32 +4,17 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
+	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
 		});
-	</script>
+    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
@@ -73,29 +58,20 @@
 
   </body>
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name; 
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("index.html", target="_self");
-				}
-			}
-		});
-		refreshBeobListe("");
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+		
+		aktualisiereBeobListe(Pfad, User);
 
 		$('li').bind('taphold', function(event){
 			var that = this;
 			var BeobId = $(that).attr('id');
-			MeldungEinzeilig("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
+			melde("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
 		});
 
 		$("#BeobListeMapÖffnen").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
@@ -128,25 +104,22 @@
 			google.maps.event.trigger(map,'resize');
 			
 			//jetzt werden für alle Beobachtungen marker erstellt
-			$db.view("evab/BeobListeLatLng",
-				{success: function(data) {
+			$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+				success: function(data) {
 					var i;
 					var anzBeob = 0;
 					var beob;
+					var key;
 					var image;
 					var infowindow = new google.maps.InfoWindow();
 					for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-						key = data.rows[i].key;
-						if (key[0] == User) {            //nur eigene Beobachtungen zählen!
-							anzBeob = anzBeob + 1;
-						}
+						anzBeob += 1;
 					}
 					if (anzBeob == 0) {
-						MeldungEinzeilig("Es wurden noch keine Beobachtungen mit Breiten- und Längengrad erfasst");
+						melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
 					} else {
 						var markers = [];
-						for(i in data.rows)                  //Liste aufbauen
-						{
+						for(i in data.rows) {                //Liste aufbauen
 							beob = data.rows[i].value;
 							key = data.rows[i].key;
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
@@ -201,24 +174,11 @@
 		});
 	
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function(){
-			MenuAufbauen(this, User, UserId, "");
+			erstelleMenu(this, User, UserId, Pfad);
 		});
 
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
@@ -228,33 +188,48 @@
 		//Neue Beobachtung managen
 		$("#NeueBeobLink").live("click", function(event){
 			event.preventDefault();
-			$.mobile.changePage("Artgruppenliste.html", "none", true, false);
-			ArtgruppenlisteAufbauen("Neu");
+			$.mobile.showPageLoadingMsg();
+			$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", "slide", true, false);
-			ArtlisteAufbauen(aArtGruppe, "Neu");
+			$.mobile.showPageLoadingMsg();
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("id");
+			var aArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
-			BeobNeuSpeichern(User, aArtGruppe, aArtName, aArtId);
+			speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId);
 		});	
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 </html>

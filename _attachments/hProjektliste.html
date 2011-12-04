@@ -4,35 +4,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
   	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -58,60 +43,51 @@
 
   </body>
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name;
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("index.html", target="_self");
-				}
-			}
-		});
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+		
 		refreshProjListe();
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+		$('#Menu').live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
   <script type="text/javascript" charset="utf-8">	
-  	function refreshProjListe()
-	{
+  	function refreshProjListe() {
+  		$db = $.couch.db("evab");
 		$("#Projekte").empty();
-		$db.view("evab/hProjListe",
-			{success: function(data) {
+		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+			success: function(data) {
 				var i;
 				var anzProj = 0;
 				var Proj;
@@ -119,14 +95,10 @@
 				var listItem;
 				var ListItemContainer = "";
 				for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-					key = data.rows[i].key;
-					if (key[0] == User) {            //nur eigene Beobachtungen zählen!
-						anzProj = anzProj + 1;
-					}
+					anzProj += 1;
 				}
 
-				//Im Titel der Seite die Anzahl Projekte anzeigen
-				var Titel2 = " Projekte";
+				var Titel2 = " Projekte";                //Im Titel der Seite die Anzahl Projekte anzeigen
 				if (anzProj==1){
 					Titel2 = " Projekt";
 				}
@@ -135,23 +107,20 @@
 				if (anzProj == 0) {
 					$("#Projekte").append("<li>Sie haben noch kein Projekt erfasst</li>");
 				} else {
-					for(i in data.rows)                  //Liste aufbauen
-					{
+					for(i in data.rows) {               //Liste aufbauen
 						Proj = data.rows[i].value;
 						key = data.rows[i].key;
-						if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-							pName = key[1];
-							externalPage = "_show/hProjektEdit/" + Proj._id;
-							listItem = "<li id=\"" + Proj._id + "\">" +
-								"<a href=\"" + externalPage + "\" rel=\"external\">" +
-								"<h3>" + pName + "<\/h3>" +
-								"<\/a> <\/li>";
-							ListItemContainer = ListItemContainer + listItem;
-						}
+						pName = key[1];
+						externalPage = "_show/hProjektEdit/" + Proj._id;
+						listItem = "<li id=\"" + Proj._id + "\">" +
+							"<a href=\"" + externalPage + "\" rel=\"external\">" +
+							"<h3>" + pName + "<\/h3>" +
+							"<\/a> <\/li>";
+						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Projekte").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#Projekte").html(ListItemContainer);
 				$("#Projekte").listview();
 				$("#Projekte").listview("refresh");
 			}

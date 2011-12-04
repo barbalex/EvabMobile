@@ -5,35 +5,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -53,14 +38,14 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get" autocomplete="off">
+			<form action="#" method="get" autocomplete="off" id="hRaumNeuForm">
 				<div data-role="fieldcontain">
 					<label for="rName">Name:</label>
 					<input id="rName" name="rName" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="rBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="rBemerkungen" id="rBemerkungen"></textarea>
+					<textarea name="rBemerkungen" id="rBemerkungen"></textarea>
 				</div>
 			</form>
 		</div>
@@ -68,22 +53,16 @@
   </body>
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
+
+		var Pfad = "../../";
+		User = "";
 		
-		userCtx = null;
-		var Autor;
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
+		prüfeAnmeldung(Pfad);
 
 		//Für obligatorisches Feld bei Änderung speichern
-		$("#rName").change(function(){
+		$("#rName").change(function() {
 			speichern();
 		});
 
@@ -94,59 +73,52 @@
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+		$('#Menu').live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
 
-	function speichern(){
-		var doc = {};
-		doc.Typ = "hRaum";
-		doc.User = User;
-		doc.ProjektId = "{{id}}";
-		var rName = $("input#rName").val();
-		if (rName == "") {
-			MeldungEinzeilig("Bitte Raumnamen eingeben");
+	function speichern() {
+		if ($("input#rName") && $("input#rName").val() == "") {
+			melde("Bitte Raumnamen eingeben");
 			document.getElementById("rName").focus();
 			return;
 		}
-		doc.rName = rName;
-		doc.rBemerkungen = $("[id$='rBemerkungen']").val();
-		if ($("[id$='rBemerkungen']").val()!=""){
-			doc.rBemerkungen = $("[id$='rBemerkungen']").val();
-		} else if (doc.rBemerkungen!=null){
-			delete doc.rBemerkungen;
-		}
-		$db.saveDoc(doc, {
+		var hRaum = {};
+		hRaum = $("#hRaumNeuForm").serializeObject();
+		hRaum.Typ = "hRaum";
+		hRaum.User = User;
+		hRaum.ProjektId = "{{id}}";
+		$db.saveDoc(hRaum, {
 			success: function(data) {
 				window.open("../hRaumEdit/" + data.id, target="_self");
 			},
 			error: function() {
-				MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
+				melde("Fehler: Raum nicht gespeichert");
 			 }
+		});
+	}
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
 		});
 	}
   </script>

@@ -4,36 +4,21 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+  	<script type="text/javascript">			
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -66,10 +51,14 @@
 
   </body>
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
-		AnmeldungPruefen();
+	function handleDocumentReady() {
+		$db = $.couch.db("evab");
+		
+		var Pfad = "../../";
+		User = "";
+		
+		prüfeAnmeldung(Pfad);
+		
 		refreshRaumListe();
 
 		//Link zum Projekt in Navbar und Titelleiste setzen
@@ -84,99 +73,67 @@
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+		$('#Menu').live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	function AnmeldungPruefen() {
-		userCtx = null;
-		$.couch.session({
-			success : function(r) {
-				userCtx = r.userCtx;
-				User = userCtx.name;
-				if (userCtx.name) {
-					//jetzt muss nichts gemacht werden
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("admin party");
-				} else {
-					window.open("../../index.html", target="_self");
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
 				}
-			}
+		    }
 		});
 	}
-
-  	function refreshRaumListe()
-	{
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	function refreshRaumListe() {
 		$("#Räume").empty();
-		$db.view("evab/hRaumListe",                  //HIER PROJEKTID ÜBERGEBEN > VIEW ZEIGT NUR RÄUME MIT DIESER PROJEKTID AN
-			{success: function(data) {
+		var ProjektId = "{{id}}";
+		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]', {
+			success: function(data) {
 				var i;
 				var anzRaum = 0;
 				var Raum;
-				var ProjektId = "{{id}}";
 				var externalPage;
 				var listItem;
 				var ListItemContainer = "";
-				for(i in data.rows) {                    //Räume zählen. Wenn noch keine: darauf hinweisen
-					key = data.rows[i].key;
-					if (key[0] == User) {            //nur eigene Räume zählen!
-						
-						if(key[1] == ProjektId) {    //nur Räume mit dieser ProjektId zählen
-							anzRaum = anzRaum + 1;
-						}
-					}
+				for(i in data.rows) {                    //Räume zählen
+					anzRaum += 1;
 				}
-
-				//Im Titel der Seite die Anzahl Räume anzeigen
-				var Titel2 = " Räume";
-				if (anzRaum==1){
+				var Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
+				if (anzRaum == 1) {
 					Titel2 = " Raum";
 				}
 				$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
-
 				if (anzRaum == 0) {
 					$("#Räume").append("<li>Sie haben noch keinen Raum erfasst</li>");
 				} else {
-					for(i in data.rows)                  //Liste aufbauen
-					{
+					for(i in data.rows) {                //Liste aufbauen
 						Raum = data.rows[i].value;
 						key = data.rows[i].key;
-						if (key[0] == User) {                   //nur eigene Räume anzeigen!
-							if(key[1] == ProjektId) {    		//nur Räume mit dieser ProjektId anzeigen
-								rName = Raum.rName;
-								externalPage = "../../_show/hRaumEdit/" + Raum._id;
-								listItem = "<li id=\"" + Raum._id + "\">" +
-									"<a href=\"" + externalPage + "\" rel=\"external\">" +
-									"<h3>" + rName + "<\/h3>" +
-									"<\/a> <\/li>";
-								ListItemContainer = ListItemContainer + listItem;
-							}
-						}
+						rName = Raum.rName;
+						externalPage = "../../_show/hRaumEdit/" + Raum._id;
+						listItem = "<li id=\"" + Raum._id + "\">" +
+							"<a href=\"" + externalPage + "\" rel=\"external\">" +
+							"<h3>" + rName + "<\/h3>" +
+							"<\/a> <\/li>";
+						ListItemContainer = ListItemContainer + listItem;
 					}
 				}
 				ListItemContainer = ListItemContainer + "<\/ul>";

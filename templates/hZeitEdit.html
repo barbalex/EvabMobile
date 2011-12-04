@@ -5,47 +5,28 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!';
+			$.mobile.defaultPageTransition  = 'none';
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false; 
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.datebox.js"></script>
-  	<script type="text/javascript">
-		$( document ).bind( "mobileinit", function(){
-			$.mobile.page.prototype.options.degradeInputs.date = 'text';
-			$.mobile.selectmenu.prototype.options.nativeMenu = false;
-		});	
-	</script>
   </head>
   <body>
 	<div data-role="page" id="ZeitEditPage">
@@ -64,14 +45,14 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get" autocomplete="off">
+			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox"}' value="{{zDatum}}" required/>
+					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zZeit">Zeit:</label>
-					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timebox"}' value="{{zZeit}}"/>
+					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zZeit}}"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zGenauigkeit">Zeit Genauigkeit:</label>
@@ -79,7 +60,7 @@
 				</div>	
 				<div data-role="fieldcontain">
 					<label for="zDeckungDefinition">Deckung Definition:</label>
-					<textarea cols="40" rows="8" name="zDeckungDefinition" id="zDeckungDefinition">{{zDeckungDefinition}}</textarea>
+					<textarea name="zDeckungDefinition" id="zDeckungDefinition">{{zDeckungDefinition}}</textarea>
 				</div>		
 				<div data-role="fieldcontain">
 					<label for="zDeckungAlgen">Deckung Algen:</label>
@@ -191,14 +172,14 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="zBemerkungen" id="zBemerkungen">{{zBemerkungen}}</textarea>
+					<textarea name="zBemerkungen" id="zBemerkungen">{{zBemerkungen}}</textarea>
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink">neu</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -209,116 +190,17 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
+
+		var Pfad = "../../";
+		User = "";
 		
-		userCtx = null;
-		var Autor;
-		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
+		prüfeAnmeldung(Pfad);
 
 		//Für jedes Feld bei Änderung speichern
-		$("#zDatum").change(function(){
-			speichern();
-		});
-		$("#zZeit").change(function(){
-			speichern();
-		});
-		$("#zGenauigkeit").change(function(){
-			speichern();
-		});
-		$("#zDeckungDefinition").change(function(){
-			speichern();
-		});
-		$("#zDeckungAlgen").change(function(){
-			speichern();
-		});
-		$("#zDeckungBäume").change(function(){
-			speichern();
-		});
-		$("#zDeckungSträucher").change(function(){
-			speichern();
-		});
-		$("#zDeckungKryptogamen").change(function(){
-			speichern();
-		});
-		$("#zDeckungWasser").change(function(){
-			speichern();
-		});
-		$("#zDeckungKräuter").change(function(){
-			speichern();
-		});
-		$("#zDeckungFlechten").change(function(){
-			speichern();
-		});
-		$("#zDeckungStreu").change(function(){
-			speichern();
-		});
-		$("#zDeckungMoos").change(function(){
-			speichern();
-		});
-		$("#zDeckungGestein").change(function(){
-			speichern();
-		});
-		$("#zDeckungBoden").change(function(){
-			speichern();
-		});
-		$("#zDeckungVegetation").change(function(){
-			speichern();
-		});
-		$("#zBaumschichtHöheMax").change(function(){
-			speichern();
-		});
-		$("#zBaumschichtHöheMin").change(function(){
-			speichern();
-		});
-		$("#zBaumschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zStrauchschichtHöheMax").change(function(){
-			speichern();
-		});
-		$("#zStrauchschichtHöheMin").change(function(){
-			speichern();
-		});
-		$("#zStrauchschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zKrautschichtHöheMax").change(function(){
-			speichern();
-		});
-		$("#zKrautschichtHöheMin").change(function(){
-			speichern();
-		});
-		$("#zKrautschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zVegHöheMax").change(function(){
-			speichern();
-		});
-		$("#zVegHöheMin").change(function(){
-			speichern();
-		});
-		$("#zVegHöheMit").change(function(){
-			speichern();
-		});
-		$("#zMoosschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zFlechtenschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zKryptogamenschichtHöheMit").change(function(){
-			speichern();
-		});
-		$("#zBemerkungen").change(function(){
-			speichern();
+		$("[name^='z']").change(function() {
+			speichern("../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -335,24 +217,9 @@
 		$("[name='hZeitListeLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$('#hZeitNeuLink').live('click', function(event){
+		$('#hZeitNeuLink').live('click', function(event) {
 			event.preventDefault();
-			var doc = {};
-			doc.Typ = "hZeit";
-			doc.User = User;
-			doc.ProjektId = "{{ProjektId}}"
-			doc.RaumId = "{{RaumId}}";
-			doc.OrtId = "{{id}}";
-			doc.zDatum = DatumNeu();
-			doc.zZeit = ZeitNeu();
-			$db.saveDoc(doc, {
-				success: function(data) {
-					window.open("../hZeitEdit/" + data.id, target="_self");
-				},
-				error: function() {
-					MeldungEinzeilig("Die neue Zeit konnte nicht gespeichert werden.");
-				 }
-			});
+			erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}"); 
 		});
 
 		//Link zur Art in Navbar setzen
@@ -366,15 +233,15 @@
 		    	'forceInput': 'false',
 		    	'buttons' : {
 				 	'ja': {
-				      	click: function () {
+				      	click: function() {
 				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
+				        	löscheZeit();
 		        		},
 		        		icon: "delete",
 		        		theme: "c"
 		      		},
 		      		'nein': {
-		        		click: function () {
+		        		click: function() {
 		          			$('#dialogoutput').text('nein');
 		        		}
 		      		}
@@ -383,33 +250,33 @@
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
+		$("[name='Menu']").live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
@@ -420,209 +287,91 @@
 		'monthsOfYear': Monate
 	});
 
-	function handleDelete(event){
-		var docId = "{{id}}";
+	function löscheZeit() {
+		var ZeitId = "{{id}}";
 		var OrtId = "{{OrtId}}";
-		// First open doc based on ID in order to get full document
-		$db.openDoc(docId, {
-			success: function(document) {
-				// Then use the opened doc as reference to remove
-				$db.removeDoc(document, {
-					success: function() {
-						MeldungEinzeilig("Zeit gelöscht");
-						window.open("../hZeitListe/" + OrtId, target="_self");
-					},
-					error: function() {
-						MeldungEinzeilig("Die Zeit konnte nicht gelöscht werden");
-					}
-				});
-			},
-			error: function() {
-				MeldungEinzeilig("Eine Zeit mit der ID: " + docId + " wurde nicht gefunden");
-			}
-		});
-		return false;
+		var Rückmeldung;
+		var ArtenGelöscht = löscheArtenVonZeit(ZeitId);
+		if (ArtenGelöscht == false) {
+			melde("Fehler: zugehörige Arten nicht gelöscht");
+			return false;
+		} else {
+			Rückmeldung = "zugehörige Arten gelöscht";
+			// First open doc based on ID in order to get full document
+			$db.openDoc(ZeitId, {
+				success: function(document) {
+					// Then use the opened doc as reference to remove
+					$db.removeDoc(document, {
+						success: function() {
+							Rückmeldung += "<br>Zeit gelöscht";
+							melde(Rückmeldung);
+							setTimeout("window.open('../hZeitListe/" + OrtId + "', target='_self')", 2800);
+							return true;
+						},
+						error: function() {
+							Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
+							melde(Rückmeldung);
+							return false;
+						}
+					});
+				},
+				error: function() {
+					Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
+					melde(Rückmeldung);
+					return false;
+				}
+			});
+		}
 	}
 
-	function speichern(){
+	//lösche alle einer Zeit zugeordnete Arten
+	function löscheArtenVonZeit(ZeitId) { 
+		var viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ArtId;
+				for(i in data.rows) {
+					ArtId = data.rows[i].key[1];
+					löscheDokument(ArtId);
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	function speichern() {
+		if ($("input#zDatum").val() == "") {
+			melde("Sie müssen ein Datum erfassen");
+			document.getElementById("zDatum").focus();
+			return;
+		}
+		if ($("input#zZeit").val() == "") {
+			melde("Bitte Zeit erfassen");
+			document.getElementById("zZeit").focus();
+			return;
+		}
+		var hZeit = {};
 		var docId = "{{id}}";
+		hZeit = $("#hZeitEditForm").serializeObject();
+		hZeit.Typ = "hZeit";
+		hZeit.User = User;
+		hZeit._id = docId;
+		hZeit.ProjektId = "{{ProjektId}}";
+		hZeit.RaumId = "{{RaumId}}";
+		hZeit.OrtId = "{{OrtId}}";
 		$db.openDoc(docId, {
 			success: function(doc) {
-				doc.Typ = "hZeit";
-				doc.User = User;
-				doc.ProjektId = "{{ProjektId}}";
-				doc.RaumId = "{{RaumId}}";
-				doc.OrtId = "{{OrtId}}";
-				if ($("input#zDatum").val()!=""){
-					doc.zDatum = $("input#zDatum").val();
-				} else {
-					MeldungEinzeilig("Sie müssen ein Datum erfassen");
-					document.getElementById("zDatum").focus();
-					return;
-				}
-				if ($("input#zZeit").val()!=""){
-					doc.zZeit = $("input#zZeit").val();
-				} else {
-					MeldungEinzeilig("Bitte Zeit erfassen");
-					document.getElementById("zZeit").focus();
-					return;
-				}
-				if ($("input#zGenauigkeit").val()!=""){
-					doc.zGenauigkeit = $("input#zGenauigkeit").val();
-				} else if (doc.zGenauigkeit!=null){
-					delete doc.zGenauigkeit;
-				}
-				if ($("input#zDeckungAlgen").val()!=""){
-					doc.zDeckungAlgen = $("input#zDeckungAlgen").val();
-				} else if (doc.zDeckungAlgen!=null){
-					delete doc.zDeckungAlgen;
-				}
-				if ($("input#zDeckungBäume").val()!=""){
-					doc.zDeckungBäume = $("input#zDeckungBäume").val();
-				} else if (doc.zDeckungBäume!=null){
-					delete doc.zDeckungBäume;
-				}
-				if ($("input#zDeckungSträucher").val()!=""){
-					doc.zDeckungSträucher = $("input#zDeckungSträucher").val();
-				} else if (doc.zDeckungSträucher!=null){
-					delete doc.zDeckungSträucher;
-				}
-				if ($("input#zDeckungKryptogamen").val()!=""){
-					doc.zDeckungKryptogamen = $("input#zDeckungKryptogamen").val();
-				} else if (doc.zDeckungKryptogamen!=null){
-					delete doc.zDeckungKryptogamen;
-				}
-				if ($("input#zDeckungWasser").val()!=""){
-					doc.zDeckungWasser = $("input#zDeckungWasser").val();
-				} else if (doc.zDeckungWasser!=null){
-					delete doc.zDeckungWasser;
-				}
-				if ($("input#zDeckungKräuter").val()!=""){
-					doc.zDeckungKräuter = $("input#zDeckungKräuter").val();
-				} else if (doc.zDeckungKräuter!=null){
-					delete doc.zDeckungKräuter;
-				}
-				if ($("input#zDeckungFlechten").val()!=""){
-					doc.zDeckungFlechten = $("input#zDeckungFlechten").val();
-				} else if (doc.zDeckungFlechten!=null){
-					delete doc.zDeckungFlechten;
-				}
-				if ($("input#zDeckungStreu").val()!=""){
-					doc.zDeckungStreu = $("input#zDeckungStreu").val();
-				} else if (doc.zDeckungStreu!=null){
-					delete doc.zDeckungStreu;
-				}
-				if ($("input#zDeckungMoos").val()!=""){
-					doc.zDeckungMoos = $("input#zDeckungMoos").val();
-				} else if (doc.zDeckungMoos!=null){
-					delete doc.zDeckungMoos;
-				}
-				if ($("input#zDeckungGestein").val()!=""){
-					doc.zDeckungGestein = $("input#zDeckungGestein").val();
-				} else if (doc.zDeckungGestein!=null){
-					delete doc.zDeckungGestein;
-				}
-				if ($("input#zDeckungBoden").val()!=""){
-					doc.zDeckungBoden = $("input#zDeckungBoden").val();
-				} else if (doc.zDeckungBoden!=null){
-					delete doc.zDeckungBoden;
-				}
-				if ($("input#zDeckungVegetation").val()!=""){
-					doc.zDeckungVegetation = $("input#zDeckungVegetation").val();
-				} else if (doc.zDeckungVegetation!=null){
-					delete doc.zDeckungVegetation;
-				}
-				if ($("[id$='zDeckungDefinition']").val()!=""){
-					doc.zDeckungDefinition = $("[id$='zDeckungDefinition']").val();
-				} else if (doc.zDeckungDefinition!=null){
-					delete doc.zDeckungDefinition;
-				}
-				if ($("input#zBaumschichtHöheMax").val()!=""){
-					doc.zBaumschichtHöheMax = $("input#zBaumschichtHöheMax").val();
-				} else if (doc.zBaumschichtHöheMax!=null){
-					delete doc.zBaumschichtHöheMax;
-				}
-				if ($("input#zBaumschichtHöheMin").val()!=""){
-					doc.zBaumschichtHöheMin = $("input#zBaumschichtHöheMin").val();
-				} else if (doc.zBaumschichtHöheMin!=null){
-					delete doc.zBaumschichtHöheMin;
-				}
-				if ($("input#zBaumschichtHöheMit").val()!=""){
-					doc.zBaumschichtHöheMit = $("input#zBaumschichtHöheMit").val();
-				} else if (doc.zBaumschichtHöheMit!=null){
-					delete doc.zBaumschichtHöheMit;
-				}
-				if ($("input#zStrauchschichtHöheMax").val()!=""){
-					doc.zStrauchschichtHöheMax = $("input#zStrauchschichtHöheMax").val();
-				} else if (doc.zStrauchschichtHöheMax!=null){
-					delete doc.zStrauchschichtHöheMax;
-				}
-				if ($("input#zStrauchschichtHöheMin").val()!=""){
-					doc.zStrauchschichtHöheMin = $("input#zStrauchschichtHöheMin").val();
-				} else if (doc.zStrauchschichtHöheMin!=null){
-					delete doc.zStrauchschichtHöheMin;
-				}
-				if ($("input#zStrauchschichtHöheMit").val()!=""){
-					doc.zStrauchschichtHöheMit = $("input#zStrauchschichtHöheMit").val();
-				} else if (doc.zStrauchschichtHöheMit!=null){
-					delete doc.zStrauchschichtHöheMit;
-				}
-				if ($("input#zKrautschichtHöheMax").val()!=""){
-					doc.zKrautschichtHöheMax = $("input#zKrautschichtHöheMax").val();
-				} else if (doc.zKrautschichtHöheMax!=null){
-					delete doc.zKrautschichtHöheMax;
-				}
-				if ($("input#zKrautschichtHöheMin").val()!=""){
-					doc.zKrautschichtHöheMin = $("input#zKrautschichtHöheMin").val();
-				} else if (doc.zKrautschichtHöheMin!=null){
-					delete doc.zKrautschichtHöheMin;
-				}
-				if ($("input#zKrautschichtHöheMit").val()!=""){
-					doc.zKrautschichtHöheMit = $("input#zKrautschichtHöheMit").val();
-				} else if (doc.zKrautschichtHöheMit!=null){
-					delete doc.zKrautschichtHöheMit;
-				}
-				if ($("input#zVegHöheMax").val()!=""){
-					doc.zVegHöheMax = $("input#zVegHöheMax").val();
-				} else if (doc.zVegHöheMax!=null){
-					delete doc.zVegHöheMax;
-				}
-				if ($("input#zVegHöheMin").val()!=""){
-					doc.zVegHöheMin = $("input#zVegHöheMin").val();
-				} else if (doc.zVegHöheMin!=null){
-					delete doc.zVegHöheMin;
-				}
-				if ($("input#zVegHöheMit").val()!=""){
-					doc.zVegHöheMit = $("input#zVegHöheMit").val();
-				} else if (doc.zVegHöheMit!=null){
-					delete doc.zVegHöheMit;
-				}
-				if ($("input#zMoosschichtHöheMit").val()!=""){
-					doc.zMoosschichtHöheMit = $("input#zMoosschichtHöheMit").val();
-				} else if (doc.zMoosschichtHöheMit!=null){
-					delete doc.zMoosschichtHöheMit;
-				}
-				if ($("input#zFlechtenschichtHöheMit").val()!=""){
-					doc.zFlechtenschichtHöheMit = $("input#zFlechtenschichtHöheMit").val();
-				} else if (doc.zFlechtenschichtHöheMit!=null){
-					delete doc.zFlechtenschichtHöheMit;
-				}
-				if ($("input#zKryptogamenschichtHöheMit").val()!=""){
-					doc.zKryptogamenschichtHöheMit = $("input#zKryptogamenschichtHöheMit").val();
-				} else if (doc.zKryptogamenschichtHöheMit!=null){
-					delete doc.zKryptogamenschichtHöheMit;
-				}
-				if ($("[id$='zBemerkungen']").val()!=""){
-					doc.zBemerkungen = $("[id$='zBemerkungen']").val();
-				} else if (doc.zBemerkungen!=null){
-					delete doc.zBemerkungen;
-				}
-				$db.saveDoc(doc, {
-					success: function(data) {
-						//MeldungEinzeilig("Zeit gespeichert");
+				hZeit._rev = doc._rev;
+				$db.saveDoc(hZeit, {
+					success: function() {
+
 					},
 					error: function() {
-						MeldungEinzeilig("Die Zeit konnte nicht gespeichert werden.");
+						melde("Fehler: Zeit nicht gespeichert");
 					 }
 				});
 			}

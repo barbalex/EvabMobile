@@ -5,35 +5,20 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/main.css" type="text/css">
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function() {
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
@@ -54,21 +39,21 @@
 			</div><!-- /navbar -->
 		</div>
 		<div data-role="content">
-			<form action="#" method="get" autocomplete="off">
+			<form action="#" method="get" autocomplete="off" id="hRaumEditForm">
 				<div data-role="fieldcontain">
 					<label for="rName">Name:</label>
 					<input id="rName" name="rName" type="text" value="{{rName}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="rBemerkungen">Bemerkungen:</label>
-					<textarea cols="40" rows="8" name="rBemerkungen" id="rBemerkungen">{{rBemerkungen}}</textarea>
+					<textarea name="rBemerkungen" id="rBemerkungen">{{rBemerkungen}}</textarea>
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink">neu</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -79,25 +64,17 @@
   
   
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
-  		$db = $.couch.db("evab-ch_barbalex_evab");
-		userCtx = null;
-		var Autor;
+	function handleDocumentReady() {
+  		$db = $.couch.db("evab");
+
+		var Pfad = "../../";
+		User = "";
 		
-		$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
-				}
-		});
+		prüfeAnmeldung(Pfad);
 
 		//Für jedes Feld bei Änderung speichern
-		$("#rName").change(function(){
-			speichern();
-		});
-		$("#rBemerkungen").change(function(){
-			speichern();
+		$("[name^='r']").change(function() {
+			speichern("../../");
 		});
 
 		//Code für den Raum-Löschen-Dialog
@@ -108,15 +85,15 @@
 		    	'forceInput': 'false',
 		    	'buttons' : {
 				 	'ja': {
-				      	click: function () {
+				      	click: function() {
 				        	$('#dialogoutput').text('ja');
-				        	handleDelete();
+				        	löscheRaum();
 		        		},
 		        		icon: "delete",
 		        		theme: "c"
 		      		},
 		      		'nein': {
-		        		click: function () {
+		        		click: function() {
 		          			$('#dialogoutput').text('nein');
 		        		}
 		      		}
@@ -125,24 +102,11 @@
 		});
 
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		var UserId;
-		$db.view("evab/User",
-			{success: function(data) {
-				var i;
-				var doc;
-				for(i in data.rows) {
-					key = data.rows[i].key;
-					doc = data.rows[i].value;
-					if (key == User) {
-						UserId = doc._id;
-					}
-				}
-			}
-		});
+		UserId = holeUserId(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function(){
-			MenuAufbauenHierarchisch(this, User, UserId, "../../");
+		$('#Menu').live('click', function() {
+			erstelleMenuHierarchisch(this, User, UserId, "../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -158,65 +122,176 @@
 
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
-	function handleDelete(event){
-		var docId = "{{id}}";
+
+	function löscheRaum() {
+		var RaumId = "{{id}}";
 		var ProjektId = "{{ProjektId}}";
-		// First open doc based on ID in order to get full document
-		$db.openDoc(docId, {
-			success: function(document) {
-				// Then use the opened doc as reference to remove
-				$db.removeDoc(document, {
-					success: function() {
-						MeldungEinzeilig("Raum gelöscht");
-						window.open("../hRaumListe/" + ProjektId, target="_self");
-					},
-					error: function() {
-						MeldungEinzeilig("Der Raum mit der ID: " + docId + " konnte nicht gelöscht werden");
+		var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht;
+		var Rückmeldung;
+		ArtenGelöscht = löscheArtenVonRaum(RaumId);
+		if (ArtenGelöscht == false) {
+			melde("Fehler: Zugehörige Arten nicht gelöscht");
+			return false;
+		} else {
+			Rückmeldung = "zugehörige Arten gelöscht";
+			ZeitenGelöscht = löscheZeitenVonRaum(RaumId);
+			if (ZeitenGelöscht == false) {
+				Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
+				melde(Rückmeldung);
+				return false;
+			} else {
+				Rückmeldung += "\rzugehörige Zeiten gelöscht";
+				OrteGelöscht = löscheOrteVonRaum(RaumId);
+				if (OrteGelöscht == false) {
+					Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
+					melde(Rückmeldung);
+					return false;
+				} else {
+					Rückmeldung += "\rzugehörige Orte gelöscht";
+					// First open doc based on ID in order to get full document
+					return $db.openDoc(RaumId, {
+						success: function(document) {
+							// lösche Raum
+							return $db.removeDoc(document, {
+								success: function() {
+									Rückmeldung += "\rRaum gelöscht";
+									melde(Rückmeldung);
+									setTimeout("window.open('../hRaumListe/" + ProjektId + "', target='_self')", 1400);
+									return true;
+								},
+								error: function() {
+									Rückmeldung += "\rFehler: Raum nicht gelöscht";
+									melde(Rückmeldung);
+									return false;
+								}
+							});
+						},
+						error: function() {
+							Rückmeldung += "\rFehler: Raum nicht gelöscht";
+							melde(Rückmeldung);
+							return false;
+						}
+					});
+				}
+
+			}
+		}
+	}
+
+	//lösche alle einem Raum zugeordnete Orte
+	function löscheOrteVonRaum(RaumId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var OrtId;
+				for(i in data.rows) {
+					OrtId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(OrtId);
+					if (DokumentGelöscht == false) {
+						return false;
 					}
-				});
+				}
+				return true;
 			},
 			error: function() {
-				MeldungEinzeilig("Ein Raum mit der ID: " + docId + " wurde nicht gefunden");
+				return false;
 			}
 		});
-		return false;
 	}
-	function speichern(){
+
+	//lösche alle einem Raum zugeordnete Zeiten
+	function löscheZeitenVonRaum(RaumId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ZeitId;
+				for(i in data.rows) {
+					ZeitId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ZeitId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	//lösche alle einem Raum zugeordnete Arten
+	function löscheArtenVonRaum(RaumId) { 
+		var DokumentGelöscht;
+		var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '", {}]';
+		return $db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ArtId;
+				for(i in data.rows) {
+					ArtId = data.rows[i].key[1];
+					DokumentGelöscht = löscheDokument(ArtId);
+					if (DokumentGelöscht == false) {
+						return false;
+					}
+				}
+				return true;
+			},
+			error: function() {
+				return false;
+			}
+		});
+	}
+
+	function speichern() {
+		if ($("input#rName").val() == "") {
+			melde("Bitte Raumnamen eingeben");
+			document.getElementById("rName").focus();
+			return;
+		}
+		var hRaum = {};
 		var docId = "{{id}}";
+		hRaum = $("#hRaumEditForm").serializeObject();
+		hRaum.Typ = "hRaum";
+		hRaum.User = User;
+		hRaum._id = docId;
+		hRaum.ProjektId = "{{ProjektId}}";
 		$db.openDoc(docId, {
 			success: function(doc) {
-				doc.Typ = "hRaum";
-				doc.User = User;
-				doc.ProjektId = "{{ProjektId}}";
-				var rName = $("input#rName").val();
-				if (rName == "") {
-					MeldungEinzeilig("Bitte Raumnamen eingeben");
-					document.getElementById("rName").focus();
-					return;
-				}
-				doc.rName = rName;
-				if ($("[id$='rBemerkungen']").val()!=""){
-					doc.rBemerkungen = $("[id$='rBemerkungen']").val();
-				} else if (doc.rBemerkungen!=null){
-					delete doc.rBemerkungen;
-				}
-				$db.saveDoc(doc, {
-					success: function(data) {
-						//MeldungEinzeilig("Raum gespeichert");
+				hRaum._rev = doc._rev;
+				$db.saveDoc(hRaum, {
+					success: function() {
 					},
 					error: function() {
-						MeldungEinzeilig("Der Raum konnte nicht gespeichert werden.");
+						melde("Fehler: Raum nicht gespeichert");
 					 }
 				});
 			}

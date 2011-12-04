@@ -5,33 +5,18 @@
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/main.css" type="text/css">
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
-	<script type="text/javascript">
-	//customize jQuery Mobile to let IE7+ in (Mobile IE)
-	//run this script after jQuery loads, but before jQuery Mobile loads				
-		$(document).bind("mobileinit", function(){
-			$.extend(  $.mobile , {	
-			//extend gradeA qualifier to include IE7+
-				gradeA: function(){    	
-			    	//IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-					var ie = (function() {
-					    var v = 3, div = document.createElement('div'), a = div.all || [];
-					    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
-					    return v > 4 ? v : !v;
-					}());
-			    	
-			    	//must either support media queries or be IE7+
-			    	return $.support.mediaquery || (ie && ie >= 7);
-			    }
-			});
-		});
-	</script>	
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -72,7 +57,7 @@
 					<input id="Email" name="Email" type="email" placeholder="(fakultativ)"/>
 					<hr />
 				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup" data-type="horizontal">
+				    <fieldset data-role="controlgroup">
 				    	<legend>Ich will in diesem Modus erfassen:</legend>
 				         	<input type="radio" name="Modus" id="einfach" value="einfach" checked="checked"/>
 				         	<label for="einfach">einfach</label>
@@ -80,20 +65,20 @@
 				         	<label for="hierarchisch">hierarchisch</label>
 				    </fieldset>
 				</div>
-				<p style="text-align: center">Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Angaben in einer übersichtlichen Liste.<br />Im hierarchischen Modus stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit und Art</i> viele Felder zur Verfügung.<br />Auf Stufe Art stehen für jede Artgruppe eigene Felder zur Verfügung.</p>
+				<p>Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Informationen in einer übersichtlichen Liste.<br />Vorteile: 1. einfach 2. übersichtlich 3. geeignet für die Erfassung von Einzel- oder Gelegenheitsbeobachtungen.<br /><br />Der hierarchische Modus ist für Experten und "Poweruser" gedacht: Hier stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit</i> und <i>Art</i> viele Felder zur Verfügung.<br />Vorteile: 1. Es können Artgruppen-spezifische Informationen erfasst werden. 2. Effizienter, wenn am selben Ort viele Beobachtungen erfasst werden (z.B. für Vegetationsaufnahmen).</p>
 				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" checked="checked"/>
-				         	<label for="Nein">nein (Standard)</label>
+				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  checked="checked"/>
+				         	<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
 				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
 				         	<label for="Ja">ja, ohne Einschränkung</label>
-				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
-				         	<label for="JaAber">ja aber kontrolliert und für Naturschutzzwecke*</label>
+				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein"/>
+				         	<label for="Nein">nein</label>
 				    </fieldset>
 				</div>
-				<p style="text-align: center">* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten</p>
+				<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
 				</div>
 			</form>
 		</div>
@@ -110,7 +95,7 @@
   <script type="text/javascript" charset="utf-8">;
 	function handleDocumentReady()
 	{
-		$db = $.couch.db("evab-ch_barbalex_evab");
+		$db = $.couch.db("evab");
 		
 		$("#SubmitButton").tap(function(event){
 			var UserName = $('input[name=UserName]').val();
@@ -118,95 +103,89 @@
 			var Passwort2 =$('input[name=Passwort2]').val();
 			var Autor =$("input#Autor").val();
 			if (UserName == "") {
-				MeldungEinzeilig("Bitte Benutzernamen eingeben");
+				melde("Bitte Benutzernamen eingeben");
 			} else if (Passwort==""){
-				MeldungEinzeilig("Bitte Passwort eingeben");
+				melde("Bitte Passwort eingeben");
 			} else if (Passwort2==""){
-				MeldungEinzeilig("Bitte Passwort bestätigen");
+				melde("Bitte Passwort bestätigen");
 			} else if (Passwort != Passwort2) {
-				MeldungEinzeilig("Passwort ist falsch bestätigt");
+				melde("Passwort ist falsch bestätigt");
 			} else if (Autor==""){
-				MeldungEinzeilig("Bitte Autor eingeben");
+				melde("Bitte Autor eingeben");
 			} else {
-				signup();
+				erstelleKonto(UserName, Passwort, Autor, Modus);
 			}
 		});
 
 		//Modus managen
-		Modus = "einfach";
+		var Modus = "einfach";
 		$("input[name='Modus']").change(function(){
 			Modus = $(this).attr("id");
 		});
 
 		//Datenverwendung managen
-		Datenverwendung = "Nein";
+		Datenverwendung = "JaAber";
 		$("input[name='Datenverwendung']").change(function(){
 			Datenverwendung = $(this).attr("id");
-		});
-
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
   </script>
   <script type="text/javascript" charset="utf-8">	
-	function signup() {
-		//User in _user eintragen
-		var Autor = $("input#Autor").val();                                     
+	function erstelleKonto(UserName, Passwort, Autor, Modus) {
+		//User in _user eintragen                                    
 		var email = $("input#Email").val();                                      
-		var name = $('input[name=UserName]').val();
-		var pass = $('input[name=Passwort]').val();
 		$.couch.signup({
-				name : name, Autor: Autor, email: email
-		  	}, pass, {
+				name: UserName, Autor: Autor, email: email
+		  	}, Passwort, {
 		  	success : function() {
-		  		einloggen(name, pass);
+		  		speichereUserInEvab(UserName, Modus);
+		  		meldeUserAn(UserName, Passwort);
 		  	},
 		  	error : function() {
-		  		MeldungZweizeilig("Das Konto konnte nicht gespeichert werden.", "Versuchen Sie es mit einem anderen Benutzernamen");
+		  		melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
 		  	}
 		});
 	}
 	
-  	function einloggen(name, pass) {
+  	function meldeUserAn(UserName, Passwort) {
 		$.couch.login({
-			name : name,
-			password : pass,
+			name : UserName,
+			password : Passwort,
 			success : function(r) {
-				_init();
+				authentifiziereUser();
 			},
 			error: function() {
-				MeldungZweizeilig("Die automatische Anmeldung ist gescheitert.","Bitte melden Sie sich mit dem neuen Konto an.");
-				window.open("index.html", target="_self");
+				melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
+				setTimeout('window.open("index.html", target="_self")', 2800);
 			}
 		});      
 	}
 	
-	function _init() {
+	//Für authentifizierte Benutzer wird ein cookie erstellt und die Startseite geöffnet
+	function authentifiziereUser() {
 		var userCtx;
 		$.couch.session({
 			success : function(r) {
 				userCtx = r.userCtx;
 				if (userCtx.name) {
-					UserInEvabSpeichern();
-					MeldungZweizeilig("Willkommen " + userCtx.name, "Sie sind angemeldet");
-					setTimeout("window.open('BeobListe.html', target='_self')",2800);
+					//speichereUserInEvab(userCtx.name);
+					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
+					setTimeout("window.open('BeobListe.html', target='_self')", 2800);
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
-					MeldungEinzeilig("Oops, die Datenbank hat keine Benutzer!");
+					melde("Fehler: Anmeldung gescheitert");
 				} else {
-					MeldungEinzeilig("Sie konnten nicht eingeloggt werden");
+					melde("Fehler: Anmeldung gescheitert");
 				}
 			}
 		});
 	}
 	
-	function UserInEvabSpeichern() {
+	function speichereUserInEvab(UserName, Modus) {
 		var doc = {};
 		doc.Typ = "User";
-		doc.UserName = $('input[name=UserName]').val();
+		doc.UserName = UserName;
 		doc.Autor = $("input#Autor").val();
 		doc.Modus = Modus;
 		doc.Datenverwendung = Datenverwendung;
@@ -214,7 +193,14 @@
 			doc.Email = $("input#Email").val();
 		}
 		doc.Modus = "einfach";
-		$db.saveDoc(doc);
+		$db.saveDoc(doc, {
+			success: function(data) {
+				melde("Yuhui, Ihr User wurde erstellt");
+			},
+			error: function() {
+				melde("Oh je, Ihr User konnte nicht erstellt werden");
+			}
+		});
 	}
   </script>
 </html>
