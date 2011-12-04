@@ -189,7 +189,7 @@
 		$("#NeueBeobLink").live("click", function(event){
 			event.preventDefault();
 			$.mobile.showPageLoadingMsg();
-			$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtgruppenliste("Neu");
 		});
 
@@ -197,7 +197,7 @@
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
 			$.mobile.showPageLoadingMsg();
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
