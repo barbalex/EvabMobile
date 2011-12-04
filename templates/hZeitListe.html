@@ -134,7 +134,7 @@
 				$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
 				if (anzZeit == 0) {
-					$("#Zeiten").append("<li>Sie haben noch keine Zeit erfasst</li>");
+					ListItemContainer = "<li>Sie haben noch keine Zeit erfasst</li>";
 				} else {
 					for(i in data.rows) {
 						Zeit = data.rows[i].value;
@@ -145,11 +145,11 @@
 							"<a href=\"" + externalPage + "\" rel=\"external\">" +
 							"<h3>" + zZeitDatum + "<\/h3>" +
 							"<\/a> <\/li>";
-						ListItemContainer = ListItemContainer + listItem;
+						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Zeiten").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#Zeiten").html(ListItemContainer);
 				$("#Zeiten").listview();
 				$("#Zeiten").listview("refresh");
 			}

@@ -105,7 +105,7 @@
 				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 				if (anzProj == 0) {
-					$("#Projekte").append("<li>Sie haben noch kein Projekt erfasst</li>");
+					ListItemContainer = "<li>Sie haben noch kein Projekt erfasst</li>";
 				} else {
 					for(i in data.rows) {               //Liste aufbauen
 						Proj = data.rows[i].value;

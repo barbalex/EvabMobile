@@ -91,14 +91,14 @@
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
@@ -156,7 +156,7 @@
 				$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 				if (anzArt == 0) {
-					$("#Arten").append("<li>Sie haben noch keine Art erfasst</li>");
+					ListItemContainer = "<li>Sie haben noch keine Art erfasst</li>";
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Art = data.rows[i].value;

@@ -122,7 +122,7 @@
 				}
 				$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 				if (anzRaum == 0) {
-					$("#Räume").append("<li>Sie haben noch keinen Raum erfasst</li>");
+					ListItemContainer = "<li>Sie haben noch keinen Raum erfasst</li>";
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Raum = data.rows[i].value;
@@ -133,11 +133,11 @@
 							"<a href=\"" + externalPage + "\" rel=\"external\">" +
 							"<h3>" + rName + "<\/h3>" +
 							"<\/a> <\/li>";
-						ListItemContainer = ListItemContainer + listItem;
+						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Räume").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#Räume").html(ListItemContainer);
 				$("#Räume").listview();
 				$("#Räume").listview("refresh");
 			}

@@ -112,14 +112,14 @@
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
 		});
@@ -136,14 +136,14 @@
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 		$("select#aArtGruppe").tap(function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtgruppenliste("Edit");
 		});
 
 		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
 			aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Edit");
 			$("#ArtgruppenListe").empty();
 		});
@@ -160,7 +160,7 @@
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
 		$("select#aArtName").tap(function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true"});
+			$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Edit");
 		});
 

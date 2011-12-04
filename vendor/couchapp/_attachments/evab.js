@@ -436,7 +436,7 @@ function aktualisiereBeobListe(Pfad, User) {
 			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 			if (anzBeob == 0) {
-				$("#beobachtungen").html("<li>Sie haben noch keine Beobachtung erfasst</li>");
+				ListItemContainer = "<li>Sie haben noch keine Beobachtung erfasst</li>";
 			} else {
 				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 				for(i in data.rows) {                //Liste aufbauen

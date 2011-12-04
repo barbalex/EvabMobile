@@ -238,7 +238,7 @@
 				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
-					$("#Orte").append("<li>Sie haben noch keinen Ort erfasst</li>");
+					ListItemContainer = "<li>Sie haben noch keinen Ort erfasst</li>";
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;
@@ -249,11 +249,11 @@
 							"<a href=\"" + externalPage + "\" rel=\"external\">" +
 							"<h3>" + oName + "<\/h3>" +
 							"<\/a> <\/li>";
-						ListItemContainer = ListItemContainer + listItem;
+						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer = ListItemContainer + "<\/ul>";
-				$("#Orte").append(ListItemContainer);
+				ListItemContainer += "<\/ul>";
+				$("#Orte").html(ListItemContainer);
 				$("#Orte").listview();
 				$("#Orte").listview("refresh");
 			}
