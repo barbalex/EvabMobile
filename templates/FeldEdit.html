@@ -59,15 +59,14 @@
 				}
 			});
 			
+			//Tabelle managen
+			TabelleWerte = "{{Tabelle}}";
+			$("input[name='Tabelle']").checkboxradio();
+			$("#" + TabelleWerte).attr("checked",true).checkboxradio("refresh");
+
 			//ArtGruppe managen
 			ArtGruppeAufbauen();
 			ArtGruppenWerte = "{{ArtGruppe}}";
-			$("input[name='ArtGruppe']").checkboxradio();
-			$("input[name='ArtGruppe']").attr("checked",true).checkboxradio("refresh");
-			
-			$("select#Tabelle").val("{{Tabelle}}");
-			$("select#Tabelle").selectmenu();
-			$("select#Tabelle").selectmenu("refresh");
 			
 			$("select#RolleModusEinfach").val("{{RolleModusEinfach}}");
 			$("select#RolleModusEinfach").selectmenu();
@@ -80,45 +79,23 @@
 			$("select#FormElementTyp").val("{{FormElementTyp}}");
 			$("select#FormElementTyp").selectmenu();
 			$("select#FormElementTyp").selectmenu("refresh");
-			
-			
-			
 
-			$("#submitButton").tap(function(event) {
-				speichereFeld();
+			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
+			$(".Feldeigenschaften").change(function() {
+				speichereFeldeigenschaften();
 			});
 			$("input[name='ArtGruppe']").change(function() {
 				ArtGruppenWerte = $(this).attr("id");
-				speichereFeld();
+				speichereFeldeigenschaften();
 			});
-			
-			$("#submitUserFeldButton").tap(function(event) {
-				alert("submitUserFeldButton ausgelöst");
-				if (UserFeldDocId) {
-					$db.openDoc(UserFeldDocId, {
-						success: function(document) {
-							document.Typ = "UserFeld";
-							document.User = User;
-							document.FeldName = "{{FeldName}}";
-							document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-							document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-							document.Standardwert = $("input#Standardwert").val();
-							saveUserFeld(document);
-						},
-						error: function() {
-							melde("Fehler beim Speichern");
-						}
-					});
-				} else {
-					var document = {};
-					document.Typ = "UserFeld";
-					document.User = User;
-					document.FeldName = "{{FeldName}}";
-					document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-					document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-					document.Standardwert = $("input#Standardwert").val();
-					saveUserFeld(document);
-				}
+			$("input[name='Tabelle']").change(function() {
+				TabelleWerte = $(this).attr("id");
+				speichereFeldeigenschaften();
+			});
+
+			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
+			$(".MeineEinstellungen").change(function() {
+				speichereMeineEinstellungen(UserFeldDocId);
 			});
 
 			//Code für den Feld-Löschen-Dialog
@@ -155,13 +132,14 @@
 		});
 	</script>
 	<script type="text/javascript">
-		function speichereFeld() {
+		function speichereFeldeigenschaften() {
 			var docId = "{{id}}";
 				$db.openDoc(docId, {
 					success: function(document) {
 						document.Typ = "Feld";
 						document.User = User;
-						document.Tabelle = $("select#Tabelle").val();
+						document.Tabelle = TabelleWerte;
+						//document.Tabelle = $("select#Tabelle").val();
 						document.FeldName = $("input#FeldName").val();
 						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
 						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
@@ -192,6 +170,34 @@
 			});
 		}
 		
+		function speichereMeineEinstellungen(UserFeldDocId) {
+			if (UserFeldDocId) {
+				$db.openDoc(UserFeldDocId, {
+					success: function(document) {
+						document.Typ = "UserFeld";
+						document.User = User;
+						document.FeldName = "{{FeldName}}";
+						document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+						document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+						document.Standardwert = $("input#Standardwert").val();
+						saveUserFeld(document);
+					},
+					error: function() {
+						melde("Fehler: Einstellungen nicht gespeichert");
+					}
+				});
+			} else {
+				var document = {};
+				document.Typ = "UserFeld";
+				document.User = User;
+				document.FeldName = "{{FeldName}}";
+				document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+				document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+				document.Standardwert = $("input#Standardwert").val();
+				saveUserFeld(document);
+			}
+		}
+
 		function saveUserFeld(document) {
 			$db.saveDoc(document, {
 				success: function() {
@@ -216,9 +222,10 @@
 					var listItem;
 					for(i in data.rows) {
 						ArtGruppe = data.rows[i].key;
-						listItem = "<input type='checkbox' name='ArtGruppe' id='";
+						listItem = "<input type='checkbox' class='Feldeigenschaften' name='ArtGruppe' id='";
 						listItem += ArtGruppe;
-						listItem += "' class='custom'";
+						listItem += "'";
+						listItem += " class='custom'";
 						if(ArtGruppe.indexOf(ArtGruppenWerte)>=0){
 							listItem += " checked='checked'";
 						}
@@ -230,10 +237,16 @@
 						ListItemContainer += listItem;
 					}
 					ListItemContainer += "\n</fieldset>"
-					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+					//$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+					$("#Artgruppenliste").html(ListItemContainer).trigger("create");
+					//$("input[name='ArtGruppe']").checkboxradio();
+					//$("input[name='ArtGruppe']").checkboxradio("refresh");
+					$("input[name='ArtGruppe']").checkboxradio();
+					for(i in ArtGruppenWerte) {
+						$("#" + i).attr("checked",true).checkboxradio("refresh");
+					}
 				}
 			});
-			
 		}
 
 		function löscheFeld(event) {
@@ -289,68 +302,72 @@
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
+					<select class="MeineEinstellungen", name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
+					<select class="MeineEinstellungen", name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input id="Standardwert" name="Standardwert" type="text" />
+					<input class="MeineEinstellungen", id="Standardwert" name="Standardwert" type="text" />
 				</div>
-				<a href="#" data-role="button" data-icon="check" id="submitUserFeldButton">speichern</a>
 			</form>
 				<hr>
 				<h2>Feldeigenschaften</h2>
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain">
-					<label for="Tabelle" class="select">Tabelle:</label>
-					<select id="Tabelle" name="Tabelle">
-						<option value="Art">Art</option>
-						<option value="Zeit">Zeit</option>
-						<option value="Ort">Ort</option>
-						<option value="Raum">Raum</option>
-						<option value="Projekt">Projekt</option>
-					</select>
+					<fieldset data-role="controlgroup">
+						<legend>Tabelle:</legend>
+							<input type="radio" name="Tabelle" id="Projekt" value="Projekt"/>
+	         				<label for="Projekt">Projekt</label>
+	         				<input type="radio" name="Tabelle" id="Raum" value="Raum"/>
+	         				<label for="Raum">Raum</label>
+	         				<input type="radio" name="Tabelle" id="Ort" value="Ort"/>
+	         				<label for="Ort">Ort</label>
+	         				<input type="radio" name="Tabelle" id="Zeit" value="Zeit"/>
+	         				<label for="Zeit">Zeit</label>
+							<input type="radio" name="Tabelle" id="Art" value="Art"/>
+	         				<label for="Art">Art</label>
+	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Feld-Name:</label>
-					<input id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
+					<input class="Feldeigenschaften", id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
+					<input class="Feldeigenschaften", id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea id="FeldBeschreibung" name="FeldBeschreibung">{{FeldBeschreibung}}</textarea>
+					<textarea class="Feldeigenschaften", id="FeldBeschreibung" name="FeldBeschreibung">{{FeldBeschreibung}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" />
+					<input class="Feldeigenschaften", id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Feldname in EvAB:</label>
-					<input id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
+					<input class="Feldeigenschaften", id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Feldname beim ZDSF:</label>
-					<input id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
+					<input class="Feldeigenschaften", id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Feldname beim CSCF:</label>
-					<input id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
+					<input class="Feldeigenschaften", id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="RolleModusEinfach" class="select">Rolle im Modus "einfach":</label>
-					<select id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="true">
+					<select class="Feldeigenschaften", id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="true">
 						<option value="EingabeErforderlich">EingabeErforderlich</option>
 						<option value="EingabeMöglich">EingabeMöglich</option>
 						<option value="EingabeNichtVorgesehen">EingabeNichtVorgesehen</option>
@@ -358,7 +375,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Formularelement" class="select">Formularelement:</label>
-					<select id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
+					<select class="Feldeigenschaften", id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
 						<option value="textinput">textinput</option>
 						<option value="textarea">textarea</option>
 						<option value="toggleswitch">toggleswitch</option>
@@ -370,7 +387,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>
-					<select id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
+					<select class="Feldeigenschaften", id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
 						<optio value=""></option>
 						<option value="text">text</option>
 						<option value="date">date</option>
@@ -378,7 +395,6 @@
 				</div>
 				<div data-role="fieldcontain" id="Artgruppenliste">
 				</div>
-				<button type="submit" id="submitButton" data-icon="check" data-theme="b">speichern</button>
 				<a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a>
 			</form>
 		</div>
