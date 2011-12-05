@@ -29,48 +29,30 @@
 			
 			var Pfad = "../../";
 			User = "";
+			UserFeldDocId = 0;
 		
 			prüfeAnmeldung(Pfad);
 			
-			var UserFeldDocId;
+			setzeUserFeldEinstellungen("{{FeldName}}");
 			
-			//User-Felder setzen
-			var viewname = 'evab/UserFeld?startkey=["' + User + '"]&endkey=["' + User + '",{}]';
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var key;
-					var row;
-					var Feld = "{{FeldName}}";
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						row = data.rows[i].value;
-						if(key[1] == Feld){
-							UserFeldDocId = row._id;
-							$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
-							$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
-							$("input#Standardwert").val(row.Standardwert);
-						}
-					}
-					$("select#SichtbarModusEinfach").slider();
-					$("select#SichtbarModusEinfach").slider("refresh");
-					$("select#SichtbarModusHierarchisch").slider();
-					$("select#SichtbarModusHierarchisch").slider("refresh");
-				}
-			});
+			
 			
 			//Tabelle managen
 			TabelleWerte = "{{Tabelle}}";
 			$("input[name='Tabelle']").checkboxradio();
 			$("#" + TabelleWerte).attr("checked",true).checkboxradio("refresh");
+			$("input[name='Tabelle']").change(function() {
+				TabelleWerte = $(this).attr("id");
+				speichereFeldeigenschaften();
+			});
 
 			//ArtGruppe managen
 			ArtGruppeAufbauen();
 			ArtGruppenWerte = "{{ArtGruppe}}";
-			
-			$("select#RolleModusEinfach").val("{{RolleModusEinfach}}");
-			$("select#RolleModusEinfach").selectmenu();
-			$("select#RolleModusEinfach").selectmenu("refresh");
+			$("input[name='ArtGruppe']").change(function() {
+				ArtGruppenWerte = $(this).attr("id");
+				speichereFeldeigenschaften();
+			});
 			
 			$("select#Formularelement").val("{{Formularelement}}");
 			$("select#Formularelement").selectmenu();
@@ -84,15 +66,7 @@
 			$(".Feldeigenschaften").change(function() {
 				speichereFeldeigenschaften();
 			});
-			$("input[name='ArtGruppe']").change(function() {
-				ArtGruppenWerte = $(this).attr("id");
-				speichereFeldeigenschaften();
-			});
-			$("input[name='Tabelle']").change(function() {
-				TabelleWerte = $(this).attr("id");
-				speichereFeldeigenschaften();
-			});
-
+			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
 			$(".MeineEinstellungen").change(function() {
 				speichereMeineEinstellungen(UserFeldDocId);
@@ -132,6 +106,33 @@
 		});
 	</script>
 	<script type="text/javascript">
+
+		function setzeUserFeldEinstellungen(FeldName){
+			//setzt die FeldEinstellungen
+			//Erwartet den FeldNamen
+			$db = $.couch.db("evab");
+			var viewname = 'evab/UserFeldEinstellung?key=["' + User + '","' + FeldName + '"]';
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var key;
+					var row;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						row = data.rows[i].value;
+						$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
+						$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
+						$("input#Standardwert").val(row.Standardwert);
+						UserFeldDocId = row.id;
+					}
+					$("select#SichtbarModusEinfach").slider();
+					$("select#SichtbarModusEinfach").slider("refresh");
+					$("select#SichtbarModusHierarchisch").slider();
+					$("select#SichtbarModusHierarchisch").slider("refresh");
+				}
+			});
+		}
+
 		function speichereFeldeigenschaften() {
 			var docId = "{{id}}";
 				$db.openDoc(docId, {
@@ -147,7 +148,6 @@
 						document.FeldNameEvab = $("input#FeldNameEvab").val();
 						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
 						document.FeldNameCscf = $("input#FeldNameCscf").val();
-						document.RolleModusEinfach = $("select#RolleModusEinfach").val();
 						document.Formularelement = $("select#Formularelement").val();
 						document.FormElementTyp = $("select#FormElementTyp").val();
 						document.ArtGruppe = ArtGruppenWerte;
@@ -169,17 +169,27 @@
 				}
 			});
 		}
-		
-		function speichereMeineEinstellungen(UserFeldDocId) {
-			if (UserFeldDocId) {
+
+		function speichereMeineEinstellungen() {
+			$db = $.couch.db("evab");
+			var Typ = "UserFeldEinstellung";
+			var FeldName = "{{FeldName}}";
+			var SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+			var SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+			var Standardwert = $("input#Standardwert").val();
+			if (UserFeldDocId != 0) {
 				$db.openDoc(UserFeldDocId, {
 					success: function(document) {
-						document.Typ = "UserFeld";
+						document.Typ = Typ;
 						document.User = User;
-						document.FeldName = "{{FeldName}}";
-						document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-						document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-						document.Standardwert = $("input#Standardwert").val();
+						document.FeldName = FeldName;
+						document.SichtbarModusEinfach = SichtbarModusEinfach;
+						document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
+						if (Standardwert != "") {
+							document.Standardwert = Standardwert;
+						} else {
+							delete document.Standardwert;
+						}
 						saveUserFeld(document);
 					},
 					error: function() {
@@ -188,20 +198,24 @@
 				});
 			} else {
 				var document = {};
-				document.Typ = "UserFeld";
+				document.Typ = Typ;
 				document.User = User;
-				document.FeldName = "{{FeldName}}";
-				document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-				document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-				document.Standardwert = $("input#Standardwert").val();
+				document.FeldName = FeldName;
+				document.SichtbarModusEinfach = SichtbarModusEinfach;
+				document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
+				if (Standardwert != "") {
+					document.Standardwert = Standardwert;
+				}
 				saveUserFeld(document);
 			}
 		}
 
 		function saveUserFeld(document) {
+			$db = $.couch.db("evab");
 			$db.saveDoc(document, {
-				success: function() {
+				success: function(data) {
 					melde("Einstellungen gespeichert");
+					UserFeldDocId = data.id;
 				},
 				error: function() {
 					melde("Fehler: Einstellungen nicht gespeichert");
@@ -302,21 +316,21 @@
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select class="MeineEinstellungen", name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
+					<select class="MeineEinstellungen" name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="MeineEinstellungen", name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
+					<select class="MeineEinstellungen" name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input class="MeineEinstellungen", id="Standardwert" name="Standardwert" type="text" />
+					<input class="MeineEinstellungen" id="Standardwert" name="Standardwert" type="text" />
 				</div>
 			</form>
 				<hr>
@@ -339,43 +353,35 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Feld-Name:</label>
-					<input class="Feldeigenschaften", id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
+					<input class="Feldeigenschaften" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften", id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
+					<input class="Feldeigenschaften" id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea class="Feldeigenschaften", id="FeldBeschreibung" name="FeldBeschreibung">{{FeldBeschreibung}}</textarea>
+					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung">{{FeldBeschreibung}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften", id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" />
+					<input class="Feldeigenschaften" id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Feldname in EvAB:</label>
-					<input class="Feldeigenschaften", id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
+					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Feldname beim ZDSF:</label>
-					<input class="Feldeigenschaften", id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
+					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Feldname beim CSCF:</label>
-					<input class="Feldeigenschaften", id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="RolleModusEinfach" class="select">Rolle im Modus "einfach":</label>
-					<select class="Feldeigenschaften", id="RolleModusEinfach" name="RolleModusEinfach" value="{{RolleModusEinfach}}" data-native-menu="true">
-						<option value="EingabeErforderlich">EingabeErforderlich</option>
-						<option value="EingabeMöglich">EingabeMöglich</option>
-						<option value="EingabeNichtVorgesehen">EingabeNichtVorgesehen</option>
-					</select>
+					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Formularelement" class="select">Formularelement:</label>
-					<select class="Feldeigenschaften", id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
+					<select class="Feldeigenschaften" id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
 						<option value="textinput">textinput</option>
 						<option value="textarea">textarea</option>
 						<option value="toggleswitch">toggleswitch</option>
@@ -387,7 +393,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>
-					<select class="Feldeigenschaften", id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
+					<select class="Feldeigenschaften" id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
 						<optio value=""></option>
 						<option value="text">text</option>
 						<option value="date">date</option>

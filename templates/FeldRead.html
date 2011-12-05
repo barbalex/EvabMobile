@@ -29,63 +29,18 @@
 			
 			var Pfad = "../../";
 			User = "";
+			UserFeldDocId = 0;
 		
 			prüfeAnmeldung(Pfad);
 			
-			var UserFeldDocId;
-			
-			//User-Felder setzen
-			var viewname = 'evab/UserFeld?startkey=["' + User + '"]&endkey=["' + User + '",{}]';
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var key;
-					var row;
-					var Feld = "{{FeldName}}";
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						row = data.rows[i].value;
-						if(key[1] == Feld) {
-							UserFeldDocId = row._id;
-							$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
-							$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
-							$("input#Standardwert").val(row.Standardwert);
-						}
-					}
-					$("select#SichtbarModusEinfach").slider("refresh");
-					$("select#SichtbarModusHierarchisch").slider("refresh");
-				}
+			setzeUserFeldEinstellungen("{{FeldName}}");
+
+			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
+			$(".MeineEinstellungen").change(function() {
+				speichereMeineEinstellungen();
 			});
 			
 			var docId = "{{id}}";                  //brauchts das?
-			
-			$("#submitUserFeldButton").tap(function(event) {
-				if (UserFeldDocId) {
-					$db.openDoc(UserFeldDocId, {
-						success: function(document) {
-							document.Typ = "UserFeld";
-							document.User = User;
-							document.FeldName = "{{FeldName}}";
-							document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-							document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-							document.Standardwert = $("input#Standardwert").val();
-							saveUserFeld(document);
-						},
-						error: function() {
-							melde("Fehler: nicht gespeichert");
-						}
-					});
-				} else {
-					var document = {};
-					document.Typ = "UserFeld";
-					document.User = User;
-					document.FeldName = "{{FeldName}}";
-					document.SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-					document.SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-					document.Standardwert = $("input#Standardwert").val();
-					saveUserFeld(document);
-				}
-			});
 
 			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
 			UserId = holeUserId(User);
@@ -97,12 +52,80 @@
 		});
 	</script>
 	<script type="text/javascript">
+
+		function setzeUserFeldEinstellungen(FeldName){
+			//setzt die FeldEinstellungen
+			//Erwartet den FeldNamen
+			$db = $.couch.db("evab");
+			var viewname = 'evab/UserFeldEinstellung?key=["' + User + '","' + FeldName + '"]';
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var key;
+					var row;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						row = data.rows[i].value;
+						$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
+						$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
+						$("input#Standardwert").val(row.Standardwert);
+						UserFeldDocId = row.id;
+					}
+					$("select#SichtbarModusEinfach").slider("refresh");
+					$("select#SichtbarModusHierarchisch").slider("refresh");
+				}
+			});
+		}
+
+		function speichereMeineEinstellungen() {
+			$db = $.couch.db("evab");
+			var Typ = "UserFeldEinstellung";
+			var FeldName = "{{FeldName}}";
+			var SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
+			var SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+			var Standardwert = $("input#Standardwert").val();
+			if (UserFeldDocId != 0) {
+				$db.openDoc(UserFeldDocId, {
+					success: function(document) {
+						document.Typ = Typ;
+						document.User = User;
+						document.FeldName = FeldName;
+						document.SichtbarModusEinfach = SichtbarModusEinfach;
+						document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
+						if (Standardwert != "") {
+							document.Standardwert = Standardwert;
+						} else {
+							delete document.Standardwert;
+						}
+						saveUserFeld(document);
+					},
+					error: function() {
+						melde("Fehler: Einstellungen nicht gespeichert");
+					}
+				});
+			} else {
+				var document = {};
+				document.Typ = Typ;
+				document.User = User;
+				document.FeldName = FeldName;
+				document.SichtbarModusEinfach = SichtbarModusEinfach;
+				document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
+				if (Standardwert != "") {
+					document.Standardwert = Standardwert;
+				}
+				saveUserFeld(document);
+			}
+		}
+
 		function saveUserFeld(document) {
+			$db = $.couch.db("evab");
 			$db.saveDoc(document, {
-				success: function() {
+				success: function(data) {
+					melde("Einstellungen gespeichert");
+					UserFeldDocId = data.id;
 				},
 				error: function() {
-					melde("Fehler: nicht gespeichert");
+					melde("Fehler: Einstellungen nicht gespeichert");
 				}
 			});
 		}
@@ -138,23 +161,22 @@
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
+					<select class="MeineEinstellungen" name="SichtbarModusEinfach" id="SichtbarModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
+					<select class="MeineEinstellungen" name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input id="Standardwert" name="Standardwert" type="text" />
+					<input class="MeineEinstellungen" id="Standardwert" name="Standardwert" type="text" />
 				</div>
-				<button type="submit" id="submitUserFeldButton" data-icon="check" data-iconpos="left" class="ui-btn-active" data-role="button">speichern</button>
 			</form>
 			<hr>
 			<h2>Feldeigenschaften</h2>
@@ -166,7 +188,6 @@
 			<p><span class="Feldbeschriftung">Feldname in EvAB: </span><span class="Feld">{{FeldNameEvab}}</span></p>
 			<p><span class="Feldbeschriftung">Feldname beim ZDSF: </span><span class="Feld">{{FeldNameZdsf}}</span></p>
 			<p><span class="Feldbeschriftung">Feldname beim CSCF: </span><span class="Feld">{{FeldNameCscf}}</span></p>
-			<p><span class="Feldbeschriftung">Rolle im Modus "einfach": </span><span class="Feld">{{RolleModusEinfach}}</span></p>
 			<p><span class="Feldbeschriftung">Formularelement: </span><span class="Feld">{{Formularelement}}</span></p>
 			<p><span class="Feldbeschriftung">Formularelement-Typ: </span><span class="Feld">{{FormElementTyp}}</span></p>
 			<p><span class="Feldbeschriftung">Art-Gruppen: </span><span class="Feld">{{ArtGruppe}}</span></p>

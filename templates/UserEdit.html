@@ -112,7 +112,7 @@
 			//Modus managen
 			var Modus = "{{Modus}}";
 			$("input[name='Modus']").checkboxradio();
-			$("input#{{Modus}}").attr("checked",true).checkboxradio("refresh");
+			$("#{{Modus}}").attr("checked",true).checkboxradio("refresh");
 			$("input[name='Modus']").change(function(){
 				Modus = $(this).attr("id");
 				speichern(Modus);
@@ -121,15 +121,11 @@
 			//Datenverwendung managen
 			Datenverwendung = "{{Datenverwendung}}";
 			$("input[name='Datenverwendung']").checkboxradio();
-			$("input#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
+			$("#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
 			$("input[name='Datenverwendung']").change(function(){
 				Datenverwendung = $(this).attr("id");
 				speichern(Modus);
 			});
-			
-			$("#submitButton").tap(function(event) {
-				speichern();
-			});	
 
 			//jedes Feld bei Änderung speichern
 			//Modus und Datenverwendung wurden oben gespeichert
