@@ -16,7 +16,7 @@
 			$.mobile.loadingMessage = 'chrampfe!';
 			$.mobile.defaultPageTransition  = 'none';
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
-			$.mobile.selectmenu.prototype.options.nativeMenu = false; 
+			$.mobile.selectmenu.prototype.options.nativeMenu = true; 
 		});
     </script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
@@ -106,22 +106,19 @@
 		$("input[name='aMeldungTyp']").prop("checked",true).checkboxradio("refresh");
 		$("input[name='aMeldungTyp']").change(function() {
 			aMeldungTyp = $(this).prop("id");
-			speichern("../../");
+			speichern();
 		});
 
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtgruppenliste("Neu");
+			zuArtgruppenliste("Neu");
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Neu");
-			$("#ArtgruppenListe").empty();
+			zuArtliste(aArtGruppe, "Neu", "");
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
@@ -134,34 +131,30 @@
 		});	
 
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-		$("select#aArtGruppe").tap(function(event) {
+		$("#aArtGruppe").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtgruppenliste("Edit");
+			zuArtgruppenliste("Edit");
 		});
 
 		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
 			aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Edit");
-			$("#ArtgruppenListe").empty();
+			zuArtliste(aArtGruppe, "Edit", "");
 		});
 		
 		$("[name='ArtListItemEdit']").live("click", function(event) {
 			event.preventDefault();
 			aArtGruppe = $(this).attr("aArtGruppe");
-			aArtName = $(this).attr("id");
+			aArtName = $(this).attr("artbezeichnung");
 			aArtId = $(this).attr("artid");
-			speichern("");
+			speichern("NeuÖffnen");
 			$("#ArtenListe").empty();
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
-		$("select#aArtName").tap(function(event) {
+		$("#aArtName").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Edit");
+			zuArtliste(aArtGruppe, "Edit", "../../");
 		});
 
 		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
@@ -170,7 +163,7 @@
 			//warte(300);   
 			//anders lösen - warte blockiert CPU!
 			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird
-			speichern('../../');
+			speichern();
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -247,6 +240,17 @@
 		    }
 		});
 	}
+
+	function zuArtgruppenliste(Status) {
+		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		erstelleArtgruppenliste(Status);
+	}
+
+	function zuArtliste(aArtGruppe, Status, Pfad) {
+		$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		erstelleArtliste(aArtGruppe, Status, Pfad);
+		$("#ArtgruppenListe").empty();
+	}
   </script>
 
   <script type="text/javascript" charset="utf-8">	
@@ -301,9 +305,10 @@
 
 	//Speichert alle Daten
 	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
-	function speichern() {
+	function speichern(NeuÖffnenIn) {
 		var hArt = {};
 		var docId = "{{id}}";
+		var NeuÖffnen = NeuÖffnenIn || false;
 		hArt = $("#hArtEditForm").serializeObject();
 		hArt.Typ = "hArt";
 		hArt.User = User;
@@ -312,12 +317,17 @@
 		hArt.RaumId = "{{RaumId}}";
 		hArt.OrtId = "{{OrtId}}";
 		hArt.ZeitId = "{{ZeitId}}";
+		hArt.aArtId = aArtId;
+		hArt.aArtName = aArtName;
+		hArt.aArtGruppe = aArtGruppe;
 		$db.openDoc(docId, {
 			success: function(doc) {
 				hArt._rev = doc._rev;
 				$db.saveDoc(hArt, {
 					success: function() {
-
+						if (NeuÖffnen != false) {
+							window.open("_show/hArtEdit/" + "{{id}}", target="_self");
+						}
 					},
 					error: function() {
 						melde("Fehler: Art nicht gespeichert");

@@ -182,8 +182,9 @@ function erstelleArtgruppenliste(Status) {
 
 //ArtenListe in Artenliste.html wird aufgebaut
 //Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
-function erstelleArtliste(ArtGruppe, Status) { 
+function erstelleArtliste(ArtGruppe, Status, PfadIn) { 
 	var viewname = "evab/Artliste" + ArtGruppe;
+	var Pfad = PfadIn || "";
 	$db.view(viewname, {
 		success: function(data) {
 			var i;
@@ -197,13 +198,13 @@ function erstelleArtliste(ArtGruppe, Status) {
 				Art = data.rows[i].value;
 				ArtId = Art._id;
 				if(Art.HinweisVerwandschaft){
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtBezeichnung + "<\/h3>" +
 					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
 					"<\/a> <\/li>";
 				}else{
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\">" +
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">" +
 					"<a href=\"#\">" +
 					"<h3>" + ArtBezeichnung + "<\/h3>" +
 					"<\/a> <\/li>";

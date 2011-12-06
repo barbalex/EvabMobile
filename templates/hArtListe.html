@@ -98,7 +98,7 @@
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Neu");
+			erstelleArtliste(aArtGruppe, "Neu", "");
 			$("#ArtgruppenListe").empty();
 		});
 		

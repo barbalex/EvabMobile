@@ -142,7 +142,7 @@
 				var ArtGruppe = $(this).attr("id");
 				//$.mobile.showPageLoadingMsg(); 
 				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-				erstelleArtliste(ArtGruppe, "Neu");
+				erstelleArtliste(ArtGruppe, "Neu", "");
 				$("#ArtgruppenListe").empty();
 			});
 			
@@ -168,7 +168,7 @@
 				event.preventDefault();
 				aArtGruppe = $(this).attr("id");
 				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-				erstelleArtliste(aArtGruppe, "Edit");
+				erstelleArtliste(aArtGruppe, "Edit", "");
 				$("#ArtgruppenListe").empty();
 			});
 			
@@ -177,7 +177,8 @@
 				aArtGruppe = $(this).attr("aArtGruppe");
 				aArtName = $(this).attr("ArtBezeichnung");
 				aArtId = $(this).attr("artid");
-				speichern("", "BeobEditAufrufen", "KeineMeldung");
+				var Pfad = $(this).attr("Pfad");
+				speichern(Pfad, "BeobEditAufrufen", "KeineMeldung");
 				$("#ArtenListe").empty();
 			});
 
@@ -185,7 +186,7 @@
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
 				$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-				erstelleArtliste(aArtGruppe, "Edit");
+				erstelleArtliste(aArtGruppe, "Edit", "");
 			});
 
 			//Für jedes Feld bei Änderung speichern
