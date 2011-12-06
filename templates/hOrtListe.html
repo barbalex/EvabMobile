@@ -238,7 +238,8 @@
 				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
-					ListItemContainer = "<li>Sie haben noch keinen Ort erfasst</li>";
+					var url = "../hOrtNeu/" + "{{id}}";
+					ListItemContainer = '<li><a href="' + url + '" data-transition="slideup" rel="external">Ersten Ort erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;

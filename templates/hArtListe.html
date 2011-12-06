@@ -91,8 +91,7 @@
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
-			$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtgruppenliste("Neu");
+			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
@@ -114,6 +113,11 @@
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function erstelleNeueBeob_1_Artgruppenliste() {
+		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		erstelleArtgruppenliste("Neu");
+	}
 
 	function prüfeAnmeldung(Pfad) {		
 		//User Anmeldung überprüfen
@@ -156,7 +160,7 @@
 				$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 				if (anzArt == 0) {
-					ListItemContainer = "<li>Sie haben noch keine Art erfasst</li>";
+					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Art erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Art = data.rows[i].value;

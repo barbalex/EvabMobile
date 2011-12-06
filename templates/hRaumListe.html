@@ -122,7 +122,8 @@
 				}
 				$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 				if (anzRaum == 0) {
-					ListItemContainer = "<li>Sie haben noch keinen Raum erfasst</li>";
+					var url = "../hRaumNeu/" + "{{id}}";
+					ListItemContainer = '<li><a href="' + url + '" data-transition="slideup" rel="external">Ersten Raum erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Raum = data.rows[i].value;
@@ -139,6 +140,7 @@
 				ListItemContainer += "<\/ul>";
 				$("#Räume").html(ListItemContainer);
 				$("#Räume").listview();
+				//$("#Räume").listview("create");
 				$("#Räume").listview("refresh");
 			}
 		});

@@ -188,9 +188,7 @@
 		//Neue Beobachtung managen
 		$("#NeueBeobLink").live("click", function(event){
 			event.preventDefault();
-			$.mobile.showPageLoadingMsg();
-			$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			erstelleArtgruppenliste("Neu");
+			erstelleNeuBeob_1_Artgruppenliste();
 		});
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
@@ -230,6 +228,12 @@
 				}
 		    }
 		});
+	}
+
+	function erstelleNeuBeob_1_Artgruppenliste() {
+		$.mobile.showPageLoadingMsg();
+		$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		erstelleArtgruppenliste("Neu");
 	}
   </script>
 </html>

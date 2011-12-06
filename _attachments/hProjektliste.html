@@ -105,7 +105,7 @@
 				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 				if (anzProj == 0) {
-					ListItemContainer = "<li>Sie haben noch kein Projekt erfasst</li>";
+					ListItemContainer = "<li><a href='hProjektNeu.html' data-transition='slideup' rel='external'>Erstes Projekt erfassen</a></li>";
 				} else {
 					for(i in data.rows) {               //Liste aufbauen
 						Proj = data.rows[i].value;

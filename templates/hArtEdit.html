@@ -118,7 +118,7 @@
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
-			var aArtGruppe = $(this).prop("id");
+			var aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
@@ -126,9 +126,9 @@
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
-			var aArtGruppe = $(this).prop("aArtGruppe");
-			var aArtName = $(this).prop("ArtBezeichnung");
-			var aArtId = $(this).prop("artid");
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("ArtBezeichnung");
+			var aArtId = $(this).attr("artid");
 			$("#ArtenListe").empty();
 			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
 		});	
@@ -142,7 +142,7 @@
 
 		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
-			aArtGruppe = $(this).prop("id");
+			aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Edit");
 			$("#ArtgruppenListe").empty();
@@ -150,9 +150,9 @@
 		
 		$("[name='ArtListItemEdit']").live("click", function(event) {
 			event.preventDefault();
-			aArtGruppe = $(this).prop("aArtGruppe");
-			aArtName = $(this).prop("id");
-			aArtId = $(this).prop("artid");
+			aArtGruppe = $(this).attr("aArtGruppe");
+			aArtName = $(this).attr("id");
+			aArtId = $(this).attr("artid");
 			speichern("");
 			$("#ArtenListe").empty();
 		});

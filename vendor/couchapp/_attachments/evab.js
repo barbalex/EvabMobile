@@ -436,7 +436,7 @@ function aktualisiereBeobListe(Pfad, User) {
 			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 			if (anzBeob == 0) {
-				ListItemContainer = "<li>Sie haben noch keine Beobachtung erfasst</li>";
+				ListItemContainer = '<li><a href="javascript:erstelleNeuBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
 			} else {
 				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 				for(i in data.rows) {                //Liste aufbauen
@@ -578,7 +578,6 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		FeldWert = (eval("Beobachtung." + FeldName) || "");
-		//alert("FeldName, FeldWert = " + FeldName + ", " + FeldWert);
 		FeldBeschriftung = Feld.FeldBeschriftung;
 		Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
 		ListItem = "";
@@ -610,7 +609,6 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
 			}
 		}
 		HtmlContainer += ListItem;
-		//Feld = {};
 	}
 	return HtmlContainer;
 }
