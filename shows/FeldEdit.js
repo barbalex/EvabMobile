@@ -11,7 +11,6 @@ function(doc, req) {
 		FeldNameEvab: doc.FeldNameEvab,
 		FeldNameZdsf: doc.FeldNameZdsf,
 		FeldNameCscf: doc.FeldNameCscf,
-		RolleModusEinfach: doc.RolleModusEinfach,
 		Formularelement: doc.Formularelement,
 		FormElementTyp: doc.FormElementTyp,
 		ArtGruppe: doc.ArtGruppe

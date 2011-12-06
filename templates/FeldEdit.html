@@ -30,33 +30,57 @@
 			var Pfad = "../../";
 			User = "";
 			UserFeldDocId = 0;
+			var ArtGruppenWerte;
+			var OptionenWerte;
 		
 			prüfeAnmeldung(Pfad);
 			
 			setzeUserFeldEinstellungen("{{FeldName}}");
+
+			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
+			var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var row;
+					for(i in data.rows) {
+						row = data.rows[i].value;
+						ArtGruppenWerte = row.ArtGruppe;
+						ArtGruppeAufbauen(ArtGruppenWerte);
+						OptionenWerte = row.Optionen;
+					}
+				}
+			});
 			
-			
-			
-			//Tabelle managen
+			//Tabelle managen (radio)
 			TabelleWerte = "{{Tabelle}}";
 			$("input[name='Tabelle']").checkboxradio();
-			$("#" + TabelleWerte).attr("checked",true).checkboxradio("refresh");
+			$("#" + TabelleWerte).prop("checked",true).checkboxradio("refresh");
 			$("input[name='Tabelle']").change(function() {
-				TabelleWerte = $(this).attr("id");
-				speichereFeldeigenschaften();
+				TabelleWerte = $(this).prop("id");
+				speichereFeldeigenschaften(ArtGruppenWerte);
 			});
 
-			//ArtGruppe managen
-			ArtGruppeAufbauen();
-			ArtGruppenWerte = "{{ArtGruppe}}";
-			$("input[name='ArtGruppe']").change(function() {
-				ArtGruppenWerte = $(this).attr("id");
-				speichereFeldeigenschaften();
+			//ArtGruppe managen (checkbox)
+			$("input[name='ArtGruppe']").live("change", function() {
+				var FeldId = $(this).prop("id");
+				if ($("#" + FeldId).prop("checked") == true) {
+					ArtGruppenWerte.push(FeldId);
+				} else {
+					var idx = ArtGruppenWerte.indexOf(FeldId);
+					if(idx!=-1) ArtGruppenWerte.splice(idx, 1);
+				}
+				speichereFeldeigenschaften(ArtGruppenWerte);
 			});
-			
-			$("select#Formularelement").val("{{Formularelement}}");
-			$("select#Formularelement").selectmenu();
-			$("select#Formularelement").selectmenu("refresh");
+
+			//Formularelement managen (radio)
+			FormularelementWerte = "{{Formularelement}}";
+			$("input[name='Formularelement']").checkboxradio();
+			$("#" + FormularelementWerte).prop("checked",true).checkboxradio("refresh");
+			$("input[name='Formularelement']").change(function() {
+				FormularelementWerte = $(this).prop("id");
+				speichereFeldeigenschaften(ArtGruppenWerte);
+			});
 			
 			$("select#FormElementTyp").val("{{FormElementTyp}}");
 			$("select#FormElementTyp").selectmenu();
@@ -64,7 +88,7 @@
 
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").change(function() {
-				speichereFeldeigenschaften();
+				speichereFeldeigenschaften(ArtGruppenWerte);
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -133,7 +157,8 @@
 			});
 		}
 
-		function speichereFeldeigenschaften() {
+		function speichereFeldeigenschaften(ArtGruppenWerte) {
+			$db = $.couch.db("evab");
 			var docId = "{{id}}";
 				$db.openDoc(docId, {
 					success: function(document) {
@@ -148,7 +173,7 @@
 						document.FeldNameEvab = $("input#FeldNameEvab").val();
 						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
 						document.FeldNameCscf = $("input#FeldNameCscf").val();
-						document.Formularelement = $("select#Formularelement").val();
+						document.Formularelement = FormularelementWerte;
 						document.FormElementTyp = $("select#FormElementTyp").val();
 						document.ArtGruppe = ArtGruppenWerte;
 						saveDocument(document);
@@ -160,6 +185,7 @@
 		}
 
 		function saveDocument(document) {
+			$db = $.couch.db("evab");
 			$db.saveDoc(document, {
 				success: function() {
 					melde("Feld gespeichert");
@@ -223,15 +249,14 @@
 			});
 		}
 		
-		function ArtGruppeAufbauen() {
+		function ArtGruppeAufbauen(ArtGruppenWerte) {
+			$db = $.couch.db("evab");
 			$("select#ArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
 			$db.view(viewname, {
 				success: function(data) {
 					var i;
 					var ArtGruppe;
-					var ArtGruppenWerte = [];
-					ArtGruppenWerte = '{{ArtGruppe}}';
 					var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
 					var listItem;
 					for(i in data.rows) {
@@ -240,7 +265,7 @@
 						listItem += ArtGruppe;
 						listItem += "'";
 						listItem += " class='custom'";
-						if(ArtGruppe.indexOf(ArtGruppenWerte)>=0){
+						if(ArtGruppenWerte.indexOf(ArtGruppe)!=-1) {
 							listItem += " checked='checked'";
 						}
 						listItem += "/>\n<label for='";
@@ -257,7 +282,7 @@
 					//$("input[name='ArtGruppe']").checkboxradio("refresh");
 					$("input[name='ArtGruppe']").checkboxradio();
 					for(i in ArtGruppenWerte) {
-						$("#" + i).attr("checked",true).checkboxradio("refresh");
+						$("#" + i).prop("checked",true).checkboxradio("refresh");
 					}
 				}
 			});
@@ -380,16 +405,23 @@
 					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Formularelement" class="select">Formularelement:</label>
-					<select class="Feldeigenschaften" id="Formularelement" name="Formularelement" value="{{Formularelement}}" data-native-menu="true">
-						<option value="textinput">textinput</option>
-						<option value="textarea">textarea</option>
-						<option value="toggleswitch">toggleswitch</option>
-						<option value="toggleswitch">checkbox</option>
-						<option value="selectmenu">selectmenu</option>
-						<option value="multipleselect">slider</option>
-						<option value="multipleselect">radio</option>
-					</select>
+					<fieldset data-role="controlgroup">
+						<legend>Formularelement:</legend>
+							<input type="radio" name="Formularelement" id="textinput" value="textinput"/>
+	         				<label for="textinput">textinput</label>
+	         				<input type="radio" name="Formularelement" id="textarea" value="textarea"/>
+	         				<label for="textarea">textarea</label>
+	         				<input type="radio" name="Formularelement" id="toggleswitch" value="toggleswitch"/>
+	         				<label for="toggleswitch">toggleswitch</label>
+	         				<input type="radio" name="Formularelement" id="slider" value="slider"/>
+	         				<label for="slider">slider</label>
+							<input type="radio" name="Formularelement" id="selectmenu" value="selectmenu"/>
+	         				<label for="selectmenu">selectmenu</label>
+	         				<input type="radio" name="Formularelement" id="radio" value="radio"/>
+	         				<label for="radio">radio</label>
+							<input type="radio" name="Formularelement" id="checkbox" value="checkbox"/>
+	         				<label for="checkbox">checkbox</label>
+	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>

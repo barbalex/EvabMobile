@@ -100,12 +100,12 @@
 		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
 		$("select#aPopGrösseKlassiert").selectmenu("refresh");
 		*/
-		//aMeldungTyp managen
+		//aMeldungTyp managen (radio)
 		aMeldungTyp = "{{aMeldungTyp}}";
 		$("input[name='aMeldungTyp']").checkboxradio();
-		$("input[name='aMeldungTyp']").attr("checked",true).checkboxradio("refresh");
+		$("input[name='aMeldungTyp']").prop("checked",true).checkboxradio("refresh");
 		$("input[name='aMeldungTyp']").change(function() {
-			aMeldungTyp = $(this).attr("id");
+			aMeldungTyp = $(this).prop("id");
 			speichern("../../");
 		});
 
@@ -118,7 +118,7 @@
 
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
-			var aArtGruppe = $(this).attr("id");
+			var aArtGruppe = $(this).prop("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu");
 			$("#ArtgruppenListe").empty();
@@ -126,9 +126,9 @@
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
 			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("ArtBezeichnung");
-			var aArtId = $(this).attr("artid");
+			var aArtGruppe = $(this).prop("aArtGruppe");
+			var aArtName = $(this).prop("ArtBezeichnung");
+			var aArtId = $(this).prop("artid");
 			$("#ArtenListe").empty();
 			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
 		});	
@@ -142,7 +142,7 @@
 
 		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 			event.preventDefault();
-			aArtGruppe = $(this).attr("id");
+			aArtGruppe = $(this).prop("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Edit");
 			$("#ArtgruppenListe").empty();
@@ -150,9 +150,9 @@
 		
 		$("[name='ArtListItemEdit']").live("click", function(event) {
 			event.preventDefault();
-			aArtGruppe = $(this).attr("aArtGruppe");
-			aArtName = $(this).attr("id");
-			aArtId = $(this).attr("artid");
+			aArtGruppe = $(this).prop("aArtGruppe");
+			aArtName = $(this).prop("id");
+			aArtId = $(this).prop("artid");
 			speichern("");
 			$("#ArtenListe").empty();
 		});
@@ -166,8 +166,8 @@
 
 		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
 		//aMeldungTyp ist oben schon gemacht
-		$("[name^='a']").change(function() {
-			warte(300);   
+		$("[name^='a']").live("change", function() {
+			//warte(300);   
 			//anders lösen - warte blockiert CPU!
 			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird
 			speichern('../../');

@@ -112,18 +112,18 @@
 			//Modus managen
 			var Modus = "{{Modus}}";
 			$("input[name='Modus']").checkboxradio();
-			$("#{{Modus}}").attr("checked",true).checkboxradio("refresh");
+			$("#{{Modus}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='Modus']").change(function(){
-				Modus = $(this).attr("id");
+				Modus = $(this).prop("id");
 				speichern(Modus);
 			});
 
 			//Datenverwendung managen
 			Datenverwendung = "{{Datenverwendung}}";
 			$("input[name='Datenverwendung']").checkboxradio();
-			$("#{{Datenverwendung}}").attr("checked",true).checkboxradio("refresh");
+			$("#{{Datenverwendung}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='Datenverwendung']").change(function(){
-				Datenverwendung = $(this).attr("id");
+				Datenverwendung = $(this).prop("id");
 				speichern(Modus);
 			});
 
