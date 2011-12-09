@@ -30,10 +30,18 @@
 			var Pfad = "../../";
 			User = "";
 			UserFeldDocId = 0;
+			SichtbarModusHierarchischId = 0;
 		
 			prüfeAnmeldung(Pfad);
 			
 			setzeUserFeldEinstellungen("{{FeldName}}");
+			setzeSichtbarModusHierarchisch("{{FeldName}}");
+
+			//noch nicht aktive Felder deaktivieren
+			$('#SichtbarModusEinfach').textinput();
+			$('#SichtbarModusEinfach').textinput('disable');
+			$('#Standardwert').textinput();
+			$('#Standardwert').textinput('disable');
 
 			//Radio managen, Werte initiieren
 			var TabelleWert = "{{Tabelle}}";
@@ -105,6 +113,11 @@
 				speichereMeineEinstellungen(UserFeldDocId);
 			});
 
+			//Sichtbarkeit Modus hierarchisch speichern
+			$("#SichtbarModusHierarchisch").change(function() {
+				speichereSichtbarModusHierarchisch(SichtbarModusHierarchischId);
+			});
+
 			//Code für den Feld-Löschen-Dialog
 			$('#LöschenDialogLink').live('click', function() {
 				$(this).simpledialog({
@@ -154,12 +167,37 @@
 						key = data.rows[i].key;
 						row = data.rows[i].value;
 						$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
-						$("select#SichtbarModusHierarchisch").val(row.SichtbarModusHierarchisch);
 						$("input#Standardwert").val(row.Standardwert);
 						UserFeldDocId = row.id;
 					}
 					$("select#SichtbarModusEinfach").slider();
 					$("select#SichtbarModusEinfach").slider("refresh");
+				}
+			});
+		}
+
+		function setzeSichtbarModusHierarchisch(FeldName){
+			//setzt die FeldEinstellungen
+			//Erwartet den FeldNamen
+			$db = $.couch.db("evab");
+			var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var key;
+					var row;
+					for(i in data.rows) {
+						key = data.rows[i].key;
+						row = data.rows[i].value;
+						var Felder = row.Felder;
+						var idx = Felder.indexOf(FeldName);
+						if (idx != -1) {
+							$("select#SichtbarModusHierarchisch").val("ja");
+						} else {
+							$("select#SichtbarModusHierarchisch").val("nein");
+						}
+						SichtbarModusHierarchischId = row._id;
+					}
 					$("select#SichtbarModusHierarchisch").slider();
 					$("select#SichtbarModusHierarchisch").slider("refresh");
 				}
@@ -213,7 +251,6 @@
 			var Typ = "UserFeldEinstellung";
 			var FeldName = "{{FeldName}}";
 			var SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-			var SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
 			var Standardwert = $("input#Standardwert").val();
 			if (UserFeldDocId != 0) {
 				$db.openDoc(UserFeldDocId, {
@@ -222,7 +259,6 @@
 						document.User = User;
 						document.FeldName = FeldName;
 						document.SichtbarModusEinfach = SichtbarModusEinfach;
-						document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
 						if (Standardwert != "") {
 							document.Standardwert = Standardwert;
 						} else {
@@ -240,7 +276,6 @@
 				document.User = User;
 				document.FeldName = FeldName;
 				document.SichtbarModusEinfach = SichtbarModusEinfach;
-				document.SichtbarModusHierarchisch = SichtbarModusHierarchisch;
 				if (Standardwert != "") {
 					document.Standardwert = Standardwert;
 				}
@@ -257,6 +292,56 @@
 				},
 				error: function() {
 					melde("Fehler: Einstellungen nicht gespeichert");
+				}
+			});
+		}
+
+		function speichereSichtbarModusHierarchisch(SichtbarModusHierarchischId) {
+			$db = $.couch.db("evab");
+			var Typ = "SichtbarModusHierarchisch";
+			var FeldName = "{{FeldName}}";
+			var SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
+			if (SichtbarModusHierarchischId != 0) {
+				$db.openDoc(SichtbarModusHierarchischId, {
+					success: function(document) {
+						document.Typ = Typ;
+						document.User = User;
+						var Felder = document.Felder;
+						//Felder.push(document.Felder);
+						if (SichtbarModusHierarchisch == "ja") {
+							Felder.push(FeldName);
+						} else {
+							var idx = Felder.indexOf(FeldName);
+							if(idx!=-1) Felder.splice(idx, 1);
+						}
+						document.Felder = Felder;
+						saveSichtbarModusHierarchisch(document);
+					},
+					error: function() {
+						melde("Fehler: Einstellung nicht gespeichert");
+					}
+				});
+			} else {
+				var document = {};
+				document.Typ = Typ;
+				document.User = User;
+				//var Felder = '["' + FeldName + '"]';
+				//Felder.push(FeldName);
+				document.Felder = [];
+				document.Felder.push(FeldName);
+				saveSichtbarModusHierarchisch(document);
+			}
+		}
+
+		function saveSichtbarModusHierarchisch(document) {
+			$db = $.couch.db("evab");
+			$db.saveDoc(document, {
+				success: function(data) {
+					melde("Einstellung gespeichert");
+					SichtbarModusHierarchischId = data.id;
+				},
+				error: function() {
+					melde("Fehler: Einstellung nicht gespeichert");
 				}
 			});
 		}
@@ -357,7 +442,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="MeineEinstellungen" name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
+					<select name="SichtbarModusHierarchisch" id="SichtbarModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
@@ -367,6 +452,7 @@
 					<input class="MeineEinstellungen" id="Standardwert" name="Standardwert" type="text" />
 				</div>
 			</form>
+			<p>Hier wird für Sie gebaut: Die ausgeblendeten Felder werden später aktiviert.</p>
 				<hr>
 				<h2>Feldeigenschaften</h2>
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
