@@ -536,29 +536,32 @@ function Manager() {
 
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: id der Art, Artgruppe, Artname
-function erstelle_hArtEdit(ID, aArtGruppe, aArtName) {
+function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 	$("#hArtEditForm").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeArt', {
 		success: function(data) {
-			var Feldliste = data;
-			//Holt die Beobachtung mit der id "ID" aus der DB
-			$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
+			var FeldlisteAlle = data;
+			//Holt, welche Felder angezeigt werden sollen
+			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
-					var Beobachtung = data.rows[0].value;
-					//alert("Beobachtung = " + Beobachtung);
-					var HtmlContainer3 = generiereHtmlFuerhArtEditForm (aArtGruppe, Feldliste, Beobachtung);
-					var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
-					var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
-					var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
-					$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
-				},
-				error: function() {
+					var row = data.rows[0].value;
+					var SichtbareFelder = row.Felder;
+					//Holt die Beobachtung mit der id "ID" aus der DB
+					$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
+						success: function(data) {
+							var Beobachtung = data.rows[0].value;
+							//alert("Beobachtung = " + Beobachtung);
+							var HtmlContainer3 = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
+							var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
+							var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
+							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
+							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
+						}
+					});
 				}
 			});
-		},
-		error: function() {
 		}
 	});
 }
@@ -566,7 +569,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName) {
 //generiert das Html für das Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt; HtmlContainer mit dessen aktuellen Stand
 //der HtmlContainer wird ergänzt und zurück gegeben
-function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
+function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -578,39 +581,41 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		FeldWert = (eval("Beobachtung." + FeldName) || "");
-		FeldBeschriftung = Feld.FeldBeschriftung;
-		Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
-		InputTyp = Feld.InputTyp;
-		ListItem = "";
-		if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
-			switch(Feld.Formularelement) {
-				case "textinput": 	
-					ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
-					break;
-				case "textarea":
-					ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
-					break;
-				case "toggleswitch":
-					ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
-					break;
-				case "checkbox":
-					ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
-					break;
-				case "selectmenu":
-					ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
-					break;
-				case "slider":
-					SliderMinimum = Feld.SliderMinimum || 0;
-					SliderMaximum = Feld.SliderMaximum || 100;
-					ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
-					break;
-				case "radio":
-					ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
-					break;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Beobachtung." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung;
+			Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+			InputTyp = Feld.InputTyp;
+			ListItem = "";
+			if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
+				switch(Feld.Formularelement) {
+					case "textinput": 	
+						ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
+						break;
+					case "textarea":
+						ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
+						break;
+					case "toggleswitch":
+						ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+						break;
+					case "checkbox":
+						ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+					case "selectmenu":
+						ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+					case "slider":
+						SliderMinimum = Feld.SliderMinimum || 0;
+						SliderMaximum = Feld.SliderMaximum || 100;
+						ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
+						break;
+					case "radio":
+						ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+				}
 			}
+			HtmlContainer += ListItem;
 		}
-		HtmlContainer += ListItem;
 	}
 	return HtmlContainer;
 }

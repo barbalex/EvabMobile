@@ -76,29 +76,14 @@
 		aArtId = "{{aArtId}}";
 		ID = "{{id}}";
 
-		erstelle_hArtEdit(ID, aArtGruppe, aArtName);	
 		prüfeAnmeldung(Pfad);
-
-		//$.mobile.initializePage();                   //experimentell!
+		erstelle_hArtEdit(ID, aArtGruppe, aArtName, User);
 
 		var Status = get_url_param("Status");
 		if (Status == "neu") {
 			setzeAutor();
 		}
-		/*
-		//select-Felder aktualisieren
-		refreshArtGruppen("{{aArtGruppe}}");
-		refreshArtName("{{aArtName}}");
-		$("select#aArtNameUnsicher").slider();
-		$("select#aArtNameUnsicher").val("{{aArtNameUnsicher}}");
-		$("select#aArtNameUnsicher").slider("refresh");
-		$("select#aVorhandensein").slider();
-		$("select#aVorhandensein").val("{{aVorhandensein}}");
-		$("select#aVorhandensein").slider("refresh");
-		$("select#aPopGrösseKlassiert").selectmenu();
-		$("select#aPopGrösseKlassiert").val("{{aPopGrösseKlassiert}}");
-		$("select#aPopGrösseKlassiert").selectmenu("refresh");
-		*/
+
 		//aMeldungTyp managen (radio)
 		aMeldungTyp = "{{aMeldungTyp}}";
 		$("input[name='aMeldungTyp']").checkboxradio();

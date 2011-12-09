@@ -25,7 +25,7 @@
   </head>
   <body>
   	<div data-role="page">
-		<div data-role="header">
+		<div data-role="header" data-position="fixed">
 			<a href="#index.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external" data-rel="back" >Back</a>
 			<h1>Konto erstellen</h1>
 		</div>
@@ -82,10 +82,10 @@
 				</div>
 			</form>
 		</div>
-		<div data-role="footer">
+		<div data-role="footer"  data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check">speichern</a></li>
+					<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check">Konto erstellen</a></li>
 					<li><a href="index.html" id="CancelButton" data-icon="delete">abbrechen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -141,6 +141,7 @@
 		  	}, Passwort, {
 		  	success : function() {
 		  		speichereUserInEvab(UserName, Modus);
+		  		erstelleSichtbarImModusHierarchisch(UserName);
 		  		meldeUserAn(UserName, Passwort);
 		  	},
 		  	error : function() {
@@ -170,7 +171,6 @@
 			success : function(r) {
 				userCtx = r.userCtx;
 				if (userCtx.name) {
-					//speichereUserInEvab(userCtx.name);
 					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
 					setTimeout("window.open('BeobListe.html', target='_self')", 2800);
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
@@ -199,6 +199,37 @@
 			},
 			error: function() {
 				melde("Oh je, Ihr User konnte nicht erstellt werden");
+			}
+		});
+	}
+
+	function erstelleSichtbarImModusHierarchisch(UserName) {
+		//setzt alle Felder sichtbar
+		//Erwartet den UserNamen
+		$db = $.couch.db("evab");
+		var viewname = 'evab/FeldListeFeldName';
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var key;
+				var Felder = [];
+				for(i in data.rows) {
+					key = data.rows[i].key;
+					Felder.push(key);
+				}
+				var document = {};
+				document.Typ = "SichtbarModusHierarchisch";
+				document.User = UserName;
+				//document.Felder = [];
+				document.Felder = Felder;
+				$db.saveDoc(document, {
+					success: function(data) {
+						melde("Felder sichtbar geschaltet");
+					},
+					error: function() {
+						melde("Fehler: Felder nicht sichtbar geschaltet");
+					}
+				});
 			}
 		});
 	}
