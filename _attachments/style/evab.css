@@ -6,8 +6,8 @@
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}
 
-/*.Feldbeschriftung {margin-bottom: 0px;}*/
-.Feld {margin-bottom: 0px; font-weight:bold;}
+/*in FeldRead.html Felder darstellen*/
+.Feld {font-weight:bold;}
 
 .GmInfowindow {line-height: 0.3; margin-top: 0.3; margin-bottom: 0; white-space: nowrap}
 
