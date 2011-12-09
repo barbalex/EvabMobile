@@ -30,65 +30,74 @@
 			var Pfad = "../../";
 			User = "";
 			UserFeldDocId = 0;
-			var ArtGruppenWerte;
-			var OptionenWerte;
 		
 			prüfeAnmeldung(Pfad);
 			
 			setzeUserFeldEinstellungen("{{FeldName}}");
 
+			//Radio managen, Werte initiieren
+			var TabelleWert = "{{Tabelle}}";
+			var FormularelementWert = "{{Formularelement}}";
+			var InputTypWert = "{{InputTyp}}";
+			var OptionenArray = new Array("{{Optionen}}");
+
+			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
 			var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
+			var ArtGruppenArray;
 			$db.view(viewname, {
 				success: function(data) {
 					var i;
 					var row;
 					for(i in data.rows) {
 						row = data.rows[i].value;
-						ArtGruppenWerte = row.ArtGruppe;
-						ArtGruppeAufbauen(ArtGruppenWerte);
-						OptionenWerte = row.Optionen;
+						ArtGruppenArray = row.ArtGruppe;
+						ArtGruppeAufbauen(ArtGruppenArray);
 					}
 				}
 			});
 			
 			//Tabelle managen (radio)
-			TabelleWerte = "{{Tabelle}}";
 			$("input[name='Tabelle']").checkboxradio();
-			$("#" + TabelleWerte).prop("checked",true).checkboxradio("refresh");
+			$("#" + TabelleWert).prop("checked",true).checkboxradio("refresh");
 			$("input[name='Tabelle']").change(function() {
-				TabelleWerte = $(this).prop("id");
-				speichereFeldeigenschaften(ArtGruppenWerte);
+				TabelleWert = $(this).prop("id");
+				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
 			});
 
 			//ArtGruppe managen (checkbox)
 			$("input[name='ArtGruppe']").live("change", function() {
 				var FeldId = $(this).prop("id");
 				if ($("#" + FeldId).prop("checked") == true) {
-					ArtGruppenWerte.push(FeldId);
+					ArtGruppenArray.push(FeldId);
 				} else {
-					var idx = ArtGruppenWerte.indexOf(FeldId);
-					if(idx!=-1) ArtGruppenWerte.splice(idx, 1);
+					var idx = ArtGruppenArray.indexOf(FeldId);
+					if(idx!=-1) ArtGruppenArray.splice(idx, 1);
 				}
-				speichereFeldeigenschaften(ArtGruppenWerte);
+				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
 			});
 
 			//Formularelement managen (radio)
-			FormularelementWerte = "{{Formularelement}}";
+			FormularelementWert = "{{Formularelement}}";
 			$("input[name='Formularelement']").checkboxradio();
-			$("#" + FormularelementWerte).prop("checked",true).checkboxradio("refresh");
+			$("#" + FormularelementWert).prop("checked",true).checkboxradio("refresh");
 			$("input[name='Formularelement']").change(function() {
-				FormularelementWerte = $(this).prop("id");
-				speichereFeldeigenschaften(ArtGruppenWerte);
+				FormularelementWert = $(this).prop("id");
+				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
 			});
-			
-			$("select#FormElementTyp").val("{{FormElementTyp}}");
-			$("select#FormElementTyp").selectmenu();
-			$("select#FormElementTyp").selectmenu("refresh");
+
+			//InputTyp managen (radio)
+			InputTypWert = "{{InputTyp}}";
+			$("input[name='InputTyp']").checkboxradio();
+			$("#" + InputTypWert).prop("checked",true).checkboxradio("refresh");
+			$("input[name='InputTyp']").change(function() {
+				InputTypWert = $(this).prop("id");
+				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
+			});
 
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").change(function() {
-				speichereFeldeigenschaften(ArtGruppenWerte);
+				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -157,15 +166,14 @@
 			});
 		}
 
-		function speichereFeldeigenschaften(ArtGruppenWerte) {
+		function speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert) {
 			$db = $.couch.db("evab");
 			var docId = "{{id}}";
 				$db.openDoc(docId, {
 					success: function(document) {
 						document.Typ = "Feld";
 						document.User = User;
-						document.Tabelle = TabelleWerte;
-						//document.Tabelle = $("select#Tabelle").val();
+						document.Tabelle = TabelleWert;
 						document.FeldName = $("input#FeldName").val();
 						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
 						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
@@ -173,9 +181,13 @@
 						document.FeldNameEvab = $("input#FeldNameEvab").val();
 						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
 						document.FeldNameCscf = $("input#FeldNameCscf").val();
-						document.Formularelement = FormularelementWerte;
-						document.FormElementTyp = $("select#FormElementTyp").val();
-						document.ArtGruppe = ArtGruppenWerte;
+						document.Formularelement = FormularelementWert;
+						document.InputTyp = InputTypWert;
+						document.ArtGruppe = ArtGruppenArray;
+						document.Optionen = new Array($("[id$='Optionen']").val());
+						document.Standardwert = $("input#Standardwert_FE").val();
+						document.SliderMinimum = $("input#SliderMinimum").val();
+						document.SliderMaximum = $("input#SliderMaximum").val();
 						saveDocument(document);
 					},
 					error: function() {
@@ -249,7 +261,7 @@
 			});
 		}
 		
-		function ArtGruppeAufbauen(ArtGruppenWerte) {
+		function ArtGruppeAufbauen(ArtGruppenArray) {
 			$db = $.couch.db("evab");
 			$("select#ArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
@@ -265,7 +277,7 @@
 						listItem += ArtGruppe;
 						listItem += "'";
 						listItem += " class='custom'";
-						if(ArtGruppenWerte.indexOf(ArtGruppe)!=-1) {
+						if(ArtGruppenArray.indexOf(ArtGruppe)!=-1) {
 							listItem += " checked='checked'";
 						}
 						listItem += "/>\n<label for='";
@@ -276,12 +288,9 @@
 						ListItemContainer += listItem;
 					}
 					ListItemContainer += "\n</fieldset>"
-					//$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 					$("#Artgruppenliste").html(ListItemContainer).trigger("create");
-					//$("input[name='ArtGruppe']").checkboxradio();
-					//$("input[name='ArtGruppe']").checkboxradio("refresh");
 					$("input[name='ArtGruppe']").checkboxradio();
-					for(i in ArtGruppenWerte) {
+					for(i in ArtGruppenArray) {
 						$("#" + i).prop("checked",true).checkboxradio("refresh");
 					}
 				}
@@ -424,14 +433,41 @@
 	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FormElementTyp" class="select">Formularelement-Typ:</label>
-					<select class="Feldeigenschaften" id="FormElementTyp" name="FormElementTyp" value="{{FormElementTyp}}" data-native-menu="true">
-						<optio value=""></option>
-						<option value="text">text</option>
-						<option value="date">date</option>
-					</select>
+					<fieldset data-role="controlgroup">
+						<legend>Input Typ für textinput:</legend>
+							<input type="radio" name="InputTyp" id="text" value="text"/>
+	         				<label for="text">text</label>
+	         				<input type="radio" name="InputTyp" id="number" value="number"/>
+	         				<label for="number">number</label>
+	         				<input type="radio" name="InputTyp" id="date" value="date"/>
+	         				<label for="date">date</label>
+							<input type="radio" name="InputTyp" id="time" value="time"/>
+	         				<label for="time">time</label>
+	         				<input type="radio" name="InputTyp" id="datetime" value="datetime"/>
+	         				<label for="datetime">datetime</label>
+	         				<input type="radio" name="InputTyp" id="email" value="email"/>
+	         				<label for="email">email</label>
+	         				<input type="radio" name="InputTyp" id="url" value="url"/>
+	         				<label for="url">url</label>
+	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain" id="Artgruppenliste">
+				</div>
+				<div data-role="fieldcontain">
+					<label for="FeldBeschreibung">Optionen:</label>
+					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen">{{Optionen}}</textarea>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="Standardwert_FE">Standardwert:</label>
+					<input class="Feldeigenschaften" id="Standardwert_FE" name="Standardwert_FE" type="text" value="{{Standardwert}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="SliderMinimum">Slider Minimum:</label>
+					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text" value="{{SliderMinimum}}" />
+				</div>
+				<div data-role="fieldcontain">
+					<label for="SliderMaximum">Slider Maximum:</label>
+					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" value="{{SliderMaximum}}" />
 				</div>
 				<a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a>
 			</form>

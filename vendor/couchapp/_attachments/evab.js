@@ -581,11 +581,12 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, Beobachtung) {
 		FeldWert = (eval("Beobachtung." + FeldName) || "");
 		FeldBeschriftung = Feld.FeldBeschriftung;
 		Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+		InputTyp = Feld.InputTyp;
 		ListItem = "";
 		if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
 			switch(Feld.Formularelement) {
 				case "textinput": 	
-					ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert);
+					ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
 					break;
 				case "textarea":
 					ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
@@ -645,7 +646,7 @@ function generiereHtmlFuerArtname(aArtName) {
 
 //generiert den html-Inhalt für Textinputs
 //wird von erstelle_hArtEdit aufgerufen
-function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert) {
+function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
 	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
@@ -654,7 +655,9 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldName;
 	HtmlContainer += '" name="';
 	HtmlContainer += FeldName;
-	HtmlContainer += '" type="text" value="';
+	HtmlContainer += '" type="';
+	HtmlContainer += InputTyp;
+	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '"/>\n</div>';
 	return HtmlContainer;		

@@ -12,8 +12,12 @@ function(doc, req) {
 		FeldNameZdsf: doc.FeldNameZdsf,
 		FeldNameCscf: doc.FeldNameCscf,
 		Formularelement: doc.Formularelement,
-		FormElementTyp: doc.FormElementTyp,
-		ArtGruppe: doc.ArtGruppe
+		InputTyp: doc.InputTyp,
+		ArtGruppe: doc.ArtGruppe,
+		Optionen: doc.Optionen,
+		Standardwert: doc.Standardwert,
+		SliderMinimum: doc.SliderMinimum,
+		SliderMaximum: doc.SliderMaximum
 	};
 	return Mustache.to_html(this.templates.FeldEdit, stash);
 }
