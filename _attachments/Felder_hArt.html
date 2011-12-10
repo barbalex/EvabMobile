@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!'; 
+			$.mobile.defaultPageTransition  = 'none';
+		});
+    </script>	
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$db = $.couch.db("evab");
+			
+			var Pfad = "";
+			User = "";
+		
+			prüfeAnmeldung(Pfad);
+			erstelle_SichtbareFelder(aArtGruppe, User); //vom aufrufenden Formular auslösen!
+
+			//Felder speichern (checkbox)
+			$("input[name='Felder']").live("change", function() {
+				var FelderArray = [];
+				$("input[name='Felder']").each(function(id)) {
+					if ($("#" + id).prop("checked") == true) {
+						FelderArray.push(id);
+					} else {
+						var idx = FelderArray.indexOf(id);
+						if(idx!=-1) FelderArray.splice(idx, 1);
+					}
+				}
+				speichere(FelderArray);
+			});
+
+			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
+			UserId = holeUserId(User);
+
+			//Menu aufbauen
+			$("[name='Menu']").live('click', function(){
+				erstelleMenuFürFelder(this, "");
+			});
+		});
+	</script>
+	<script type="text/javascript">
+
+		//generiert dynamisch die Artgruppen-abhängigen Felder im Formular Felder_hArt.html
+		//Mitgeben: Artgruppe, User
+		function erstelle_SichtbareFelder(aArtGruppe, User) {
+			$("#Feldliste").empty();
+			$db = $.couch.db("evab");
+			//holt die Feldliste aus der DB
+			$db.view('evab/FeldListeArt', {
+				success: function(data) {
+					var FeldlisteAlle = data;
+					//Holt, welche Felder angezeigt werden sollen
+					$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+						success: function(data) {
+							var row = data.rows[0].value;
+							var SichtbareFelder = row.Felder;
+							SichtbarModusHierarchischId = row._id;
+							var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>Sichtbare Felder</legend>";
+							for(i in FeldlisteAlle) {
+								if (FeldListeAlle.Tabelle == "Art") {
+									var FeldName = FeldlisteAlle[i];
+									var ListItem = "\n\t\t\t<label for='";
+									ListItem += FeldName;
+									ListItem += "'>";
+									ListItem += FeldName;
+									ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
+									ListItem += Felder;
+									ListItem += "' id='";
+									ListItem += FeldName;
+									ListItem += "' value='";
+									ListItem += FeldName;
+									ListItem += "' class='custom'";
+									if(SichtbareFelder.indexOf(FeldName)>=0){
+										ListItem += " checked='checked'";
+									}
+									ListItem += "/>";
+									HtmlContainer += ListItem;
+								}
+							}
+							HtmlContainer += "\n\t</fieldset>\n</div>"
+							$("#Feldliste").html(HtmlContainer).trigger("create");
+							$("input[name='Felder']").checkboxradio();
+							for(i in SichtbareFelder) {
+								$("#" + i).prop("checked",true).checkboxradio("refresh");
+							}
+						}
+					});
+				}
+			});
+		}
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
+
+	function speichern(FelderArray) {
+		$db = $.couch.db("evab");
+		$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			success: function(data) {
+				var row = data.rows[0].value;
+				var SichtbarModusHierarchischId = row._id;
+				$db.openDoc(SichtbarModusHierarchischId, {
+					success: function(document) {
+						document.Typ = "SichtbarModusHierarchisch";
+						document.User = User;
+						document.Felder = FelderArray;
+						$db.saveDoc(document, {
+							success: function(data) {
+								melde("gespeichert");
+							},
+							error: function() {
+								melde("Fehler: nicht gespeichert");
+							}
+						});
+					},
+					error: function() {
+						melde("Fehler: nicht gespeichert");
+					}
+				});
+			}
+		});
+	}
+	</script>
+  </head>
+  <body>
+  	<div data-role="page" id="FeldEditPage">
+  		<div data-role="header" data-position="fixed">
+  			<a href="_shows/hArtEdit.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+  			<h2>sichtbare Felder</h2>
+  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  		</div>
+		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
+			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
+				<h2>Felder, die im hierarchischen Modus sichtbar sein sollen</h2>
+				<p></p>
+			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
+				<div data-role="fieldcontain" id="Feldliste">
+				</div>
+			</form>
+		</div>
+	</div>
+  </body>
+</html>
