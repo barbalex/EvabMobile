@@ -198,7 +198,7 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenu(this, User, UserId, "../../", ArtGruppe);
+			erstelleMenu(this, User, UserId, "../../", aArtGruppe);
 		});
 	}
 	
@@ -261,13 +261,6 @@
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
-	      		'Felder wählen': {
-			      	click: function () {
-			        	window.open(Pfad + "Felder_hArt.html?" + ArtGruppe, target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "gear"
-	      		},
 	      		'lokal installieren': {
 			      	click: function () {
 			        	window.open(Pfad + "Installieren.html", target="_self");
@@ -288,6 +281,13 @@
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
+	      		},
+	      		'sichtbare Felder wählen': {
+			      	click: function () {
+			        	window.open(Pfad + "Felder_hArt.html?ArtGruppe=" + ArtGruppe, target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
 	      		},
 	      		'schliessen': {
 	                click: function () { return true; },
