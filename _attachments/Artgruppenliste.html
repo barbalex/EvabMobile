@@ -12,6 +12,7 @@
 	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
 			$.mobile.loadingMessage = 'chrampfe!'; 
+			defaultDialogTransition = none;
 		});
     </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
@@ -42,11 +43,6 @@
 		User = "";
 		
 		prüfeAnmeldung(Pfad);
-	
-		//transitions ausschalten, weil das auf Android nativ miserabel funktioniert
-		$(document).bind("mobileinit", function(){
-			defaultDialogTransition = none;
-		});
 	}
 	
 	$(document).ready(handleDocumentReady);

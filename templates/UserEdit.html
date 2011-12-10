@@ -88,9 +88,9 @@
 
 			userCtx = null;
 			$.couch.session({
-			success : function(r) {
-				var userCtx = r.userCtx;
-				User = userCtx.name;
+				success : function(r) {
+					var userCtx = r.userCtx;
+					User = userCtx.name;
 				}
 			});
 			

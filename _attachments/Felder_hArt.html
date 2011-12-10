@@ -29,83 +29,91 @@
 			
 			var Pfad = "";
 			User = "";
+			FeldArray = [];
+
+			var ArtGruppe = get_url_param('ArtGruppe');
 		
 			prüfeAnmeldung(Pfad);
-			erstelle_SichtbareFelder(aArtGruppe, User); //vom aufrufenden Formular auslösen!
+			erstelle_sichtbareFelder(ArtGruppe, User);
+
+			//FeldArray holen, damit nur Änderungen gespeichert werden, da nicht alle Felder geladen werden
+			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
+			var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var row;
+					for(i in data.rows) {
+						row = data.rows[i].value;
+						FeldArray = row.FElder;
+					}
+				}
+			});
 
 			//Felder speichern (checkbox)
 			$("input[name='Felder']").live("change", function() {
-				var FelderArray = [];
-				$("input[name='Felder']").each(function(id)) {
-					if ($("#" + id).prop("checked") == true) {
-						FelderArray.push(id);
+					var Feld = $(this).prop("id");
+					if ($("#" + Feld).prop("checked") == true) {
+						FeldArray.push(Feld);
 					} else {
-						var idx = FelderArray.indexOf(id);
-						if(idx!=-1) FelderArray.splice(idx, 1);
+						var idx = FeldArray.indexOf(Feld);
+						if(idx!=-1) FeldArray.splice(idx, 1);
 					}
 				}
-				speichere(FelderArray);
-			});
-
-			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-			UserId = holeUserId(User);
-
-			//Menu aufbauen
-			$("[name='Menu']").live('click', function(){
-				erstelleMenuFürFelder(this, "");
+				speichern(FeldArray);
 			});
 		});
 	</script>
 	<script type="text/javascript">
 
-		//generiert dynamisch die Artgruppen-abhängigen Felder im Formular Felder_hArt.html
-		//Mitgeben: Artgruppe, User
-		function erstelle_SichtbareFelder(aArtGruppe, User) {
-			$("#Feldliste").empty();
-			$db = $.couch.db("evab");
-			//holt die Feldliste aus der DB
-			$db.view('evab/FeldListeArt', {
-				success: function(data) {
-					var FeldlisteAlle = data;
-					//Holt, welche Felder angezeigt werden sollen
-					$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
-						success: function(data) {
-							var row = data.rows[0].value;
-							var SichtbareFelder = row.Felder;
-							SichtbarModusHierarchischId = row._id;
-							var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>Sichtbare Felder</legend>";
-							for(i in FeldlisteAlle) {
-								if (FeldListeAlle.Tabelle == "Art") {
-									var FeldName = FeldlisteAlle[i];
-									var ListItem = "\n\t\t\t<label for='";
-									ListItem += FeldName;
-									ListItem += "'>";
-									ListItem += FeldName;
-									ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
-									ListItem += Felder;
-									ListItem += "' id='";
-									ListItem += FeldName;
-									ListItem += "' value='";
-									ListItem += FeldName;
-									ListItem += "' class='custom'";
-									if(SichtbareFelder.indexOf(FeldName)>=0){
-										ListItem += " checked='checked'";
-									}
-									ListItem += "/>";
-									HtmlContainer += ListItem;
+	//generiert dynamisch die Artgruppen-abhängigen Felder im Formular Felder_hArt.html
+	//Mitgeben: Artgruppe, User
+	function erstelle_sichtbareFelder(ArtGruppe, User) {
+		$("#Feldliste").empty();
+		$db = $.couch.db("evab");
+		//holt die Feldliste aus der DB
+		$db.view('evab/FeldListeArt', {
+			success: function(data) {
+				var FeldlisteAlle = data;
+				//Holt, welche Felder angezeigt werden sollen
+				$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+					success: function(data) {
+						var row = data.rows[0].value;
+						var SichtbareFelder = row.Felder;
+						SichtbarModusHierarchischId = row._id;
+						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>Sichtbare Felder</legend>";
+						for(i in FeldlisteAlle) {
+							if (FeldListeAlle.Tabelle == "Art" && FeldListeAlle.ArtGruppe.indexOf(ArtGruppe)) {
+								var FeldName = FeldlisteAlle[i];
+								var ListItem = "\n\t\t\t<label for='";
+								ListItem += FeldName;
+								ListItem += "'>";
+								ListItem += FeldName;
+								ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
+								ListItem += Felder;
+								ListItem += "' id='";
+								ListItem += FeldName;
+								ListItem += "' value='";
+								ListItem += FeldName;
+								ListItem += "' class='custom'";
+								if(SichtbareFelder.indexOf(FeldName)>=0){
+									ListItem += " checked='checked'";
 								}
-							}
-							HtmlContainer += "\n\t</fieldset>\n</div>"
-							$("#Feldliste").html(HtmlContainer).trigger("create");
-							$("input[name='Felder']").checkboxradio();
-							for(i in SichtbareFelder) {
-								$("#" + i).prop("checked",true).checkboxradio("refresh");
+								ListItem += "/>";
+								HtmlContainer += ListItem;
 							}
 						}
-					});
-				}
-			});
-		}
+						HtmlContainer += "\n\t</fieldset>\n</div>"
+						$("#Feldliste").html(HtmlContainer).trigger("create");
+						$("input[name='Felder']").checkboxradio();
+						for(i in SichtbareFelder) {
+							$("#" + i).prop("checked",true).checkboxradio("refresh");
+						}
+					}
+				});
+			}
+		});
+	}
 
 	function prüfeAnmeldung(Pfad) {		
 		//User Anmeldung überprüfen
@@ -125,7 +133,7 @@
 		});
 	}
 
-	function speichern(FelderArray) {
+	function speichern(FeldArray) {
 		$db = $.couch.db("evab");
 		$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 			success: function(data) {
@@ -135,7 +143,7 @@
 					success: function(document) {
 						document.Typ = "SichtbarModusHierarchisch";
 						document.User = User;
-						document.Felder = FelderArray;
+						document.Felder = FeldArray;
 						$db.saveDoc(document, {
 							success: function(data) {
 								melde("gespeichert");
@@ -158,14 +166,11 @@
   	<div data-role="page" id="FeldEditPage">
   		<div data-role="header" data-position="fixed">
   			<a href="_shows/hArtEdit.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
-  			<h2>sichtbare Felder</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<h2>Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
-			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
+			<form action="#" method="get">
 				<h2>Felder, die im hierarchischen Modus sichtbar sein sollen</h2>
-				<p></p>
-			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain" id="Feldliste">
 				</div>
 			</form>
