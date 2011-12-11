@@ -750,9 +750,9 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += "' id='";
 		ListItem += Option;
 		ListItem += "' value='";
-		ListItem += FeldWert;
+		ListItem += Option;
 		ListItem += "' class='custom'";
-		if(FeldWert.indexOf(Optionen)>=0){
+		if(FeldWert.indexOf(Option) >=0) {
 			ListItem += " checked='checked'";
 		}
 		ListItem += "/>";
@@ -788,9 +788,9 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += "' id='";
 		ListItem += Option;
 		ListItem += "' value='";
-		ListItem += FeldWert;
-		if(FeldWert.indexOf(Optionen)>=0){
-			ListItem += " checked='checked'";
+		ListItem += Option;
+		if(FeldWert == Option){
+			ListItem += "' checked='checked";
 		}
 		ListItem += "'/>";
 		HtmlContainer += ListItem;
@@ -825,7 +825,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 		var ListItem = "\n\t\t<option value='";
 		ListItem += Option;
 		if(FeldWert.indexOf(Optionen)>=0){
-			ListItem += " checked='checked'";
+			ListItem += " checked='checked";
 		}
 		ListItem += "'>";
 		ListItem += Option;

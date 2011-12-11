@@ -84,14 +84,18 @@
 			setzeAutor();
 		}
 
+		//Radio managen, Werte initiieren
+		//aMeldungTyp = "{{aMeldungTyp}}";
+
 		//aMeldungTyp managen (radio)
-		aMeldungTyp = "{{aMeldungTyp}}";
-		$("input[name='aMeldungTyp']").checkboxradio();
-		$("input[name='aMeldungTyp']").prop("checked",true).checkboxradio("refresh");
-		$("input[name='aMeldungTyp']").change(function() {
+		//beim Öffnen des Formulars gespeicherten Wert anzeigen
+		//$("input[name='aMeldungTyp']").checkboxradio();
+		//$("input[name='aMeldungTyp']").prop("checked",true).checkboxradio("refresh");
+		//speichern managen
+		/*$("input[name='aMeldungTyp']").live("change", function() {
 			aMeldungTyp = $(this).prop("id");
 			speichern();
-		});
+		});*/
 
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").live("click", function(event) {
@@ -308,19 +312,11 @@
 	});
 
 	function refreshArtGruppen(aArtGruppe) {
-		//$("select#aArtGruppe").selectmenu();
-		//$("select#aArtGruppe").empty();
-		//var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
-		//$("select#aArtGruppe").append(startoption);
 		$("select#aArtGruppe").val(aArtGruppe);
 		$("select#aArtGruppe").selectmenu("refresh");
 	}
 	
 	function refreshArtName(aArtName) {
-		//$("select#aArtName").selectmenu();
-		//$("select#aArtName").empty();
-		//var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
-		//$("select#aArtName").append(startoption);
 		$("select#aArtName").val(aArtName);
 		$("select#aArtName").selectmenu("refresh");
 	}
