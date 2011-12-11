@@ -32,7 +32,7 @@
   			<h2>meine Einstellungen</h2>
   		</div>
 		<div id="UserEditContent" data-role="content" data-theme="c" style="padding:0em;">
-			<form id="UserEditForm" action="#" method="get" data-identity="{{document}}"
+			<form id="UserEditForm" action="#" method="get" data-identity="{{document}}">
 				<div data-role="fieldcontain">
 					<label for="Benutzername">Benutzername:</label>
 					<input id="Benutzername" name="Benutzername" type="text" value="{{UserName}}"/>
@@ -42,21 +42,21 @@
 				<hr />
 				<div data-role="fieldcontain">
 					<label for="Autor">Autor:</label>
-					<input id="Autor" name="Autor" type="text" value="{{Autor}}" placeholder="(erforderlich)" required/>
+					<input id="Autor" name="Autor" class="Feld" type="text" value="{{Autor}}" placeholder="(erforderlich)" required/>
 					<p>Eingabe obligatorisch. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
 					<label for="Email">email-Adresse:</label>
-					<input id="Email" name="Email" type="email" value="{{Email}}" placeholder="(fakultativ)"/>
+					<input id="Email" name="Email" class="Feld" type="email" value="{{Email}}" placeholder="(fakultativ)"/>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
 				    	<legend>Ich will in diesem Modus erfassen:</legend>
-				         	<input type="radio" name="Modus" id="einfach" value="einfach" />
+				         	<input type="radio" name="Modus" class="Feld" id="einfach" value="einfach" />
 				         	<label for="einfach">einfach</label>
-				         	<input type="radio" name="Modus" id="hierarchisch" value="hierarchisch"/>
+				         	<input type="radio" name="Modus" class="Feld" id="hierarchisch" value="hierarchisch"/>
 				         	<label for="hierarchisch">hierarchisch</label>
 				    </fieldset>
 				</div>
@@ -65,11 +65,11 @@
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  />
+				         	<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber"  />
 				         	<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
-				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
+				         	<input type="radio" name="Datenverwendung" class="Feld" id="Ja" value="Ja"  />
 				         	<label for="Ja">ja, ohne Einschränkung</label>
-				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein" />
+				         	<input type="radio" name="Datenverwendung" class="Feld" id="Nein" value="Nein" />
 				         	<label for="Nein">nein</label>
 				    </fieldset>
 				</div>
@@ -110,49 +110,32 @@
 			$('#Benutzername').textinput('disable');
 
 			//Modus managen
-			var Modus = "{{Modus}}";
 			$("input[name='Modus']").checkboxradio();
 			$("#{{Modus}}").prop("checked",true).checkboxradio("refresh");
-			$("input[name='Modus']").change(function(){
-				Modus = $(this).prop("id");
-				speichern(Modus);
-			});
 
 			//Datenverwendung managen
-			Datenverwendung = "{{Datenverwendung}}";
 			$("input[name='Datenverwendung']").checkboxradio();
 			$("#{{Datenverwendung}}").prop("checked",true).checkboxradio("refresh");
-			$("input[name='Datenverwendung']").change(function(){
-				Datenverwendung = $(this).prop("id");
-				speichern(Modus);
-			});
 
 			//jedes Feld bei Änderung speichern
-			//Modus und Datenverwendung wurden oben gespeichert
-			$("#Autor").change(function(){
-				speichern(Modus);
-			});
-			$("#Email").change(function(){
-				speichern(Modus);
+			$(".Feld").change(function(){
+				speichern();
 			});
 		});
 	</script>
 	<script type="text/javascript">
-
-		function speichern(Modus) {
+		//Objekt heisst Userr weil Variable User schon verwendet wird
+		function speichern() {
 			if ($("input#Autor").val() == ""){
 				melde("Bitte Autor eingeben");
 				return;
 			}
 			var Userr = {};
-			var docId = "{{id}}";
 			Userr = $("#UserEditForm").serializeObject();
 			Userr.Typ = "User";
 			Userr.UserName = "{{UserName}}";
-			Userr._id = docId;
-			Userr.Modus = Modus;
-			Userr.Datenverwendung = Datenverwendung;
-			$db.openDoc(docId, {
+			Userr._id = "{{id}}";
+			$db.openDoc("{{id}}", {
 				success: function(doc) {
 					Userr._rev = doc._rev;
 					$db.saveDoc(Userr, {

@@ -40,14 +40,14 @@
 			//noch nicht aktive Felder deaktivieren
 			$('#SichtbarModusEinfach').textinput();
 			$('#SichtbarModusEinfach').textinput('disable');
-			$('#Standardwert').textinput();
-			$('#Standardwert').textinput('disable');
+			$('#Standardwert_ME').textinput();
+			$('#Standardwert_ME').textinput('disable');
 
-			//Radio managen, Werte initiieren
+			/*//Radio managen, Werte initiieren
 			var TabelleWert = "{{Tabelle}}";
 			var FormularelementWert = "{{Formularelement}}";
 			var InputTypWert = "{{InputTyp}}";
-			var OptionenArray = new Array("{{Optionen}}");
+			var OptionenArray = new Array("{{Optionen}}");*/
 
 			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
@@ -65,47 +65,17 @@
 				}
 			});
 			
-			//Tabelle managen (radio)
+			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
 			$("input[name='Tabelle']").checkboxradio();
-			$("#" + TabelleWert).prop("checked",true).checkboxradio("refresh");
-			$("input[name='Tabelle']").change(function() {
-				TabelleWert = $(this).prop("id");
-				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
-			});
-
-			//ArtGruppe managen (checkbox)
-			$("input[name='ArtGruppe']").live("change", function() {
-				var FeldId = $(this).prop("id");
-				if ($("#" + FeldId).prop("checked") == true) {
-					ArtGruppenArray.push(FeldId);
-				} else {
-					var idx = ArtGruppenArray.indexOf(FeldId);
-					if(idx!=-1) ArtGruppenArray.splice(idx, 1);
-				}
-				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
-			});
-
-			//Formularelement managen (radio)
-			FormularelementWert = "{{Formularelement}}";
+			$("#{{Tabelle}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='Formularelement']").checkboxradio();
-			$("#" + FormularelementWert).prop("checked",true).checkboxradio("refresh");
-			$("input[name='Formularelement']").change(function() {
-				FormularelementWert = $(this).prop("id");
-				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
-			});
-
-			//InputTyp managen (radio)
-			InputTypWert = "{{InputTyp}}";
+			$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='InputTyp']").checkboxradio();
-			$("#" + InputTypWert).prop("checked",true).checkboxradio("refresh");
-			$("input[name='InputTyp']").change(function() {
-				InputTypWert = $(this).prop("id");
-				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
-			});
+			$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
-			$(".Feldeigenschaften").change(function() {
-				speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert);
+			$(".Feldeigenschaften").live("change", function() {
+				speichereFeldeigenschaften();
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -204,29 +174,23 @@
 			});
 		}
 
-		function speichereFeldeigenschaften(TabelleWert, ArtGruppenArray, FormularelementWert, InputTypWert) {
+		function speichereFeldeigenschaften() {
 			$db = $.couch.db("evab");
-			var docId = "{{id}}";
-				$db.openDoc(docId, {
-					success: function(document) {
-						document.Typ = "Feld";
-						document.User = User;
-						document.Tabelle = TabelleWert;
-						document.FeldName = $("input#FeldName").val();
-						document.FeldBeschriftung = $("input#FeldBeschriftung").val();
-						document.FeldBeschreibung = $("[id$='FeldBeschreibung']").val();						
-						document.Reihenfolge = parseInt($("input#Reihenfolge").val());
-						document.FeldNameEvab = $("input#FeldNameEvab").val();
-						document.FeldNameZdsf = $("input#FeldNameZdsf").val();
-						document.FeldNameCscf = $("input#FeldNameCscf").val();
-						document.Formularelement = FormularelementWert;
-						document.InputTyp = InputTypWert;
-						document.ArtGruppe = ArtGruppenArray;
-						document.Optionen = new Array($("[id$='Optionen']").val());
-						document.Standardwert = $("input#Standardwert_FE").val();
-						document.SliderMinimum = $("input#SliderMinimum").val();
-						document.SliderMaximum = $("input#SliderMaximum").val();
-						saveDocument(document);
+			var Feld = $("#FeldEditForm").serializeObject();
+			Feld.Typ = "Feld";
+			Feld.User = User;
+			Feld._id = "{{id}}";
+				$db.openDoc("{{id}}", {
+					success: function(doc) {
+						Feld._rev = doc._rev;
+						$db.saveDoc(Feld, {
+							success: function() {
+								melde("Feld gespeichert");
+							},
+							error: function() {
+								melde("Fehler: Feld nicht gespeichert");
+							}
+						});
 					},
 					error: function() {
 						melde("Fehler: Feld nicht gespeichert");
@@ -234,24 +198,12 @@
 				});
 		}
 
-		function saveDocument(document) {
-			$db = $.couch.db("evab");
-			$db.saveDoc(document, {
-				success: function() {
-					melde("Feld gespeichert");
-				},
-				error: function() {
-					melde("Fehler: Feld nicht gespeichert");
-				}
-			});
-		}
-
 		function speichereMeineEinstellungen() {
 			$db = $.couch.db("evab");
 			var Typ = "UserFeldEinstellung";
 			var FeldName = "{{FeldName}}";
 			var SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-			var Standardwert = $("input#Standardwert").val();
+			var Standardwert = $("input#Standardwert_ME").val();
 			if (UserFeldDocId != 0) {
 				$db.openDoc(UserFeldDocId, {
 					success: function(document) {
@@ -358,14 +310,14 @@
 					var listItem;
 					for(i in data.rows) {
 						ArtGruppe = data.rows[i].key;
-						listItem = "<input type='checkbox' class='Feldeigenschaften' name='ArtGruppe' id='";
+						listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
 						listItem += ArtGruppe;
-						listItem += "'";
-						listItem += " class='custom'";
+						listItem += "' value='";
+						listItem += ArtGruppe;
 						if(ArtGruppenArray.indexOf(ArtGruppe)!=-1) {
-							listItem += " checked='checked'";
+							listItem += "' checked='checked";
 						}
-						listItem += "/>\n<label for='";
+						listItem += "'/>\n<label for='";
 						listItem += ArtGruppe;
 						listItem += "'>";
 						listItem += ArtGruppe;
@@ -373,11 +325,7 @@
 						ListItemContainer += listItem;
 					}
 					ListItemContainer += "\n</fieldset>"
-					$("#Artgruppenliste").html(ListItemContainer).trigger("create");
-					$("input[name='ArtGruppe']").checkboxradio();
-					for(i in ArtGruppenArray) {
-						$("#" + i).prop("checked",true).checkboxradio("refresh");
-					}
+					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 				}
 			});
 		}
@@ -448,8 +396,8 @@
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Standardwert">Standardwert:</label>
-					<input class="MeineEinstellungen" id="Standardwert" name="Standardwert" type="text" />
+					<label for="Standardwert_ME">Standardwert:</label>
+					<input class="MeineEinstellungen" id="Standardwert_ME" name="Standardwert_ME" type="text" />
 				</div>
 			</form>
 			<p>Hier wird für Sie gebaut: Die ausgeblendeten Felder werden später aktiviert.</p>
@@ -459,15 +407,15 @@
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Tabelle:</legend>
-							<input type="radio" name="Tabelle" id="Projekt" value="Projekt"/>
+							<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
 	         				<label for="Projekt">Projekt</label>
-	         				<input type="radio" name="Tabelle" id="Raum" value="Raum"/>
+	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Raum" value="Raum"/>
 	         				<label for="Raum">Raum</label>
-	         				<input type="radio" name="Tabelle" id="Ort" value="Ort"/>
+	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Ort" value="Ort"/>
 	         				<label for="Ort">Ort</label>
-	         				<input type="radio" name="Tabelle" id="Zeit" value="Zeit"/>
+	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
 	         				<label for="Zeit">Zeit</label>
-							<input type="radio" name="Tabelle" id="Art" value="Art"/>
+							<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Art" value="Art"/>
 	         				<label for="Art">Art</label>
 	         		</fieldset>
 				</div>
@@ -502,38 +450,38 @@
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Formularelement:</legend>
-							<input type="radio" name="Formularelement" id="textinput" value="textinput"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput"/>
 	         				<label for="textinput">textinput</label>
-	         				<input type="radio" name="Formularelement" id="textarea" value="textarea"/>
+	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
 	         				<label for="textarea">textarea</label>
-	         				<input type="radio" name="Formularelement" id="toggleswitch" value="toggleswitch"/>
+	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch"/>
 	         				<label for="toggleswitch">toggleswitch</label>
-	         				<input type="radio" name="Formularelement" id="slider" value="slider"/>
+	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider"/>
 	         				<label for="slider">slider</label>
-							<input type="radio" name="Formularelement" id="selectmenu" value="selectmenu"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu"/>
 	         				<label for="selectmenu">selectmenu</label>
-	         				<input type="radio" name="Formularelement" id="radio" value="radio"/>
+	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio"/>
 	         				<label for="radio">radio</label>
-							<input type="radio" name="Formularelement" id="checkbox" value="checkbox"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="checkbox" value="checkbox"/>
 	         				<label for="checkbox">checkbox</label>
 	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Input Typ für textinput:</legend>
-							<input type="radio" name="InputTyp" id="text" value="text"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text"/>
 	         				<label for="text">text</label>
-	         				<input type="radio" name="InputTyp" id="number" value="number"/>
+	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number"/>
 	         				<label for="number">number</label>
-	         				<input type="radio" name="InputTyp" id="date" value="date"/>
+	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="date" value="date"/>
 	         				<label for="date">date</label>
-							<input type="radio" name="InputTyp" id="time" value="time"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="time" value="time"/>
 	         				<label for="time">time</label>
-	         				<input type="radio" name="InputTyp" id="datetime" value="datetime"/>
+	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="datetime" value="datetime"/>
 	         				<label for="datetime">datetime</label>
-	         				<input type="radio" name="InputTyp" id="email" value="email"/>
+	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="email" value="email"/>
 	         				<label for="email">email</label>
-	         				<input type="radio" name="InputTyp" id="url" value="url"/>
+	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="url" value="url"/>
 	         				<label for="url">url</label>
 	         		</fieldset>
 				</div>
@@ -544,8 +492,8 @@
 					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen">{{Optionen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Standardwert_FE">Standardwert:</label>
-					<input class="Feldeigenschaften" id="Standardwert_FE" name="Standardwert_FE" type="text" value="{{Standardwert}}" />
+					<label for="Standardwert">Standardwert:</label>
+					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Slider Minimum:</label>
