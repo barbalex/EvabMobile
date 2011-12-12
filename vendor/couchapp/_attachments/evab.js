@@ -835,7 +835,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-(function($) {
+/*(function($) {
     // friendly helper http://tinyurl.com/6aow6yn
     //Läuft durch alle Felder im Formular
     //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
@@ -852,6 +852,35 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	                o[this.name].push(this.value);
 	            } else {
 	                o[this.name] = this.value;
+	            }
+	   		}
+        });
+        return o;
+    };
+})(jQuery);*/
+
+(function($) {
+    // friendly helper http://tinyurl.com/6aow6yn
+    //Läuft durch alle Felder im Formular
+    //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
+    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+        	if (this.value != "") {
+	            if (o[this.name]) {
+	                if (!o[this.name].push) {
+	                    o[this.name] = [o[this.name]];
+	                }
+	                o[this.name].push(this.value);
+	            } else {
+	            	//verhindern, dass Nummern in Strings verwandelt werden
+	            	if (this.value > -999999999 && this.value < 999999999) {
+	            		o[this.name] = parseInt(this.value);
+	            	} else {
+	                	o[this.name] = this.value;
+	                }
 	            }
 	   		}
         });
