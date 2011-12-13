@@ -45,7 +45,7 @@
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
-					<input id="oName" name="oName" type="text" value="{{oName}}" required/>
+					<input id="oName" name="oName" type="text" value="{{oName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -68,7 +68,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink" name="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
@@ -98,6 +98,12 @@
 		var Pfad = "../../";
 		User = "";
 		
+		//Wenn neuer Ort, dann Koordinaten holen
+		Status = get_url_param('Status');
+		if (Status == "neu") {
+			GetGeolocation();
+		}
+		
 		prüfeAnmeldung(Pfad);
 
 		//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
@@ -119,8 +125,10 @@
 		var url = "../hOrtListe/" + "{{RaumId}}";
 		$("[name='hOrtListeLink']").attr('href', url);
 
-		//Link zum OrtNeu setzen
-		document.getElementById("hOrtNeuLink").href = "../hOrtNeu/" + "{{RaumId}}";
+		//neuen Ort erstellen
+		$("[name='hOrtNeuLink']").live('click', function(){
+			erstelleNeuenOrt(User, "{{ProjektId}}", "{{RaumId}}");
+		});
 
 		//Link zur Zeit in Navbar setzen
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
@@ -155,7 +163,8 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			var zurueck = "hOrtEdit/" + "{{id}}";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
 		//Karte managen

@@ -132,7 +132,6 @@
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").live("click", function(event){
 				event.preventDefault();
-				//$.mobile.showPageLoadingMsg(); 
 				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 				erstelleArtgruppenliste("Neu");
 			});
@@ -140,7 +139,6 @@
 			$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 				event.preventDefault();
 				var ArtGruppe = $(this).attr("id");
-				//$.mobile.showPageLoadingMsg(); 
 				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 				erstelleArtliste(ArtGruppe, "Neu", "");
 				$("#ArtgruppenListe").empty();
@@ -374,7 +372,8 @@
 
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
-				erstelleMenu(this, User, UserId, "../../");
+				var zurueck = "BeobEdit/" + "{{id}}";
+				erstelleMenu(zurueck, this, User, UserId, "../../");
 			});
 
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt

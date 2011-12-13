@@ -278,7 +278,7 @@ function setzeAutor() {
 }
 
 //Menü aufbauen. Wird aufgerufen von allen Formularen in evab/_attachments
-function erstelleMenu(thiz, User, UserId, Pfad) {
+function erstelleMenu(zurueck, thiz, User, UserId, Pfad) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
@@ -321,7 +321,7 @@ function erstelleMenu(thiz, User, UserId, Pfad) {
       		},
       		'Datenfelder verwalten': {
 		      	click: function () {
-		        	window.open(Pfad + "FeldListe.html", target="_self");
+		        	window.open(Pfad + "FeldListe.html?zurueck=" + zurueck, target="_self");
         		},
         		theme: "a",
         		icon: "grid"
@@ -336,7 +336,7 @@ function erstelleMenu(thiz, User, UserId, Pfad) {
 }
 
 //Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-function erstelleMenuHierarchisch(thiz, User, UserId, Pfad){
+function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
@@ -379,7 +379,7 @@ function erstelleMenuHierarchisch(thiz, User, UserId, Pfad){
       		},
       		'Datenfelder verwalten': {
 		      	click: function () {
-		        	window.open(Pfad + "FeldListe.html", target="_self");
+		        	window.open(Pfad + "FeldListe.html?zurueck=" + zurueck, target="_self");
         		},
         		theme: "a",
         		icon: "grid"
@@ -486,8 +486,54 @@ function erstelleNeueZeit(User, ProjektId, RaumId, OrtId) {
 			window.open("../hZeitEdit/" + data.id, target="_self");
 		},
 		error: function() {
-			melde("Fehler: neue Zeit nicht gespeichert.");
+			melde("Fehler: keine neue Zeit erstellt");
 		}
+	});
+}
+
+function erstelleNeuenOrt(User, ProjektId, RaumId) {
+	var hOrt = {};
+	hOrt.Typ = "hOrt";
+	hOrt.User = User;
+	hOrt.ProjektId = ProjektId;
+	hOrt.RaumId = RaumId;
+	$db.saveDoc(hOrt, {
+		success: function(data) {
+			window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
+		},
+		error: function() {
+			melde("Fehler: kein neuer Ort erstellt");
+		 }
+	});
+}
+
+function erstelleNeuenRaum(ProjektId) {
+	$db = $.couch.db("evab");
+	var hRaum = {};
+	hRaum.Typ = "hRaum";
+	hRaum.User = User;
+	hRaum.ProjektId = ProjektId;
+	$db.saveDoc(hRaum, {
+		success: function(data) {
+			window.open("../hRaumEdit/" + data.id, target="_self");
+		},
+		error: function() {
+			melde("Fehler: kein neuer Raum erstellt");
+		 }
+	});
+}
+
+function erstelleNeuesProjekt(Pfad) {
+	var hProjekt = {};
+	hProjekt.Typ = "hProjekt";
+	hProjekt.User = User;
+	$db.saveDoc(hProjekt, {
+		success: function(data) {
+			window.open(Pfad + "hProjektEdit/" + data.id, target="_self");
+		},
+		error: function() {
+			melde("Fehler: kein neues Projekt erstellt");
+		 }
 	});
 }
 
@@ -534,6 +580,88 @@ function Manager() {
   }
 }
 
+//generiert in hZeitEdit.html dynamisch die Artgruppen-abhängigen Felder
+//Mitgeben: id der Zeit, Artgruppe
+function erstelle_hZeitEdit(ID, aArtGruppe, User) {
+	$("#hZeitEditFormHtml").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeZeit', {
+		success: function(data) {
+			var FeldlisteAlle = data;
+			//Holt, welche Felder angezeigt werden sollen
+			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+				success: function(data) {
+					var row = data.rows[0].value;
+					var SichtbareFelder = row.Felder;
+					//Holt die Zeit mit der id "ID" aus der DB
+					$db.view('evab/ZeitenNachId?key="' + ID + '"', {
+						success: function(data) {
+							var Zeit = data.rows[0].value;
+							var HtmlContainer = generiereHtmlFuerZeitOrtEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
+							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+//generiert das Html für Formulare in hZeitEdit.html, hOrtEditForm
+//erwartet Feldliste als Objekt; Dokument(Zeit, Ort) als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerZeitOrtEditForm (Feldliste, SichtbareFelder, Dokument) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Dokument." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung;
+			Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+			InputTyp = Feld.InputTyp;
+			ListItem = "";
+			if ((FeldName != "zDatum") && (FeldName != "zZeit")) {
+				switch(Feld.Formularelement) {
+					case "textinput": 	
+						ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
+						break;
+					case "textarea":
+						ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
+						break;
+					case "toggleswitch":
+						ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+						break;
+					case "checkbox":
+						ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+					case "selectmenu":
+						ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+					case "slider":
+						SliderMinimum = Feld.SliderMinimum || 0;
+						SliderMaximum = Feld.SliderMaximum || 100;
+						ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
+						break;
+					case "radio":
+						ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+						break;
+				}
+			}
+			HtmlContainer += ListItem;
+		}
+	}
+	return HtmlContainer;
+}
+
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: id der Art, Artgruppe, Artname
 function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
@@ -566,10 +694,10 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 	});
 }
 
-//generiert das Html für das Formular in hArtEdit.html
-//erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt; HtmlContainer mit dessen aktuellen Stand
-//der HtmlContainer wird ergänzt und zurück gegeben
-function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
+//generiert das Html für Formular in hArtEdit.html
+//erwartet ArtGruppe; Feldliste als Objekt; Dokument(Beobachtung, Zeit etc.) als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Dokument) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -582,7 +710,7 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, B
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Beobachtung." + FeldName) || "");
+			FeldWert = (eval("Dokument." + FeldName) || "");
 			FeldBeschriftung = Feld.FeldBeschriftung;
 			Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
 			InputTyp = Feld.InputTyp;
@@ -620,11 +748,12 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, B
 	return HtmlContainer;
 }
 
+
 //generiert den html-Inhalt für aArtGruppe
 //wird von erstelle_hArtEdit aufgerufen
 function generiereHtmlFuerArtgruppe(aArtGruppe) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtGruppe' class='select'>Artgruppe:</label>\n\t";
-	HtmlContainer += "<select name='aArtGruppe' id='aArtGruppe' data-icon='arrow-r' data-native-menu='true' value='";
+	HtmlContainer += "<select name='aArtGruppe' id='aArtGruppe' class='speichern' data-icon='arrow-r' data-native-menu='true' value='";
 	HtmlContainer += aArtGruppe;
 	HtmlContainer += "'>\n\t\t<option value='"
 	HtmlContainer += aArtGruppe;
@@ -639,7 +768,7 @@ function generiereHtmlFuerArtgruppe(aArtGruppe) {
 //bekommt HtmlContainer, ergänzt ihn und gibt ihn zurück
 function generiereHtmlFuerArtname(aArtName) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtName' class='select'>Artname:</label>\n\t";
-	HtmlContainer += "<select name='aArtName' id='aArtName' data-icon='arrow-r' data-native-menu='true' value='";
+	HtmlContainer += "<select name='aArtName' id='aArtName' class='speichern' data-icon='arrow-r' data-native-menu='true' value='";
 	HtmlContainer += aArtName;
 	HtmlContainer += "'>\n\t\t<option value='";
 	HtmlContainer += aArtName;
@@ -662,9 +791,15 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 	HtmlContainer += FeldName;
 	HtmlContainer += '" type="';
 	HtmlContainer += InputTyp;
+	/*if (InputTyp == "date") {
+		HtmlContainer +=  '" data-role="datebox" data-options="{\'mode\': \'calbox\', \'calStartDay\': 1}';
+	}
+	if (InputTyp == "time") {
+		HtmlContainer +=  '" data-role="datebox';
+	}*/
 	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
-	HtmlContainer += '"/>\n</div>';
+	HtmlContainer += '" class="speichern"/>\n</div>';
 	return HtmlContainer;		
 }
 
@@ -675,7 +810,7 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<input x="y" type="range" name="';
+	HtmlContainer += ':</label>\n\t<input class="speichern" type="range" name="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" id="';
 	HtmlContainer += FeldName;
@@ -700,7 +835,7 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldName;
 	HtmlContainer += '" name="';
 	HtmlContainer += FeldName;
-	HtmlContainer += '">';
+	HtmlContainer += '" class="speichern">';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '</textarea>\n</div>';
 	return HtmlContainer;		
@@ -719,7 +854,7 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldName;
 	HtmlContainer += "' data-role='slider' value='";
 	HtmlContainer += FeldWert;
-	HtmlContainer += "'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
+	HtmlContainer += "' class='speichern'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
 	return HtmlContainer;
 }
 
@@ -751,7 +886,7 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += Option;
 		ListItem += "' value='";
 		ListItem += Option;
-		ListItem += "' class='custom'";
+		ListItem += "' class='custom speichern'";
 		if(FeldWert.indexOf(Option) >=0) {
 			ListItem += " checked='checked'";
 		}
@@ -783,7 +918,7 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += Option;
 		ListItem += "'>";
 		ListItem += Option;
-		ListItem += "</label>\n\t\t\t<input type='radio' name='";
+		ListItem += "</label>\n\t\t\t<input class='speichern' type='radio' name='";
 		ListItem += FeldName;
 		ListItem += "' id='";
 		ListItem += Option;
@@ -827,7 +962,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 		if(FeldWert.indexOf(Optionen)>=0){
 			ListItem += " checked='checked";
 		}
-		ListItem += "'>";
+		ListItem += "' class='speichern'>";
 		ListItem += Option;
 		ListItem += "</option>";
 		HtmlContainer += ListItem;
@@ -871,19 +1006,3 @@ function warte(ms) {
 	ms += new Date().getTime();
 	while (new Date() < ms){}
 } 
-
-function neuesFeld() {
-	$db = $.couch.db("evab");
-	var Feld = {};
-	Feld.Typ == "Feld";
-	//Feld.FeldName = "Bitte Feldnamen einfügen";
-	$db.saveDoc(Feld, {
-		success: function(data) {
-			var id = data.id;
-			window.open("../FeldEdit/" + id + "?Status=neu", target="_self");
-		},
-		error: function() {
-			melde("Fehler: Feld nicht erzeugt");
-		}
-	});
-}

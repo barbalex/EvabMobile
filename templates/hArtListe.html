@@ -85,7 +85,8 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			var zurueck = "hArtListe/" + "{{id}}";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
 		//Neue Beobachtung managen

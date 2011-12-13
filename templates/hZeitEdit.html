@@ -15,6 +15,7 @@
 			$.mobile.loadingMessage = 'chrampfe!';
 			$.mobile.defaultPageTransition  = 'none';
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false; 
 		});
     </script>
@@ -48,131 +49,14 @@
 			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
+					<input id="zDatum" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zZeit">Zeit:</label>
-					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zZeit}}"/>
+					<input id="zZeit" name="zZeit" class="speichern" type="time" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zZeit}}"/>
 				</div>
-				<div data-role="fieldcontain">
-					<label for="zGenauigkeit">Zeit Genauigkeit:</label>
-					<input id="zGenauigkeit" name="zGenauigkeit" type="text" value="{{zGenauigkeit}}"/>
-				</div>	
-				<div data-role="fieldcontain">
-					<label for="zDeckungDefinition">Deckung Definition:</label>
-					<textarea name="zDeckungDefinition" id="zDeckungDefinition">{{zDeckungDefinition}}</textarea>
-				</div>		
-				<div data-role="fieldcontain">
-					<label for="zDeckungAlgen">Deckung Algen:</label>
-					<input id="zDeckungAlgen" name="zDeckungAlgen" type="text" value="{{zDeckungAlgen}}"/>
-					</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungBäume">Deckung Bäume:</label>
-					<input id="zDeckungBäume" name="zDeckungBäume" type="text" value="{{zDeckungBäume}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungSträucher">Deckung Sträucher:</label>
-					<input id="zDeckungSträucher" name="zDeckungSträucher" type="text" value="{{zDeckungSträucher}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungKryptogamen">Deckung Kryptogamen:</label>
-					<input id="zDeckungKryptogamen" name="zDeckungKryptogamen" type="text" value="{{zDeckungKryptogamen}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungWasser">Deckung Wasser:</label>
-					<input id="zDeckungWasser" name="zDeckungWasser" type="text" value="{{zDeckungWasser}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungKräuter">Deckung Kräuter:</label>
-					<input id="zDeckungKräuter" name="zDeckungKräuter" type="text" value="{{zDeckungKräuter}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungFlechten">Deckung Flechten:</label>
-					<input id="zDeckungFlechten" name="zDeckungFlechten" type="text" value="{{zDeckungFlechten}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungStreu">Deckung Streu:</label>
-					<input id="zDeckungStreu" name="zDeckungStreu" type="text" value="{{zDeckungStreu}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungMoos">Deckung Moos:</label>
-					<input id="zDeckungMoos" name="zDeckungMoos" type="text" value="{{zDeckungMoos}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungGestein">Deckung Gestein:</label>
-					<input id="zDeckungGestein" name="zDeckungGestein" type="text" value="{{zDeckungGestein}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungBoden">Deckung Boden:</label>
-					<input id="zDeckungBoden" name="zDeckungBoden" type="text" value="{{zDeckungBoden}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zDeckungVegetation">Deckung Vegetation:</label>
-					<input id="zDeckungVegetation" name="zDeckungVegetation" type="text" value="{{zDeckungVegetation}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zBaumschichtHöheMax">Baumschicht max. Höhe cm:</label>
-					<input id="zBaumschichtHöheMax" name="zBaumschichtHöheMax" type="number" value="{{zBaumschichtHöheMax}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zBaumschichtHöheMin">Baumschicht min. Höhe cm:</label>
-					<input id="zBaumschichtHöheMin" name="zBaumschichtHöheMin" type="number" value="{{zBaumschichtHöheMin}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zBaumschichtHöheMit">Baumschicht mittlere Höhe cm:</label>
-					<input id="zBaumschichtHöheMit" name="zBaumschichtHöheMit" type="number" value="{{zBaumschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zStrauchschichtHöheMax">Strauchschicht max. Höhe cm:</label>
-					<input id="zStrauchschichtHöheMax" name="zStrauchschichtHöheMax" type="number" value="{{zStrauchschichtHöheMax}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zStrauchschichtHöheMin">Strauchschicht min. Höhe cm:</label>
-					<input id="zStrauchschichtHöheMin" name="zStrauchschichtHöheMin" type="number" value="{{zStrauchschichtHöheMin}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zStrauchschichtHöheMit">Strauchschicht mittlere Höhe cm:</label>
-					<input id="zStrauchschichtHöheMit" name="zStrauchschichtHöheMit" type="number" value="{{zStrauchschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zKrautschichtHöheMax">Krautschicht max. Höhe cm:</label>
-					<input id="zKrautschichtHöheMax" name="zKrautschichtHöheMax" type="number" value="{{zKrautschichtHöheMax}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zKrautschichtHöheMin">Krautschicht min. Höhe cm:</label>
-					<input id="zKrautschichtHöheMin" name="zKrautschichtHöheMin" type="number" value="{{zKrautschichtHöheMin}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zKrautschichtHöheMit">Krautschicht mittlere Höhe cm:</label>
-					<input id="zKrautschichtHöheMit" name="zKrautschichtHöheMit" type="number" value="{{zKrautschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zVegHöheMax">Vegetation max. Höhe cm:</label>
-					<input id="zVegHöheMax" name="zVegHöheMax" type="number" value="{{zVegHöheMax}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zVegHöheMin">Vegetation min. Höhe cm:</label>
-					<input id="zVegHöheMin" name="zVegHöheMin" type="number" value="{{zVegHöheMin}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zVegHöheMit">Vegetation mittlere Höhe cm:</label>
-					<input id="zVegHöheMit" name="zVegHöheMit" type="number" value="{{zVegHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zMoosschichtHöheMit">Moosschicht mittlere Höhe cm:</label>
-					<input id="zMoosschichtHöheMit" name="zMoosschichtHöheMit" type="number" value="{{zMoosschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zFlechtenschichtHöheMit">Flechtenschicht mittlere Höhe cm:</label>
-					<input id="zFlechtenschichtHöheMit" name="zFlechtenschichtHöheMit" type="number" value="{{zFlechtenschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zKryptogamenschichtHöheMit">Kryptogamenschicht mittlere Höhe cm:</label>
-					<input id="zKryptogamenschichtHöheMit" name="zKryptogamenschichtHöheMit" type="number" value="{{zKryptogamenschichtHöheMit}}"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="zBemerkungen">Bemerkungen:</label>
-					<textarea name="zBemerkungen" id="zBemerkungen">{{zBemerkungen}}</textarea>
+				<div id="hZeitEditFormHtml">
+
 				</div>
 			</form>
 		</div>
@@ -195,11 +79,14 @@
 
 		var Pfad = "../../";
 		User = "";
+		aArtGruppe = ""; //ArtGruppe ist hier nicht bekannt!
+		ID = "{{id}}";
 		
 		prüfeAnmeldung(Pfad);
+		erstelle_hZeitEdit(ID, aArtGruppe, User);
 
 		//Für jedes Feld bei Änderung speichern
-		$("[name^='z']").change(function() {
+		$(".speichern").live("change", function() {
 			speichern("../../");
 		});
 
@@ -254,7 +141,7 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			erstelleMenu(this, User, UserId, "../../");
 		});
 	}
 	
@@ -376,6 +263,71 @@
 				});
 			}
 		});
+	}
+
+	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
+	function erstelleMenu(thiz, User, UserId, Pfad){
+		//Code um Menü aufzubauen
+		$(thiz).simpledialog({
+			'mode' : 'bool',
+			'prompt' : 'Menü',
+	    	'buttons' : {
+			 	'einfacher Modus': {
+			      	click: function () {
+			        	window.open(Pfad + "BeobListe.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "check"
+	      		},
+	      		'neu anmelden': {
+			      	click: function () {
+			        	window.open(Pfad + "index.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "home"
+	      		},
+	      		'meine Einstellungen': {
+			      	click: function () {
+			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'lokal installieren': {
+			      	click: function () {
+			        	window.open(Pfad + "Installieren.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'Beobachtungen exportieren': {
+			      	click: function () {
+			        	window.open(Pfad + '_list/BeobExportHierarchisch/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+	        		},
+	        		theme: "a",
+	        		icon: "arrow-r"
+	      		},
+	      		'Datenfelder verwalten': {
+			      	click: function () {
+			        	window.open(Pfad + "FeldListe.html?zurueck=hZeitEdit/" + "{{id}}", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "grid"
+	      		},
+	      		'sichtbare Felder wählen': {
+			      	click: function () {
+			        	window.open(Pfad + "Felder_hZeit.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'schliessen': {
+	                click: function () { return true; },
+	                icon: "back",
+	                theme: "c"
+	            }
+	    	}
+	  	})
 	}
   </script>
 </html>

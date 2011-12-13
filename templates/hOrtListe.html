@@ -48,7 +48,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink">neuer Ort</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink" name="hOrtNeuLink">neuer Ort</a></li>
 					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
 				</ul>
 			</div>
@@ -87,8 +87,10 @@
 		var url = "../hRaumEdit/" + "{{id}}";
 		$("[name='hRaumLink']").attr('href', url);
 
-		//Link zum OrtNeu in Navbar setzen
-		document.getElementById("hOrtNeuLink").href = "../hOrtNeu/" + "{{id}}";
+		//neuen Ort erstellen
+		$("[name='hOrtNeuLink']").live('click', function(){
+			erstelleNeuenOrt(User, "{{ProjektId}}", "{{id}}");
+		});
 
 		//Link zur OrtListe in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
@@ -98,7 +100,8 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function(){
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			var zurueck = "hOrtListe/" + "{{id}}";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
 		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
@@ -238,8 +241,7 @@
 				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
-					var url = "../hOrtNeu/" + "{{id}}";
-					ListItemContainer = '<li><a href="' + url + '" data-transition="slideup" rel="external">Ersten Ort erfassen</a></li>';
+					ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hOrtNeuLink">Ersten Ort erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;

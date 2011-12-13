@@ -41,7 +41,7 @@
 			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
-					<input id="pName" name="pName" type="text" value="{{pName}}" required/>
+					<input id="pName" name="pName" type="text" value="{{pName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="pBemerkungen">Bemerkungen:</label>
@@ -52,7 +52,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="../../hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active">neu</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" name="hProjektNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -108,7 +108,13 @@
 
 		//Menu aufbauen
 		$('#Menu').live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			var zurueck = "hProjektEdit/" + "{{id}}";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
+		});
+
+		//neues Projekt erstellen
+		$("[name='hProjektNeuLink']").live("click", function() {
+			erstelleNeuesProjekt("../../");
 		});
 	}
 	

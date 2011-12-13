@@ -43,12 +43,6 @@
 			$('#Standardwert_ME').textinput();
 			$('#Standardwert_ME').textinput('disable');
 
-			/*//Radio managen, Werte initiieren
-			var TabelleWert = "{{Tabelle}}";
-			var FormularelementWert = "{{Formularelement}}";
-			var InputTypWert = "{{InputTyp}}";
-			var OptionenArray = new Array("{{Optionen}}");*/
-
 			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
 			var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
@@ -122,12 +116,13 @@
 
 			//BackButton steuern
 			$("[name='BackButton']").live('click', function(){
+				var zurueck = get_url_param("zurueck");
 				var Status = get_url_param("Status");
 				if (Status == "neu"){
-					window.open("../../FeldListe.html", target="_self");
+					window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 				} else {
 					//$.mobile.changePage("../../FeldListe.html", {reloadPage: true});
-					window.open("../../FeldListe.html", target="_self");
+					window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 				}
 			});
 		});
@@ -379,6 +374,22 @@
 					window.open(Pfad + "index.html", target="_self");
 				}
 		    }
+		});
+	}
+
+	function neuesFeld() {
+		$db = $.couch.db("evab");
+		var Feld = {};
+		Feld.Typ == "Feld";
+		$db.saveDoc(Feld, {
+			success: function(data) {
+				var id = data.id;
+				var zurueck = get_url_param("zurueck");
+				window.open("../FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
+			},
+			error: function() {
+				melde("Fehler: Feld nicht erzeugt");
+			}
 		});
 	}
 	</script>

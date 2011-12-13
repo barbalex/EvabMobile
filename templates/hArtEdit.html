@@ -134,7 +134,7 @@
 
 		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
 		//aMeldungTyp ist oben schon gemacht
-		$("*").live("change", function() {
+		$(".speichern").live("change", function() {
 			//warte(300);   
 			//anders lösen - warte blockiert CPU!
 			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird
@@ -268,7 +268,7 @@
 	      		},
 	      		'Datenfelder verwalten': {
 			      	click: function () {
-			        	window.open(Pfad + "FeldListe.html", target="_self");
+			        	window.open(Pfad + "FeldListe.html?zurueck=hArtEdit/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "grid"

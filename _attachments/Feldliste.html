@@ -27,7 +27,7 @@
   <body>
   	<div data-role="page" id="FeldListePage">
   		<div id="FeldListePageHeader" data-role="header" data-position="fixed">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
+  			<a href="#" name="FeldListeBackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="FeldListePageTitel">Felder</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
@@ -44,6 +44,7 @@
 		IsAdmin = "nichts";
 		User = "";
 		var Pfad = "";
+		var zurueck = get_url_param('zurueck');
 		
 		prüfeAnmeldung(Pfad);
 		
@@ -80,10 +81,11 @@
 					var FeldNameCscf = Feld.FeldNameCscf;
 					var ArtGruppe = Feld.ArtGruppe;
 					ImageLink = "Hierarchiebilder/" + Tabelle + ".png";
+					var zurueck = get_url_param('zurueck');
 					if (IsAdmin == false) {
-						externalPage = "_show/FeldRead/" + Feld._id;
+						externalPage = "_show/FeldRead/" + Feld._id + "?zurueck=" + zurueck;
 					} else {
-						externalPage = "_show/FeldEdit/" + Feld._id;
+						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
 					}
 					ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 						"<a href='" + externalPage + "' rel='external'>" +
@@ -105,6 +107,16 @@
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function(){
 			erstelleMenuFürFelder(this, "");
+		});
+
+		//BackButton steuern
+		$("[name='FeldListeBackButton']").live('click', function(){
+			var zurueck = get_url_param('zurueck');
+			if (zurueck == "BeobListe.html" || zurueck == "hProjektListe.html" || zurueck == "hProjektNeu.html"){
+				window.open(zurueck, target="_self");
+			} else {
+				window.open("_show/" + zurueck, target="_self");
+			}
 		});
 	}
 	

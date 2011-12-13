@@ -87,7 +87,8 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "../../");
+			var zurueck = "hZeitListe/" + "{{id}}";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 	}
 	

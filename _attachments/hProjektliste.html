@@ -35,7 +35,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="hProjektNeu.html" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" >neues Projekt</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" name="hProjektNeuLink" class="ui-btn-active" >neues Projekt</a></li>
 				</ul>
 			</div>
 		</div>
@@ -58,7 +58,13 @@
 
 		//Menu aufbauen
 		$('#Menu').live('click', function() {
-			erstelleMenuHierarchisch(this, User, UserId, "");
+			var zurueck = "hProjektListe.html";
+			erstelleMenuHierarchisch(zurueck, this, User, UserId, "");
+		});
+
+		//neues Projekt erstellen
+		$("[name='hProjektNeuLink']").live("click", function() {
+			erstelleNeuesProjekt("_show/");
 		});
 	}
 	
@@ -105,7 +111,7 @@
 				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 				if (anzProj == 0) {
-					ListItemContainer = "<li><a href='hProjektNeu.html' data-transition='slideup' rel='external'>Erstes Projekt erfassen</a></li>";
+					ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink'>Erstes Projekt erfassen</a></li>";
 				} else {
 					for(i in data.rows) {               //Liste aufbauen
 						Proj = data.rows[i].value;
