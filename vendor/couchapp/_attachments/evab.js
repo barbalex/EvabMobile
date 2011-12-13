@@ -835,30 +835,6 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-/*(function($) {
-    // friendly helper http://tinyurl.com/6aow6yn
-    //Läuft durch alle Felder im Formular
-    //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
-    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-    $.fn.serializeObject = function() {
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function() {
-        	if (this.value != "") {
-	            if (o[this.name]) {
-	                if (!o[this.name].push) {
-	                    o[this.name] = [o[this.name]];
-	                }
-	                o[this.name].push(this.value);
-	            } else {
-	                o[this.name] = this.value;
-	            }
-	   		}
-        });
-        return o;
-    };
-})(jQuery);*/
-
 (function($) {
     // friendly helper http://tinyurl.com/6aow6yn
     //Läuft durch alle Felder im Formular
@@ -895,3 +871,19 @@ function warte(ms) {
 	ms += new Date().getTime();
 	while (new Date() < ms){}
 } 
+
+function neuesFeld() {
+	$db = $.couch.db("evab");
+	var Feld = {};
+	Feld.Typ == "Feld";
+	//Feld.FeldName = "Bitte Feldnamen einfügen";
+	$db.saveDoc(Feld, {
+		success: function(data) {
+			var id = data.id;
+			window.open("../FeldEdit/" + id + "?Status=neu", target="_self");
+		},
+		error: function() {
+			melde("Fehler: Feld nicht erzeugt");
+		}
+	});
+}

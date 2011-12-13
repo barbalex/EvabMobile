@@ -134,7 +134,7 @@
 
 		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
 		//aMeldungTyp ist oben schon gemacht
-		$("[name^='a']").live("change", function() {
+		$("*").live("change", function() {
 			//warte(300);   
 			//anders lösen - warte blockiert CPU!
 			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird

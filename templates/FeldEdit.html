@@ -98,7 +98,7 @@
 					 	'ja': {
 					      	click: function () {
 					        	$('#dialogoutput').text('ja');
-					        	löscheFeld();
+					        	löscheFeld(Pfad);
 			        		},
 			        		icon: "delete",
 			        		theme: "c"
@@ -118,6 +118,17 @@
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
 				erstelleMenuFürFelder(this, "../../");
+			});
+
+			//BackButton steuern
+			$("[name='BackButton']").live('click', function(){
+				var Status = get_url_param("Status");
+				if (Status == "neu"){
+					window.open("../../FeldListe.html", target="_self");
+				} else {
+					//$.mobile.changePage("../../FeldListe.html", {reloadPage: true});
+					window.open("../../FeldListe.html", target="_self");
+				}
 			});
 		});
 	</script>
@@ -178,7 +189,6 @@
 			$db = $.couch.db("evab");
 			var Feld = $("#FeldEditForm").serializeObject();
 			Feld.Typ = "Feld";
-			Feld.User = User;
 			Feld._id = "{{id}}";
 				$db.openDoc("{{id}}", {
 					success: function(doc) {
@@ -298,7 +308,7 @@
 			});
 		}
 		
-		function ArtGruppeAufbauen(ArtGruppenArray) {
+		function ArtGruppeAufbauen(ArtGruppenArrayIn) {
 			$db = $.couch.db("evab");
 			$("select#ArtGruppe").empty();
 			var viewname = "evab/Artgruppen";
@@ -308,6 +318,7 @@
 					var ArtGruppe;
 					var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
 					var listItem;
+					var ArtGruppenArray = ArtGruppenArrayIn || [];
 					for(i in data.rows) {
 						ArtGruppe = data.rows[i].key;
 						listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
@@ -330,7 +341,7 @@
 			});
 		}
 
-		function löscheFeld(event) {
+		function löscheFeld(Pfad) {
 			var docId = "{{id}}";
 			// First open doc based on ID in order to get full document
 			$db.openDoc(docId, {
@@ -338,6 +349,7 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
+							//var Pfad = Pfad || "../../";
 							window.open(Pfad + "FeldListe.html", target = '_self');
 						},
 						error: function() {
@@ -374,7 +386,7 @@
   <body>
   	<div data-role="page" id="FeldEditPage">
   		<div data-role="header" data-position="fixed">
-  			<a href="../../FeldListe.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+  			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2>Datenfelder</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
@@ -503,9 +515,17 @@
 					<label for="SliderMaximum">Slider Maximum:</label>
 					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" value="{{SliderMaximum}}" />
 				</div>
-				<a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a>
+				
 			</form>
 		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus">neu</a></li>			
+					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
 	</div>
   </body>
 </html>
