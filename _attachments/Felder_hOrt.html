@@ -83,7 +83,7 @@
 						for (i in data.rows) {
 							var Feld = data.rows[i].value;
 							var FeldName = Feld.FeldName;
-							if ((Feld.Tabelle == "Ort") && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord")) {
+							if ((Feld.Tabelle == "Ort") && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 								anzFelder += 1;
 								var FeldBeschriftung = Feld.FeldBeschriftung;
 								var ListItem = "\n\t\t\<label for='";

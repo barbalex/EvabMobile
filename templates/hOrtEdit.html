@@ -55,6 +55,10 @@
 					<label for="oYKoord">Y-Koordinate:</label>
 					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
 				</div>
+				<div data-role="fieldcontain">
+					<label for="oLagegenauigkeit">Lage Genauigkeit (Text):</label>
+					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
+				</div>
 				<div id="hOrtEditFormHtml">
 
 				</div>
@@ -509,6 +513,7 @@
 				hOrt._rev = doc._rev;
 				$db.saveDoc(hOrt, {
 					success: function() {
+						Status = "";
 						if (Meldung && Meldung != "KeineMeldung") {
 							melde(Meldung);
 						}

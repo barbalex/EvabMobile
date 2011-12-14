@@ -246,6 +246,7 @@ function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, 
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 	var doc = {};
+	doc.aAutor = setzeAutor();
 	doc.Typ = "hArt";
 	doc.User = User;
 	doc.ProjektId = ProjektId;
@@ -256,23 +257,32 @@ function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, 
 	doc.aArtName = aArtName;
 	doc.aArtId = aArtId;
 	doc.aMeldungTyp = "Feldbeobachtung";
-	$db.saveDoc(doc, {
+	return $db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
-			window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
-		},
-		error: function() {
-			melde("Die Art konnte nicht gespeichert werden.");
+			var User;
+			User = data.rows[0].value;
+			doc.aAutor = User.Autor;
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
+				},
+				error: function() {
+					melde("Die Art konnte nicht gespeichert werden.");
+				}
+			});
 		}
 	});
 }
 
 function setzeAutor() {
-	$db.view('evab/User?key="' + User + '"', {
+	var aAutor = "";
+	return $db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			var doc;
 			doc = data.rows[0].value;
-			var aAutor = doc.Autor;
+			aAutor = doc.Autor;
 			$("input#aAutor").val(aAutor);
+			return aAutor;
 		}
 	});
 }
@@ -628,7 +638,7 @@ function generiereHtmlFuerOrtEditForm (Feldliste, SichtbareFelder, Ort) {
 			FeldBeschriftung = Feld.FeldBeschriftung;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
-			if ((FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord")) {
+			if ((FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
 		}
@@ -999,7 +1009,7 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 //wird von generiereHtmlFuerSelectmenu aufgerufen
 function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	var i;
-	var HtmlContainer = "\n\t\t<option value=''>Kein Eintrag</option>";
+	var HtmlContainer = "\n\t\t<option value=''></option>";
 	for(i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t<option value='";
@@ -1021,7 +1031,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 //FeldWert ist ein Array
 function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	var i;
-	var HtmlContainer = "\n\t\t<option value=''>Kein Eintrag</option>";
+	var HtmlContainer = "\n\t\t<option value=''></option>";
 	for(i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t<option value='";
