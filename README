@@ -1,10 +1,10 @@
 AUSGANGSLAGE
-Für viele biologische Projekte ist die Verfügbarkeit von Art-Beobachtungsdaten in digitaler Form wichtig. Anspruchsvolle Auswertungen und Erfolgskontrollen sind nur möglich, wenn die Daten digital vorliegen. Fliessen digitale Daten in den nationalen Kreislauf der Schweiz (CSCF, SISF), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Für viele biologische Projekte ist die Verfügbarkeit von Art-Beobachtungsdaten in digitaler Form wichtig. Anspruchsvolle Auswertungen und Erfolgskontrollen sind nur möglich, wenn die Daten digital vorliegen. Fliessen digitale Daten in den nationalen Kreislauf der Schweiz (info flora, info fauna), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
-Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen, welche sicherstellen, dass die benötigten Informationen festgehalten werden.
+Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen.
 
 Fehlerquellen: 
-- Nicht eindeutige Bezeichnung von Arten
+- keine eindeutige Bezeichnung von Arten
 - Verwendung von nicht (mehr) offiziellen Artnamen
 - Erfassung unvollständig oder nicht gemäss den Vorgaben des Projekts
 - Nicht eindeutige Ortsbeschreibung oder ungenaues/fehlerhaftes Auslesen von Koordinaten
@@ -12,9 +12,9 @@ Fehlerquellen:
 Die Digitalisierung erfolgt später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn.
 
 Fehlerquellen: Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
-Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Massenverarbeitung. Es ist allzu menschlich, sie 1. an eine andere Person auszulagern und 2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
+Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Fleissarbeit. Es ist allzu menschlich, sie 1. an eine andere Person auszulagern und 2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
-ZIELE
+ZIELE FÜR NATURSCHUTZFACHSTELLEN
 1. Artbeobachtungen liegen vermehrt digital vor
 2. sie stehen schneller zur Verfügung
 3. ihre Datenqualität ist höher, da bedeutende Fehlerquellen ausgeschaltet wurden
@@ -28,7 +28,15 @@ PROJEKTIDEE
 - Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert werden und jederzeit synchronisiert
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
+WAS KANN DIE APP?
+- Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
+- Lokalisierung mit GPS und / oder auf dem Luftbild
+- Im Modus "hierarchisch" umfassende Aufnahmen effizient erheben
+- Jede Artgruppe hat ihre eigenen Attribute(Datenfelder)
+- Datenfelder können den eigenen Bedürfnissen angepasst werden
+- Der Benutzer bestimmt, welche Felder sichtbar sind
+- Beobachtungen und Datenfelder können exportiert werden
 
 HILFE ERWÜNSCHT
-Ich bin Biologe. Mit Access-Datenbanken habe ich viel Erfahrung, auch mit deren Programmierung mit Visual Basic. Was JavaScript, jQuery, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+Ich bin Biologe. Mit Access-Datenbanken habe ich viel Erfahrung, auch mit deren Programmierung mit Visual Basic. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Noch schlimmer: Java und Cocoa, für die Android- und iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
 
