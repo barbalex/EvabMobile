@@ -22,13 +22,14 @@ ZIELE FÜR NATURSCHUTZFACHSTELLEN
 5. die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
 
 PROJEKTIDEE
-- Eine Mobil-App ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
+- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Für die Mobil-App wird jQuery mobile und Phonegap verwendet. Damit sollte es für möglichst viele Geräte entwickelt werden können
 - Die App steht auch als Website zur Verfügung
-- Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert werden und jederzeit synchronisiert
+- Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
-WAS KANN DIE APP?
+WAS KANN DIE APP momentan?
+- Es ist erst eine WebSite
 - Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
 - Lokalisierung mit GPS und / oder auf dem Luftbild
 - Im Modus "hierarchisch" umfassende Aufnahmen effizient erheben
@@ -37,6 +38,14 @@ WAS KANN DIE APP?
 - Der Benutzer bestimmt, welche Felder sichtbar sind
 - Beobachtungen und Datenfelder können exportiert werden
 
+WIE GEHT ES WEITER? (ROADMAP)
+- Macken reduzieren
+- Tempo erhöhen
+- Datenschutz gewährleisten (das wird die grösste Knacknuss!)
+- Android- und iOS-App
+- Funktionalität erweitern (z.B. Bilder und Tonaufnahmen)
+Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab...
+
 HILFE ERWÜNSCHT
-Ich bin Biologe. Mit Access-Datenbanken habe ich viel Erfahrung, auch mit deren Programmierung mit Visual Basic. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Noch schlimmer: Java und Cocoa, für die Android- und iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Noch schlimmer sind Java und Cocoa, für die Android- und iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
 
