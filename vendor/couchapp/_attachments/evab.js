@@ -580,13 +580,13 @@ function Manager() {
   }
 }
 
-//generiert in hZeitEdit.html dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: id der Zeit, Artgruppe
-function erstelle_hZeitEdit(ID, aArtGruppe, User) {
-	$("#hZeitEditFormHtml").empty();
+//generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//Mitgeben: id des Orts, User
+function erstelle_hOrtEdit(ID, User) {
+	$("#hOrtEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeZeit', {
+	$db.view('evab/FeldListeOrt', {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen
@@ -595,11 +595,11 @@ function erstelle_hZeitEdit(ID, aArtGruppe, User) {
 					var row = data.rows[0].value;
 					var SichtbareFelder = row.Felder;
 					//Holt die Zeit mit der id "ID" aus der DB
-					$db.view('evab/ZeitenNachId?key="' + ID + '"', {
+					$db.view('evab/hOrteNachId?key="' + ID + '"', {
 						success: function(data) {
-							var Zeit = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerZeitOrtEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
-							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+							var Ort = data.rows[0].value;
+							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
+							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						}
 					});
 				}
@@ -608,10 +608,10 @@ function erstelle_hZeitEdit(ID, aArtGruppe, User) {
 	});
 }
 
-//generiert das Html für Formulare in hZeitEdit.html, hOrtEditForm
-//erwartet Feldliste als Objekt; Dokument(Zeit, Ort) als Objekt
+//generiert das Html für das Formular in hOrtEdit.html
+//erwartet Feldliste als Objekt; Ort als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitOrtEditForm (Feldliste, SichtbareFelder, Dokument) {
+function generiereHtmlFuerOrtEditForm (Feldliste, SichtbareFelder, Ort) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -624,39 +624,69 @@ function generiereHtmlFuerZeitOrtEditForm (Feldliste, SichtbareFelder, Dokument)
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Dokument." + FeldName) || "");
+			FeldWert = (eval("Ort." + FeldName) || "");
 			FeldBeschriftung = Feld.FeldBeschriftung;
-			Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
-			ListItem = "";
-			if ((FeldName != "zDatum") && (FeldName != "zZeit")) {
-				switch(Feld.Formularelement) {
-					case "textinput": 	
-						ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
-						break;
-					case "textarea":
-						ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
-						break;
-					case "toggleswitch":
-						ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
-						break;
-					case "checkbox":
-						ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-					case "selectmenu":
-						ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-					case "slider":
-						SliderMinimum = Feld.SliderMinimum || 0;
-						SliderMaximum = Feld.SliderMaximum || 100;
-						ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
-						break;
-					case "radio":
-						ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-				}
+			if ((FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord")) {
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
-			HtmlContainer += ListItem;
+		}
+	}
+	return HtmlContainer;
+}
+
+//generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//Mitgeben: id der Zeit, User
+function erstelle_hZeitEdit(ID, User) {
+	$("#hZeitEditFormHtml").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeZeit', {
+		success: function(data) {
+			var FeldlisteAlle = data;
+			//Holt, welche Felder angezeigt werden sollen
+			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+				success: function(data) {
+					var row = data.rows[0].value;
+					var SichtbareFelder = row.Felder;
+					//Holt die Zeit mit der id "ID" aus der DB
+					$db.view('evab/hZeitenNachId?key="' + ID + '"', {
+						success: function(data) {
+							var Zeit = data.rows[0].value;
+							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
+							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+//generiert das Html für das Formular in hZeitEdit.html
+//erwartet Feldliste als Objekt; Zeit als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Zeit." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung;
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			InputTyp = Feld.InputTyp;
+			if (FeldName != "zDatum" && FeldName != "zZeit") {
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
+			}
 		}
 	}
 	return HtmlContainer;
@@ -695,9 +725,9 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 }
 
 //generiert das Html für Formular in hArtEdit.html
-//erwartet ArtGruppe; Feldliste als Objekt; Dokument(Beobachtung, Zeit etc.) als Objekt
+//erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Dokument) {
+function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -710,40 +740,47 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, D
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Dokument." + FeldName) || "");
+			FeldWert = (eval("Beobachtung." + FeldName) || "");
 			FeldBeschriftung = Feld.FeldBeschriftung;
-			Optionen = Feld.Optionen || ['Bitte Optionen erfassen > Feldverwaltung'];
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
-			ListItem = "";
 			if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
-				switch(Feld.Formularelement) {
-					case "textinput": 	
-						ListItem = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
-						break;
-					case "textarea":
-						ListItem = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
-						break;
-					case "toggleswitch":
-						ListItem = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
-						break;
-					case "checkbox":
-						ListItem = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-					case "selectmenu":
-						ListItem = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-					case "slider":
-						SliderMinimum = Feld.SliderMinimum || 0;
-						SliderMaximum = Feld.SliderMaximum || 100;
-						ListItem = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
-						break;
-					case "radio":
-						ListItem = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
-						break;
-				}
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
-			HtmlContainer += ListItem;
 		}
+	}
+	return HtmlContainer;
+}
+
+//generiert das Html für ein Formularelement
+//erwartet diverse Übergabewerte
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum) {
+	var HtmlContainer = "";
+	switch(Feld.Formularelement) {
+		case "textinput": 	
+			HtmlContainer = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
+			break;
+		case "textarea":
+			HtmlContainer = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
+			break;
+		case "toggleswitch":
+			HtmlContainer = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+			break;
+		case "checkbox":
+			HtmlContainer = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+			break;
+		case "selectmenu":
+			HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
+			break;
+		case "slider":
+			SliderMinimum = Feld.SliderMinimum || 0;
+			SliderMaximum = Feld.SliderMaximum || 100;
+			HtmlContainer = generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
+			break;
+		case "radio":
+			HtmlContainer = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+			break;
 	}
 	return HtmlContainer;
 }

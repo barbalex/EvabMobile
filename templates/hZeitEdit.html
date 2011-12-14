@@ -79,11 +79,9 @@
 
 		var Pfad = "../../";
 		User = "";
-		aArtGruppe = ""; //ArtGruppe ist hier nicht bekannt!
-		ID = "{{id}}";
 		
 		prüfeAnmeldung(Pfad);
-		erstelle_hZeitEdit(ID, aArtGruppe, User);
+		erstelle_hZeitEdit("{{id}}", User);
 
 		//Für jedes Feld bei Änderung speichern
 		$(".speichern").live("change", function() {

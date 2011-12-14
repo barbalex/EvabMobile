@@ -55,13 +55,8 @@
 					<label for="oYKoord">Y-Koordinate:</label>
 					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
 				</div>
-				<div data-role="fieldcontain">
-					<label for="oLagegenauigkeit">Lagegenauigkeit:</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="oBemerkungen">Bemerkungen:</label>
-					<textarea name="oBemerkungen" id="oBemerkungen">{{oBemerkungen}}</textarea>
+				<div id="hOrtEditFormHtml">
+
 				</div>
 			</form>
 		</div>
@@ -105,13 +100,14 @@
 		}
 		
 		prüfeAnmeldung(Pfad);
+		erstelle_hOrtEdit("{{id}}", User);
 
 		//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 		oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
 		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
 		//Für jedes Feld bei Änderung speichern
-		$("[name^='o']").change(function() {
+		$(".speichern").live("change", function() {
 			speichern("KeineMeldung");
 		});
 
@@ -126,7 +122,8 @@
 		$("[name='hOrtListeLink']").attr('href', url);
 
 		//neuen Ort erstellen
-		$("[name='hOrtNeuLink']").live('click', function(){
+		$("[name='hOrtNeuLink']").live('click', function(event){
+			event.preventDefault();
 			erstelleNeuenOrt(User, "{{ProjektId}}", "{{RaumId}}");
 		});
 
@@ -163,8 +160,7 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			var zurueck = "hOrtEdit/" + "{{id}}";
-			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
+			erstelleMenu(this, User, UserId, Pfad);
 		});
 
 		//Karte managen
@@ -523,6 +519,71 @@
 				});
 			}
 		});
+	}
+
+	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
+	function erstelleMenu(thiz, User, UserId, Pfad){
+		//Code um Menü aufzubauen
+		$(thiz).simpledialog({
+			'mode' : 'bool',
+			'prompt' : 'Menü',
+	    	'buttons' : {
+			 	'einfacher Modus': {
+			      	click: function () {
+			        	window.open(Pfad + "BeobListe.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "check"
+	      		},
+	      		'neu anmelden': {
+			      	click: function () {
+			        	window.open(Pfad + "index.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "home"
+	      		},
+	      		'meine Einstellungen': {
+			      	click: function () {
+			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'lokal installieren': {
+			      	click: function () {
+			        	window.open(Pfad + "Installieren.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'Beobachtungen exportieren': {
+			      	click: function () {
+			        	window.open(Pfad + '_list/BeobExportHierarchisch/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+	        		},
+	        		theme: "a",
+	        		icon: "arrow-r"
+	      		},
+	      		'Datenfelder verwalten': {
+			      	click: function () {
+			        	window.open(Pfad + "FeldListe.html?zurueck=hOrtEdit/" + "{{id}}", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "grid"
+	      		},
+	      		'sichtbare Felder wählen': {
+			      	click: function () {
+			        	window.open(Pfad + "Felder_hOrt.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'schliessen': {
+	                click: function () { return true; },
+	                icon: "back",
+	                theme: "c"
+	            }
+	    	}
+	  	})
 	}
   </script>
 </html>
