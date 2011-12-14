@@ -716,6 +716,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
 							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
 							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
+							//$("#oLebensraumDelarze").selectmenu('refresh');
 						}
 					});
 				}
@@ -771,7 +772,10 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 			HtmlContainer = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
 			break;
 		case "selectmenu":
-			HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen);
+			HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect");
+			break;
+		case "multipleselect":
+			HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect");
 			break;
 		case "slider":
 			SliderMinimum = Feld.SliderMinimum || 0;
@@ -828,12 +832,6 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 	HtmlContainer += FeldName;
 	HtmlContainer += '" type="';
 	HtmlContainer += InputTyp;
-	/*if (InputTyp == "date") {
-		HtmlContainer +=  '" data-role="datebox" data-options="{\'mode\': \'calbox\', \'calStartDay\': 1}';
-	}
-	if (InputTyp == "time") {
-		HtmlContainer +=  '" data-role="datebox';
-	}*/
 	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '" class="speichern"/>\n</div>';
@@ -972,7 +970,7 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 
 //generiert den html-Inhalt für Selectmenus
 //wird von erstelle_hArtEdit aufgerufen
-function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' class='select'>";
@@ -981,8 +979,18 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 	HtmlContainer += FeldName;
 	HtmlContainer += "' id='";
 	HtmlContainer += FeldName;
-	HtmlContainer += "' data-native-menu='false'>";
-	HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += "' value='";
+	HtmlContainer += FeldWert.toString();
+	HtmlContainer += "' data-native-menu='false'";
+	if(MultipleSingleSelect == "MultipleSelect"){
+		HtmlContainer += " multiple='multiple'";
+	}
+	HtmlContainer += " class='speichern'>";
+	if(MultipleSingleSelect == "MultipleSelect"){
+		HtmlContainer += generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen);
+	} else {
+		HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
+	}
 	HtmlContainer += "\n\t</select>\n</div>";
 	return HtmlContainer;	
 }
@@ -996,10 +1004,33 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t<option value='";
 		ListItem += Option;
-		if(FeldWert.indexOf(Optionen)>=0){
-			ListItem += " checked='checked";
+		ListItem += "' class='speichern'";
+		if(FeldWert == Option){
+			ListItem += " selected='selected'";
 		}
-		ListItem += "' class='speichern'>";
+		ListItem += ">";
+		ListItem += Option;
+		ListItem += "</option>";
+		HtmlContainer += ListItem;
+	}
+	return HtmlContainer;
+}
+
+//generiert den html-Inhalt für Optionen von MultipleSelect
+//wird von generiereHtmlFuerSelectmenu aufgerufen
+//FeldWert ist ein Array
+function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
+	var i;
+	var HtmlContainer = "\n\t\t<option value=''>Kein Eintrag</option>";
+	for(i in Optionen) {
+		var Option = Optionen[i];
+		var ListItem = "\n\t\t<option value='";
+		ListItem += Option;
+		ListItem += "' class='speichern'";
+		if(FeldWert.indexOf(Option)!=-1){
+			ListItem += " selected='selected'";
+		}
+		ListItem += ">";
 		ListItem += Option;
 		ListItem += "</option>";
 		HtmlContainer += ListItem;
