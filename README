@@ -28,7 +28,7 @@ PROJEKTIDEE
 - Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
-WAS KANN DIE APP momentan?
+WAS KANN DIE APP MOMENTAN?
 - Es ist erst eine WebSite
 - Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
 - Lokalisierung mit GPS und / oder auf dem Luftbild
