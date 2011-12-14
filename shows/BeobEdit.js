@@ -13,7 +13,7 @@ function(doc, req) {
 		oLatitudeDecDeg: doc.oLatitudeDecDeg,
 		oLagegenauigkeit: doc.oLagegenauigkeit,
 		zDatum: doc.zDatum,
-		zZeit: doc.zZeit
+		zUhrzeit: doc.zUhrzeit
 	};
 	return Mustache.to_html(this.templates.BeobEdit, stash);
 }

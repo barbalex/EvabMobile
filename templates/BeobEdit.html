@@ -71,8 +71,8 @@
 					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zZeit">Zeit:</label>
-					<input id="zZeit" name="zZeit" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zZeit}}" />
+					<label for="zUhrzeit">Zeit:</label>
+					<input id="zUhrzeit" name="zUhrzeit" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zUhrzeit}}" />
 				</div>
 			</form>
 		</div>
@@ -150,7 +150,7 @@
 				var ArtName = $(this).attr("ArtBezeichnung");
 				var ArtId = $(this).attr("artid");
 				var Datum = $("input#zDatum").val();
-				var Zeit = $("input#zZeit").val();
+				var Zeit = $("input#zUhrzeit").val();
 				$("#ArtenListe").empty();
 				speichereNeueBeobachtung(Pfad, User, ArtGruppe, ArtName, ArtId);
 			});
@@ -244,7 +244,7 @@
 				var aArtName = $("select#aArtName").val();
 				var aAutor = $("input#aAutor").val();
 				var zDatum = $("input#zDatum").val();
-				var zZeit = $("input#zZeit").val();
+				var zUhrzeit = $("input#zUhrzeit").val();
 				var image = "../../Artgruppenbilder/" + aArtGruppe + ".png";
 				if (verorted == true){
 					var marker = new google.maps.Marker({
@@ -264,7 +264,7 @@
 					    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
 					    '<p>Autor: ' + aAutor + '</p>'+
 					    '<p>Datum: ' + zDatum + '</p>'+
-					    '<p>Zeit: ' + zZeit + '</p>'+
+					    '<p>Zeit: ' + zUhrzeit + '</p>'+
 					    '</div>'+
 					    '</div>';
 					var infowindow = new google.maps.InfoWindow({

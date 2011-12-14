@@ -229,7 +229,7 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = aArtId;
 	doc.zDatum = erstelleNeuesDatum();          //GEHT DAS AUF MOBILGERÄTEN ZU LANGE?????????????
-	doc.zZeit = erstelleNeueUhrzeit();
+	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.saveDoc(doc, {
 		success: function(data) {
 			//$.mobile.changePage(Pfad + "_show/BeobEdit/" + data.id + "?Status=neu", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
@@ -454,7 +454,7 @@ function aktualisiereBeobListe(Pfad, User) {
 					beob = data.rows[i].value;
 					key = data.rows[i].key;
 					var Datum = beob.zDatum;
-					var Zeit = beob.zZeit;
+					var Zeit = beob.zUhrzeit;
 					var ArtGruppe = beob.aArtGruppe;
 					var ImageLink = Pfad + "Artgruppenbilder/" + ArtGruppe + ".png";
 					var ArtName = beob.aArtName;
@@ -467,7 +467,7 @@ function aktualisiereBeobListe(Pfad, User) {
 					ListItemContainer += ImageLink;
 					ListItemContainer += "\" /><h3 class=\"aArtName\">";
 					ListItemContainer += ArtName;
-					ListItemContainer += "<\/h3><p class=\"zZeit\">";
+					ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
 					ListItemContainer += Datum;
 					ListItemContainer += "&nbsp; &nbsp;";
 					ListItemContainer += Zeit;
@@ -490,7 +490,7 @@ function erstelleNeueZeit(User, ProjektId, RaumId, OrtId) {
 	doc.RaumId = RaumId;
 	doc.OrtId = OrtId;
 	doc.zDatum = erstelleNeuesDatum();
-	doc.zZeit = erstelleNeueUhrzeit();
+	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.saveDoc(doc, {
 		success: function(data) {
 			window.open("../hZeitEdit/" + data.id, target="_self");
@@ -694,7 +694,7 @@ function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
 			FeldBeschriftung = Feld.FeldBeschriftung;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
-			if (FeldName != "zDatum" && FeldName != "zZeit") {
+			if (FeldName != "zDatum" && FeldName != "zUhrzeit") {
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
 		}

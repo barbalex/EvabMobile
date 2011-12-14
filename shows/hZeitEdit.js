@@ -7,7 +7,7 @@ function(doc, req) {
 		RaumId: doc.RaumId,
 		OrtId: doc.OrtId,
 		zDatum: doc.zDatum,
-		zZeit: doc.zZeit,
+		zUhrzeit: doc.zUhrzeit,
 		zGenauigkeit: doc.zGenauigkeit,
 		zDeckungAlgen: doc.zDeckungAlgen,
 		zDeckungBäume: doc.zDeckungBäume,

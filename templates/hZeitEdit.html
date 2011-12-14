@@ -52,8 +52,8 @@
 					<input id="zDatum" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zZeit">Zeit:</label>
-					<input id="zZeit" name="zZeit" class="speichern" type="time" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zZeit}}"/>
+					<label for="zUhrzeit">Zeit:</label>
+					<input id="zUhrzeit" name="zUhrzeit" class="speichern" type="time" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zUhrzeit}}"/>
 				</div>
 				<div id="hZeitEditFormHtml">
 
@@ -234,9 +234,9 @@
 			document.getElementById("zDatum").focus();
 			return;
 		}
-		if ($("input#zZeit").val() == "") {
+		if ($("input#zUhrzeit").val() == "") {
 			melde("Bitte Zeit erfassen");
-			document.getElementById("zZeit").focus();
+			document.getElementById("zUhrzeit").focus();
 			return;
 		}
 		var hZeit = {};
