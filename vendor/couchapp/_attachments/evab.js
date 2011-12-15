@@ -604,7 +604,7 @@ function erstelle_hOrtEdit(ID, User) {
 				success: function(data) {
 					var row = data.rows[0].value;
 					var SichtbareFelder = row.Felder;
-					//Holt die Zeit mit der id "ID" aus der DB
+					//Holt den Ort mit der id "ID" aus der DB
 					$db.view('evab/hOrteNachId?key="' + ID + '"', {
 						success: function(data) {
 							var Ort = data.rows[0].value;
@@ -635,9 +635,10 @@ function generiereHtmlFuerOrtEditForm (Feldliste, SichtbareFelder, Ort) {
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
 			FeldWert = (eval("Ort." + FeldName) || "");
-			FeldBeschriftung = Feld.FeldBeschriftung;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
 			if ((FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
@@ -691,9 +692,10 @@ function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
 			FeldWert = (eval("Zeit." + FeldName) || "");
-			FeldBeschriftung = Feld.FeldBeschriftung;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
 			if (FeldName != "zDatum" && FeldName != "zUhrzeit") {
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
@@ -752,9 +754,10 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, B
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
 			FeldWert = (eval("Beobachtung." + FeldName) || "");
-			FeldBeschriftung = Feld.FeldBeschriftung;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
 			if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
 			}
