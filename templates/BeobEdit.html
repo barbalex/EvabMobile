@@ -414,27 +414,6 @@
 			$("select#aArtName").selectmenu("refresh");
 		}
 
-		function GetGeolocation(){
-			if (navigator.geolocation) { 
-	        navigator.geolocation.getCurrentPosition ( 
-	            function(position) {
-	                oLongitudeDecDeg = position.coords.longitude;
-					oLatitudeDecDeg = position.coords.latitude;
-					var oLagegenauigkeit = position.coords.accuracy;
-					$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-					var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-					var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-					$("input#oXKoord").val(x);
-					$("input#oYKoord").val(y);
-					speichern("../../", "BeobEditNichtAufrufen", "Koordinaten gespeichert");
-	            }, 
-	            function(){ 
-	                melde('Keine Positionsdaten verfügbar');
-	            },
-	        	{enableHighAccuracy: true, maximumAge: 5000, timeout: 30000}); 
-	        }
-		}
-
 		//Speichert alle Daten
 		//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
 		//BeobEditAufrufen: Bestimmt of das Formular nach dem Speichern geöffnet werden soll. 

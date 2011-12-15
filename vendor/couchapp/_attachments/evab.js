@@ -1089,3 +1089,59 @@ function warte(ms) {
 	ms += new Date().getTime();
 	while (new Date() < ms){}
 } 
+
+//Position ermitteln
+function onGeolocationSuccess(position) {
+	oLongitudeDecDeg = position.coords.longitude;
+	oLatitudeDecDeg = position.coords.latitude;
+	var oLagegenauigkeit = position.coords.accuracy;
+	var Höhe = position.coords.altitude;
+	$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+	var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+	var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+	$("input#oXKoord").val(x);
+	$("input#oYKoord").val(y);
+	if (Höhe > 0) {
+		$("input#oObergrenzeHöhe").val(position.coords.altitude);
+	}
+	speichern();
+	if (oLagegenauigkeit < 10) {
+		stopGeolocation();
+		speichern("Koordinaten gespeichert");
+	}
+}
+
+//onError Callback receives a PositionError object
+function onGeolocationError(error) {
+	melde("Keine Position erhalten" + "\n" + error.message);
+	stopGeolocation();
+}
+
+//Options: retrieve the location every 3 seconds
+watchID = null;
+function GetGeolocation() {
+	$("input#oXKoord").val("Position ermitteln...");
+	$("input#oYKoord").val("Position ermitteln...");
+	$("input#oLagegenauigkeit").val("Position ermitteln...");
+	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
+	stopGeolocationNachIntervall(30000);
+	return watchID;
+}
+
+function stopGeolocationNachIntervall(Intervall) {
+	setTimeout("stopGeolocation()", Intervall);
+}
+
+function stopGeolocation() {
+    if (watchID != null) {
+        navigator.geolocation.clearWatch(watchID);
+        watchID = null;
+        if ($("input#oXKoord").val() == "Position ermitteln...") {
+        	$("input#oXKoord").val("");
+			$("input#oYKoord").val("");
+        	$("input#oLagegenauigkeit").val("");
+        	melde("Keine Position erhalten");
+        }
+        speichern();
+    }
+}
