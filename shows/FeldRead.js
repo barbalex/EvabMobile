@@ -6,18 +6,21 @@ function(doc, req) {
 		Tabelle: doc.Tabelle,
 		FeldName: doc.FeldName,
 		FeldBeschriftung: doc.FeldBeschriftung,
-		FeldBeschreibung: doc.FeldBeschreibung,
+		FeldBeschreibung: doc.FeldBeschreibung || "-",
 		Reihenfolge: doc.Reihenfolge,		
-		FeldNameEvab: doc.FeldNameEvab,
-		FeldNameZdsf: doc.FeldNameZdsf,
-		FeldNameCscf: doc.FeldNameCscf,
-		Formularelement: doc.Formularelement,
-		InputTyp: doc.InputTyp,
-		ArtGruppe: doc.ArtGruppe,
-		Optionen: doc.Optionen,
-		Standardwert: doc.Standardwert,
-		SliderMinimum: doc.SliderMinimum,
-		SliderMaximum: doc.SliderMaximum
+		FeldNameEvab: doc.FeldNameEvab || "-",
+		FeldNameZdsf: doc.FeldNameZdsf || "-",
+		FeldNameCscf: doc.FeldNameCscf || "-",
+		FeldNameNism: doc.FeldNameNism || "-",
+		FeldNameWslPilze: doc.FeldNameWslPilze || "-",
+		FeldNameWslFlechten: doc.FeldNameWslFlechten || "-",
+		Formularelement: doc.Formularelement || "-",
+		InputTyp: doc.InputTyp || "-",
+		ArtGruppe: doc.ArtGruppe || "-",
+		Optionen: doc.Optionen || "-",
+		Standardwert: doc.Standardwert || "-",
+		SliderMinimum: doc.SliderMinimum || "-",
+		SliderMaximum: doc.SliderMaximum || "-"
 	};
 	return Mustache.to_html(this.templates.FeldRead, stash);
 }

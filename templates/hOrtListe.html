@@ -246,11 +246,10 @@
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
-						oName = Ort.oName;
 						externalPage = "../../_show/hOrtEdit/" + Ort._id;
 						listItem = "<li id=\"" + Ort._id + "\">" +
 							"<a href=\"" + externalPage + "\" rel=\"external\">" +
-							"<h3>" + oName + "<\/h3>" +
+							"<h3>" + Ort.oName + "<\/h3>" +
 							"<\/a> <\/li>";
 						ListItemContainer += listItem;
 					}

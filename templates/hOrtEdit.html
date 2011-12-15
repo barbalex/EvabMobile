@@ -45,24 +45,25 @@
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
-					<input id="oName" name="oName" type="text" value="{{oName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="oName" name="oName" class="speichern" type="text" value="{{oName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" type="text" value="{{oXKoord}}" />
+					<input id="oXKoord" name="oXKoord" class="speichern" type="text" value="{{oXKoord}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
+					<input id="oYKoord" name="oYKoord" class="speichern" type="text" value="{{oYKoord}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lage Genauigkeit (Text):</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
+					<input id="oLagegenauigkeit" name="oLagegenauigkeit" class="speichern" type="text" value="{{oLagegenauigkeit}}" />
 				</div>
 				<div id="hOrtEditFormHtml">
 
 				</div>
 			</form>
+			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">

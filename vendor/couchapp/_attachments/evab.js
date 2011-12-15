@@ -610,6 +610,7 @@ function erstelle_hOrtEdit(ID, User) {
 							var Ort = data.rows[0].value;
 							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
 							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+							$("#Hinweistext").html("");
 						}
 					});
 				}
@@ -667,6 +668,7 @@ function erstelle_hZeitEdit(ID, User) {
 							var Zeit = data.rows[0].value;
 							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
 							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+							$("#Hinweistext").html("");
 						}
 					});
 				}
@@ -728,7 +730,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
 							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
 							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
-							//$("#oLebensraumDelarze").selectmenu('refresh');
+							$("#Hinweistext").html("");
 						}
 					});
 				}

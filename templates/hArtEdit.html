@@ -49,6 +49,7 @@
 		<div data-role="content">
 			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
 			</form>
+			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -73,7 +74,6 @@
 		aArtId = "{{aArtId}}";
 		aArtGruppe = "{{aArtGruppe}}";
 		aArtName = "{{aArtName}}";
-		aArtId = "{{aArtId}}";
 		ID = "{{id}}";
 
 		prüfeAnmeldung(Pfad);
@@ -130,7 +130,6 @@
 		});
 
 		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
-		//aMeldungTyp ist oben schon gemacht
 		$(".speichern").live("change", function() {
 			//warte(300);   
 			//anders lösen - warte blockiert CPU!
