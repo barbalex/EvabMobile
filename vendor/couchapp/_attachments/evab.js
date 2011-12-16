@@ -172,9 +172,9 @@ function erstelleArtgruppenliste(Status) {
 				"<h3>" + ArtGruppe + "<\/h3>" +
 				"<\/a> <\/li>";
 			}
-			ListItemContainer += "<\/ul>";
+			//ListItemContainer += "<\/ul>";
 			$("#ArtgruppenListe").html(ListItemContainer);
-			$("#ArtgruppenListe").listview();
+			//$("#ArtgruppenListe").listview();
 			$("#ArtgruppenListe").listview("refresh");
 		}
 	});
@@ -212,7 +212,7 @@ function erstelleArtliste(ArtGruppe, Status, PfadIn) {
 			}
 			ListItemContainer += "<\/ul>";
 			$("#ArtenListe").html(ListItemContainer);
-			$("#ArtenListe").listview();
+			//$("#ArtenListe").listview();
 			$("#ArtenListe").listview("refresh");
 		}
 	});
@@ -230,25 +230,29 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 	doc.aArtId = aArtId;
 	doc.zDatum = erstelleNeuesDatum();          //GEHT DAS AUF MOBILGERÄTEN ZU LANGE?????????????
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	$db.saveDoc(doc, {
+	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
-			//$.mobile.changePage(Pfad + "_show/BeobEdit/" + data.id + "?Status=neu", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
-			window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
-			//$("#BeobEditPage").page();
-		},
-		error: function() {
-			melde("Die Beobachtung konnte nicht gespeichert werden.");
+			var User;
+			User = data.rows[0].value;
+			doc.aAutor = User.Autor;
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+				},
+				error: function() {
+					melde("Die Beobachtung konnte nicht gespeichert werden.");
+				}
+			});
 		}
 	});
 }
 
-function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, User, aArtGruppe, aArtName, aArtId) {
+function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, aArtId) {
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 	var doc = {};
-	doc.aAutor = setzeAutor();
 	doc.Typ = "hArt";
-	doc.User = User;
+	doc.User = UserName;
 	doc.ProjektId = ProjektId;
 	doc.RaumId = RaumId;
 	doc.OrtId = OrtId;
@@ -257,7 +261,7 @@ function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, 
 	doc.aArtName = aArtName;
 	doc.aArtId = aArtId;
 	doc.aMeldungTyp = "Feldbeobachtung";
-	return $db.view('evab/User?key="' + User + '"', {
+	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			var User;
 			User = data.rows[0].value;
@@ -1133,12 +1137,9 @@ function GetGeolocation() {
 	$("input#oYKoord").val("Position ermitteln...");
 	$("input#oLagegenauigkeit").val("Position ermitteln...");
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
-	stopGeolocationNachIntervall(30000);
+	//nach spätestens 30 Sekunden aufhören zu messen
+	setTimeout("stopGeolocation()", 30000);
 	return watchID;
-}
-
-function stopGeolocationNachIntervall(Intervall) {
-	setTimeout("stopGeolocation()", Intervall);
 }
 
 function stopGeolocation() {

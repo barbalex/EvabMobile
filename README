@@ -29,25 +29,36 @@ PROJEKTIDEE
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
 WAS KANN DIE APP MOMENTAN?
+Im einfachen Modus:
 - Es ist erst eine WebSite
 - Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
-- Automatische Lokalisierung durch Gerät und / oder auf dem Luftbild
-- Automatische Lokalisierung wird ab Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
-- Im Modus "hierarchisch" umfassende Aufnahmen effizient erheben
-- Jede Artgruppe hat ihre eigenen Attribute(Datenfelder)
-- Datenfelder können den eigenen Bedürfnissen angepasst werden
-- Der Benutzer bestimmt, welche Felder sichtbar sind
-- Es können unbekannte und eigene Arten erfasst werden
+  (nur die grundlegenden Attribute)
+- Automatische Lokalisierung durch Gerät
+- Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
+  Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
+- Manuelle Lokalisierung auf Luftbild / Karte
+- Darstellung aller Beobachtungen auf Luftbild / Karte
 - Beobachtungen und Datenfelder können exportiert werden
+
+Zusätzlich im hierarchischen Modus:
+- Umfassende Aufnahmen effizient erheben: 
+  Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
+- Der Benutzer bestimmt, welche Felder sichtbar sind
+- Die Datenfelder können an die eigenen Bedürfnisse angepasst werden 
+  (sie sind frei konfigurierbar! Vorläufig noch mit Einschränkungen)
+- Jede Artgruppe hat ihre eigenen Attribute (Datenfelder)
+- Es können unbekannte Arten beschrieben werden, z.B. um sie später zu bestimmen
+- Es können eigene Arten erfasst werden, welche nicht im offiziellen Index enthalten sind
+  (Spezialfälle für absolute Artspezialisten und frische Neobiotika)
 
 WIE GEHT ES WEITER? (ROADMAP)
 - Macken reduzieren
 - Tempo erhöhen
-- Datenschutz gewährleisten (das wird die grösste Knacknuss!)
+- Datenschutz gewährleisten (wird wohl die grösste Knacknuss!)
 - Android- und iOS-App
-- Funktionalität erweitern (z.B. Bilder und Tonaufnahmen)
+- Funktionalität erweitern (z.B. Bilder und Tonaufnahmen, spezifisch Neophyten erfassen)
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab...
 
 HILFE ERWÜNSCHT
-Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, bin ich aber ein blutiger Anfänger. Noch schlimmer sind Java und Cocoa, für die Android- und iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, war ich aber ein blutiger Anfänger und befinde mich in einer steilen - und schlüpfrigen - Lernkurve. Noch schlimmer sind Java/Android SDK für Android-Apps und Cocoa/Objective-C für iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
 
