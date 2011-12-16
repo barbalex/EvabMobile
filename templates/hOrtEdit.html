@@ -98,11 +98,16 @@
 		var Pfad = "../../";
 		User = "";
 		
-		//Wenn neuer Ort, dann Koordinaten holen
-		Status = get_url_param('Status');
-		if (Status == "neu") {
-			GetGeolocation();
+		//Wenn neuer Ort, dann verorten
+		//prüfen, ob Koordinate schon existiert
+		//sonst wird beim Aktualisieren der Seite nochmals verortet
+		if ($("input#oXKoord").val() == "") {
+			var Status = get_url_param('Status');
+			if (Status == "neu") {
+				GetGeolocation();
+			}
 		}
+		
 		
 		prüfeAnmeldung(Pfad);
 		erstelle_hOrtEdit("{{id}}", User);
@@ -488,12 +493,20 @@
 			hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
 			hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
 		}
+		//Verhindern, dass Infotext gespeichert wird, wenn User den Ort 
+		//vor Bendigung von GetGeolocation verlässt und während der Verortung
+		//gespeichert hat
+		if ($("input#oXKoord").val() == "Position ermitteln...") {
+			delete hOrt.oXKoord;
+			delete hOrt.oYKoord;
+			delete hOrt.oLagegenauigkeit;
+			delete hOrt.oObergrenzeHöhe;
+		}
 		$db.openDoc(docId, {
 			success: function(doc) {
 				hOrt._rev = doc._rev;
 				$db.saveDoc(hOrt, {
 					success: function() {
-						Status = "";
 						if (Meldung && Meldung != "KeineMeldung") {
 							melde(Meldung);
 						}

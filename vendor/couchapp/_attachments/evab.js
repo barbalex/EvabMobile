@@ -1092,20 +1092,29 @@ function warte(ms) {
 
 //Position ermitteln
 function onGeolocationSuccess(position) {
-	oLongitudeDecDeg = position.coords.longitude;
-	oLatitudeDecDeg = position.coords.latitude;
+	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
 	var oLagegenauigkeit = position.coords.accuracy;
-	var Höhe = position.coords.altitude;
-	$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-	var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-	var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-	$("input#oXKoord").val(x);
-	$("input#oYKoord").val(y);
-	if (Höhe > 0) {
-		$("input#oObergrenzeHöhe").val(position.coords.altitude);
+	if (oLagegenauigkeit < 100) {
+		oLongitudeDecDeg = position.coords.longitude;
+		oLatitudeDecDeg = position.coords.latitude;
+		var Höhe = position.coords.altitude;
+		$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+		var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+		var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+		$("input#oXKoord").val(x);
+		$("input#oYKoord").val(y);
+		if (Höhe > 0) {
+			$("input#oObergrenzeHöhe").val(position.coords.altitude);
+		}
+		if (oLagegenauigkeit > 30) {
+			speichern("Koordinaten gespeichert\nAchtung: nicht sehr genau\nAuf Karte verorten?");
+		} else {
+			speichern();	
+		}
+
 	}
-	speichern();
-	if (oLagegenauigkeit < 10) {
+	//Verortung abbrechen, wenn sehr genau
+	if (oLagegenauigkeit < 5) {
 		stopGeolocation();
 		speichern("Koordinaten gespeichert");
 	}
@@ -1140,7 +1149,7 @@ function stopGeolocation() {
         	$("input#oXKoord").val("");
 			$("input#oYKoord").val("");
         	$("input#oLagegenauigkeit").val("");
-        	melde("Keine Position erhalten");
+        	melde("Keine genaue Position erhalten");
         }
         speichern();
     }

@@ -31,7 +31,8 @@ PROJEKTIDEE
 WAS KANN DIE APP MOMENTAN?
 - Es ist erst eine WebSite
 - Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
-- Lokalisierung mit GPS und / oder auf dem Luftbild
+- Automatische Lokalisierung durch Gerät und / oder auf dem Luftbild
+- Automatische Lokalisierung wird ab Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
 - Im Modus "hierarchisch" umfassende Aufnahmen effizient erheben
 - Jede Artgruppe hat ihre eigenen Attribute(Datenfelder)
 - Datenfelder können den eigenen Bedürfnissen angepasst werden

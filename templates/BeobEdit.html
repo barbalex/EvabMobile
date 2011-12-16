@@ -123,10 +123,14 @@
 			oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
 			oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
-			var Status = get_url_param("Status");
-			if (Status == "neu"){
-				setzeAutor();
-				GetGeolocation();                   
+			//Wenn neue Beob, dann verorten
+			//prüfen, ob Koordinate schon existiert
+			//sonst wird beim Aktualisieren der Seite nochmals verortet
+			if ($("input#oXKoord").val() == "") {
+				var Status = get_url_param('Status');
+				if (Status == "neu") {
+					GetGeolocation();
+				}
 			}
 
 			//Neue Beobachtung erfassen
@@ -433,6 +437,15 @@
 			if (oLongitudeDecDeg && oLatitudeDecDeg) {
 				Beob.oLongitudeDecDeg = oLongitudeDecDeg;
 				Beob.oLatitudeDecDeg = oLatitudeDecDeg;
+			}
+			//Verhindern, dass Infotext gespeichert wird, wenn User die Beobachtung 
+			//vor Bendigung von GetGeolocation verlässt und während der Verortung
+			//gespeichert hat
+			if ($("input#oXKoord").val() == "Position ermitteln...") {
+				delete Beob.oXKoord;
+				delete Beob.oYKoord;
+				delete Beob.oLagegenauigkeit;
+				delete Beob.oObergrenzeHöhe;
 			}
 			$db.openDoc(docId, {
 				success: function(doc) {
