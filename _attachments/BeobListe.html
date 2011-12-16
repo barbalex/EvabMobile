@@ -33,7 +33,8 @@
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div data-role="content">
-			<ul id="beobachtungen" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			<ul id="beobachtungen" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen...">
+			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -150,11 +151,11 @@
 								    '</div>'+
 								    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
 								    '<div id="bodyContent" class="GmInfowindow">'+
-								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
 								    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
 								    '<p>Autor: ' + Autor + '</p>'+
 								    '<p>Datum: ' + Datum + '</p>'+
 								    '<p>Zeit: ' + Zeit + '</p>'+
+								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
 								    '</div>'+
 								    '</div>';
 								makeListener(map, marker, contentString);

@@ -278,19 +278,6 @@ function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, 
 	});
 }
 
-function setzeAutor() {
-	var aAutor = "";
-	return $db.view('evab/User?key="' + User + '"', {
-		success: function(data) {
-			var doc;
-			doc = data.rows[0].value;
-			aAutor = doc.Autor;
-			$("input#aAutor").val(aAutor);
-			return aAutor;
-		}
-	});
-}
-
 //Menü aufbauen. Wird aufgerufen von allen Formularen in evab/_attachments
 function erstelleMenu(zurueck, thiz, User, UserId, Pfad) {
 	//Code um Menü aufzubauen
