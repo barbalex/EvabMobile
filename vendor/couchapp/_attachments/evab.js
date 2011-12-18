@@ -593,6 +593,7 @@ function erstelle_hOrtEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
 							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -651,6 +652,7 @@ function erstelle_hZeitEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
 							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -713,6 +715,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
 							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
