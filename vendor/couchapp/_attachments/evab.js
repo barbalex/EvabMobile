@@ -167,12 +167,9 @@ function erstelleArtgruppenliste(Status) {
 			var ArtGruppe;
 			for(i in data.rows) {
 				ArtGruppe = data.rows[i].key;
-				ListItemContainer += "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">" +
-				"<a href=\"#\">" +
-				"<h3>" + ArtGruppe + "<\/h3>" +
-				"<\/a> <\/li>";
+				ListItemContainer += "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">";
+				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><\/a><\/li>";
 			}
-			//ListItemContainer += "<\/ul>";
 			$("#ArtgruppenListe").html(ListItemContainer);
 			//$("#ArtgruppenListe").listview();
 			$("#ArtgruppenListe").listview("refresh");
@@ -198,19 +195,13 @@ function erstelleArtliste(ArtGruppe, Status, PfadIn) {
 				Art = data.rows[i].value;
 				ArtId = Art._id;
 				if(Art.HinweisVerwandschaft){
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">" +
-					"<a href=\"#\">" +
-					"<h3>" + ArtBezeichnung + "<\/h3>" +
-					"<p>" + Art.HinweisVerwandschaft + "<\/p>" +
-					"<\/a> <\/li>";
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+					ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
 				}else{
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">" +
-					"<a href=\"#\">" +
-					"<h3>" + ArtBezeichnung + "<\/h3>" +
-					"<\/a> <\/li>";
+					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+					ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
 				}
 			}
-			ListItemContainer += "<\/ul>";
 			$("#ArtenListe").html(ListItemContainer);
 			//$("#ArtenListe").listview();
 			$("#ArtenListe").listview("refresh");

@@ -100,7 +100,7 @@
 			var aArtGruppe = $(this).attr("id");
 			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu", "");
-			$("#ArtgruppenListe").empty();
+			$("#ArtgruppenlistePage").empty().remove();
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
@@ -108,7 +108,7 @@
 			var aArtGruppe = $(this).attr("aArtGruppe");
 			var aArtName = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
-			$("#ArtenListe").empty();
+			$("#ArtenlistePage").empty().remove();
 			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{id}}", User, aArtGruppe, aArtName, aArtId);
 		});	
 	}

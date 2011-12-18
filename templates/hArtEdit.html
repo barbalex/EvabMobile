@@ -98,7 +98,7 @@
 			var aArtGruppe = $(this).attr("aArtGruppe");
 			var aArtName = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
-			$("#ArtenListe").empty();
+			$("#ArtenlistePage").empty().remove();
 			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
 		});	
 
@@ -120,7 +120,7 @@
 			aArtName = $(this).attr("artbezeichnung");
 			aArtId = $(this).attr("artid");
 			speichern("NeuÖffnen");
-			$("#ArtenListe").empty();
+			$("#ArtenlistePage").empty().remove();
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
@@ -217,7 +217,7 @@
 	function zuArtliste(aArtGruppe, Status, Pfad) {
 		$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
 		erstelleArtliste(aArtGruppe, Status, Pfad);
-		$("#ArtgruppenListe").empty();
+		$("#ArtgruppenlistePage").empty().remove();
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
