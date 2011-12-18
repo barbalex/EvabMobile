@@ -173,6 +173,7 @@ function erstelleArtgruppenliste(Status) {
 			$("#ArtgruppenListe").html(ListItemContainer);
 			//$("#ArtgruppenListe").listview();
 			$("#ArtgruppenListe").listview("refresh");
+			$("#ArtengruppenListeHinweistext").empty().remove();
 		}
 	});
 }
@@ -205,6 +206,8 @@ function erstelleArtliste(ArtGruppe, Status, PfadIn) {
 			$("#ArtenListe").html(ListItemContainer);
 			//$("#ArtenListe").listview();
 			$("#ArtenListe").listview("refresh");
+			$("#ArtenListeHinweistext").empty().remove();
+			$("#ArtgruppenlistePage").empty().remove();
 		}
 	});
 }
@@ -228,6 +231,7 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
+					$("#ArtenlistePage").empty().remove();
 					window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
 				},
 				error: function() {

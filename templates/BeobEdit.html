@@ -137,16 +137,15 @@
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").live("click", function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 				erstelleArtgruppenliste("Neu");
 			});
 
 			$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 				event.preventDefault();
 				var ArtGruppe = $(this).attr("id");
-				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 				erstelleArtliste(ArtGruppe, "Neu", "");
-				$("#ArtgruppenListe").empty();
 			});
 			
 			$("[name='ArtListItemNeu']").live("click", function(event) {
@@ -156,23 +155,21 @@
 				var ArtId = $(this).attr("artid");
 				var Datum = $("input#zDatum").val();
 				var Zeit = $("input#zUhrzeit").val();
-				$("#ArtenListe").empty();
 				speichereNeueBeobachtung(Pfad, User, ArtGruppe, ArtName, ArtId);
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 				erstelleArtgruppenliste("Edit");
 			});
 
 			$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
 				event.preventDefault();
 				aArtGruppe = $(this).attr("id");
-				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 				erstelleArtliste(aArtGruppe, "Edit", "");
-				$("#ArtgruppenListe").empty();
 			});
 			
 			$("[name='ArtListItemEdit']").live("click", function(event) {
@@ -182,13 +179,13 @@
 				aArtId = $(this).attr("artid");
 				var Pfad = $(this).attr("Pfad");
 				speichern(Pfad, "BeobEditAufrufen", "KeineMeldung");
-				$("#ArtenListe").empty();
+				$("#ArtenlistePage").empty().remove();
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+				$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 				erstelleArtliste(aArtGruppe, "Edit", "");
 			});
 

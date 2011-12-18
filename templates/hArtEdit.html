@@ -99,7 +99,6 @@
 			var aArtGruppe = $(this).attr("aArtGruppe");
 			var aArtName = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
-			$("#ArtenlistePage").empty().remove();
 			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
 		});	
 
@@ -211,14 +210,13 @@
 	}
 
 	function zuArtgruppenliste(Status) {
-		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 		erstelleArtgruppenliste(Status);
 	}
 
 	function zuArtliste(aArtGruppe, Status, Pfad) {
-		$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 		erstelleArtliste(aArtGruppe, Status, Pfad);
-		$("#ArtgruppenlistePage").empty().remove();
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates

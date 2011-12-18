@@ -198,9 +198,8 @@
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
 			$.mobile.showPageLoadingMsg();
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 			erstelleArtliste(aArtGruppe, "Neu", "");
-			$("#ArtgruppenListe").empty();
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
@@ -208,7 +207,6 @@
 			var aArtGruppe = $(this).attr("aArtGruppe");
 			var aArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var aArtId = $(this).attr("artid");
-			$("#ArtenListe").empty();
 			speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId);
 		});	
 	}
@@ -235,7 +233,7 @@
 
 	function erstelleNeuBeob_1_Artgruppenliste() {
 		$.mobile.showPageLoadingMsg();
-		$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "true", reloadPage: "true"});
+		$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
 		erstelleArtgruppenliste("Neu");
 	}
   </script>
