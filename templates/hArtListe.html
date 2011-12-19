@@ -116,9 +116,7 @@
 	$(document).ready(handleDocumentReady);
 
 	function erstelleNeueBeob_1_Artgruppenliste() {
-		window.open("../../Artgruppenliste.html?Status=Neu", target="_self");
-		//$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		//erstelleArtgruppenliste("Neu");
+		window.open("../../Artgruppenliste.html?Status=Neu&Von=hArtListe&ProjektId=" + "{{ProjektId}}" + "&RaumId=" + "{{RaumId}}" + "&OrtId=" + "{{OrtId}}" + "&ZeitId=" + "{{id}}", target="_self");
 	}
 
 	function prüfeAnmeldung(Pfad) {		

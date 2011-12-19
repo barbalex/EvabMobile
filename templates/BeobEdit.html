@@ -137,19 +137,19 @@
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").live("click", function(event){
 				event.preventDefault();
-				window.open("../../BeobArtgruppenliste.html?Status=Neu&Von=BeobEdit", target="_self");
+				window.open("../../Artgruppenliste.html?Status=Neu&Von=BeobEdit", target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
-				window.open("../../BeobArtgruppenliste.html?Status=Edit&Von=BeobEdit&oLatitudeDecDeg=" + oLatitudeDecDeg + "&oLongitudeDecDeg=" + oLongitudeDecDeg + "&BeobId=" + docId, target="_self");
+				window.open("../../Artgruppenliste.html?Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				window.open("../../BeobArtenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+				window.open("../../Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 			});
 
 			//Für jedes Feld bei Änderung speichern
@@ -425,7 +425,6 @@
 	function speichern(Pfad, BeobEditAufrufen, Meldung) {
 		var Beob = {};
 		Beob = $("#BeobEditForm").serializeObject();
-		Beob.Modus = "einfach";
 		Beob.Typ = "Beobachtung";
 		Beob.User = User;
 		Beob.aArtGruppe = aArtGruppe;

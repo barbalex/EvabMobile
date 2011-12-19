@@ -8,8 +8,8 @@
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
+  	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+  	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
 			$.mobile.loadingMessage = 'chrampfe!';
 			$.mobile.touchOverflowEnabled = 'true';
@@ -22,61 +22,85 @@
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>  	
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
   </head>
   <body>
-	<div data-role="page" id="ArtgruppenlistePage">
+  	<div data-role="page" id="ArtenlistePage">
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
-			<h1>Art-Gruppe wählen</h1>
+			<h1>Art wählen</h1>
 		</div>
 		<div data-role="content">
-			<ul id="ArtgruppenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..."></ul>
-			<p id="ArtengruppenListeHinweistext" class="HinweisDynamischerFeldaufbau">Die Liste wird aufgebaut...</p>
+			<ul id="ArtenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen...">
+				
+			</ul>
+			<p id="ArtenListeHinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
 		</div>
-	</div>  	
+	</div>
+	
   </body>
   <script type="text/javascript" charset="utf-8">;
 	function handleDocumentReady()
 	{
 		$db = $.couch.db("evab");
-		
-		var Pfad = "../../";
+
 		User = "";
+		var ArtGruppe = get_url_param("aArtGruppe");
 		var Status = get_url_param("Status");
 		var Von = get_url_param("Von");
-		if (Von == "BeobEdit") {
-			Pfad = "";
+		var Pfad = "";
+		if (Von == "BeobListe") {
+			Pfad = "../../";
 		}
-		var oLatitudeDecDeg = get_url_param("oLatitudeDecDeg") || "";
-		var oLongitudeDecDeg = get_url_param("oLongitudeDecDeg") || "";
 		var BeobId = get_url_param("BeobId") || "";
+		var ProjektId = get_url_param("ProjektId") || "";
+		var RaumId = get_url_param("RaumId") || "";
+		var OrtId = get_url_param("OrtId") || "";
+		var ZeitId = get_url_param("ZeitId") || "";
 		
 		prüfeAnmeldung(Pfad);
 
-		var viewname = "evab/Artgruppen";
+		//erstelleArtliste(aArtGruppe, Status, Pfad);
+
+		var viewname = "evab/Artliste" + ArtGruppe;
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
 				var ListItemContainer = "";
-				var ArtGruppe;
+				var ArtBezeichnung;
+				var Art;
+				var ArtId;
+				var HinweisVerwandschaft;
 				for(i in data.rows) {
-					ArtGruppe = data.rows[i].key;
-					ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><\/a><\/li>";
+					ArtBezeichnung = data.rows[i].key;
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					if(Art.HinweisVerwandschaft){
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
+					}else{
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+					}
 				}
-				$("#ArtgruppenListe").html(ListItemContainer);
-				//$("#ArtgruppenListe").listview();
-				$("#ArtgruppenListe").listview("refresh");
-				$("#ArtengruppenListeHinweistext").empty().remove();
+				$("#ArtenListe").html(ListItemContainer);
+				//$("#ArtenListe").listview();
+				$("#ArtenListe").listview("refresh");
+				$("#ArtenListeHinweistext").empty().remove();
+				$("#ArtgruppenlistePage").empty().remove();
 			}
 		});
 
-		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+		$("[name='ArtListItem']").live("click", function(event) {
 			event.preventDefault();
-			aArtGruppe = $(this).attr("id");
-			window.open("BeobArtenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&oLatitudeDecDeg=" + oLatitudeDecDeg + "&oLongitudeDecDeg=" + oLongitudeDecDeg + "&BeobId=" + BeobId, target="_self");
+			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
+			var ArtId = $(this).attr("artid");
+			if (Status == "Neu") {
+				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
+			} else {
+				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
+			}
 		});
 	}
 	
@@ -101,6 +125,6 @@
 	}
   </script>
   <script type="text/javascript" charset="utf-8">	
-  
+  	
   </script>
 </html>

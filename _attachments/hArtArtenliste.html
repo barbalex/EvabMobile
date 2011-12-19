@@ -45,19 +45,21 @@
 	{
 		$db = $.couch.db("evab");
 
-		var Pfad = "";
+		var Pfad = "../../";
 		User = "";
-		var aArtGruppe = get_url_param("aArtGruppe");
+		var ArtGruppe = get_url_param("aArtGruppe");
 		var Status = get_url_param("Status");
-		var Pfad = get_url_param("Pfad");
-		var Modus = get_url_param("Modus");
+		var Von = get_url_param("Von");
+		if (Von == "BeobEdit") {
+			Pfad = "";
+		}
+		var BeobId = get_url_param("BeobId") || "";
 		
-		//prüfeAnmeldung(Pfad);
+		prüfeAnmeldung(Pfad);
 
 		//erstelleArtliste(aArtGruppe, Status, Pfad);
 
 		var viewname = "evab/Artliste" + ArtGruppe;
-		var Pfad = PfadIn || "";
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -71,10 +73,10 @@
 					Art = data.rows[i].value;
 					ArtId = Art._id;
 					if(Art.HinweisVerwandschaft){
-						ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
 						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
 					}else{
-						ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
 						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
 					}
 				}
@@ -86,41 +88,15 @@
 			}
 		});
 
-		$("[name='ArtListItemNeu']").live("click", function(event) {
+		$("[name='ArtListItem']").live("click", function(event) {
 			event.preventDefault();
-			var ArtGruppe = $(this).attr("aArtGruppe");
-			var ArtName = $(this).attr("ArtBezeichnung");
+			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var ArtId = $(this).attr("artid");
-			var Datum = $("input#zDatum").val();
-			var Zeit = $("input#zUhrzeit").val();
-			speichereNeueBeobachtung(Pfad, User, ArtGruppe, ArtName, ArtId);
-		});
-
-		$("[name='ArtListItemNeu']").live("click", function(event) {
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("ArtBezeichnung");
-			var aArtId = $(this).attr("artid");
-			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
-		});
-
-		$("[name='ArtListItemEdit']").live("click", function(event) {
-			event.preventDefault();
-			aArtGruppe = $(this).attr("aArtGruppe");
-			aArtName = $(this).attr("ArtBezeichnung");
-			aArtId = $(this).attr("artid");
-			var Pfad = $(this).attr("Pfad");
-			speichern(Pfad, "BeobEditAufrufen", "KeineMeldung");
-			$("#ArtenlistePage").empty().remove();
-		});
-
-		$("[name='ArtListItemEdit']").live("click", function(event) {
-			event.preventDefault();
-			aArtGruppe = $(this).attr("aArtGruppe");
-			aArtName = $(this).attr("artbezeichnung");
-			aArtId = $(this).attr("artid");
-			speichern("NeuÖffnen");
-			$("#ArtenlistePage").empty().remove();
+			if (Status == "Neu") {
+				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId);
+			} else {
+				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId);
+			}
 		});
 	}
 	

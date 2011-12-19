@@ -88,53 +88,16 @@
 			zuArtgruppenliste("Neu");
 		});
 
-		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("id");
-			zuArtliste(aArtGruppe, "Neu", "");
-		});
-		
-		$("[name='ArtListItemNeu']").live("click", function(event) {
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("ArtBezeichnung");
-			var aArtId = $(this).attr("artid");
-			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
-		});	
-
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 		$("#aArtGruppe").live("click", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste("Edit");
 		});
 
-		$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
-			event.preventDefault();
-			aArtGruppe = $(this).attr("id");
-			zuArtliste(aArtGruppe, "Edit", "");
-		});
-		
-		$("[name='ArtListItemEdit']").live("click", function(event) {
-			event.preventDefault();
-			aArtGruppe = $(this).attr("aArtGruppe");
-			aArtName = $(this).attr("artbezeichnung");
-			aArtId = $(this).attr("artid");
-			speichern("NeuÖffnen");
-			$("#ArtenlistePage").empty().remove();
-		});
-
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
 		$("#aArtName").live("click", function(event) {
 			event.preventDefault();
 			zuArtliste(aArtGruppe, "Edit", "../../");
-		});
-
-		//Für jedes Feld (=Selector, dessen Name mit a beginnt) bei Änderung speichern
-		$(".speichern").live("change", function() {
-			//warte(300);   
-			//anders lösen - warte blockiert CPU!
-			//irgendwie muss aber verhindert werden, dass der Change-event im Slider mehr als 1 mal ausgelöst wird
-			speichern();
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -210,15 +173,11 @@
 	}
 
 	function zuArtgruppenliste(Status) {
-		window.open("../../Artgruppenliste.html?Status=" + Status, target="_self");
-		//$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		//erstelleArtgruppenliste(Status);
+		window.open("../../Artgruppenliste.html?Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&ProjektId=" + "{{ProjektId}}" + "&RaumId=" + "{{RaumId}}" + "&OrtId=" + "{{OrtId}}" + "&ZeitId=" + "{{ZeitId}}", target="_self");
 	}
 
 	function zuArtliste(aArtGruppe, Status, Pfad) {
-		window.open(Pfad + "Artenliste.html?aArtGruppe=" + aArtGruppe + "?Status=" + Status + "?Pfad=" + Pfad, target="_self");
-		//$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		//erstelleArtliste(aArtGruppe, Status, Pfad);
+		window.open(Pfad + "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=BeobEdit&Pfad=" + Pfad + "&BeobId=" + "{{id}}" + "&ProjektId=" + "{{ProjektId}}" + "&RaumId=" + "{{RaumId}}" + "&OrtId=" + "{{OrtId}}" + "&ZeitId=" + "{{ZeitId}}", target="_self");
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates

@@ -42,16 +42,17 @@
 	{
 		$db = $.couch.db("evab");
 		
-		var Pfad = "../../";
-		//User = "";
 		var Status = get_url_param("Status");
 		var Von = get_url_param("Von");
-		if (Von == "BeobEdit") {
-			Pfad = "";
+		var Pfad = "";		
+		if (Von == "BeobListe") {
+			Pfad = "../../";
 		}
 		var BeobId = get_url_param("BeobId") || "";
-		
-		//prüfeAnmeldung(Pfad);
+		var ProjektId = get_url_param("ProjektId") || "";
+		var RaumId = get_url_param("RaumId") || "";
+		var OrtId = get_url_param("OrtId") || "";
+		var ZeitId = get_url_param("ZeitId") || "";
 
 		var viewname = "evab/Artgruppen";
 		$db.view(viewname, {
@@ -74,29 +75,26 @@
 		$("[name='ArtgruppenListItem']").live("click", function(event) {        
 			event.preventDefault();
 			aArtGruppe = $(this).attr("id");
-			window.open("BeobArtenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&BeobId=" + BeobId, target="_self");
+			//zuerst link für BeobEdit setzen
+			var link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&BeobId=" + BeobId;
+			//dann für BeobListe
+			if (Von == "BeobListe") {
+				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+			}
+			//Dann für hArt
+			if (Von == "hArtListe") {
+				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+			}
+			//Dann für hArt
+			if (Von == "hArtEdit") {
+				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&BeobId=" + BeobId;
+			}
+			window.open(link, target="_self");
 		});
 	}
 	
 	$(document).ready(handleDocumentReady);
 
-	function prüfeAnmeldung(Pfad) {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session?callback=',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if(User != undefined || null) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open(Pfad + "index.html", target="_self");
-				}
-		    }
-		});
-	}
   </script>
   <script type="text/javascript" charset="utf-8">	
   

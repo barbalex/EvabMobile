@@ -156,13 +156,23 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
+function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId, Von, ProjektId, RaumId, OrtId, ZeitId) {
 //Neue Beobachtungen werden gespeichert
-//ausgelöst durch BeobListe.html oder BeobEdit.html
+//ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
+//hArtListe und hArtEdit geben ProjektId, RaumId, OrtId und ZeitId mit
 	$db = $.couch.db("evab");
 	var doc = {};
-	doc.Modus = "einfach";
-	doc.Typ = "Beobachtung";
+	if (Von == "BeobListe" || Von == "BeobEdit") {
+		doc.Typ = "Beobachtung";
+	} else {
+		doc.Typ = "hArt";
+	}
+	if (Von == "hArtListe" || Von == "hArtEdit") {
+		doc.ProjektId = ProjektId;
+		doc.RaumId = RaumId;
+		doc.OrtId = OrtId;
+		doc.ZeitId = ZeitId;
+	}
 	doc.User = User;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
@@ -176,7 +186,11 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+					if (Von == "BeobListe" || Von == "BeobEdit") {
+						window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+					} else {
+						window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
+					}
 				},
 				error: function() {
 					melde("Die Beobachtung konnte nicht gespeichert werden.");
@@ -186,8 +200,9 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
 	});
 }
 
-//Speichert, wenn in BeobEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
-function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, aArtId) {
+//Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
+//erwartet Von = von welchem Formular aufgerufen wurde
+function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, aArtId, Von) {
 $db.openDoc(BeobId, {
 		success: function(Beob) {
 			if (aArtGruppe) {
@@ -197,7 +212,11 @@ $db.openDoc(BeobId, {
 			Beob.aArtId = aArtId;
 			$db.saveDoc(Beob, {
 				success: function(data) {
-					window.open("_show/BeobEdit/" + BeobId, target="_self");
+					if (Von == "BeobListe" || Von == "BeobEdit") {
+						window.open("_show/BeobEdit/" + BeobId, target="_self");
+					} else {
+						window.open("_show/hArtEdit/" + BeobId, target="_self");
+					}
 				},
 				error: function() {
 					melde("Fehler: Beobachtung nicht gespeichert");
