@@ -14,12 +14,14 @@ Die Digitalisierung erfolgt später im Büro. Im besten Fall nach wenigen Stunde
 Fehlerquellen: Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Fleissarbeit. Es ist allzu menschlich, sie 1. an eine andere Person auszulagern und 2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
+
 ZIELE FÜR NATURSCHUTZFACHSTELLEN
 1. Artbeobachtungen liegen vermehrt digital vor
 2. sie stehen schneller zur Verfügung
 3. ihre Datenqualität ist höher, da bedeutende Fehlerquellen ausgeschaltet wurden
 4. der Gesamtaufwand für Felderfassung und Digitalisierung sinkt
 5. die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
+
 
 PROJEKTIDEE
 - Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
@@ -28,11 +30,11 @@ PROJEKTIDEE
 - Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
+
 WAS KANN DIE APP MOMENTAN?
-Im einfachen Modus:
+Generell:
 - Es ist erst eine WebSite
-- Im Modus "einfach" Beobachtungen schnell und unkompliziert erfassen
-  (nur die grundlegenden Attribute)
+- Jede Änderung wird automatisch gespeichert
 - Automatische Lokalisierung durch Gerät
 - Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
   Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
@@ -40,7 +42,11 @@ Im einfachen Modus:
 - Darstellung aller Beobachtungen auf Luftbild / Karte
 - Beobachtungen und Datenfelder können exportiert werden
 
-Zusätzlich im hierarchischen Modus:
+Im einfachen Modus:
+- Beobachtungen schnell und unkompliziert erfassen
+  (nur die grundlegenden Attribute)
+
+Im hierarchischen Modus:
 - Umfassende Aufnahmen effizient erheben: 
   Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
 - Der Benutzer bestimmt, welche Felder sichtbar sind
@@ -51,6 +57,7 @@ Zusätzlich im hierarchischen Modus:
 - Es können eigene Arten erfasst werden, welche nicht im offiziellen Index enthalten sind
   (Spezialfälle für absolute Artspezialisten und frische Neobiotika)
 
+
 WIE GEHT ES WEITER? (ROADMAP)
 - Macken reduzieren
 - Tempo erhöhen
@@ -58,6 +65,7 @@ WIE GEHT ES WEITER? (ROADMAP)
 - Android- und iOS-App
 - Funktionalität erweitern (z.B. Bilder und Tonaufnahmen, spezifisch Neophyten erfassen)
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab...
+
 
 HILFE ERWÜNSCHT
 Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, war ich aber ein blutiger Anfänger und befinde mich in einer steilen - und schlüpfrigen - Lernkurve. Noch schlimmer sind Java/Android SDK für Android-Apps und Cocoa/Objective-C für iOS-Apps. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!

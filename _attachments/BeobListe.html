@@ -191,28 +191,15 @@
 		//Neue Beobachtung managen
 		$("#NeueBeobLink").live("click", function(event){
 			event.preventDefault();
-			erstelleNeuBeob_1_Artgruppenliste();
-		});
-
-		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("id");
-			$.mobile.showPageLoadingMsg();
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Neu", "");
-		});
-		
-		$("[name='ArtListItemNeu']").live("click", function(event) {
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtBezeichnung = $(this).attr("ArtBezeichnung");
-			var aArtId = $(this).attr("artid");
-			speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId);
+			erstelleNeueBeob_1_Artgruppenliste();
 		});	
 	}
 	
 	$(document).ready(handleDocumentReady);
-
+	//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
+	function erstelleNeueBeob_1_Artgruppenliste() {
+		window.open("BeobArtgruppenliste.html?Status=Neu&Von=BeobListe", target="_self");
+	}
 	function prüfeAnmeldung(Pfad) {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren
@@ -229,12 +216,6 @@
 				}
 		    }
 		});
-	}
-
-	function erstelleNeuBeob_1_Artgruppenliste() {
-		$.mobile.showPageLoadingMsg();
-		$.mobile.changePage("Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		erstelleArtgruppenliste("Neu");
 	}
   </script>
 </html>

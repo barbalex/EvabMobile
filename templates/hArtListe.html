@@ -99,8 +99,9 @@
 		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("id");
-			$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-			erstelleArtliste(aArtGruppe, "Neu", "");
+			window.open("Artenliste.html?aArtGruppe=" + aArtGruppe + "?Status=Neu?Pfad=''", target="_self");
+			//$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
+			//erstelleArtliste(aArtGruppe, "Neu", "");
 		});
 		
 		$("[name='ArtListItemNeu']").live("click", function(event) {
@@ -115,8 +116,9 @@
 	$(document).ready(handleDocumentReady);
 
 	function erstelleNeueBeob_1_Artgruppenliste() {
-		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		erstelleArtgruppenliste("Neu");
+		window.open("../../Artgruppenliste.html?Status=Neu", target="_self");
+		//$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
+		//erstelleArtgruppenliste("Neu");
 	}
 
 	function prüfeAnmeldung(Pfad) {		

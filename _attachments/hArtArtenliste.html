@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+  	<script type="text/javascript">			
+		$(document).bind("mobileinit", function(){
+			$.mobile.loadingMessage = 'chrampfe!';
+			$.mobile.touchOverflowEnabled = 'true';
+			//defaultDialogTransition = none;
+		});
+    </script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+  	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
+  </head>
+  <body>
+  	<div data-role="page" id="ArtenlistePage">
+		<div data-role="header" data-position="fixed">
+			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
+			<h1>Art wählen</h1>
+		</div>
+		<div data-role="content">
+			<ul id="ArtenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen...">
+				
+			</ul>
+			<p id="ArtenListeHinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
+		</div>
+	</div>
+	
+  </body>
+  <script type="text/javascript" charset="utf-8">;
+	function handleDocumentReady()
+	{
+		$db = $.couch.db("evab");
+
+		var Pfad = "";
+		User = "";
+		var aArtGruppe = get_url_param("aArtGruppe");
+		var Status = get_url_param("Status");
+		var Pfad = get_url_param("Pfad");
+		var Modus = get_url_param("Modus");
+		
+		//prüfeAnmeldung(Pfad);
+
+		//erstelleArtliste(aArtGruppe, Status, Pfad);
+
+		var viewname = "evab/Artliste" + ArtGruppe;
+		var Pfad = PfadIn || "";
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ListItemContainer = "";
+				var ArtBezeichnung;
+				var Art;
+				var ArtId;
+				var HinweisVerwandschaft;
+				for(i in data.rows) {
+					ArtBezeichnung = data.rows[i].key;
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					if(Art.HinweisVerwandschaft){
+						ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
+					}else{
+						ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+					}
+				}
+				$("#ArtenListe").html(ListItemContainer);
+				//$("#ArtenListe").listview();
+				$("#ArtenListe").listview("refresh");
+				$("#ArtenListeHinweistext").empty().remove();
+				$("#ArtgruppenlistePage").empty().remove();
+			}
+		});
+
+		$("[name='ArtListItemNeu']").live("click", function(event) {
+			event.preventDefault();
+			var ArtGruppe = $(this).attr("aArtGruppe");
+			var ArtName = $(this).attr("ArtBezeichnung");
+			var ArtId = $(this).attr("artid");
+			var Datum = $("input#zDatum").val();
+			var Zeit = $("input#zUhrzeit").val();
+			speichereNeueBeobachtung(Pfad, User, ArtGruppe, ArtName, ArtId);
+		});
+
+		$("[name='ArtListItemNeu']").live("click", function(event) {
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("aArtGruppe");
+			var aArtName = $(this).attr("ArtBezeichnung");
+			var aArtId = $(this).attr("artid");
+			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{ZeitId}}", User, aArtGruppe, aArtName, aArtId);
+		});
+
+		$("[name='ArtListItemEdit']").live("click", function(event) {
+			event.preventDefault();
+			aArtGruppe = $(this).attr("aArtGruppe");
+			aArtName = $(this).attr("ArtBezeichnung");
+			aArtId = $(this).attr("artid");
+			var Pfad = $(this).attr("Pfad");
+			speichern(Pfad, "BeobEditAufrufen", "KeineMeldung");
+			$("#ArtenlistePage").empty().remove();
+		});
+
+		$("[name='ArtListItemEdit']").live("click", function(event) {
+			event.preventDefault();
+			aArtGruppe = $(this).attr("aArtGruppe");
+			aArtName = $(this).attr("artbezeichnung");
+			aArtId = $(this).attr("artid");
+			speichern("NeuÖffnen");
+			$("#ArtenlistePage").empty().remove();
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+
+	function prüfeAnmeldung(Pfad) {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren
+		//Wenn nicht angemeldet, Anmeldedialog öffnen
+		$.ajax({
+		    url: '/_session?callback=',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if(User != undefined || null) {
+		        	User = session.userCtx.name;
+		        } else {
+					window.open(Pfad + "index.html", target="_self");
+				}
+		    }
+		});
+	}
+  </script>
+  <script type="text/javascript" charset="utf-8">	
+  	
+  </script>
+</html>

@@ -137,56 +137,19 @@
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").live("click", function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-				erstelleArtgruppenliste("Neu");
-			});
-
-			$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
-				event.preventDefault();
-				var ArtGruppe = $(this).attr("id");
-				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-				erstelleArtliste(ArtGruppe, "Neu", "");
-			});
-			
-			$("[name='ArtListItemNeu']").live("click", function(event) {
-				event.preventDefault();
-				var ArtGruppe = $(this).attr("aArtGruppe");
-				var ArtName = $(this).attr("ArtBezeichnung");
-				var ArtId = $(this).attr("artid");
-				var Datum = $("input#zDatum").val();
-				var Zeit = $("input#zUhrzeit").val();
-				speichereNeueBeobachtung(Pfad, User, ArtGruppe, ArtName, ArtId);
+				window.open("../../BeobArtgruppenliste.html?Status=Neu&Von=BeobEdit", target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-				erstelleArtgruppenliste("Edit");
-			});
-
-			$("[name='ArtgruppenListItemEdit']").live("click", function(event) {        
-				event.preventDefault();
-				aArtGruppe = $(this).attr("id");
-				$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-				erstelleArtliste(aArtGruppe, "Edit", "");
-			});
-			
-			$("[name='ArtListItemEdit']").live("click", function(event) {
-				event.preventDefault();
-				aArtGruppe = $(this).attr("aArtGruppe");
-				aArtName = $(this).attr("ArtBezeichnung");
-				aArtId = $(this).attr("artid");
-				var Pfad = $(this).attr("Pfad");
-				speichern(Pfad, "BeobEditAufrufen", "KeineMeldung");
-				$("#ArtenlistePage").empty().remove();
+				window.open("../../BeobArtgruppenliste.html?Status=Edit&Von=BeobEdit&oLatitudeDecDeg=" + oLatitudeDecDeg + "&oLongitudeDecDeg=" + oLongitudeDecDeg + "&BeobId=" + docId, target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				$.mobile.changePage("../../Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-				erstelleArtliste(aArtGruppe, "Edit", "");
+				window.open("../../BeobArtenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 			});
 
 			//Für jedes Feld bei Änderung speichern
@@ -415,56 +378,6 @@
 			$("select#aArtName").val(aArtName);
 			$("select#aArtName").selectmenu("refresh");
 		}
-
-		//Speichert alle Daten
-		//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
-		//BeobEditAufrufen: Bestimmt of das Formular nach dem Speichern geöffnet werden soll. 
-		//Ist "nein" wenn von der Karte aus gespeichert wird. Auch, wenn schon von BeobEdit.html aus gespeichert wird. 
-		//Ist "ja", wenn von ArtenListe.html aus gespeichert wird
-		function speichern(Pfad, BeobEditAufrufen, Meldung) {
-			var Beob = {};
-			Beob = $("#BeobEditForm").serializeObject();
-			Beob.Modus = "einfach";
-			Beob.Typ = "Beobachtung";
-			Beob.User = User;
-			Beob.aArtGruppe = aArtGruppe;
-			Beob.aArtName = aArtName;
-			Beob.aArtId = aArtId;
-			//Längen- und Breitengrad sind in keinem Feld dargestellt
-			//sie müssen aus ihren Variabeln gespeichert werden
-			if (oLongitudeDecDeg && oLatitudeDecDeg) {
-				Beob.oLongitudeDecDeg = oLongitudeDecDeg;
-				Beob.oLatitudeDecDeg = oLatitudeDecDeg;
-			}
-			//Verhindern, dass Infotext gespeichert wird, wenn User die Beobachtung 
-			//vor Bendigung von GetGeolocation verlässt und während der Verortung
-			//gespeichert hat
-			if ($("input#oXKoord").val() == "Position ermitteln...") {
-				delete Beob.oXKoord;
-				delete Beob.oYKoord;
-				delete Beob.oLagegenauigkeit;
-				delete Beob.oObergrenzeHöhe;
-			}
-			$db.openDoc(docId, {
-				success: function(doc) {
-					Beob._id = docId;
-					Beob._rev = doc._rev;
-					$db.saveDoc(Beob, {
-						success: function(data) {
-							if (BeobEditAufrufen == "BeobEditAufrufen"){
-								window.open(Pfad + "_show/BeobEdit/" + data.id, target="_self");
-							}
-							if (Meldung && Meldung != "KeineMeldung") {
-								melde(Meldung);
-							}
-						},
-						error: function() {
-							melde("Fehler: Beobachtung nicht gespeichert");
-						 }
-					});
-				}
-			});
-		}
 		
 		function löscheBeobachtung(event) {
 			// First open doc based on ID in order to get full document
@@ -501,6 +414,56 @@
 					window.open(Pfad + "index.html", target="_self");
 				}
 		    }
+		});
+	}
+
+	//Speichert alle Daten
+	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
+	//BeobEditAufrufen: Bestimmt of das Formular nach dem Speichern geöffnet werden soll. 
+	//Ist "nein" wenn von der Karte aus gespeichert wird. Auch, wenn schon von BeobEdit.html aus gespeichert wird. 
+	//Ist "ja", wenn von ArtenListe.html aus gespeichert wird
+	function speichern(Pfad, BeobEditAufrufen, Meldung) {
+		var Beob = {};
+		Beob = $("#BeobEditForm").serializeObject();
+		Beob.Modus = "einfach";
+		Beob.Typ = "Beobachtung";
+		Beob.User = User;
+		Beob.aArtGruppe = aArtGruppe;
+		Beob.aArtName = aArtName;
+		Beob.aArtId = aArtId;
+		//Längen- und Breitengrad sind in keinem Feld dargestellt
+		//sie müssen aus ihren Variabeln gespeichert werden
+		if (oLongitudeDecDeg && oLatitudeDecDeg) {
+			Beob.oLongitudeDecDeg = oLongitudeDecDeg;
+			Beob.oLatitudeDecDeg = oLatitudeDecDeg;
+		}
+		//Verhindern, dass Infotext gespeichert wird, wenn User die Beobachtung 
+		//vor Bendigung von GetGeolocation verlässt und während der Verortung
+		//gespeichert hat
+		if ($("input#oXKoord").val() == "Position ermitteln...") {
+			delete Beob.oXKoord;
+			delete Beob.oYKoord;
+			delete Beob.oLagegenauigkeit;
+			delete Beob.oObergrenzeHöhe;
+		}
+		$db.openDoc(docId, {
+			success: function(doc) {
+				Beob._id = docId;
+				Beob._rev = doc._rev;
+				$db.saveDoc(Beob, {
+					success: function(data) {
+						if (BeobEditAufrufen == "BeobEditAufrufen"){
+							window.open(Pfad + "_show/BeobEdit/" + data.id, target="_self");
+						}
+						if (Meldung && Meldung != "KeineMeldung") {
+							melde(Meldung);
+						}
+					},
+					error: function() {
+						melde("Fehler: Beobachtung nicht gespeichert");
+					 }
+				});
+			}
 		});
 	}
 	</script>

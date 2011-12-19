@@ -210,13 +210,15 @@
 	}
 
 	function zuArtgruppenliste(Status) {
-		$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		erstelleArtgruppenliste(Status);
+		window.open("../../Artgruppenliste.html?Status=" + Status, target="_self");
+		//$.mobile.changePage("../../Artgruppenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
+		//erstelleArtgruppenliste(Status);
 	}
 
 	function zuArtliste(aArtGruppe, Status, Pfad) {
-		$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-		erstelleArtliste(aArtGruppe, Status, Pfad);
+		window.open(Pfad + "Artenliste.html?aArtGruppe=" + aArtGruppe + "?Status=" + Status + "?Pfad=" + Pfad, target="_self");
+		//$.mobile.changePage(Pfad + "Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
+		//erstelleArtliste(aArtGruppe, Status, Pfad);
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates

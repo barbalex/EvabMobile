@@ -156,65 +156,10 @@ function melde(Meldung) {
 		});
 };
 
-//ArtgruppenListe in Artgruppenliste.html wird aufgebaut
-//Status ist Neu oder Edit, damit BeobListe.html und hArtListe.html (Neu) bzw. BeobEdit.html und hArtEdit.html individuell reagieren können
-function erstelleArtgruppenliste(Status) { 
-	var viewname = "evab/Artgruppen";
-	$db.view(viewname, {
-		success: function(data) {
-			var i;
-			var ListItemContainer = "";
-			var ArtGruppe;
-			for(i in data.rows) {
-				ArtGruppe = data.rows[i].key;
-				ListItemContainer += "<li name=\"ArtgruppenListItem" + Status + "\" id=\"" + ArtGruppe + "\">";
-				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><\/a><\/li>";
-			}
-			$("#ArtgruppenListe").html(ListItemContainer);
-			//$("#ArtgruppenListe").listview();
-			$("#ArtgruppenListe").listview("refresh");
-			$("#ArtengruppenListeHinweistext").empty().remove();
-		}
-	});
-}
-
-//ArtenListe in Artenliste.html wird aufgebaut
-//Status ist Neu oder Edit, damit BeobListe.html (Neu) und BeobEdit.html individuell reagieren können
-function erstelleArtliste(ArtGruppe, Status, PfadIn) { 
-	var viewname = "evab/Artliste" + ArtGruppe;
-	var Pfad = PfadIn || "";
-	$db.view(viewname, {
-		success: function(data) {
-			var i;
-			var ListItemContainer = "";
-			var ArtBezeichnung;
-			var Art;
-			var ArtId;
-			var HinweisVerwandschaft;
-			for(i in data.rows) {
-				ArtBezeichnung = data.rows[i].key;
-				Art = data.rows[i].value;
-				ArtId = Art._id;
-				if(Art.HinweisVerwandschaft){
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
-				}else{
-					ListItemContainer += "<li name=\"ArtListItem" + Status + "\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\" aArtGruppe=\"" + ArtGruppe + "\" Pfad=\"" + Pfad + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
-				}
-			}
-			$("#ArtenListe").html(ListItemContainer);
-			//$("#ArtenListe").listview();
-			$("#ArtenListe").listview("refresh");
-			$("#ArtenListeHinweistext").empty().remove();
-			$("#ArtgruppenlistePage").empty().remove();
-		}
-	});
-}
-
-function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
+function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html oder BeobEdit.html
+	$db = $.couch.db("evab");
 	var doc = {};
 	doc.Modus = "einfach";
 	doc.Typ = "Beobachtung";
@@ -222,7 +167,7 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = aArtId;
-	doc.zDatum = erstelleNeuesDatum();          //GEHT DAS AUF MOBILGERÄTEN ZU LANGE?????????????
+	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
@@ -231,7 +176,6 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
-					$("#ArtenlistePage").empty().remove();
 					window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
 				},
 				error: function() {
@@ -242,9 +186,31 @@ function speichereNeueBeobachtung(Pfad, User, aArtGruppe, aArtBezeichnung, aArtI
 	});
 }
 
-function speichereNeueBeobachtungHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, aArtId) {
+//Speichert, wenn in BeobEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
+function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, aArtId) {
+$db.openDoc(BeobId, {
+		success: function(Beob) {
+			if (aArtGruppe) {
+				Beob.aArtGruppe = aArtGruppe;
+			}
+			Beob.aArtName = aArtName;
+			Beob.aArtId = aArtId;
+			$db.saveDoc(Beob, {
+				success: function(data) {
+					window.open("_show/BeobEdit/" + BeobId, target="_self");
+				},
+				error: function() {
+					melde("Fehler: Beobachtung nicht gespeichert");
+				 }
+			});
+		}
+	});
+}
+
+function speichereNeueBeobHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, aArtId) {
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
+	$db = $.couch.db("evab");
 	var doc = {};
 	doc.Typ = "hArt";
 	doc.User = UserName;

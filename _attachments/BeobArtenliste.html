@@ -45,10 +45,59 @@
 	{
 		$db = $.couch.db("evab");
 
-		var Pfad = "";
+		var Pfad = "../../";
 		User = "";
+		var ArtGruppe = get_url_param("aArtGruppe");
+		var Status = get_url_param("Status");
+		var Von = get_url_param("Von");
+		if (Von == "BeobEdit") {
+			Pfad = "";
+		}
+		var BeobId = get_url_param("BeobId") || "";
 		
 		prüfeAnmeldung(Pfad);
+
+		//erstelleArtliste(aArtGruppe, Status, Pfad);
+
+		var viewname = "evab/Artliste" + ArtGruppe;
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ListItemContainer = "";
+				var ArtBezeichnung;
+				var Art;
+				var ArtId;
+				var HinweisVerwandschaft;
+				for(i in data.rows) {
+					ArtBezeichnung = data.rows[i].key;
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					if(Art.HinweisVerwandschaft){
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
+					}else{
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+					}
+				}
+				$("#ArtenListe").html(ListItemContainer);
+				//$("#ArtenListe").listview();
+				$("#ArtenListe").listview("refresh");
+				$("#ArtenListeHinweistext").empty().remove();
+				$("#ArtgruppenlistePage").empty().remove();
+			}
+		});
+
+		$("[name='ArtListItem']").live("click", function(event) {
+			event.preventDefault();
+			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
+			var ArtId = $(this).attr("artid");
+			if (Status == "Neu") {
+				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId);
+			} else {
+				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId);
+			}
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
