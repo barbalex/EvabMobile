@@ -75,19 +75,23 @@
 		$("[name='ArtgruppenListItem']").live("click", function(event) {        
 			event.preventDefault();
 			aArtGruppe = $(this).attr("id");
-			//zuerst link für BeobEdit setzen
-			var link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&BeobId=" + BeobId;
-			//dann für BeobListe
-			if (Von == "BeobListe") {
-				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+			var link;
+			switch (Von) {
+				case "BeobEdit":
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+					break;
+				case "BeobListe":
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+					break;
+				case "hArtListe":
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					break;
+				case "hArtEdit":
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					break;
 			}
-			//Dann für hArt
-			if (Von == "hArtListe") {
-				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
-			}
-			//Dann für hArt
-			if (Von == "hArtEdit") {
-				link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&BeobId=" + BeobId;
+			if (BeobId != "") {
+				link += "&BeobId=" + BeobId;
 			}
 			window.open(link, target="_self");
 		});

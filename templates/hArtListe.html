@@ -94,22 +94,6 @@
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
-		});
-
-		$("[name='ArtgruppenListItemNeu']").live("click", function(event) {        
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("id");
-			window.open("Artenliste.html?aArtGruppe=" + aArtGruppe + "?Status=Neu?Pfad=''", target="_self");
-			//$.mobile.changePage("Artenliste.html", {transition: "slide", reverse: "false", showLoadMsg: "false", reloadPage: "true"});
-			//erstelleArtliste(aArtGruppe, "Neu", "");
-		});
-		
-		$("[name='ArtListItemNeu']").live("click", function(event) {
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("aArtGruppe");
-			var aArtName = $(this).attr("ArtBezeichnung");
-			var aArtId = $(this).attr("artid");
-			speichereNeueBeobachtungHierarchisch("{{ProjektId}}", "{{RaumId}}", "{{OrtId}}", "{{id}}", User, aArtGruppe, aArtName, aArtId);
 		});	
 	}
 	
