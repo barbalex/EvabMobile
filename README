@@ -36,28 +36,26 @@ PROJEKTIDEE
 
 WAS KANN DIE APP MOMENTAN?
 Generell:
-- Es ist erst eine WebSite
+- Sie ist erst eine Webseite
 - Jede Änderung wird automatisch gespeichert
-- Automatische Lokalisierung durch Gerät
-- Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
+- Automatische Lokalisierung durch Gerät:
+  Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
   Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
-- Manuelle Lokalisierung auf Luftbild / Karte
+- Manuelle Lokalisierung auf Luftbildern / Karten von Google
 - Darstellung aller Beobachtungen auf Luftbild / Karte
 - Beobachtungen und Datenfelder können exportiert werden
 
 Im einfachen Modus:
-- Beobachtungen schnell und unkompliziert erfassen
-  (nur die grundlegenden Attribute)
+- Beobachtungen schnell und unkompliziert erfassen (nur die grundlegenden Attribute)
 
 Im hierarchischen Modus:
 - Umfassende Aufnahmen effizient erheben: 
   Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
-- Der Benutzer bestimmt, welche Felder sichtbar sind
-- Die Datenfelder können an die eigenen Bedürfnisse angepasst werden 
-  (sie sind frei konfigurierbar! Vorläufig noch mit Einschränkungen)
 - Jede Artgruppe hat ihre eigenen Attribute (Datenfelder)
-- Es können unbekannte Arten beschrieben werden, z.B. um sie später zu bestimmen
-- Es können eigene Arten erfasst werden, welche nicht im offiziellen Index enthalten sind
+- Selber wählen, welche Felder sichtbar sind
+- Datenfelder an die eigenen Bedürfnisse anpassen (sie sind frei konfigurierbar!)
+- Unbekannte Arten beschreiben, z.B. um sie später zu bestimmen
+- Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind
   (Spezialfälle für absolute Artspezialisten und frische Neobiotika)
 
 
