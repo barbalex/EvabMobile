@@ -24,10 +24,13 @@ ZIELE FÜR NATURSCHUTZFACHSTELLEN
 
 
 PROJEKTIDEE
-- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
-- Für die Mobil-App wird jQuery mobile und Phonegap verwendet. Damit sollte es für möglichst viele Geräte entwickelt werden können
+- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, 
+  unabhängig vom Mobilfunknetz
+- Für die Mobil-App wird jQuery mobile und Phonegap verwendet. 
+  Damit sollte es für möglichst viele Geräte entwickelt werden können
 - Die App steht auch als Website zur Verfügung
-- Als Datenbank wird CouchDb verwendet. Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
+- Als Datenbank wird CouchDb verwendet. 
+  Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
 - CouchDb ermöglicht es, zusätzliche projekteigene Attribute zu definieren sowie Dateien (z.B. Bilder) zu erfassen
 
 
