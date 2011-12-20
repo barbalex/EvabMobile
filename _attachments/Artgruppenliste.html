@@ -54,16 +54,18 @@
 		var OrtId = get_url_param("OrtId") || "";
 		var ZeitId = get_url_param("ZeitId") || "";
 
-		var viewname = "evab/Artgruppen";
+		var viewname = "evab/ArtgruppenAnzArten?group=true";
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
 				var ListItemContainer = "";
 				var ArtGruppe;
+				var AnzArten;
 				for(i in data.rows) {
 					ArtGruppe = data.rows[i].key;
+					AnzArten = data.rows[i].value;
 					ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><\/a><\/li>";
+					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<span class='ui-li-count'>" + AnzArten + "</span><\/h3><\/a><\/li>";
 				}
 				$("#ArtgruppenListe").html(ListItemContainer);
 				//$("#ArtgruppenListe").listview();
