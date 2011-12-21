@@ -43,6 +43,7 @@
   		</div>
 		<div data-role="content">
 			<ul id="Arten" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -161,9 +162,8 @@
 						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer += "<\/ul>";
 				$("#Arten").html(ListItemContainer);
-				$("#Arten").listview();
+				//$("#Arten").listview();
 				$("#Arten").listview("refresh");
 			}
 		});

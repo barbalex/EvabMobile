@@ -40,6 +40,7 @@
   		</div>
 		<div data-role="content">
 			<ul id="Räume" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -132,17 +133,12 @@
 						key = data.rows[i].key;
 						rName = Raum.rName;
 						externalPage = "../../_show/hRaumEdit/" + Raum._id;
-						listItem = "<li id=\"" + Raum._id + "\">" +
-							"<a href=\"" + externalPage + "\" rel=\"external\">" +
-							"<h3>" + rName + "<\/h3>" +
-							"<\/a> <\/li>";
+						listItem = "<li id=\"" + Raum._id + "\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}
 				}
-				ListItemContainer += "<\/ul>";
 				$("#Räume").html(ListItemContainer);
-				$("#Räume").listview();
-				//$("#Räume").listview("create");
+				//$("#Räume").listview();
 				$("#Räume").listview("refresh");
 			}
 		});

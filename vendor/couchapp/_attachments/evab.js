@@ -445,9 +445,8 @@ function aktualisiereBeobListe(Pfad, User) {
 					ListItemContainer += "<\/p><\/a> <\/li>";
 				}
 			}
-			ListItemContainer += "<\/ul>";
 			$("#beobachtungen").html(ListItemContainer);
-			$("#beobachtungen").listview();
+			//$("#beobachtungen").listview();
 			$("#beobachtungen").listview("refresh");
 		}
 	});

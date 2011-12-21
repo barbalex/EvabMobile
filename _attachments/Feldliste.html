@@ -34,6 +34,7 @@
   		</div>
 		<div data-role="content">
 			<ul id="FeldListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..." />
+			</ul>
 		</div>
 	</div>
   </body>
@@ -95,9 +96,8 @@
 						"<p>" + FeldBeschreibung + "</p>"
 						"<\/a><\/li>";
 				}
-				ListItemContainer += "<\/ul>";
 				$("#FeldListe").html(ListItemContainer);
-				$("#FeldListe").listview();
+				//$("#FeldListe").listview();
 				$("#FeldListe").listview("refresh");
 			}
 		});
