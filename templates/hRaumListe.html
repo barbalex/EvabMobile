@@ -83,6 +83,8 @@
 			var zurueck = "hRaumListe/" + "{{id}}";
 			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -140,6 +142,7 @@
 				$("#Räume").html(ListItemContainer);
 				//$("#Räume").listview();
 				$("#Räume").listview("refresh");
+				$.mobile.fixedToolbars.show();
 			}
 		});
 	}

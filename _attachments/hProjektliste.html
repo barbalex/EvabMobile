@@ -68,6 +68,8 @@
 		$("[name='hProjektNeuLink']").live("click", function() {
 			erstelleNeuesProjekt("_show/");
 		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -129,6 +131,7 @@
 				$("#Projekte").html(ListItemContainer);
 				//$("#Projekte").listview();
 				$("#Projekte").listview("refresh");
+				$.mobile.fixedToolbars.show();
 			}
 		});
 	}

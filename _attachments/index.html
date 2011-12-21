@@ -26,7 +26,7 @@
   </head>
   <body>
 	<div data-role="page">
-		<div data-role="header" data-backbtn="false">
+		<div data-role="header" data-backbtn="false" data-position="fixed">
 			<h1>anmelden</h1>
 		</div>
 		<div data-role="content">
@@ -46,7 +46,7 @@
 			<p style="text-align: center">Ich freue mich über Rückmeldungen: <a href="mailto:alex.barbalex@gmail.com">email senden</a></p>
 			<p style="text-align: center"><a href="http://www.barbalex.ch/news/latest/evabmobile/">mehr Infos hier</a></p>
 		</div>
-		<div data-role="footer">
+		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SubmitButton" data-icon="check" class="ui-btn-active">anmelden</a></li>
@@ -82,6 +82,8 @@
 		    	e.preventDefault();
 		  	}
 		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);

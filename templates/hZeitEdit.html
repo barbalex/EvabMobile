@@ -143,6 +143,8 @@
 		$("[name='Menu']").live('click', function() {
 			erstelleMenu(this, User, UserId, "../../");
 		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);

@@ -199,6 +199,8 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -249,16 +251,14 @@
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
 						externalPage = "../../_show/hOrtEdit/" + Ort._id;
-						listItem = "<li id=\"" + Ort._id + "\">" +
-							"<a href=\"" + externalPage + "\" rel=\"external\">" +
-							"<h3>" + Ort.oName + "<\/h3>" +
-							"<\/a> <\/li>";
+						listItem = "<li id=\"" + Ort._id + "\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}
 				}
 				$("#Orte").html(ListItemContainer);
 				//$("#Orte").listview();
 				$("#Orte").listview("refresh");
+				$.mobile.fixedToolbars.show();
 			}
 		});
 	}

@@ -150,6 +150,8 @@
 		$("[name='Menu']").live('click', function() {
 			erstelleMenu(this, User, UserId, "../../", aArtGruppe);
 		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);

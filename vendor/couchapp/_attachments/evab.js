@@ -448,6 +448,7 @@ function aktualisiereBeobListe(Pfad, User) {
 			$("#beobachtungen").html(ListItemContainer);
 			//$("#beobachtungen").listview();
 			$("#beobachtungen").listview("refresh");
+			$.mobile.fixedToolbars.show();
 		}
 	});
 }

@@ -126,6 +126,8 @@
 					window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 				}
 			});
+
+			$.mobile.fixedToolbars.show();
 		});
 	</script>
 	<script type="text/javascript">
@@ -333,6 +335,7 @@
 					}
 					ListItemContainer += "\n</fieldset>"
 					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+					$.mobile.fixedToolbars.show();
 				}
 			});
 		}

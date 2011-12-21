@@ -95,7 +95,9 @@
 		$("#hArtNeuLink").live("click", function(event) {
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
-		});	
+		});
+
+		$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -165,6 +167,7 @@
 				$("#Arten").html(ListItemContainer);
 				//$("#Arten").listview();
 				$("#Arten").listview("refresh");
+				$.mobile.fixedToolbars.show();
 			}
 		});
 	}
