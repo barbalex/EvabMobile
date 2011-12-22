@@ -32,7 +32,8 @@
 			<h1>Art-Gruppe wählen</h1>
 		</div>
 		<div data-role="content">
-			<ul id="ArtgruppenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen..."></ul>
+			<ul id="ArtgruppenListe" data-role="listview" data-theme="c" data-filter="true" data-filter-placeholder="Filter setzen...">
+			</ul>
 			<p id="ArtengruppenListeHinweistext" class="HinweisDynamischerFeldaufbau">Die Liste wird aufgebaut...</p>
 		</div>
 	</div>  	
@@ -61,11 +62,37 @@
 				var ListItemContainer = "";
 				var ArtGruppe;
 				var AnzArten;
+				var ArtGruppe2LVorhanden;
 				for(i in data.rows) {
-					ArtGruppe = data.rows[i].key;
+					ArtGruppe = data.rows[i].key[0];
+					ArtGruppe2LVorhanden = data.rows[i].key[1];
 					AnzArten = data.rows[i].value;
-					ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<span class='ui-li-count'>" + AnzArten + "</span><\/h3><\/a><\/li>";
+					if (ArtGruppe2LVorhanden == null) {
+						ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+					} else {
+						ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\"><a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a>";
+						var viewname2 = 'evab/Artgruppen?key="' + ArtGruppe + '"';
+						$db.view(viewname2, {
+							success: function(data) {
+								var y;
+								var ArtGruppe2L;
+								var AnzArten2;
+								for(y in data.rows) {
+									var row = data.rows[y].value;
+									ArtGruppe2L = row.ArtGruppe_2_L;
+									AnzArten2 = ArtGruppe2L.length();
+									for (x in ArtGruppe2L) {
+										ListItemContainer += "<ul>";
+										ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
+										ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe2L[x] + "<\/h3><span class='ui-li-count'>" + AnzArten2 + "</span><\/a><\/li>";
+										ListItemContainer += "</ul>";
+									}
+								}
+							}
+						});
+						ListItemContainer += "<\/li>";
+					}
 				}
 				$("#ArtgruppenListe").html(ListItemContainer);
 				//$("#ArtgruppenListe").listview();
