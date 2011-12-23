@@ -418,7 +418,7 @@ function aktualisiereBeobListe(Pfad, User) {
 			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 			if (anzBeob == 0) {
-				ListItemContainer = '<li><a href="javascript:erstelleNeuBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
+				ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
 			} else {
 				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 				for(i in data.rows) {                //Liste aufbauen

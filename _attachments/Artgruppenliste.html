@@ -55,43 +55,32 @@
 		var OrtId = get_url_param("OrtId") || "";
 		var ZeitId = get_url_param("ZeitId") || "";
 
-		var viewname = "evab/ArtgruppenAnzArten?group=true";
+		var viewname = "evab/Artgruppen";
 		$db.view(viewname, {
 			success: function(data) {
-				var i;
+				var i, y;
 				var ListItemContainer = "";
 				var ArtGruppe;
+				var row;
+				var ArtGruppe_2_L;
 				var AnzArten;
-				var ArtGruppe2LVorhanden;
 				for(i in data.rows) {
-					ArtGruppe = data.rows[i].key[0];
-					ArtGruppe2LVorhanden = data.rows[i].key[1];
-					AnzArten = data.rows[i].value;
-					if (ArtGruppe2LVorhanden == null) {
-						ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
-						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-					} else {
-						ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\"><a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a>";
-						var viewname2 = 'evab/Artgruppen?key="' + ArtGruppe + '"';
-						$db.view(viewname2, {
-							success: function(data) {
-								var y;
-								var ArtGruppe2L;
-								var AnzArten2;
-								for(y in data.rows) {
-									var row = data.rows[y].value;
-									ArtGruppe2L = row.ArtGruppe_2_L;
-									AnzArten2 = ArtGruppe2L.length();
-									for (x in ArtGruppe2L) {
-										ListItemContainer += "<ul>";
-										ListItemContainer += "<li name=\"ArtgruppenListItem\" id=\"" + ArtGruppe + "\">";
-										ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe2L[x] + "<\/h3><span class='ui-li-count'>" + AnzArten2 + "</span><\/a><\/li>";
-										ListItemContainer += "</ul>";
-									}
-								}
-							}
-						});
+					ArtGruppe = data.rows[i].key;
+					row = data.rows[i].value;
+					AnzArten = row.AnzArten;
+					ArtGruppe_2_L = row.ArtGruppe_2_L;
+					if (ArtGruppe_2_L != undefined) {
+						ListItemContainer += "<li><a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a>";
+						ListItemContainer += "<ul>";
+						for(y in ArtGruppe_2_L) {
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppe_2_L[y] + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe_2_L[y] + "<\/h3><\/a><\/li>";
+						}
+						ListItemContainer += "</ul>";
 						ListItemContainer += "<\/li>";
+					} else {
+						ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 					}
 				}
 				$("#ArtgruppenListe").html(ListItemContainer);
@@ -103,20 +92,21 @@
 
 		$("[name='ArtgruppenListItem']").live("click", function(event) {        
 			event.preventDefault();
-			aArtGruppe = $(this).attr("id");
+			var aArtGruppe = $(this).attr("ArtGruppe");
+			var L = $(this).attr("L") || "";
 			var link;
 			switch (Von) {
 				case "BeobEdit":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
 					break;
 				case "BeobListe":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
 					break;
 				case "hArtListe":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					break;
 				case "hArtEdit":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					break;
 			}
 			if (BeobId != "") {
@@ -128,8 +118,5 @@
 	
 	$(document).ready(handleDocumentReady);
 
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  
   </script>
 </html>

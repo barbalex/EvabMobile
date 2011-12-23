@@ -47,6 +47,7 @@
 
 		User = "";
 		var ArtGruppe = get_url_param("aArtGruppe");
+		var L = get_url_param("L");
 		var Status = get_url_param("Status");
 		var Von = get_url_param("Von");
 		var Pfad = "";
@@ -61,9 +62,13 @@
 		
 		prüfeAnmeldung(Pfad);
 
-		//erstelleArtliste(aArtGruppe, Status, Pfad);
-
-		var viewname = "evab/Artliste" + ArtGruppe;
+		var viewname;
+		//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
+		if (L == "") {
+			viewname = 'evab/Artliste' + ArtGruppe;
+		} else {
+			viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
+		}
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -73,7 +78,7 @@
 				var ArtId;
 				var HinweisVerwandschaft;
 				for(i in data.rows) {
-					ArtBezeichnung = data.rows[i].key;
+					ArtBezeichnung = data.rows[i].key[1];
 					Art = data.rows[i].value;
 					ArtId = Art._id;
 					if(Art.HinweisVerwandschaft){
