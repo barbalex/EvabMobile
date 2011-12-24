@@ -106,6 +106,23 @@
 			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
+		$(".Ort").live("swipeleft", function() {
+			var OrtId = $(this).attr('id');
+			window.open("../hZeitListe/" + OrtId, target="_self");
+		});
+
+		$(".erste").live("swipeleft", function() {
+			erstelleNeuenOrt(User, "{{ProjektId}}", "{{id}}");
+		});
+
+		$(".Ort").live("swiperight", function() {
+			window.open("../hRaumListe/" + "{{ProjektId}}", target="_self");
+		});
+
+		$(".erste").live("swiperight", function() {
+			window.open("../hRaumListe/" + "{{ProjektId}}", target="_self");
+		});
+
 		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
 			$.mobile.changePage("#hOrtListeMapPage", "slide", false, true);
 		});
@@ -200,7 +217,7 @@
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
 
-		$.mobile.fixedToolbars.show();
+		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -245,20 +262,20 @@
 				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
-					ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hOrtNeuLink">Ersten Ort erfassen</a></li>';
+					ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hOrtNeuLink" class="erste">Ersten Ort erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
 						externalPage = "../../_show/hOrtEdit/" + Ort._id;
-						listItem = "<li id=\"" + Ort._id + "\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+						listItem = "<li id=\"" + Ort._id + "\" class=\"Ort\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}
 				}
 				$("#Orte").html(ListItemContainer);
 				//$("#Orte").listview();
 				$("#Orte").listview("refresh");
-				$.mobile.fixedToolbars.show();
+				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

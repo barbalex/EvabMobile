@@ -81,6 +81,23 @@
 			erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}"); 
 		});
 
+		$(".Zeit").live("swipeleft", function() {
+			var ZeitId = $(this).attr('id');
+			window.open("../hArtListe/" + ZeitId, target="_self");
+		});
+
+		$(".erste").live("swipeleft", function() {
+			erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}");
+		});
+
+		$(".Zeit").live("swiperight", function() {
+			window.open("../hOrtListe/" + "{{RaumId}}", target="_self");
+		});
+
+		$(".erste").live("swiperight", function() {
+			window.open("../hOrtListe/" + "{{RaumId}}", target="_self");
+		});
+
 		//Link zur OrtListe in Navbar setzen
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
@@ -93,7 +110,7 @@
 			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
-		$.mobile.fixedToolbars.show();
+		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -139,21 +156,21 @@
 				$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
 				if (anzZeit == 0) {
-					ListItemContainer = '<li><a href="javascript:erstelleNeueZeit_mitAllenParametern()" data-transition="slideup" rel="external">Erste Zeit erfassen</a></li>';
+					ListItemContainer = '<li><a href="javascript:erstelleNeueZeit_mitAllenParametern()" data-transition="slideup" rel="external" class="erste">Erste Zeit erfassen</a></li>';
 				} else {
 					for(i in data.rows) {
 						Zeit = data.rows[i].value;
 						key = data.rows[i].key;
 						var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 						externalPage = "../../_show/hZeitEdit/" + Zeit._id;
-						listItem = "<li id=\"" + Zeit._id + "\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+						listItem = "<li id=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}
 				}
 				$("#Zeiten").html(ListItemContainer);
 				//$("#Zeiten").listview();
 				$("#Zeiten").listview("refresh");
-				$.mobile.fixedToolbars.show();
+				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

@@ -76,6 +76,11 @@
 			melde("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
 		});
 
+		$(".beob").live("swipeleft", function() {
+			var BeobId = $(this).attr('id');
+			window.open("_show/BeobEdit/" + BeobId, target="_self");
+		});
+
 		$("#BeobListeMapÖffnen").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
 			$.mobile.changePage("#BeobListeMap", "slide", false, true);
 		});

@@ -56,23 +56,38 @@
 		var ZeitId = get_url_param("ZeitId") || "";
 
 		var viewname = "evab/Artgruppen";
+		var i;
+		var y;
+		var x;
+		var ListItemContainer = "";
+		var ArtGruppe;
+		var row;
+		var ArtGruppe_2_L;
+		var ArtGruppen;
+		var AnzArten, AnzArten2;
+		var viewname2;
 		$db.view(viewname, {
 			success: function(data) {
-				var i, y;
-				var ListItemContainer = "";
-				var ArtGruppe;
-				var row;
-				var ArtGruppe_2_L;
-				var AnzArten;
+				ArtGruppen = data;
 				for(i in data.rows) {
-					ArtGruppe = data.rows[i].key;
-					row = data.rows[i].value;
+					ArtGruppe = ArtGruppen.rows[i].key;
+					row = ArtGruppen.rows[i].value;
 					AnzArten = row.AnzArten;
 					ArtGruppe_2_L = row.ArtGruppe_2_L;
 					if (ArtGruppe_2_L != undefined) {
 						ListItemContainer += "<li><a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a>";
 						ListItemContainer += "<ul>";
 						for(y in ArtGruppe_2_L) {
+							/*viewname2 = 'evab/ArtgruppenLAnz?key=["' + ArtGruppe + '", "' + ArtGruppe_2_L[y] + '"]&group=true';
+							$db.view(viewname2, {
+								success: function(data) {
+									//for(x in data.rows) {
+										AnzArten2 = data.rows[0].value;
+										ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppe_2_L[y] + "\">";
+										ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe_2_L[y] + "<\/h3><span class='ui-li-count'>" + AnzArten2 + "</span><\/a><\/li>";
+									//}
+								}
+							});*/
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppe_2_L[y] + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe_2_L[y] + "<\/h3><\/a><\/li>";
 						}

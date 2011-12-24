@@ -69,7 +69,16 @@
 			erstelleNeuesProjekt("_show/");
 		});
 
-		$.mobile.fixedToolbars.show();
+		$(".Projekt").live("swipeleft", function() {
+			var ProjektId = $(this).attr('id');
+			window.open("_show/hRaumListe/" + ProjektId, target="_self");
+		});
+
+		$(".erste").live("swipeleft", function() {
+			erstelleNeuesProjekt("_show/");
+		});
+
+		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -115,14 +124,14 @@
 				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 				if (anzProj == 0) {
-					ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink'>Erstes Projekt erfassen</a></li>";
+					ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink' class='erste'>Erstes Projekt erfassen</a></li>";
 				} else {
 					for(i in data.rows) {               //Liste aufbauen
 						Proj = data.rows[i].value;
 						key = data.rows[i].key;
 						pName = key[1];
 						externalPage = "_show/hProjektEdit/" + Proj._id;
-						listItem = "<li id=\"" + Proj._id + "\">";
+						listItem = "<li id=\"" + Proj._id + "\" class=\"Projekt\">";
 						listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
 						listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
@@ -131,7 +140,7 @@
 				$("#Projekte").html(ListItemContainer);
 				//$("#Projekte").listview();
 				$("#Projekte").listview("refresh");
-				$.mobile.fixedToolbars.show();
+				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

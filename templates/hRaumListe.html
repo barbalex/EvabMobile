@@ -84,7 +84,27 @@
 			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
 
-		$.mobile.fixedToolbars.show();
+		$(".Raum").live("swipeleft", function() {
+			var RaumId = $(this).attr('id');
+			window.open("../hOrtListe/" + RaumId, target="_self");
+			//$.mobile.changePage("../hOrtListe/" + RaumId, {transition: "slide"});
+		});
+
+		$(".erste").live("swipeleft", function() {
+			erstelleNeuenRaum("{{id}}");
+		});
+
+		$(".Raum").live("swiperight", function() {
+			window.open("../../hProjektListe.html", target="_self");
+			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
+		});
+
+		$(".erste").live("swiperight", function() {
+			window.open("../../hProjektListe.html", target="_self");
+			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
+		});
+
+		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -128,21 +148,21 @@
 				}
 				$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 				if (anzRaum == 0) {
-					ListItemContainer = '<li><a href="#"" data-transition="slideup" rel="external" name="hRaumNeuLink">Ersten Raum erfassen</a></li>';
+					ListItemContainer = '<li><a href="#"" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Raum = data.rows[i].value;
 						key = data.rows[i].key;
 						rName = Raum.rName;
 						externalPage = "../../_show/hRaumEdit/" + Raum._id;
-						listItem = "<li id=\"" + Raum._id + "\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+						listItem = "<li id=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}
 				}
 				$("#Räume").html(ListItemContainer);
 				//$("#Räume").listview();
 				$("#Räume").listview("refresh");
-				$.mobile.fixedToolbars.show();
+				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

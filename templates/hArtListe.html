@@ -97,7 +97,24 @@
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$.mobile.fixedToolbars.show();
+		$(".beob").live("swipeleft", function() {
+			var ArtId = $(this).attr('id');
+			window.open("../hArtEdit/" + ArtId, target="_self");
+		});
+
+		$(".erste").live("swipeleft", function() {
+			erstelleNeueBeob_1_Artgruppenliste();
+		});
+
+		$(".beob").live("swiperight", function() {
+			window.open("../hZeitListe/" + "{{OrtId}}", target="_self");
+		});
+
+		$(".erste").live("swiperight", function() {
+			window.open("../hZeitListe/" + "{{OrtId}}", target="_self");
+		});
+
+		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -147,7 +164,7 @@
 				$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 				if (anzArt == 0) {
-					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Art erfassen</a></li>';
+					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external" class="erste">Erste Art erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Art = data.rows[i].value;
@@ -167,7 +184,7 @@
 				$("#Arten").html(ListItemContainer);
 				//$("#Arten").listview();
 				$("#Arten").listview("refresh");
-				$.mobile.fixedToolbars.show();
+				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}
