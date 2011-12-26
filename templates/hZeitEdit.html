@@ -46,7 +46,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content">
+		<div data-role="content" id="hZeitEditContent">
 			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
@@ -144,7 +144,13 @@
 			erstelleMenu(this, User, UserId, "../../");
 		});
 
-		//$.mobile.fixedToolbars.show();
+		$("#hZeitEditContent").live("swipeleft", function() {
+			nächsteVorigeZeit("{{id}}", "nächste");
+		});
+
+		$("#hZeitEditContent").live("swiperight", function() {
+			nächsteVorigeZeit("{{id}}", "vorige");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -330,6 +336,46 @@
 	            }
 	    	}
 	  	})
+	}
+
+	//Öffnet die vorige oder nächste Zeit
+	//vorige der ersten => ZeitListe
+	//nächste der letzten => melden
+	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
+		$db.view('evab/hZeitListe?startkey=["' + User + '", "' + "{{OrtId}}" + '"]&endkey=["' + User + '", "' + "{{OrtId}}" + '" ,{}]', {
+			success: function(data) {
+				var i;
+				var ZeitIdAktuell;
+				var ZeitIdNächste;
+				var ZeitIdVorige;
+				var AnzZeit;
+				for(i in data.rows) {
+					ZeitIdAktuell = data.rows[i].value._id;
+					var AnzZeit = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (ZeitIdAktuell == IdAktuell) {
+						switch (NächsteOderVorige) {
+						case "nächste":
+							if (i < AnzZeit) {
+								ZeitIdNächste = data.rows[parseInt(i)+1].value._id;
+								window.open(ZeitIdNächste, target="_self")
+							} else {
+								melde("Das ist die letzte Zeit");
+							}
+							break;
+						case "vorige":
+							if (i > 0) {
+								ZeitIdVorige = data.rows[i-1].value._id;
+								window.open(ZeitIdVorige, target="_self")
+							} else {
+								window.open("../hZeitListe/" + "{{OrtId}}", target="_self")
+							}
+							break;
+						}
+					}
+				}
+			}
+		});
 	}
   </script>
 </html>
