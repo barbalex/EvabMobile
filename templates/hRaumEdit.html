@@ -39,7 +39,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content">
+		<div data-role="content" id="hRaumEditContent">
 			<form action="#" method="get" autocomplete="off" id="hRaumEditForm">
 				<div data-role="fieldcontain">
 					<label for="rName">Name:</label>
@@ -126,7 +126,13 @@
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
-		//$.mobile.fixedToolbars.show();
+		$("#hRaumEditContent").live("swipeleft", function() {
+			nächsterVorigerRaum("{{id}}", "nächster");
+		});
+
+		$("#hRaumEditContent").live("swiperight", function() {
+			nächsterVorigerRaum("{{id}}", "voriger");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -299,6 +305,46 @@
 						melde("Fehler: Raum nicht gespeichert");
 					 }
 				});
+			}
+		});
+	}
+
+	//Öffnet den vorigen oder nächsten Raum
+	//voriger des ersten => RaumListe
+	//nächster des letzten => melden
+	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
+		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + "{{ProjektId}}" + '"]&endkey=["' + User + '", "' + "{{ProjektId}}" + '" ,{}]', {
+			success: function(data) {
+				var i;
+				var RaumIdAktuell;
+				var RaumIdNächster;
+				var RaumIdVoriger;
+				var AnzRaum;
+				for(i in data.rows) {
+					RaumIdAktuell = data.rows[i].value._id;
+					var AnzRaum = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (RaumIdAktuell == IdAktuell) {
+						switch (NächsterOderVoriger) {
+						case "nächster":
+							if (i < AnzRaum) {
+								RaumIdNächster = data.rows[parseInt(i)+1].value._id;
+								window.open(RaumIdNächster, target="_self")
+							} else {
+								melde("Das ist der letzte Raum");
+							}
+							break;
+						case "voriger":
+							if (i > 0) {
+								RaumIdVoriger = data.rows[i-1].value._id;
+								window.open(RaumIdVoriger, target="_self")
+							} else {
+								window.open("../hRaumListe/" + "{{ProjektId}}", target="_self")
+							}
+							break;
+						}
+					}
+				}
 			}
 		});
 	}

@@ -477,14 +477,12 @@
 		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 			success: function(data) {
 				var i;
-				var BeobAktuell;
 				var BeobIdAktuell;
 				var BeobIdNächste;
 				var BeobIdVorige;
 				var AnzBeob;
 				for(i in data.rows) {
-					BeobAktuell = data.rows[i].value;
-					BeobIdAktuell = BeobAktuell._id;
+					BeobIdAktuell = data.rows[i].value._id;
 					var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 					if (BeobIdAktuell == IdAktuell) {
 						switch (NächsteOderVorige) {

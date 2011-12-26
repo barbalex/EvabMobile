@@ -350,21 +350,19 @@
 	//voriges des ersten => ProjektListe
 	//nächstes des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-	function nächstesVorigesProjekt(IdAktuell, NächsteOderVorige) {
+	function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
 		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
 			success: function(data) {
 				var i;
-				var ProjAktuell;
 				var ProjIdAktuell;
 				var ProjIdNächstes;
 				var ProjIdVoriges;
 				var AnzProj;
 				for(i in data.rows) {
-					ProjAktuell = data.rows[i].value;
-					ProjIdAktuell = ProjAktuell._id;
+					ProjIdAktuell = data.rows[i].value._id;
 					var AnzProj = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 					if (ProjIdAktuell == IdAktuell) {
-						switch (NächsteOderVorige) {
+						switch (NächstesOderVoriges) {
 						case "nächstes":
 							if (i < AnzProj) {
 								ProjIdNächstes = data.rows[parseInt(i)+1].value._id;
