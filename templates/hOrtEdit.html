@@ -42,7 +42,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content">
+		<div data-role="content" id="hOrtEditContent">
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
@@ -306,7 +306,13 @@
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
 
-		//$.mobile.fixedToolbars.show();
+		$("#hOrtEditContent").live("swipeleft", function() {
+			nächsterVorigerOrt("{{id}}", "nächster");
+		});
+
+		$("#hOrtEditContent").live("swiperight", function() {
+			nächsterVorigerOrt("{{id}}", "voriger");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -585,6 +591,46 @@
 	            }
 	    	}
 	  	})
+	}
+
+	//Öffnet den vorigen oder nächsten Ort
+	//voriger des ersten => OrtListe
+	//nächster des letzten => melden
+	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
+		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + "{{RaumId}}" + '"]&endkey=["' + User + '", "' + "{{RaumId}}" + '" ,{}]', {
+			success: function(data) {
+				var i;
+				var OrtIdAktuell;
+				var OrtIdNächster;
+				var OrtIdVoriger;
+				var AnzOrt;
+				for(i in data.rows) {
+					OrtIdAktuell = data.rows[i].value._id;
+					var AnzOrt = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (OrtIdAktuell == IdAktuell) {
+						switch (NächsterOderVoriger) {
+						case "nächster":
+							if (i < AnzOrt) {
+								OrtIdNächster = data.rows[parseInt(i)+1].value._id;
+								window.open(OrtIdNächster, target="_self")
+							} else {
+								melde("Das ist der letzte Ort");
+							}
+							break;
+						case "voriger":
+							if (i > 0) {
+								OrtIdVoriger = data.rows[i-1].value._id;
+								window.open(OrtIdVoriger, target="_self")
+							} else {
+								window.open("../hOrtListe/" + "{{RaumId}}", target="_self")
+							}
+							break;
+						}
+					}
+				}
+			}
+		});
 	}
   </script>
 </html>
