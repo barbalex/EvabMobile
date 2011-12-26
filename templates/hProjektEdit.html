@@ -38,7 +38,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content">
+		<div data-role="content" id="hProjektEditContent">
 			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
@@ -118,7 +118,13 @@
 			erstelleNeuesProjekt("../");
 		});
 
-		//$.mobile.fixedToolbars.show();
+		$("#hProjektEditContent").live("swipeleft", function() {
+			nächstesVorigesProjekt("{{id}}", "nächstes");
+		});
+
+		$("#hProjektEditContent").live("swiperight", function() {
+			nächstesVorigesProjekt("{{id}}", "voriges");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -336,6 +342,48 @@
 						melde("Fehler: Projekt nicht gespeichert");
 					 }
 				});
+			}
+		});
+	}
+
+	//Öffnet das vorige oder nächste Projekt
+	//voriges des ersten => ProjektListe
+	//nächstes des letzten => melden
+	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	function nächstesVorigesProjekt(IdAktuell, NächsteOderVorige) {
+		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+			success: function(data) {
+				var i;
+				var ProjAktuell;
+				var ProjIdAktuell;
+				var ProjIdNächstes;
+				var ProjIdVoriges;
+				var AnzProj;
+				for(i in data.rows) {
+					ProjAktuell = data.rows[i].value;
+					ProjIdAktuell = ProjAktuell._id;
+					var AnzProj = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (ProjIdAktuell == IdAktuell) {
+						switch (NächsteOderVorige) {
+						case "nächstes":
+							if (i < AnzProj) {
+								ProjIdNächstes = data.rows[parseInt(i)+1].value._id;
+								window.open(ProjIdNächstes, target="_self")
+							} else {
+								melde("Das ist das letzte Projekt");
+							}
+							break;
+						case "voriges":
+							if (i > 0) {
+								ProjIdVoriges = data.rows[i-1].value._id;
+								window.open(ProjIdVoriges, target="_self")
+							} else {
+								window.open("../../hProjektListe.html", target="_self")
+							}
+							break;
+						}
+					}
+				}
 			}
 		});
 	}

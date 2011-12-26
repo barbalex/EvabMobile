@@ -469,9 +469,9 @@
 		});
 	}
 
-	//Öffnet die nächste oder vorige Beobachtung
-	//voriger vom ersten => BeobListe
-	//voriger vom letzten => melden
+	//Öffnet die vorige oder nächste Beobachtung
+	//vorige der ersten => BeobListe
+	//nächste der letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
 		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
