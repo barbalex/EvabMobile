@@ -401,7 +401,7 @@ function erstelleMenuFürFelder(thiz, Pfad) {
 //Pfad muss mitgegeben werden, weil sonst beim Aufruf von BeobEdit der Pfad zu den Bildern nicht klappt...
 function aktualisiereBeobListe(Pfad, User) {
 	$("#beobachtungen").empty();
-	$db.view('evab/BeobListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+	$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 		success: function(data) {
 			var i;
 			var anzBeob = 0;
@@ -420,7 +420,7 @@ function aktualisiereBeobListe(Pfad, User) {
 			if (anzBeob == 0) {
 				ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
 			} else {
-				data.rows.reverse();                 //zuletzt erfasste sind zuoberst
+				//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 				for(i in data.rows) {                //Liste aufbauen
 					beob = data.rows[i].value;
 					key = data.rows[i].key;
@@ -582,7 +582,7 @@ function erstelle_hOrtEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
 							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							//$.mobile.fixedToolbars.show();
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -641,7 +641,7 @@ function erstelle_hZeitEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
 							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							//$.mobile.fixedToolbars.show();
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -704,7 +704,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
 							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							//$.mobile.fixedToolbars.show();
+							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
