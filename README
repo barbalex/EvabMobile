@@ -38,12 +38,12 @@ WAS KANN DIE APP MOMENTAN?
 Generell:
 - Sie ist erst eine Webseite
 - Jede Änderung wird automatisch gespeichert
-- Automatische Lokalisierung durch Gerät:
+- Automatisch durch Gerät lokalisieren:
   Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
   Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
-- Manuelle Lokalisierung auf Luftbildern / Karten von Google
-- Darstellung aller Beobachtungen auf Luftbild / Karte
-- Beobachtungen und Datenfelder können exportiert werden
+- Manuell auf Luftbildern / Karten von Google lokalisieren
+- Alle Beobachtungen auf Luftbild / Karte darstellen
+- Beobachtungen und Datenfelder exportieren
 
 Im einfachen Modus:
 - Beobachtungen schnell und unkompliziert erfassen (nur die grundlegenden Attribute)
