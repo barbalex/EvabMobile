@@ -55,17 +55,6 @@
 				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
-				    	<legend>Ich will in diesem Modus erfassen:</legend>
-				         	<input type="radio" name="Modus" class="Feld" id="einfach" value="einfach" />
-				         	<label for="einfach">einfach</label>
-				         	<input type="radio" name="Modus" class="Feld" id="hierarchisch" value="hierarchisch"/>
-				         	<label for="hierarchisch">hierarchisch</label>
-				    </fieldset>
-				</div>
-				<p>Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Informationen in einer übersichtlichen Liste.<br />Vorteile: 1. einfach 2. übersichtlich 3. geeignet für die Erfassung von Einzel- oder Gelegenheitsbeobachtungen.<br /><br />Der hierarchische Modus ist für Experten und "Poweruser" gedacht: Hier stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit</i> und <i>Art</i> viele Felder zur Verfügung.<br />Vorteile: 1. Es können Artgruppen-spezifische Informationen erfasst werden. 2. Effizienter, wenn am selben Ort viele Beobachtungen erfasst werden (z.B. für Vegetationsaufnahmen).</p>
-				<hr />
-				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
 				         	<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber"  />
 				         	<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
@@ -93,10 +82,9 @@
 				success : function(r) {
 					var userCtx = r.userCtx;
 					User = userCtx.name;
+					//speichereLetzteUrl(User);  ausgeschaltet, weil von nicht bekannt ist
 				}
 			});
-
-			speichereLetzteUrl(User);
 			
 			/*
 			$.ajax({

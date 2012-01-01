@@ -123,7 +123,6 @@
 
 	function öffneStartseite(User) {
 		//_replicate(name, pass);
-		var Modus;
 		$db.view('evab/User?key="' + User + '"', {
 			success: function(data) {
 				var doc = data.rows[0].value;

@@ -60,17 +60,6 @@
 					<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
-				    	<legend>Ich will in diesem Modus erfassen:</legend>
-				         	<input type="radio" name="Modus" id="einfach" value="einfach" checked="checked"/>
-				         	<label for="einfach">einfach</label>
-				         	<input type="radio" name="Modus" id="hierarchisch" value="hierarchisch"  />
-				         	<label for="hierarchisch">hierarchisch</label>
-				    </fieldset>
-				</div>
-				<p>Im einfachen Modus erfassen Sie für alle Artengruppen dieselben Informationen in einer übersichtlichen Liste.<br />Vorteile: 1. einfach 2. übersichtlich 3. geeignet für die Erfassung von Einzel- oder Gelegenheitsbeobachtungen.<br /><br />Der hierarchische Modus ist für Experten und "Poweruser" gedacht: Hier stehen in den fünf Hierarchiestufen <i>Projekt, Raum, Ort, Zeit</i> und <i>Art</i> viele Felder zur Verfügung.<br />Vorteile: 1. Es können Artgruppen-spezifische Informationen erfasst werden. 2. Effizienter, wenn am selben Ort viele Beobachtungen erfasst werden (z.B. für Vegetationsaufnahmen).</p>
-				<hr />
-				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
 				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber"  checked="checked"/>
 				         	<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
@@ -115,14 +104,8 @@
 			} else if (Autor==""){
 				melde("Bitte Autor eingeben");
 			} else {
-				erstelleKonto(UserName, Passwort, Autor, Modus);
+				erstelleKonto(UserName, Passwort, Autor);
 			}
-		});
-
-		//Modus managen
-		var Modus = "einfach";
-		$("input[name='Modus']").change(function(){
-			Modus = $(this).attr("id");
 		});
 
 		//Datenverwendung managen
@@ -135,14 +118,14 @@
 	$(document).ready(handleDocumentReady);
   </script>
   <script type="text/javascript" charset="utf-8">	
-	function erstelleKonto(UserName, Passwort, Autor, Modus) {
+	function erstelleKonto(UserName, Passwort, Autor) {
 		//User in _user eintragen                                    
 		var email = $("input#Email").val();                                      
 		$.couch.signup({
 				name: UserName, Autor: Autor, email: email
 		  	}, Passwort, {
 		  	success : function() {
-		  		speichereUserInEvab(UserName, Modus);
+		  		speichereUserInEvab(UserName);
 		  		erstelleSichtbarImModusHierarchisch(UserName);
 		  		meldeUserAn(UserName, Passwort);
 		  	},
@@ -184,17 +167,15 @@
 		});
 	}
 	
-	function speichereUserInEvab(UserName, Modus) {
+	function speichereUserInEvab(UserName) {
 		var doc = {};
 		doc.Typ = "User";
 		doc.UserName = UserName;
 		doc.Autor = $("input#Autor").val();
-		doc.Modus = Modus;
 		doc.Datenverwendung = Datenverwendung;
 		if ($("input#Email").val() != "") {
 			doc.Email = $("input#Email").val();
 		}
-		doc.Modus = "einfach";
 		$db.saveDoc(doc, {
 			success: function(data) {
 				melde("Yuhui, Ihr User wurde erstellt");
