@@ -63,10 +63,9 @@
 		var ListItemContainer = "";
 		var ArtGruppe;
 		var row;
-		var ArtGruppe_2_L;
+		var ArtGruppen_2_L;
 		var ArtGruppen;
-		var AnzArten, AnzArten2;
-		var viewname2;
+		var AnzArten;
 		$db.view(viewname, {
 			success: function(data) {
 				ArtGruppen = data;
@@ -84,8 +83,7 @@
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
 						}
-						ListItemContainer += "</ul>";
-						ListItemContainer += "<\/li>";
+						ListItemContainer += "</ul><\/li>";
 					} else {
 						ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
