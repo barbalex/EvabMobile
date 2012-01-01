@@ -25,11 +25,19 @@
    }
 
 .ui-content {
-  background-color: #ecf6e0;
+  background-color: #f3f9eb; 
 }
 
 .ui-page {
-  background-color: #ecf6e0;
+  background-color: #f3f9eb;
+}
+
+.ui-listview-filter {
+  background-color: #f3f9eb;
+}
+
+.ui-bar-c {
+  background-color: #f3f9eb;
 }
 
 .HinweisDynamischerFeldaufbau {
