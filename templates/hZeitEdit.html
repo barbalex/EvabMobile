@@ -85,6 +85,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		erstelle_hZeitEdit("{{id}}", User);
+		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
 		$(".speichern").live("change", function() {

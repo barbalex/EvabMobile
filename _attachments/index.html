@@ -126,15 +126,9 @@
 		var Modus;
 		$db.view('evab/User?key="' + User + '"', {
 			success: function(data) {
-				var doc;
-				doc = data.rows[0].value;
-				Modus = doc.Modus || "einfach";
-				UserId = doc._id;
-				if (Modus == "hierarchisch"){
-					window.open("hProjektListe.html", target="_self");
-				} else {
-					window.open("BeobListe.html", target="_self");
-				}
+				var doc = data.rows[0].value;
+				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
+				window.open(LetzteUrl, target="_self");
 			}
 		});
 	}

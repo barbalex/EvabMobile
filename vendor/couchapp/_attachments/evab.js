@@ -1125,3 +1125,22 @@ function stopGeolocation() {
         speichern();
     }
 }
+
+function speichereLetzteUrl(User) {
+//empfängt User und Name der letzten Ansicht
+//speichert diese im Userdokument
+//damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
+	//var url = window.location.pathname; nimmt hasch nicht mit!
+	var url = $(location).attr('href');
+	$db.view('evab/User?key="' + User + '"', {
+		success: function(data) {
+			var UserId = data.rows[0].value._id;
+			$db.openDoc(UserId, {
+				success: function(doc) {
+					doc.LetzteUrl = url;
+					$db.saveDoc(doc);
+				}
+			});
+		}
+	});
+}

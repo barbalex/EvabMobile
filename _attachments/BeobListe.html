@@ -71,6 +71,8 @@
 		
 		aktualisiereBeobListe(Pfad, User);
 
+		speichereLetzteUrl(User);
+
 		$('li').bind('taphold', function(event){
 			var that = this;
 			var BeobId = $(that).attr('id');

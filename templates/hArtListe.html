@@ -66,6 +66,7 @@
 		prüfeAnmeldung(Pfad);
 		
 		refreshArtListe();
+		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";

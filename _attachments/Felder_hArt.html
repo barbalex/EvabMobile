@@ -36,6 +36,7 @@
 			var ArtGruppe = get_url_param('ArtGruppe');
 		
 			prüfeAnmeldung(Pfad);
+			speichereLetzteUrl(User);
 			var Erläuterungstext = "<h3>Felder der Artgruppe " + ArtGruppe + " wählen:</h3><p>In der Feldverwaltung ist definiert, welche Felder in welcher Artgruppe zur Verfügung stehen.</p>";
 			$("#Erläuterungstext").html(Erläuterungstext).trigger("create");
 			erstelle_sichtbareFelder(ArtGruppe, User);
