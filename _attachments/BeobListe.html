@@ -73,12 +73,6 @@
 
 		speichereLetzteUrl(User);
 
-		$('li').bind('taphold', function(event){
-			var that = this;
-			var BeobId = $(that).attr('id');
-			melde("Jetzt käme das Kontextmenu für BeobId = " + BeobId);
-		});
-
 		$(".beob").live("swipeleft", function() {
 			var BeobId = $(this).attr('id');
 			window.open("_show/BeobEdit/" + BeobId, target="_self");
