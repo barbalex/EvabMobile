@@ -26,7 +26,7 @@ function(head, req) {
 	send(Titel);
 
 	while(row = getRow()) {
-		send('"' + (row.value.Tabelle || "") + '"\t"' + (row.value.FeldName || "") + '"\t"' + (row.value.Reihenfolge || "") + '"\t"' + (row.value.FeldBeschriftung || "") + '"\t"' + (row.value.FeldBeschreibung || "") + '"\t"' + (row.value.Formularelement || "") + '"\t"' + (row.value.InputTyp || "") + '"\t"' + (row.value.FeldNameEvab || "") + '"\t"' + (row.value.FeldNameZdsf || "") + '"\t"' + (row.value.FeldNameCscf || "") + '"\t"' + (row.value.ArtGruppe || "") + '"\t"' + (row.value.Optionen || "") + '"\t"' + (row.value.Standardwert || "") + '"\t"' + (row.value.SliderMinimum || "") + '"\t"' + (row.value.SliderMaximum || "") + '" \n');
+		send('"' + (row.value.Hierarchiestufe || "") + '"\t"' + (row.value.FeldName || "") + '"\t"' + (row.value.Reihenfolge || "") + '"\t"' + (row.value.FeldBeschriftung || "") + '"\t"' + (row.value.FeldBeschreibung || "") + '"\t"' + (row.value.Formularelement || "") + '"\t"' + (row.value.InputTyp || "") + '"\t"' + (row.value.FeldNameEvab || "") + '"\t"' + (row.value.FeldNameZdsf || "") + '"\t"' + (row.value.FeldNameCscf || "") + '"\t"' + (row.value.ArtGruppe || "") + '"\t"' + (row.value.Optionen || "") + '"\t"' + (row.value.Standardwert || "") + '"\t"' + (row.value.SliderMinimum || "") + '"\t"' + (row.value.SliderMaximum || "") + '" \n');
 	}
 	//send(Werte);
 }

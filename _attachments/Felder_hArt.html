@@ -80,14 +80,14 @@
 				var SichtbareFelder = row.Felder;
 				SichtbarModusHierarchischId = row._id;
 				//holt die Feldliste aus der DB
-				//und schreibt die Feldnamen für Tabelle Art in den Array FeldlisteArt
+				//und schreibt die Feldnamen für Hierarchiestufe Art in den Array FeldlisteArt
 				$db.view('evab/FeldListeArt', {
 					success: function(data) {
 						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 						var anzFelder = 0;
 						for (i in data.rows) {
 							var Feld = data.rows[i].value;
-							if (Feld.Tabelle == "Art" && (Feld.ArtGruppe.indexOf(ArtGruppe) != -1) && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
+							if (Feld.Hierarchiestufe == "Art" && (Feld.ArtGruppe.indexOf(ArtGruppe) != -1) && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
 								anzFelder += 1;
 								var FeldName = Feld.FeldName;
 								var FeldBeschriftung = Feld.FeldBeschriftung;

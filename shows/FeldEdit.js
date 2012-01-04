@@ -3,7 +3,7 @@ function(doc, req) {
 	var stash = {
 		id: doc._id,
 		rev: doc._rev,
-		Tabelle: doc.Tabelle,
+		Hierarchiestufe: doc.Hierarchiestufe,
 		FeldName: doc.FeldName,
 		FeldBeschriftung: doc.FeldBeschriftung,
 		FeldBeschreibung: doc.FeldBeschreibung,

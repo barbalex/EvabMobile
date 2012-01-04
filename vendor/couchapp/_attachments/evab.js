@@ -156,7 +156,7 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId, Von, ProjektId, RaumId, OrtId, ZeitId) {
+function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //hArtListe und hArtEdit geben ProjektId, RaumId, OrtId und ZeitId mit
@@ -176,7 +176,7 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId, Von,
 	doc.User = User;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
-	doc.aArtId = aArtId;
+	doc.aArtId = ArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.view('evab/User?key="' + User + '"', {
@@ -202,14 +202,14 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, aArtId, Von,
 
 //Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
 //erwartet Von = von welchem Formular aufgerufen wurde
-function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, aArtId, Von) {
+function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, ArtId, Von) {
 $db.openDoc(BeobId, {
 		success: function(Beob) {
 			if (aArtGruppe) {
 				Beob.aArtGruppe = aArtGruppe;
 			}
 			Beob.aArtName = aArtName;
-			Beob.aArtId = aArtId;
+			Beob.aArtId = ArtId;
 			$db.saveDoc(Beob, {
 				success: function(data) {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
@@ -226,7 +226,7 @@ $db.openDoc(BeobId, {
 	});
 }
 
-function speichereNeueBeobHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, aArtId) {
+function speichereNeueBeobHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, ArtId) {
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 	$db = $.couch.db("evab");
@@ -239,7 +239,7 @@ function speichereNeueBeobHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserNam
 	doc.ZeitId = ZeitId;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtName;
-	doc.aArtId = aArtId;
+	doc.aArtId = ArtId;
 	doc.aMeldungTyp = "Feldbeobachtung";
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
@@ -1130,8 +1130,9 @@ function speichereLetzteUrl(User) {
 //empfängt User und Name der letzten Ansicht
 //speichert diese im Userdokument
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
-	//var url = window.location.pathname; nimmt hasch nicht mit!
-	var url = $(location).attr('href');
+//host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
+	var url = window.location.pathname + window.location.search;
+	//var url = $(location).attr('href');
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			var UserId = data.rows[0].value._id;

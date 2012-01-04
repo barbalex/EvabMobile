@@ -63,8 +63,8 @@
 			});
 			
 			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
-			$("input[name='Tabelle']").checkboxradio();
-			$("#{{Tabelle}}").prop("checked",true).checkboxradio("refresh");
+			$("input[name='Hierarchiestufe']").checkboxradio();
+			$("#{{Hierarchiestufe}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='Formularelement']").checkboxradio();
 			$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
 			$("input[name='InputTyp']").checkboxradio();
@@ -435,16 +435,16 @@
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<legend>Tabelle:</legend>
-							<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
+						<legend>Hierarchiestufe:</legend>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
 	         				<label for="Projekt">Projekt</label>
-	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Raum" value="Raum"/>
+	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum"/>
 	         				<label for="Raum">Raum</label>
-	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Ort" value="Ort"/>
+	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Ort" value="Ort"/>
 	         				<label for="Ort">Ort</label>
-	         				<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
+	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
 	         				<label for="Zeit">Zeit</label>
-							<input type="radio" name="Tabelle" class="Feldeigenschaften" id="Art" value="Art"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Art" value="Art"/>
 	         				<label for="Art">Art</label>
 	         		</fieldset>
 				</div>

@@ -77,7 +77,7 @@
 				var SichtbareFelder = row.Felder;
 				SichtbarModusHierarchischId = row._id;
 				//holt die Feldliste aus der DB
-				//und schreibt die Feldnamen für Tabelle Art in den Array FeldlisteArt
+				//und schreibt die Feldnamen für Hierarchiestufe Art in den Array FeldlisteArt
 				$db.view('evab/FeldListeOrt', {
 					success: function(data) {
 						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
@@ -85,7 +85,7 @@
 						for (i in data.rows) {
 							var Feld = data.rows[i].value;
 							var FeldName = Feld.FeldName;
-							if ((Feld.Tabelle == "Ort") && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
+							if ((Feld.Hierarchiestufe == "Ort") && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 								anzFelder += 1;
 								var FeldBeschriftung = Feld.FeldBeschriftung;
 								var ListItem = "\n\t\t\<label for='";

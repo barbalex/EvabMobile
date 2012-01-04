@@ -2,6 +2,8 @@
  * mit dieser Datei werden die CSS-Styling-Vorgaben angepasst
  */
 
+ body {background: #f3f9eb; background-color: #f3f9eb;}
+
 .ui-field-contain {margin: 0.5em 0;}
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}

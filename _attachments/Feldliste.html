@@ -72,7 +72,7 @@
 				for(i in data.rows) {                 //Liste aufbauen
 					Feld = data.rows[i].value;
 					var Typ = Feld.Typ;
-					var Tabelle = Feld.Tabelle;
+					var Hierarchiestufe = Feld.Hierarchiestufe;
 					var FeldName = Feld.FeldName;
 					var Reihenfolge = Feld.Reihenfolge;
 					var FeldBeschriftung = Feld.FeldBeschriftung;
@@ -85,7 +85,7 @@
 					var FeldNameZdsf = Feld.FeldNameZdsf;
 					var FeldNameCscf = Feld.FeldNameCscf;
 					var ArtGruppe = Feld.ArtGruppe;
-					ImageLink = "Hierarchiebilder/" + Tabelle + ".png";
+					ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
 					var zurueck = get_url_param('zurueck');
 					if (IsAdmin == false) {
 						externalPage = "_show/FeldRead/" + Feld._id + "?zurueck=" + zurueck;
@@ -95,7 +95,7 @@
 					ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 						"<a href='" + externalPage + "' rel='external'>" +
 						"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-						"<h2>" + Tabelle + ': ' + FeldBeschriftung + "<\/h2>" +
+						"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
 						"<p>" + FeldBeschreibung + "</p>"
 						"<\/a><\/li>";
 				}
