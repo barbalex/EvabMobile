@@ -353,7 +353,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
       		},
       		'Beobachtungen exportieren': {
 		      	click: function () {
-		        	window.open(Pfad + '_list/BeobExportHierarchisch/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+		        	window.open(Pfad + '_list/hBeobExport/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
         		},
         		theme: "a",
         		icon: "arrow-r"
