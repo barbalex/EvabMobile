@@ -132,8 +132,8 @@
   <script type="text/javascript" charset="utf-8">	
   	function refreshRaumListe() {
 		$("#Räume").empty();
-		var ProjektId = "{{id}}";
-		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]', {
+		var hProjektId = "{{id}}";
+		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + hProjektId + '"]&endkey=["' + User + '", "' + hProjektId + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var anzRaum = 0;

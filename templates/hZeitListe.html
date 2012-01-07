@@ -68,10 +68,10 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 
 		//Link zum Raum in Navbar setzen
-		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{RaumId}}";
+		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{hRaumId}}";
 
 		//Link zum Ort in Navbar und Titelleiste setzen
 		var url = "../hOrtEdit/" + "{{id}}";
@@ -80,24 +80,24 @@
 		//Neue Zeit erstellen
 		$('#hZeitNeuLink').live('click', function(event) {
 			event.preventDefault();
-			erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}"); 
+			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
 		});
 
 		$(".Zeit").live("swipeleft", function() {
-			var ZeitId = $(this).attr('id');
-			window.open("../hArtListe/" + ZeitId, target="_self");
+			var hZeitId = $(this).attr('id');
+			window.open("../hArtListe/" + hZeitId, target="_self");
 		});
 
 		$(".erste").live("swipeleft", function() {
-			erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}");
+			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}");
 		});
 
 		$(".Zeit").live("swiperight", function() {
-			window.open("../hOrtListe/" + "{{RaumId}}", target="_self");
+			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
 		});
 
 		$(".erste").live("swiperight", function() {
-			window.open("../hOrtListe/" + "{{RaumId}}", target="_self");
+			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
 		});
 
 		//Link zur OrtListe in Navbar setzen
@@ -138,8 +138,8 @@
   <script type="text/javascript" charset="utf-8">	
   	function refreshZeitListe() {
 		$("#Zeiten").empty();
-		var OrtId = "{{id}}";
-		$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
+		var hOrtId = "{{id}}";
+		$db.view('evab/hZeitListe?startkey=["' + User + '", "' + hOrtId + '"]&endkey=["' + User + '", "' + hOrtId + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var anzZeit = 0;
@@ -178,7 +178,7 @@
 	}
 
 	function erstelleNeueZeit_mitAllenParametern() {
-		erstelleNeueZeit(User, "{{ProjektId}}", "{{RaumId}}", "{{id}}");
+		erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}");
 	}
   </script>
 </html>

@@ -51,10 +51,10 @@
 			Pfad = "../../";
 		}
 		var BeobId = get_url_param("BeobId") || "";
-		var ProjektId = get_url_param("ProjektId") || "";
-		var RaumId = get_url_param("RaumId") || "";
-		var OrtId = get_url_param("OrtId") || "";
-		var ZeitId = get_url_param("ZeitId") || "";
+		var hProjektId = get_url_param("hProjektId") || "";
+		var hRaumId = get_url_param("hRaumId") || "";
+		var hOrtId = get_url_param("hOrtId") || "";
+		var hZeitId = get_url_param("hZeitId") || "";
 
 		var viewname = "evab/Artgruppen";
 		var i;
@@ -109,10 +109,10 @@
 					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
 					break;
 				case "hArtListe":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
 					break;
 				case "hArtEdit":
-					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
 					break;
 			}
 			if (BeobId != "") {

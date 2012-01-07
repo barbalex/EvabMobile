@@ -3,8 +3,8 @@ function(doc, req) {
 	var stash = {
 		id: doc._id,
 		rev: doc._rev,
-		ProjektId: doc.ProjektId,
-		RaumId: doc.RaumId,
+		hProjektId: doc.hProjektId,
+		hRaumId: doc.hRaumId,
 		oName: doc.oName,
 		oXKoord: doc.oXKoord,
 		oYKoord: doc.oYKoord,

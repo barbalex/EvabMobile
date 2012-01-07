@@ -85,7 +85,7 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 
 		//Link zum Raum in Navbar und Titelleiste setzen
 		var url = "../hRaumEdit/" + "{{id}}";
@@ -93,7 +93,7 @@
 
 		//neuen Ort erstellen
 		$("[name='hOrtNeuLink']").live('click', function(){
-			erstelleNeuenOrt(User, "{{ProjektId}}", "{{id}}");
+			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 
 		//Link zur OrtListe in Navbar setzen
@@ -109,20 +109,20 @@
 		});
 
 		$(".Ort").live("swipeleft", function() {
-			var OrtId = $(this).attr('id');
-			window.open("../hZeitListe/" + OrtId, target="_self");
+			var hOrtId = $(this).attr('id');
+			window.open("../hZeitListe/" + hOrtId, target="_self");
 		});
 
 		$(".erste").live("swipeleft", function() {
-			erstelleNeuenOrt(User, "{{ProjektId}}", "{{id}}");
+			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 
 		$(".Ort").live("swiperight", function() {
-			window.open("../hRaumListe/" + "{{ProjektId}}", target="_self");
+			window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
 		});
 
 		$(".erste").live("swiperight", function() {
-			window.open("../hRaumListe/" + "{{ProjektId}}", target="_self");
+			window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
 		});
 
 		$("#GeButton").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
@@ -167,13 +167,13 @@
 								for(i in data.rows) {               //Liste aufbauen
 									Ort = data.rows[i].value;
 									key = data.rows[i].key;
-									var OrtId = Ort._id;
+									var hOrtId = Ort._id;
 									var oName = Ort.oName;
 									var oXKoord = Ort.oXKoord;
 									var oYKoord = Ort.oYKoord;
 									var lat2 = Ort.oLatitudeDecDeg;
 									var lng2 = Ort.oLongitudeDecDeg;
-									var externalPage = "../../_show/hOrtEdit/" + OrtId;
+									var externalPage = "../../_show/hOrtEdit/" + hOrtId;
 									var latlng2 = new google.maps.LatLng(lat2, lng2);
 									var marker = new MarkerWithLabel({ 
 										map: map,
@@ -238,13 +238,13 @@
 							for(i in data.rows) {               //Liste aufbauen
 								Ort = data.rows[i].value;
 								key = data.rows[i].key;
-								var OrtId = Ort._id;
+								var hOrtId = Ort._id;
 								var oName = Ort.oName;
 								var oXKoord = Ort.oXKoord;
 								var oYKoord = Ort.oYKoord;
 								var lat2 = Ort.oLatitudeDecDeg;
 								var lng2 = Ort.oLongitudeDecDeg;
-								var externalPage = "../../_show/hOrtEdit/" + OrtId;
+								var externalPage = "../../_show/hOrtEdit/" + hOrtId;
 								var latlng2 = new google.maps.LatLng(lat2, lng2);
 								var marker = new MarkerWithLabel({ 
 									map: map,
@@ -312,8 +312,8 @@
   <script type="text/javascript" charset="utf-8">	
   	function refreshOrtListe() {
 		$("#Orte").empty();
-		var RaumId = "{{id}}";
-		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
+		var hRaumId = "{{id}}";
+		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + hRaumId + '"]&endkey=["' + User + '", "' + hRaumId + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var anzOrt = 0;

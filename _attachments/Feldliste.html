@@ -71,20 +71,12 @@
 
 				for(i in data.rows) {                 //Liste aufbauen
 					Feld = data.rows[i].value;
-					var Typ = Feld.Typ;
 					var Hierarchiestufe = Feld.Hierarchiestufe;
-					var FeldName = Feld.FeldName;
-					var Reihenfolge = Feld.Reihenfolge;
 					var FeldBeschriftung = Feld.FeldBeschriftung;
 					var FeldBeschreibung ="";
 					if (Feld.FeldBeschreibung){
 						FeldBeschreibung = Feld.FeldBeschreibung;
 					}
-					var RolleModusEinfach = Feld.RolleModusEinfach;
-					var FeldNameEvab = Feld.FeldNameEvab;
-					var FeldNameZdsf = Feld.FeldNameZdsf;
-					var FeldNameCscf = Feld.FeldNameCscf;
-					var ArtGruppe = Feld.ArtGruppe;
 					ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
 					var zurueck = get_url_param('zurueck');
 					if (IsAdmin == false) {

@@ -3,7 +3,7 @@ function(doc, req) {
 	var stash = {
 		id: doc._id,
 		rev: doc._rev,
-		ProjektId: doc.ProjektId
+		hProjektId: doc.hProjektId
 	};
 	return Mustache.to_html(this.templates.hOrtListe, stash);
 }

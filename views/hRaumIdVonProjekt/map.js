@@ -1,7 +1,5 @@
 function(doc) {
-	var ProjektId = doc.ProjektId;
-	var id = doc._id;
-	if(doc.Typ == 'hRaum' && ProjektId){
-		emit ([ProjektId, id], null);
+	if(doc.Typ == 'hRaum' && doc.hProjektId){
+		emit ([doc.hProjektId, doc._id], null);
 	}
 }

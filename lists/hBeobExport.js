@@ -1,5 +1,5 @@
 function(head, req) { 
-	var row;
+	
 	start({
 		"headers": {
 			"Content-Type": "text/csv",
@@ -7,25 +7,88 @@ function(head, req) {
 			"Accept-Charset": "utf-8"
 	    }
 	});
-	send('Hierarchiestufe\tProjektId\tpName\tpBemerkungen\tRaumId\trName\trBemerkungen\tOrtId\toName\toXKoord\toYKoord\toLongitudeDecDeg\toLatitudeDecDeg\toLagegenauigkeit\toBemerkungen\tZeitId\tzDatum\tzZeit\tzGenauigkeit\tzDeckungDefinition\tzBemerkungen\tArtId\taArtGruppe\taArtName\taArtId\taMeldungTyp\taArtNameUnsicher\taVorhandensein\taArtNameVerifiziertDurch\taArtNameBemerkungen\taAutor\taMenge\taBemerkungen\n');
+
+	var row;
+	var name, i, y, z;
+	var FeldName;
+	var FeldNamen = [];
+	var FeldNamenEnthalten = [];
+	var Titelzeile;
+	var Titellänge;
+	var Datensatz, Datensatz;
+	var Datensätze = [];
+	var Datenzeile;
+	var Datenzeilenlänge;
+
+	//Array mit allen Feldnamen erstellen
 	while(row = getRow()) {
-		var RaumId = "";
-		if (row.key[2].length > 0) {
-			RaumId = row.key[2];
+		Datensatz = row.value;
+		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
+		switch (Datensatz.Typ) {
+			case "hProjekt":
+				Datensatz.hProjektId = Datensatz._id;
+			break;
+			case "hRaum":
+				Datensatz.hRaumId = Datensatz._id;
+			break;
+			case "hOrt":
+				Datensatz.hOrtId = Datensatz._id;
+			break;
+			case "hZeit":
+				Datensatz.hZeitId = Datensatz._id;
+			break;
+			//für hArt nicht nötig
 		}
-		var OrtId = "";
-		if (row.key[3].length > 0) {
-			OrtId = row.key[3];
+		Datensätze.push(Datensatz);
+		for (name in Datensatz) {
+			if (name !== '_id' && name !== '_rev' && name !== 'User') {
+				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
+				if (FeldNamen.indexOf(name) == -1) {
+					FeldNamen.push(name);
+				}
+			}
 		}
-		var ZeitId = "";
-		if (row.key[4].length > 0) {
-			ZeitId = row.key[4];
+	}
+	FeldNamen.sort();
+
+	//Titelzeile erstellen
+	Titelzeile = '"';
+	for (i in FeldNamen) {
+		Titelzeile += FeldNamen[i] + '"\t"';
+	}
+
+	//letztes t abschneiden, mit n ersetzen
+	Titellänge = (Titelzeile.length - 3);
+	Titelzeile = Titelzeile.slice(0, Titellänge) + '"\n';
+
+	send(Titelzeile);
+
+	//durch Datensätze loopen. i = Datensatz
+	for (y in Datensätze) {
+		Datensatz = Datensätze[y];
+		//für jeden Datensatz die Liste der enthaltenen Felder erstellen
+		FeldNamenEnthalten = [];
+		for (name in Datensatz) {
+			if (name !== '_id' && name !== '_rev' && name !== 'User') {
+				FeldNamenEnthalten.push(name);
+			}
 		}
-		var ArtId = "";
-		if (row.key[5].length > 0) {
-			ArtId = row.key[5];
+		//Durch FeldNamen loopen
+		//wenn FeldName des Datensatzes enthalten ist, dessen Wert anfügen
+		//sonst leeren Wert
+		Datenzeile = '"';
+		for (z in FeldNamen) {
+			FeldName = FeldNamen[z];
+			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
+				Datenzeile += eval('Datensatz.' + FeldNamen[z]) + '"\t"';
+			} else {
+				Datenzeile += '"\t"';
+			}
 		}
-		send('"' + row.value.Typ.slice(1) + '"\t"' + row.key[1] + '"\t"' + (row.value.pName || "") + '"\t"' + (row.value.pBemerkungen || "") + '"\t"' + RaumId + '"\t"' + (row.value.rName || "") + '"\t"' + (row.value.rBemerkungen || "") + '"\t"' + OrtId + '"\t"' + (row.value.oName || "") + '"\t"' + (row.value.oXKoord || "") + '"\t"' + (row.value.oYKoord || "") + '"\t"' + (row.value.oLongitudeDecDeg || "") + '"\t"' + (row.value.oLatitudeDecDeg || "") + '"\t"' + (row.value.oLagegenauigkeit || "") + '"\t"' + (row.value.oBemerkungen || "") + '"\t"' + ZeitId + '"\t"' + (row.value.zDatum || "") + '"\t"' + (row.value.zZeit || "") + '"\t"' + (row.value.zGenauigkeit || "") + '"\t"' + (row.value.zDeckungDefinition || "") + '"\t"' + (row.value.zBemerkungen || "") + '"\t"' + ArtId + '"\t"' + (row.value.aArtGruppe || "") + '"\t"' + (row.value.aArtName || "") + '"\t"' + (row.value.aArtId || "") + '"\t"' + (row.value.aMeldungTyp || "") + '"\t"' + (row.value.aArtNameUnsicher || "") + '"\t"' + (row.value.aVorhandensein || "") + '"\t"' + (row.value.aArtNameVerifiziertDurch || "") + '"\t"' + (row.value.aArtNameBemerkungen || "") + '"\t"' + (row.value.aAutor || "") + '"\t"' + (row.value.aMenge || "") + '"\t"' + (row.value.aBemerkungen || "") + '"\n');
+		Datenzeilenlänge = (Datenzeile.length -3);
+		//letztes \t abschneiden, mit \n zur nächsten Zeile
+		Datenzeile = Datenzeile.slice(0, Datenzeilenlänge) + '"\n';
+		send(Datenzeile);
 	}
 }
 

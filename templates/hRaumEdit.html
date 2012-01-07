@@ -114,15 +114,15 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 
 		//Link zur RaumListe in Navbar setzen
-		var url = "../hRaumListe/" + "{{ProjektId}}";
+		var url = "../hRaumListe/" + "{{hProjektId}}";
 		$("[name='hRaumListeLink']").attr('href', url);
 
 		//neuen Raum erstellen
 		$("[name='hRaumNeuLink']").live("click", function() {
-			erstelleNeuenRaum("{{ProjektId}}");
+			erstelleNeuenRaum("{{hProjektId}}");
 		});
 
 		//Link zur Ortliste in Navbar setzen
@@ -162,7 +162,7 @@
 
 	function löscheRaum() {
 		var RaumId = "{{id}}";
-		var ProjektId = "{{ProjektId}}";
+		var hProjektId = "{{hProjektId}}";
 		var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht;
 		var Rückmeldung;
 		ArtenGelöscht = löscheArtenVonRaum(RaumId);
@@ -193,7 +193,7 @@
 								success: function() {
 									Rückmeldung += "\rRaum gelöscht";
 									melde(Rückmeldung);
-									setTimeout("window.open('../hRaumListe/" + ProjektId + "', target='_self')", 1400);
+									setTimeout("window.open('../hRaumListe/" + hProjektId + "', target='_self')", 1400);
 									return true;
 								},
 								error: function() {
@@ -296,7 +296,7 @@
 		hRaum.Typ = "hRaum";
 		hRaum.User = User;
 		hRaum._id = docId;
-		hRaum.ProjektId = "{{ProjektId}}";
+		hRaum.hProjektId = "{{hProjektId}}";
 		$db.openDoc(docId, {
 			success: function(doc) {
 				hRaum._rev = doc._rev;
@@ -316,7 +316,7 @@
 	//nächster des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
-		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + "{{ProjektId}}" + '"]&endkey=["' + User + '", "' + "{{ProjektId}}" + '" ,{}]', {
+		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + "{{hProjektId}}" + '"]&endkey=["' + User + '", "' + "{{hProjektId}}" + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var RaumIdAktuell;
@@ -341,7 +341,7 @@
 								RaumIdVoriger = data.rows[i-1].value._id;
 								window.open(RaumIdVoriger, target="_self")
 							} else {
-								window.open("../hRaumListe/" + "{{ProjektId}}", target="_self")
+								window.open("../hRaumListe/" + "{{hProjektId}}", target="_self")
 							}
 							break;
 						}

@@ -156,10 +156,10 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId) {
+function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
-//hArtListe und hArtEdit geben ProjektId, RaumId, OrtId und ZeitId mit
+//hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	$db = $.couch.db("evab");
 	var doc = {};
 	if (Von == "BeobListe" || Von == "BeobEdit") {
@@ -168,10 +168,10 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, 
 		doc.Typ = "hArt";
 	}
 	if (Von == "hArtListe" || Von == "hArtEdit") {
-		doc.ProjektId = ProjektId;
-		doc.RaumId = RaumId;
-		doc.OrtId = OrtId;
-		doc.ZeitId = ZeitId;
+		doc.hProjektId = hProjektId;
+		doc.hRaumId = hRaumId;
+		doc.hOrtId = hOrtId;
+		doc.hZeitId = hZeitId;
 	}
 	doc.User = User;
 	doc.aArtGruppe = aArtGruppe;
@@ -226,17 +226,17 @@ $db.openDoc(BeobId, {
 	});
 }
 
-function speichereNeueBeobHierarchisch(ProjektId, RaumId, OrtId, ZeitId, UserName, aArtGruppe, aArtName, ArtId) {
+function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, UserName, aArtGruppe, aArtName, ArtId) {
 //Neue hierarchische Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 	$db = $.couch.db("evab");
 	var doc = {};
 	doc.Typ = "hArt";
 	doc.User = UserName;
-	doc.ProjektId = ProjektId;
-	doc.RaumId = RaumId;
-	doc.OrtId = OrtId;
-	doc.ZeitId = ZeitId;
+	doc.hProjektId = hProjektId;
+	doc.hRaumId = hRaumId;
+	doc.hOrtId = hOrtId;
+	doc.hZeitId = hZeitId;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtName;
 	doc.aArtId = ArtId;
@@ -453,13 +453,13 @@ function aktualisiereBeobListe(Pfad, User) {
 	});
 }
 
-function erstelleNeueZeit(User, ProjektId, RaumId, OrtId) {
+function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 	var doc = {};
 	doc.Typ = "hZeit";
 	doc.User = User;
-	doc.ProjektId = ProjektId;
-	doc.RaumId = RaumId;
-	doc.OrtId = OrtId;
+	doc.hProjektId = hProjektId;
+	doc.hRaumId = hRaumId;
+	doc.hOrtId = hOrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.saveDoc(doc, {
@@ -472,12 +472,12 @@ function erstelleNeueZeit(User, ProjektId, RaumId, OrtId) {
 	});
 }
 
-function erstelleNeuenOrt(User, ProjektId, RaumId) {
+function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 	var hOrt = {};
 	hOrt.Typ = "hOrt";
 	hOrt.User = User;
-	hOrt.ProjektId = ProjektId;
-	hOrt.RaumId = RaumId;
+	hOrt.hProjektId = hProjektId;
+	hOrt.hRaumId = hRaumId;
 	$db.saveDoc(hOrt, {
 		success: function(data) {
 			window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
@@ -488,12 +488,12 @@ function erstelleNeuenOrt(User, ProjektId, RaumId) {
 	});
 }
 
-function erstelleNeuenRaum(ProjektId) {
+function erstelleNeuenRaum(hProjektId) {
 	$db = $.couch.db("evab");
 	var hRaum = {};
 	hRaum.Typ = "hRaum";
 	hRaum.User = User;
-	hRaum.ProjektId = ProjektId;
+	hRaum.hProjektId = hProjektId;
 	$db.saveDoc(hRaum, {
 		success: function(data) {
 			window.open("../hRaumEdit/" + data.id, target="_self");

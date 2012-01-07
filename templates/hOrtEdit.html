@@ -125,19 +125,19 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 
 		//Link zum Raum in Navbar setzen
-		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{RaumId}}";
+		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{hRaumId}}";
 
 		//Link zur OrtListe in Navbar setzen
-		var url = "../hOrtListe/" + "{{RaumId}}";
+		var url = "../hOrtListe/" + "{{hRaumId}}";
 		$("[name='hOrtListeLink']").attr('href', url);
 
 		//neuen Ort erstellen
 		$("[name='hOrtNeuLink']").live('click', function(event){
 			event.preventDefault();
-			erstelleNeuenOrt(User, "{{ProjektId}}", "{{RaumId}}");
+			erstelleNeuenOrt(User, "{{hProjektId}}", "{{hRaumId}}");
 		});
 
 		//Link zur Zeit in Navbar setzen
@@ -341,17 +341,17 @@
   <script type="text/javascript" charset="utf-8">	
 	/*
 	function löscheOrt() {
-		var OrtId = "{{id}}";
-		var RaumId = "{{RaumId}}";
+		var hOrtId = "{{id}}";
+		var hRaumId = "{{hRaumId}}";
 		// First open doc based on ID in order to get full document
-		$db.openDoc(OrtId, {
+		$db.openDoc(hOrtId, {
 			success: function(document) {
 				$db.removeDoc(document, {
 					success: function() {
 						melde('Ort gelöscht');
-						setTimeout("löscheArtenVonOrt('" + OrtId + "')", 1400);
-						setTimeout("löscheZeitenVonOrt('" + OrtId + "')", 2800);
-						setTimeout("window.open('../hOrtListe/" + RaumId + "', target='_self')", 4200);
+						setTimeout("löscheArtenVonOrt('" + hOrtId + "')", 1400);
+						setTimeout("löscheZeitenVonOrt('" + hOrtId + "')", 2800);
+						setTimeout("window.open('../hOrtListe/" + hRaumId + "', target='_self')", 4200);
 					},
 					error: function() {
 						melde("Fehler: Der Ort konnte nicht gelöscht werden");
@@ -365,11 +365,11 @@
 	}*/
 	
 	function löscheOrt() {
-		var OrtId = "{{id}}";
-		var RaumId = "{{RaumId}}";
+		var hOrtId = "{{id}}";
+		var hRaumId = "{{hRaumId}}";
 		var ArtenGelöscht, ZeitenGelöscht;
 		var Rückmeldung;
-		ArtenGelöscht = löscheArtenVonOrt(OrtId);
+		ArtenGelöscht = löscheArtenVonOrt(hOrtId);
 		if (ArtenGelöscht != 0 && ArtenGelöscht == false) {
 			melde("Fehler: Zugehörige Arten nicht gelöscht");
 			return false;
@@ -379,7 +379,7 @@
 			} else {
 				Rückmeldung = "zugehörige Arten gelöscht";
 			}
-			ZeitenGelöscht = löscheZeitenVonOrt(OrtId);
+			ZeitenGelöscht = löscheZeitenVonOrt(hOrtId);
 			if (ZeitenGelöscht != 0 && ZeitenGelöscht == false) {
 				Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 				melde(Rückmeldung);
@@ -391,14 +391,14 @@
 					Rückmeldung += "\rzugehörige Zeiten gelöscht";
 				}
 				// First open doc based on ID in order to get full document
-				return $db.openDoc(OrtId, {
+				return $db.openDoc(hOrtId, {
 					success: function(document) {
 						// lösche Ort
 						return $db.removeDoc(document, {
 							success: function() {
 								Rückmeldung += "\rOrt gelöscht";
 								melde(Rückmeldung);
-								setTimeout("window.open('../hOrtListe/" + RaumId + "', target='_self')", 1400);
+								setTimeout("window.open('../hOrtListe/" + hRaumId + "', target='_self')", 1400);
 								return true;
 							},
 							error: function() {
@@ -419,10 +419,10 @@
 	}
 	
 	//lösche alle einem Ort zugeordnete Arten
-	function löscheArtenVonOrt(OrtId) { 
+	function löscheArtenVonOrt(hOrtId) { 
 		var AnzArtenGelöscht = 0; 
 		var DokumentGelöscht;
-		var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '", {}]';
+		var viewname = 'evab/hArtIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '", {}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -444,10 +444,10 @@
 	}
 
 	//lösche alle einem Ort zugeordnete Zeiten
-	function löscheZeitenVonOrt(OrtId) { 
+	function löscheZeitenVonOrt(hOrtId) { 
 		var AnzZeitenGelöscht = 0;
 		var DokumentGelöscht;
-		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '", {}]';
+		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '", {}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -471,8 +471,8 @@
 	//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
 	//und gib diesen Wert zurück
 	function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
-		var OrtId = "{{id}}";
-		var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
+		var hOrtId = "{{id}}";
+		var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + hOrtId + '"';
 		var AnzahlZeiten = 0;
 		return $db.view(viewname, {
 			success: function(data) {
@@ -496,8 +496,8 @@
 		hOrt.Typ = "hOrt";
 		hOrt.User = User;
 		hOrt._id = docId;
-		hOrt.ProjektId = "{{ProjektId}}";
-		hOrt.RaumId = "{{RaumId}}";
+		hOrt.hProjektId = "{{hProjektId}}";
+		hOrt.hRaumId = "{{hRaumId}}";
 		//Längen- und Breitengrad sind in keinem Feld dargestellt
 		//sie müssen aus ihren Variabeln gespeichert werden
 		if (oLatitudeDecDeg && oLatitudeDecDeg != "" && oLongitudeDecDeg && oLongitudeDecDeg != "") {
@@ -600,7 +600,7 @@
 	//nächster des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
-		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + "{{RaumId}}" + '"]&endkey=["' + User + '", "' + "{{RaumId}}" + '" ,{}]', {
+		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + "{{hRaumId}}" + '"]&endkey=["' + User + '", "' + "{{hRaumId}}" + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var OrtIdAktuell;
@@ -625,7 +625,7 @@
 								OrtIdVoriger = data.rows[i-1].value._id;
 								window.open(OrtIdVoriger, target="_self")
 							} else {
-								window.open("../hOrtListe/" + "{{RaumId}}", target="_self")
+								window.open("../hOrtListe/" + "{{hRaumId}}", target="_self")
 							}
 							break;
 						}

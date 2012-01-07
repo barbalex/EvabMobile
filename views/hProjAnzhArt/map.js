@@ -1,5 +1,5 @@
 ﻿function(doc) {
-	if(doc.Typ == 'hArt' && doc.ProjektId){
-		emit (doc.ProjektId, 1);
+	if(doc.Typ == 'hArt' && doc.hProjektId){
+		emit (doc.hProjektId, 1);
 	}
 }

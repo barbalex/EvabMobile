@@ -1,7 +1,5 @@
 function(doc) {
-	var ZeitId = doc.ZeitId;
-	var id = doc._id;
-	if(doc.Typ == 'hArt' && ZeitId){
-		emit ([ZeitId, id], null);
+	if(doc.Typ == 'hArt' && doc.hZeitId){
+		emit ([doc.hZeitId, doc._id], null);
 	}
 }

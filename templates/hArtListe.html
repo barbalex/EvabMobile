@@ -69,13 +69,13 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{ProjektId}}";
+		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 
 		//Link zum Raum in Navbar setzen
-		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{RaumId}}";
+		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{hRaumId}}";
 
 		//Link zum Ort in Navbar setzen
-		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{OrtId}}";
+		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{hOrtId}}";
 
 		//Link zur Zeit in Navbar und Titelleiste setzen
 		var url = "../hZeitEdit/" + "{{id}}";
@@ -109,11 +109,11 @@
 		});
 
 		$(".beob").live("swiperight", function() {
-			window.open("../hZeitListe/" + "{{OrtId}}", target="_self");
+			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
 
 		$(".erste").live("swiperight", function() {
-			window.open("../hZeitListe/" + "{{OrtId}}", target="_self");
+			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
 
 		//$.mobile.fixedToolbars.show();
@@ -122,7 +122,7 @@
 	$(document).ready(handleDocumentReady);
 
 	function erstelleNeueBeob_1_Artgruppenliste() {
-		window.open("../../Artgruppenliste.html?Status=Neu&Von=hArtListe&ProjektId=" + "{{ProjektId}}" + "&RaumId=" + "{{RaumId}}" + "&OrtId=" + "{{OrtId}}" + "&ZeitId=" + "{{id}}", target="_self");
+		window.open("../../Artgruppenliste.html?Status=Neu&Von=hArtListe&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{id}}", target="_self");
 	}
 
 	function prüfeAnmeldung(Pfad) {		
@@ -146,8 +146,8 @@
   <script type="text/javascript" charset="utf-8">	
   	function refreshArtListe() {
 		$("#Arten").empty();
-		var ZeitId = "{{id}}";
-		$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
+		var hZeitId = "{{id}}";
+		$db.view('evab/hArtListe?startkey=["' + User + '", "' + hZeitId + '"]&endkey=["' + User + '", "' + hZeitId + '" ,{}]', {
 			success: function(data) {
 				var i;
 				var anzArt = 0;
