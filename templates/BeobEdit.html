@@ -152,7 +152,20 @@
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
 			$("select#aArtName").tap(function(event){
 				event.preventDefault();
-				window.open("../../Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+				//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
+				//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
+				//wenn nein: direkt die Artenliste aufrufen
+				var viewname = 'evab/Artgruppen?key="' + "{{aArtGruppe}}" + '"'; 
+				$db.view(viewname, {
+					success: function(data) {
+						var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+						if (ArtGruppen_2_L) {
+							window.open("../../Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+						} else {
+							window.open("../../Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+						}
+					}
+				});	
 			});
 
 			//Für jedes Feld bei Änderung speichern

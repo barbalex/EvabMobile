@@ -2,7 +2,13 @@
  * mit dieser Datei werden die CSS-Styling-Vorgaben angepasst
  */
 
- body {background: #f3f9eb; background-color: #f3f9eb;}
+body {background: #f3f9eb; background-color: #f3f9eb;}
+
+/*verhindern, dass der Text in der Titelzeile abgeschnitten wird*/
+.ui-header .ui-title {
+  overflow: visible !important;
+  white-space: normal !important;
+}
 
 .ui-field-contain {margin: 0.5em 0;}
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
