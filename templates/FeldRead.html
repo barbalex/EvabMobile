@@ -39,12 +39,11 @@
 			
 			setzeUserFeldEinstellungen("{{FeldName}}");
 			setzeSichtbarModusHierarchisch("{{FeldName}}");
+			$(".FeldReadHeaderTitel").text("{{FeldBeschriftung}}");
 
 			//noch nicht aktive Felder deaktivieren
 			$('#SichtbarModusEinfach').textinput();
 			$('#SichtbarModusEinfach').textinput('disable');
-			$('#Standardwert').textinput();
-			$('#Standardwert').textinput('disable');
 
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
 			$(".MeineEinstellungen").change(function() {
@@ -89,7 +88,6 @@
 						key = data.rows[i].key;
 						row = data.rows[i].value;
 						$("select#SichtbarModusEinfach").val(row.SichtbarModusEinfach);
-						$("input#Standardwert").val(row.Standardwert);
 						UserFeldDocId = row.id;
 					}
 					$("select#SichtbarModusEinfach").slider("refresh");
@@ -130,7 +128,6 @@
 			var Typ = "UserFeldEinstellung";
 			var FeldName = "{{FeldName}}";
 			var SichtbarModusEinfach = $("select#SichtbarModusEinfach").val();
-			var Standardwert = $("input#Standardwert").val();
 			if (UserFeldDocId != 0) {
 				$db.openDoc(UserFeldDocId, {
 					success: function(document) {
@@ -138,11 +135,6 @@
 						document.User = User;
 						document.FeldName = FeldName;
 						document.SichtbarModusEinfach = SichtbarModusEinfach;
-						if (Standardwert != "") {
-							document.Standardwert = Standardwert;
-						} else {
-							delete document.Standardwert;
-						}
 						saveUserFeld(document);
 					},
 					error: function() {
@@ -155,9 +147,6 @@
 				document.User = User;
 				document.FeldName = FeldName;
 				document.SichtbarModusEinfach = SichtbarModusEinfach;
-				if (Standardwert != "") {
-					document.Standardwert = Standardwert;
-				}
 				saveUserFeld(document);
 			}
 		}
@@ -248,7 +237,7 @@
   	<div data-role="page" id="FeldReadPage">
   		<div data-role="header" data-position="fixed">
   			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
-  			<h2>Datenfelder</h2>
+  			<h2 class="FeldReadHeaderTitel">Datenfelder</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
@@ -267,10 +256,6 @@
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
-				</div>
-				<div data-role="fieldcontain">
-					<label for="Standardwert">Standardwert:</label>
-					<input class="MeineEinstellungen" id="Standardwert" name="Standardwert" type="text" />
 				</div>
 			</form>
 			<p>Hier wird für Sie gebaut: Die ausgeblendeten Felder werden - voraussichtlich - später aktiviert.</p>
