@@ -56,7 +56,10 @@
 					for(i in data.rows) {
 						row = data.rows[i].value;
 						ArtGruppenArray = row.ArtGruppe;
-						ArtGruppeAufbauen(ArtGruppenArray);
+						//ArtGruppen nur in der Hierarchiestufe Art anzeigen
+						if ("{{Hierarchiestufe}}" === "Art") {
+							ArtGruppeAufbauen(ArtGruppenArray);
+						}
 					}
 				}
 			});

@@ -41,6 +41,12 @@
 			setzeSichtbarModusHierarchisch("{{FeldName}}");
 			$(".FeldReadHeaderTitel").text("{{FeldBeschriftung}}");
 
+			//ArtGruppen nur in der Hierarchiestufe Art anzeigen
+			if ("{{Hierarchiestufe}}" !== "Art") {
+				var ArtGruppe = document.getElementById("ArtGruppe");
+				ArtGruppe.style.display = "none";
+			}
+
 			//noch nicht aktive Felder deaktivieren
 			$('#SichtbarModusEinfach').textinput();
 			$('#SichtbarModusEinfach').textinput('disable');
@@ -318,7 +324,7 @@
 				    <td valign="top">Input Typ für textinput:</td>
 				    <td valign="top"><span class="Feld">{{InputTyp}}</span></td>
 			  	</tr>
-			  	<tr>
+			  	<tr id="ArtGruppe">
 				    <td valign="top">Art-Gruppen:</td>
 				    <td valign="top"><span class="Feld">{{ArtGruppe}}</span></td>
 			  	</tr>
