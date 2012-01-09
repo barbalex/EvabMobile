@@ -73,7 +73,7 @@ Generell:
 - Alle Beobachtungen auf Luftbild / Karte darstellen
   Das Luftbild wird auf die aktuelle Position zentriert
 - Durch Listen und Formulare "swipen"
-- App öffnet nach Anmeldung wieder die zuletzt benutzte Seite
+- App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
 
 Im einfachen Modus:
@@ -88,7 +88,7 @@ Im hierarchischen Modus:
   sie sind frei konfigurierbar, inklusive eigener Auwahllisten (verbesserungsbedürftig)
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind
-  (Spezialfälle für Artspezialisten und frische Neobiotika)
+  (Spezialfälle für Artspezialisten und frische Neobiota)
 
 
 WIE GEHT ES WEITER? (ROADMAP)
