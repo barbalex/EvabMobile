@@ -96,7 +96,15 @@ WIE GEHT ES WEITER? (ROADMAP)
 - Tempo erhöhen
 - Datenschutz gewährleisten (wird wohl die grösste Knacknuss!)
 - Android- und iOS-App
-- Funktionalität erweitern (z.B. Bilder und Tonaufnahmen, spezifisch Neophyten erfassen)
+- Funktionalität erweitern, z.B.:
+  - Bilder und Tonaufnahmen anhängen
+  - spezifisch Neophyten erfassen
+  - Datenbanken teilen
+  - Anzahl Meldungen derselben Art im 10*10km-Quadranten, Jahr der jüngsten Meldung
+  - andere Darstellung auf grossen Bildschirmen  
+  - Beobachtungen in Listenform bearbeiten 
+    (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
+  - Artgruppe vorwählen (z.B. für Floraaufnahmen)
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
 
 
