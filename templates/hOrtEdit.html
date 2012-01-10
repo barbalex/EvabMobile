@@ -124,6 +124,16 @@
 			speichern("KeineMeldung");
 		});
 
+		//Für jedes Slider-Feld bei Änderung speichern
+		//Problem: Slider löst bei jeder Wertänderung aus
+		//zieht man, löst dies viel zu viele Speichervorgänge aus
+		//mouseup scheint nicht zu funktionieren
+		//ungelöstes Problem: swipe reagiert!
+		$(".speichernSlider").live("change", function(event) {
+			warte(1000);
+			speichern("KeineMeldung");
+		});
+
 		//Link zum Projekt in Navbar setzen
 		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
 

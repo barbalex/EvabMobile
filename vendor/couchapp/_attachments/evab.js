@@ -834,7 +834,7 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<input class="speichern" type="range" name="';
+	HtmlContainer += ':</label>\n\t<input class="speichernSlider" type="range" name="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" id="';
 	HtmlContainer += FeldName;
@@ -1205,3 +1205,53 @@ function löscheFeldSichtbarImModusHierarchisch(UserName, FeldName) {
 		}
 	});
 }
+
+/*! A fix for the iOS orientationchange zoom bug.
+ Script by @scottjehl, rebound by @wilto.
+ MIT License.
+*/
+(function(w){
+    var doc = w.document;
+
+    if( !doc.querySelector ){ return; }
+
+    var meta = doc.querySelector( "meta[name=viewport]" ),
+        initialContent = meta && meta.getAttribute( "content" ),
+        disabledZoom = initialContent + ", maximum-scale=1",
+        enabledZoom = initialContent + ", maximum-scale=10",
+        enabled = true,
+        orientation = w.orientation,
+        rotation = 0;
+
+    if( !meta ){ return; }
+
+    function restoreZoom(){
+        meta.setAttribute( "content", enabledZoom );
+        enabled = true;
+    }
+
+    function disableZoom(){
+        meta.setAttribute( "content", disabledZoom );
+        enabled = false;
+    }
+
+    function checkTilt( e ){
+        orientation = Math.abs( w.orientation );
+        rotation = Math.abs( e.gamma );
+
+        if( rotation > 8 && orientation === 0 ){
+            if( enabled ){
+                disableZoom();
+            }   
+        }
+        else {
+            if( !enabled ){
+                restoreZoom();
+            }
+        }
+    }
+
+    w.addEventListener( "orientationchange", restoreZoom, false );
+    w.addEventListener( "deviceorientation", checkTilt, false );
+
+})( this );
