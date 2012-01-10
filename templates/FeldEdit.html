@@ -195,6 +195,13 @@
 				setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
 			}
 			var Feld = $("#FeldEditForm").serializeObject();
+			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
+			if (Feld.Optionen) {
+				Feld.Optionen = Feld.Optionen.split(", ");
+			}
+			if (Feld.ArtGruppe) {
+				Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
+			}
 			Feld.Typ = "Feld";
 			Feld._id = "{{id}}";
 				$db.openDoc("{{id}}", {
@@ -213,20 +220,6 @@
 						melde("Fehler: Feld nicht gespeichert");
 					}
 				});
-		}
-
-		function erstelleNeuesFeld() {
-			$db = $.couch.db("evab");
-			Feld.Typ = "Feld";
-			$db.saveDoc(Feld, {
-				success: function(data) {
-					var zurueck = get_url_param('zurueck');
-					window.open('FeldEdit' + data.id + '"?"' + zurueck, target = '_self');
-				},
-				error: function() {
-					melde("Fehler: Feld nicht gespeichert");
-				}
-			});
 		}
 
 		function speichereMeineEinstellungen() {
@@ -362,8 +355,27 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							//var Pfad = Pfad || "../../";
-							window.open(Pfad + "FeldListe.html", target = '_self');
+							//Feld aus UserSichtbarModusHierarchisch entfernen
+							$db = $.couch.db("evab");
+							var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+							$db.view(viewname, {
+								success: function(data) {
+									var doc = data.rows[0].value;
+									var Felder = doc.Felder;
+									if (Felder.indexOf("{{FeldName}}") != -1) {
+										Felder.splice(Felder.indexOf("{{FeldName}}"), 1);
+										$db.saveDoc(doc);
+										window.open(Pfad + "FeldListe.html", target = '_self');
+									} else {
+										window.open(Pfad + "FeldListe.html", target = '_self');
+									}
+								},
+								error: function() {
+									//scheitert entfernen aus UserSichtbarModusHierarchisch, trotzdem löschen
+									window.open(Pfad + "FeldListe.html", target = '_self');
+								}
+							});
+							
 						},
 						error: function() {
 							melde("Fehler: Löschen gescheitert");
@@ -443,7 +455,7 @@
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<legend>Hierarchiestufe:</legend>
+						<legend>Hierarchiestufe (erforderlich):</legend>
 							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
 	         				<label for="Projekt">Projekt</label>
 	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum"/>
@@ -458,11 +470,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Feld-Name:</label>
-					<input class="Feldeigenschaften" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" />
+					<input class="Feldeigenschaften" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften" id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" />
+					<input class="Feldeigenschaften" id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
@@ -498,7 +510,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<legend>Formularelement:</legend>
+						<legend>Formularelement (erforderlich):</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput"/>
 	         				<label for="textinput">textinput</label>
 	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
@@ -540,11 +552,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Optionen:</label>
-					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen">{{Optionen}}</textarea>
+					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte, mit, Komma, trennen. Erforderlich für selectmenu, multipleselect, radio und checkbox">{{Optionen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}" />
+					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}"  placeholder="dieses Feld ist (noch) inaktiv"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Slider Minimum:</label>
@@ -560,7 +572,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus">neu</a></li>			
+					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
 					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->

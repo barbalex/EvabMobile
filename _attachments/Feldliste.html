@@ -37,6 +37,13 @@
 			<ul id="FeldListe" data-role="listview" data-filter="true" data-filter-placeholder="Filter setzen..." />
 			</ul>
 		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
 	</div>
   </body>
   <script type="text/javascript" charset="utf-8">;
@@ -139,6 +146,22 @@
 					window.open(Pfad + "index.html", target="_self");
 				}
 		    }
+		});
+	}
+
+	function neuesFeld() {
+		$db = $.couch.db("evab");
+		var Feld = {};
+		Feld.Typ == "Feld";
+		$db.saveDoc(Feld, {
+			success: function(data) {
+				var id = data.id;
+				var zurueck = get_url_param("zurueck");
+				window.open("_show/FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
+			},
+			error: function() {
+				melde("Fehler: Feld nicht erzeugt");
+			}
 		});
 	}
   </script>

@@ -1154,7 +1154,7 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
 	$db.view(viewname, {
 		success: function(data) {
-			doc = data.rows[0].value;
+			var doc = data.rows[0].value;
 			//neuen Wert hinzufügen
 			doc.Felder.push(FeldNameNeu);
 			docId = doc._id;
@@ -1174,7 +1174,7 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 										success: function(data) {
 											var Felder = data.Felder;
 											if (Felder.indexOf(FeldNameAlt) != -1) {
-												Felder.splice(Felder.indexOf(FeldNameAlt), 1)
+												Felder.splice(Felder.indexOf(FeldNameAlt), 1);
 												$db.saveDoc(data);
 											}
 										}
@@ -1186,6 +1186,22 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 		            
 				}
 			});
+		}
+	});
+}
+
+function löscheFeldSichtbarImModusHierarchisch(UserName, FeldName) {
+	//entfernt Feld mit übergebenem Namen im Array der sichtbaren Felder
+	//Erwartet UserNamen und Feldnamen
+	$db = $.couch.db("evab");
+	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
+	$db.view(viewname, {
+		success: function(data) {
+			doc = data.rows[0].value;
+			if (doc.Felder.indexOf(FeldName) != -1) {
+				doc.Felder.splice(doc.Felder.indexOf(FeldName), 1)
+				$db.saveDoc(data);
+			}
 		}
 	});
 }
