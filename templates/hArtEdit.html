@@ -169,10 +169,12 @@
 		});
 
 		$("#hArtEditContent").live("swipeleft", function() {
+		//$(".speichern").live("swipeleft", function() {   //nicht im slider!
 			nächsteVorigeArt("{{id}}", "nächste");
 		});
 
 		$("#hArtEditContent").live("swiperight", function() {
+		//$("#hArtEditContent").live("swiperight", function() {   //nicht im slider!
 			nächsteVorigeArt("{{id}}", "vorige");
 		});
 	}
