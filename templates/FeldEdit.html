@@ -74,7 +74,7 @@
 
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
-				speichereFeldeigenschaften();
+				speichereFeldeigenschaften(this.id);
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -186,8 +186,14 @@
 			});
 		}
 
-		function speichereFeldeigenschaften() {
+		function speichereFeldeigenschaften(FeldId) {
 			$db = $.couch.db("evab");
+			if (FeldId == "FeldName") {
+				//letzen FeldNamen aus der Liste der anzuzeigenden Felder entfernen
+				var FeldNameAlt = "{{FeldName}}";
+				var FeldNameNeu = $("#FeldName").val();
+				setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
+			}
 			var Feld = $("#FeldEditForm").serializeObject();
 			Feld.Typ = "Feld";
 			Feld._id = "{{id}}";
@@ -207,6 +213,20 @@
 						melde("Fehler: Feld nicht gespeichert");
 					}
 				});
+		}
+
+		function erstelleNeuesFeld() {
+			$db = $.couch.db("evab");
+			Feld.Typ = "Feld";
+			$db.saveDoc(Feld, {
+				success: function(data) {
+					var zurueck = get_url_param('zurueck');
+					window.open('FeldEdit' + data.id + '"?"' + zurueck, target = '_self');
+				},
+				error: function() {
+					melde("Fehler: Feld nicht gespeichert");
+				}
+			});
 		}
 
 		function speichereMeineEinstellungen() {

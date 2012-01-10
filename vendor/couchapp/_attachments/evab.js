@@ -1145,3 +1145,47 @@ function speichereLetzteUrl(User) {
 		}
 	});
 }
+
+function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
+	//ergänzt Feld mit übergebenem Namen im Array der sichtbaren Felder
+	//entfernt den früheren Feldnamen
+	//Erwartet UserNamen, neuen Feldnamen und ID des Felds
+	$db = $.couch.db("evab");
+	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
+	$db.view(viewname, {
+		success: function(data) {
+			doc = data.rows[0].value;
+			//neuen Wert hinzufügen
+			doc.Felder.push(FeldNameNeu);
+			docId = doc._id;
+			$db.saveDoc(doc, {
+				success: function() {
+					//vorletzer Revision ermitteln
+					$db.openDoc(FeldId, {revs_info:'true'}, {
+						success: function(data) {
+							var revs_info = data._revs_info;
+							var ZweitletzteRev = revs_info[1].rev;
+							//alten Wert aus vorletzer Revision holen
+							$db.openDoc(FeldId, {rev:ZweitletzteRev}, {
+								success: function(data) {
+									var FeldNameAlt = data.FeldName;
+									//alten Wert löschen
+									$db.openDoc(docId, {
+										success: function(data) {
+											var Felder = data.Felder;
+											if (Felder.indexOf(FeldNameAlt) != -1) {
+												Felder.splice(Felder.indexOf(FeldNameAlt), 1)
+												$db.saveDoc(data);
+											}
+										}
+									});
+								}
+							});
+						}
+					});
+		            
+				}
+			});
+		}
+	});
+}
