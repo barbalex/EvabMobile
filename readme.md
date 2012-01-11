@@ -90,6 +90,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - andere Darstellung auf grossen Bildschirmen  
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
+
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
 
 #Hilfe erwünscht
