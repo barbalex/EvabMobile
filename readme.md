@@ -1,5 +1,5 @@
 #Ausgangslage
-Für viele biologische Projekte ist die Verfügbarkeit von digitalen Art-Beobachtungsdaten wichtig. Anspruchsvolle Auswertungen und Erfolgskontrollen sind nur mit digitalen Daten möglich. Fliessen diese in den nationalen Kreislauf der Schweiz (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschtz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn digitale Art-Beobachtungsdaten vorliegen. Fliessen diese in den nationalen Kreislauf der Schweiz (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
@@ -18,7 +18,6 @@ Gängige Fehlerquellen:
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: 
      Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
-
 
 #Meine Motivation
 Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Kantons Zürich regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
