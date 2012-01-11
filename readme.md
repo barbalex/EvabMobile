@@ -18,7 +18,7 @@ Gängige Fehlerquellen:
      Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 
-MEINE MOTIVATION
+#Meine Motivation
 Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Kantons Zürich regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
 
 --------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ Darum soll dieses Projekt in erster Linie Ideenträger sein und Möglichkeiten a
 Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber gute Software programmieren können Profi-Programmierer nun wirklich besser.
 
 
-PROJEKTIDEE
+#Projektidee
 - Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, 
   unabhängig vom Mobilfunknetz
 - Für die Mobil-App wird jQuery mobile und Phonegap verwendet
@@ -40,7 +40,7 @@ PROJEKTIDEE
   sowie Dateien (z.B. Bilder) zugeordnet werden
 
 
-ZIELE FÜR NATURSCHUTZFACHSTELLEN
+#Ziele für Naturschutzfachstellen
 1. Artbeobachtungen liegen vermehrt digital vor
 2. Sie stehen schneller zur Verfügung
 3. Ihre Datenqualität ist höher, da bedeutende Fehlerquellen ausgeschaltet wurden
@@ -48,13 +48,13 @@ ZIELE FÜR NATURSCHUTZFACHSTELLEN
 5. Die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
 
 
-ZIELE FÜR NATURSCHUTZPROFIS
+#Ziele für Naturschutzprofis
 1. Mühsame Nachbearbeitung reduzieren
 2. Projekte schneller abschliessen
 3. Anforderungen der Naturschutzfachstellen besser erfüllen
 
 
-ZIELE FÜR HOBBY-ARTBEOBACHTERINNEN
+#Ziele für Hobby-ArtbeobachterInnen
 1. Beobachtungen übersichtlich dokumentieren 
 2. Mit den Daten zum Schutz seltener Arten beitragen
 
