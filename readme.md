@@ -13,11 +13,10 @@ Gängige Fehlerquellen:
 
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. 
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
-- Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Fleissarbeit. 
+- Artbeobachtungen digitalisieren ist mühsame, monotone Fleissarbeit. 
   Es ist allzu menschlich, sie 
   1. an eine andere Person auszulagern und 
-  2. nach dem 80/20-Prinzip zu machen: 
-     Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
+  2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 #Meine Motivation
 Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Kantons Zürich regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
@@ -26,17 +25,14 @@ Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Ka
 
 Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber gute Software programmieren können Profi-Programmierer nun wirklich besser.
 
-
 #Projektidee
-- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, 
-  unabhängig vom Mobilfunknetz
+- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Art-Beobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Für die Mobil-App wird jQuery mobile und Phonegap verwendet
   Damit sollte es für möglichst viele Geräte entwickelt werden können
 - Die App steht auch als Webseite zur Verfügung
 - Als Datenbank wird CouchDb verwendet
   Die App kann damit auch lokal auf PC installiert und jederzeit synchronisiert werden
-- Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert 
-  sowie Dateien (z.B. Bilder) zugeordnet werden
+- Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert sowie Dateien (z.B. Bilder) zugeordnet werden
 
 
 #Ziele für Naturschutzfachstellen
@@ -65,8 +61,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren:
   Koordinaten werden ab einer Genauigkeit von 100 m gespeichert
-  Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen
-  und auf die nächste Möglichkeit hingewiesen:
+  Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern / Karten von Google lokalisieren
   Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild / Karte darstellen
