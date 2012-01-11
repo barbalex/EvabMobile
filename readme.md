@@ -53,7 +53,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 
 #Was kann die App momentan?
-##Generell:
+**Generell:**
 - Sie ist erst eine Webseite. Moderne Browser werden vorausgesetzt. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
@@ -63,10 +63,10 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
 
-##Im einfachen Modus:
+**Im einfachen Modus:**
 - Beobachtungen schnell und unkompliziert erfassen. Nur die grundlegenden Attribute
 
-##Im hierarchischen Modus:
+**Im hierarchischen Modus:**
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Datenfelder)
 - Wählen, welche Felder sichtbar sind
