@@ -1,5 +1,5 @@
 #Ausgangslage
-Im Naturschtz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn digitale Art-Beobachtungsdaten vorliegen. Fliessen diese in den nationalen Kreislauf der Schweiz (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn digitale Art-Beobachtungsdaten vorliegen. Werden diese den nationalen Artdaten-Zentren der Schweiz geliefert (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
@@ -88,7 +88,6 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind
   (Spezialfälle für Artspezialisten und frische Neobiota)
 
-
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
 - Tempo erhöhen
@@ -104,7 +103,6 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
     (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
-
 
 #Hilfe erwünscht
 Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, war ich aber ein blutiger Anfänger und befinde mich in einer steilen - und schlüpfrigen - Lernkurve. Noch schlimmer: Java/Android SDK für Android-Apps und Cocoa/Objective-C für iOS-Apps. Es hilft auch nicht, dass HTML5, CouchDb, jQuery mobile und Phonegap am Beginn bzw. mitten in einer rasanten Entwicklung stehen. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
