@@ -59,7 +59,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 2. Mit den Daten zum Schutz seltener Arten beitragen
 
 
-WAS KANN DIE APP MOMENTAN?
+#Was kann die App momentan?
 Generell:
 - Sie ist erst eine Webseite. Moderne Browser werden vorausgesetzt
   Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
@@ -90,7 +90,7 @@ Im hierarchischen Modus:
   (Spezialfälle für Artspezialisten und frische Neobiota)
 
 
-WIE GEHT ES WEITER? (ROADMAP)
+#Wie geht es weiter? (roadmap)
 - Macken reduzieren
 - Tempo erhöhen
 - Datenschutz gewährleisten (wird wohl die grösste Knacknuss!)
@@ -107,5 +107,5 @@ WIE GEHT ES WEITER? (ROADMAP)
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
 
 
-HILFE ERWÜNSCHT
+#Hilfe erwünscht
 Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, war ich aber ein blutiger Anfänger und befinde mich in einer steilen - und schlüpfrigen - Lernkurve. Noch schlimmer: Java/Android SDK für Android-Apps und Cocoa/Objective-C für iOS-Apps. Es hilft auch nicht, dass HTML5, CouchDb, jQuery mobile und Phonegap am Beginn bzw. mitten in einer rasanten Entwicklung stehen. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
