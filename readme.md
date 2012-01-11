@@ -1,5 +1,5 @@
 #Ausgangslage
-Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn digitale Art-Beobachtungsdaten vorliegen. Werden diese den nationalen Artdaten-Zentren der Schweiz geliefert (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Art-Beobachtungsdaten digital vorliegen. Werden diese den nationalen Artdaten-Zentren der Schweiz geliefert (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
