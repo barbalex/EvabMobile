@@ -3,12 +3,14 @@ Für viele biologische Projekte ist die Verfügbarkeit von digitalen Art-Beobach
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
+
 - Nicht eindeutige Bezeichnung von Arten
 - Erfassung unvollständig oder nicht gemäss den Vorgaben des Projekts
 - Nicht eindeutige Ortsbeschreibung oder ungenaues/fehlerhaftes Auslesen von Koordinaten
 
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
 Gängige Fehlerquellen:  
+
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. 
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 - Die Digitalisierung von Artbeobachtungen ist mühsame, monotone Fleissarbeit. 
