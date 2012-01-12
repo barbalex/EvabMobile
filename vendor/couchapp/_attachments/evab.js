@@ -682,7 +682,7 @@ function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: id der Art, Artgruppe, Artname
 function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
-	$("#hArtEditForm").empty();
+	$("#hArtEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeArt', {
@@ -697,12 +697,11 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 					$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
 						success: function(data) {
 							var Beobachtung = data.rows[0].value;
-							//alert("Beobachtung = " + Beobachtung);
-							var HtmlContainer3 = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
-							var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
-							var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
-							var HtmlContainer = HtmlContainer1 + HtmlContainer2 + HtmlContainer3;
-							$("#hArtEditForm").html(HtmlContainer).trigger("create").trigger("refresh");
+							var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
+							//var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
+							//var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
+							//var HtmlContainer = HtmlContainer3;
+							$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
 							$.mobile.fixedToolbars.show();
 						}

@@ -50,6 +50,22 @@
 		</div>
 		<div data-role="content" id="hArtEditContent">
 			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
+				<div data-role='fieldcontain'>
+					<label for='aArtGruppe' class='select'>Artgruppe:</label>
+					<select name='aArtGruppe' id='aArtGruppe' class='speichern' data-icon='arrow-r' data-native-menu='true' value="{{aArtGruppe}}">
+						<option value="{{aArtGruppe}}">{{aArtGruppe}}</option>
+					</select>
+				</div>
+				<div data-role='fieldcontain'>
+					<label for='aArtName' class='select'>Artname:</label>
+					<select name='aArtName' id='aArtName' class='speichern' data-icon='arrow-r' data-native-menu='true' value="{{aArtName}}">
+						<option value="{{aArtName}}">{{aArtName}}</option>
+					</select>
+				</div>
+				<hr />
+				<div id="hArtEditFormHtml">
+
+				</div>
 			</form>
 			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 		</div>
@@ -79,6 +95,10 @@
 		ID = "{{id}}";
 
 		prüfeAnmeldung(Pfad);
+		$("#aArtGruppe").selectmenu();
+		$("#aArtGruppe").selectmenu("refresh");
+		$("#aArtName").selectmenu();
+		$("#aArtName").selectmenu("refresh");
 		erstelle_hArtEdit(ID, aArtGruppe, aArtName, User);
 		speichereLetzteUrl(User);
 
