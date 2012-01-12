@@ -698,9 +698,6 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 						success: function(data) {
 							var Beobachtung = data.rows[0].value;
 							var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
-							//var HtmlContainer1 = generiereHtmlFuerArtgruppe(aArtGruppe);
-							//var HtmlContainer2 = generiereHtmlFuerArtname(aArtName);
-							//var HtmlContainer = HtmlContainer3;
 							$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
 							$.mobile.fixedToolbars.show();
@@ -774,36 +771,6 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 			HtmlContainer = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
 			break;
 	}
-	return HtmlContainer;
-}
-
-
-//generiert den html-Inhalt für aArtGruppe
-//wird von erstelle_hArtEdit aufgerufen
-function generiereHtmlFuerArtgruppe(aArtGruppe) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtGruppe' class='select'>Artgruppe:</label>\n\t";
-	HtmlContainer += "<select name='aArtGruppe' id='aArtGruppe' class='speichern' data-icon='arrow-r' data-native-menu='true' value='";
-	HtmlContainer += aArtGruppe;
-	HtmlContainer += "'>\n\t\t<option value='"
-	HtmlContainer += aArtGruppe;
-	HtmlContainer += "'>";
-	HtmlContainer += aArtGruppe;
-	HtmlContainer += "</option>\n\t</select>\n</div>\n";
-	return HtmlContainer;
-}
-
-//generiert den html-Inhalt für aArtName
-//wird von erstelle_hArtEdit aufgerufen
-//bekommt HtmlContainer, ergänzt ihn und gibt ihn zurück
-function generiereHtmlFuerArtname(aArtName) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='aArtName' class='select'>Artname:</label>\n\t";
-	HtmlContainer += "<select name='aArtName' id='aArtName' class='speichern' data-icon='arrow-r' data-native-menu='true' value='";
-	HtmlContainer += aArtName;
-	HtmlContainer += "'>\n\t\t<option value='";
-	HtmlContainer += aArtName;
-	HtmlContainer += "'>";
-	HtmlContainer += aArtName;
-	HtmlContainer += "</option>\n\t</select>\n</div>\n<hr />";
 	return HtmlContainer;
 }
 
