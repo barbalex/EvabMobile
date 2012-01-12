@@ -74,7 +74,11 @@
 
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
-				speichereFeldeigenschaften(this.id);
+				if ("{{FeldGeschützt}}") {
+					melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Wollen Sie es wirklich verändern?<br><br>Sie können ein neues Feld erstellen");
+				} else {
+					speichereFeldeigenschaften(this.id);
+				}
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -97,7 +101,11 @@
 					 	'ja': {
 					      	click: function () {
 					        	$('#dialogoutput').text('ja');
-					        	löscheFeld(Pfad);
+					        	if ("{{FeldGeschützt}}") {
+									melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
+								} else {
+									löscheFeld(Pfad);
+								}
 			        		},
 			        		icon: "delete",
 			        		theme: "c"
@@ -376,12 +384,12 @@
 							
 						},
 						error: function() {
-							melde("Fehler: Löschen gescheitert");
+							melde("Fehler: nicht gelöscht");
 						}
 					});
 				},
 				error: function() {
-					melde("Fehler: Löschen gescheitert");
+					melde("Fehler: nicht gelöscht");
 				}
 			});
 			return false;

@@ -193,7 +193,7 @@ function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, 
 					}
 				},
 				error: function() {
-					melde("Die Beobachtung konnte nicht gespeichert werden.");
+					melde("Beobachtung nicht gespeichert.");
 				}
 			});
 		}
@@ -251,7 +251,7 @@ function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, Use
 					window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
 				},
 				error: function() {
-					melde("Die Art konnte nicht gespeichert werden.");
+					melde("Art nicht gespeichert.");
 				}
 			});
 		}
@@ -467,7 +467,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 			window.open("../hZeitEdit/" + data.id, target="_self");
 		},
 		error: function() {
-			melde("Fehler: keine neue Zeit erstellt");
+			melde("Fehler: neue Zeit nicht erstellt");
 		}
 	});
 }
@@ -483,7 +483,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 			window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
-			melde("Fehler: kein neuer Ort erstellt");
+			melde("Fehler: neuer Ort nicht erstellt");
 		 }
 	});
 }
@@ -499,7 +499,7 @@ function erstelleNeuenRaum(hProjektId) {
 			window.open("../hRaumEdit/" + data.id, target="_self");
 		},
 		error: function() {
-			melde("Fehler: kein neuer Raum erstellt");
+			melde("Fehler: neuer Raum nicht erstellt");
 		 }
 	});
 }
@@ -513,7 +513,7 @@ function erstelleNeuesProjekt(Pfad) {
 			window.open(Pfad + "hProjektEdit/" + data.id, target="_self");
 		},
 		error: function() {
-			melde("Fehler: kein neues Projekt erstellt");
+			melde("Fehler: neues Projekt nicht erstellt");
 		 }
 	});
 }
