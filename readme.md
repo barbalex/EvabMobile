@@ -87,7 +87,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - spezifisch Neobiota erfassen
   - Datenbanken teilen
   - Anzahl Meldungen derselben Art im 10*10km-Quadranten, Jahr der jüngsten Meldung
-  - andere Darstellung auf grossen Bildschirmen  
+  - Andere Darstellung auf grossen Bildschirmen  
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
 
@@ -95,3 +95,10 @@ Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und 
 
 #Hilfe erwünscht
 Ich bin Biologe. Mit Access-Datenbanken und deren Steuerung mit Visual Basic habe ich einige Erfahrung. Was JavaScript, jQuery, jQuery mobile, Phonegap und CouchDb anbelangt, war ich aber ein blutiger Anfänger und befinde mich in einer steilen - und schlüpfrigen - Lernkurve. Noch schlimmer: Java/Android SDK für Android-Apps und Cocoa/Objective-C für iOS-Apps. Es hilft auch nicht, dass HTML5, CouchDb, jQuery mobile und Phonegap am Beginn bzw. mitten in einer rasanten Entwicklung stehen. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+
+#Gibt's das nicht schon?
+Das App existiert eigentlich schon. Es heisst EVAB (<span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher niemand einen Windows-PC im Feld herum. Ausserdem sollte das App für den Feldgebrauch noch benutzerfreundlicher werden. Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug.
+
+#Das will ich ausprobieren
+Die Webversion des Apps ist <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a> sichtbar.
+Achtung: Funktioniert mit Internet Explorer erst ab Version 9 (Versionen bis 8 unterstützen HTML5 nicht)<br />Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome.
