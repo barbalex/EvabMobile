@@ -74,13 +74,12 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Datenfelder)
 - Wählen, welche Felder sichtbar sind
 - Eigene Datenfelder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
-- Datenfelder welche die nationalen Datenzentren verwenden, sind geschützt
+- Datenfelder, welche die nationalen Datenzentren verwenden, sind geschützt
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Tempo erhöhen
 - Datenschutz gewährleisten (wird wohl die grösste Knacknuss!)
 - Android- und iOS-App
 - Funktionalität erweitern, z.B.:
@@ -88,9 +87,10 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - spezifisch Neobiota erfassen
   - Datenbanken teilen
   - Anzahl Meldungen derselben Art im 10*10km-Quadranten, Jahr der jüngsten Meldung
-  - Andere Darstellung auf grossen Bildschirmen  
+  - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
+- Tempo erhöhen
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
 
