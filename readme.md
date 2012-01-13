@@ -90,6 +90,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
+  - Hierarchiestufen selber definieren? So könnte man für ein Projekt z.B. Zeit über Ort setzen!
 - Tempo erhöhen
 
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
