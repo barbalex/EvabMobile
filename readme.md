@@ -19,7 +19,7 @@ Gängige Fehlerquellen:
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 #Motivation
-Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Kantons Zürich regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
+Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
 
 **Darum soll dieses Projekt in erster Linie Ideenträger sein und Möglichkeiten aufzeigen.**
 
@@ -29,7 +29,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden HTML5, [jQuery mobile](http://jquerymobile.com/) und [Phonegap](http://phonegap.com/) verwendet. Damit sollte das App prinzipiell auf jedes Betriebssystem portiert werden können
 - Die App steht auch als Webseite zur Verfügung
-- Als Datenbank wird CouchDb verwendet. Die App kann damit auf PC's lokal installiert werden und laufend synchronisieren
+- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet. Die App kann damit auf PC's lokal installiert werden und laufend synchronisieren
 - Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert sowie Dateien (z.B. Bilder) angehängt werden
 
 
