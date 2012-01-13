@@ -1,5 +1,5 @@
 #Ausgangslage
-Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Art-Beobachtungsdaten digital vorliegen. Werden diese den nationalen Artdaten-Zentren der Schweiz geliefert (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Artbeobachtungsdaten digital vorliegen. Werden diese den nationalen Artdaten-Zentren der Schweiz geliefert (info flora, info fauna etc.), können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
@@ -11,7 +11,7 @@ Gängige Fehlerquellen:
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
 Gängige Fehlerquellen:  
 
-- Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen. 
+- Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders: Artnamen). 
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 - Artbeobachtungen digitalisieren ist mühsame, monotone Fleissarbeit. 
   Es ist allzu menschlich, sie 
