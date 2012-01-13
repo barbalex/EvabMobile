@@ -80,7 +80,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Datenschutz gewährleisten (wird wohl die grösste Knacknuss!)
+- Datenschutz gewährleisten
 - Android- und iOS-App
 - Funktionalität erweitern, z.B.:
   - Bilder und Tonaufnahmen anhängen
