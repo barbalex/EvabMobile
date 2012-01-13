@@ -93,6 +93,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Tempo erhöhen
 
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte GIS-Funktionen:
+
 - Karten das Swisstopo verwenden
 - Layer überlagern (Schutzgebiete, Parzellen...)
 - Linien und Flächen digitalisieren
