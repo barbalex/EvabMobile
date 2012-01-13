@@ -91,6 +91,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
 - Tempo erhöhen
+
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte GIS-Funktionen:
 - Karten das Swisstopo verwenden
 - Layer überlagern (Schutzgebiete, Parzellen...)
