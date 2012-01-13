@@ -18,7 +18,7 @@ Gängige Fehlerquellen:
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
-#Meine Motivation
+#Motivation
 Mit der beschriebenen Ausgangslage sind wir in der Fachstelle Naturschutz des Kantons Zürich regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Meine Erfahrung lehrt mich, dass Biologen es in der Regel nicht schaffen, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine neue, gute App erstellen können. 
 
 **Darum soll dieses Projekt in erster Linie Ideenträger sein und Möglichkeiten aufzeigen.**
