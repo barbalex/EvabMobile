@@ -27,7 +27,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 #Projektidee
 - Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
-- Zur Programmierung werden HTML5, jQuery mobile und Phonegap verwendet. Damit sollte das App prinzipiell auf jedes Betriebssystem portiert werden können
+- Zur Programmierung werden HTML5, [jQuery mobile](http://jquerymobile.com/) und [Phonegap](http://phonegap.com/) verwendet. Damit sollte das App prinzipiell auf jedes Betriebssystem portiert werden können
 - Die App steht auch als Webseite zur Verfügung
 - Als Datenbank wird CouchDb verwendet. Die App kann damit auf PC's lokal installiert werden und laufend synchronisieren
 - Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert sowie Dateien (z.B. Bilder) angehängt werden
