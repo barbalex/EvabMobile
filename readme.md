@@ -74,6 +74,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Datenfelder)
 - Wählen, welche Felder sichtbar sind
 - Eigene Datenfelder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
+- Datenfelder welche die nationalen Datenzentren verwenden, sind geschützt
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
