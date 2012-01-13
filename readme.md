@@ -92,10 +92,10 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
 - Tempo erhöhen
 
-Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte GIS-Funktionen:
+Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
 
-- Karten das Swisstopo verwenden
-- Layer überlagern (Schutzgebiete, Parzellen...)
+- Karten der Swisstopo verwenden
+- Nützliche Layer anbieten (Schutzgebiete, Parzellen...)
 - Linien und Flächen digitalisieren
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
