@@ -102,4 +102,4 @@ Das App existiert eigentlich schon. Es heisst EVAB (<span style="text-decoration
 
 #Das will ich ausprobieren
 Die Webversion des Apps ist <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a> sichtbar.
-Achtung: Funktioniert mit Internet Explorer erst ab Version 9 (Versionen bis 8 unterstützen HTML5 nicht). Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome.
+Achtung: Funktioniert mit Internet Explorer erst ab Version 9 (Versionen bis 8 unterstützen HTML5 nicht). Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile
