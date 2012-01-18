@@ -332,7 +332,7 @@
 						case "nächster":
 							if (i < AnzRaum) {
 								RaumIdNächster = data.rows[parseInt(i)+1].value._id;
-								window.open(RaumIdNächster, target="_self")
+								window.open(RaumIdNächster, target="_self");
 							} else {
 								melde("Das ist der letzte Raum");
 							}
@@ -340,9 +340,9 @@
 						case "voriger":
 							if (i > 0) {
 								RaumIdVoriger = data.rows[i-1].value._id;
-								window.open(RaumIdVoriger, target="_self")
+								window.open(RaumIdVoriger, target="_self");
 							} else {
-								window.open("../hRaumListe/" + "{{hProjektId}}", target="_self")
+								window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
 							}
 							break;
 						}

@@ -369,7 +369,7 @@
 						case "nächstes":
 							if (i < AnzProj) {
 								ProjIdNächstes = data.rows[parseInt(i)+1].value._id;
-								window.open(ProjIdNächstes, target="_self")
+								window.open(ProjIdNächstes, target="_self");
 							} else {
 								melde("Das ist das letzte Projekt");
 							}
@@ -377,9 +377,9 @@
 						case "voriges":
 							if (i > 0) {
 								ProjIdVoriges = data.rows[i-1].value._id;
-								window.open(ProjIdVoriges, target="_self")
+								window.open(ProjIdVoriges, target="_self");
 							} else {
-								window.open("../../hProjektListe.html", target="_self")
+								window.open("../../hProjektListe.html", target="_self");
 							}
 							break;
 						}

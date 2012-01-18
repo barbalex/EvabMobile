@@ -372,7 +372,7 @@
 						case "nächste":
 							if (i < AnzZeit) {
 								ZeitIdNächste = data.rows[parseInt(i)+1].value._id;
-								window.open(ZeitIdNächste, target="_self")
+								window.open(ZeitIdNächste, target="_self");
 							} else {
 								melde("Das ist die letzte Zeit");
 							}
@@ -380,9 +380,9 @@
 						case "vorige":
 							if (i > 0) {
 								ZeitIdVorige = data.rows[i-1].value._id;
-								window.open(ZeitIdVorige, target="_self")
+								window.open(ZeitIdVorige, target="_self");
 							} else {
-								window.open("../hZeitListe/" + "{{hOrtId}}", target="_self")
+								window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 							}
 							break;
 						}

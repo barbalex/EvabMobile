@@ -402,7 +402,7 @@
 						case "nächste":
 							if (i < AnzArt) {
 								ArtIdNächste = data.rows[parseInt(i)+1].value._id;
-								window.open(ArtIdNächste, target="_self")
+								window.open(ArtIdNächste, target="_self");
 							} else {
 								melde("Das ist die letzte Art");
 							}
@@ -410,9 +410,9 @@
 						case "vorige":
 							if (i > 0) {
 								ArtIdVorige = data.rows[i-1].value._id;
-								window.open(ArtIdVorige, target="_self")
+								window.open(ArtIdVorige, target="_self");
 							} else {
-								window.open("../hArtListe/" + "{{hZeitId}}", target="_self")
+								window.open("../hArtListe/" + "{{hZeitId}}", target="_self");
 							}
 							break;
 						}

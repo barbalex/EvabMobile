@@ -129,14 +129,15 @@
 
 			//BackButton steuern
 			$("[name='BackButton']").live('click', function(){
-				var zurueck = get_url_param("zurueck");
-				var Status = get_url_param("Status");
-				if (Status == "neu"){
-					window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
-				} else {
-					//$.mobile.changePage("../../FeldListe.html", {reloadPage: true});
-					window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
-				}
+				geheZurFeldListe();
+			});
+
+			$("#FeldContent").live("swipeleft", function() {
+				nächstesVorigesFeld("{{id}}", "nächstes");
+			});
+
+			$("#FeldContent").live("swiperight", function() {
+				nächstesVorigesFeld("{{id}}", "voriges");
 			});
 		});
 	</script>
@@ -427,6 +428,57 @@
 			}
 		});
 	}
+
+	//Öffnet das vorige oder nächste Feld
+	//voriges des ersten => FeldListe
+	//nächstes des letzten => melden
+	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	function nächstesVorigesFeld(IdAktuell, NächstesOderVoriges) {
+		$db.view('evab/FeldListe', {
+			success: function(data) {
+				var i;
+				var FeldIdAktuell;
+				var FeldIdNächstes;
+				var FeldIdVoriges;
+				var AnzFelder;
+				for(i in data.rows) {
+					FeldIdAktuell = data.rows[i].value._id;
+					var AnzFelder = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (FeldIdAktuell == IdAktuell) {
+						switch (NächstesOderVoriges) {
+						case "nächstes":
+							if (i < AnzFelder) {
+								FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
+								window.open(FeldIdNächstes, target="_self");
+							} else {
+								melde("Das ist das letzte Feld");
+							}
+							break;
+						case "voriges":
+							if (i > 0) {
+								FeldIdVoriges = data.rows[i-1].value._id;
+								window.open(FeldIdVoriges, target="_self");
+							} else {
+								geheZurFeldListe();
+							}
+							break;
+						}
+					}
+				}
+			}
+		});
+	}
+
+	function geheZurFeldListe() {
+		var zurueck = get_url_param("zurueck");
+		var Status = get_url_param("Status");
+		if (Status == "neu"){
+			window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+		} else {
+			//$.mobile.changePage("../../FeldListe.html", {reloadPage: true});
+			window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+		}
+	}
 	</script>
   </head>
   <body>
@@ -474,7 +526,7 @@
 	         		</fieldset>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldName">Feld-Name:</label>
+					<label for="FeldName">Name:</label>
 					<input class="Feldeigenschaften" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
@@ -490,27 +542,27 @@
 					<input class="Feldeigenschaften" id="Reihenfolge" name="Reihenfolge" type="number" value={{Reihenfolge}} />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameEvab">Feldname in EvAB:</label>
+					<label for="FeldNameEvab">Name in EvAB:</label>
 					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameZdsf">Feldname beim ZDSF:</label>
+					<label for="FeldNameZdsf">Name beim ZDSF:</label>
 					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text" value="{{FeldNameZdsf}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameCscf">Feldname beim CSCF:</label>
+					<label for="FeldNameCscf">Name beim CSCF:</label>
 					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text" value="{{FeldNameCscf}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameNism">Feldname beim NISM:</label>
+					<label for="FeldNameNism">Name beim NISM:</label>
 					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text" value="{{FeldNameNism}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameWslFlechten">Feldname bei WSL Flechten:</label>
+					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
 					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text" value="{{FeldNameWslFlechten}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="FeldNameWslPilze">Feldname bei WSL Pilze:</label>
+					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
 					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text" value="{{FeldNameWslPilze}}" />
 				</div>
 				<div data-role="fieldcontain">

@@ -626,7 +626,7 @@
 						case "nächster":
 							if (i < AnzOrt) {
 								OrtIdNächster = data.rows[parseInt(i)+1].value._id;
-								window.open(OrtIdNächster, target="_self")
+								window.open(OrtIdNächster, target="_self");
 							} else {
 								melde("Das ist der letzte Ort");
 							}
@@ -634,9 +634,9 @@
 						case "voriger":
 							if (i > 0) {
 								OrtIdVoriger = data.rows[i-1].value._id;
-								window.open(OrtIdVoriger, target="_self")
+								window.open(OrtIdVoriger, target="_self");
 							} else {
-								window.open("../hOrtListe/" + "{{hRaumId}}", target="_self")
+								window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
 							}
 							break;
 						}
