@@ -559,6 +559,64 @@ function Manager() {
   }
 }
 
+//generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//Mitgeben: id des Projekts, User
+function erstelle_hProjektEdit(ID, User) {
+	$("#hProjektEditFormHtml").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeProjekt', {
+		success: function(data) {
+			var FeldlisteAlle = data;
+			//Holt, welche Felder angezeigt werden sollen
+			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+				success: function(data) {
+					var row = data.rows[0].value;
+					var SichtbareFelder = row.Felder;
+					//Holt das Projekt mit der id "ID" aus der DB
+					$db.view('evab/hProjekteNachId?key="' + ID + '"', {
+						success: function(data) {
+							var Projekt = data.rows[0].value;
+							var HtmlContainer = generiereHtmlFuerProjektEditForm (FeldlisteAlle, SichtbareFelder, Projekt);
+							$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+							$("#Hinweistext").html("");
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+//generiert das Html für das Formular in hProjektEdit.html
+//erwartet Feldliste als Objekt; Projekt als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerProjektEditForm (Feldliste, SichtbareFelder, Projekt) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Projekt." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
+			if (FeldName != "pName") {
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
+			}
+		}
+	}
+	return HtmlContainer;
+}
+
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, User
 function erstelle_hRaumEdit(ID, User) {
@@ -588,10 +646,10 @@ function erstelle_hRaumEdit(ID, User) {
 	});
 }
 
-//generiert das Html für das Formular in hOrtEdit.html
-//erwartet Feldliste als Objekt; Ort als Objekt
+//generiert das Html für das Formular in hRaumEdit.html
+//erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Ort) {
+function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Raum) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -604,7 +662,7 @@ function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Ort) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Ort." + FeldName) || "");
+			FeldWert = (eval("Raum." + FeldName) || "");
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;

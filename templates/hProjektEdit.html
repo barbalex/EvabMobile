@@ -27,7 +27,7 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   </head>
   <body>
-	<div data-role="page">
+	<div data-role="page" id="ProjektEditPage">
 		<div data-role="header" data-position="fixed">
 			<a href="../../hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
@@ -43,13 +43,13 @@
 			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
-					<input id="pName" name="pName" type="text" value="{{pName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="pName" class="speichern" name="pName" type="text" value="{{pName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
-				<div data-role="fieldcontain">
-					<label for="pBemerkungen">Bemerkungen:</label>
-					<textarea name="pBemerkungen" id="pBemerkungen">{{pBemerkungen}}</textarea>
+				<div id="hProjektEditFormHtml">
+
 				</div>
 			</form>
+			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -72,10 +72,11 @@
 		User = "";
 		
 		prüfeAnmeldung(Pfad);
+		erstelle_hProjektEdit("{{id}}", User);
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$("[name^='p']").change(function() {
+		$(".speichern").live("change", function() {
 			speichern("../../");
 		});
 
