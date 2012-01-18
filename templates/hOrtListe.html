@@ -295,8 +295,6 @@
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
-
-		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -352,9 +350,7 @@
 					}
 				}
 				$("#Orte").html(ListItemContainer);
-				//$("#Orte").listview();
 				$("#Orte").listview("refresh");
-				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

@@ -115,8 +115,6 @@
 			window.open("../../hProjektListe.html", target="_self");
 			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
 		});
-
-		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -172,9 +170,7 @@
 					}
 				}
 				$("#Räume").html(ListItemContainer);
-				//$("#Räume").listview();
 				$("#Räume").listview("refresh");
-				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

@@ -89,8 +89,6 @@
 		$(".erste").live("swipeleft", function() {
 			erstelleNeuesProjekt("_show/");
 		});
-
-		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -150,9 +148,7 @@
 					}
 				}
 				$("#Projekte").html(ListItemContainer);
-				//$("#Projekte").listview();
 				$("#Projekte").listview("refresh");
-				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

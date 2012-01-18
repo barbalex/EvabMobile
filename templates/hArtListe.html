@@ -125,8 +125,6 @@
 		$(".erste").live("swiperight", function() {
 			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
-
-		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -194,9 +192,7 @@
 					}
 				}
 				$("#Arten").html(ListItemContainer);
-				//$("#Arten").listview();
 				$("#Arten").listview("refresh");
-				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

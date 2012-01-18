@@ -121,8 +121,6 @@
 			var zurueck = "hZeitListe/" + "{{id}}";
 			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
 		});
-
-		//$.mobile.fixedToolbars.show();
 	}
 	
 	$(document).ready(handleDocumentReady);
@@ -180,9 +178,7 @@
 					}
 				}
 				$("#Zeiten").html(ListItemContainer);
-				//$("#Zeiten").listview();
 				$("#Zeiten").listview("refresh");
-				//$.mobile.fixedToolbars.show();
 			}
 		});
 	}

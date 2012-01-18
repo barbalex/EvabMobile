@@ -4,8 +4,7 @@ function(doc, req) {
 		id: doc._id,
 		rev: doc._rev,
 		hProjektId: doc.hProjektId,
-		rName: doc.rName,
-		rBemerkungen: doc.rBemerkungen
+		rName: doc.rName
 	};
 	return Mustache.to_html(this.templates.hRaumEdit, stash);
 }

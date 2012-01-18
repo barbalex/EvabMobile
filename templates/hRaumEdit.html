@@ -27,7 +27,7 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
   </head>
   <body>
-	<div data-role="page">
+	<div data-role="page" id="RaumEditPage">
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumListeLink" name="hRaumListeLink">zur Raum-Liste</a>
 			<h2>Raum</h2>
@@ -44,13 +44,13 @@
 			<form action="#" method="get" autocomplete="off" id="hRaumEditForm">
 				<div data-role="fieldcontain">
 					<label for="rName">Name:</label>
-					<input id="rName" name="rName" type="text" value="{{rName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="rName" class="speichern" name="rName" type="text" value="{{rName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
-				<div data-role="fieldcontain">
-					<label for="rBemerkungen">Bemerkungen:</label>
-					<textarea name="rBemerkungen" id="rBemerkungen">{{rBemerkungen}}</textarea>
+				<div id="hRaumEditFormHtml">
+
 				</div>
 			</form>
+			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -73,10 +73,11 @@
 		User = "";
 		
 		prüfeAnmeldung(Pfad);
+		erstelle_hRaumEdit("{{id}}", User);
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$("[name^='r']").change(function() {
+		$(".speichern").live("change",function() {
 			speichern("../../");
 		});
 

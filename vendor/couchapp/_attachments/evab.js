@@ -446,9 +446,7 @@ function aktualisiereBeobListe(Pfad, User) {
 				}
 			}
 			$("#beobachtungen").html(ListItemContainer);
-			//$("#beobachtungen").listview();
 			$("#beobachtungen").listview("refresh");
-			//$.mobile.fixedToolbars.show();
 		}
 	});
 }
@@ -561,6 +559,64 @@ function Manager() {
   }
 }
 
+//generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//Mitgeben: id des Raums, User
+function erstelle_hRaumEdit(ID, User) {
+	$("#hRaumEditFormHtml").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeRaum', {
+		success: function(data) {
+			var FeldlisteAlle = data;
+			//Holt, welche Felder angezeigt werden sollen
+			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+				success: function(data) {
+					var row = data.rows[0].value;
+					var SichtbareFelder = row.Felder;
+					//Holt den Raum mit der id "ID" aus der DB
+					$db.view('evab/hRaeumeNachId?key="' + ID + '"', {
+						success: function(data) {
+							var Raum = data.rows[0].value;
+							var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteAlle, SichtbareFelder, Raum);
+							$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+							$("#Hinweistext").html("");
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+//generiert das Html für das Formular in hOrtEdit.html
+//erwartet Feldliste als Objekt; Ort als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Ort) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Ort." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
+			if (FeldName != "rName") {
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
+			}
+		}
+	}
+	return HtmlContainer;
+}
+
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts, User
 function erstelle_hOrtEdit(ID, User) {
@@ -582,7 +638,6 @@ function erstelle_hOrtEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
 							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -641,7 +696,6 @@ function erstelle_hZeitEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
 							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
@@ -700,7 +754,6 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
 							$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
-							$.mobile.fixedToolbars.show();
 						}
 					});
 				}
