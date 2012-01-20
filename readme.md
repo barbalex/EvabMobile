@@ -61,7 +61,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Manuell auf Luftbildern / Karten von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild / Karte darstellen. Das Luftbild wird auf die aktuelle Position zentriert
 - Durch Listen und Formulare "swipen"
-- App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
+- Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
 - Ökobüros mit eigenem GIS können direkt auf die aktuellen Daten zugreifen - schon während der Feldarbeit! Bedingung: Das GIS muss über eine http-Adresse JSON-Daten lesen können
 
