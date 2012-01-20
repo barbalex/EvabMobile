@@ -61,7 +61,6 @@
 		$db = $.couch.db("evab");
 		
 		userCtx = null;
-		IsAdmin = "nichts";
 		User = "";
 		var Pfad = "";
 		var zurueck = get_url_param('zurueck');
@@ -96,11 +95,7 @@
 					}
 					ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
 					var zurueck = get_url_param('zurueck');
-					if (IsAdmin == false) {
-						externalPage = "_show/FeldRead/" + Feld._id + "?zurueck=" + zurueck;
-					} else {
-						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
-					}
+					externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
 					ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 						"<a href='" + externalPage + "' rel='external'>" +
 						"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
@@ -143,11 +138,6 @@
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
-		    	if (session.userCtx.roles.indexOf("_admin") != -1) {
-					IsAdmin = true;
-				} else {
-					IsAdmin = false;
-				}
 		    	if(User != undefined || null) {
 		        	User = session.userCtx.name;
 		        } else {
