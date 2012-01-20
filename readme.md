@@ -81,7 +81,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Datenschutz gewährleisten
+- Daten schützen
 - Android- und iOS-App
 - Funktionalität erweitern, z.B.:
   - Standardwerte bestimmen
@@ -100,6 +100,7 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 - Karten der Swisstopo verwenden
 - Nützliche Layer anbieten (Schutzgebiete, Parzellen...)
 - Linien und Flächen digitalisieren
+- Umriss zeichnen > darin liegende Beobachtungen auflisten
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
 
