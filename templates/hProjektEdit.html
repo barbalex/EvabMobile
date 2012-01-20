@@ -81,6 +81,13 @@
 			speichern("../../");
 		});
 
+		//Slider-Felder erst bei mouseup speichern
+		//change wird für jeden geswipten Wert ausgelöst!
+		//ungelöstes Problem: swipe reagiert!
+		$(".ui-slider").live("mouseup", function(event) {
+			speichern("../../");
+		});
+
 		//Link zur Raumliste in Navbar setzen
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 

@@ -82,6 +82,13 @@
 			speichern("../../");
 		});
 
+		//Slider-Felder erst bei mouseup speichern
+		//change wird für jeden geswipten Wert ausgelöst!
+		//ungelöstes Problem: swipe reagiert!
+		$(".ui-slider").live("mouseup", function(event) {
+			speichern("../../");
+		});
+
 		//Code für den Raum-Löschen-Dialog
 		$('#LöschenDialogLink').live('click', function() {
 			$(this).simpledialog({

@@ -76,7 +76,7 @@
 			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
 				if ("{{FeldGeschützt}}") {
-					melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Wollen Sie es wirklich verändern?<br><br>Sie können ein neues Feld erstellen");
+					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
 				} else {
 					speichereFeldeigenschaften(this.id);
 				}
@@ -611,7 +611,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
-					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte, mit, Komma, trennen. Erforderlich für selectmenu, multipleselect, radio und checkbox">{{Optionen}}</textarea>
+					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte, mit, Komma, trennen. Erforderlich für Auswahllisten">{{Optionen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>

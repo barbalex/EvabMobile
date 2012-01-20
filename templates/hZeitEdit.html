@@ -88,13 +88,10 @@
 		erstelle_hZeitEdit("{{id}}", User);
 		speichereLetzteUrl(User);
 
-		//Für jedes Slider-Feld bei Änderung speichern
-		//Problem: Slider löst bei jeder Wertänderung aus
-		//zieht man, löst dies viel zu viele Speichervorgänge aus
-		//mouseup scheint nicht zu funktionieren
+		//Slider-Felder erst bei mouseup speichern
+		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".speichernSlider").live("change", function(event) {
-			warte(1000);
+		$(".ui-slider").live("mouseup", function(event) {
 			speichern("../../");
 		});
 
