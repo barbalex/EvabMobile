@@ -29,7 +29,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com/) und [Phonegap](http://phonegap.com/) verwendet. Damit sollte die App prinzipiell auf jedes Betriebssystem portiert werden können
 - Die App steht auch als Webseite zur Verfügung. Momentan [hier](http://barbalex.iriscouch.com/evab/_design/evab/index.html)
-- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und laufend synchronisieren. Sogar die App selbst wird laufend synchronisiert, d.h. bei updates automatisch aktualisiert (ausser auf iOS, weil das Apple nicht zulässt)
+- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert laufend. Sogar die App selbst wird laufend synchronisiert, d.h. updates erfolgen automatisch (ausser auf iOS, weil das Apple nicht zulässt)
 - Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert sowie Dateien (z.B. Bilder) angehängt werden
 
 
