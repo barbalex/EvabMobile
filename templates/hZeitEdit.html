@@ -18,7 +18,8 @@
 			$.mobile.touchOverflowEnabled = 'true';
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
-			$.mobile.selectmenu.prototype.options.nativeMenu = false; 
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+			$.event.special.swipe.horizontalDistanceThreshold = 200;
 		});
     </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>

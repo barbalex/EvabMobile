@@ -15,6 +15,7 @@
 			$.mobile.loadingMessage = 'chrampfe!'; 
 			$.mobile.defaultPageTransition  = 'none';
 			$.mobile.touchOverflowEnabled = 'true';
+			$.event.special.swipe.horizontalDistanceThreshold = 200;
 		});
     </script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
@@ -75,6 +76,15 @@
 			$("[name='BackButton']").live('click', function(){
 				var zurueck = get_url_param("zurueck");
 				window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+			});
+
+			//swipen steuern
+			$("#FeldContent").live("swipeleft", function() {
+				nächstesVorigesFeld("{{id}}", "nächstes");
+			});
+
+			$("#FeldContent").live("swiperight", function() {
+				nächstesVorigesFeld("{{id}}", "voriges");
 			});
 		});
 	</script>
