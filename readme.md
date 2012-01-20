@@ -84,6 +84,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Datenschutz gewährleisten
 - Android- und iOS-App
 - Funktionalität erweitern, z.B.:
+  - Standardwerte bestimmen
   - Bilder und Tonaufnahmen anhängen
   - spezifisch Neobiota erfassen
   - Datenbanken teilen
