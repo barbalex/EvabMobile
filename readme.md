@@ -63,7 +63,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Durch Listen und Formulare "swipen"
 - Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
-- Ökobüros mit eigenem GIS können direkt auf die aktuellen Daten zugreifen - schon während der Feldarbeit! Bedingung: Das GIS muss über eine http-Adresse JSON-Daten lesen können
+- Andere Apps (z.B. das GIS eines Ökobüros) können auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen
 
 **Im einfachen Modus:**
 
