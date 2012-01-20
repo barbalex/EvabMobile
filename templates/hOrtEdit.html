@@ -315,13 +315,11 @@
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
 
-		$("#hOrtEditContent").live("swipeleft", function() {
-		//$(".speichern").live("swipeleft", function() {   //nicht im slider!
+		$("*").live("swipeleft", function() {
 			nächsterVorigerOrt("{{id}}", "nächster");
 		});
 
-		$("#hOrtEditContent").live("swiperight", function() {
-		//$(".speichern").live("swiperight", function() {  //nicht im slider!
+		$("*").live("swiperight", function() {
 			nächsterVorigerOrt("{{id}}", "voriger");
 		});
 	}

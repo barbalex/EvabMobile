@@ -137,11 +137,11 @@
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
-		$("#hRaumEditContent").live("swipeleft", function() {
+		$("*").live("swipeleft", function() {
 			nächsterVorigerRaum("{{id}}", "nächster");
 		});
 
-		$("#hRaumEditContent").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			nächsterVorigerRaum("{{id}}", "voriger");
 		});
 	}

@@ -128,11 +128,7 @@
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 
-		$(".Ort").live("swiperight", function() {
-			window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
-		});
-
-		$(".erste").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
 		});
 

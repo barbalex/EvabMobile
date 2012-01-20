@@ -186,13 +186,11 @@
 			erstelleMenu(this, User, UserId, "../../", aArtGruppe);
 		});
 
-		$("#hArtEditContent").live("swipeleft", function() {
-		//$(".speichern").live("swipeleft", function() {   //nicht im slider!
+		$("*").live("swipeleft", function() {
 			nächsteVorigeArt("{{id}}", "nächste");
 		});
 
-		$("#hArtEditContent").live("swiperight", function() {
-		//$("#hArtEditContent").live("swiperight", function() {   //nicht im slider!
+		$("*").live("swiperight", function() {
 			nächsteVorigeArt("{{id}}", "vorige");
 		});
 	}

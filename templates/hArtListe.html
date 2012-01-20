@@ -119,11 +119,7 @@
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$(".beob").live("swiperight", function() {
-			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
-		});
-
-		$(".erste").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
 	}

@@ -154,13 +154,11 @@
 			erstelleMenu(this, User, UserId, "../../");
 		});
 
-		$("#hZeitEditContent").live("swipeleft", function() {
-		//$(".speichern").live("swipeleft", function() {     //nicht im slider!
+		$("*").live("swipeleft", function() {
 			nächsteVorigeZeit("{{id}}", "nächste");
 		});
 
-		$("#hZeitEditContent").live("swiperight", function() {
-		//$(".speichern").live("swiperight", function() {     //nicht im slider!
+		$("*").live("swiperight", function() {
 			nächsteVorigeZeit("{{id}}", "vorige");
 		});
 	}

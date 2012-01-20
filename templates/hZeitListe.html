@@ -103,11 +103,7 @@
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}");
 		});
 
-		$(".Zeit").live("swiperight", function() {
-			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
-		});
-
-		$(".erste").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
 		});
 

@@ -129,11 +129,11 @@
 			erstelleNeuesProjekt("../");
 		});
 
-		$("#hProjektEditContent").live("swipeleft", function() {
+		$("* :not(.ui-slider)").live("swipeleft", function() {    //schliesst leider ui-slider nicht aus
 			nächstesVorigesProjekt("{{id}}", "nächstes");
 		});
 
-		$("#hProjektEditContent").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			nächstesVorigesProjekt("{{id}}", "voriges");
 		});
 	}

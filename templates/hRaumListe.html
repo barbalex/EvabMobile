@@ -107,12 +107,7 @@
 			erstelleNeuenRaum("{{id}}");
 		});
 
-		$(".Raum").live("swiperight", function() {
-			window.open("../../hProjektListe.html", target="_self");
-			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
-		});
-
-		$(".erste").live("swiperight", function() {
+		$("*").live("swiperight", function() {
 			window.open("../../hProjektListe.html", target="_self");
 			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
 		});
