@@ -373,14 +373,12 @@
 									if (Felder.indexOf("{{FeldName}}") != -1) {
 										Felder.splice(Felder.indexOf("{{FeldName}}"), 1);
 										$db.saveDoc(doc);
-										window.open(Pfad + "FeldListe.html", target = '_self');
-									} else {
-										window.open(Pfad + "FeldListe.html", target = '_self');
 									}
+									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 								},
 								error: function() {
 									//scheitert entfernen aus UserSichtbarModusHierarchisch, trotzdem löschen
-									window.open(Pfad + "FeldListe.html", target = '_self');
+									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 								}
 							});
 							
