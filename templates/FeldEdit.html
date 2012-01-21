@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.validate.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
@@ -73,12 +74,35 @@
 			$("input[name='InputTyp']").checkboxradio();
 			$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
-			//Für jedes Feld aus Feldeigenschaften bei Änderung speichern
+			//jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
 				if ("{{FeldGeschützt}}") {
+					//geschützte Felder dürfen nicht verändert werden
 					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
+				} else if (this.id == "FeldName") {
+					//prüfen, ob der Feldname schon existiert
+					//wenn ja: melden, zurückstellen
+					//wenn nein: In sichtbarModusHierarchisch nachführen und speichern
+					prüfeFeldNamen();
 				} else {
-					speichereFeldeigenschaften(this.id);
+					speichereFeldeigenschaften();
+					/*$("#UserFeldForm").validate({      funktioniert gar nicht!
+						debug: true,
+						onsubmit: false,
+						rules: {
+							FeldName: "required",
+							Beschriftung: "required",
+							Reihenfolge: "required",
+						},
+						messages: {
+							FeldName: "Bitte Feldnamen erfassen",
+							Beschriftung: "Bitte Beschriftung erfassen",
+							Reihenfolge: "Bitte Reihenfolge erfassen",
+						},
+					    submitHandler: function(form) {
+					        speichereFeldeigenschaften();
+					    }
+					});*/
 				}
 			});
 			
@@ -195,14 +219,27 @@
 			});
 		}
 
-		function speichereFeldeigenschaften(FeldId) {
+		function prüfeFeldNamen() {
+			var FeldNameAlt = "{{FeldName}}";
+			var FeldNameNeu = $("#FeldName").val();
+			var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					if (data.rows[0]) {
+						$("#FeldName").val(FeldNameAlt);
+						$("#FeldName").focus();
+						melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
+					} else {
+						//alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
+						setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
+						speichereFeldeigenschaften();
+					}
+				}
+			});
+		}
+
+		function speichereFeldeigenschaften() {
 			$db = $.couch.db("evab");
-			if (FeldId == "FeldName") {
-				//letzen FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-				var FeldNameAlt = "{{FeldName}}";
-				var FeldNameNeu = $("#FeldName").val();
-				setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
-			}
 			var Feld = $("#FeldEditForm").serializeObject();
 			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
 			if (Feld.Optionen) {
@@ -218,7 +255,7 @@
 						Feld._rev = doc._rev;
 						$db.saveDoc(Feld, {
 							success: function() {
-								melde("Feld gespeichert");
+								//melde("Feld gespeichert");
 							},
 							error: function() {
 								melde("Fehler: Feld nicht gespeichert");
@@ -527,11 +564,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
-					<input class="Feldeigenschaften" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" value="{{FeldName}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften" id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" value="{{FeldBeschriftung}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
@@ -539,7 +576,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften" id="Reihenfolge" name="Reihenfolge" type="number" value={{Reihenfolge}} />
+					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
