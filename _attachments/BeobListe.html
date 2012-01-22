@@ -95,174 +95,108 @@
 
 		$('#BeobListeMap').live("pagecreate", function() {
 			/*
-			zuerst Koordinaten holen, Karte darum zentrieren
-			dann in schleife alle marker setzen
+			Irgend welche Koordinaten setzen, Karte darum zentrieren
+			dann in schleife alle marker setzen und Kartenausschnitt um diese Punkte erweitern
 			listener schaffen
 			*/
-			if (navigator.geolocation) { 
-	        	navigator.geolocation.getCurrentPosition ( 
-	            function(position) {
-	            	lat = position.coords.latitude;
-	            	lng = position.coords.longitude;
-	            	var latlng = new google.maps.LatLng(lat, lng);
-					var options = {
-					    zoom: 15,
-					    center: latlng,
-					    streetViewControl: false,
-					    mapTypeId: google.maps.MapTypeId.HYBRID
-					};
-					var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-					google.maps.event.trigger(map,'resize'); 
-					//jetzt werden für alle Beobachtungen marker erstellt
-					$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
-						success: function(data) {
-							var i;
-							var anzBeob = 0;
-							var beob;
-							var key;
-							var image;
-							var infowindow = new google.maps.InfoWindow();
-							for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-								anzBeob += 1;
-							}
-							if (anzBeob == 0) {
-								melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
-							} else {
-								var markers = [];
-								for(i in data.rows) {                //Liste aufbauen
-									beob = data.rows[i].value;
-									key = data.rows[i].key;
-									if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-										var BeobId = beob._id;
-										var Datum = beob.zDatum;
-										var Zeit = beob.zUhrzeit;
-										var ArtGruppe = beob.aArtGruppe;
-										var image = "Artgruppenbilder/" + ArtGruppe + ".png";
-										var ArtName = beob.aArtName;
-										var Autor = beob.aAutor;
-										var lat2 = beob.oLatitudeDecDeg;
-										var lng2 = beob.oLongitudeDecDeg;
-										var externalPage = "_show/BeobEdit/" + BeobId;
-										var latlng2 = new google.maps.LatLng(lat2, lng2);
-										var marker = new MarkerWithLabel({ 
-											map: map,
-											position: latlng2,  
-										    title: ArtName,
-										    icon: image,
-										    labelContent: ArtName,
-										    labelAnchor: new google.maps.Point(22, 0),
-										    labelClass: "MapLabel", // the CSS class for the label
-											labelStyle: {opacity: 0.75}
-										});
-										markers.push(marker);
-										var contentString = '<div id="content">'+
-										    '<div id="siteNotice">'+
-										    '</div>'+
-										    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
-										    '<div id="bodyContent" class="GmInfowindow">'+
-										    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-										    '<p>Autor: ' + Autor + '</p>'+
-										    '<p>Datum: ' + Datum + '</p>'+
-										    '<p>Zeit: ' + Zeit + '</p>'+
-										    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-										    '</div>'+
-										    '</div>';
-										makeListener(map, marker, contentString);
-									}
+        	
+			//Beobachtungen abfragen
+			$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+				success: function(data) {
+					var i;
+					var anzBeob = 0;
+					var beob;
+					var key;
+					var image;
+					var infowindow = new google.maps.InfoWindow();
+					for(i in data.rows) {                    //Beobachtungen zählen
+						anzBeob += 1;
+					}
+					if (anzBeob == 0) {
+						//Keine Beobachtungen: Hinweis und zurück
+						melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
+						$.mobile.changePage("#BeobListePage");
+					} else {
+						var lat = 47.383333;
+						var lng = 8.533333;
+						var latlng = new google.maps.LatLng(lat, lng);
+						var options = {
+						    zoom: 15,
+						    center: latlng,
+						    streetViewControl: false,
+						    mapTypeId: google.maps.MapTypeId.HYBRID
+						};
+						var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+						google.maps.event.trigger(map,'resize');
+						var bounds = new google.maps.LatLngBounds();
+						//für alle Beobachtungen Marker erstellen
+						var markers = [];
+						for(i in data.rows) {                //Liste aufbauen
+							beob = data.rows[i].value;
+							key = data.rows[i].key;
+							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
+								var BeobId = beob._id;
+								var Datum = beob.zDatum;
+								var Zeit = beob.zUhrzeit;
+								var ArtGruppe = beob.aArtGruppe;
+								var image = "Artgruppenbilder/" + ArtGruppe + ".png";
+								var ArtName = beob.aArtName;
+								var Autor = beob.aAutor;
+								var lat2 = beob.oLatitudeDecDeg;
+								var lng2 = beob.oLongitudeDecDeg;
+								var externalPage = "_show/BeobEdit/" + BeobId;
+								var latlng2 = new google.maps.LatLng(lat2, lng2);
+								if (anzBeob == 1) {
+									latlng = latlng2;   //map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+								} else {
+									bounds.extend(latlng2);               //Kartenausschnitt um diese Koordinate erweitern
 								}
-								var mcOptions = {maxZoom: 17};
-								var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-							}
-							function makeListener(map, marker, contentString){
-								google.maps.event.addListener(marker, 'click', function() {
-									infowindow.setContent(contentString);
-									infowindow.open(map,marker);
+								var marker = new MarkerWithLabel({ 
+									map: map,
+									position: latlng2,  
+								    title: ArtName,
+								    icon: image,
+								    labelContent: ArtName,
+								    labelAnchor: new google.maps.Point(22, 0),
+								    labelClass: "MapLabel", // the CSS class for the label
+									labelStyle: {opacity: 0.75}
 								});
+								markers.push(marker);
+								var contentString = '<div id="content">'+
+								    '<div id="siteNotice">'+
+								    '</div>'+
+								    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
+								    '<div id="bodyContent" class="GmInfowindow">'+
+								    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
+								    '<p>Autor: ' + Autor + '</p>'+
+								    '<p>Datum: ' + Datum + '</p>'+
+								    '<p>Zeit: ' + Zeit + '</p>'+
+								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+								    '</div>'+
+								    '</div>';
+								makeListener(map, marker, contentString);
 							}
 						}
-					}); 
-	            }); 
-	        } else {
-	        	var lat = 47.383333;
-				var lng = 8.533333;
-				var latlng = new google.maps.LatLng(lat, lng);
-				var options = {
-				    zoom: 15,
-				    center: latlng,
-				    streetViewControl: false,
-				    mapTypeId: google.maps.MapTypeId.HYBRID
-				};
-				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-				google.maps.event.trigger(map,'resize');
-				//jetzt werden für alle Beobachtungen marker erstellt
-				$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
-					success: function(data) {
-						var i;
-						var anzBeob = 0;
-						var beob;
-						var key;
-						var image;
-						var infowindow = new google.maps.InfoWindow();
-						for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-							anzBeob += 1;
-						}
-						if (anzBeob == 0) {
-							melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
+						var mcOptions = {maxZoom: 17};
+						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+						if (anzBeob == 1) {
+							//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+							map.setCenter(latlng);
+							map.setZoom(18);
 						} else {
-							var markers = [];
-							for(i in data.rows) {                //Liste aufbauen
-								beob = data.rows[i].value;
-								key = data.rows[i].key;
-								if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-									var BeobId = beob._id;
-									var Datum = beob.zDatum;
-									var Zeit = beob.zUhrzeit;
-									var ArtGruppe = beob.aArtGruppe;
-									var image = "Artgruppenbilder/" + ArtGruppe + ".png";
-									var ArtName = beob.aArtName;
-									var Autor = beob.aAutor;
-									var lat2 = beob.oLatitudeDecDeg;
-									var lng2 = beob.oLongitudeDecDeg;
-									var externalPage = "_show/BeobEdit/" + BeobId;
-									var latlng2 = new google.maps.LatLng(lat2, lng2);
-									var marker = new MarkerWithLabel({ 
-										map: map,
-										position: latlng2,  
-									    title: ArtName,
-									    icon: image,
-									    labelContent: ArtName,
-									    labelAnchor: new google.maps.Point(22, 0),
-									    labelClass: "MapLabel", // the CSS class for the label
-										labelStyle: {opacity: 0.75}
-									});
-									markers.push(marker);
-									var contentString = '<div id="content">'+
-									    '<div id="siteNotice">'+
-									    '</div>'+
-									    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
-									    '<div id="bodyContent" class="GmInfowindow">'+
-									    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-									    '<p>Autor: ' + Autor + '</p>'+
-									    '<p>Datum: ' + Datum + '</p>'+
-									    '<p>Zeit: ' + Zeit + '</p>'+
-									    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-									    '</div>'+
-									    '</div>';
-									makeListener(map, marker, contentString);
-								}
-							}
-							var mcOptions = {maxZoom: 17};
-							var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-						}
-						function makeListener(map, marker, contentString){
-							google.maps.event.addListener(marker, 'click', function() {
-								infowindow.setContent(contentString);
-								infowindow.open(map,marker);
-							});
+							//Karte auf Ausschnitt anpassen
+							map.fitBounds(bounds);
 						}
 					}
-				});
-	        }
+					//listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
+					function makeListener(map, marker, contentString){
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.setContent(contentString);
+							infowindow.open(map,marker);
+						});
+					}
+				}
+			});
 		});
 	
 		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen

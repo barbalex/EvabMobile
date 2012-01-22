@@ -58,9 +58,21 @@
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="RaumEditMapÖffnen" data-icon="star">Karte</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+	</div>
+
+	<div data-role="page" id="RaumEditMap" style="width:100%; height:100%;">
+		<div data-role="header" data-position="fixed">
+			<a href="#RaumEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
+			<h1>Karte</h1>
+			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+		</div>
+		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
+			<div id="map_canvas" style="width:100%; height:100%;"></div>
+		</div>
 	</div>
  
   </body>
