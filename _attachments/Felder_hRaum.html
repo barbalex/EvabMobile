@@ -79,14 +79,14 @@
 				SichtbarModusHierarchischId = row._id;
 				//holt die Feldliste aus der DB
 				//und schreibt die Feldnamen für Hierarchiestufe Art in den Array FeldlisteArt
-				$db.view('evab/FeldListeOrt', {
+				$db.view('evab/FeldListeRaum', {
 					success: function(data) {
 						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 						var anzFelder = 0;
 						for (i in data.rows) {
 							var Feld = data.rows[i].value;
 							var FeldName = Feld.FeldName;
-							if ((Feld.Hierarchiestufe == "Ort") && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
+							if ((Feld.Hierarchiestufe == "Raum") && (FeldName != "rName")) {
 								anzFelder += 1;
 								var FeldBeschriftung = Feld.FeldBeschriftung;
 								var ListItem = "\n\t\t\<label for='";
@@ -107,7 +107,7 @@
 								HtmlContainer += ListItem;
 							}
 						}
-						$("#Felder_hOrtPageHeader .Felder_hOrtPageTitel").text(anzFelder + " Felder");
+						$("#Felder_hRaumPageHeader .Felder_hRaumPageTitel").text(anzFelder + " Felder");
 						HtmlContainer += "\n\t</fieldset>\n</div>"
 						$("#Feldliste").html(HtmlContainer).trigger("create");
 						$("input[name='Felder']").checkboxradio();
@@ -168,14 +168,14 @@
 	</script>
   </head>
   <body>
-  	<div data-role="page" id="Felder_hOrtPage">
-  		<div data-role="header" data-position="fixed" id="Felder_hOrtPageHeader">
-  			<a href="_shows/hOrtEdit.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
-  			<h2 class="Felder_hOrtPageTitel">sichtbare Felder</h2>
+  	<div data-role="page" id="Felder_hRaumPage">
+  		<div data-role="header" data-position="fixed" id="Felder_hRaumPageHeader">
+  			<a href="_shows/hRaumEdit.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+  			<h2 class="Felder_hRaumPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
 			<form action="#" method="get">
-				<h3>Felder für Orte wählen:</h3>
+				<h3>Felder für Räume wählen:</h3>
 				<div data-role="fieldcontain" id="Feldliste">
 				</div>
 			</form>

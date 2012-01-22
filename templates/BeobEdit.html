@@ -355,7 +355,7 @@
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
 				var zurueck = "BeobEdit/" + "{{id}}";
-				erstelleMenu(zurueck, this, User, UserId, "../../");
+				erstelleMenuEinfach(zurueck, this, User, UserId, "../../");
 			});
 
 			$("#BeobEditContent").live("swipeleft", function() {

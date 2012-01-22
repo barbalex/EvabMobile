@@ -118,8 +118,7 @@
 
 		//Menu aufbauen
 		$('#Menu').live('click', function() {
-			var zurueck = "hRaumEdit/" + "{{id}}";
-			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
+			erstelleMenu(this, User, UserId, "../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -318,6 +317,70 @@
 				});
 			}
 		});
+	}
+
+	//Menü aufbauen
+	function erstelleMenu(thiz, User, UserId, Pfad){
+		$(thiz).simpledialog({
+			'mode' : 'bool',
+			'prompt' : 'Menü',
+	    	'buttons' : {
+			 	'einfacher Modus': {
+			      	click: function () {
+			        	window.open(Pfad + "BeobListe.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "check"
+	      		},
+	      		'neu anmelden': {
+			      	click: function () {
+			        	window.open(Pfad + "index.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "home"
+	      		},
+	      		'meine Einstellungen': {
+			      	click: function () {
+			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'lokal installieren': {
+			      	click: function () {
+			        	window.open(Pfad + "Installieren.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'Beobachtungen exportieren': {
+			      	click: function () {
+			        	window.open(Pfad + '_list/hBeobExport/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+	        		},
+	        		theme: "a",
+	        		icon: "arrow-r"
+	      		},
+	      		'Datenfelder verwalten': {
+			      	click: function () {
+			        	window.open(Pfad + "FeldListe.html?zurueck=hRaumEdit/" + "{{id}}", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "grid"
+	      		},
+	      		'sichtbare Felder wählen': {
+			      	click: function () {
+			        	window.open(Pfad + "Felder_hRaum.html", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "gear"
+	      		},
+	      		'schliessen': {
+	                click: function () { return true; },
+	                icon: "back",
+	                theme: "c"
+	            }
+	    	}
+	  	})
 	}
 
 	//Öffnet den vorigen oder nächsten Raum

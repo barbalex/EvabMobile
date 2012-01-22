@@ -258,8 +258,8 @@ function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, Use
 	});
 }
 
-//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/_attachments
-function erstelleMenu(zurueck, thiz, User, UserId, Pfad) {
+//Menü aufbauen. Wird aufgerufen von BeobEdit.html und BeobListe.html
+function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
