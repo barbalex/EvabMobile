@@ -129,51 +129,48 @@
 						var markers = [];
 						for(i in data.rows) {
 							beob = data.rows[i].value;
-							key = data.rows[i].key;
-							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
-								var BeobId = beob._id;
-								var Datum = beob.zDatum;
-								var Zeit = beob.zUhrzeit;
-								var ArtGruppe = beob.aArtGruppe;
-								var image = "Artgruppenbilder/" + ArtGruppe + ".png";
-								var ArtName = beob.aArtName;
-								var Autor = beob.aAutor;
-								var lat2 = beob.oLatitudeDecDeg;
-								var lng2 = beob.oLongitudeDecDeg;
-								var externalPage = "_show/BeobEdit/" + BeobId;
-								var latlng2 = new google.maps.LatLng(lat2, lng2);
-								if (anzBeob == 1) {
-									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-									latlng = latlng2;
-								} else {
-									//Kartenausschnitt um diese Koordinate erweitern
-									bounds.extend(latlng2);
-								}
-								var marker = new MarkerWithLabel({ 
-									map: map,
-									position: latlng2,  
-								    title: ArtName,
-								    icon: image,
-								    labelContent: ArtName,
-								    labelAnchor: new google.maps.Point(22, 0),
-								    labelClass: "MapLabel", // the CSS class for the label
-									labelStyle: {opacity: 0.75}
-								});
-								markers.push(marker);
-								var contentString = '<div id="content">'+
-								    '<div id="siteNotice">'+
-								    '</div>'+
-								    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
-								    '<div id="bodyContent" class="GmInfowindow">'+
-								    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-								    '<p>Autor: ' + Autor + '</p>'+
-								    '<p>Datum: ' + Datum + '</p>'+
-								    '<p>Zeit: ' + Zeit + '</p>'+
-								    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-								    '</div>'+
-								    '</div>';
-								makeListener(map, marker, contentString);
+							var BeobId = beob._id;
+							var Datum = beob.zDatum;
+							var Zeit = beob.zUhrzeit;
+							var ArtGruppe = beob.aArtGruppe;
+							var image = "Artgruppenbilder/" + ArtGruppe + ".png";
+							var ArtName = beob.aArtName;
+							var Autor = beob.aAutor;
+							var lat2 = beob.oLatitudeDecDeg;
+							var lng2 = beob.oLongitudeDecDeg;
+							var externalPage = "_show/BeobEdit/" + BeobId;
+							var latlng2 = new google.maps.LatLng(lat2, lng2);
+							if (anzBeob == 1) {
+								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+								latlng = latlng2;
+							} else {
+								//Kartenausschnitt um diese Koordinate erweitern
+								bounds.extend(latlng2);
 							}
+							var marker = new MarkerWithLabel({ 
+								map: map,
+								position: latlng2,  
+							    title: ArtName,
+							    icon: image,
+							    labelContent: ArtName,
+							    labelAnchor: new google.maps.Point(22, 0),
+							    labelClass: "MapLabel", // the CSS class for the label
+								labelStyle: {opacity: 0.75}
+							});
+							markers.push(marker);
+							var contentString = '<div id="content">'+
+							    '<div id="siteNotice">'+
+							    '</div>'+
+							    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
+							    '<div id="bodyContent" class="GmInfowindow">'+
+							    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
+							    '<p>Autor: ' + Autor + '</p>'+
+							    '<p>Datum: ' + Datum + '</p>'+
+							    '<p>Zeit: ' + Zeit + '</p>'+
+							    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+							    '</div>'+
+							    '</div>';
+							makeListener(map, marker, contentString);
 						}
 						var mcOptions = {maxZoom: 17};
 						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
