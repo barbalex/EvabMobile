@@ -76,6 +76,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Wählen, welche Felder sichtbar sind
 - Eigene Datenfelder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
 - Datenfelder, welche öffentliche Datenzentren verwenden, sind geschützt
+- Eigene Datenfelder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 

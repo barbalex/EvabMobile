@@ -80,10 +80,36 @@
 					//geschützte Felder dürfen nicht verändert werden
 					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
 				} else if (this.id == "FeldName") {
-					//prüfen, ob der Feldname schon existiert
-					//wenn ja: melden, zurückstellen
-					//wenn nein: In sichtbarModusHierarchisch nachführen und speichern
-					prüfeFeldNamen();
+					$db = $.couch.db("evab");
+					//zählen, in wievielen Datensätzen das Feld verwendet wird
+					$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+						success: function(data) {
+							var i;
+							var anzVorkommen = 0;
+							var Datensatz;
+							var Feld;
+							for(i in data.rows) {
+								Datensatz = data.rows[i].doc;
+								Feld = eval("Datensatz." + "{{FeldName}}");
+								if (Feld) {
+									anzVorkommen += 1;
+								}
+							}
+							if (anzVorkommen == 0) {
+								//prüfen, ob der Feldname schon existiert
+								//wenn ja: melden, zurückstellen
+								//wenn nein: In sichtbarModusHierarchisch nachführen und speichern
+								prüfeFeldNamen();
+							} else {
+								var ds = "Datensätzen";
+								if (anzVorkommen = 1) {
+									ds = "Datensatz";
+								}
+								$("#FeldName").val("{{FeldName}}");
+								melde("Ändern abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+							}
+						}
+					});
 				} else {
 					speichereFeldeigenschaften();
 					/*$("#UserFeldForm").validate({      funktioniert gar nicht!
@@ -129,7 +155,32 @@
 					        	if ("{{FeldGeschützt}}") {
 									melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 								} else {
-									löscheFeld(Pfad);
+									$db = $.couch.db("evab");
+									//zählen, in wievielen Datensätzen das Feld verwendet wird
+									$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+										success: function(data) {
+											var i;
+											var anzVorkommen = 0;
+											var Datensatz;
+											var Feld;
+											for(i in data.rows) {
+												Datensatz = data.rows[i].doc;
+												Feld = eval("Datensatz." + "{{FeldName}}");
+												if (Feld) {
+													anzVorkommen += 1;
+												}
+											}
+											if (anzVorkommen == 0) {
+												löscheFeld(Pfad);
+											} else {
+												var ds = "Datensätzen";
+												if (anzVorkommen = 1) {
+													ds = "Datensatz";
+												}
+												melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+											}
+										}
+									});
 								}
 			        		},
 			        		icon: "delete",

@@ -1337,6 +1337,7 @@ function löscheFeldSichtbarImModusHierarchisch(UserName, FeldName) {
 })( this );
 
 function erstelleKarteFürRaum(User, RaumId) {
+	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
 	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]&include_docs=true', {
 		success: function(data) {
@@ -1429,6 +1430,7 @@ function erstelleKarteFürRaum(User, RaumId) {
 }
 
 function erstelleKarteFürProjekt(User, ProjektId) {
+	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
 	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]&include_docs=true', {
 		success: function(data) {
@@ -1521,6 +1523,7 @@ function erstelleKarteFürProjekt(User, ProjektId) {
 }
 
 function erstelleKarteFürProjektliste(User) {
+	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
 	$db.view('evab/hProjektlisteOrteFuerKarte?key="' + User + '"&include_docs=true', {
 		success: function(data) {
