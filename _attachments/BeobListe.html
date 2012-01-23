@@ -89,18 +89,12 @@
 			window.open("_show/BeobEdit/" + BeobId, target="_self");
 		});
 
-		$("#BeobListeMapÖffnen").tap(function(event) {                        //ToDo: Prüfen, ob Beobachtungen mit LatLng vorliegen
+		$("#BeobListeMapÖffnen").tap(function(event) {
 			$.mobile.changePage("#BeobListeMap", "slide", false, true);
 		});
 
 		$('#BeobListeMap').live("pagecreate", function() {
-			/*
-			Irgend welche Koordinaten setzen, Karte darum zentrieren
-			dann in schleife alle marker setzen und Kartenausschnitt um diese Punkte erweitern
-			listener schaffen
-			*/
-        	
-			//Beobachtungen abfragen
+			//Karte aufbauen. Zuerst Beobachtungen abfragen
 			$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
 				success: function(data) {
 					var i;
@@ -109,7 +103,8 @@
 					var key;
 					var image;
 					var infowindow = new google.maps.InfoWindow();
-					for(i in data.rows) {                    //Beobachtungen zählen
+					for(i in data.rows) {
+						//Beobachtungen zählen
 						anzBeob += 1;
 					}
 					if (anzBeob == 0) {
@@ -117,6 +112,7 @@
 						melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
 						$.mobile.changePage("#BeobListePage");
 					} else {
+						//Beobachtungen vorhanden: Karte aufbauen
 						var lat = 47.383333;
 						var lng = 8.533333;
 						var latlng = new google.maps.LatLng(lat, lng);
@@ -131,7 +127,7 @@
 						var bounds = new google.maps.LatLngBounds();
 						//für alle Beobachtungen Marker erstellen
 						var markers = [];
-						for(i in data.rows) {                //Liste aufbauen
+						for(i in data.rows) {
 							beob = data.rows[i].value;
 							key = data.rows[i].key;
 							if (key[0] == User) {                   //nur eigene Beobachtungen anzeigen!
@@ -147,9 +143,11 @@
 								var externalPage = "_show/BeobEdit/" + BeobId;
 								var latlng2 = new google.maps.LatLng(lat2, lng2);
 								if (anzBeob == 1) {
-									latlng = latlng2;   //map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									latlng = latlng2;
 								} else {
-									bounds.extend(latlng2);               //Kartenausschnitt um diese Koordinate erweitern
+									//Kartenausschnitt um diese Koordinate erweitern
+									bounds.extend(latlng2);
 								}
 								var marker = new MarkerWithLabel({ 
 									map: map,
