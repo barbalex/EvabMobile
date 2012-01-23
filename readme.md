@@ -59,7 +59,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern / Karten von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
-- Alle Beobachtungen auf Luftbild / Karte darstellen. Der Kartenausschnitt zeigt alle Beobachtungen
+- Alle Beobachtungen auf Luftbild / Karte darstellen. Pro Benutzer, Projekt oder Raum. Der Kartenausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
 - Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
@@ -75,7 +75,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Datenfelder)
 - Wählen, welche Felder sichtbar sind
 - Eigene Datenfelder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
-- Datenfelder, welche die nationalen Datenzentren verwenden, sind geschützt
+- Datenfelder, welche öffentliche Datenzentren verwenden, sind geschützt
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
@@ -92,7 +92,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
-  - Hierarchiestufen selber definieren? So könnte man für ein Projekt z.B. Zeit über Ort setzen!
+  - Eventuell Hierarchiestufen selber definieren? So könnte man für ein Projekt z.B. Zeit über Ort setzen!
 - Tempo erhöhen
 
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
