@@ -21,7 +21,7 @@ Gängige Fehlerquellen:
 #Motivation
 Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. 
 
-**Darum soll dieses Projekt in erster Linie Ideenträger sein und Möglichkeiten aufzeigen.**
+**Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen.**
 
 Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber gute Software programmieren können Profi-Programmierer nun wirklich besser.
 
