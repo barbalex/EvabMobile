@@ -264,6 +264,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
 	$(thiz).simpledialog({
 		'mode' : 'bool',
 		'prompt' : 'Menü',
+		'fullHTML': 'true',
     	'buttons' : {
 		 	'hierarchischer Modus': {
 		      	click: function () {
@@ -293,7 +294,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
         		theme: "a",
         		icon: "gear"
       		},
-      		'Beobachtungen exportieren': {
+      		'Beobachtungen<br>exportieren': {
 		      	click: function () {
 		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
         		},
@@ -316,12 +317,13 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
   	})
 }
 
-//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
+//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
 		'prompt' : 'Menü',
+		'fullHTML': 'true',
     	'buttons' : {
 		 	'einfacher Modus': {
 		      	click: function () {
@@ -351,7 +353,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
         		theme: "a",
         		icon: "gear"
       		},
-      		'Beobachtungen exportieren': {
+      		'Beobachtungen<br>exportieren': {
 		      	click: function () {
 		        	window.open(Pfad + '_list/hBeobExport/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
         		},
@@ -380,8 +382,9 @@ function erstelleMenuFürFelder(thiz, Pfad) {
 	$(thiz).simpledialog({
 		'mode' : 'bool',
 		'prompt' : 'Menü',
+		'fullHTML': 'true',
     	'buttons' : {
-      		'Datenfelder exportieren': {
+      		'Datenfelder<br>exportieren': {
 		      	click: function () {
 		        	window.open(Pfad + "_list/FeldExport/FeldListe");
         		},

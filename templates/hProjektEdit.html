@@ -389,6 +389,7 @@
 		$(thiz).simpledialog({
 			'mode' : 'bool',
 			'prompt' : 'Menü',
+			'fullHTML': 'true',
 	    	'buttons' : {
 			 	'einfacher Modus': {
 			      	click: function () {
@@ -418,7 +419,7 @@
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
-	      		'Beobachtungen exportieren': {
+	      		'Beobachtungen<br>exportieren': {
 			      	click: function () {
 			        	window.open(Pfad + '_list/hBeobExport/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
 	        		},

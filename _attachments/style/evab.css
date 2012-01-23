@@ -157,3 +157,8 @@ div.avatar img {
 #items ul {
   list-style: none;
 }
+
+/*Damit Menübefehle nicht abgeschnitten werden*/
+.ui-btn-inner {
+    white-space: nowrap ! important;
+}
