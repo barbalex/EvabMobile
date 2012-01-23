@@ -1,7 +1,5 @@
 function(doc) {
-	var User = doc.User;
-	var Zeit = doc.zDatum + " " + doc.zUhrzeit;
-	if(doc.Typ == 'Beobachtung' && doc.zUhrzeit && doc.oLongitudeDecDeg && doc.oLatitudeDecDeg){
-		emit ([User, Zeit], doc);
+	if(doc.User && doc.Typ == 'Beobachtung' && doc.oLongitudeDecDeg && doc.oLatitudeDecDeg){
+		emit (doc.User, null);
 	}
 }

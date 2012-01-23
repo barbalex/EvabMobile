@@ -95,7 +95,7 @@
 
 		$('#BeobListeMap').live("pagecreate", function() {
 			//Karte aufbauen. Zuerst Beobachtungen abfragen
-			$db.view('evab/BeobListeLatLng?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
 				success: function(data) {
 					var i;
 					var anzBeob = 0;
@@ -128,7 +128,7 @@
 						//für alle Beobachtungen Marker erstellen
 						var markers = [];
 						for(i in data.rows) {
-							beob = data.rows[i].value;
+							beob = data.rows[i].doc;
 							var BeobId = beob._id;
 							var Datum = beob.zDatum;
 							var Zeit = beob.zUhrzeit;
