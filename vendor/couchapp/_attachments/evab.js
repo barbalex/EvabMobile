@@ -571,7 +571,7 @@ function erstelle_hProjektEdit(ID, User) {
 	$db.view('evab/FeldListeProjekt', {
 		success: function(data) {
 			var FeldlisteAlle = data;
-			//Holt, welche Felder angezeigt werden sollen
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
@@ -629,7 +629,7 @@ function erstelle_hRaumEdit(ID, User) {
 	$db.view('evab/FeldListeRaum', {
 		success: function(data) {
 			var FeldlisteAlle = data;
-			//Holt, welche Felder angezeigt werden sollen
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
@@ -687,7 +687,7 @@ function erstelle_hOrtEdit(ID, User) {
 	$db.view('evab/FeldListeOrt', {
 		success: function(data) {
 			var FeldlisteAlle = data;
-			//Holt, welche Felder angezeigt werden sollen
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
@@ -745,7 +745,7 @@ function erstelle_hZeitEdit(ID, User) {
 	$db.view('evab/FeldListeZeit', {
 		success: function(data) {
 			var FeldlisteAlle = data;
-			//Holt, welche Felder angezeigt werden sollen
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
@@ -803,7 +803,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 	$db.view('evab/FeldListeArt', {
 		success: function(data) {
 			var FeldlisteAlle = data;
-			//Holt, welche Felder angezeigt werden sollen
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
@@ -1229,6 +1229,7 @@ function speichereLetzteUrl(User) {
 function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 	//ergänzt Feld mit übergebenem Namen im Array der sichtbaren Felder
 	//entfernt den früheren Feldnamen
+	//setzt das Feld "" in FeldEdit.html auf ja
 	//Erwartet UserNamen, neuen Feldnamen und ID des Felds
 	$db = $.couch.db("evab");
 	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
@@ -1240,6 +1241,9 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 			docId = doc._id;
 			$db.saveDoc(doc, {
 				success: function() {
+					$("#SichtbarModusHierarchisch").val("ja");
+					$("#SichtbarModusHierarchisch").slider();
+					$("#SichtbarModusHierarchisch").slider("refresh");
 					//vorletzer Revision ermitteln
 					$db.openDoc(FeldId, {revs_info:'true'}, {
 						success: function(data) {

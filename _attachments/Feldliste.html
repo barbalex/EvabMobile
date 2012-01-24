@@ -87,21 +87,24 @@
 
 				for(i in data.rows) {                 //Liste aufbauen
 					Feld = data.rows[i].value;
-					var Hierarchiestufe = Feld.Hierarchiestufe;
-					var FeldBeschriftung = Feld.FeldBeschriftung;
-					var FeldBeschreibung ="";
-					if (Feld.FeldBeschreibung){
-						FeldBeschreibung = Feld.FeldBeschreibung;
+					//Nur eigene Felder und offizielle
+					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+						var Hierarchiestufe = Feld.Hierarchiestufe;
+						var FeldBeschriftung = Feld.FeldBeschriftung;
+						var FeldBeschreibung ="";
+						if (Feld.FeldBeschreibung){
+							FeldBeschreibung = Feld.FeldBeschreibung;
+						}
+						ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
+						var zurueck = get_url_param('zurueck');
+						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
+						ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
+							"<a href='" + externalPage + "' rel='external'>" +
+							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+							"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
+							"<p>" + FeldBeschreibung + "</p>"
+							"<\/a><\/li>";
 					}
-					ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-					var zurueck = get_url_param('zurueck');
-					externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
-					ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
-						"<a href='" + externalPage + "' rel='external'>" +
-						"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-						"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
-						"<p>" + FeldBeschreibung + "</p>"
-						"<\/a><\/li>";
 				}
 				$("#FeldListe").html(ListItemContainer);
 				$("#FeldListe").listview("refresh");

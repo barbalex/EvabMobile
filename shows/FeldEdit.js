@@ -21,7 +21,7 @@ function(doc, req) {
 		Standardwert: doc.Standardwert,
 		SliderMinimum: doc.SliderMinimum,
 		SliderMaximum: doc.SliderMaximum,
-		FeldGeschützt: doc.FeldGeschützt
+		User: doc.User
 	};
 	return Mustache.to_html(this.templates.FeldEdit, stash);
 }

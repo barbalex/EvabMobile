@@ -197,8 +197,11 @@
 				var key;
 				var Felder = [];
 				for(i in data.rows) {
-					key = data.rows[i].key;
-					Felder.push(key);
+					if (Feld.User == "ZentrenBdKt") {
+						//Nur offizielle Felder berücksichtigen
+						key = data.rows[i].key;
+						Felder.push(key);
+					}
 				}
 				var document = {};
 				document.Typ = "SichtbarModusHierarchisch";

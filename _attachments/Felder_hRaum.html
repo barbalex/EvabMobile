@@ -86,25 +86,28 @@
 						for (i in data.rows) {
 							var Feld = data.rows[i].value;
 							var FeldName = Feld.FeldName;
-							if ((Feld.Hierarchiestufe == "Raum") && (FeldName != "rName")) {
-								anzFelder += 1;
-								var FeldBeschriftung = Feld.FeldBeschriftung;
-								var ListItem = "\n\t\t\<label for='";
-								ListItem += FeldName;
-								ListItem += "'>";
-								ListItem += FeldBeschriftung;
-								ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-								ListItem += "Felder";
-								ListItem += "' id='";
-								ListItem += FeldName;
-								ListItem += "' value='";
-								ListItem += FeldName;
-								ListItem += "' class='custom'";
-								if(SichtbareFelder.indexOf(FeldName) != -1){
-									ListItem += " checked='checked'";
+							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								//Nur eigene und offizielle Felder berücksichtigen
+								if ((Feld.Hierarchiestufe == "Raum") && (FeldName != "rName")) {
+									anzFelder += 1;
+									var FeldBeschriftung = Feld.FeldBeschriftung;
+									var ListItem = "\n\t\t\<label for='";
+									ListItem += FeldName;
+									ListItem += "'>";
+									ListItem += FeldBeschriftung;
+									ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+									ListItem += "Felder";
+									ListItem += "' id='";
+									ListItem += FeldName;
+									ListItem += "' value='";
+									ListItem += FeldName;
+									ListItem += "' class='custom'";
+									if(SichtbareFelder.indexOf(FeldName) != -1){
+										ListItem += " checked='checked'";
+									}
+									ListItem += "/>";
+									HtmlContainer += ListItem;
 								}
-								ListItem += "/>";
-								HtmlContainer += ListItem;
 							}
 						}
 						$("#Felder_hRaumPageHeader .Felder_hRaumPageTitel").text(anzFelder + " Felder");
