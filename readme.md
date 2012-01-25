@@ -88,7 +88,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
   - Standardwerte bestimmen
   - Bilder und Tonaufnahmen anhängen
   - spezifisch Neobiota erfassen
-  - Datenbanken teilen
+  - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
   - Anzahl Meldungen derselben Art im 10*10km-Quadranten, Jahr der jüngsten Meldung
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
