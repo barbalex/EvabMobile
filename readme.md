@@ -103,7 +103,7 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 - Linien und Flächen digitalisieren
 - Umriss zeichnen > darin liegende Beobachtungen auflisten
 
-Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation und Freizeit ab.
+Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
 #Hilfe erwünscht
 Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
