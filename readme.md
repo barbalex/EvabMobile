@@ -63,7 +63,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Durch Listen und Formulare "swipen"
 - Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
-- Andere Apps (z.B. das GIS eines Ökobüros) können auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen
+- Andere Apps (z.B. das GIS eines Ökobüros) können auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
 
 **Im einfachen Modus:**
 
