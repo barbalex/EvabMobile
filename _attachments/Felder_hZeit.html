@@ -42,14 +42,14 @@
 			$("input[name='Felder']").live("change", function() {
 				var Feld = $(this).prop("id");
 				//FeldArray holen, damit nur Änderungen gespeichert werden, da nicht alle Felder geladen werden
-				var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+				var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
 				$db.view(viewname, {
 					success: function(data) {
 						var i;
 						var row;
 						for(i in data.rows) {
 							row = data.rows[i].value;
-							FeldArray = row.Felder;
+							FeldArray = row.ModusHierarchisch;
 						}
 						if ($("#" + Feld).prop("checked") == true) {
 							FeldArray.push(Feld);
@@ -72,11 +72,11 @@
 		$("#Feldliste").empty();
 		$db = $.couch.db("evab");
 		//Holt, welche Felder angezeigt werden sollen
-		$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+		$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 			success: function(data) {
 				var row = data.rows[0].value;
-				var SichtbareFelder = row.Felder;
-				SichtbarModusHierarchischId = row._id;
+				var SichtbareFelder = row.ModusHierarchisch;
+				SichtbareFelderId = row._id;
 				//holt die Feldliste aus der DB
 				//und schreibt die Feldnamen für Hierarchiestufe Art in den Array FeldlisteArt
 				$db.view('evab/FeldListeZeit', {
@@ -143,15 +143,15 @@
 
 	function speichern(FeldArray) {
 		$db = $.couch.db("evab");
-		$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+		$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 			success: function(data) {
 				var row = data.rows[0].value;
-				var SichtbarModusHierarchischId = row._id;
-				$db.openDoc(SichtbarModusHierarchischId, {
+				var SichtbareFelderId = row._id;
+				$db.openDoc(SichtbareFelderId, {
 					success: function(document) {
-						document.Typ = "SichtbarModusHierarchisch";
+						document.Typ = "SichtbareFelder";
 						document.User = User;
-						document.Felder = FeldArray;
+						document.ModusHierarchisch = FeldArray;
 						$db.saveDoc(document, {
 							success: function(data) {
 								melde("gespeichert");

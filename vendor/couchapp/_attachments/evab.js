@@ -572,10 +572,10 @@ function erstelle_hProjektEdit(ID, User) {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
-					var SichtbareFelder = row.Felder;
+					var SichtbareFelder = row.ModusHierarchisch;
 					//Holt das Projekt mit der id "ID" aus der DB
 					$db.view('evab/hProjekteNachId?key="' + ID + '"', {
 						success: function(data) {
@@ -630,10 +630,10 @@ function erstelle_hRaumEdit(ID, User) {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
-					var SichtbareFelder = row.Felder;
+					var SichtbareFelder = row.ModusHierarchisch;
 					//Holt den Raum mit der id "ID" aus der DB
 					$db.view('evab/hRaeumeNachId?key="' + ID + '"', {
 						success: function(data) {
@@ -688,10 +688,10 @@ function erstelle_hOrtEdit(ID, User) {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
-					var SichtbareFelder = row.Felder;
+					var SichtbareFelder = row.ModusHierarchisch;
 					//Holt den Ort mit der id "ID" aus der DB
 					$db.view('evab/hOrteNachId?key="' + ID + '"', {
 						success: function(data) {
@@ -746,10 +746,10 @@ function erstelle_hZeitEdit(ID, User) {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
-					var SichtbareFelder = row.Felder;
+					var SichtbareFelder = row.ModusHierarchisch;
 					//Holt die Zeit mit der id "ID" aus der DB
 					$db.view('evab/hZeitenNachId?key="' + ID + '"', {
 						success: function(data) {
@@ -804,10 +804,10 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 		success: function(data) {
 			var FeldlisteAlle = data;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbarModusHierarchisch?key="' + User + '"', {
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
 				success: function(data) {
 					var row = data.rows[0].value;
-					var SichtbareFelder = row.Felder;
+					var SichtbareFelder = row.ModusHierarchisch;
 					//Holt die Beobachtung mit der id "ID" aus der DB
 					$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
 						success: function(data) {
@@ -1218,8 +1218,11 @@ function speichereLetzteUrl(User) {
 			var UserId = data.rows[0].value._id;
 			$db.openDoc(UserId, {
 				success: function(doc) {
-					doc.LetzteUrl = url;
-					$db.saveDoc(doc);
+					//nur speichern, wenn anders als zuletzt
+					if (doc.LetzteUrl != url) {	
+						doc.LetzteUrl = url;
+						$db.saveDoc(doc);
+					}
 				}
 			});
 		}
@@ -1232,12 +1235,12 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 	//setzt das Feld "" in FeldEdit.html auf ja
 	//Erwartet UserNamen, neuen Feldnamen und ID des Felds
 	$db = $.couch.db("evab");
-	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
+	var viewname = 'evab/UserSichtbareFelder?key="' + UserName + '"';
 	$db.view(viewname, {
 		success: function(data) {
 			var doc = data.rows[0].value;
 			//neuen Wert hinzufügen
-			doc.Felder.push(FeldNameNeu);
+			doc.ModusHierarchisch.push(FeldNameNeu);
 			docId = doc._id;
 			$db.saveDoc(doc, {
 				success: function() {
@@ -1256,9 +1259,9 @@ function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
 									//alten Wert löschen
 									$db.openDoc(docId, {
 										success: function(data) {
-											var Felder = data.Felder;
-											if (Felder.indexOf(FeldNameAlt) != -1) {
-												Felder.splice(Felder.indexOf(FeldNameAlt), 1);
+											var ModusHierarchisch = data.ModusHierarchisch;
+											if (ModusHierarchisch.indexOf(FeldNameAlt) != -1) {
+												ModusHierarchisch.splice(ModusHierarchisch.indexOf(FeldNameAlt), 1);
 												$db.saveDoc(data);
 											}
 										}
@@ -1278,12 +1281,12 @@ function löscheFeldSichtbarImModusHierarchisch(UserName, FeldName) {
 	//entfernt Feld mit übergebenem Namen im Array der sichtbaren Felder
 	//Erwartet UserNamen und Feldnamen
 	$db = $.couch.db("evab");
-	var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + UserName + '"';
+	var viewname = 'evab/UserSichtbareFelder?key="' + UserName + '"';
 	$db.view(viewname, {
 		success: function(data) {
 			doc = data.rows[0].value;
-			if (doc.Felder.indexOf(FeldName) != -1) {
-				doc.Felder.splice(doc.Felder.indexOf(FeldName), 1)
+			if (doc.ModusHierarchisch.indexOf(FeldName) != -1) {
+				doc.ModusHierarchisch.splice(doc.ModusHierarchisch.indexOf(FeldName), 1)
 				$db.saveDoc(data);
 			}
 		}

@@ -34,42 +34,44 @@
 			var Pfad = "../../";
 			User = "";
 			UserFeldDocId = 0;
-			SichtbarModusHierarchischId = 0;
 		
 			prüfeAnmeldung(Pfad);
 			speichereLetzteUrl(User);
 			
 			if ("{{FeldName}}") {
 				//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
-				setzeSichtbarModusHierarchisch("{{FeldName}}");
+				setzeSichtbarModusHierarchisch(User, "{{FeldName}}");
 			}
 			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
 
 			//noch nicht aktive Felder deaktivieren
-			$('#SichtbarModusEinfach').textinput();
-			$('#SichtbarModusEinfach').textinput('disable');
+			$('#SichtbarModusEinfach').slider();
+			$('#SichtbarModusEinfach').slider('disable');
 
 			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
-			var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
-			var ArtGruppenArray;
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var Feld;
-					for(i in data.rows) {
-						Feld = data.rows[i].value;
-						//Nur eigene Felder und offizielle
-						if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-							ArtGruppenArray = Feld.ArtGruppe;
-							//ArtGruppen nur in der Hierarchiestufe Art anzeigen
-							if ("{{Hierarchiestufe}}" === "Art") {
-								ArtGruppeAufbauen(ArtGruppenArray);
+			//nur machen, wen ein FeldName existiert, sonst gibt es einen Fehler
+			if ("{{FeldName}}") {
+				var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
+				var ArtGruppenArray;
+				$db.view(viewname, {
+					success: function(data) {
+						var i;
+						var Feld;
+						for(i in data.rows) {
+							Feld = data.rows[i].value;
+							//Nur eigene Felder und offizielle
+							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								ArtGruppenArray = Feld.ArtGruppe;
+								//ArtGruppen nur in der Hierarchiestufe Art anzeigen
+								if ("{{Hierarchiestufe}}" === "Art") {
+									ArtGruppeAufbauen(ArtGruppenArray);
+								}
 							}
 						}
 					}
-				}
-			});
+				});
+			}
 			
 			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
 			$("input[name='Hierarchiestufe']").checkboxradio();
@@ -106,7 +108,7 @@
 								if (anzVorkommen == 0) {
 									//prüfen, ob der Feldname schon existiert
 									//wenn ja: melden, zurückstellen
-									//wenn nein: In sichtbarModusHierarchisch nachführen und speichern
+									//wenn nein: In SichtbareFelder nachführen und speichern
 									prüfeFeldNamen(User);
 								} else {
 									var ds = "Datensätzen";
@@ -122,7 +124,7 @@
 						//Wenn dies ein neues Feld ist
 						//prüfen, ob der Feldname schon existiert
 						//wenn ja: melden, zurückstellen
-						//wenn nein: In sichtbarModusHierarchisch nachführen und speichern
+						//wenn nein: In SichtbareFelder nachführen und speichern
 						prüfeFeldNamen(User);
 					}
 
@@ -155,7 +157,7 @@
 
 			//Sichtbarkeit Modus hierarchisch speichern
 			$("#SichtbarModusHierarchisch").change(function() {
-				speichereSichtbarModusHierarchisch(SichtbarModusHierarchischId);
+				speichereSichtbarModusHierarchisch(User, this.value);
 			});
 
 			//Code für den Feld-Löschen-Dialog
@@ -236,27 +238,22 @@
 	</script>
 	<script type="text/javascript">
 
-		function setzeSichtbarModusHierarchisch(FeldName){
-			//speichert, ob das Feld sichtbar ist
+		function setzeSichtbarModusHierarchisch(User, FeldName){
+			//setzt den korrekten Wert im Feld SichtbarModusHierarchisch
 			//Erwartet den FeldNamen
 			$db = $.couch.db("evab");
-			var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+			var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
 			$db.view(viewname, {
 				success: function(data) {
 					var i;
-					var key;
 					var row;
-					for(i in data.rows) {
-						key = data.rows[i].key;
-						row = data.rows[i].value;
-						var Felder = row.Felder;
-						var idx = Felder.indexOf(FeldName);
-						if (idx != -1) {
-							$("select#SichtbarModusHierarchisch").val("ja");
-						} else {
-							$("select#SichtbarModusHierarchisch").val("nein");
-						}
-						SichtbarModusHierarchischId = row._id;
+					var ModusHierarchisch;
+					row = data.rows[0].value;
+					ModusHierarchisch = row.ModusHierarchisch;
+					if (ModusHierarchisch.indexOf(FeldName) != -1) {
+						$("select#SichtbarModusHierarchisch").val("ja");
+					} else {
+						$("select#SichtbarModusHierarchisch").val("nein");
 					}
 					$("select#SichtbarModusHierarchisch").slider();
 					$("select#SichtbarModusHierarchisch").slider("refresh");
@@ -372,52 +369,38 @@
 			});
 		}
 
-		function speichereSichtbarModusHierarchisch(SichtbarModusHierarchischId) {
+		function speichereSichtbarModusHierarchisch(User, SichtbarModusHierarchisch) {
 			$db = $.couch.db("evab");
-			var Typ = "SichtbarModusHierarchisch";
-			var FeldName = "{{FeldName}}";
-			var SichtbarModusHierarchisch = $("select#SichtbarModusHierarchisch").val();
-			if (SichtbarModusHierarchischId != 0) {
-				$db.openDoc(SichtbarModusHierarchischId, {
-					success: function(document) {
-						document.Typ = Typ;
-						document.User = User;
-						var Felder = document.Felder;
-						//Felder.push(document.Felder);
-						if (SichtbarModusHierarchisch == "ja") {
-							Felder.push(FeldName);
-						} else {
-							var idx = Felder.indexOf(FeldName);
-							if(idx!=-1) Felder.splice(idx, 1);
-						}
-						document.Felder = Felder;
-						saveSichtbarModusHierarchisch(document);
-					},
-					error: function() {
-						melde("Fehler: Einstellung nicht gespeichert");
-					}
-				});
-			} else {
-				var document = {};
-				document.Typ = Typ;
-				document.User = User;
-				//var Felder = '["' + FeldName + '"]';
-				//Felder.push(FeldName);
-				document.Felder = [];
-				document.Felder.push(FeldName);
-				saveSichtbarModusHierarchisch(document);
-			}
-		}
-
-		function saveSichtbarModusHierarchisch(document) {
-			$db = $.couch.db("evab");
-			$db.saveDoc(document, {
+			var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
+			$db.view(viewname, {
 				success: function(data) {
-					melde("Einstellung gespeichert");
-					SichtbarModusHierarchischId = data.id;
-				},
-				error: function() {
-					melde("Fehler: Einstellung nicht gespeichert");
+					var doc = data.rows[0].value;
+					var FeldName = $("#FeldName").val();
+					$db = $.couch.db("evab");
+					$db.openDoc(doc._id, {
+						success: function(document) {
+							var ModusHierarchisch = document.ModusHierarchisch;
+							if (SichtbarModusHierarchisch == "ja") {
+								ModusHierarchisch.push(FeldName);
+							} else {
+								var idx = ModusHierarchisch.indexOf(FeldName);
+								if(idx!=-1) ModusHierarchisch.splice(idx, 1);
+							}
+							document.ModusHierarchisch = ModusHierarchisch;
+							$db = $.couch.db("evab");
+							$db.saveDoc(document, {
+								success: function(data) {
+									melde("Einstellung gespeichert");
+								},
+								error: function() {
+									melde("Fehler: Einstellung nicht gespeichert");
+								}
+							});
+						},
+						error: function() {
+							melde("Fehler: Einstellung nicht gespeichert");
+						}
+					});
 				}
 			});
 		}
@@ -463,21 +446,21 @@
 					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							//Feld aus UserSichtbarModusHierarchisch entfernen
+							//Feld aus UserSichtbareFelder entfernen
 							$db = $.couch.db("evab");
-							var viewname = 'evab/UserSichtbarModusHierarchisch?key="' + User + '"';
+							var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
 							$db.view(viewname, {
 								success: function(data) {
 									var doc = data.rows[0].value;
-									var Felder = doc.Felder;
-									if (Felder.indexOf("{{FeldName}}") != -1) {
-										Felder.splice(Felder.indexOf("{{FeldName}}"), 1);
+									var ModusHierarchisch = doc.ModusHierarchisch;
+									if (ModusHierarchisch.indexOf("{{FeldName}}") != -1) {
+										ModusHierarchisch.splice(ModusHierarchisch.indexOf("{{FeldName}}"), 1);
 										$db.saveDoc(doc);
 									}
 									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 								},
 								error: function() {
-									//scheitert entfernen aus UserSichtbarModusHierarchisch, trotzdem löschen
+									//scheitert entfernen aus UserSichtbareFelder, trotzdem löschen
 									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 								}
 							});
