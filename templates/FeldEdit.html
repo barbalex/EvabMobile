@@ -83,11 +83,15 @@
 
 			//jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
+				var FeldWert = this.value;
+				var FeldName = this.id;
+				var AlterFeldWert = this.defaultValue;
 				if ("{{User}}" == "ZentrenBdKt") {
 					//Felder der Datenzentren dürfen nicht verändert werden
+					$("#" + FeldName).val(AlterFeldWert);
 					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
-				} else if (this.id == "FeldName") {
-					//Wenn Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
+				} else if (FeldName == "FeldName") {
+					//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
 					if ("{{FeldName}}") {
 						//wenn ein alter Feldname existiert,
 						//zählen, in wievielen Datensätzen das Feld verwendet wird
@@ -228,11 +232,11 @@
 
 			//swipen steuern
 			$("#FeldContent").live("swipeleft", function() {
-				nächstesVorigesFeld("{{id}}", "nächstes");
+				geheZumNächstenFeld(User, "{{id}}");
 			});
 
 			$("#FeldContent").live("swiperight", function() {
-				nächstesVorigesFeld("{{id}}", "voriges");
+				geheZumVorigenFeld(User, "{{id}}");
 			});
 		});
 	</script>
@@ -513,76 +517,95 @@
 		});
 	}
 
-	//Öffnet das vorige oder nächste Feld
-	//voriges des ersten => FeldListe
+	//Öffnet das nächste Feld
 	//nächstes des letzten => melden
-	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-	function nächstesVorigesFeld(IdAktuell, NächstesOderVoriges) {
+	//erwartet die ID des aktuellen Datensatzes
+	function geheZumNächstenFeld(User, IdAktuell) {
 		$db.view('evab/FeldListe', {
 			success: function(data) {
 				var i, y;
 				var FeldIdAktuell;
 				var FeldIdNächstes;
-				var FeldIdVoriges;
-				var AnzFelder;
+				var AnzFelder = data.rows.length -1;  
 				for(i in data.rows) {
 					//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 					Feld = data.rows[i].value;
-					var AnzFelder = data.rows.length -1;  
 					//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
 						//Nur eigene und offizielle Felder berücksichtigen
 						FeldIdAktuell = data.rows[i].value._id;
 						if (FeldIdAktuell == IdAktuell) {
 							//das ist das aktuelle Feld
-							//von hier aus vorwärts oder rückwärts das nächste eigene oder offizielle suchen
-							switch (NächstesOderVoriges) {
-							case "nächstes":
-								if (i < AnzFelder) {
-									//das aktuelle Feld ist nicht das letzte
-									for (y == i+1; y <= AnzFelder; y++) {
-										//alle verbleibenden Felder durchlaufen, eigenes suchen
-										Feld = data.rows[y].value;
-										//Nur eigene Felder und offizielle berücksichtigen
-										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-											//das ist das nächste eigene Feld > öffnen
-											FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
-											window.open(FeldIdNächstes, target="_self");
-										} else {
-											if (y == AnzFelder) {
-												//am letzten Feld angelangt und es ist kein eigenes
-												melde("Das ist das letzte Feld");
-											}
+							//von hier aus vorwärts das nächste eigene oder offizielle suchen
+							if (i < AnzFelder) {
+								//das aktuelle Feld ist nicht das letzte
+								for (y = parseInt(i)+1; y <= AnzFelder; y++) {
+									//alle verbleibenden Felder durchlaufen, eigenes suchen
+									Feld = data.rows[y].value;
+									//Nur eigene Felder und offizielle berücksichtigen
+									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+										//das ist das nächste eigene Feld > öffnen
+										FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
+										window.open(FeldIdNächstes, target="_self");
+									} else {
+										if (y == AnzFelder) {
+											//am letzten Feld angelangt und es ist kein eigenes
+											melde("Das ist das letzte Feld");
 										}
 									}
-								} else {
-									//das aktuelle Feld ist das letzte
-									melde("Das ist das letzte Feld");
 								}
-								break;
-							case "voriges":
-								if (i > 0) {
-									//das aktuelle Feld ist nicht das erste 
-									for (y == i-1; y > 0; y--) {
-										//alle vorhergehenden Felder durchlaufen, eigenes suchen
-										Feld = data.rows[y].value;
-										//Nur eigene Felder und offizielle berücksichtigen
-										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-											//das ist das nächstvorherige eigene Feld > öffnen
-											FeldIdVoriges = data.rows[i-1].value._id;
-											window.open(FeldIdVoriges, target="_self");
-										} else {
-											if (y == 1) {
-												//am ersten Feld angelangt und es ist kein eigenes
-												geheZurFeldListe();
-											}
+							} else {
+								//das aktuelle Feld ist das letzte
+								melde("Das ist das letzte Feld");
+							}
+						}
+					}
+				}
+			}
+		});
+	}
+
+	//Öffnet das vorige Feld
+	//voriges des ersten => FeldListe
+	//erwartet die ID des aktuellen Datensatzes
+	function geheZumVorigenFeld(User, IdAktuell) {
+		$db.view('evab/FeldListe', {
+			success: function(data) {
+				var i, y;
+				var FeldIdAktuell;
+				var FeldIdVoriges;
+				var AnzFelder = data.rows.length -1;  
+				for(i in data.rows) {
+					//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+					Feld = data.rows[i].value;
+					//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+						//Nur eigene und offizielle Felder berücksichtigen
+						FeldIdAktuell = data.rows[i].value._id;
+						if (FeldIdAktuell == IdAktuell) {
+							//das ist das aktuelle Feld
+							//von hier aus rückwärts das nächste eigene oder offizielle suchen
+							if (i > 0) {
+								//das aktuelle Feld ist nicht das erste 
+								for (y = parseInt(i)-1; y >= 0; y--) {
+									//alle vorhergehenden Felder durchlaufen, eigenes suchen
+									Feld = data.rows[y].value;
+									//Nur eigene Felder und offizielle berücksichtigen
+									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+										//das ist das nächstvorherige eigene Feld > öffnen
+										FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
+										window.open(FeldIdVoriges, target="_self");
+									} else {
+										if (y == 1) {
+											//am ersten Feld angelangt und es ist kein eigenes
+											geheZurFeldListe();
 										}
 									}
-								} else {
-									//das aktuelle Feld ist das erste
-									geheZurFeldListe();	
 								}
-								break;
+							} else {
+								//das aktuelle Feld ist das erste
+								//wir gehen zur Feldliste
+								geheZurFeldListe();	
 							}
 						}
 					}
