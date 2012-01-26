@@ -75,7 +75,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Felder)
 - Wählen, welche Felder sichtbar sind
-- Eigene Felder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
+- Eigene Felder erstellen, frei konfigurierbar, inklusive eigener Auswahllisten!
 - Felder, welche öffentliche Datenzentren verwenden, sind geschützt
 - Eigene Felder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
 - Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
