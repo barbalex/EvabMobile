@@ -4,22 +4,22 @@ Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur mögli
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
 
-- Nicht eindeutige Bezeichnung von Arten
-- Erfassung unvollständig oder nicht gemäss den Vorgaben des Projekts
-- Nicht eindeutige Ortsbeschreibung oder ungenaues/fehlerhaftes Auslesen von Koordinaten
+- Arten sind nicht eindeutig bezeichnet
+- Daten sind unvollständig oder nicht gemäss den Vorgaben des Projekts erfasst
+- Der Ort ist nicht eindeutig, ungenau oder gar falsch (Koordinaten falsch ausgelesen)
 
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
 Gängige Fehlerquellen:  
 
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders: Artnamen). 
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
-- Artbeobachtungen digitalisieren ist mühsame, monotone Fleissarbeit. 
-  Es ist allzu menschlich, sie 
+- Artbeobachtungen digitalisieren ist mühsam und monoton. 
+  Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 #Motivation
-Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. 
+Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen.**
 
@@ -55,11 +55,12 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 #Was kann die App momentan?
 **Generell:**
 
-- Sie ist erst eine Webseite. Moderne Browser werden vorausgesetzt. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
+- Sie ist erst eine Webseite. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
+- Diese Artgruppen können erfasst werden: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
-- Manuell auf Luftbildern / Karten von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
-- Alle Beobachtungen auf Luftbild / Karte darstellen. Pro Benutzer, Projekt oder Raum. Der Kartenausschnitt passt sich an die Beobachtungen an
+- Manuell auf Luftbildern von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
+- Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt oder Raum. Der Ausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
 - Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
@@ -72,12 +73,12 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 **Im hierarchischen Modus:**
 
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
-- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Datenfelder)
+- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Felder)
 - Wählen, welche Felder sichtbar sind
-- Eigene Datenfelder erstellen, frei konfigurierbar, inklusive eigener Auwahllisten
-- Datenfelder, welche öffentliche Datenzentren verwenden, sind geschützt
-- Eigene Datenfelder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
-- Unbekannte Arten beschreiben, z.B. um sie später genauer zu bestimmen
+- Eigene Felder erstellen, frei konfigurierbar, inklusive eigener Auswahllisten!
+- Felder, welche öffentliche Datenzentren verwenden, sind geschützt
+- Eigene Felder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
+- Unbekannte Arten beschreiben, z.B. um sie später zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 #Wie geht es weiter? (roadmap)
