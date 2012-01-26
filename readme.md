@@ -59,7 +59,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 - Diese Artgruppen können erfasst werden: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
-- Manuell auf Luftbildern / Karten von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
+- Manuell auf Luftbildern von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild / Karte darstellen. Pro Benutzer, Projekt oder Raum. Der Kartenausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
 - Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
