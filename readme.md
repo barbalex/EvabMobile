@@ -13,8 +13,8 @@ Gängige Fehlerquellen:
 
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders: Artnamen). 
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
-- Artbeobachtungen digitalisieren ist mühsame, monotone Fleissarbeit. 
-  Es ist allzu menschlich, sie 
+- Artbeobachtungen digitalisieren ist mühsam und monoton. 
+  Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
