@@ -55,7 +55,7 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 #Was kann die App momentan?
 **Generell:**
 
-- Sie ist erst eine Webseite. Moderne Browser werden vorausgesetzt. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
+- Sie ist erst eine Webseite. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
 - Jede Änderung wird automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern / Karten von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
