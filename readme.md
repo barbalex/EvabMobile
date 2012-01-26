@@ -4,9 +4,9 @@ Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur mögli
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
 
-- Arten sind nicht eindeutige bezeichnet
+- Arten sind nicht eindeutig bezeichnet
 - Daten sind unvollständig oder nicht gemäss den Vorgaben des Projekts erfasst
-- Der Ort ist nicht eindeutig, ungenau oder gar fehlerhaft (Koordinaten falsch ausgelesen) erfasst
+- Der Ort ist nicht eindeutig, ungenau oder gar falsch (Koordinaten falsch ausgelesen)
 
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
 Gängige Fehlerquellen:  
