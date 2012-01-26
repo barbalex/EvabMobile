@@ -84,7 +84,7 @@
 			//jedes Feld aus Feldeigenschaften bei Änderung speichern
 			$(".Feldeigenschaften").live("change", function() {
 				var FeldWert = this.value;
-				var FeldName = this.id;
+				var FeldName = this.name;
 				var AlterFeldWert = this.defaultValue;
 				if ("{{User}}" == "ZentrenBdKt") {
 					//Felder der Datenzentren dürfen nicht verändert werden
@@ -131,7 +131,19 @@
 						//wenn nein: In SichtbareFelder nachführen und speichern
 						prüfeFeldNamen(User);
 					}
-
+				} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
+					//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
+					ArtGruppeAufbauen();
+				} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
+					$db.openDoc("{{id}}", {
+						success: function(doc) {
+							var letzteHierarchiestufe = doc.Hierarchiestufe;
+							if (letzteHierarchiestufe == "Art") {
+								//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
+								$("#Artgruppenliste").empty();
+							}
+						}
+					});
 				} else {
 					speichereFeldeigenschaften();
 					/*$("#UserFeldForm").validate({      funktioniert gar nicht!
