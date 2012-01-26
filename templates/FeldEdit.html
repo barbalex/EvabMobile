@@ -316,13 +316,13 @@
 		function speichereFeldeigenschaften() {
 			$db = $.couch.db("evab");
 			var Feld = $("#FeldEditForm").serializeObject();
-			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
-			if (Feld.Optionen) {
+			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+			/*if (Feld.Optionen) {
 				Feld.Optionen = Feld.Optionen.split(", ");
 			}
 			if (Feld.ArtGruppe) {
 				Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
-			}
+			}*/
 			Feld.Typ = "Feld";
 			Feld.User = User;
 			Feld._id = "{{id}}";
