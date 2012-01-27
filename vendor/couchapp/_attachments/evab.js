@@ -301,7 +301,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
         		theme: "a",
         		icon: "arrow-r"
       		},
-      		'Datenfelder verwalten': {
+      		'Felder verwalten': {
 		      	click: function () {
 		        	window.open(Pfad + "FeldListe.html?zurueck=" + zurueck, target="_self");
         		},
@@ -360,7 +360,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
         		theme: "a",
         		icon: "arrow-r"
       		},
-      		'Datenfelder verwalten': {
+      		'Felder verwalten': {
 		      	click: function () {
 		        	window.open(Pfad + "FeldListe.html?zurueck=" + zurueck, target="_self");
         		},
