@@ -583,6 +583,8 @@ function erstelle_hProjektEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerProjektEditForm (FeldlisteAlle, SichtbareFelder, Projekt);
 							$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+							$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
@@ -641,6 +643,8 @@ function erstelle_hRaumEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteAlle, SichtbareFelder, Raum);
 							$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+							$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
@@ -699,6 +703,8 @@ function erstelle_hOrtEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
 							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+							$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
@@ -757,6 +763,8 @@ function erstelle_hZeitEdit(ID, User) {
 							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
 							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+							$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
@@ -815,6 +823,8 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 							var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
 							$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 							$("#Hinweistext").html("");
+							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+							$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
