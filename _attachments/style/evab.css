@@ -162,3 +162,8 @@ div.avatar img {
 .ui-btn-inner {
     white-space: nowrap ! important;
 }
+
+/*Feldhintergrund färben*/
+input.ui-input-text, textarea.ui-input-text {
+  background: #F0F6E8;
+}

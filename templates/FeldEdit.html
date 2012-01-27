@@ -451,6 +451,8 @@
 					}
 					ListItemContainer += "\n</fieldset>"
 					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
