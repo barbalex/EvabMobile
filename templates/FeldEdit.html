@@ -41,13 +41,9 @@
 			
 			if ("{{FeldName}}") {
 				//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
-				setzeSichtbarModusHierarchisch(User, "{{FeldName}}");
+				setzeSichtbarModusEinfachUndHierarchisch(User, "{{FeldName}}");
 			}
 			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
-
-			//noch nicht aktive Felder deaktivieren
-			$('#SichtbarModusEinfach').slider();
-			$('#SichtbarModusEinfach').slider('disable');
 
 			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
@@ -177,6 +173,11 @@
 				speichereSichtbarModusHierarchisch(User, this.value);
 			});
 
+			//Sichtbarkeit Modus einfach speichern
+			$("#SichtbarModusEinfach").change(function() {
+				speichereSichtbarModusEinfach(User, this.value);
+			});
+
 			//Code für den Feld-Löschen-Dialog
 			$('#LöschenDialogLink').live('click', function() {
 				$(this).simpledialog({
@@ -255,7 +256,7 @@
 	</script>
 	<script type="text/javascript">
 
-		function setzeSichtbarModusHierarchisch(User, FeldName){
+		function setzeSichtbarModusEinfachUndHierarchisch(User, FeldName){
 			//setzt den korrekten Wert im Feld SichtbarModusHierarchisch
 			//Erwartet den FeldNamen
 			$db = $.couch.db("evab");
@@ -265,8 +266,10 @@
 					var i;
 					var row;
 					var ModusHierarchisch;
+					var ModusEinfach;
 					row = data.rows[0].value;
 					ModusHierarchisch = row.ModusHierarchisch;
+					ModusEinfach = row.ModusEinfach;
 					if (ModusHierarchisch.indexOf(FeldName) != -1) {
 						$("select#SichtbarModusHierarchisch").val("ja");
 					} else {
@@ -274,6 +277,13 @@
 					}
 					$("select#SichtbarModusHierarchisch").slider();
 					$("select#SichtbarModusHierarchisch").slider("refresh");
+					if (ModusEinfach.indexOf(FeldName) != -1) {
+						$("select#SichtbarModusEinfach").val("ja");
+					} else {
+						$("select#SichtbarModusEinfach").val("nein");
+					}
+					$("select#SichtbarModusEinfach").slider();
+					$("select#SichtbarModusEinfach").slider("refresh");
 				}
 			});
 		}
@@ -407,7 +417,43 @@
 							$db = $.couch.db("evab");
 							$db.saveDoc(document, {
 								success: function(data) {
-									melde("Einstellung gespeichert");
+									//melde("Einstellung gespeichert");
+								},
+								error: function() {
+									melde("Fehler: Einstellung nicht gespeichert");
+								}
+							});
+						},
+						error: function() {
+							melde("Fehler: Einstellung nicht gespeichert");
+						}
+					});
+				}
+			});
+		}
+
+		function speichereSichtbarModusEinfach(User, SichtbarModusEinfach) {
+			$db = $.couch.db("evab");
+			var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					var doc = data.rows[0].value;
+					var FeldName = $("#FeldName").val();
+					$db = $.couch.db("evab");
+					$db.openDoc(doc._id, {
+						success: function(document) {
+							var ModusEinfach = document.ModusEinfach;
+							if (SichtbarModusEinfach == "ja") {
+								ModusEinfach.push(FeldName);
+							} else {
+								var idx = ModusEinfach.indexOf(FeldName);
+								if(idx != -1) ModusEinfach.splice(idx, 1);
+							}
+							document.ModusEinfach = ModusEinfach;
+							$db = $.couch.db("evab");
+							$db.saveDoc(document, {
+								success: function(data) {
+									//melde("Einstellung gespeichert");
 								},
 								error: function() {
 									melde("Fehler: Einstellung nicht gespeichert");
@@ -726,7 +772,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<legend>Formularelement (erforderlich):</legend>
+						<legend>Feldtyp:</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput"/>
 	         				<label for="textinput">einfaches Feld (textinput)</label>
 	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
@@ -747,7 +793,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
-						<legend>Typ des einfachen Feldes (textinput):</legend>
+						<legend>Datentyp eines einfachen Feldes:</legend>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text"/>
 	         				<label for="text">Text</label>
 	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number"/>
@@ -771,18 +817,17 @@
 					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte, mit, Komma, trennen. Erforderlich für Auswahllisten">{{Optionen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="Standardwert">Standardwert:</label>
-					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}"  placeholder="dieses Feld ist (noch) inaktiv"/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="SliderMinimum">Schieber minimaler Wert:</label>
+					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text" value="{{SliderMinimum}}" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="SliderMaximum">Schieber maximaler Wert:</label>
+					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" value="{{SliderMaximum}}" />
 				</div>
-				
+				<div data-role="fieldcontain">
+					<label for="Standardwert">Standardwert:</label>
+					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}"  placeholder="dieses Feld ist (noch) inaktiv"/>
+				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">

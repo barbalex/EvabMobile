@@ -52,39 +52,40 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 2. Mit den Daten zum Schutz seltener Arten beitragen
 
 
-#Was kann die App momentan?
+#Was kann man momentan mit der App machen?
 **Generell:**
 
-- Sie ist erst eine Webseite. Zusätzlich kann sie auf iOS und Windows installiert werden (kaum getestet)
-- Diese Artgruppen können erfasst werden: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
-- Jede Änderung wird automatisch gespeichert
+- Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
+- Auf dem PC installiern und lokal arbeiten (Windows, Mac OsX, wenig getestet)
+- Arten aus diesen Artgruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- Eigene Felder erstellen und konfigurieren, inklusive eigener Auswahllisten!
+- Zusätzlich stehen 162 Datenfelder der öffentlichen Artdatenzentren zur Verfügung. Diese sind vor Änderung geschützt
+- Bestimmen, welche Felder sichtbar sind
+- Eigene Felder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
+- Eingaben werden automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt oder Raum. Der Ausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
-- Die App öffnet nach Neuanmeldung wieder die zuletzt benutzte Seite
+- Nach Neuanmeldung öffnet wieder die zuletzt benutzte Seite
 - Beobachtungen und Datenfelder exportieren
-- Andere Apps (z.B. das GIS eines Ökobüros) können auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
+- Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
 
 **Im einfachen Modus:**
 
-- Beobachtungen schnell und unkompliziert erfassen. Nur die grundlegenden Attribute
+- Beobachtungen schnell und unkompliziert erfassen
 
 **Im hierarchischen Modus:**
 
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
-- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Attribute (Felder)
-- Wählen, welche Felder sichtbar sind
-- Eigene Felder erstellen, frei konfigurierbar, inklusive eigener Auswahllisten!
-- Felder, welche öffentliche Datenzentren verwenden, sind geschützt
-- Eigene Felder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
+- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Felder
 - Unbekannte Arten beschreiben, z.B. um sie später zu bestimmen
 - Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
 - Daten schützen
-- Android- und iOS-App
+- Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
   - Standardwerte bestimmen
   - Bilder und Tonaufnahmen anhängen

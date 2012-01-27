@@ -212,6 +212,8 @@
 				document.User = UserName;
 				//document.ModusHierarchisch = [];
 				document.ModusHierarchisch = ModusHierarchisch;
+				//bereitet Modus einfach vor, setzt aber keine weiteren Felder sichtbar
+				document.ModusEinfach = [];
 				$db.saveDoc(document, {
 					success: function(data) {
 						//melde("Felder sichtbar geschaltet");

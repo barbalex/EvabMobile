@@ -45,38 +45,41 @@
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
 				<div data-role="fieldcontain">
-					<label for="aArtGruppe" class="select">Artgruppe:</label>
+					<label for="aArtGruppe" class="select speichern">Artgruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}" data-icon="arrow-r" data-native-menu="true">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="aArtName" class="select">Artname:</label>
+					<label for="aArtName" class="select speichern">Artname:</label>
 					<select id="aArtName" name="aArtName" value="{{aArtName}}" data-icon="arrow-r" data-native-menu="true">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" type="text" value="{{aAutor}}" required/>
+					<input id="aAutor" name="aAutor" class="speichern" type="text" value="{{aAutor}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" type="text" value="{{oXKoord}}" />
+					<input id="oXKoord" name="oXKoord" class="speichern" type="text" value="{{oXKoord}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" type="text" value="{{oYKoord}}" />
+					<input id="oYKoord" name="oYKoord" class="speichern" type="text" value="{{oYKoord}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeit">Lage Genauigkeit:</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" type="text" value="{{oLagegenauigkeit}}" />
+					<input id="oLagegenauigkeit" name="oLagegenauigkeit" class="speichern" type="text" value="{{oLagegenauigkeit}}" />
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
+					<input id="zDatum" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' value="{{zDatum}}" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zUhrzeit">Zeit:</label>
-					<input id="zUhrzeit" name="zUhrzeit" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zUhrzeit}}" />
+					<input id="zUhrzeit" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' value="{{zUhrzeit}}" />
+				</div>
+				<div id="BeobEditFormHtml">
+
 				</div>
 			</form>
 		</div>
@@ -114,7 +117,7 @@
 			User = "";
 		
 			prüfeAnmeldung(Pfad);
-
+			erstelle_BeobEdit("{{id}}", User);
 			speichereLetzteUrl(User);
 
 			refreshArtGruppe("{{aArtGruppe}}");
@@ -171,15 +174,14 @@
 			});
 
 			//Für jedes Feld bei Änderung speichern
-			$("[name^='a']").change(function() {
+			$(".speichern").live("change", function() {
 				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
 			});
 
-			$("[name^='o']").change(function() {
-				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
-			});
-
-			$("[name^='z']").change(function() {
+			//Slider-Felder erst bei mouseup speichern
+			//change wird für jeden geswipten Wert ausgelöst!
+			//ungelöstes Problem: swipe reagiert!
+			$(".ui-slider").live("mouseup", function(event) {
 				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
 			});
 			
@@ -356,7 +358,7 @@
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
 				var zurueck = "BeobEdit/" + "{{id}}";
-				erstelleMenuEinfach(zurueck, this, User, UserId, "../../");
+				erstelleMenu(zurueck, this, User, UserId, "../../");
 			});
 
 			$("#BeobEditContent").live("swipeleft", function() {
@@ -381,6 +383,72 @@
 			'headerFormat': 'YYYY-MM-DD',
 			'monthsOfYear': Monate
 		});
+
+		//Menü aufbauen
+		function erstelleMenu(zurueck, thiz, User, UserId, Pfad) {
+			//Code um Menü aufzubauen
+			$(thiz).simpledialog({
+				'mode' : 'bool',
+				'prompt' : 'Menü',
+				'fullHTML': 'true',
+		    	'buttons' : {
+				 	'hierarchischer Modus': {
+				      	click: function () {
+				        	window.open(Pfad + "hProjektListe.html", target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "check"
+		      		},
+				 	'neu anmelden': {
+				      	click: function () {
+				        	window.open(Pfad + "index.html", target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "home"
+		      		},
+		      		'meine Einstellungen': {
+				      	click: function () {
+				        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "gear"
+		      		},
+		      		'lokal installieren': {
+				      	click: function () {
+				        	window.open(Pfad + "Installieren.html", target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "gear"
+		      		},
+		      		'Beobachtungen<br>exportieren': {
+				      	click: function () {
+				        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+		        		},
+		        		theme: "a",
+		        		icon: "arrow-r"
+		      		},
+		      		'Datenfelder verwalten': {
+				      	click: function () {
+				        	window.open(Pfad + "FeldListe.html?zurueck=" + zurueck, target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "grid"
+		      		},
+		      		'sichtbare Felder wählen': {
+				      	click: function () {
+				        	window.open(Pfad + "Felder_Beob.html", target="_self");
+		        		},
+		        		theme: "a",
+		        		icon: "gear"
+		      		},
+		      		'schliessen': {
+		                click: function () { return true; },
+		                icon: "back",
+		                theme: "c"
+		            }
+		    	}
+		  	})
+		}
 		
 		function refreshArtGruppe(aArtGruppe)
 		{

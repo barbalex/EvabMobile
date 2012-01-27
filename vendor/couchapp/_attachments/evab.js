@@ -258,7 +258,7 @@ function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, Use
 	});
 }
 
-//Menü aufbauen. Wird aufgerufen von BeobEdit.html und BeobListe.html
+//Menü aufbauen. Wird aufgerufen von BeobListe.html
 function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
@@ -296,7 +296,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
       		},
       		'Beobachtungen<br>exportieren': {
 		      	click: function () {
-		        	window.open(Pfad + '_list/BeobExport/BeobListeUser?key="' + User + '"');
+		        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -355,7 +355,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
       		},
       		'Beobachtungen<br>exportieren': {
 		      	click: function () {
-		        	window.open(Pfad + '_list/hBeobExport/hArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+		        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -562,6 +562,67 @@ function Manager() {
   }
 }
 
+//generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//Mitgeben: id der Beobachtung, User
+function erstelle_BeobEdit(ID, User) {
+	$("#BeobEditFormHtml").empty();
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeBeob', {
+		success: function(data1) {
+			var FeldlisteAlle = data1;
+			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
+			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
+				success: function(data2) {
+					var row = data2.rows[0].value;
+					var SichtbareFelder = row.ModusEinfach;
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt die Beobachtung mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Beob) {
+								var HtmlContainer = generiereHtmlFuerBeobEditForm (FeldlisteAlle, SichtbareFelder, Beob);
+								$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
+				}
+			});
+		}
+	});
+}
+
+//generiert das Html für das Formular in BeobEdit.html
+//erwartet Feldliste als Objekt; Beob als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerBeobEditForm (Feldliste, SichtbareFelder, Beob) {
+	var Feld = {};
+	var i;
+	var FeldName;
+	var FeldBeschriftung;
+	var SliderMinimum;
+	var SliderMaximum;
+	var ListItem = "";
+	var HtmlContainer = "<hr />";
+	for(i in Feldliste.rows) {              
+		Feld = Feldliste.rows[i].value;
+		FeldName = Feld.FeldName;
+		if (SichtbareFelder.indexOf(FeldName) != -1) {
+			FeldWert = (eval("Beob." + FeldName) || "");
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			InputTyp = Feld.InputTyp;
+			//Bereits im Formular integrierte Felder nicht anzeigen
+			if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
+			}
+		}
+	}
+	return HtmlContainer;
+}
+
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, User
 function erstelle_hProjektEdit(ID, User) {
@@ -569,24 +630,26 @@ function erstelle_hProjektEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeProjekt', {
-		success: function(data) {
-			var FeldlisteAlle = data;
+		success: function(data1) {
+			var FeldlisteAlle = data1;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data) {
-					var row = data.rows[0].value;
+				success: function(data2) {
+					var row = data2.rows[0].value;
 					var SichtbareFelder = row.ModusHierarchisch;
-					//Holt das Projekt mit der id "ID" aus der DB
-					$db.view('evab/hProjekteNachId?key="' + ID + '"', {
-						success: function(data) {
-							var Projekt = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerProjektEditForm (FeldlisteAlle, SichtbareFelder, Projekt);
-							$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-							$("#Hinweistext").html("");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							$.mobile.fixedToolbars.show(true);
-						}
-					});
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt das Projekt mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Projekt) {
+								var HtmlContainer = generiereHtmlFuerProjektEditForm (FeldlisteAlle, SichtbareFelder, Projekt);
+								$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								$("#Hinweistext").html("");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
 				}
 			});
 		}
@@ -629,24 +692,26 @@ function erstelle_hRaumEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeRaum', {
-		success: function(data) {
-			var FeldlisteAlle = data;
+		success: function(data1) {
+			var FeldlisteAlle = data1;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data) {
-					var row = data.rows[0].value;
+				success: function(data2) {
+					var row = data2.rows[0].value;
 					var SichtbareFelder = row.ModusHierarchisch;
-					//Holt den Raum mit der id "ID" aus der DB
-					$db.view('evab/hRaeumeNachId?key="' + ID + '"', {
-						success: function(data) {
-							var Raum = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteAlle, SichtbareFelder, Raum);
-							$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-							$("#Hinweistext").html("");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							$.mobile.fixedToolbars.show(true);
-						}
-					});
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt den Raum mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Raum) {
+								var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteAlle, SichtbareFelder, Raum);
+								$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								$("#Hinweistext").html("");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
 				}
 			});
 		}
@@ -689,24 +754,26 @@ function erstelle_hOrtEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeOrt', {
-		success: function(data) {
-			var FeldlisteAlle = data;
+		success: function(data1) {
+			var FeldlisteAlle = data1;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data) {
-					var row = data.rows[0].value;
+				success: function(data2) {
+					var row = data2.rows[0].value;
 					var SichtbareFelder = row.ModusHierarchisch;
-					//Holt den Ort mit der id "ID" aus der DB
-					$db.view('evab/hOrteNachId?key="' + ID + '"', {
-						success: function(data) {
-							var Ort = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
-							$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-							$("#Hinweistext").html("");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							$.mobile.fixedToolbars.show(true);
-						}
-					});
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt den Ort mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Ort) {
+								var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
+								$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								$("#Hinweistext").html("");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
 				}
 			});
 		}
@@ -749,24 +816,26 @@ function erstelle_hZeitEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeZeit', {
-		success: function(data) {
-			var FeldlisteAlle = data;
+		success: function(data1) {
+			var FeldlisteAlle = data1;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data) {
-					var row = data.rows[0].value;
+				success: function(data2) {
+					var row = data2.rows[0].value;
 					var SichtbareFelder = row.ModusHierarchisch;
-					//Holt die Zeit mit der id "ID" aus der DB
-					$db.view('evab/hZeitenNachId?key="' + ID + '"', {
-						success: function(data) {
-							var Zeit = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
-							$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-							$("#Hinweistext").html("");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							$.mobile.fixedToolbars.show(true);
-						}
-					});
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt die Zeit mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Zeit) {
+								var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
+								$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								$("#Hinweistext").html("");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
 				}
 			});
 		}
@@ -809,24 +878,26 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeArt', {
-		success: function(data) {
-			var FeldlisteAlle = data;
+		success: function(data1) {
+			var FeldlisteAlle = data1;
 			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
 			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data) {
-					var row = data.rows[0].value;
+				success: function(data2) {
+					var row = data2.rows[0].value;
 					var SichtbareFelder = row.ModusHierarchisch;
-					//Holt die Beobachtung mit der id "ID" aus der DB
-					$db.view('evab/BeobachtungenNachId?key="' + ID + '"', {
-						success: function(data) {
-							var Beobachtung = data.rows[0].value;
-							var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
-							$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-							$("#Hinweistext").html("");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							$.mobile.fixedToolbars.show(true);
-						}
-					});
+					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
+					if (SichtbareFelder.length > 0) {
+						//Holt die Beobachtung mit der id "ID" aus der DB
+						$db.openDoc(ID, {
+							success: function(Beobachtung) {
+								var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
+								$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+								$("#Hinweistext").html("");
+								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+								$.mobile.fixedToolbars.show(true);
+							}
+						});
+					}
 				}
 			});
 		}
@@ -867,6 +938,8 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, B
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum) {
 	var HtmlContainer = "";
+	//abfangen, wenn Inputtyp vergessen wurde
+	InputTyp = InputTyp || "text";
 	switch(Feld.Formularelement) {
 		case "textinput": 	
 			HtmlContainer = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
@@ -893,6 +966,10 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 			break;
 		case "radio":
 			HtmlContainer = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+			break;
+		case null:
+			//Abfangen, wenn das Formularelement nicht gewählt wurde
+			HtmlContainer = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
 			break;
 	}
 	return HtmlContainer;
