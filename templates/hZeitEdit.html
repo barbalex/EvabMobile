@@ -93,12 +93,12 @@
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".ui-slider").live("mouseup", function(event) {
+		$("#hZeitEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("../../");
 		});
 
 		//Für jedes Feld bei Änderung speichern
-		$(".speichern").live("change", function() {
+		$("#hZeitEditForm").delegate(".speichern", "change", function() {
 			speichern("../../");
 		});
 
@@ -116,7 +116,7 @@
 		$("[name='hZeitListeLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$('#hZeitNeuLink').live('click', function(event) {
+		$('#hZeitNeuLink').bind('click', function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{hOrtId}}"); 
 		});
@@ -125,7 +125,7 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Code für den Zeit-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
+		$('#LöschenDialogLink').bind('click', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Diese Zeit löschen?',
@@ -149,15 +149,15 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function() {
+		$("[name='Menu']").bind('click', function() {
 			erstelleMenu(this, User, "../../");
 		});
 
-		$("*").live("swipeleft", function() {
+		$("body").bind("swipeleft", function() {
 			nächsteVorigeZeit("{{id}}", "nächste");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			nächsteVorigeZeit("{{id}}", "vorige");
 		});
 	}

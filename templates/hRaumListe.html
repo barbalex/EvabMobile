@@ -98,7 +98,7 @@
 		$("[name='hProjektLink']").attr('href', url);
 
 		//neuen Raum erstellen
-		$("[name='hRaumNeuLink']").live("click", function() {
+		$("[name='hRaumNeuLink']").bind("click", function() {
 			erstelleNeuenRaum("{{id}}");
 		});
 
@@ -106,22 +106,22 @@
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
 		//Menu aufbauen
-		$('#Menu').live('click', function() {
+		$('#Menu').bind('click', function() {
 			var zurueck = "hRaumListe/" + "{{id}}";
 			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
-		$(".Raum").live("swipeleft", function() {
+		$("#Räume").delegate(".Raum", "swipeleft", function() {
 			var RaumId = $(this).attr('id');
 			window.open("../hOrtListe/" + RaumId, target="_self");
 			//$.mobile.changePage("../hOrtListe/" + RaumId, {transition: "slide"});
 		});
 
-		$(".erste").live("swipeleft", function() {
+		$("#Räume").delegate(".erste", "swipeleft", function() {
 			erstelleNeuenRaum("{{id}}");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			window.open("../../hProjektListe.html", target="_self");
 			//$.mobile.changePage("../hRaumListe/" + "{{id}}", {transition: "slide", reverse: true});
 		});
@@ -130,7 +130,7 @@
 			$.mobile.changePage("#RaumListeMap", "slide", false, true);
 		});
 
-		$('#RaumListeMap').live("pagecreate", function() {
+		$('#RaumListeMap').bind("pagecreate", function() {
 			//Karte aufbauen
 			erstelleKarteFürProjekt(User, "{{id}}");
 		});

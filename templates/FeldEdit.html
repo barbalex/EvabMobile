@@ -80,7 +80,7 @@
 			$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 			//jedes Feld aus Feldeigenschaften bei Änderung speichern
-			$(".Feldeigenschaften").live("change", function() {
+			$("#FeldEditForm").delegate(".Feldeigenschaften", "change", function() {
 				var FeldWert = this.value;
 				var FeldName = this.name;
 				var AlterFeldWert = this.defaultValue;
@@ -180,18 +180,18 @@
 			});
 
 			//Code für den Feld-Löschen-Dialog
-			$('#LöschenDialogLink').live('click', function() {
-				$(this).simpledialog({
-					'mode' : 'bool',
-			    	'prompt' : 'Dieses Feld löschen?',
-			    	'forceInput': 'false',
-			    	'buttons' : {
-					 	'ja': {
-					      	click: function () {
-					        	$('#dialogoutput').text('ja');
-					        	if ("{{FeldGeschützt}}") {
-									melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
-								} else {
+			$('#LöschenDialogLink').bind('click', function() {
+				if ("{{User}}" == "ZentrenBdKt") {
+					melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
+				} else {
+					$(this).simpledialog({
+						'mode' : 'bool',
+				    	'prompt' : 'Dieses Feld löschen?',
+				    	'forceInput': 'false',
+				    	'buttons' : {
+						 	'ja': {
+						      	click: function () {
+						        	$('#dialogoutput').text('ja');
 									$db = $.couch.db("evab");
 									//zählen, in wievielen Datensätzen das Feld verwendet wird
 									$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
@@ -218,36 +218,36 @@
 											}
 										}
 									});
-								}
-			        		},
-			        		icon: "delete",
-			        		theme: "c"
-			      		},
-			      		'nein': {
-			        		click: function () {
-			          			$('#dialogoutput').text('nein');
-			        		}
-			      		}
-			    	}
-			  	})
+				        		},
+				        		icon: "delete",
+				        		theme: "c"
+				      		},
+				      		'nein': {
+				        		click: function () {
+				          			$('#dialogoutput').text('nein');
+				        		}
+				      		}
+				    	}
+				  	})
+				}
 			});
 
 			//Menu aufbauen
-			$("[name='Menu']").live('click', function(){
+			$("[name='Menu']").bind('click', function(){
 				erstelleMenuFürFelder(this, "../../");
 			});
 
 			//BackButton steuern
-			$("[name='BackButton']").live('click', function(){
+			$("[name='BackButton']").bind('click', function(){
 				geheZurFeldListe();
 			});
 
 			//swipen steuern
-			$("#FeldContent").live("swipeleft", function() {
+			$("#FeldContent").bind("swipeleft", function() {
 				geheZumNächstenFeld(User, "{{id}}");
 			});
 
-			$("#FeldContent").live("swiperight", function() {
+			$("#FeldContent").bind("swiperight", function() {
 				geheZumVorigenFeld(User, "{{id}}");
 			});
 		});
@@ -686,7 +686,7 @@
   </head>
   <body>
   	<div data-role="page" id="FeldEditPage">
-  		<div data-role="header" data-position="fixed">
+  		<div data-role="header" data-position="fixed" id="FeldEditHeader">
   			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
@@ -828,7 +828,7 @@
 				</div>
 			</form>
 		</div>
-		<div data-role="footer" data-position="fixed">
+		<div data-role="footer" data-position="fixed" id="FeldEditFooter">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			

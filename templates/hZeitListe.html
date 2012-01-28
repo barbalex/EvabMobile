@@ -91,21 +91,21 @@
 		$("[name='hOrtLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$('#hZeitNeuLink').live('click', function(event) {
+		$('#hZeitNeuLink').bind('click', function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
 		});
 
-		$(".Zeit").live("swipeleft", function() {
+		$("#Zeiten").delegate(".Zeit", "swipeleft", function() {
 			var hZeitId = $(this).attr('id');
 			window.open("../hArtListe/" + hZeitId, target="_self");
 		});
 
-		$(".erste").live("swipeleft", function() {
+		$("#Zeiten").delegate(".erste", "swipeleft", function() {
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
 		});
 
@@ -113,7 +113,7 @@
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function() {
+		$("[name='Menu']").bind('click', function() {
 			var zurueck = "hZeitListe/" + "{{id}}";
 			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});

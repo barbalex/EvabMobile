@@ -95,19 +95,19 @@
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$(".speichern").live("change", function() {
+		$("#hRaumEditForm").delegate(".speichern", "change", function() {
 			speichern("../../");
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".ui-slider").live("mouseup", function(event) {
+		$("#hRaumEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("../../");
 		});
 
 		//Code für den Raum-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
+		$('#LöschenDialogLink').bind('click', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Diesen Raum löschen?',
@@ -131,7 +131,7 @@
 		});
 
 		//Menu aufbauen
-		$('#Menu').live('click', function() {
+		$('#Menu').bind('click', function() {
 			erstelleMenu(this, User, "../../");
 		});
 
@@ -143,18 +143,18 @@
 		$("[name='hRaumListeLink']").attr('href', url);
 
 		//neuen Raum erstellen
-		$("[name='hRaumNeuLink']").live("click", function() {
+		$("[name='hRaumNeuLink']").bind("click", function() {
 			erstelleNeuenRaum("{{hProjektId}}");
 		});
 
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
-		$("*").live("swipeleft", function() {
+		$("body").bind("swipeleft", function() {
 			nächsterVorigerRaum("{{id}}", "nächster");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			nächsterVorigerRaum("{{id}}", "voriger");
 		});
 
@@ -162,7 +162,7 @@
 			$.mobile.changePage("#RaumEditMap", "slide", false, true);
 		});
 
-		$('#RaumEditMap').live("pagecreate", function() {
+		$('#RaumEditMap').bind("pagecreate", function() {
 			//Karte aufbauen
 			erstelleKarteFürRaum(User, "{{id}}");
 		});

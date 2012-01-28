@@ -43,7 +43,7 @@
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Art wählen</h1>
 		</div>
-		<div data-role="content">
+		<div data-role="content" id="ArtenlistePageContent">
 			<ul id="ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="Filter setzen...">
 				
 			</ul>
@@ -108,7 +108,7 @@
 			}
 		});
 
-		$("[name='ArtListItem']").live("click", function(event) {
+		$("#ArtenListe").delegate("[name='ArtListItem']", "click", function(event) {
 			event.preventDefault();
 			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var ArtId = $(this).attr("artid");

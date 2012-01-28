@@ -94,14 +94,14 @@
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$(".speichern").live("change", function() {
+		$("#hProjektEditForm").delegate(".speichern", "change", function() {
 			speichern("../../");
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".ui-slider").live("mouseup", function(event) {
+		$("#hProjektEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("../../");
 		});
 
@@ -109,7 +109,7 @@
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
 		//Code für den Projekt-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
+		$('#LöschenDialogLink').bind('click', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Dieses Projekt löschen?',
@@ -133,20 +133,20 @@
 		});
 
 		//Menu aufbauen
-		$('#Menu').live('click', function() {
+		$('#Menu').bind('click', function() {
 			erstelleMenu(this, User, "../../");
 		});
 
 		//neues Projekt erstellen
-		$("[name='hProjektNeuLink']").live("click", function() {
+		$("[name='hProjektNeuLink']").bind("click", function() {
 			erstelleNeuesProjekt("../");
 		});
 
-		$("* :not(.ui-slider)").live("swipeleft", function() {    //schliesst leider ui-slider nicht aus
+		$("body").bind("swipeleft", function() {
 			nächstesVorigesProjekt("{{id}}", "nächstes");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			nächstesVorigesProjekt("{{id}}", "voriges");
 		});
 
@@ -154,7 +154,7 @@
 			$.mobile.changePage("#ProjektEditMap", "slide", false, true);
 		});
 
-		$('#ProjektEditMap').live("pagecreate", function() {
+		$('#ProjektEditMap').bind("pagecreate", function() {
 			//Karte aufbauen
 			erstelleKarteFürProjekt(User, "{{id}}");
 		});

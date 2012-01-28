@@ -122,14 +122,14 @@
 		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
 		//Für jedes Feld bei Änderung speichern
-		$(".speichern").live("change", function() {
+		$("#hOrtEditForm").delegate(".speichern", "change", function() {
 			speichern("KeineMeldung");
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".ui-slider").live("mouseup", function(event) {
+		$("#hOrtEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("KeineMeldung");
 		});
 
@@ -144,7 +144,7 @@
 		$("[name='hOrtListeLink']").attr('href', url);
 
 		//neuen Ort erstellen
-		$("[name='hOrtNeuLink']").live('click', function(event){
+		$("[name='hOrtNeuLink']").bind('click', function(event){
 			event.preventDefault();
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{hRaumId}}");
 		});
@@ -153,7 +153,7 @@
 		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
 
 		//Code für den Ort-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
+		$('#LöschenDialogLink').bind('click', function() {
 			var AnzZeiten;
 			$(this).simpledialog({
 				'mode' : 'bool',
@@ -178,7 +178,7 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function() {
+		$("[name='Menu']").bind('click', function() {
 			erstelleMenu(this, User, Pfad);
 		});
 
@@ -195,7 +195,7 @@
 		var markersArray = [];
 		var InfoWindowArray = [];
 
-		$('#OrtEditMap').live("pagecreate", function() {
+		$('#OrtEditMap').bind("pagecreate", function() {
 			var map;
 			var verorted;
 			if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
@@ -314,11 +314,11 @@
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
 
-		$("*").live("swipeleft", function() {
+		$("body").bind("swipeleft", function() {
 			nächsterVorigerOrt("{{id}}", "nächster");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			nächsterVorigerOrt("{{id}}", "voriger");
 		});
 	}

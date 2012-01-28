@@ -85,7 +85,7 @@
 			
 		speichereLetzteUrl(User);
 
-		$(".beob").live("swipeleft", function() {
+		$("#beobachtungen").delegate(".beob", "swipeleft", function() {
 			var BeobId = $(this).attr('id');
 			window.open("_show/BeobEdit/" + BeobId, target="_self");
 		});
@@ -94,7 +94,7 @@
 			$.mobile.changePage("#BeobListeMap", "slide", false, true);
 		});
 
-		$('#BeobListeMap').live("pagecreate", function() {
+		$('#BeobListeMap').bind("pagecreate", function() {
 			//Karte aufbauen. Zuerst Beobachtungen abfragen
 			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
 				success: function(data) {
@@ -196,7 +196,7 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
+		$("[name='Menu']").bind('click', function(){
 			var zurueck = "BeobListe.html";
 			erstelleMenuEinfach(zurueck, this, User, Pfad);
 		});
@@ -206,10 +206,14 @@
 		$("#map_canvas").css("height", contentHeight + "px");
 
 		//Neue Beobachtung managen
-		$("#NeueBeobLink").live("click", function(event){
+		$("#NeueBeobLink").bind("click", function(event){
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
-		});	
+		});
+
+		$("body").bind("swiperight", function() {
+			window.open("hProjektListe.html", target="_self");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

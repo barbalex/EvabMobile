@@ -84,7 +84,7 @@
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			<div data-role="navbar">
+			<div data-role="navbar" id=""BeobEditPageFooterNavbar>
 				<ul>
 					<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus" class="ui-btn-active">neu</a></li>					
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
@@ -144,7 +144,7 @@
 			}
 
 			//Neue Beobachtung erfassen
-			$("#NeueBeobLink").live("click", function(event){
+			$("#NeueBeobLink").bind("click", function(event){
 				event.preventDefault();
 				window.open("../../Artgruppenliste.html?Status=Neu&Von=BeobEdit", target="_self");
 			});
@@ -175,14 +175,14 @@
 			});
 
 			//Für jedes Feld bei Änderung speichern
-			$(".speichern").live("change", function() {
+			$("#BeobEditForm").delegate(".speichern", "change", function() {
 				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
 			});
 
 			//Slider-Felder erst bei mouseup speichern
 			//change wird für jeden geswipten Wert ausgelöst!
 			//ungelöstes Problem: swipe reagiert!
-			$(".ui-slider").live("mouseup", function(event) {
+			$("#BeobEditForm").delegate(".ui-slider", "mouseup", function(event) {
 				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
 			});
 			
@@ -198,7 +198,7 @@
 			var markersArray = [];
 			var InfoWindowArray = [];
 
-			$('#BeobEditMap').live("pagecreate", function() {
+			$('#BeobEditMap').bind("pagecreate", function() {
 				var map;
 				var verorted;
 				if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
@@ -330,7 +330,7 @@
 			}
 
 			//Code für den Beobachtung-Löschen-Dialog
-			$('#LöschenDialogLink').live('click', function() {
+			$('#LöschenDialogLink').bind('click', function() {
 				$(this).simpledialog({
 					'mode' : 'bool',
 			    	'prompt' : 'Beobachtung löschen?',
@@ -354,16 +354,16 @@
 			});
 
 			//Menu aufbauen
-			$("[name='Menu']").live('click', function(){
+			$("[name='Menu']").bind('click', function(){
 				var zurueck = "BeobEdit/" + "{{id}}";
 				erstelleMenu(zurueck, this, User, "../../");
 			});
 
-			$("#BeobEditContent").live("swipeleft", function() {
+			$("#BeobEditContent").bind("swipeleft", function() {
 				nächsteVorigeBeob("{{id}}", "nächste");
 			});
 
-			$("#BeobEditContent").live("swiperight", function() {
+			$("#BeobEditContent").bind("swiperight", function() {
 				nächsteVorigeBeob("{{id}}", "vorige");
 			});
 

@@ -44,7 +44,7 @@
 			erstelle_sichtbareFelder(ArtGruppe, User);
 
 			//Felder speichern (checkbox)
-			$("input[name='Felder']").live("change", function() {
+			$("#Feldliste").delegate("input[name='Felder']", "change", function() {
 				var Feld = $(this).prop("id");
 				//FeldArray holen, damit nur Änderungen gespeichert werden, da nicht alle Felder geladen werden
 				var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
@@ -158,15 +158,15 @@
 						document.ModusHierarchisch = FeldArray;
 						$db.saveDoc(document, {
 							success: function(data) {
-								melde("gespeichert");
+								//melde("gespeichert");
 							},
 							error: function() {
-								melde("Fehler: nicht gespeichert");
+								melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 							}
 						});
 					},
 					error: function() {
-						melde("Fehler: nicht gespeichert");
+						melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 					}
 				});
 			}

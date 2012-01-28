@@ -98,27 +98,27 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function() {
+		$("[name='Menu']").bind('click', function() {
 			var zurueck = "hArtListe/" + "{{id}}";
 			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").live("click", function(event) {
+		$("#hArtNeuLink").bind("click", function(event) {
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$(".beob").live("swipeleft", function() {
+		$("#Arten").delegate(".beob", "swipeleft", function() {
 			var ArtId = $(this).attr('id');
 			window.open("../hArtEdit/" + ArtId, target="_self");
 		});
 
-		$(".erste").live("swipeleft", function() {
+		$("#Arten").delegate(".erste", "swipeleft", function() {
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
 	}

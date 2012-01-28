@@ -86,30 +86,34 @@
 		speichereLetzteUrl(User);
 
 		//Menu aufbauen
-		$('#Menu').live('click', function() {
+		$('#Menu').bind('click', function() {
 			var zurueck = "hProjektListe.html";
 			erstelleMenuHierarchisch(zurueck, this, User, "");
 		});
 
 		//neues Projekt erstellen
-		$("[name='hProjektNeuLink']").live("click", function() {
+		$("[name='hProjektNeuLink']").bind("click", function() {
 			erstelleNeuesProjekt("_show/");
 		});
 
-		$(".Projekt").live("swipeleft", function() {
+		$("#Projekte").delegate(".Projekt", "swipeleft", function() {
 			var ProjektId = $(this).attr('id');
 			window.open("_show/hRaumListe/" + ProjektId, target="_self");
 		});
 
-		$(".erste").live("swipeleft", function() {
+		$("#Projekte").delegate(".erste", "swipeleft", function() {
 			erstelleNeuesProjekt("_show/");
+		});
+
+		$("body").bind("swiperight", function() {
+			window.open("BeobListe.html", target="_self");
 		});
 
 		$("#ProjektListeMapÖffnen").tap(function(event) {
 			$.mobile.changePage("#ProjektListeMap", "slide", false, true);
 		});
 
-		$('#ProjektListeMap').live("pagecreate", function() {
+		$('#ProjektListeMap').bind("pagecreate", function() {
 			//Karte aufbauen
 			erstelleKarteFürProjektliste(User);
 		});

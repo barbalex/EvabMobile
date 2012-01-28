@@ -65,21 +65,13 @@
 	    }*/
 
 		$("#SubmitButton").tap(function(event) {
-			var UserName = $('input[name=UserName]').val();
-			var Passwort = $('input[name=Passwort]').val();
-			if (UserName == "") {
-				melde("Bitte Benutzernamen eingeben");
-			} else if (Passwort==""){
-				melde("Bitte Passwort eingeben");
-			} else {
-				meldeUserAn();
-			}
+			meldeUserAn();
 		});
 
 		//Reaktion auf Enter-Taste
-		$("#Passwort").live("keydown", function(e) {
+		$("#Passwort").bind("keydown", function(e) {
 			if (e.keyCode === 13) {
-		    	$("#SubmitButton").trigger('tap');
+		    	meldeUserAn();
 		    	e.preventDefault();
 		  	}
 		});
@@ -91,16 +83,22 @@
 	function meldeUserAn() {
 		var UserName = $('input[name=UserName]').val();
 		var Passwort = $('input[name=Passwort]').val();
-		$.couch.login({
-			name : UserName,
-			password : Passwort,
-			success : function(r) {
-				authentifiziereUser();
-			},
-			error: function() {
-				melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
-			}
-		});      
+		if (UserName == "") {
+			melde("Bitte Benutzernamen eingeben");
+		} else if (Passwort==""){
+			melde("Bitte Passwort eingeben");
+		} else {
+			$.couch.login({
+				name : UserName,
+				password : Passwort,
+				success : function(r) {
+					authentifiziereUser();
+				},
+				error: function() {
+					melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+				}
+			});
+		} 
 	}
 	
 	function authentifiziereUser() {
@@ -109,7 +107,7 @@
 				var userCtx = r.userCtx;
 				User = userCtx.name;
 				if (userCtx.name) {
-					öffneStartseite(User);
+					öffneZuletztBenutzteSeite(User);
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
 					melde("Oops, die Datenbank hat keine Benutzer!");
 				} else {
@@ -119,7 +117,7 @@
 		});
 	}
 
-	function öffneStartseite(User) {
+	function öffneZuletztBenutzteSeite(User) {
 		//_replicate(name, pass);
 		$db.view('evab/User?key="' + User + '"', {
 			success: function(data) {

@@ -107,33 +107,33 @@
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$(".speichern").live("change", function() {
+		$("#hArtEditForm").delegate(".speichern", "change", function() {
 			speichern();
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$(".ui-slider").live("mouseup", function(event) {
+		$("#hArtEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("../../");
 		});
 
 		var Status = get_url_param("Status");
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").live("click", function(event) {
+		$("#hArtNeuLink").bind("click", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste("Neu");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-		$("#aArtGruppe").live("click", function(event) {
+		$("#aArtGruppe").bind("click", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste("Edit");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
-		$("#aArtName").live("click", function(event) {
+		$("#aArtName").bind("click", function(event) {
 			event.preventDefault();
 			zuArtliste(aArtGruppe, "Edit", "../../");
 		});
@@ -158,7 +158,7 @@
 		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{hZeitId}}";
 
 		//Code für den Art-Löschen-Dialog
-		$('#LöschenDialogLink').live('click', function() {
+		$('#LöschenDialogLink').bind('click', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Diese Art löschen?',
@@ -182,15 +182,15 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function() {
+		$("[name='Menu']").bind('click', function() {
 			erstelleMenu(this, User, "../../", aArtGruppe);
 		});
 
-		$("*").live("swipeleft", function() {
+		$("body").bind("swipeleft", function() {
 			nächsteVorigeArt("{{id}}", "nächste");
 		});
 
-		$("*").live("swiperight", function() {
+		$("body").bind("swiperight", function() {
 			nächsteVorigeArt("{{id}}", "vorige");
 		});
 	}

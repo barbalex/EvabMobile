@@ -113,12 +113,12 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").live('click', function(){
+		$("[name='Menu']").bind('click', function(){
 			erstelleMenuFürFelder(this, "");
 		});
 
 		//BackButton steuern
-		$("[name='FeldListeBackButton']").live('click', function(){
+		$("[name='FeldListeBackButton']").bind('click', function(){
 			var zurueck = get_url_param('zurueck');
 			if (zurueck == "BeobListe.html" || zurueck == "hProjektListe.html" || zurueck == "hProjektNeu.html"){
 				window.open(zurueck, target="_self");

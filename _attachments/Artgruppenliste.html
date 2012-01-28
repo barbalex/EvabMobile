@@ -135,7 +135,7 @@
 		}
 			
 
-		$("[name='ArtgruppenListItem']").live("click", function(event) {        
+		$("#ArtgruppenListe").delegate("[name='ArtgruppenListItem']", "click", function(event) {        
 			event.preventDefault();
 			var aArtGruppe = $(this).attr("ArtGruppe");
 			var L = $(this).attr("L") || "";
