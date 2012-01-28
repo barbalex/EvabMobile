@@ -56,31 +56,31 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 **Generell:**
 
 - Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
-- Auf dem PC installiern und lokal arbeiten (Windows, Mac OsX, wenig getestet)
-- Arten aus diesen Artgruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
-- Eigene Felder erstellen und konfigurieren, inklusive eigener Auswahllisten!
-- Zusätzlich stehen 162 Datenfelder der öffentlichen Artdatenzentren zur Verfügung. Diese sind vor Änderung geschützt
+- Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
+- Arten aus diesen Gruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
+- Eigene Felder erstellen, Feldtyp wählen, sogar eigene Auswahllisten erstellen
 - Bestimmen, welche Felder sichtbar sind
-- Eigene Felder können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) verwendet werden
+- Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 - Eingaben werden automatisch gespeichert
 - Automatisch durch Gerät lokalisieren: Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt oder Raum. Der Ausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
-- Nach Neuanmeldung öffnet wieder die zuletzt benutzte Seite
+- Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
 - Beobachtungen und Datenfelder exportieren
 - Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über http [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
 
 **Im einfachen Modus:**
 
-- Beobachtungen schnell und unkompliziert erfassen
+- Beobachtungen in einer einfachen Liste erfassen
 
 **Im hierarchischen Modus:**
 
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Felder
 - Unbekannte Arten beschreiben, z.B. um sie später zu bestimmen
-- Eigene Arten erfassen, welche nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
+- Eigene Arten erfassen, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
@@ -101,9 +101,9 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
 
 - Karten der Swisstopo verwenden
-- Nützliche Layer anbieten (Schutzgebiete, Parzellen...)
-- Linien und Flächen digitalisieren
-- Umriss zeichnen > darin liegende Beobachtungen auflisten
+- Nützliche Layer überlagern (z.B. Schutzgebiete)
+- Mit Linien und Flächen verorten
+- Umriss zeichnen, um darin enthaltene Beobachtungen aufzulisten
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
