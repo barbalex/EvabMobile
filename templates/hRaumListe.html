@@ -90,6 +90,7 @@
 		prüfeAnmeldung(Pfad);
 		
 		refreshRaumListe();
+
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar und Titelleiste setzen
@@ -104,13 +105,10 @@
 		//Link zur RaumListe in Navbar setzen
 		document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
-		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		UserId = holeUserId(User);
-
 		//Menu aufbauen
 		$('#Menu').live('click', function() {
 			var zurueck = "hRaumListe/" + "{{id}}";
-			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
+			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
 		$(".Raum").live("swipeleft", function() {
@@ -149,7 +147,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session) {

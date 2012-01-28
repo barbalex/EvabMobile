@@ -118,6 +118,7 @@
 		
 			prüfeAnmeldung(Pfad);
 			erstelle_BeobEdit("{{id}}", User);
+
 			speichereLetzteUrl(User);
 
 			refreshArtGruppe("{{aArtGruppe}}");
@@ -352,13 +353,10 @@
 			  	})
 			});
 
-			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-			UserId = holeUserId(User);
-
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
 				var zurueck = "BeobEdit/" + "{{id}}";
-				erstelleMenu(zurueck, this, User, UserId, "../../");
+				erstelleMenu(zurueck, this, User, "../../");
 			});
 
 			$("#BeobEditContent").live("swipeleft", function() {
@@ -385,7 +383,7 @@
 		});
 
 		//Menü aufbauen
-		function erstelleMenu(zurueck, thiz, User, UserId, Pfad) {
+		function erstelleMenu(zurueck, thiz, User, Pfad) {
 			//Code um Menü aufzubauen
 			$(thiz).simpledialog({
 				'mode' : 'bool',
@@ -408,7 +406,7 @@
 		      		},
 		      		'meine Einstellungen': {
 				      	click: function () {
-				        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+				        	öffneMeineEinstellungen(User, Pfad)
 		        		},
 		        		theme: "a",
 		        		icon: "gear"
@@ -493,7 +491,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){

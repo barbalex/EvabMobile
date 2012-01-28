@@ -87,6 +87,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		erstelle_hZeitEdit("{{id}}", User);
+
 		speichereLetzteUrl(User);
 
 		//Slider-Felder erst bei mouseup speichern
@@ -147,12 +148,9 @@
 		  	})
 		});
 
-		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		UserId = holeUserId(User);
-
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenu(this, User, UserId, "../../");
+			erstelleMenu(this, User, "../../");
 		});
 
 		$("*").live("swipeleft", function() {
@@ -171,7 +169,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session) {
@@ -285,7 +283,7 @@
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-	function erstelleMenu(thiz, User, UserId, Pfad){
+	function erstelleMenu(thiz, User, Pfad){
 		//Code um Menü aufzubauen
 		$(thiz).simpledialog({
 			'mode' : 'bool',
@@ -308,7 +306,7 @@
 	      		},
 	      		'meine Einstellungen': {
 			      	click: function () {
-			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+			        	öffneMeineEinstellungen(User, Pfad);
 	        		},
 	        		theme: "a",
 	        		icon: "gear"

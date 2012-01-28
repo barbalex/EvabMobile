@@ -259,7 +259,7 @@ function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, Use
 }
 
 //Menü aufbauen. Wird aufgerufen von BeobListe.html
-function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
+function erstelleMenuEinfach(zurueck, thiz, User, Pfad) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
@@ -282,7 +282,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+		        	öffneMeineEinstellungen(User, Pfad);
         		},
         		theme: "a",
         		icon: "gear"
@@ -318,7 +318,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, UserId, Pfad) {
 }
 
 //Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
+function erstelleMenuHierarchisch(zurueck, thiz, User, Pfad){
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
@@ -341,7 +341,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, UserId, Pfad){
       		},
       		'meine Einstellungen': {
 		      	click: function () {
-		        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+		        	öffneMeineEinstellungen(User, Pfad);
         		},
         		theme: "a",
         		icon: "gear"
@@ -519,13 +519,11 @@ function erstelleNeuesProjekt(Pfad) {
 	});
 }
 
-function holeUserId(User) {
+function öffneMeineEinstellungen(User, Pfad) {
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
-			var doc;
-			doc = data.rows[0].value;
-			UserId = doc._id;
-			return UserId;
+			UserId = data.rows[0].value._id;
+			window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
 		}
 	});
 }
@@ -1298,8 +1296,8 @@ function speichereLetzteUrl(User) {
 //speichert diese im Userdokument
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
+//UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
 	var url = window.location.pathname + window.location.search;
-	//var url = $(location).attr('href');
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			var UserId = data.rows[0].value._id;

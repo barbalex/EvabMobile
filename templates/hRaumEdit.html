@@ -91,6 +91,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		erstelle_hRaumEdit("{{id}}", User);
+
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
@@ -129,12 +130,9 @@
 		  	})
 		});
 
-		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		UserId = holeUserId(User);
-
 		//Menu aufbauen
 		$('#Menu').live('click', function() {
-			erstelleMenu(this, User, UserId, "../../");
+			erstelleMenu(this, User, "../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
@@ -181,7 +179,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session) {
@@ -349,7 +347,7 @@
 	}
 
 	//Menü aufbauen
-	function erstelleMenu(thiz, User, UserId, Pfad){
+	function erstelleMenu(thiz, User, Pfad){
 		$(thiz).simpledialog({
 			'mode' : 'bool',
 			'prompt' : 'Menü',
@@ -371,7 +369,7 @@
 	      		},
 	      		'meine Einstellungen': {
 			      	click: function () {
-			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+			        	öffneMeineEinstellungen(User, Pfad);
 	        		},
 	        		theme: "a",
 	        		icon: "gear"

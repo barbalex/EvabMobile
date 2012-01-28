@@ -37,6 +37,7 @@
 			UserFeldDocId = 0;
 		
 			prüfeAnmeldung(Pfad);
+
 			speichereLetzteUrl(User);
 			
 			if ("{{FeldName}}") {
@@ -230,9 +231,6 @@
 			    	}
 			  	})
 			});
-
-			//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-			UserId = holeUserId(User);
 
 			//Menu aufbauen
 			$("[name='Menu']").live('click', function(){
@@ -548,7 +546,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){

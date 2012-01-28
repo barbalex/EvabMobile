@@ -114,6 +114,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		erstelle_hOrtEdit("{{id}}", User);
+
 		speichereLetzteUrl(User);
 
 		//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
@@ -176,12 +177,9 @@
 		  	})
 		});
 
-		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		UserId = holeUserId(User);
-
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
-			erstelleMenu(this, User, UserId, Pfad);
+			erstelleMenu(this, User, Pfad);
 		});
 
 		//Karte managen
@@ -332,7 +330,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
@@ -539,7 +537,7 @@
 	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-	function erstelleMenu(thiz, User, UserId, Pfad){
+	function erstelleMenu(thiz, User, Pfad){
 		//Code um Menü aufzubauen
 		$(thiz).simpledialog({
 			'mode' : 'bool',
@@ -562,7 +560,7 @@
 	      		},
 	      		'meine Einstellungen': {
 			      	click: function () {
-			        	window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+			        	öffneMeineEinstellungen(User, Pfad);
 	        		},
 	        		theme: "a",
 	        		icon: "gear"

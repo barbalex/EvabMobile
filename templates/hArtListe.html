@@ -78,6 +78,7 @@
 		prüfeAnmeldung(Pfad);
 		
 		refreshArtListe();
+
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
@@ -96,13 +97,10 @@
 		//Link zur ArtListe in Navbar setzen
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
-		//UserId ermitteln, um Link zum UserEdit im Menü zu setzen
-		UserId = holeUserId(User);
-
 		//Menu aufbauen
 		$("[name='Menu']").live('click', function() {
 			var zurueck = "hArtListe/" + "{{id}}";
-			erstelleMenuHierarchisch(zurueck, this, User, UserId, "../../");
+			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
 		//Neue Beobachtung managen
@@ -136,7 +134,7 @@
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
 		$.ajax({
-		    url: '/_session?callback=',
+		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session) {

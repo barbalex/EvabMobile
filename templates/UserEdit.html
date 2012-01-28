@@ -83,13 +83,12 @@
 				success : function(r) {
 					var userCtx = r.userCtx;
 					User = userCtx.name;
-					//speichereLetzteUrl(User);  ausgeschaltet, weil von nicht bekannt ist
 				}
 			});
 			
 			/*
 			$.ajax({
-			    url: '/_session?callback=',
+			    url: '/_session',
 			    dataType: 'json',
 			    async: false,
 			    success: function(session){
