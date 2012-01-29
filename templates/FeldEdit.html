@@ -46,30 +46,15 @@
 			}
 			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
 
-			//Checkboxen managen, Werte initiieren
 			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
-			//nur machen, wen ein FeldName existiert, sonst gibt es einen Fehler
-			if ("{{FeldName}}") {
-				var viewname = 'evab/FeldListeFeldName?key="' + "{{FeldName}}" + '"';
-				var ArtGruppenArray;
-				$db.view(viewname, {
-					success: function(data) {
-						var i;
-						var Feld;
-						for(i in data.rows) {
-							Feld = data.rows[i].value;
-							//Nur eigene Felder und offizielle
-							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-								ArtGruppenArray = Feld.ArtGruppe;
-								//ArtGruppen nur in der Hierarchiestufe Art anzeigen
-								if ("{{Hierarchiestufe}}" === "Art") {
-									ArtGruppeAufbauen(ArtGruppenArray);
-								}
-							}
-						}
+			$db.openDoc("{{id}}", {
+				success: function(Feld) {
+					//ArtGruppen nur in der Hierarchiestufe Art anzeigen
+					if ("{{Hierarchiestufe}}" === "Art") {
+						ArtGruppeAufbauen(Feld.ArtGruppe);
 					}
-				});
-			}
+				}
+			});
 			
 			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
 			$("input[name='Hierarchiestufe']").checkboxradio();
