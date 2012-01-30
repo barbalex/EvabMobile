@@ -82,13 +82,13 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Daten schützen
+- Daten vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
   - Bilder und Tonaufnahmen anhängen
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
-  - Anzahl Meldungen derselben Art im 10*10km-Quadranten, Jahr der jüngsten Meldung
+  - Anzahl Meldungen derselben Art im aktuellen 10*10km-Quadranten, Jahr der jüngsten Meldung (wie wahrscheinlich bzw. sensationell ist meine Beobachtung?)
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen)
