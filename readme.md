@@ -56,7 +56,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
 - Beobachtungen von Arten aus diesen Gruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - Beobachtungen von unbekannten Arten erfassen, z.B. um sie später zu bestimmen
-- Beobachtungen von "eigenen" Arten erfassen, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
+- Beobachtungen von "eigenen" Arten erfassen, die nicht im offiziellen Index enthalten sind<br>(Spezialfälle für Artspezialisten und frische Neobiota)
 - 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
 - Eigene Felder erstellen, Feldtyp wählen, sogar eigene Auswahllisten erstellen
 - Standardwerte bestimmen, die bei neuen Beobachtungen automatisch in Felder gesetzt werden
