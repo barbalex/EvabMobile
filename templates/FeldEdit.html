@@ -43,6 +43,20 @@
 			if ("{{FeldName}}") {
 				//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
 				setzeSichtbarModusEinfachUndHierarchisch(User, "{{FeldName}}");
+				//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+				if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
+					$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
+					$("#Standardwert").attr("disabled", true);
+				} else if ("{{FeldName}}" == "aAutor") {
+					$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+					$("#Standardwert").attr("disabled", true);
+				} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
+					$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
+					$("#Standardwert").attr("disabled", true);
+				} else if (["zDatum", "zUhrzeit"].indexOf("{{FeldName}}") > -1) {
+					$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
+					$("#Standardwert").attr("disabled", true);
+				}
 			}
 			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
 

@@ -583,9 +583,12 @@ function erstelle_BeobEdit(ID, User) {
 								$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//speichern, damit Standardwerte von dynamisch erstellten Feldern gespeichert werden 
-								speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
-								GetGeolocation();
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									//und verorten
+									speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+									GetGeolocation();
+								}
 							}
 						});
 					}
@@ -653,8 +656,10 @@ function erstelle_hProjektEdit(ID, User) {
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//dynamisch erstellte Standardwerte speichern
-								speichern("../../");
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									speichern("../../");
+								}
 							}
 						});
 					}
@@ -675,7 +680,7 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, SichtbareFelder, Pro
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "";
+	var HtmlContainer = "<hr />";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
@@ -722,8 +727,10 @@ function erstelle_hRaumEdit(ID, User) {
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//dynamisch erstellte Standardwerte speichern
-								speichern("../../");
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									speichern("../../");
+								}
 							}
 						});
 					}
@@ -744,7 +751,7 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, SichtbareFelder, Raum) 
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "";
+	var HtmlContainer = "<hr />";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
@@ -791,9 +798,12 @@ function erstelle_hOrtEdit(ID, User) {
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//dynamisch erstellte Standardwerte speichern
-								speichern("KeineMeldung");
-								GetGeolocation();
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									//und verorten
+									speichern("KeineMeldung");
+									GetGeolocation();
+								}
 							}
 						});
 					}
@@ -814,7 +824,7 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, SichtbareFelder, Ort) {
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "";
+	var HtmlContainer = "<hr />";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
@@ -861,8 +871,10 @@ function erstelle_hZeitEdit(ID, User) {
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//speichern, damit dynamisch erstellte Standardwerte bleiben
-								speichern("../../");
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									speichern("../../");
+								}
 							}
 						});
 					}
@@ -883,7 +895,7 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, SichtbareFelder, Zeit) 
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "";
+	var HtmlContainer = "<hr />";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
@@ -930,8 +942,10 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
-								//dynamisch erstellte Standardwerte speichern
-								speichern();
+								if (get_url_param("Status") == "neu") {
+									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+									speichern();
+								}
 							}
 						});
 					}
@@ -952,7 +966,7 @@ function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, SichtbareFel
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "";
+	var HtmlContainer = "<hr />";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
