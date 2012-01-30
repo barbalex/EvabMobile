@@ -55,7 +55,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
 - Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
 - Beobachtungen von Arten aus diesen Gruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
-- Beobachtungen von unbekannte Arten erfassen, z.B. um sie später zu bestimmen
+- Beobachtungen von unbekannten Arten erfassen, z.B. um sie später zu bestimmen
 - Beobachtungen von "eigenen" Arten erfassen, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
 - Eigene Felder erstellen, Feldtyp wählen, sogar eigene Auswahllisten erstellen
