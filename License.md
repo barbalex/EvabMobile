@@ -1,4 +1,5 @@
 Copyright (c) 2012, Alexander Gabriel
+
 Alle Rechte vorbehalten.
 
 Weiterverbreitung und Verwendung in nichtkompilierter oder kompilierter Form, mit oder ohne Veränderung, sind unter den folgenden Bedingungen zulässig:
