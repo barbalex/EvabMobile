@@ -64,6 +64,14 @@
 	      document.getElementById("UserName").focus();
 	    }*/
 
+	    //Wenn möglich alten cookie für die Anmeldung verwenden
+	    //ausser User hat via Menü bewusst neu anmelden wollen
+	    //User = "";
+	    var Status = get_url_param("Status");
+	    if (Status != "neu") {
+	    	prüfeAnmeldung();
+	    }
+
 		$("#SubmitButton").tap(function(event) {
 			meldeUserAn();
 		});
@@ -125,6 +133,24 @@
 				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
 				window.open(LetzteUrl, target="_self");
 			}
+		});
+	}
+
+	function prüfeAnmeldung() {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
+		$.ajax({
+		    url: '/_session',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	User = session.userCtx.name;
+		    	if(User != (undefined || null)) {
+		        	öffneZuletztBenutzteSeite(User);
+		       	} else {
+		       		$("#UserName").focus();
+		       	}
+		    }
 		});
 	}
 

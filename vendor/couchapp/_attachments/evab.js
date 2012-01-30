@@ -275,7 +275,7 @@ function erstelleMenuEinfach(zurueck, thiz, User, Pfad) {
       		},
 		 	'neu anmelden': {
 		      	click: function () {
-		        	window.open(Pfad + "index.html", target="_self");
+		        	window.open(Pfad + "index.html?Status=neu", target="_self");
         		},
         		theme: "a",
         		icon: "home"
@@ -334,7 +334,7 @@ function erstelleMenuHierarchisch(zurueck, thiz, User, Pfad){
       		},
       		'neu anmelden': {
 		      	click: function () {
-		        	window.open(Pfad + "index.html", target="_self");
+		        	window.open(Pfad + "index.html?Status=neu", target="_self");
         		},
         		theme: "a",
         		icon: "home"
