@@ -12,6 +12,7 @@ Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall
 Gängige Fehlerquellen:  
 
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders Artnamen). 
+  
   Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
