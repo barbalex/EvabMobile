@@ -329,10 +329,10 @@
 			$db = $.couch.db("evab");
 			var Feld = $("#FeldEditForm").serializeObject();
 			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
-			/*if (Feld.Optionen) {
-				Feld.Optionen = Feld.Optionen.split(", ");
+			if (Feld.Optionen) {
+				Feld.Optionen = Feld.Optionen.split(",");
 			}
-			if (Feld.ArtGruppe) {
+			/*if (Feld.ArtGruppe) {
 				Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
 			}*/
 			Feld.Typ = "Feld";
@@ -842,7 +842,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
-					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte, mit, Komma, trennen. Erforderlich für Auswahllisten">{{Optionen}}</textarea>
+					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten">{{Optionen}}</textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>

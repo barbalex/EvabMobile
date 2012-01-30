@@ -57,9 +57,12 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 - Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
 - Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
-- Arten aus diesen Gruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- Beobachtungen von Arten aus diesen Gruppen erfassen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- Beobachtungen von unbekannte Arten erfassen, z.B. um sie später zu bestimmen
+- Beobachtungen von "eigenen" Arten erfassen, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
 - Eigene Felder erstellen, Feldtyp wählen, sogar eigene Auswahllisten erstellen
+- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch in Felder gesetzt werden
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 - Eingaben werden automatisch gespeichert
@@ -79,15 +82,12 @@ Vielleicht wird es in einer Übergangszeit auch ein nützliches Werkzeug. Aber g
 
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Felder
-- Unbekannte Arten beschreiben, z.B. um sie später zu bestimmen
-- Eigene Arten erfassen, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
 - Daten schützen
 - Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
-  - Standardwerte bestimmen
   - Bilder und Tonaufnahmen anhängen
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
