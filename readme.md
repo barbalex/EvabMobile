@@ -63,7 +63,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 - Eingaben werden automatisch gespeichert
-- Lokalisierung dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis zu einer Genauigkeit von 30 m wird auf die Ungenauikeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
+- Lokalisierung dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - Manuell auf Luftbildern von Google lokalisieren. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt oder Raum. Der Ausschnitt passt sich an die Beobachtungen an
 - Durch Listen und Formulare "swipen"
