@@ -78,7 +78,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 **Im hierarchischen Modus:**
 
 - Umfassende Aufnahmen effizient erheben: Informationen zu Projekt, Raum, Ort und Zeit müssen nur ein mal erfasst werden
-- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen Felder
+- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
