@@ -52,36 +52,42 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 #Was kann man momentan mit der App machen?
 
 **installieren**
+
 - Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
 - Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
 
 **Beobachtungen erfassen...**
+
 - ...von Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
-- ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind<br>(Spezialfälle für Artspezialisten und frische Neobiota)
+- ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 
 **Datenfelder verwalten**
-- 162 (nicht veränderbaren) Datenfelder der öffentlichen Artdatenzentren benutzen
+
+- 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
 - Eigene Felder erstellen, aus verschiedenen Feldtypen wählen, eigene Auswahllisten erstellen
 - Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 
-**lokalisieren**
+**lokalisieren...**
+
 - ...dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - ...manuell auf Luftbildern von Google. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
 
 **Effizient arbeiten**
-- Im *einfachen Modus* Beobachtungen in einer einfachen Liste erfassen
-- Im *hierarchischen Modus* umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
+
+- Im **einfachen Modus** Beobachtungen in einer einfachen Liste erfassen
+- Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
 - Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
-- Wenn das alte Cookie noch existiert entfällt die Anmeldung
+- Die Anmeldung entfällt, wenn das alte Cookie noch existiert
 
 **Über die Daten verfügen**
+
 - Beobachtungen und Datenfelder exportieren
 - Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
 
