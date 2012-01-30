@@ -172,7 +172,54 @@
 			});
 
 			$("#Standardwert").bind("change", function() {
-				speichereFeldeigenschaften();
+				var Optionen = $("#Optionen").val();
+				var Feldwert = this.value;
+				if (Optionen != "") {
+					$db.openDoc("{{id}}", {
+						success: function(doc) {
+							var LetzterFeldwert = doc.Standardwert[User];
+							var Formularelement = doc.Formularelement;
+							//Standardwert in Array verwandeln
+							StandardwertOptionen = Feldwert.split(",");
+							//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
+							if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
+								//alle Werte des Arrays müssen Optionen sein
+								for (i in StandardwertOptionen) {
+									if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
+										//ein Wert ist keine Option, abbrechen
+										$("#Standardwert").val(LetzterFeldwert);
+										melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
+										return;
+									}
+								}
+								//alle Werte sind Optionen
+								speichereFeldeigenschaften();
+							} else {
+								//Feld ist toggleswitch, selectmenu oder radio. Array darf nur ein Element enthalten
+								if (StandardwertOptionen.length > 1) {
+									//Array enthält mehrere Optionen, nicht zulässig
+									$("#Standardwert").val(LetzterFeldwert);
+									melde("Ändern abgebrochen:<br>Wählen Sie eine einzige der Optionen");
+								} else {
+									//Array enthält eine einzige Option
+									for (i in StandardwertOptionen) {
+										if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
+											//der Wert ist keine Option, abbrechen
+											$("#Standardwert").val(LetzterFeldwert);
+											melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
+											return;
+										}
+									}
+									//alle Werte sind Optionen
+									speichereFeldeigenschaften();
+								}
+							}
+						}
+					});
+				} else {
+					//Feld Optionen ist leer. Alle Werte akzeptieren
+					speichereFeldeigenschaften();
+				}
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
