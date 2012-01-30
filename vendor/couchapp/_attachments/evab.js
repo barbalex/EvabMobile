@@ -465,7 +465,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	$db.saveDoc(doc, {
 		success: function(data) {
-			window.open("../hZeitEdit/" + data.id, target="_self");
+			window.open("../hZeitEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
 			melde("Fehler: neue Zeit nicht erstellt");
@@ -497,7 +497,7 @@ function erstelleNeuenRaum(hProjektId) {
 	hRaum.hProjektId = hProjektId;
 	$db.saveDoc(hRaum, {
 		success: function(data) {
-			window.open("../hRaumEdit/" + data.id, target="_self");
+			window.open("../hRaumEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
 			melde("Fehler: neuer Raum nicht erstellt");
@@ -511,7 +511,7 @@ function erstelleNeuesProjekt(Pfad) {
 	hProjekt.User = User;
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
-			window.open(Pfad + "hProjektEdit/" + data.id, target="_self");
+			window.open(Pfad + "hProjektEdit/" + data.id + "?Status=neu", target="_self");
 		},
 		error: function() {
 			melde("Fehler: neues Projekt nicht erstellt");
@@ -579,10 +579,13 @@ function erstelle_BeobEdit(ID, User) {
 						//Holt die Beobachtung mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Beob) {
-								var HtmlContainer = generiereHtmlFuerBeobEditForm (FeldlisteAlle, SichtbareFelder, Beob);
+								var HtmlContainer = generiereHtmlFuerBeobEditForm (User, FeldlisteAlle, SichtbareFelder, Beob);
 								$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//speichern, damit Standardwerte von dynamisch erstellten Feldern gespeichert werden 
+								speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+								GetGeolocation();
 							}
 						});
 					}
@@ -595,7 +598,7 @@ function erstelle_BeobEdit(ID, User) {
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (Feldliste, SichtbareFelder, Beob) {
+function generiereHtmlFuerBeobEditForm (User, Feldliste, SichtbareFelder, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -604,11 +607,16 @@ function generiereHtmlFuerBeobEditForm (Feldliste, SichtbareFelder, Beob) {
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "<hr />";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Beob." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Beob." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
@@ -640,11 +648,13 @@ function erstelle_hProjektEdit(ID, User) {
 						//Holt das Projekt mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Projekt) {
-								var HtmlContainer = generiereHtmlFuerProjektEditForm (FeldlisteAlle, SichtbareFelder, Projekt);
+								var HtmlContainer = generiereHtmlFuerProjektEditForm (User, FeldlisteAlle, SichtbareFelder, Projekt);
 								$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//dynamisch erstellte Standardwerte speichern
+								speichern("../../");
 							}
 						});
 					}
@@ -657,7 +667,7 @@ function erstelle_hProjektEdit(ID, User) {
 //generiert das Html für das Formular in hProjektEdit.html
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerProjektEditForm (Feldliste, SichtbareFelder, Projekt) {
+function generiereHtmlFuerProjektEditForm (User, Feldliste, SichtbareFelder, Projekt) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -666,11 +676,16 @@ function generiereHtmlFuerProjektEditForm (Feldliste, SichtbareFelder, Projekt) 
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Projekt." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Projekt." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
@@ -702,11 +717,13 @@ function erstelle_hRaumEdit(ID, User) {
 						//Holt den Raum mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Raum) {
-								var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteAlle, SichtbareFelder, Raum);
+								var HtmlContainer = generiereHtmlFuerRaumEditForm (User, FeldlisteAlle, SichtbareFelder, Raum);
 								$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//dynamisch erstellte Standardwerte speichern
+								speichern("../../");
 							}
 						});
 					}
@@ -719,7 +736,7 @@ function erstelle_hRaumEdit(ID, User) {
 //generiert das Html für das Formular in hRaumEdit.html
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Raum) {
+function generiereHtmlFuerRaumEditForm (User, Feldliste, SichtbareFelder, Raum) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -728,11 +745,16 @@ function generiereHtmlFuerRaumEditForm (Feldliste, SichtbareFelder, Raum) {
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Raum." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Raum." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
@@ -764,11 +786,14 @@ function erstelle_hOrtEdit(ID, User) {
 						//Holt den Ort mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Ort) {
-								var HtmlContainer = generiereHtmlFuerOrtEditForm (FeldlisteAlle, SichtbareFelder, Ort);
+								var HtmlContainer = generiereHtmlFuerOrtEditForm (User, FeldlisteAlle, SichtbareFelder, Ort);
 								$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//dynamisch erstellte Standardwerte speichern
+								speichern("KeineMeldung");
+								GetGeolocation();
 							}
 						});
 					}
@@ -781,7 +806,7 @@ function erstelle_hOrtEdit(ID, User) {
 //generiert das Html für das Formular in hOrtEdit.html
 //erwartet Feldliste als Objekt; Ort als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerOrtEditForm (Feldliste, SichtbareFelder, Ort) {
+function generiereHtmlFuerOrtEditForm (User, Feldliste, SichtbareFelder, Ort) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -790,11 +815,16 @@ function generiereHtmlFuerOrtEditForm (Feldliste, SichtbareFelder, Ort) {
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Ort." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Ort." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
@@ -826,11 +856,13 @@ function erstelle_hZeitEdit(ID, User) {
 						//Holt die Zeit mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Zeit) {
-								var HtmlContainer = generiereHtmlFuerZeitEditForm (FeldlisteAlle, SichtbareFelder, Zeit);
+								var HtmlContainer = generiereHtmlFuerZeitEditForm (User, FeldlisteAlle, SichtbareFelder, Zeit);
 								$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//speichern, damit dynamisch erstellte Standardwerte bleiben
+								speichern("../../");
 							}
 						});
 					}
@@ -843,7 +875,7 @@ function erstelle_hZeitEdit(ID, User) {
 //generiert das Html für das Formular in hZeitEdit.html
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
+function generiereHtmlFuerZeitEditForm (User, Feldliste, SichtbareFelder, Zeit) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -852,11 +884,16 @@ function generiereHtmlFuerZeitEditForm (Feldliste, SichtbareFelder, Zeit) {
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Zeit." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Zeit." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;
@@ -888,11 +925,13 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 						//Holt die Beobachtung mit der id "ID" aus der DB
 						$db.openDoc(ID, {
 							success: function(Beobachtung) {
-								var HtmlContainer = generiereHtmlFuerhArtEditForm (aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
+								var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
 								$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 								$("#Hinweistext").html("");
 								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 								$.mobile.fixedToolbars.show(true);
+								//dynamisch erstellte Standardwerte speichern
+								speichern();
 							}
 						});
 					}
@@ -905,7 +944,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 //generiert das Html für Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
+function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -914,11 +953,16 @@ function generiereHtmlFuerhArtEditForm (ArtGruppe, Feldliste, SichtbareFelder, B
 	var SliderMaximum;
 	var ListItem = "";
 	var HtmlContainer = "";
+	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		if (SichtbareFelder.indexOf(FeldName) != -1) {
-			FeldWert = (eval("Beobachtung." + FeldName) || "");
+			if (Status == "neu" && Feld.Standardwert) {
+				FeldWert = eval("Feld.Standardwert." + User) || "";
+			} else {
+				FeldWert = (eval("Beobachtung." + FeldName) || "");
+			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 			InputTyp = Feld.InputTyp;

@@ -98,7 +98,7 @@
 		$("[name='hProjektLink']").attr('href', url);
 
 		//neuen Raum erstellen
-		$("[name='hRaumNeuLink']").bind("click", function() {
+		$("body").delegate("[name='hRaumNeuLink']", "click", function() {
 			erstelleNeuenRaum("{{id}}");
 		});
 
@@ -181,7 +181,7 @@
 				}
 				$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 				if (anzRaum == 0) {
-					ListItemContainer = '<li><a href="#"" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
+					ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Raum = data.rows[i].value;

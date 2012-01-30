@@ -38,12 +38,12 @@
   	</style>
   </head>
   <body>
-  	<div data-role="page" id="ArtenlistePage">
+  	<div data-role="page">
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Art wählen</h1>
 		</div>
-		<div data-role="content" id="ArtenlistePageContent">
+		<div data-role="content">
 			<ul id="ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
 				
 			</ul>
@@ -112,7 +112,7 @@
 			event.preventDefault();
 			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var ArtId = $(this).attr("artid");
-			if (Status == "Neu") {
+			if (Status == "neu") {
 				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId);
 			} else {
 				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);

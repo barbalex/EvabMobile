@@ -105,7 +105,7 @@
 		$("[name='hRaumLink']").attr('href', url);
 
 		//neuen Ort erstellen
-		$("[name='hOrtNeuLink']").bind('click', function(){
+		$("body").delegate("[name='hOrtNeuLink']", "click", function(){
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 

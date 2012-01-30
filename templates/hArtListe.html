@@ -104,7 +104,7 @@
 		});
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").bind("click", function(event) {
+		$("body").delegate("[name='hArtNeuLink']", "click", function(event) {
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
@@ -126,7 +126,7 @@
 	$(document).ready(handleDocumentReady);
 
 	function erstelleNeueBeob_1_Artgruppenliste() {
-		window.open("../../Artgruppenliste.html?Status=Neu&Von=hArtListe&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{id}}", target="_self");
+		window.open("../../Artgruppenliste.html?Status=neu&Von=hArtListe&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{id}}", target="_self");
 	}
 
 	function prüfeAnmeldung(Pfad) {		

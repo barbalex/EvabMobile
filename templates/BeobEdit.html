@@ -133,20 +133,10 @@
 			oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
 			oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
-			//Wenn neue Beob, dann verorten
-			//prüfen, ob Koordinate schon existiert
-			//sonst wird beim Aktualisieren der Seite nochmals verortet
-			if ($("input#oXKoord").val() == "") {
-				var Status = get_url_param('Status');
-				if (Status == "neu") {
-					GetGeolocation();
-				}
-			}
-
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").bind("click", function(event){
 				event.preventDefault();
-				window.open("../../Artgruppenliste.html?Status=Neu&Von=BeobEdit", target="_self");
+				window.open("../../Artgruppenliste.html?Status=neu&Von=BeobEdit", target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von Artgruppe

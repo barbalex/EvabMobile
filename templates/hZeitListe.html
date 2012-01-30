@@ -91,7 +91,7 @@
 		$("[name='hOrtLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$('#hZeitNeuLink').bind('click', function(event) {
+		$("body").delegate("[name='hZeitNeuLink']", "click", function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
 		});

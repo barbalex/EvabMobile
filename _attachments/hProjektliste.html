@@ -92,7 +92,7 @@
 		});
 
 		//neues Projekt erstellen
-		$("[name='hProjektNeuLink']").bind("click", function() {
+		$("body").delegate("[name='hProjektNeuLink']", "click", function() {
 			erstelleNeuesProjekt("_show/");
 		});
 

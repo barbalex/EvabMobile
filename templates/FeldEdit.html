@@ -46,12 +46,19 @@
 			}
 			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
 
-			//Arrays müssen abgefragt werden, weil Mustashe sie verändert
 			$db.openDoc("{{id}}", {
 				success: function(Feld) {
 					//ArtGruppen nur in der Hierarchiestufe Art anzeigen
 					if ("{{Hierarchiestufe}}" === "Art") {
 						ArtGruppeAufbauen(Feld.ArtGruppe);
+					}
+					//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+					//darum hier auslesen und setzen
+					if (Feld.Standardwert) {
+						var Standardwert = eval("Feld.Standardwert." + User);
+						if (Standardwert) {
+							$("#Standardwert").val(Standardwert);
+						}
 					}
 				}
 			});
@@ -71,6 +78,7 @@
 				var AlterFeldWert = this.defaultValue;
 				if ("{{User}}" == "ZentrenBdKt") {
 					//Felder der Datenzentren dürfen nicht verändert werden
+					//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
 					$("#" + FeldName).val(AlterFeldWert);
 					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
 				} else if (FeldName == "FeldName") {
@@ -147,6 +155,10 @@
 					    }
 					});*/
 				}
+			});
+
+			$("#Standardwert").bind("change", function() {
+				speichereFeldeigenschaften();
 			});
 			
 			//Für jedes Feld aus Meine Einstellungen bei Änderung speichern
@@ -329,6 +341,30 @@
 				$db.openDoc("{{id}}", {
 					success: function(doc) {
 						Feld._rev = doc._rev;
+						//Standardwert managen
+						//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+						//darum manuell für diesen User updaten
+						var StandardwertUserImFormular = $("#Standardwert").val();
+						if (doc.Standardwert) {
+							Feld.Standardwert = doc.Standardwert;
+							if (StandardwertUserImFormular != "") {
+								//neuen Standardwert setzen
+								Feld.Standardwert[User] = StandardwertUserImFormular;
+							} else {
+								//Standardwert ist leer
+								if (eval("Feld.Standardwert." + User)) {
+									//bisherigen Standardwert löschen
+									delete Feld.Standardwert[User];
+								}
+							}
+						} else {
+							//Bisher gab es gar keinen Standardwert
+							if (StandardwertUserImFormular != "") {
+								//Objekt für Standardwert schaffen und neuen Wert setzen
+								Feld.Standardwert = {};
+								Feld.Standardwert[User] = StandardwertUserImFormular;
+							}
+						}
 						$db.saveDoc(Feld, {
 							success: function() {
 								//melde("Feld gespeichert");
@@ -699,8 +735,11 @@
 						<option value="ja">ja</option>
 					</select> 
 				</div>
+				<div data-role="fieldcontain">
+					<label for="Standardwert">Standardwert:</label>
+					<input id="Standardwert" name="Standardwert" type="text"  placeholder="dieser Wert wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
+				</div>
 			</form>
-			<p>Hier wird für Sie gebaut: Die ausgeblendeten Felder werden später aktiviert.</p>
 				<hr>
 				<h2>Feldeigenschaften</h2>
 			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
@@ -812,10 +851,6 @@
 				<div data-role="fieldcontain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" value="{{SliderMaximum}}" />
-				</div>
-				<div data-role="fieldcontain">
-					<label for="Standardwert">Standardwert:</label>
-					<input class="Feldeigenschaften" id="Standardwert" name="Standardwert" type="text" value="{{Standardwert}}"  placeholder="dieses Feld ist (noch) inaktiv"/>
 				</div>
 			</form>
 		</div>

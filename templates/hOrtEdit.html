@@ -102,16 +102,6 @@
 		var Pfad = "../../";
 		User = "";
 		
-		//Wenn neuer Ort, dann verorten
-		//prüfen, ob Koordinate schon existiert
-		//sonst wird beim Aktualisieren der Seite nochmals verortet
-		if ($("input#oXKoord").val() == "") {
-			var Status = get_url_param('Status');
-			if (Status == "neu") {
-				GetGeolocation();
-			}
-		}
-		
 		prüfeAnmeldung(Pfad);
 		erstelle_hOrtEdit("{{id}}", User);
 
