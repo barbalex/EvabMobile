@@ -62,6 +62,16 @@
 					}
 				});
 			});
+
+			$("#Feldliste").delegate("input[name='Felder']", "taphold", function(event) {
+				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+				öffneFeld(this.id);
+			});
+
+			$("#Feldliste").delegate("input[name='Felder']", "contextmenu", function(event) {
+				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+				öffneFeld(this.id);
+			});
 		});
 	</script>
 	<script type="text/javascript">
@@ -167,6 +177,16 @@
 						melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 					}
 				});
+			}
+		});
+	}
+
+	function öffneFeld(FeldName) {
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
+			success: function(data) {
+				var FeldId = data.rows[0].value._id;
+				window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target="_self");
 			}
 		});
 	}

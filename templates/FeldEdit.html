@@ -303,7 +303,7 @@
 
 			//BackButton steuern
 			$("[name='BackButton']").bind('click', function(){
-				geheZurFeldListe();
+				geheZurück();
 			});
 
 			//swipen steuern
@@ -745,14 +745,14 @@
 									} else {
 										if (y == 1) {
 											//am ersten Feld angelangt und es ist kein eigenes
-											geheZurFeldListe();
+											geheZurück();
 										}
 									}
 								}
 							} else {
 								//das aktuelle Feld ist das erste
 								//wir gehen zur Feldliste
-								geheZurFeldListe();	
+								geheZurück();	
 							}
 						}
 					}
@@ -761,11 +761,12 @@
 		});
 	}
 
-	function geheZurFeldListe() {
+	function geheZurück() {
 		var zurueck = get_url_param("zurueck");
-		var Status = get_url_param("Status");
-		if (Status == "neu"){
-			window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+		if (zurueck.slice(0, 6) == "Felder") {
+			//direkt zurück, Feldliste auslassen
+			window.open("../../" + zurueck, target="_self");
+			
 		} else {
 			window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 		}

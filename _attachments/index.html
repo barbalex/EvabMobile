@@ -92,8 +92,10 @@
 		var UserName = $('input[name=UserName]').val();
 		var Passwort = $('input[name=Passwort]').val();
 		if (UserName == "") {
+			$("#UserName").focus();
 			melde("Bitte Benutzernamen eingeben");
-		} else if (Passwort==""){
+		} else if (Passwort == ""){
+			$("#Passwort").focus();
 			melde("Bitte Passwort eingeben");
 		} else {
 			$.couch.login({

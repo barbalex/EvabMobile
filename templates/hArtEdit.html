@@ -215,7 +215,7 @@
 	}
 
 	function zuArtgruppenliste(Status) {
-		window.open("../../Artgruppenliste.html?Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
+		window.open("../../Artgruppenliste.html?User=" + User + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 	}
 
 	function zuArtliste(aArtGruppe, Status, Pfad) {
@@ -227,9 +227,9 @@
 			success: function(data) {
 				var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 				if (ArtGruppen_2_L) {
-					window.open("../../Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
+					window.open("../../Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 				} else {
-					window.open(Pfad + "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&Pfad=" + Pfad + "&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
+					window.open(Pfad + "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&Pfad=" + Pfad + "&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 				}
 			}
 		});

@@ -57,7 +57,7 @@
 	{
 		$db = $.couch.db("evab");
 
-		User = "";
+		var User = get_url_param("User");
 		var ArtGruppe = get_url_param("aArtGruppe");
 		var L = get_url_param("L");
 		var Status = get_url_param("Status");
@@ -71,40 +71,25 @@
 		var hRaumId = get_url_param("hRaumId") || "";
 		var hOrtId = get_url_param("hOrtId") || "";
 		var hZeitId = get_url_param("hZeitId") || "";
-		
-		prüfeAnmeldung(Pfad);
 
-		var viewname;
-		//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-		if (L == "") {
-			viewname = 'evab/Artliste' + ArtGruppe;
-		} else {
-			viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
-		}
+		var viewname = 'evab/User?key="' + User + '"'; 
 		$db.view(viewname, {
 			success: function(data) {
-				var i;
-				var ListItemContainer = "";
-				var ArtBezeichnung;
-				var Art;
-				var ArtId;
-				var HinweisVerwandschaft;
+				var viewname2;
 				for(i in data.rows) {
-					ArtBezeichnung = data.rows[i].key[1];
-					Art = data.rows[i].value;
-					ArtId = Art._id;
-					if(Art.HinweisVerwandschaft){
-						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
-					}else{
-						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-						ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+					ArtenSprache = data.rows[i].value.ArtenSprache;
+					switch(ArtenSprache) {
+					case "Lateinisch":
+						erstelleArtenlisteLateinisch();
+						break;
+					case "Deutsch":
+						erstelleArtenlisteDeutsch();
+						
+						break;
+					default:
+						erstelleArtenlisteLateinisch();
 					}
 				}
-				$("#ArtenListe").html(ListItemContainer);
-				//$("#ArtenListe").listview();
-				$("#ArtenListe").listview("refresh");
-				$("#ArtenListeHinweistext").empty().remove();
 			}
 		});
 
@@ -118,27 +103,82 @@
 				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
 			}
 		});
+
+		function erstelleArtenlisteLateinisch() {
+			//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
+			if (L == "") {
+				viewname = 'evab/Artliste' + ArtGruppe;
+			} else {
+				viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
+			}
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var ListItemContainer = "";
+					var ArtBezeichnung;
+					var Art;
+					var ArtId;
+					var HinweisVerwandschaft;
+					for(i in data.rows) {
+						ArtBezeichnung = data.rows[i].key[1];
+						Art = data.rows[i].value;
+						ArtId = Art._id;
+						if(Art.HinweisVerwandschaft){
+							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
+						}else{
+							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+						}
+					}
+					$("#ArtenListe").html(ListItemContainer);
+					//$("#ArtenListe").listview();
+					$("#ArtenListe").listview("refresh");
+					$("#ArtenListeHinweistext").empty().remove();
+				}
+			});
+		}
+
+		function erstelleArtenlisteDeutsch() {
+			//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
+			if (L == "") {
+				viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
+			} else {
+				viewname = 'evab/ArtlisteDeutsch' + ArtGruppe + '?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
+			}
+			$db.view(viewname, {
+				success: function(data) {
+					var i;
+					var ListItemContainer = "";
+					var ArtBezeichnung;
+					var Art;
+					var ArtId;
+					var HinweisVerwandschaft;
+					for(i in data.rows) {
+						ArtBezeichnung = data.rows[i].key[2];
+						Art = data.rows[i].value;
+						ArtId = Art._id;
+						if(Art.HinweisVerwandschaft){
+							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
+						}else{
+							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+						}
+					}
+					$("#ArtenListe").html(ListItemContainer);
+					//$("#ArtenListe").listview();
+					$("#ArtenListe").listview("refresh");
+					$("#ArtenListeHinweistext").empty().remove();
+				}
+			});
+		}
 	}
 	
 	$(document).ready(handleDocumentReady);
 
-	function prüfeAnmeldung(Pfad) {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if(User != undefined || null) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open(Pfad + "index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
+	
+
   </script>
   <script type="text/javascript" charset="utf-8">	
   	

@@ -136,13 +136,13 @@
 			//Neue Beobachtung erfassen
 			$("#NeueBeobLink").bind("click", function(event){
 				event.preventDefault();
-				window.open("../../Artgruppenliste.html?Status=neu&Von=BeobEdit", target="_self");
+				window.open("../../Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
-				window.open("../../Artgruppenliste.html?Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+				window.open("../../Artgruppenliste.html?User=" + User + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
@@ -156,9 +156,9 @@
 					success: function(data) {
 						var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 						if (ArtGruppen_2_L) {
-							window.open("../../Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+							window.open("../../Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 						} else {
-							window.open("../../Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+							window.open("../../Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=Edit&Von=BeobEdit&BeobId=" + docId, target="_self");
 						}
 					}
 				});	

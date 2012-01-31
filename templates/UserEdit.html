@@ -56,6 +56,17 @@
 				<hr />
 				<div data-role="fieldcontain">
 				    <fieldset data-role="controlgroup">
+				    	<legend>Sprache für Artnamen:</legend>
+				         	<input type="radio" name="ArtenSprache" class="Feld" id="Lateinisch" value="Lateinisch"  />
+				         	<label for="Lateinisch">Lateinisch (Standard)</label>
+				         	<input type="radio" name="ArtenSprache" class="Feld" id="Deutsch" value="Deutsch"  />
+				         	<label for="Deutsch">Deutsch</label>
+				    </fieldset>
+				    <p>Wenn Sie Deutsch wählen, können Sie nur Beobachtungen von Arten erfassen, die einen Deutschen Namen haben. Das ist - je nach Artengruppe - nur ein kleiner Teil der Arten!</p>
+				</div>
+				<hr />
+				<div data-role="fieldcontain">
+				    <fieldset data-role="controlgroup">
 				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
 				         	<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber"  />
 				         	<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
@@ -108,6 +119,10 @@
 			//Datenverwendung managen
 			$("input[name='Datenverwendung']").checkboxradio();
 			$("#{{Datenverwendung}}").prop("checked",true).checkboxradio("refresh");
+
+			//ArtenSprache managen
+			$("input[name='ArtenSprache']").checkboxradio();
+			$("#{{ArtenSprache}}").prop("checked",true).checkboxradio("refresh");
 
 			//jedes Feld bei Änderung speichern
 			$(".Feld").change(function(){

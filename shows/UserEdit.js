@@ -6,6 +6,7 @@ function(doc, req) {
 		UserName: doc.UserName,
 		Autor: doc.Autor,
 		Email: doc.Email,
+		ArtenSprache: doc.ArtenSprache,
 		Modus: doc.Modus,
 		Datenverwendung: doc.Datenverwendung
 	};
