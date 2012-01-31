@@ -61,6 +61,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - ...von Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
+- ...mit Lateinischen (Standard) oder Deutschen Namen
 
 **Datenfelder verwalten:**
 
