@@ -82,7 +82,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
-- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder
+- Im hierarchischen Modus hat jede Artgruppe auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
