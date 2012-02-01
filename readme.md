@@ -86,7 +86,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
-- Die Anmeldung entfällt, wenn das alte Cookie noch existiert
+- Die Anmeldung entfällt, wenn das alte Cookie noch existiert (wird künftig noch verbessert)
 
 **Über die Daten verfügen:**
 
