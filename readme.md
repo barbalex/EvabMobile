@@ -59,7 +59,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 **Beobachtungen erfassen...**
 
 - ...von Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
-- ...von offiziellen Arten. Bei Artengruppen, wo dies möglich ist (Flora, Moose) sind Synonyme, Unterarten und Aggregate als solche erkenntlich. Bei Synonymen und Unterarten wird auf die offizielle Art hingewiesen
+- ...von offiziellen Arten. Bei Artengruppen, wo dies möglich ist (Flora, Moose) sind Synonyme, nicht anerkannte Unterarten und Aggregate als solche erkenntlich. Bei Synonymen und Unterarten wird auf die offizielle Art hingewiesen
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...mit Lateinischen (Standard) oder Deutschen Namen
