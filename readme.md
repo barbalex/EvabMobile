@@ -97,7 +97,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Daten vor unauthorisiertem Zugriff schützen
+- Daten besser vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
   - Bilder und Tonaufnahmen anhängen
