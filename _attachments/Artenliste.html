@@ -144,13 +144,15 @@
 			if (L == "") {
 				viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
 			} else {
-				viewname = 'evab/ArtlisteDeutsch' + ArtGruppe + '?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
+				viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
 			}
 			$db.view(viewname, {
 				success: function(data) {
 					var i;
 					var ListItemContainer = "";
 					var ArtBezeichnung;
+					var ArtNameL;
+					var ArtNameD;
 					var Art;
 					var ArtId;
 					var HinweisVerwandschaft;

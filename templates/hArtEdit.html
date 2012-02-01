@@ -122,19 +122,19 @@
 		//Neue Beobachtung managen
 		$("#hArtNeuLink").bind("click", function(event) {
 			event.preventDefault();
-			zuArtgruppenliste("Neu");
+			zuArtgruppenliste("neu");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 		$("#aArtGruppe").bind("click", function(event) {
 			event.preventDefault();
-			zuArtgruppenliste("Edit");
+			zuArtgruppenliste("edit");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
 		$("#aArtName").bind("click", function(event) {
 			event.preventDefault();
-			zuArtliste(aArtGruppe, "Edit", "../../");
+			zuArtliste(aArtGruppe, "edit", "../../");
 		});
 
 		//Link zum Projekt in Navbar setzen
