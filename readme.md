@@ -68,7 +68,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 - 162 Felder der öffentlichen Artdatenzentren benutzen. Diese sind geschützt und können nicht verändert werden
 - Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen. Es können eigene Auswahllisten definiert werden
-- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden. Ist eine Auswahlliste definiert, werden nur deren Inhalte als Standardwerte akzeptiert
+- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden. Bei Auswahllisten werden nur deren Elemente akzeptiert
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 
