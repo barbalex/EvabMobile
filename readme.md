@@ -18,16 +18,16 @@ Gängige Fehlerquellen:
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 #Motivation
-Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig habe ich schon immer gerne mit Software "Rätsel gelöst". Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein hinreichendes Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sie alle inhaltliche Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
+Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sie alle inhaltliche Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
 
 #Projektidee
-- Eine Mobil-App (Android und iOS) ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
+- Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com) und [Phonegap](http://phonegap.com) verwendet. Damit kann die App prinzipiell auf jedes Betriebssystem portiert werden
 - Die App steht auch als [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) zur Verfügung
-- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert automatisch im Hintergrund. Sogar die App selbst wird laufend synchronisiert, d.h. updates erfolgen automatisch (ausser auf iOS, weil Apple das nicht zulässt)
-- Da schemafrei, können mit CouchDb zusätzliche projekteigene Attribute definiert sowie Dateien (z.B. Bilder) angehängt werden
+- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert Daten und Anwendung automatisch im Hintergrund
+- Da schemafrei, können mit CouchDb zusätzliche projekteigene Datenfelder definiert sowie Bilder und Tonaufnahmen angehängt werden
 
 
 #Ziele für Naturschutzfachstellen
@@ -53,21 +53,22 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 **Installieren:**
 
-- Auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
-- Auf dem PC installieren und lokal arbeiten (Windows, MacOsX - wenig getestet)
+- Direkt auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
+- Auf dem PC installieren und lokal arbeiten (Windows, Mac OsX - wenig getestet)
 
 **Beobachtungen erfassen...**
 
 - ...von Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...mit Lateinischen (Standard) oder Deutschen Namen
 
 **Datenfelder verwalten:**
 
-- 162 (nicht veränderbare) Datenfelder der öffentlichen Artdatenzentren benutzen
-- Eigene Felder erstellen, aus verschiedenen Feldtypen wählen, eigene Auswahllisten erstellen
-- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden. Ist eine Auswahlliste definiert, werden nur deren Inhalte als Standardwerte akzeptiert
+- 162 Felder der öffentlichen Artdatenzentren benutzen. Diese sind geschützt und können nicht verändert werden
+- Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen. Es können eigene Auswahllisten definiert werden
+- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden. Bei Auswahllisten werden nur deren Elemente akzeptiert
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können erst gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 
@@ -79,22 +80,24 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 **Effizient arbeiten:**
 
-- Im **einfachen Modus** Beobachtungen in einer einfachen Liste erfassen
+- Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
-- Jede Artgruppe hat auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder
+- Im hierarchischen Modus hat jede Artgruppe auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder (in der Feldverwaltung einstellbar)
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
-- Die Anmeldung entfällt, wenn das alte Cookie noch existiert
+- Die Anmeldung entfällt, wenn das alte Cookie noch existiert (wird künftig noch verbessert)
 
-**Über die Daten verfügen:**
+**Über Daten und App verfügen:**
 
 - Beobachtungen und Datenfelder exportieren
 - Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
+- Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank. Diese synchronisiert laufend mit derjenigen im Internet. Sie sind dem Webservice (mir) nicht ausgeliefert. Anders gesagt: Verschwindet der Webservice, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert (eine solche Synchronisation selber einzurichten kostet einen Profi aber bloss 20 Minuten)
+- [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Daten vor unauthorisiertem Zugriff schützen
+- Daten besser vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
   - Bilder und Tonaufnahmen anhängen
