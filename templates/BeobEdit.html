@@ -90,6 +90,7 @@
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>						
 					<li><a href="#" id="zeigeKarte" data-icon="star">Karte</a></li>
+					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -143,6 +144,12 @@
 			$("select#aArtGruppe").tap(function(event){
 				event.preventDefault();
 				window.open("../../Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + docId, target="_self");
+			});
+
+			//sichtbare Felder wählen
+			$("#wähleFelder").bind("click", function(event){
+				event.preventDefault();
+				window.open("../../Felder_Beob.html", target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
@@ -421,13 +428,6 @@
 		        		},
 		        		theme: "a",
 		        		icon: "grid"
-		      		},
-		      		'Felder wählen': {
-				      	click: function () {
-				        	window.open(Pfad + "Felder_Beob.html", target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "gear"
 		      		},
 		      		'schliessen': {
 		                click: function () { return true; },

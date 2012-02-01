@@ -62,6 +62,7 @@
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" name="hProjektNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="star">Karte</a></li>
+					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -140,6 +141,12 @@
 		//neues Projekt erstellen
 		$("[name='hProjektNeuLink']").bind("click", function() {
 			erstelleNeuesProjekt("../");
+		});
+
+		//sichtbare Felder wählen
+		$("#wähleFelder").bind("click", function(event){
+			event.preventDefault();
+			window.open("../../Felder_hProjekt.html", target="_self");
 		});
 
 		$("body").bind("swipeleft", function() {
@@ -431,13 +438,6 @@
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
-	      		},
-	      		'Felder wählen': {
-			      	click: function () {
-			        	window.open(Pfad + "Felder_hProjekt.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "gear"
 	      		},
 	      		'schliessen': {
 	                click: function () { return true; },

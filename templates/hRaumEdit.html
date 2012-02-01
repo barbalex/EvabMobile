@@ -63,6 +63,7 @@
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" name="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="RaumEditMapÖffnen" data-icon="star">Karte</a></li>
+					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -149,6 +150,12 @@
 
 		//Link zur Ortliste in Navbar setzen
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
+
+		//sichtbare Felder wählen
+		$("#wähleFelder").bind("click", function(event){
+			event.preventDefault();
+			window.open("../../Felder_hRaum.html", target="_self");
+		});
 
 		$("body").bind("swipeleft", function() {
 			nächsterVorigerRaum("{{id}}", "nächster");
@@ -394,13 +401,6 @@
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
-	      		},
-	      		'Felder wählen': {
-			      	click: function () {
-			        	window.open(Pfad + "Felder_hRaum.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "gear"
 	      		},
 	      		'schliessen': {
 	                click: function () { return true; },

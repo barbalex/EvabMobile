@@ -118,21 +118,24 @@
 					var ArtBezeichnung;
 					var Art;
 					var ArtId;
-					var HinweisVerwandschaft;
 					for(i in data.rows) {
 						ArtBezeichnung = data.rows[i].key[1];
 						Art = data.rows[i].value;
 						ArtId = Art._id;
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+						ListItemContainer += ArtBezeichnung;
+						ListItemContainer += "\" ArtId=\"";
+						ListItemContainer += ArtId;
+						ListItemContainer += "\">";
+						ListItemContainer += "<a href=\"#\"><h3>";
+						ListItemContainer += ArtBezeichnung;
+						ListItemContainer += "<\/h3>";
 						if(Art.HinweisVerwandschaft){
-							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
-						}else{
-							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+							ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
 						}
+						ListItemContainer += "<\/a><\/li>";
 					}
 					$("#ArtenListe").html(ListItemContainer);
-					//$("#ArtenListe").listview();
 					$("#ArtenListe").listview("refresh");
 					$("#ArtenListeHinweistext").empty().remove();
 				}
@@ -151,25 +154,26 @@
 					var i;
 					var ListItemContainer = "";
 					var ArtBezeichnung;
-					var ArtNameL;
-					var ArtNameD;
 					var Art;
 					var ArtId;
-					var HinweisVerwandschaft;
 					for(i in data.rows) {
 						ArtBezeichnung = data.rows[i].key[2];
 						Art = data.rows[i].value;
 						ArtId = Art._id;
+						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+						ListItemContainer += ArtBezeichnung;
+						ListItemContainer += "\" ArtId=\"";
+						ListItemContainer += ArtId;
+						ListItemContainer += "\">";
+						ListItemContainer += "<a href=\"#\"><h3>";
+						ListItemContainer += ArtBezeichnung;
+						ListItemContainer += "<\/h3>";
 						if(Art.HinweisVerwandschaft){
-							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><p>" + Art.HinweisVerwandschaft + "<\/p><\/a><\/li>";
-						}else{
-							ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"" + ArtBezeichnung + "\" ArtId=\"" + ArtId + "\">";
-							ListItemContainer += "<a href=\"#\"><h3>" + ArtBezeichnung + "<\/h3><\/a><\/li>";
+							ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
 						}
+						ListItemContainer += "<\/a><\/li>";
 					}
 					$("#ArtenListe").html(ListItemContainer);
-					//$("#ArtenListe").listview();
 					$("#ArtenListe").listview("refresh");
 					$("#ArtenListeHinweistext").empty().remove();
 				}

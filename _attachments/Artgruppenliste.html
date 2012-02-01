@@ -39,9 +39,10 @@
   </head>
   <body>
 	<div data-role="page" data-dom-cache="true">
-		<div data-role="header" data-position="fixed">
+		<div data-role="header" data-position="fixed" id="ArtgruppenlisteHeader">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Artgruppe wählen</h1>
+			<a href="#" data-role="button" class="ButtonSprache">Lat</a>
 		</div>
 		<div data-role="content">
 			<ul id="ArtgruppenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -57,7 +58,7 @@
 		var User = get_url_param("User");
 		var Status = get_url_param("Status");
 		var Von = get_url_param("Von");
-		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+		
 		var Pfad = "";		
 		if (Von == "BeobListe") {
 			Pfad = "../../";
@@ -68,13 +69,59 @@
 		var hOrtId = get_url_param("hOrtId") || "";
 		var hZeitId = get_url_param("hZeitId") || "";
 		
+		erstelleArtgruppenListe(User);	
+
+		$("body").delegate("[name='ArtgruppenListItem']", "click", function(event) {        
+			event.preventDefault();
+			var aArtGruppe = $(this).attr("ArtGruppe");
+			var L = $(this).attr("L") || "";
+			var link;
+			switch (Von) {
+				case "BeobEdit":
+					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
+					break;
+				case "BeobListe":
+					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
+					break;
+				case "hArtListe":
+					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
+					break;
+				case "hArtEdit":
+					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
+					break;
+			}
+			if (BeobId != "") {
+				link += "&BeobId=" + BeobId;
+			}
+			window.open(link, target="_self");
+		});
+
+		$("[name='ButtonSprache']").bind("click", function(event) {        
+			event.preventDefault();
+			switch(this.text) {
+				case "Lat":
+
+					break;
+				case "Deu":
+					
+					break;
+			}
+		});
+	}
+	
+	$(document).ready(handleDocumentReady);
+
+	function erstelleArtgruppenListe(User) {
 		//gewünschte Sprache für Arten ermitteln
-		//und Listen aufbauen lassen
+		//Listen aufbauen lassen
+		//und butten für Sprache richtig beschriften
+		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/User?key="' + User + '"'; 
 		$db.view(viewname, {
 			success: function(data) {
 				for(i in data.rows) {
 					ArtenSprache = data.rows[i].value.ArtenSprache;
+					$("#ArtgruppenlisteHeader .ButtonSprache").text(ArtenSprache.slice(0, 3));
 					switch(ArtenSprache) {
 					case "Lateinisch":
 						if (aArtGruppeÜbergeben) {
@@ -102,37 +149,10 @@
 					}
 				}
 			}
-		});	
-
-		$("body").delegate("[name='ArtgruppenListItem']", "click", function(event) {        
-			event.preventDefault();
-			var aArtGruppe = $(this).attr("ArtGruppe");
-			var L = $(this).attr("L") || "";
-			var link;
-			switch (Von) {
-				case "BeobEdit":
-					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
-					break;
-				case "BeobListe":
-					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
-					break;
-				case "hArtListe":
-					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
-					break;
-				case "hArtEdit":
-					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
-					break;
-			}
-			if (BeobId != "") {
-				link += "&BeobId=" + BeobId;
-			}
-			window.open(link, target="_self");
 		});
 	}
-	
-	$(document).ready(handleDocumentReady);
 
-	function erstelleArtgruppenListeFürNestedArtgruppeLat(aArtGruppeÜbergeben) {
+	function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 		var i;
 		var y;
 		var ListItemContainer = "";
@@ -141,6 +161,7 @@
 		var ArtGruppen_2_L;
 		var ArtGruppen;
 		var AnzArten;
+		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 		$db.view(viewname, {
 			success: function(data) {
@@ -166,7 +187,7 @@
 		});
 	}
 
-	function erstelleArtgruppenListeFürNestedArtgruppeDeutsch(aArtGruppeÜbergeben) {
+	function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 		var i;
 		var y;
 		var ListItemContainer = "";
@@ -175,6 +196,7 @@
 		var ArtGruppen_2_D;
 		var ArtGruppen;
 		var AnzArten;
+		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 		$db.view(viewname, {
 			success: function(data) {

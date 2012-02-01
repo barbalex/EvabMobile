@@ -70,6 +70,7 @@
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -119,6 +120,12 @@
 		$('#hZeitNeuLink').bind('click', function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{hOrtId}}"); 
+		});
+
+		//sichtbare Felder wählen
+		$("#wähleFelder").bind("click", function(event){
+			event.preventDefault();
+			window.open("../../Felder_hZeit.html", target="_self");
 		});
 
 		//Link zur Art in Navbar setzen
@@ -331,13 +338,6 @@
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
-	      		},
-	      		'Felder wählen': {
-			      	click: function () {
-			        	window.open(Pfad + "Felder_hZeit.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "gear"
 	      		},
 	      		'schliessen': {
 	                click: function () { return true; },

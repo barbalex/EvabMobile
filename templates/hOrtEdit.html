@@ -76,6 +76,7 @@
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
+					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -137,6 +138,12 @@
 		$("[name='hOrtNeuLink']").bind('click', function(event){
 			event.preventDefault();
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{hRaumId}}");
+		});
+
+		//sichtbare Felder wählen
+		$("#wähleFelder").bind("click", function(event){
+			event.preventDefault();
+			window.open("../../Felder_hOrt.html", target="_self");
 		});
 
 		//Link zur Zeit in Navbar setzen
@@ -575,13 +582,6 @@
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
-	      		},
-	      		'Felder wählen': {
-			      	click: function () {
-			        	window.open(Pfad + "Felder_hOrt.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "gear"
 	      		},
 	      		'schliessen': {
 	                click: function () { return true; },
