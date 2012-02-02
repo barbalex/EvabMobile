@@ -96,7 +96,27 @@
 					}
 					$db.saveDoc(doc, {
 						success: function() {
-							erstelleArtenliste();
+							//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
+							//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
+							//wenn nein: direkt die Artenliste aktualisieren
+							var viewname = 'evab/Artgruppen?key="' + ArtGruppe + '"'; 
+							$db.view(viewname, {
+								success: function(data) {
+									//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
+									var ArtGruppen_2;
+									if (ButtonText.slice(0, 3) == "Deu") {
+										ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_D;
+									} else {
+										ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
+									}
+									if (ArtGruppen_2) {
+										window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von, target="_self");
+									} else {
+										erstelleArtenliste();
+									}
+								}
+							});	
+							//erstelleArtenliste();
 						},
 						error: function() {
 							melde("Fehler: Sprache nicht verändert");
