@@ -70,7 +70,7 @@
 		var hOrtId = get_url_param("hOrtId") || "";
 		var hZeitId = get_url_param("hZeitId") || "";
 		
-		erstelleArtgruppenListe(User);	
+		erstelleArtgruppenListe();	
 
 		$("body").delegate("[name='ArtgruppenListItem']", "click", function(event) {        
 			event.preventDefault();
@@ -97,7 +97,7 @@
 			window.open(link, target="_self");
 		});
 
-		$("#ButtonSprache").live("click", function(event) {       
+		$("#ButtonSprache").bind("click", function(event) {       
 			event.preventDefault();
 			var ButtonText = this.text;
 			$db.openDoc(UserId, {
@@ -109,7 +109,7 @@
 					}
 					$db.saveDoc(doc, {
 						success: function() {
-							erstelleArtgruppenListe(User);
+							erstelleArtgruppenListe();
 						},
 						error: function() {
 							melde("Fehler: Sprache nicht verändert");
@@ -125,10 +125,11 @@
 	
 	$(document).ready(handleDocumentReady);
 
-	function erstelleArtgruppenListe(User) {
+	function erstelleArtgruppenListe() {
 		//gewünschte Sprache für Arten ermitteln
 		//Listen aufbauen lassen
 		//und butten für Sprache richtig beschriften
+		var User = get_url_param("User");
 		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/User?key="' + User + '"'; 
 		$db.view(viewname, {

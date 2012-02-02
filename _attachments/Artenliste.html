@@ -42,6 +42,7 @@
 		<div data-role="header" data-position="fixed">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Art wählen</h1>
+			<a href="#" id="ButtonSprache">Lat</a>
 		</div>
 		<div data-role="content">
 			<ul id="ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -53,13 +54,11 @@
 	
   </body>
   <script type="text/javascript" charset="utf-8">;
-	function handleDocumentReady()
-	{
+	function handleDocumentReady() {
 		$db = $.couch.db("evab");
-
+		UserId = "";
 		var User = get_url_param("User");
 		var ArtGruppe = get_url_param("aArtGruppe");
-		var L = get_url_param("L");
 		var Status = get_url_param("Status");
 		var Von = get_url_param("Von");
 		var Pfad = "";
@@ -72,26 +71,7 @@
 		var hOrtId = get_url_param("hOrtId") || "";
 		var hZeitId = get_url_param("hZeitId") || "";
 
-		var viewname = 'evab/User?key="' + User + '"'; 
-		$db.view(viewname, {
-			success: function(data) {
-				var viewname2;
-				for(i in data.rows) {
-					ArtenSprache = data.rows[i].value.ArtenSprache;
-					switch(ArtenSprache) {
-					case "Lateinisch":
-						erstelleArtenlisteLateinisch();
-						break;
-					case "Deutsch":
-						erstelleArtenlisteDeutsch();
-						
-						break;
-					default:
-						erstelleArtenlisteLateinisch();
-					}
-				}
-			}
-		});
+		erstelleArtenliste();
 
 		$("#ArtenListe").delegate("[name='ArtListItem']", "click", function(event) {
 			event.preventDefault();
@@ -104,89 +84,140 @@
 			}
 		});
 
-		function erstelleArtenlisteLateinisch() {
-			//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-			if (L == "") {
-				viewname = 'evab/Artliste' + ArtGruppe;
-			} else {
-				viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
-			}
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var ListItemContainer = "";
-					var ArtBezeichnung;
-					var Art;
-					var ArtId;
-					for(i in data.rows) {
-						ArtBezeichnung = data.rows[i].key[1];
-						Art = data.rows[i].value;
-						ArtId = Art._id;
-						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-						ListItemContainer += ArtBezeichnung;
-						ListItemContainer += "\" ArtId=\"";
-						ListItemContainer += ArtId;
-						ListItemContainer += "\">";
-						ListItemContainer += "<a href=\"#\"><h3>";
-						ListItemContainer += ArtBezeichnung;
-						ListItemContainer += "<\/h3>";
-						if(Art.HinweisVerwandschaft){
-							ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-						}
-						ListItemContainer += "<\/a><\/li>";
+		$("#ButtonSprache").bind("click", function(event) {       
+			event.preventDefault();
+			var ButtonText = this.text;
+			$db.openDoc(UserId, {
+				success: function(doc) {
+					if (ButtonText.slice(0, 3) == "Deu") {
+						doc.ArtenSprache = "Deutsch";
+					} else {
+						doc.ArtenSprache = "Lateinisch";
 					}
-					$("#ArtenListe").html(ListItemContainer);
-					$("#ArtenListe").listview("refresh");
-					$("#ArtenListeHinweistext").empty().remove();
+					$db.saveDoc(doc, {
+						success: function() {
+							erstelleArtenliste();
+						},
+						error: function() {
+							melde("Fehler: Sprache nicht verändert");
+						 }
+					});
+				},
+				error: function() {
+					melde("Fehler: Sprache nicht verändert");
 				}
 			});
-		}
-
-		function erstelleArtenlisteDeutsch() {
-			//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-			if (L == "") {
-				viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
-			} else {
-				viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
-			}
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var ListItemContainer = "";
-					var ArtBezeichnung;
-					var Art;
-					var ArtId;
-					for(i in data.rows) {
-						ArtBezeichnung = data.rows[i].key[2];
-						Art = data.rows[i].value;
-						ArtId = Art._id;
-						ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-						ListItemContainer += ArtBezeichnung;
-						ListItemContainer += "\" ArtId=\"";
-						ListItemContainer += ArtId;
-						ListItemContainer += "\">";
-						ListItemContainer += "<a href=\"#\"><h3>";
-						ListItemContainer += ArtBezeichnung;
-						ListItemContainer += "<\/h3>";
-						if(Art.HinweisVerwandschaft){
-							ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-						}
-						ListItemContainer += "<\/a><\/li>";
-					}
-					$("#ArtenListe").html(ListItemContainer);
-					$("#ArtenListe").listview("refresh");
-					$("#ArtenListeHinweistext").empty().remove();
-				}
-			});
-		}
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
 
-	
-
   </script>
   <script type="text/javascript" charset="utf-8">	
-  	
+  	function erstelleArtenliste() {
+  		var User = get_url_param("User");
+	  	var viewname = 'evab/User?key="' + User + '"'; 
+		$db.view(viewname, {
+			success: function(data) {
+				for(i in data.rows) {
+					UserId = data.rows[i].value._id;
+					var ArtenSprache = data.rows[i].value.ArtenSprache;
+					switch(ArtenSprache) {
+					case "Lateinisch":
+						$("#ButtonSprache .ui-btn-text").text("Deutsch");
+						erstelleArtenlisteLateinisch();
+						break;
+					case "Deutsch":
+						$("#ButtonSprache .ui-btn-text").text("Lateinisch");
+						erstelleArtenlisteDeutsch();
+						break;
+					default:
+						$("#ButtonSprache .ui-btn-text").text("Deutsch");
+						erstelleArtenlisteLateinisch();
+					}
+				}
+			}
+		});
+	}
+
+	function erstelleArtenlisteLateinisch() {
+		var ArtGruppe = get_url_param("aArtGruppe");
+		var L = get_url_param("L");
+		//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
+		if (L == "") {
+			viewname = 'evab/Artliste' + ArtGruppe;
+		} else {
+			viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
+		}
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ListItemContainer = "";
+				var ArtBezeichnung;
+				var Art;
+				var ArtId;
+				for(i in data.rows) {
+					ArtBezeichnung = data.rows[i].key[1];
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "\" ArtId=\"";
+					ListItemContainer += ArtId;
+					ListItemContainer += "\">";
+					ListItemContainer += "<a href=\"#\"><h3>";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "<\/h3>";
+					if(Art.HinweisVerwandschaft){
+						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+					}
+					ListItemContainer += "<\/a><\/li>";
+				}
+				$("#ArtenListe").html(ListItemContainer);
+				$("#ArtenListe").listview("refresh");
+				$("#ArtenListeHinweistext").empty().remove();
+			}
+		});
+	}
+
+	function erstelleArtenlisteDeutsch() {
+		var ArtGruppe = get_url_param("aArtGruppe");
+		var L = get_url_param("L");
+		//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
+		if (L == "") {
+			viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
+		} else {
+			viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
+		}
+		$db.view(viewname, {
+			success: function(data) {
+				var i;
+				var ListItemContainer = "";
+				var ArtBezeichnung;
+				var Art;
+				var ArtId;
+				for(i in data.rows) {
+					ArtBezeichnung = data.rows[i].key[2];
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "\" ArtId=\"";
+					ListItemContainer += ArtId;
+					ListItemContainer += "\">";
+					ListItemContainer += "<a href=\"#\"><h3>";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "<\/h3>";
+					if(Art.HinweisVerwandschaft){
+						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+					}
+					ListItemContainer += "<\/a><\/li>";
+				}
+				$("#ArtenListe").html(ListItemContainer);
+				$("#ArtenListe").listview("refresh");
+				$("#ArtenListeHinweistext").empty().remove();
+			}
+		});
+	}
   </script>
 </html>
