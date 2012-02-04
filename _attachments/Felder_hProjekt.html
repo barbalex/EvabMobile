@@ -32,7 +32,6 @@
 			
 			var Pfad = "";
 			User = "";
-			FeldArray = [];
 		
 			prüfeAnmeldung(Pfad);
 			speichereLetzteUrl(User);
@@ -41,27 +40,31 @@
 
 			//Felder speichern (checkbox)
 			$("#Feldliste").delegate("input[name='Felder']", "change", function() {
-				var Feld = $(this).prop("id");
-				//FeldArray holen, damit nur Änderungen gespeichert werden, da nicht alle Felder geladen werden
-				var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
-				$db.view(viewname, {
-					success: function(data) {
-						var i;
-						var row;
-						for(i in data.rows) {
-							row = data.rows[i].value;
-							FeldArray = row.ModusHierarchisch;
-						}
-						if ($("#" + Feld).prop("checked") == true) {
-							FeldArray.push(Feld);
+				var FeldName = $(this).prop("id");
+				var FeldId = $(this).attr("feldid");
+				$db.openDoc(FeldId, {
+					success: function(Feld) {
+						if ($("#" + FeldName).prop("checked") == true) {
+							Feld.SichtbarImModusHierarchisch.push(User);
 						} else {
-							var idx = FeldArray.indexOf(Feld);
-							if(idx!=-1) FeldArray.splice(idx, 1);
+							var idx = Feld.SichtbarImModusHierarchisch.indexOf(User);
+							if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 						}
-						speichern(FeldArray);
+						$db.saveDoc(Feld, {
+							error: function() {
+								melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+							}
+						});
+					},
+					error: function() {
+						melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 					}
 				});
 			});
+
+			//Link zum Projekt in Navbar setzen
+			var url = get_url_param("zurueck");
+			$("#Felder_hProjektPage_href").attr('href', url);
 		});
 	</script>
 	<script type="text/javascript">
@@ -72,54 +75,48 @@
 	function erstelle_sichtbareFelder(User) {
 		$("#Feldliste").empty();
 		$db = $.couch.db("evab");
-		//Holt, welche Felder angezeigt werden sollen
-		$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
+		//holt die Feldliste aus der DB
+		$db.view('evab/FeldListeProjekt', {
 			success: function(data) {
-				var row = data.rows[0].value;
-				var SichtbareFelder = row.ModusHierarchisch;
-				SichtbareFelderId = row._id;
-				//holt die Feldliste aus der DB
-				//und schreibt die Feldnamen für Hierarchiestufe Art in den Array FeldlisteArt
-				$db.view('evab/FeldListeProjekt', {
-					success: function(data) {
-						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-						var anzFelder = 0;
-						for (i in data.rows) {
-							var Feld = data.rows[i].value;
-							var FeldName = Feld.FeldName;
-							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-								//Nur eigene und offizielle Felder berücksichtigen
-								if ((Feld.Hierarchiestufe == "Projekt") && (FeldName != "pName")) {
-									anzFelder += 1;
-									var FeldBeschriftung = Feld.FeldBeschriftung;
-									var ListItem = "\n\t\t\<label for='";
-									ListItem += FeldName;
-									ListItem += "'>";
-									ListItem += FeldBeschriftung;
-									ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-									ListItem += "Felder";
-									ListItem += "' id='";
-									ListItem += FeldName;
-									ListItem += "' value='";
-									ListItem += FeldName;
-									ListItem += "' class='custom'";
-									if(SichtbareFelder.indexOf(FeldName) != -1){
-										ListItem += " checked='checked'";
-									}
-									ListItem += "/>";
-									HtmlContainer += ListItem;
+				var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+				var anzFelder = 0;
+				for (i in data.rows) {
+					var Feld = data.rows[i].value;
+					var FeldName = Feld.FeldName;
+					//Nur eigene und offizielle Felder berücksichtigen
+					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+						//im Formular fix integrierte Felder nicht aufbauen
+						if (Feld.Hierarchiestufe == "Projekt" && FeldName != "pName") {
+							anzFelder += 1;
+							var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+							var ListItem = "\n\t\t\<label for='";
+							ListItem += FeldName;
+							ListItem += "'>";
+							ListItem += FeldBeschriftung;
+							ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+							ListItem += "Felder";
+							ListItem += "' id='";
+							ListItem += FeldName;
+							ListItem += "' FeldId='";
+							ListItem += Feld._id;
+							ListItem += "' value='";
+							ListItem += FeldName;
+							ListItem += "' class='custom'";
+							if(Feld.SichtbarImModusHierarchisch) {
+								if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
+									//wenn sichtbar, anzeigen
+									ListItem += " checked='checked'";
 								}
 							}
-						}
-						$("#Felder_hProjektPageHeader .Felder_hProjektPageTitel").text(anzFelder + " Felder");
-						HtmlContainer += "\n\t</fieldset>\n</div>"
-						$("#Feldliste").html(HtmlContainer).trigger("create");
-						$("input[name='Felder']").checkboxradio();
-						for(i in SichtbareFelder) {
-							$("#" + i).prop("checked",true).checkboxradio("refresh");
+							ListItem += "/>";
+							HtmlContainer += ListItem;
 						}
 					}
-				});
+				}
+				$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
+				HtmlContainer += "\n\t</fieldset>\n</div>"
+				$("#Feldliste").html(HtmlContainer).trigger("create");
+				$("input[name='Felder']").checkboxradio();
 			}
 		});
 	}
@@ -141,40 +138,12 @@
 		    }
 		});
 	}
-
-	function speichern(FeldArray) {
-		$db = $.couch.db("evab");
-		$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-			success: function(data) {
-				var row = data.rows[0].value;
-				var SichtbareFelderId = row._id;
-				$db.openDoc(SichtbareFelderId, {
-					success: function(document) {
-						document.Typ = "SichtbareFelder";
-						document.User = User;
-						document.ModusHierarchisch = FeldArray;
-						$db.saveDoc(document, {
-							success: function(data) {
-								//melde("gespeichert");
-							},
-							error: function() {
-								melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-							}
-						});
-					},
-					error: function() {
-						melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-					}
-				});
-			}
-		});
-	}
 	</script>
   </head>
   <body>
   	<div data-role="page" id="Felder_hProjektPage">
   		<div data-role="header" data-position="fixed" id="Felder_hProjektPageHeader">
-  			<a href="_shows/hProjektEdit.html" data-role="button" data-icon="arrow-l" data-rel="back" rel="external" data-iconpos="notext">abbrechen</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="Felder_hProjektPage_href">abbrechen</a>
   			<h2 class="Felder_hProjektPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">

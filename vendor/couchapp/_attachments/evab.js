@@ -567,31 +567,25 @@ function erstelle_BeobEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeBeob', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusEinfach;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt die Beobachtung mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Beob) {
-								var HtmlContainer = generiereHtmlFuerBeobEditForm (User, FeldlisteAlle, SichtbareFelder, Beob);
-								$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									//und verorten
-									speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
-									GetGeolocation();
-								}
-							}
-						});
+		success: function(Feldliste) {
+			$db.openDoc(ID, {
+				success: function(Beob) {
+					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
+					//nur anfügen, wenn Felder erstellt wurden
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							//und verorten
+							speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+							GetGeolocation();
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -601,7 +595,7 @@ function erstelle_BeobEdit(ID, User) {
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (User, Feldliste, SichtbareFelder, Beob) {
+function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -609,24 +603,21 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, SichtbareFelder, Beob) 
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(User) != -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Beob." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -639,30 +630,24 @@ function erstelle_hProjektEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeProjekt', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusHierarchisch;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt das Projekt mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Projekt) {
-								var HtmlContainer = generiereHtmlFuerProjektEditForm (User, FeldlisteAlle, SichtbareFelder, Projekt);
-								$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								$("#Hinweistext").html("");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									speichern("../../");
-								}
-							}
-						});
+		success: function(Feldliste) {
+			$db.openDoc(ID, {
+				success: function(Projekt) {
+					var HtmlContainer = generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt);
+					//nur anfügen, wenn Felder erstellt wurden
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#Hinweistext").html("");
+						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							speichern("../../");
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -672,7 +657,7 @@ function erstelle_hProjektEdit(ID, User) {
 //generiert das Html für das Formular in hProjektEdit.html
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerProjektEditForm (User, Feldliste, SichtbareFelder, Projekt) {
+function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -680,24 +665,21 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, SichtbareFelder, Pro
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "pName") {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Projekt." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if (FeldName != "pName") {
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -710,30 +692,24 @@ function erstelle_hRaumEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeRaum', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusHierarchisch;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt den Raum mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Raum) {
-								var HtmlContainer = generiereHtmlFuerRaumEditForm (User, FeldlisteAlle, SichtbareFelder, Raum);
-								$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								$("#Hinweistext").html("");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									speichern("../../");
-								}
-							}
-						});
+		success: function(Feldliste) {
+			//Holt den Raum mit der id "ID" aus der DB
+			$db.openDoc(ID, {
+				success: function(Raum) {
+					var HtmlContainer = generiereHtmlFuerRaumEditForm (User, Feldliste, Raum);
+					//nur anfügen, wenn Felder erstellt wurden
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#Hinweistext").html("");
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							speichern("../../");
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -743,7 +719,7 @@ function erstelle_hRaumEdit(ID, User) {
 //generiert das Html für das Formular in hRaumEdit.html
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerRaumEditForm (User, Feldliste, SichtbareFelder, Raum) {
+function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -751,24 +727,21 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, SichtbareFelder, Raum) 
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "rName") {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Raum." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if (FeldName != "rName") {
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -781,32 +754,25 @@ function erstelle_hOrtEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeOrt', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusHierarchisch;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt den Ort mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Ort) {
-								var HtmlContainer = generiereHtmlFuerOrtEditForm (User, FeldlisteAlle, SichtbareFelder, Ort);
-								$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								$("#Hinweistext").html("");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									//und verorten
-									speichern("KeineMeldung");
-									GetGeolocation();
-								}
-							}
-						});
+		success: function(Feldliste) {
+			$db.openDoc(ID, {
+				success: function(Ort) {
+					var HtmlContainer = generiereHtmlFuerOrtEditForm (User, Feldliste, Ort);
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#Hinweistext").html("");
+						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							//und verorten
+							speichern("KeineMeldung");
+							GetGeolocation();
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -816,7 +782,7 @@ function erstelle_hOrtEdit(ID, User) {
 //generiert das Html für das Formular in hOrtEdit.html
 //erwartet Feldliste als Objekt; Ort als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerOrtEditForm (User, Feldliste, SichtbareFelder, Ort) {
+function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -824,24 +790,21 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, SichtbareFelder, Ort) {
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Ort." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if ((FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -854,30 +817,22 @@ function erstelle_hZeitEdit(ID, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeZeit', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusHierarchisch;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt die Zeit mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Zeit) {
-								var HtmlContainer = generiereHtmlFuerZeitEditForm (User, FeldlisteAlle, SichtbareFelder, Zeit);
-								$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								$("#Hinweistext").html("");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									speichern("../../");
-								}
-							}
-						});
+		success: function(Feldliste) {
+			$db.openDoc(ID, {
+				success: function(Zeit) {
+					var HtmlContainer = generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit);
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#Hinweistext").html("");
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							speichern("../../");
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -887,7 +842,7 @@ function erstelle_hZeitEdit(ID, User) {
 //generiert das Html für das Formular in hZeitEdit.html
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitEditForm (User, Feldliste, SichtbareFelder, Zeit) {
+function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -895,24 +850,21 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, SichtbareFelder, Zeit) 
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "zDatum" && FeldName != "zUhrzeit") {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Zeit." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if (FeldName != "zDatum" && FeldName != "zUhrzeit") {
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -925,30 +877,22 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeArt', {
-		success: function(data1) {
-			var FeldlisteAlle = data1;
-			//Holt, welche Felder angezeigt werden sollen (das sind immer eigene oder Zentrumsfelder)
-			$db.view('evab/UserSichtbareFelder?key="' + User + '"', {
-				success: function(data2) {
-					var row = data2.rows[0].value;
-					var SichtbareFelder = row.ModusHierarchisch;
-					//Wenn keine Felder sichtbar geschaltet sind, nicht weiter machen
-					if (SichtbareFelder.length > 0) {
-						//Holt die Beobachtung mit der id "ID" aus der DB
-						$db.openDoc(ID, {
-							success: function(Beobachtung) {
-								var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, FeldlisteAlle, SichtbareFelder, Beobachtung);
-								$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-								$("#Hinweistext").html("");
-								//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-								$.mobile.fixedToolbars.show(true);
-								if (get_url_param("Status") == "neu") {
-									//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-									speichern();
-								}
-							}
-						});
+		success: function(Feldliste) {
+			$db.openDoc(ID, {
+				success: function(Beobachtung) {
+					var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, Feldliste, Beobachtung);
+					if (HtmlContainer != "") {
+						HtmlContainer = "<hr />" + HtmlContainer;
+						$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#Hinweistext").html("");
+						if (get_url_param("Status") == "neu") {
+							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+							speichern();
+						}
+					} else {
+						$("#Hinweistext").html("");
 					}
+					$.mobile.fixedToolbars.show(true);
 				}
 			});
 		}
@@ -958,7 +902,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 //generiert das Html für Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, SichtbareFelder, Beobachtung) {
+function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, Beobachtung) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -966,24 +910,21 @@ function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, SichtbareFel
 	var SliderMinimum;
 	var SliderMaximum;
 	var ListItem = "";
-	var HtmlContainer = "<hr />";
+	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
-		if (SichtbareFelder.indexOf(FeldName) != -1) {
+		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
 				FeldWert = (eval("Beobachtung." + FeldName) || "");
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldWert;
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			InputTyp = Feld.InputTyp;
-			//Bereits im Formular integrierte Felder nicht anzeigen
-			if (Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {  //aArtId soll nicht angezeigt werden
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum);
-			}
+			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;

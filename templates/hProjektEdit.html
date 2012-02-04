@@ -146,7 +146,7 @@
 		//sichtbare Felder wählen
 		$("#wähleFelder").bind("click", function(event){
 			event.preventDefault();
-			window.open("../../Felder_hProjekt.html", target="_self");
+			window.open("../../Felder_hProjekt.html?zurueck=_show/hProjektEdit/" + "{{id}}", target="_self");
 		});
 
 		$("body").bind("swipeleft", function() {

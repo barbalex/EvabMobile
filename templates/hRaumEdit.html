@@ -154,7 +154,7 @@
 		//sichtbare Felder wählen
 		$("#wähleFelder").bind("click", function(event){
 			event.preventDefault();
-			window.open("../../Felder_hRaum.html", target="_self");
+			window.open("../../Felder_hRaum.html?zurueck=_show/hRaumEdit/" + "{{id}}", target="_self");
 		});
 
 		$("body").bind("swipeleft", function() {

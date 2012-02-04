@@ -141,7 +141,7 @@
 		//sichtbare Felder wählen
 		$("#wähleFelder").bind("click", function(event){
 			event.preventDefault();
-			window.open("../../Felder_hArt.html?ArtGruppe=" + aArtGruppe, target="_self");
+			window.open("../../Felder_hArt.html?ArtGruppe=" + aArtGruppe + "&zurueck=_show/hArtEdit/" + "{{id}}", target="_self");
 		});
 
 		//Link zum Projekt in Navbar setzen
