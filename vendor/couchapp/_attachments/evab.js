@@ -575,17 +575,18 @@ function erstelle_BeobEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							//und verorten
 							speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
-							GetGeolocation();
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
+					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 					$.mobile.fixedToolbars.show(true);
+					//in neuen Datensätzen verorten
+					if (get_url_param("Status") == "neu") {
+						GetGeolocation();
+					}
 				}
 			});
 		}
@@ -638,15 +639,13 @@ function erstelle_hProjektEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#Hinweistext").html("");
 						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichern("../../");
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
 					$.mobile.fixedToolbars.show(true);
 				}
 			});
@@ -701,14 +700,12 @@ function erstelle_hRaumEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#Hinweistext").html("");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichern("../../");
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
 					$.mobile.fixedToolbars.show(true);
 				}
 			});
@@ -761,18 +758,18 @@ function erstelle_hOrtEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#Hinweistext").html("");
-						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							//und verorten
 							speichern("KeineMeldung");
-							GetGeolocation();
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
+					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 					$.mobile.fixedToolbars.show(true);
+					if (get_url_param("Status") == "neu") {
+						//in neuen Datensätzen verorten
+						GetGeolocation();
+					}
 				}
 			});
 		}
@@ -824,14 +821,12 @@ function erstelle_hZeitEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#Hinweistext").html("");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichern("../../");
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
 					$.mobile.fixedToolbars.show(true);
 				}
 			});
@@ -884,14 +879,12 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#Hinweistext").html("");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichern();
 						}
-					} else {
-						$("#Hinweistext").html("");
 					}
+					$("#Hinweistext").html("");
 					$.mobile.fixedToolbars.show(true);
 				}
 			});
@@ -1309,70 +1302,6 @@ function speichereLetzteUrl(User) {
 					}
 				}
 			});
-		}
-	});
-}
-
-function setzeFeldSichtbarImModusHierarchisch(UserName, FeldNameNeu, FeldId) {
-	//ergänzt Feld mit übergebenem Namen im Array der sichtbaren Felder
-	//entfernt den früheren Feldnamen
-	//setzt das Feld "" in FeldEdit.html auf ja
-	//Erwartet UserNamen, neuen Feldnamen und ID des Felds
-	$db = $.couch.db("evab");
-	var viewname = 'evab/UserSichtbareFelder?key="' + UserName + '"';
-	$db.view(viewname, {
-		success: function(data) {
-			var doc = data.rows[0].value;
-			//neuen Wert hinzufügen
-			doc.ModusHierarchisch.push(FeldNameNeu);
-			docId = doc._id;
-			$db.saveDoc(doc, {
-				success: function() {
-					$("#SichtbarModusHierarchisch").val("ja");
-					$("#SichtbarModusHierarchisch").slider();
-					$("#SichtbarModusHierarchisch").slider("refresh");
-					//vorletzer Revision ermitteln
-					$db.openDoc(FeldId, {revs_info:'true'}, {
-						success: function(data) {
-							var revs_info = data._revs_info;
-							var ZweitletzteRev = revs_info[1].rev;
-							//alten Wert aus vorletzer Revision holen
-							$db.openDoc(FeldId, {rev:ZweitletzteRev}, {
-								success: function(data) {
-									var FeldNameAlt = data.FeldName;
-									//alten Wert löschen
-									$db.openDoc(docId, {
-										success: function(data) {
-											var ModusHierarchisch = data.ModusHierarchisch;
-											if (ModusHierarchisch.indexOf(FeldNameAlt) != -1) {
-												ModusHierarchisch.splice(ModusHierarchisch.indexOf(FeldNameAlt), 1);
-												$db.saveDoc(data);
-											}
-										}
-									});
-								}
-							});
-						}
-					});
-		            
-				}
-			});
-		}
-	});
-}
-
-function löscheFeldSichtbarImModusHierarchisch(UserName, FeldName) {
-	//entfernt Feld mit übergebenem Namen im Array der sichtbaren Felder
-	//Erwartet UserNamen und Feldnamen
-	$db = $.couch.db("evab");
-	var viewname = 'evab/UserSichtbareFelder?key="' + UserName + '"';
-	$db.view(viewname, {
-		success: function(data) {
-			doc = data.rows[0].value;
-			if (doc.ModusHierarchisch.indexOf(FeldName) != -1) {
-				doc.ModusHierarchisch.splice(doc.ModusHierarchisch.indexOf(FeldName), 1)
-				$db.saveDoc(data);
-			}
 		}
 	});
 }

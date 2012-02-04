@@ -359,13 +359,13 @@
 							} else {
 								//Feldname ist bei diesem User neu, somit zulässig > speichern
 								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-								setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
+								speichereSichtbarModusHierarchisch(User, "ja"); 
 								speichereFeldeigenschaften();
 							}
 						} else {
 							//Feldname ist neu, somit zulässig > speichern
 							//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-							setzeFeldSichtbarImModusHierarchisch(User, FeldNameNeu, "{{id}}"); 
+							speichereSichtbarModusHierarchisch(User, "ja"); 
 							speichereFeldeigenschaften();
 						}
 					}
@@ -511,31 +511,11 @@
 
 		function löscheFeld(Pfad) {
 			var docId = "{{id}}";
-			// First open doc based on ID in order to get full document
 			$db.openDoc(docId, {
 				success: function(document) {
-					// Then use the opened doc as reference to remove
 					$db.removeDoc(document, {
 						success: function() {
-							//Feld aus UserSichtbareFelder entfernen
-							$db = $.couch.db("evab");
-							var viewname = 'evab/UserSichtbareFelder?key="' + User + '"';
-							$db.view(viewname, {
-								success: function(data) {
-									var doc = data.rows[0].value;
-									var ModusHierarchisch = doc.ModusHierarchisch;
-									if (ModusHierarchisch.indexOf("{{FeldName}}") != -1) {
-										ModusHierarchisch.splice(ModusHierarchisch.indexOf("{{FeldName}}"), 1);
-										$db.saveDoc(doc);
-									}
-									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
-								},
-								error: function() {
-									//scheitert entfernen aus UserSichtbareFelder, trotzdem löschen
-									window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
-								}
-							});
-							
+							window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 						},
 						error: function() {
 							melde("Fehler: nicht gelöscht");

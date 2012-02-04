@@ -81,10 +81,18 @@
 				<div id="BeobEditFormHtml">
 
 				</div>
-				<div data-role="fieldcontain">
-					<label for="Anhang">Datei:</label>
-					<input id="Anhang" name="Anhang" class="speichern" type="file" size="100"/>
-				</div>
+			</form>
+			<hr />
+			<form action="" method="post" id="BeobEditAnhangForm" enctype="multipart/form-data">
+				<h3>Bild oder Tonaufnahme anfügen</h3>
+				<fieldset>
+				    <table summary=""><tbody><tr>
+				      <th><label>File:</label></th>
+				      <td><input type="file" id="Anhang" name="Anhang" class="speichern"></td>
+				    </tr><tr>
+				      <td id="progress" colspan="2">&nbsp;</td>
+				    </tr></table>
+				</fieldset>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
@@ -185,6 +193,11 @@
 			//ungelöstes Problem: swipe reagiert!
 			$("#BeobEditForm").delegate(".ui-slider", "mouseup", function(event) {
 				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+			});
+
+			//Änderungen im Formular für Anhänge speichern
+			$("#BeobEditAnhangForm").delegate(".speichern", "change", function() {
+				speichereAnhang();
 			});
 			
 			$("#zeigeKarte").tap(function(event) {
@@ -542,6 +555,27 @@
 					error: function() {
 						melde("Fehler: Beobachtung nicht gespeichert");
 					 }
+				});
+			}
+		});
+	}
+
+	function speichereAnhang() {
+		$db.openDoc("{{id}}", {
+			success: function(Beob) {
+				var data = {};
+				var Feldname;
+				data._rev = Beob._rev;
+				data.Anhang = $("#Anhang").val();
+				$.ajax({
+					type: "Put",
+				    url: "/evab/" + "{{id}}" + "/" + $("#Anhang").val() + "?rev=" + Beob._rev,
+				    data: data.Anhang,
+				    //contenType: "multipart/form-data",
+				    //contenType: "image/png",
+				    success: function(resp) {
+				    	//$('#saved').fadeIn().animate({ opacity: 1.0 },3000).fadeOut();
+				    }
 				});
 			}
 		});
