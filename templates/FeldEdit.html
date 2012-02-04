@@ -28,183 +28,171 @@
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-    <script type="text/javascript">
-		$(document).ready(function(){
-			$db = $.couch.db("evab");
+    
+	
+  </head>
+  <body>
+  	<div data-role="page" id="FeldEditPage">
+  		<script type="text/javascript">
+			//$("#FeldEditPage").live("pageInit", function(event){
+			$(document).ready(function(){
+				$db = $.couch.db("evab");
+				
+				var Pfad = "../../";
+				User = "";
+				UserFeldDocId = 0;
 			
-			var Pfad = "../../";
-			User = "";
-			UserFeldDocId = 0;
-		
-			prüfeAnmeldung(Pfad);
+				prüfeAnmeldung(Pfad);
 
-			speichereLetzteUrl(User);
-			
-			if ("{{FeldName}}") {
-				//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
-				setzeSichtbarImModusEinfachUndHierarchisch(User);
-				//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
-				if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
-					$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
-					$("#Standardwert").attr("disabled", true);
-				} else if ("{{FeldName}}" == "aAutor") {
-					$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
-					$("#Standardwert").attr("disabled", true);
-				} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
-					$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
-					$("#Standardwert").attr("disabled", true);
-				} else if (["zDatum", "zUhrzeit"].indexOf("{{FeldName}}") > -1) {
-					$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
-					$("#Standardwert").attr("disabled", true);
-				}
-			}
-			$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
-
-			$db.openDoc("{{id}}", {
-				success: function(Feld) {
-					//ArtGruppen nur in der Hierarchiestufe Art anzeigen
-					if ("{{Hierarchiestufe}}" === "Art") {
-						ArtGruppeAufbauen(Feld.ArtGruppe);
+				speichereLetzteUrl(User);
+				
+				if ("{{FeldName}}") {
+					//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
+					setzeSichtbarImModusEinfachUndHierarchisch(User);
+					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+					if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
+						$("#Standardwert").attr("disabled", true);
+					} else if ("{{FeldName}}" == "aAutor") {
+						$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+						$("#Standardwert").attr("disabled", true);
+					} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
+						$("#Standardwert").attr("disabled", true);
+					} else if (["zDatum", "zUhrzeit"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
+						$("#Standardwert").attr("disabled", true);
 					}
-					//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
-					//darum hier auslesen und setzen
-					if (Feld.Standardwert) {
-						var Standardwert = eval("Feld.Standardwert." + User);
-						if (Standardwert) {
-							$("#Standardwert").val(Standardwert);
+				}
+				$(".FeldEditHeaderTitel").text("{{FeldBeschriftung}}");
+
+				$db.openDoc("{{id}}", {
+					success: function(Feld) {
+						//ArtGruppen nur in der Hierarchiestufe Art anzeigen
+						if ("{{Hierarchiestufe}}" === "Art") {
+							ArtGruppeAufbauen(Feld.ArtGruppe);
+						}
+						//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+						//darum hier auslesen und setzen
+						if (Feld.Standardwert) {
+							var Standardwert = eval("Feld.Standardwert." + User);
+							if (Standardwert) {
+								$("#Standardwert").val(Standardwert);
+							}
 						}
 					}
-				}
-			});
-			
-			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
-			$("input[name='Hierarchiestufe']").checkboxradio();
-			$("#{{Hierarchiestufe}}").prop("checked",true).checkboxradio("refresh");
-			$("input[name='Formularelement']").checkboxradio();
-			$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
-			$("input[name='InputTyp']").checkboxradio();
-			$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
+				});
+				
+				//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
+				$("input[name='Hierarchiestufe']").checkboxradio();
+				$("#{{Hierarchiestufe}}").prop("checked",true).checkboxradio("refresh");
+				$("input[name='Formularelement']").checkboxradio();
+				$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
+				$("input[name='InputTyp']").checkboxradio();
+				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
-			//jedes Feld aus Feldeigenschaften bei Änderung speichern
-			$("#FeldEditForm").delegate(".Feldeigenschaften", "change", function() {
-				var FeldWert = this.value;
-				var FeldName = this.name;
-				var AlterFeldWert = this.defaultValue;
-				if ("{{User}}" == "ZentrenBdKt") {
-					//Felder der Datenzentren dürfen nicht verändert werden
-					//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
-					$("#" + FeldName).val(AlterFeldWert);
-					melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
-				} else if (FeldName == "FeldName") {
-					//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
-					if ("{{FeldName}}") {
-						//wenn ein alter Feldname existiert,
-						//zählen, in wievielen Datensätzen das Feld verwendet wird
-						$db = $.couch.db("evab");
-						$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
-							success: function(data) {
-								var i;
-								var anzVorkommen = 0;
-								var Datensatz;
-								var Feld;
-								for(i in data.rows) {
-									Datensatz = data.rows[i].doc; 
-									Feld = eval("Datensatz." + "{{FeldName}}");
-									if (Feld) {
-										anzVorkommen += 1;
+				//jedes Feld aus Feldeigenschaften bei Änderung speichern
+				$("#FeldEditForm").delegate(".Feldeigenschaften", "change", function() {
+					var FeldWert = this.value;
+					var FeldName = this.name;
+					var AlterFeldWert = this.defaultValue;
+					if ("{{User}}" == "ZentrenBdKt") {
+						//Felder der Datenzentren dürfen nicht verändert werden
+						//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
+						$("#" + FeldName).val(AlterFeldWert);
+						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
+					} else if (FeldName == "FeldName") {
+						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
+						if ("{{FeldName}}") {
+							//wenn ein alter Feldname existiert,
+							//zählen, in wievielen Datensätzen das Feld verwendet wird
+							$db = $.couch.db("evab");
+							$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+								success: function(data) {
+									var i;
+									var anzVorkommen = 0;
+									var Datensatz;
+									var Feld;
+									for(i in data.rows) {
+										Datensatz = data.rows[i].doc; 
+										Feld = eval("Datensatz." + "{{FeldName}}");
+										if (Feld) {
+											anzVorkommen += 1;
+										}
+									}
+									if (anzVorkommen == 0) {
+										//prüfen, ob der Feldname schon existiert
+										//wenn ja: melden, zurückstellen
+										//wenn nein: In SichtbareFelder nachführen und speichern
+										prüfeFeldNamen(User);
+									} else {
+										var ds = "Datensätzen";
+										if (anzVorkommen = 1) {
+											ds = "Datensatz";
+										}
+										$("#FeldName").val("{{FeldName}}");
+										melde("Ändern abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
 									}
 								}
-								if (anzVorkommen == 0) {
-									//prüfen, ob der Feldname schon existiert
-									//wenn ja: melden, zurückstellen
-									//wenn nein: In SichtbareFelder nachführen und speichern
-									prüfeFeldNamen(User);
-								} else {
-									var ds = "Datensätzen";
-									if (anzVorkommen = 1) {
-										ds = "Datensatz";
-									}
-									$("#FeldName").val("{{FeldName}}");
-									melde("Ändern abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+							});
+						} else {
+							//Wenn dies ein neues Feld ist
+							//prüfen, ob der Feldname schon existiert
+							//wenn ja: melden, zurückstellen
+							//wenn nein: In SichtbareFelder nachführen und speichern
+							prüfeFeldNamen(User);
+						}
+					} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
+						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
+						ArtGruppeAufbauen();
+					} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
+						$db.openDoc("{{id}}", {
+							success: function(doc) {
+								var letzteHierarchiestufe = doc.Hierarchiestufe;
+								if (letzteHierarchiestufe == "Art") {
+									//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
+									$("#Artgruppenliste").empty();
 								}
 							}
 						});
 					} else {
-						//Wenn dies ein neues Feld ist
-						//prüfen, ob der Feldname schon existiert
-						//wenn ja: melden, zurückstellen
-						//wenn nein: In SichtbareFelder nachführen und speichern
-						prüfeFeldNamen(User);
+						speichereFeldeigenschaften();
+						/*$("#UserFeldForm").validate({      //funktioniert gar nicht!
+							debug: true,
+							onsubmit: false,
+							rules: {
+								FeldName: "required",
+								Beschriftung: "required",
+								Reihenfolge: "required",
+							},
+							messages: {
+								FeldName: "Bitte Feldnamen erfassen",
+								Beschriftung: "Bitte Beschriftung erfassen",
+								Reihenfolge: "Bitte Reihenfolge erfassen",
+							},
+						    submitHandler: function(form) {
+						        speichereFeldeigenschaften();
+						    }
+						});*/
 					}
-				} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
-					//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
-					ArtGruppeAufbauen();
-				} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
-					$db.openDoc("{{id}}", {
-						success: function(doc) {
-							var letzteHierarchiestufe = doc.Hierarchiestufe;
-							if (letzteHierarchiestufe == "Art") {
-								//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
-								$("#Artgruppenliste").empty();
-							}
-						}
-					});
-				} else {
-					speichereFeldeigenschaften();
-					/*$("#UserFeldForm").validate({      //funktioniert gar nicht!
-						debug: true,
-						onsubmit: false,
-						rules: {
-							FeldName: "required",
-							Beschriftung: "required",
-							Reihenfolge: "required",
-						},
-						messages: {
-							FeldName: "Bitte Feldnamen erfassen",
-							Beschriftung: "Bitte Beschriftung erfassen",
-							Reihenfolge: "Bitte Reihenfolge erfassen",
-						},
-					    submitHandler: function(form) {
-					        speichereFeldeigenschaften();
-					    }
-					});*/
-				}
-			});
+				});
 
-			$("#Standardwert").bind("change", function() {
-				var Optionen = $("#Optionen").val();
-				var Feldwert = this.value;
-				if (Optionen != "") {
-					$db.openDoc("{{id}}", {
-						success: function(doc) {
-							var LetzterFeldwert = doc.Standardwert[User];
-							var Formularelement = doc.Formularelement;
-							//Standardwert in Array verwandeln
-							StandardwertOptionen = Feldwert.split(",");
-							//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
-							if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
-								//alle Werte des Arrays müssen Optionen sein
-								for (i in StandardwertOptionen) {
-									if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
-										//ein Wert ist keine Option, abbrechen
-										$("#Standardwert").val(LetzterFeldwert);
-										melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
-										return;
-									}
-								}
-								//alle Werte sind Optionen
-								speichereFeldeigenschaften();
-							} else {
-								//Feld ist toggleswitch, selectmenu oder radio. Array darf nur ein Element enthalten
-								if (StandardwertOptionen.length > 1) {
-									//Array enthält mehrere Optionen, nicht zulässig
-									$("#Standardwert").val(LetzterFeldwert);
-									melde("Ändern abgebrochen:<br>Wählen Sie eine einzige der Optionen");
-								} else {
-									//Array enthält eine einzige Option
+				$("#Standardwert").bind("change", function() {
+					var Optionen = $("#Optionen").val();
+					var Feldwert = this.value;
+					if (Optionen != "") {
+						$db.openDoc("{{id}}", {
+							success: function(doc) {
+								var LetzterFeldwert = doc.Standardwert[User];
+								var Formularelement = doc.Formularelement;
+								//Standardwert in Array verwandeln
+								StandardwertOptionen = Feldwert.split(",");
+								//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
+								if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
+									//alle Werte des Arrays müssen Optionen sein
 									for (i in StandardwertOptionen) {
 										if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
-											//der Wert ist keine Option, abbrechen
+											//ein Wert ist keine Option, abbrechen
 											$("#Standardwert").val(LetzterFeldwert);
 											melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
 											return;
@@ -212,469 +200,484 @@
 									}
 									//alle Werte sind Optionen
 									speichereFeldeigenschaften();
+								} else {
+									//Feld ist toggleswitch, selectmenu oder radio. Array darf nur ein Element enthalten
+									if (StandardwertOptionen.length > 1) {
+										//Array enthält mehrere Optionen, nicht zulässig
+										$("#Standardwert").val(LetzterFeldwert);
+										melde("Ändern abgebrochen:<br>Wählen Sie eine einzige der Optionen");
+									} else {
+										//Array enthält eine einzige Option
+										for (i in StandardwertOptionen) {
+											if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
+												//der Wert ist keine Option, abbrechen
+												$("#Standardwert").val(LetzterFeldwert);
+												melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
+												return;
+											}
+										}
+										//alle Werte sind Optionen
+										speichereFeldeigenschaften();
+									}
 								}
 							}
+						});
+					} else {
+						//Feld Optionen ist leer. Alle Werte akzeptieren
+						speichereFeldeigenschaften();
+					}
+				});
+
+				//Sichtbarkeit Modus hierarchisch speichern
+				$("#SichtbarImModusHierarchisch").change(function() {
+					speichereSichtbarModusHierarchisch(User, this.value);
+				});
+
+				//Sichtbarkeit Modus einfach speichern
+				$("#SichtbarImModusEinfach").change(function() {
+					speichereSichtbarModusEinfach(User, this.value);
+				});
+
+				//Code für den Feld-Löschen-Dialog
+				$('#LöschenDialogLink').bind('click', function() {
+					if ("{{User}}" == "ZentrenBdKt") {
+						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
+					} else {
+						$(this).simpledialog({
+							'mode' : 'bool',
+					    	'prompt' : 'Dieses Feld löschen?',
+					    	'forceInput': 'false',
+					    	'buttons' : {
+							 	'ja': {
+							      	click: function () {
+							        	$('#dialogoutput').text('ja');
+							        	if ("{{FeldName}}" == "") {
+							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
+							        		//Feld = eval("Datensatz." + "{{FeldName}}") lieferte einen Fehler!
+							        		löscheFeld(Pfad);
+							        	} else {
+											$db = $.couch.db("evab");
+											//zählen, in wievielen Datensätzen das Feld verwendet wird
+											$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+												success: function(data) {
+													var i;
+													var anzVorkommen = 0;
+													var Datensatz;
+													var Feld;
+													for(i in data.rows) {
+														Datensatz = data.rows[i].doc;
+														Feld = eval("Datensatz." + "{{FeldName}}");
+														if (Feld) {
+															anzVorkommen += 1;
+														}
+													}
+													if (anzVorkommen == 0) {
+														löscheFeld(Pfad);
+													} else {
+														var ds = "Datensätzen";
+														if (anzVorkommen = 1) {
+															ds = "Datensatz";
+														}
+														melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+													}
+												}
+											});
+										}
+					        		},
+					        		icon: "delete",
+					        		theme: "c"
+					      		},
+					      		'nein': {
+					        		click: function () {
+					          			$('#dialogoutput').text('nein');
+					        		}
+					      		}
+					    	}
+					  	})
+					}
+				});
+
+				//Menu aufbauen
+				$("[name='Menu']").bind('click', function(){
+					erstelleMenuFürFelder(this, "../../");
+				});
+
+				//BackButton steuern
+				$("[name='BackButton']").bind('click', function(){
+					geheZurück();
+				});
+
+				//swipen steuern
+				$("#FeldContent").live("swipeleft", function() {
+					geheZumNächstenFeld(User, "{{id}}");
+				});
+
+				$("#FeldContent").live("swiperight", function() {
+					geheZumVorigenFeld(User, "{{id}}");
+				});
+			});
+		</script>
+		<script type="text/javascript">
+			function setzeSichtbarImModusEinfachUndHierarchisch(User){
+				//setzt den korrekten Wert im Feld SichtbarImModusHierarchisch
+				$db.openDoc("{{id}}", {
+					success: function(Feld) {
+						var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
+						var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
+						if (SichtbarImModusHierarchisch.indexOf(User) != -1) {
+							$("select#SichtbarImModusHierarchisch").val("ja");
+						} else {
+							$("select#SichtbarImModusHierarchisch").val("nein");
 						}
-					});
-				} else {
-					//Feld Optionen ist leer. Alle Werte akzeptieren
-					speichereFeldeigenschaften();
-				}
-			});
-
-			//Sichtbarkeit Modus hierarchisch speichern
-			$("#SichtbarImModusHierarchisch").change(function() {
-				speichereSichtbarModusHierarchisch(User, this.value);
-			});
-
-			//Sichtbarkeit Modus einfach speichern
-			$("#SichtbarImModusEinfach").change(function() {
-				speichereSichtbarModusEinfach(User, this.value);
-			});
-
-			//Code für den Feld-Löschen-Dialog
-			$('#LöschenDialogLink').bind('click', function() {
-				if ("{{User}}" == "ZentrenBdKt") {
-					melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
-				} else {
-					$(this).simpledialog({
-						'mode' : 'bool',
-				    	'prompt' : 'Dieses Feld löschen?',
-				    	'forceInput': 'false',
-				    	'buttons' : {
-						 	'ja': {
-						      	click: function () {
-						        	$('#dialogoutput').text('ja');
-						        	if ("{{FeldName}}" == "") {
-						        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-						        		//Feld = eval("Datensatz." + "{{FeldName}}") lieferte einen Fehler!
-						        		löscheFeld(Pfad);
-						        	} else {
-										$db = $.couch.db("evab");
-										//zählen, in wievielen Datensätzen das Feld verwendet wird
-										$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
-											success: function(data) {
-												var i;
-												var anzVorkommen = 0;
-												var Datensatz;
-												var Feld;
-												for(i in data.rows) {
-													Datensatz = data.rows[i].doc;
-													Feld = eval("Datensatz." + "{{FeldName}}");
-													if (Feld) {
-														anzVorkommen += 1;
-													}
-												}
-												if (anzVorkommen == 0) {
-													löscheFeld(Pfad);
-												} else {
-													var ds = "Datensätzen";
-													if (anzVorkommen = 1) {
-														ds = "Datensatz";
-													}
-													melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
-												}
-											}
-										});
-									}
-				        		},
-				        		icon: "delete",
-				        		theme: "c"
-				      		},
-				      		'nein': {
-				        		click: function () {
-				          			$('#dialogoutput').text('nein');
-				        		}
-				      		}
-				    	}
-				  	})
-				}
-			});
-
-			//Menu aufbauen
-			$("[name='Menu']").bind('click', function(){
-				erstelleMenuFürFelder(this, "../../");
-			});
-
-			//BackButton steuern
-			$("[name='BackButton']").bind('click', function(){
-				geheZurück();
-			});
-
-			//swipen steuern
-			$("#FeldContent").bind("swipeleft", function() {
-				geheZumNächstenFeld(User, "{{id}}");
-			});
-
-			$("#FeldContent").bind("swiperight", function() {
-				geheZumVorigenFeld(User, "{{id}}");
-			});
-		});
-	</script>
-	<script type="text/javascript">
-
-		function setzeSichtbarImModusEinfachUndHierarchisch(User){
-			//setzt den korrekten Wert im Feld SichtbarImModusHierarchisch
-			$db.openDoc("{{id}}", {
-				success: function(Feld) {
-					var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
-					var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
-					if (SichtbarImModusHierarchisch.indexOf(User) != -1) {
-						$("select#SichtbarImModusHierarchisch").val("ja");
-					} else {
-						$("select#SichtbarImModusHierarchisch").val("nein");
+						$("select#SichtbarImModusHierarchisch").slider();
+						$("select#SichtbarImModusHierarchisch").slider("refresh");
+						if (SichtbarImModusEinfach.indexOf(User) != -1) {
+							$("select#SichtbarImModusEinfach").val("ja");
+						} else {
+							$("select#SichtbarImModusEinfach").val("nein");
+						}
+						$("select#SichtbarImModusEinfach").slider();
+						$("select#SichtbarImModusEinfach").slider("refresh");
 					}
-					$("select#SichtbarImModusHierarchisch").slider();
-					$("select#SichtbarImModusHierarchisch").slider("refresh");
-					if (SichtbarImModusEinfach.indexOf(User) != -1) {
-						$("select#SichtbarImModusEinfach").val("ja");
-					} else {
-						$("select#SichtbarImModusEinfach").val("nein");
-					}
-					$("select#SichtbarImModusEinfach").slider();
-					$("select#SichtbarImModusEinfach").slider("refresh");
-				}
-			});
-		}
+				});
+			}
 
-		function prüfeFeldNamen(User) {
-			var FeldNameAlt = "{{FeldName}}" || "";
-			var FeldNameNeu = $("#FeldName").val();
-			var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var key;
-					var Feld;
-					for(i in data.rows) {
-						//kommt ein Feld mit diesem Namen schon vor?
-						if (data.rows[i].value) {
-							Feld = data.rows[i].value;
-							//ist es ein eigenes oder ein offizielles?
-							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-								//ja > dieser Name ist nicht zulässig
-								$("#FeldName").val(FeldNameAlt);
-								$("#FeldName").focus();
-								melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
+			function prüfeFeldNamen(User) {
+				var FeldNameAlt = "{{FeldName}}" || "";
+				var FeldNameNeu = $("#FeldName").val();
+				var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
+				$db.view(viewname, {
+					success: function(data) {
+						var i;
+						var key;
+						var Feld;
+						for(i in data.rows) {
+							//kommt ein Feld mit diesem Namen schon vor?
+							if (data.rows[i].value) {
+								Feld = data.rows[i].value;
+								//ist es ein eigenes oder ein offizielles?
+								if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+									//ja > dieser Name ist nicht zulässig
+									$("#FeldName").val(FeldNameAlt);
+									$("#FeldName").focus();
+									melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
+								} else {
+									//Feldname ist bei diesem User neu, somit zulässig > speichern
+									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
+									speichereSichtbarModusHierarchisch(User, "ja"); 
+									speichereFeldeigenschaften();
+								}
 							} else {
-								//Feldname ist bei diesem User neu, somit zulässig > speichern
+								//Feldname ist neu, somit zulässig > speichern
 								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 								speichereSichtbarModusHierarchisch(User, "ja"); 
 								speichereFeldeigenschaften();
 							}
-						} else {
-							//Feldname ist neu, somit zulässig > speichern
-							//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-							speichereSichtbarModusHierarchisch(User, "ja"); 
-							speichereFeldeigenschaften();
 						}
 					}
-				}
-			});
-		}
-
-		function speichereFeldeigenschaften() {
-			$db = $.couch.db("evab");
-			var Feld = $("#FeldEditForm").serializeObject();
-			//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
-			if (Feld.Optionen) {
-				Feld.Optionen = Feld.Optionen.split(",");
+				});
 			}
-			/*if (Feld.ArtGruppe) {
-				Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
-			}*/
-			Feld.Typ = "Feld";
-			Feld.User = User;
-			Feld._id = "{{id}}";
-				$db.openDoc("{{id}}", {
-					success: function(doc) {
-						Feld._rev = doc._rev;
-						Feld.SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
-						Feld.SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
-						//Standardwert managen
-						//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
-						//darum manuell für diesen User updaten
-						var StandardwertUserImFormular = $("#Standardwert").val();
-						if (doc.Standardwert) {
-							Feld.Standardwert = doc.Standardwert;
-							if (StandardwertUserImFormular != "") {
-								//neuen Standardwert setzen
-								Feld.Standardwert[User] = StandardwertUserImFormular;
+
+			function speichereFeldeigenschaften() {
+				$db = $.couch.db("evab");
+				var Feld = $("#FeldEditForm").serializeObject();
+				//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+				if (Feld.Optionen) {
+					Feld.Optionen = Feld.Optionen.split(",");
+				}
+				/*if (Feld.ArtGruppe) {
+					Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
+				}*/
+				Feld.Typ = "Feld";
+				Feld.User = User;
+				Feld._id = "{{id}}";
+					$db.openDoc("{{id}}", {
+						success: function(doc) {
+							Feld._rev = doc._rev;
+							Feld.SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
+							Feld.SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
+							//Standardwert managen
+							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+							//darum manuell für diesen User updaten
+							var StandardwertUserImFormular = $("#Standardwert").val();
+							if (doc.Standardwert) {
+								Feld.Standardwert = doc.Standardwert;
+								if (StandardwertUserImFormular != "") {
+									//neuen Standardwert setzen
+									Feld.Standardwert[User] = StandardwertUserImFormular;
+								} else {
+									//Standardwert ist leer
+									if (eval("Feld.Standardwert." + User)) {
+										//bisherigen Standardwert löschen
+										delete Feld.Standardwert[User];
+									}
+								}
 							} else {
-								//Standardwert ist leer
-								if (eval("Feld.Standardwert." + User)) {
-									//bisherigen Standardwert löschen
-									delete Feld.Standardwert[User];
+								//Bisher gab es gar keinen Standardwert
+								if (StandardwertUserImFormular != "") {
+									//Objekt für Standardwert schaffen und neuen Wert setzen
+									Feld.Standardwert = {};
+									Feld.Standardwert[User] = StandardwertUserImFormular;
 								}
 							}
+							$db.saveDoc(Feld, {
+								success: function() {
+									//melde("Feld gespeichert");
+								},
+								error: function() {
+									melde("Fehler: Feld nicht gespeichert");
+								}
+							});
+						},
+						error: function() {
+							melde("Fehler: Feld nicht gespeichert");
+						}
+					});
+			}
+
+			function speichereSichtbarModusHierarchisch(User, SichtbarImModusHierarchisch) {
+				var FeldName = $("#FeldName").val();
+				$db.openDoc("{{id}}", {
+					success: function(Feld) {
+						if (SichtbarImModusHierarchisch == "ja") {
+							Feld.SichtbarImModusHierarchisch.push(User);
 						} else {
-							//Bisher gab es gar keinen Standardwert
-							if (StandardwertUserImFormular != "") {
-								//Objekt für Standardwert schaffen und neuen Wert setzen
-								Feld.Standardwert = {};
-								Feld.Standardwert[User] = StandardwertUserImFormular;
-							}
+							var idx = Feld.SichtbarImModusHierarchisch.indexOf(User);
+							if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 						}
 						$db.saveDoc(Feld, {
-							success: function() {
-								//melde("Feld gespeichert");
-							},
 							error: function() {
-								melde("Fehler: Feld nicht gespeichert");
+								melde("Fehler: nicht gespeichert");
 							}
 						});
 					},
 					error: function() {
-						melde("Fehler: Feld nicht gespeichert");
+						melde("Fehler: nicht gespeichert");
 					}
 				});
-		}
-
-		function speichereSichtbarModusHierarchisch(User, SichtbarImModusHierarchisch) {
-			var FeldName = $("#FeldName").val();
-			$db.openDoc("{{id}}", {
-				success: function(Feld) {
-					if (SichtbarImModusHierarchisch == "ja") {
-						Feld.SichtbarImModusHierarchisch.push(User);
-					} else {
-						var idx = Feld.SichtbarImModusHierarchisch.indexOf(User);
-						if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
-					}
-					$db.saveDoc(Feld, {
-						error: function() {
-							melde("Fehler: nicht gespeichert");
-						}
-					});
-				},
-				error: function() {
-					melde("Fehler: nicht gespeichert");
-				}
-			});
-		}
-
-		function speichereSichtbarModusEinfach(User, SichtbarImModusEinfach) {
-			var FeldName = $("#FeldName").val();
-			$db.openDoc("{{id}}", {
-				success: function(Feld) {
-					if (SichtbarImModusEinfach == "ja") {
-						Feld.SichtbarImModusEinfach.push(User);
-					} else {
-						var idx = Feld.SichtbarImModusEinfach.indexOf(User);
-						if(idx!=-1) Feld.SichtbarImModusEinfach.splice(idx, 1);
-					}
-					$db.saveDoc(Feld, {
-						error: function() {
-							melde("Fehler: nicht gespeichert");
-						}
-					});
-				},
-				error: function() {
-					melde("Fehler: nicht gespeichert");
-				}
-			});
-		}
-		
-		function ArtGruppeAufbauen(ArtGruppenArrayIn) {
-			$db = $.couch.db("evab");
-			$("select#ArtGruppe").empty();
-			var viewname = "evab/Artgruppen";
-			$db.view(viewname, {
-				success: function(data) {
-					var i;
-					var ArtGruppe;
-					var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
-					var listItem;
-					var ArtGruppenArray = ArtGruppenArrayIn || [];
-					for(i in data.rows) {
-						ArtGruppe = data.rows[i].key;
-						listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
-						listItem += ArtGruppe;
-						listItem += "' value='";
-						listItem += ArtGruppe;
-						if(ArtGruppenArray.indexOf(ArtGruppe)!=-1) {
-							listItem += "' checked='checked";
-						}
-						listItem += "'/>\n<label for='";
-						listItem += ArtGruppe;
-						listItem += "'>";
-						listItem += ArtGruppe;
-						listItem += "</label>";
-						ListItemContainer += listItem;
-					}
-					ListItemContainer += "\n</fieldset>"
-					$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
-					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-					$.mobile.fixedToolbars.show(true);
-				}
-			});
-		}
-
-		function löscheFeld(Pfad) {
-			var docId = "{{id}}";
-			$db.openDoc(docId, {
-				success: function(document) {
-					$db.removeDoc(document, {
-						success: function() {
-							window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
-						},
-						error: function() {
-							melde("Fehler: nicht gelöscht");
-						}
-					});
-				},
-				error: function() {
-					melde("Fehler: nicht gelöscht");
-				}
-			});
-			return false;
-		}
-
-	function prüfeAnmeldung(Pfad) {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if(session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open(Pfad + "index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
-
-	function neuesFeld() {
-		$db = $.couch.db("evab");
-		var Feld = {};
-		Feld.Typ = "Feld";
-		Feld.User = User;
-		$db.saveDoc(Feld, {
-			success: function(data) {
-				var id = data.id;
-				var zurueck = get_url_param("zurueck");
-				window.open("../FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
-			},
-			error: function() {
-				melde("Fehler: Feld nicht erzeugt");
 			}
-		});
-	}
 
-	//Öffnet das nächste Feld
-	//nächstes des letzten => melden
-	//erwartet die ID des aktuellen Datensatzes
-	function geheZumNächstenFeld(User, IdAktuell) {
-		$db.view('evab/FeldListe', {
-			success: function(data) {
-				var i, y;
-				var FeldIdAktuell;
-				var FeldIdNächstes;
-				var AnzFelder = data.rows.length -1;  
-				for(i in data.rows) {
-					//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-					Feld = data.rows[i].value;
-					//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-						//Nur eigene und offizielle Felder berücksichtigen
-						FeldIdAktuell = data.rows[i].value._id;
-						if (FeldIdAktuell == IdAktuell) {
-							//das ist das aktuelle Feld
-							//von hier aus vorwärts das nächste eigene oder offizielle suchen
-							if (i < AnzFelder) {
-								//das aktuelle Feld ist nicht das letzte
-								for (y = parseInt(i)+1; y <= AnzFelder; y++) {
-									//alle verbleibenden Felder durchlaufen, eigenes suchen
-									Feld = data.rows[y].value;
-									//Nur eigene Felder und offizielle berücksichtigen
-									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-										//das ist das nächste eigene Feld > öffnen
-										FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
-										window.open(FeldIdNächstes, target="_self");
-									} else {
-										if (y == AnzFelder) {
-											//am letzten Feld angelangt und es ist kein eigenes
-											melde("Das ist das letzte Feld");
-										}
-									}
-								}
-							} else {
-								//das aktuelle Feld ist das letzte
-								melde("Das ist das letzte Feld");
+			function speichereSichtbarModusEinfach(User, SichtbarImModusEinfach) {
+				var FeldName = $("#FeldName").val();
+				$db.openDoc("{{id}}", {
+					success: function(Feld) {
+						if (SichtbarImModusEinfach == "ja") {
+							Feld.SichtbarImModusEinfach.push(User);
+						} else {
+							var idx = Feld.SichtbarImModusEinfach.indexOf(User);
+							if(idx!=-1) Feld.SichtbarImModusEinfach.splice(idx, 1);
+						}
+						$db.saveDoc(Feld, {
+							error: function() {
+								melde("Fehler: nicht gespeichert");
 							}
-						}
+						});
+					},
+					error: function() {
+						melde("Fehler: nicht gespeichert");
 					}
-				}
+				});
 			}
-		});
-	}
-
-	//Öffnet das vorige Feld
-	//voriges des ersten => FeldListe
-	//erwartet die ID des aktuellen Datensatzes
-	function geheZumVorigenFeld(User, IdAktuell) {
-		$db.view('evab/FeldListe', {
-			success: function(data) {
-				var i, y;
-				var FeldIdAktuell;
-				var FeldIdVoriges;
-				var AnzFelder = data.rows.length -1;  
-				for(i in data.rows) {
-					//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-					Feld = data.rows[i].value;
-					//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-						//Nur eigene und offizielle Felder berücksichtigen
-						FeldIdAktuell = data.rows[i].value._id;
-						if (FeldIdAktuell == IdAktuell) {
-							//das ist das aktuelle Feld
-							//von hier aus rückwärts das nächste eigene oder offizielle suchen
-							if (i > 0) {
-								//das aktuelle Feld ist nicht das erste 
-								for (y = parseInt(i)-1; y >= 0; y--) {
-									//alle vorhergehenden Felder durchlaufen, eigenes suchen
-									Feld = data.rows[y].value;
-									//Nur eigene Felder und offizielle berücksichtigen
-									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-										//das ist das nächstvorherige eigene Feld > öffnen
-										FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
-										window.open(FeldIdVoriges, target="_self");
-									} else {
-										if (y == 1) {
-											//am ersten Feld angelangt und es ist kein eigenes
-											geheZurück();
-										}
-									}
-								}
-							} else {
-								//das aktuelle Feld ist das erste
-								//wir gehen zur Feldliste
-								geheZurück();	
-							}
-						}
-					}
-				}
-			}
-		});
-	}
-
-	function geheZurück() {
-		var zurueck = get_url_param("zurueck");
-		if (zurueck.slice(0, 6) == "Felder") {
-			//direkt zurück, Feldliste auslassen
-			window.open("../../" + zurueck, target="_self");
 			
-		} else {
-			window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+			function ArtGruppeAufbauen(ArtGruppenArrayIn) {
+				$db = $.couch.db("evab");
+				$("select#ArtGruppe").empty();
+				var viewname = "evab/Artgruppen";
+				$db.view(viewname, {
+					success: function(data) {
+						var i;
+						var ArtGruppe;
+						var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
+						var listItem;
+						var ArtGruppenArray = ArtGruppenArrayIn || [];
+						for(i in data.rows) {
+							ArtGruppe = data.rows[i].key;
+							listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
+							listItem += ArtGruppe;
+							listItem += "' value='";
+							listItem += ArtGruppe;
+							if(ArtGruppenArray.indexOf(ArtGruppe)!=-1) {
+								listItem += "' checked='checked";
+							}
+							listItem += "'/>\n<label for='";
+							listItem += ArtGruppe;
+							listItem += "'>";
+							listItem += ArtGruppe;
+							listItem += "</label>";
+							ListItemContainer += listItem;
+						}
+						ListItemContainer += "\n</fieldset>"
+						$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
+						$.mobile.fixedToolbars.show(true);
+					}
+				});
+			}
+
+			function löscheFeld(Pfad) {
+				var docId = "{{id}}";
+				$db.openDoc(docId, {
+					success: function(document) {
+						$db.removeDoc(document, {
+							success: function() {
+								window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
+							},
+							error: function() {
+								melde("Fehler: nicht gelöscht");
+							}
+						});
+					},
+					error: function() {
+						melde("Fehler: nicht gelöscht");
+					}
+				});
+				return false;
+			}
+
+		function prüfeAnmeldung(Pfad) {		
+			//User Anmeldung überprüfen
+			//Wenn angemeldet, globale Variable User aktualisieren
+			//Wenn nicht angemeldet, Anmeldedialog öffnen
+			$.ajax({
+			    url: '/_session',
+			    dataType: 'json',
+			    async: false,
+			    success: function(session){
+			    	if(session.userCtx.name != (undefined || null)) {
+			        	User = session.userCtx.name;
+			        } else {
+						window.open(Pfad + "index.html?Status=neu", target="_self");
+					}
+			    }
+			});
 		}
-	}
-	</script>
-  </head>
-  <body>
-  	<div data-role="page" id="FeldEditPage">
+
+		function neuesFeld() {
+			$db = $.couch.db("evab");
+			var Feld = {};
+			Feld.Typ = "Feld";
+			Feld.User = User;
+			$db.saveDoc(Feld, {
+				success: function(data) {
+					var id = data.id;
+					var zurueck = get_url_param("zurueck");
+					window.open("../FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
+				},
+				error: function() {
+					melde("Fehler: Feld nicht erzeugt");
+				}
+			});
+		}
+
+		//Öffnet das nächste Feld
+		//nächstes des letzten => melden
+		//erwartet die ID des aktuellen Datensatzes
+		function geheZumNächstenFeld(User, IdAktuell) {
+			$db.view('evab/FeldListe', {
+				success: function(data) {
+					var i, y;
+					var FeldIdAktuell;
+					var FeldIdNächstes;
+					var AnzFelder = data.rows.length -1;  
+					for(i in data.rows) {
+						//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+						Feld = data.rows[i].value;
+						//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+							//Nur eigene und offizielle Felder berücksichtigen
+							FeldIdAktuell = data.rows[i].value._id;
+							if (FeldIdAktuell == IdAktuell) {
+								//das ist das aktuelle Feld
+								//von hier aus vorwärts das nächste eigene oder offizielle suchen
+								if (i < AnzFelder) {
+									//das aktuelle Feld ist nicht das letzte
+									for (y = parseInt(i)+1; y <= AnzFelder; y++) {
+										//alle verbleibenden Felder durchlaufen, eigenes suchen
+										Feld = data.rows[y].value;
+										//Nur eigene Felder und offizielle berücksichtigen
+										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+											//das ist das nächste eigene Feld > öffnen
+											FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
+											window.open(FeldIdNächstes, target="_self");
+											//$.mobile.changePage(FeldIdNächstes);
+										} else {
+											if (y == AnzFelder) {
+												//am letzten Feld angelangt und es ist kein eigenes
+												melde("Das ist das letzte Feld");
+											}
+										}
+									}
+								} else {
+									//das aktuelle Feld ist das letzte
+									melde("Das ist das letzte Feld");
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+
+		//Öffnet das vorige Feld
+		//voriges des ersten => FeldListe
+		//erwartet die ID des aktuellen Datensatzes
+		function geheZumVorigenFeld(User, IdAktuell) {
+			$db.view('evab/FeldListe', {
+				success: function(data) {
+					var i, y;
+					var FeldIdAktuell;
+					var FeldIdVoriges;
+					var AnzFelder = data.rows.length -1;  
+					for(i in data.rows) {
+						//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+						Feld = data.rows[i].value;
+						//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+							//Nur eigene und offizielle Felder berücksichtigen
+							FeldIdAktuell = data.rows[i].value._id;
+							if (FeldIdAktuell == IdAktuell) {
+								//das ist das aktuelle Feld
+								//von hier aus rückwärts das nächste eigene oder offizielle suchen
+								if (i > 0) {
+									//das aktuelle Feld ist nicht das erste 
+									for (y = parseInt(i)-1; y >= 0; y--) {
+										//alle vorhergehenden Felder durchlaufen, eigenes suchen
+										Feld = data.rows[y].value;
+										//Nur eigene Felder und offizielle berücksichtigen
+										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+											//das ist das nächstvorherige eigene Feld > öffnen
+											FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
+											window.open(FeldIdVoriges, target="_self");
+										} else {
+											if (y == 1) {
+												//am ersten Feld angelangt und es ist kein eigenes
+												geheZurück();
+											}
+										}
+									}
+								} else {
+									//das aktuelle Feld ist das erste
+									//wir gehen zur Feldliste
+									geheZurück();	
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+
+		function geheZurück() {
+			var zurueck = get_url_param("zurueck");
+			if (zurueck.slice(0, 6) == "Felder") {
+				//direkt zurück, Feldliste auslassen
+				window.open("../../" + zurueck, target="_self");
+				
+			} else {
+				window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+			}
+		}
+		</script>
   		<div data-role="header" data-position="fixed" id="FeldEditHeader">
   			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
