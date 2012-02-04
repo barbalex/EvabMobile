@@ -136,7 +136,7 @@
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
-		    	if(User != undefined || null) {
+		    	if(session.userCtx.name != (undefined || null)) {
 		        	User = session.userCtx.name;
 		        } else {
 					window.open(Pfad + "index.html?Status=neu", target="_self");

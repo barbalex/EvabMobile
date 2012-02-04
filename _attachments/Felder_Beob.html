@@ -31,7 +31,7 @@
 			$db = $.couch.db("evab");
 			
 			var Pfad = "";
-			User = "";
+			User = get_url_param("User");
 		
 			prüfeAnmeldung(Pfad);
 			speichereLetzteUrl(User);
@@ -142,7 +142,7 @@
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
-		    	if(User != undefined || null) {
+		    	if(session.userCtx.name != (undefined || null)) {
 		        	User = session.userCtx.name;
 		        } else {
 					window.open(Pfad + "index.html?Status=neu", target="_self");

@@ -147,7 +147,7 @@
 		    async: false,
 		    success: function(session) {
 		    	User = session.userCtx.name;
-		    	if(User != (undefined || null)) {
+		    	if(session.userCtx.name != (undefined || null)) {
 		        	öffneZuletztBenutzteSeite(User);
 		       	} else {
 		       		$("#UserName").focus();

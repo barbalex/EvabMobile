@@ -153,7 +153,7 @@
 			//sichtbare Felder wählen
 			$("#wähleFelder").bind("click", function(event){
 				event.preventDefault();
-				window.open("../../Felder_Beob.html?zurueck=_show/BeobEdit/" + "{{id}}", target="_self");
+				window.open("../../Felder_Beob.html?zurueck=_show/BeobEdit/" + "{{id}}" + "&User=" + User, target="_self");
 			});
 
 			//Editieren von Beobachtungen managen, ausgehend von ArtName
@@ -489,7 +489,7 @@
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
-		    	if (User != undefined || null) {
+		    	if (session.userCtx.name != (undefined || null)) {
 		        	User = session.userCtx.name;
 		        } else {
 					window.open(Pfad + "index.html?Status=neu", target="_self");
