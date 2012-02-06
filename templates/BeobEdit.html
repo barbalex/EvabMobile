@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+    <script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
@@ -81,15 +82,18 @@
 				<div id="BeobEditFormHtml">
 
 				</div>
+			</form>
+			<form id="FormAnhänge" action="" method="post" >
 				<hr />
-				<h3>Bilder</h3>	
+				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
 				<div id="BeobEditAnhänge">
 
 				</div>			
 				<div data-role="fieldcontain">
-				    <label for="Anhang" class="ui-input-text">Bild anfügen:</label>
-				    <input type="file" id="Anhang" name="Anhang" class="speichernAnhang ui-body-c"/>
+				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
+				    <input type="file" id="_attachments" name="_attachments" class="speichernAnhang ui-body-c"/>
 				</div>
+				<input type="hidden" id="_rev" name="_rev">
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
@@ -183,19 +187,22 @@
 
 			//Für jedes Feld bei Änderung speichern
 			$("#BeobEditForm").delegate(".speichern", "change", function() {
-				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+				speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Slider-Felder erst bei mouseup speichern
 			//change wird für jeden geswipten Wert ausgelöst!
 			//ungelöstes Problem: swipe reagiert!
 			$("#BeobEditForm").delegate(".ui-slider", "mouseup", function(event) {
-				speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+				speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Änderungen im Formular für Anhänge speichern
-			$("#BeobEditForm").delegate(".speichernAnhang", "change", function() {
-				speichereAnhang();
+			$(".speichernAnhang").live("change", function() {
+				var _attachments = $("#_attachments").val();
+				if (_attachments && _attachments.length != 0) {
+					speichereAnhang();
+				}
 			});
 			
 			$("#zeigeKarte").tap(function(event) {
@@ -320,7 +327,7 @@
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
-				speichern("../../", "BeobEditNichtAufrufen", "Koordinaten gespeichert");
+				speichern("../../", "BeobEditNichtAufrufen");
 			}
 
 			//alle Marker löschen
@@ -383,7 +390,7 @@
 			contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
 
-			$("#BeobEditForm").delegate("[name='LöscheAnhang']", "click", function(event) {
+			$("[name='LöscheAnhang']").live("click", function(event) {
 				var Dateiname = this.id;
 				$db.openDoc("{{id}}", {
 					success: function(Beob) {
@@ -391,6 +398,8 @@
 						$db.saveDoc(Beob, {
 							success: function() {
 								erstelleAnhänge();
+								refreshArtGruppe("{{aArtGruppe}}");
+								refreshArtName("{{aArtName}}");
 							}
 						});
 					}
@@ -529,7 +538,7 @@
 	//BeobEditAufrufen: Bestimmt of das Formular nach dem Speichern geöffnet werden soll. 
 	//Ist "nein" wenn von der Karte aus gespeichert wird. Auch, wenn schon von BeobEdit.html aus gespeichert wird. 
 	//Ist "ja", wenn von ArtenListe.html aus gespeichert wird
-	function speichern(Pfad, BeobEditAufrufen, Meldung) {
+	function speichern(Pfad, BeobEditAufrufen) {
 		var Beob = {};
 		Beob = $("#BeobEditForm").serializeObject();
 		Beob.Typ = "Beobachtung";
@@ -559,10 +568,7 @@
 				$db.saveDoc(Beob, {
 					success: function(data) {
 						if (BeobEditAufrufen == "BeobEditAufrufen"){
-							window.open(Pfad + "_show/BeobEdit/" + data.id, target="_self");
-						}
-						if (Meldung && Meldung != "KeineMeldung") {
-							melde(Meldung);
+							window.open(Pfad + "_show/BeobEdit/" + docId, target="_self");
 						}
 					},
 					error: function() {
@@ -575,16 +581,15 @@
 
 	function speichereAnhang() {
 		$db.openDoc("{{id}}", {
-			success: function(Beob) {
-				var data = {};
-				data._rev = Beob._rev;
-				data.Anhang = $("#Anhang").val();
-				$.ajax({
-					type: "Put",
-				    url: "/evab/" + "{{id}}" + "/" + $("#Anhang").val() + "?rev=" + Beob._rev,
-				    data: data.Anhang,
-				    contentType: "multipart/form-data",
-				    success: function(resp) {
+			success: function(data) {
+				$("#_rev").val(data._rev);
+				$("#FormAnhänge").ajaxSubmit({
+				    url: "/evab/" + "{{id}}",
+				    success: function() {
+				    	//show attachments in form
+				    	erstelleAnhänge();
+				    },
+				    error: function() {
 				    	//show attachments in form
 				    	erstelleAnhänge();
 				    }
@@ -645,8 +650,13 @@
 						var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 						HtmlContainer += "<a href='";
 						HtmlContainer += url;
-						HtmlContainer += "' data-role='button' data-inline='true'>" + Dateiname + "</a><button name='LöscheAnhang' id='" + Dateiname + "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
+						HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
+						HtmlContainer += Dateiname;
+						HtmlContainer += "</a><button name='LöscheAnhang' id='";
+						HtmlContainer += Dateiname;
+						HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
 					});
+					$("#_attachments").val("");
 					$("#BeobEditAnhänge").html(HtmlContainer).trigger("create").trigger("refresh");
 					$.mobile.fixedToolbars.show(true);
 				}
