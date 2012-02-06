@@ -127,7 +127,7 @@ Die App existiert eigentlich schon. Sie heisst EvAB (<span style="text-decoratio
 Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
 
 #Das will ich ausprobieren
-Die Webversion des Apps ist <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a> sichtbar.
+Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a>.
 
 Achtung: Funktioniert mit Internet Explorer erst ab Version 9. Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile, Android-Browser auf ICS (Android Version 4).
 Auf Mobilgeräten ist die Verwendung der Webseite bisher zu langsam und daher unpraktisch.
