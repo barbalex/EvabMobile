@@ -107,6 +107,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen, beschleunigt die Arbeit)
+  - Zusätzliche Hierarchie, wo Ort und Zeit getauscht sind. Hier könnten sehr gut Lebensräume kartiert werden. Dazu müssten auf Luftbild/Karte Flächen digitalisiert weden können... (träum weiter)
 - Tempo erhöhen
 
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
