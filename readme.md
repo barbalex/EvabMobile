@@ -129,7 +129,7 @@ Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_bl
 #Das will ich ausprobieren
 Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a>.
 
-Achtung: Funktioniert mit Internet Explorer erst ab Version 9. Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile, Android-Browser auf ICS (Android Version 4).
-Auf Mobilgeräten ist die Verwendung der Webseite bisher zu langsam und daher unpraktisch.
+Das App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
 
-Die App überrascht immer wieder, wenn jQuery mobile oder ein Browser aktualisiert wurde - meist mit Fehlern, hin und wieder mit Verbesserungen...
+Achtung: Funktioniert mit Internet Explorer erst ab Version 9. Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile, Android-Browser auf ICS (Android Version 4).
+Auf Mobilgeräten ist die Verwendung der Webseite bisher langsam und daher unpraktisch.
