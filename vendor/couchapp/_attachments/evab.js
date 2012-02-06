@@ -562,7 +562,7 @@ function Manager() {
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Beobachtung, User
-function erstelle_BeobEdit(ID, User) {
+function erstelleBeobEdit(ID, User) {
 	$("#BeobEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB

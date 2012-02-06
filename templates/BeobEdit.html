@@ -81,18 +81,15 @@
 				<div id="BeobEditFormHtml">
 
 				</div>
-			</form>
-			<hr />
-			<form action="" method="post" id="BeobEditAnhangForm" enctype="multipart/form-data">
-				<h3>Bild oder Tonaufnahme anfügen</h3>
-				<fieldset>
-				    <table summary=""><tbody><tr>
-				      <th><label>File:</label></th>
-				      <td><input type="file" id="Anhang" name="Anhang" class="speichern"></td>
-				    </tr><tr>
-				      <td id="progress" colspan="2">&nbsp;</td>
-				    </tr></table>
-				</fieldset>
+				<hr />
+				<h3>Bilder</h3>	
+				<div id="BeobEditAnhänge">
+
+				</div>			
+				<div data-role="fieldcontain">
+				    <label for="Anhang" class="ui-input-text">Bild anfügen:</label>
+				    <input type="file" id="Anhang" name="Anhang" class="speichernAnhang ui-body-c"/>
+				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
@@ -130,7 +127,8 @@
 			User = "";
 		
 			prüfeAnmeldung(Pfad);
-			erstelle_BeobEdit("{{id}}", User);
+			erstelleBeobEdit("{{id}}", User);
+			erstelleAnhänge();
 
 			speichereLetzteUrl(User);
 
@@ -196,7 +194,7 @@
 			});
 
 			//Änderungen im Formular für Anhänge speichern
-			$("#BeobEditAnhangForm").delegate(".speichern", "change", function() {
+			$("#BeobEditForm").delegate(".speichernAnhang", "change", function() {
 				speichereAnhang();
 			});
 			
@@ -384,6 +382,21 @@
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
+
+			$("#BeobEditForm").delegate("[name='LöscheAnhang']", "click", function(event) {
+				var Dateiname = this.id;
+				$db.openDoc("{{id}}", {
+					success: function(Beob) {
+						delete Beob._attachments[Dateiname];
+						$db.saveDoc(Beob, {
+							success: function() {
+								erstelleAnhänge();
+							}
+						});
+					}
+				});
+			});
+			
 		}
 	
 		$(document).ready(handleDocumentReady);
@@ -564,17 +577,16 @@
 		$db.openDoc("{{id}}", {
 			success: function(Beob) {
 				var data = {};
-				var Feldname;
 				data._rev = Beob._rev;
 				data.Anhang = $("#Anhang").val();
 				$.ajax({
 					type: "Put",
 				    url: "/evab/" + "{{id}}" + "/" + $("#Anhang").val() + "?rev=" + Beob._rev,
 				    data: data.Anhang,
-				    //contenType: "multipart/form-data",
-				    //contenType: "image/png",
+				    contentType: "multipart/form-data",
 				    success: function(resp) {
-				    	//$('#saved').fadeIn().animate({ opacity: 1.0 },3000).fadeOut();
+				    	//show attachments in form
+				    	erstelleAnhänge();
 				    }
 				});
 			}
@@ -616,6 +628,27 @@
 							break;
 						}
 					}
+				}
+			}
+		});
+	}
+
+	function erstelleAnhänge() {
+		$db.openDoc("{{id}}", {
+			success: function(Beob) {
+				var attachments = Beob._attachments;
+				var rev = Beob._rev;
+				if (attachments) {
+					var HtmlContainer = "";
+					$.each(attachments, function(Dateiname, val) {
+						var url = "/evab/" + "{{id}}" + "/" + Dateiname;
+						var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+						HtmlContainer += "<a href='";
+						HtmlContainer += url;
+						HtmlContainer += "' data-role='button' data-inline='true'>" + Dateiname + "</a><button name='LöscheAnhang' id='" + Dateiname + "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
+					});
+					$("#BeobEditAnhänge").html(HtmlContainer).trigger("create").trigger("refresh");
+					$.mobile.fixedToolbars.show(true);
 				}
 			}
 		});
