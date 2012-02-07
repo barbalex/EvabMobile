@@ -81,8 +81,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 **Dokumentieren**
 
-Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert werden. Denkbar sind z.B.:
-
+Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert werden. Denkbar sind z.B.:<br>
 - Bestimmungen mit Fotos oder Tonaufnahmen belegen
 - Orte mit Fotos oder (fotografierten) Skizzen beschreiben
 - Das Projekt mit einen Projektbericht versehen
