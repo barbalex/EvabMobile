@@ -63,6 +63,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...mit Lateinischen (Standard) oder Deutschen Namen
+- ...mit artgruppenspezifischen Feldern (Felder der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
 
 **Datenfelder verwalten:**
 
@@ -79,6 +80,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
 
 **Dokumentieren**
+
 Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert werden. Denkbar sind z.B.:
 - Bestimmungen mit Fotos oder Tonaufnahmen belegen
 - Orte mit Fotos oder (fotografierten) Skizzen beschreiben
@@ -89,7 +91,6 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
-- Im hierarchischen Modus hat jede Artgruppe auf der Hierarchiestufe "Art" ihre eigenen, spezifischen Felder (in der Feldverwaltung einstellbar)
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten

@@ -561,8 +561,8 @@ function Manager() {
 }
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id der Beobachtung, User
-function erstelleBeobEdit(ID, User) {
+//Mitgeben: id der Beobachtung, User, Artgruppe
+function erstelleBeobEdit(ID, aArtGruppe, User) {
 	$("#BeobEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -570,7 +570,7 @@ function erstelleBeobEdit(ID, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Beob) {
-					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
+					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, aArtGruppe, Feldliste, Beob);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
@@ -593,9 +593,9 @@ function erstelleBeobEdit(ID, User) {
 }
 
 //generiert das Html für das Formular in BeobEdit.html
-//erwartet Feldliste als Objekt; Beob als Objekt
+//erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
+function generiereHtmlFuerBeobEditForm (User, ArtGruppe, Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -610,14 +610,17 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(User) != -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
-			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
-			} else {
-				FeldWert = (eval("Beob." + FeldName) || "");
+			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+			if (Feld.Hierarchiestufe != "Art" || Feld.ArtGruppe.indexOf(ArtGruppe)>=0) {
+				if (Status == "neu" && Feld.Standardwert) {
+					FeldWert = eval("Feld.Standardwert." + User) || "";
+				} else {
+					FeldWert = (eval("Beob." + FeldName) || "");
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -863,8 +866,8 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 }
 
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: id der Art, Artgruppe, Artname
-function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
+//Mitgeben: id der Art, Artgruppe
+function erstelle_hArtEdit(ID, aArtGruppe, User) {
 	$("#hArtEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
