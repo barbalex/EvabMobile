@@ -92,16 +92,16 @@
 		});
 
 		//neues Projekt erstellen
-		$("body").delegate("[name='hProjektNeuLink']", "click", function() {
+		$("body").on("click", "[name='hProjektNeuLink']", function() {
 			erstelleNeuesProjekt("_show/");
 		});
 
-		$("#Projekte").delegate(".Projekt", "swipeleft", function() {
+		$("#Projekte").on("swipeleft", ".Projekt", function() {
 			var ProjektId = $(this).attr('id');
 			window.open("_show/hRaumListe/" + ProjektId, target="_self");
 		});
 
-		$("#Projekte").delegate(".erste", "swipeleft", function() {
+		$("#Projekte").on("swipeleft", ".erste", function() {
 			erstelleNeuesProjekt("_show/");
 		});
 

@@ -98,7 +98,7 @@
 		$("[name='hProjektLink']").attr('href', url);
 
 		//neuen Raum erstellen
-		$("body").delegate("[name='hRaumNeuLink']", "click", function() {
+		$("body").on("click", "[name='hRaumNeuLink']", function() {
 			erstelleNeuenRaum("{{id}}");
 		});
 
@@ -111,13 +111,13 @@
 			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
-		$("#Räume").delegate(".Raum", "swipeleft", function() {
+		$("#Räume").on("swipeleft", ".Raum", function() {
 			var RaumId = $(this).attr('id');
 			window.open("../hOrtListe/" + RaumId, target="_self");
 			//$.mobile.changePage("../hOrtListe/" + RaumId, {transition: "slide"});
 		});
 
-		$("#Räume").delegate(".erste", "swipeleft", function() {
+		$("#Räume").on("swipeleft", ".erste", function() {
 			erstelleNeuenRaum("{{id}}");
 		});
 

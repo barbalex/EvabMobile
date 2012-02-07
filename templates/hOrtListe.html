@@ -105,7 +105,7 @@
 		$("[name='hRaumLink']").attr('href', url);
 
 		//neuen Ort erstellen
-		$("body").delegate("[name='hOrtNeuLink']", "click", function(){
+		$("body").on("click", "[name='hOrtNeuLink']", function(){
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 
@@ -118,12 +118,12 @@
 			erstelleMenuHierarchisch(zurueck, this, User, "../../");
 		});
 
-		$("#Orte").delegate(".Ort", "swipeleft", function() {
+		$("#Orte").on("swipeleft", ".Ort", function() {
 			var hOrtId = $(this).attr('id');
 			window.open("../hZeitListe/" + hOrtId, target="_self");
 		});
 
-		$("#Orte").delegate(".erste", "swipeleft", function() {
+		$("#Orte").on("swipeleft", ".erste", function() {
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 

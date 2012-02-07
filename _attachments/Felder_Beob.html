@@ -39,7 +39,7 @@
 			erstelle_sichtbareFelder(User);
 
 			//Felder speichern (checkbox)
-			$("#Feldliste").delegate("input[name='Felder']", "change", function() {
+			$("#Feldliste").on("change", "input[name='Felder']", function() {
 				var FeldName = $(this).prop("id");
 				var FeldId = $(this).attr("feldid");
 				$db.openDoc(FeldId, {
@@ -68,12 +68,12 @@
 			var url = get_url_param("zurueck");
 			$("#Felder_hBeobPage_href").attr('href', url);
 
-			$("#Feldliste").delegate("input[name='Felder']", "taphold", function(event) {
+			$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {
 				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 				öffneFeld(this.id);
 			});
 
-			$("#Feldliste").delegate("input[name='Felder']", "contextmenu", function(event) {
+			$("#Feldliste").on("contextmenu", "input[name='Felder']", function(event) {
 				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 				öffneFeld(this.id);
 			});

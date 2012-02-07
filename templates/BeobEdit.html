@@ -185,19 +185,19 @@
 			});
 
 			//Für jedes Feld bei Änderung speichern
-			$("#BeobEditForm").delegate(".speichern", "change", function() {
+			$("#BeobEditForm").on("change", ".speichern", function() {
 				speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Slider-Felder erst bei mouseup speichern
 			//change wird für jeden geswipten Wert ausgelöst!
 			//ungelöstes Problem: swipe reagiert!
-			$("#BeobEditForm").delegate(".ui-slider", "mouseup", function(event) {
+			$("#BeobEditForm").on("mouseup", ".ui-slider", function(event) {
 				speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Änderungen im Formular für Anhänge speichern
-			$(".speichernAnhang").live("change", function() {
+			$("#FormAnhänge").on("change", ".speichernAnhang", function() {
 				var _attachments = $("#_attachments").val();
 				if (_attachments && _attachments.length != 0) {
 					speichereAnhänge("{{id}}");
@@ -389,7 +389,7 @@
 			contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
 
-			$("[name='LöscheAnhang']").live("click", function(event) {
+			$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 				event.preventDefault();
 				var Dateiname = this.id;
 				$db.openDoc("{{id}}", {

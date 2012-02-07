@@ -39,7 +39,7 @@
 			erstelle_sichtbareFelder(User);
 
 			//Felder speichern (checkbox)
-			$("#Feldliste").delegate("input[name='Felder']", "change", function() {
+			$("#Feldliste").on("change", "input[name='Felder']", function() {
 				var FeldName = $(this).prop("id");
 				var FeldId = $(this).attr("feldid");
 				$db.openDoc(FeldId, {

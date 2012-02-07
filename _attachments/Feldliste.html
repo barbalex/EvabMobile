@@ -51,7 +51,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" onClick="Javascript:neuesFeld(User, '_show/');" data-icon="plus" class="ui-btn-active">neu</a></li>			
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -64,7 +64,8 @@
 		userCtx = null;
 		User = "";
 		var Pfad = "";
-		var zurueck = get_url_param('zurueck');
+		//sicherstellen, dass zurueck nie leer ist
+		var zurueck = get_url_param('zurueck') || "BeobListe.html";
 		
 		prüfeAnmeldung(Pfad);
 
@@ -97,7 +98,7 @@
 							FeldBeschreibung = Feld.FeldBeschreibung;
 						}
 						ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-						var zurueck = get_url_param('zurueck');
+						var zurueck = get_url_param('zurueck') || "BeobListe.html";
 						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
 						ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 							"<a href='" + externalPage + "' rel='external'>" +
@@ -119,7 +120,7 @@
 
 		//BackButton steuern
 		$("[name='FeldListeBackButton']").bind('click', function(){
-			var zurueck = get_url_param('zurueck');
+			var zurueck = get_url_param('zurueck') || "BeobListe.html";
 			if (zurueck == "BeobListe.html" || zurueck == "hProjektListe.html" || zurueck == "hProjektNeu.html"){
 				window.open(zurueck, target="_self");
 			} else {
@@ -148,20 +149,5 @@
 		});
 	}
 
-	function neuesFeld() {
-		$db = $.couch.db("evab");
-		var Feld = {};
-		Feld.Typ == "Feld";
-		$db.saveDoc(Feld, {
-			success: function(data) {
-				var id = data.id;
-				var zurueck = get_url_param("zurueck");
-				window.open("_show/FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
-			},
-			error: function() {
-				melde("Fehler: Feld nicht erzeugt");
-			}
-		});
-	}
   </script>
 </html>

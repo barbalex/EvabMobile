@@ -109,12 +109,12 @@
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$("#Arten").delegate(".beob", "swipeleft", function() {
+		$("#Arten").on("swipeleft", ".beob", function() {
 			var ArtId = $(this).attr('id');
 			window.open("../hArtEdit/" + ArtId, target="_self");
 		});
 
-		$("#Arten").delegate(".erste", "swipeleft", function() {
+		$("#Arten").on("swipeleft", ".erste", function() {
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 

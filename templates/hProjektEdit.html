@@ -106,19 +106,19 @@
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$("#hProjektEditForm").delegate(".speichern", "change", function() {
+		$("#hProjektEditForm").on("change", ".speichern", function() {
 			speichern("../../");
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$("#hProjektEditForm").delegate(".ui-slider", "mouseup", function(event) {
+		$("#hProjektEditForm").on("mouseup", ".ui-slider", function(event) {
 			speichern("../../");
 		});
 
 		//Änderungen im Formular für Anhänge speichern
-		$(".speichernAnhang").live("change", function() {
+		$("#FormAnhänge").on("change", ".speichernAnhang", function() {
 			var _attachments = $("#_attachments").val();
 			if (_attachments && _attachments.length != 0) {
 				speichereAnhänge("{{id}}");
@@ -189,7 +189,7 @@
 		contentHeight = $(window).height() - 43;
 		$("#map_canvas").css("height", contentHeight + "px");
 
-		$("[name='LöscheAnhang']").live("click", function(event) {
+		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
 			$db.openDoc("{{id}}", {

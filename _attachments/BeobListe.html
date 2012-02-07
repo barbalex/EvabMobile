@@ -85,7 +85,7 @@
 			
 		speichereLetzteUrl(User);
 
-		$("#beobachtungen").delegate(".beob", "swipeleft", function() {
+		$("#beobachtungen").on("swipeleft", ".beob", function() {
 			var BeobId = $(this).attr('id');
 			window.open("_show/BeobEdit/" + BeobId, target="_self");
 		});

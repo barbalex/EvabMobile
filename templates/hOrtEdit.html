@@ -124,19 +124,19 @@
 		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
 		//Für jedes Feld bei Änderung speichern
-		$("#hOrtEditForm").delegate(".speichern", "change", function() {
+		$("#hOrtEditForm").on("change", ".speichern", function() {
 			speichern("KeineMeldung");
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
-		$("#hOrtEditForm").delegate(".ui-slider", "mouseup", function(event) {
+		$("#hOrtEditForm").on("mouseup", ".ui-slider", function(event) {
 			speichern("KeineMeldung");
 		});
 
 		//Änderungen im Formular für Anhänge speichern
-		$(".speichernAnhang").live("change", function() {
+		$("#FormAnhänge").on("change", ".speichernAnhang", function() {
 			var _attachments = $("#_attachments").val();
 			if (_attachments && _attachments.length != 0) {
 				speichereAnhänge("{{id}}");
@@ -338,7 +338,7 @@
 			nächsterVorigerOrt("{{id}}", "voriger");
 		});
 
-		$("[name='LöscheAnhang']").live("click", function(event) {
+		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
 			$db.openDoc("{{id}}", {

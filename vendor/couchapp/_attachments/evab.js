@@ -1686,3 +1686,30 @@ function erstelleAttachments(id) {
 		}
 	});
 }
+
+//kreiert ein neues Feld
+//erwartet den Teil des Pfads, der links von FeldEdit ist
+function neuesFeld(User, Pfad) {
+	$db = $.couch.db("evab");
+	var Feld = {};
+	Feld.Typ = "Feld";
+	Feld.User = User;
+	Feld.SichtbarImModusEinfach = [];
+	Feld.SichtbarImModusHierarchisch = [];
+	//gleich sichtbar stellen
+	Feld.SichtbarImModusEinfach.push(User);
+	Feld.SichtbarImModusHierarchisch.push(User);
+	//Standardwerte für Formularelement setzen
+	Feld.Formularelement = "textinput";
+	Feld.InputTyp = "text";
+	$db.saveDoc(Feld, {
+		success: function(data) {
+			var id = data.id;
+			var zurueck = get_url_param("zurueck");
+			window.open(Pfad + "FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
+		},
+		error: function() {
+			melde("Fehler: Feld nicht erzeugt");
+		}
+	});
+}

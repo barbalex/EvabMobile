@@ -46,9 +46,9 @@
 
 				speichereLetzteUrl(User);
 				
+				setzeSichtbarImModusEinfachUndHierarchisch(User);
+
 				if ("{{FeldName}}") {
-					//nur setzen, wenn schon ein Name existiert - nicht gegeben bei neuem Feld!
-					setzeSichtbarImModusEinfachUndHierarchisch(User);
 					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
 					if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
 						$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
@@ -92,16 +92,16 @@
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
-				$("#FeldEditForm").delegate(".Feldeigenschaften", "change", function() {
+				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
 					var FeldWert = this.value;
 					var FeldName = this.name;
 					var AlterFeldWert = this.defaultValue;
-					if ("{{User}}" == "ZentrenBdKt") {
+					if ("{{User}}" === "ZentrenBdKt") {
 						//Felder der Datenzentren dürfen nicht verändert werden
 						//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
 						$("#" + FeldName).val(AlterFeldWert);
 						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
-					} else if (FeldName == "FeldName") {
+					} else if (FeldName === "FeldName") {
 						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
 						if ("{{FeldName}}") {
 							//wenn ein alter Feldname existiert,
@@ -308,11 +308,11 @@
 				});
 
 				//swipen steuern
-				$("#FeldContent").live("swipeleft", function() {
+				$("body").on("swipeleft", "#FeldContent", function() {
 					geheZumNächstenFeld(User, "{{id}}");
 				});
 
-				$("#FeldContent").live("swiperight", function() {
+				$("body").on("swiperight", "#FeldContent", function() {
 					geheZumVorigenFeld(User, "{{id}}");
 				});
 			});
@@ -324,14 +324,16 @@
 					success: function(Feld) {
 						var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
 						var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
-						if (SichtbarImModusHierarchisch.indexOf(User) != -1) {
+						//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
+						if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(User) != -1) {
 							$("select#SichtbarImModusHierarchisch").val("ja");
 						} else {
 							$("select#SichtbarImModusHierarchisch").val("nein");
 						}
 						$("select#SichtbarImModusHierarchisch").slider();
 						$("select#SichtbarImModusHierarchisch").slider("refresh");
-						if (SichtbarImModusEinfach.indexOf(User) != -1) {
+						//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusEinfach noch nicht
+						if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(User) != -1) {
 							$("select#SichtbarImModusEinfach").val("ja");
 						} else {
 							$("select#SichtbarImModusEinfach").val("nein");
@@ -391,48 +393,57 @@
 				Feld.Typ = "Feld";
 				Feld.User = User;
 				Feld._id = "{{id}}";
-					$db.openDoc("{{id}}", {
-						success: function(doc) {
-							Feld._rev = doc._rev;
-							Feld.SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
-							Feld.SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
-							//Standardwert managen
-							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
-							//darum manuell für diesen User updaten
-							var StandardwertUserImFormular = $("#Standardwert").val();
-							if (doc.Standardwert) {
-								Feld.Standardwert = doc.Standardwert;
-								if (StandardwertUserImFormular != "") {
-									//neuen Standardwert setzen
-									Feld.Standardwert[User] = StandardwertUserImFormular;
-								} else {
-									//Standardwert ist leer
-									if (eval("Feld.Standardwert." + User)) {
-										//bisherigen Standardwert löschen
-										delete Feld.Standardwert[User];
-									}
-								}
+				//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+				if (Feld.Formularelement !== "textinput" && Feld.InputTyp) {
+					delete Feld.InputTyp;
+					$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
+				}
+				//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+				if (Feld.Formularelement === "textinput" && !Feld.InputTyp) {
+					Feld.InputTyp = "text";
+				}
+				$db.openDoc("{{id}}", {
+					success: function(doc) {
+						Feld._rev = doc._rev;
+						Feld.SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
+						Feld.SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
+						//Standardwert managen
+						//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+						//darum manuell für diesen User updaten
+						var StandardwertUserImFormular = $("#Standardwert").val();
+						if (doc.Standardwert) {
+							Feld.Standardwert = doc.Standardwert;
+							if (StandardwertUserImFormular != "") {
+								//neuen Standardwert setzen
+								Feld.Standardwert[User] = StandardwertUserImFormular;
 							} else {
-								//Bisher gab es gar keinen Standardwert
-								if (StandardwertUserImFormular != "") {
-									//Objekt für Standardwert schaffen und neuen Wert setzen
-									Feld.Standardwert = {};
-									Feld.Standardwert[User] = StandardwertUserImFormular;
+								//Standardwert ist leer
+								if (eval("Feld.Standardwert." + User)) {
+									//bisherigen Standardwert löschen
+									delete Feld.Standardwert[User];
 								}
 							}
-							$db.saveDoc(Feld, {
-								success: function() {
-									//melde("Feld gespeichert");
-								},
-								error: function() {
-									melde("Fehler: Feld nicht gespeichert");
-								}
-							});
-						},
-						error: function() {
-							melde("Fehler: Feld nicht gespeichert");
+						} else {
+							//Bisher gab es gar keinen Standardwert
+							if (StandardwertUserImFormular != "") {
+								//Objekt für Standardwert schaffen und neuen Wert setzen
+								Feld.Standardwert = {};
+								Feld.Standardwert[User] = StandardwertUserImFormular;
+							}
 						}
-					});
+						$db.saveDoc(Feld, {
+							success: function() {
+								//melde("Feld gespeichert");
+							},
+							error: function() {
+								melde("Fehler: Feld nicht gespeichert");
+							}
+						});
+					},
+					error: function() {
+						melde("Fehler: Feld nicht gespeichert");
+					}
+				});
 			}
 
 			function speichereSichtbarModusHierarchisch(User, SichtbarImModusHierarchisch) {
@@ -549,23 +560,6 @@
 						window.open(Pfad + "index.html?Status=neu", target="_self");
 					}
 			    }
-			});
-		}
-
-		function neuesFeld() {
-			$db = $.couch.db("evab");
-			var Feld = {};
-			Feld.Typ = "Feld";
-			Feld.User = User;
-			$db.saveDoc(Feld, {
-				success: function(data) {
-					var id = data.id;
-					var zurueck = get_url_param("zurueck");
-					window.open("../FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
-				},
-				error: function() {
-					melde("Fehler: Feld nicht erzeugt");
-				}
 			});
 		}
 
@@ -822,7 +816,7 @@
 		<div data-role="footer" data-position="fixed" id="FeldEditFooter">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" onClick="Javascript:neuesFeld(User, '../');" data-icon="plus" class="ui-btn-active">neu</a></li>			
 					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->

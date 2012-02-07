@@ -73,7 +73,7 @@
 
 		erstelleArtenliste();
 
-		$("#ArtenListe").delegate("[name='ArtListItem']", "click", function(event) {
+		$("#ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 			event.preventDefault();
 			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var ArtId = $(this).attr("artid");

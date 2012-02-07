@@ -91,17 +91,17 @@
 		$("[name='hOrtLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$("body").delegate("[name='hZeitNeuLink']", "click", function(event) {
+		$("body").on("click", "[name='hZeitNeuLink']", function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
 		});
 
-		$("#Zeiten").delegate(".Zeit", "swipeleft", function() {
+		$("#Zeiten").on("swipeleft", ".Zeit", function() {
 			var hZeitId = $(this).attr('id');
 			window.open("../hArtListe/" + hZeitId, target="_self");
 		});
 
-		$("#Zeiten").delegate(".erste", "swipeleft", function() {
+		$("#Zeiten").on("swipeleft", ".erste", function() {
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}");
 		});
 
