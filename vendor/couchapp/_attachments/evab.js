@@ -1699,9 +1699,6 @@ function neuesFeld(User, Pfad) {
 	//gleich sichtbar stellen
 	Feld.SichtbarImModusEinfach.push(User);
 	Feld.SichtbarImModusHierarchisch.push(User);
-	//Standardwerte für Formularelement setzen
-	Feld.Formularelement = "textinput";
-	Feld.InputTyp = "text";
 	$db.saveDoc(Feld, {
 		success: function(data) {
 			var id = data.id;

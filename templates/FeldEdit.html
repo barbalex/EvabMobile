@@ -143,9 +143,11 @@
 							prüfeFeldNamen(User);
 						}
 					} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
+						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauen();
 					} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
+						speichereFeldeigenschaften();
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
 								var letzteHierarchiestufe = doc.Hierarchiestufe;
@@ -393,6 +395,20 @@
 				Feld.Typ = "Feld";
 				Feld.User = User;
 				Feld._id = "{{id}}";
+				
+				//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+				if (!Feld.FeldBeschriftung && Feld.Hierarchiestufe && Feld.FeldName) {
+					Feld.FeldBeschriftung = Feld.FeldName;
+				}
+				//Es braucht eine Reihenfolge
+				if (!Feld.Reihenfolge && Feld.Hierarchiestufe && Feld.FeldName) {
+					Feld.Reihenfolge = 1;
+				}
+				//Es braucht einen Feldtyp
+				if (!Feld.Formularelement && Feld.Hierarchiestufe && Feld.FeldName) {
+					Feld.Formularelement = "textinput";
+					Feld.InputTyp = "text";
+				}
 				//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
 				if (Feld.Formularelement !== "textinput" && Feld.InputTyp) {
 					delete Feld.InputTyp;
