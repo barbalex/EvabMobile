@@ -38,8 +38,6 @@
 		
 			prüfeAnmeldung(Pfad);
 			speichereLetzteUrl(User);
-			var Erläuterungstext = "<h3>Felder der Artgruppe " + ArtGruppe + " wählen:</h3><p>In der Feldverwaltung ist definiert, welche Felder in welcher Artgruppe zur Verfügung stehen.</p>";
-			$("#Erläuterungstext").html(Erläuterungstext).trigger("create");
 			erstelle_sichtbareFelder(ArtGruppe, User);
 
 			//Felder speichern (checkbox)
@@ -75,7 +73,7 @@
 	</script>
 	<script type="text/javascript">
 
-	//generiert dynamisch die Artgruppen-abhängigen Felder im Formular Felder_hArt.html
+	//generiert dynamisch die (Artgruppen-abhängigen) Felder im Formular Felder_hArt.html
 	//Mitgeben: Artgruppe, User
 	function erstelle_sichtbareFelder(ArtGruppe, User) {
 		$("#Feldliste").empty();
@@ -89,12 +87,16 @@
 				var anzFelder = 0;
 				for (i in data.rows) {
 					var Feld = data.rows[i].value;
+					//Nur eigene und offizielle Felder berücksichtigen
 					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.Hierarchiestufe == "Art" && (Feld.ArtGruppe.indexOf(ArtGruppe) != -1) && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
+						// nur Artfelder, im Formular enthaltene und die ArtId nicht anzeigen
+						if (Feld.Hierarchiestufe == "Art" && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
 							anzFelder += 1;
 							var FeldName = Feld.FeldName;
 							var FeldBeschriftung = Feld.FeldBeschriftung;
+							if (Feld.ArtGruppe.indexOf(ArtGruppe) == -1) {
+								FeldBeschriftung += " (nicht sichtbar in Artgruppe " + ArtGruppe + ")";
+							}
 							var ListItem = "\n\t\t\<label for='";
 							ListItem += FeldName;
 							ListItem += "'>";
@@ -154,7 +156,8 @@
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
 			<form action="#" method="get">
-				<span id="Erläuterungstext"></span>
+				<h3>Felder für Art wählen:</h3>
+  				<p>Die Felder dieser Hierarchiestufe werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>
 				<div data-role="fieldcontain" id="Feldliste">
 				</div>
 			</form>
