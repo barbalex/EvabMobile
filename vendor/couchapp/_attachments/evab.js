@@ -581,8 +581,7 @@ function erstelleBeobEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 					//in neuen Datensätzen verorten
 					if (get_url_param("Status") == "neu") {
 						GetGeolocation();
@@ -639,14 +638,13 @@ function erstelle_hProjektEdit(ID, User) {
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichern("../../");
 						}
 					}
 					$("#Hinweistext").html("");
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 				}
 			});
 		}
@@ -706,7 +704,7 @@ function erstelle_hRaumEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 				}
 			});
 		}
@@ -764,8 +762,7 @@ function erstelle_hOrtEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 					if (get_url_param("Status") == "neu") {
 						//in neuen Datensätzen verorten
 						GetGeolocation();
@@ -827,7 +824,7 @@ function erstelle_hZeitEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 				}
 			});
 		}
@@ -885,7 +882,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, aArtName, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					$.mobile.fixedToolbars.show(true);
+					erstelleAttachments(ID);
 				}
 			});
 		}
@@ -1631,6 +1628,58 @@ function erstelleKarteFürProjektliste(User) {
 					infowindow.open(map,marker);
 				});
 			}
+		}
+	});
+}
+
+//speichert Anhänge
+//setzt ein passendes Formular mit den feldern _rev und _attachments voraus
+//wird benutzt von: BeobEdit.html
+function speichereAnhänge(id) {
+	$db.openDoc(id, {
+		success: function(data) {
+			$("#_rev").val(data._rev);
+			$("#FormAnhänge").ajaxSubmit({
+			    url: "/evab/" + id,
+			    success: function() {
+			    	//show attachments in form
+			    	erstelleAttachments(id);
+			    },
+			    error: function() {
+			    	//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
+			    	erstelleAttachments(id);
+			    }
+			});
+		}
+	});
+}
+
+//erstellt Anhänge
+//setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
+//wird benutzt von allen Beobachtungs-Edit-Formularen
+//Status wird benötigt, weil .trigger create nur beim ersten mal funktioniert
+function erstelleAttachments(id) {
+	$db.openDoc(id, {
+		success: function(doc) {
+			var attachments = doc._attachments;
+			var rev = doc._rev;
+			var HtmlContainer = "";
+			if (attachments) {
+				$.each(attachments, function(Dateiname, val) {
+					var url = "/evab/" + id + "/" + Dateiname;
+					var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+					HtmlContainer += "<a href='";
+					HtmlContainer += url;
+					HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
+					HtmlContainer += Dateiname;
+					HtmlContainer += "</a><button name='LöscheAnhang' id='";
+					HtmlContainer += Dateiname;
+					HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
+				});
+				$("#_attachments").val("");
+			}
+			$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
+			$.mobile.fixedToolbars.show(true);
 		}
 	});
 }

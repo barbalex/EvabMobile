@@ -78,6 +78,13 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - ...manuell auf Luftbildern von Google. Das Luftbild wird auf die aktuelle Position zentriert
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
 
+**Dokumentieren**
+Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert werden. Denkbar sind z.B.:
+- Bestimmungen mit Fotos oder Tonaufnahmen belegen
+- Orte mit Fotos oder (fotografierten) Skizzen beschreiben
+- Das Projekt mit einen Projektbericht versehen
+- Dem Projekt eine GIS-Datei anfügen, in der die Orte als Linien oder Flächen digitalisiert wurden
+
 **Effizient arbeiten:**
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
@@ -100,7 +107,6 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - Daten besser vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App bereitstellen
 - Funktionalität erweitern, z.B.:
-  - Bilder und Tonaufnahmen anhängen
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
   - Anzahl Meldungen derselben Art im aktuellen 10*10km-Quadranten, Jahr der jüngsten Meldung<br>(wie wahrscheinlich bzw. sensationell ist meine Beobachtung?)

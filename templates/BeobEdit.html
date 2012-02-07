@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
-    <script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script
+    <script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
@@ -86,7 +86,7 @@
 			<form id="FormAnhänge" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
-				<div id="BeobEditAnhänge">
+				<div id="Anhänge">
 
 				</div>			
 				<div data-role="fieldcontain">
@@ -132,7 +132,6 @@
 		
 			prüfeAnmeldung(Pfad);
 			erstelleBeobEdit("{{id}}", User);
-			erstelleAnhänge();
 
 			speichereLetzteUrl(User);
 
@@ -201,7 +200,7 @@
 			$(".speichernAnhang").live("change", function() {
 				var _attachments = $("#_attachments").val();
 				if (_attachments && _attachments.length != 0) {
-					speichereAnhang();
+					speichereAnhänge("{{id}}");
 				}
 			});
 			
@@ -391,15 +390,14 @@
 			$("#map_canvas").css("height", contentHeight + "px");
 
 			$("[name='LöscheAnhang']").live("click", function(event) {
+				event.preventDefault();
 				var Dateiname = this.id;
 				$db.openDoc("{{id}}", {
 					success: function(Beob) {
 						delete Beob._attachments[Dateiname];
 						$db.saveDoc(Beob, {
 							success: function() {
-								erstelleAnhänge();
-								refreshArtGruppe("{{aArtGruppe}}");
-								refreshArtName("{{aArtName}}");
+								erstelleAttachments("{{id}}");
 							}
 						});
 					}
@@ -579,25 +577,6 @@
 		});
 	}
 
-	function speichereAnhang() {
-		$db.openDoc("{{id}}", {
-			success: function(data) {
-				$("#_rev").val(data._rev);
-				$("#FormAnhänge").ajaxSubmit({
-				    url: "/evab/" + "{{id}}",
-				    success: function() {
-				    	//show attachments in form
-				    	erstelleAnhänge();
-				    },
-				    error: function() {
-				    	//show attachments in form
-				    	erstelleAnhänge();
-				    }
-				});
-			}
-		});
-	}
-
 	//Öffnet die vorige oder nächste Beobachtung
 	//vorige der ersten => BeobListe
 	//nächste der letzten => melden
@@ -633,32 +612,6 @@
 							break;
 						}
 					}
-				}
-			}
-		});
-	}
-
-	function erstelleAnhänge() {
-		$db.openDoc("{{id}}", {
-			success: function(Beob) {
-				var attachments = Beob._attachments;
-				var rev = Beob._rev;
-				if (attachments) {
-					var HtmlContainer = "";
-					$.each(attachments, function(Dateiname, val) {
-						var url = "/evab/" + "{{id}}" + "/" + Dateiname;
-						var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
-						HtmlContainer += "<a href='";
-						HtmlContainer += url;
-						HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
-						HtmlContainer += Dateiname;
-						HtmlContainer += "</a><button name='LöscheAnhang' id='";
-						HtmlContainer += Dateiname;
-						HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
-					});
-					$("#_attachments").val("");
-					$("#BeobEditAnhänge").html(HtmlContainer).trigger("create").trigger("refresh");
-					$.mobile.fixedToolbars.show(true);
 				}
 			}
 		});

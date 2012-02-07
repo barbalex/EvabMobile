@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.util.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
@@ -69,6 +70,16 @@
 				</div>
 			</form>
 			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
+			<form id="FormAnhänge" action="" method="post" >
+				<hr />
+				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
+				<div id="Anhänge"></div>			
+				<div data-role="fieldcontain">
+				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
+				    <input type="file" id="_attachments" name="_attachments" class="speichernAnhang ui-body-c"/>
+				</div>
+				<input type="hidden" id="_rev" name="_rev">
+			</form>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
@@ -116,6 +127,14 @@
 		//ungelöstes Problem: swipe reagiert!
 		$("#hArtEditForm").delegate(".ui-slider", "mouseup", function(event) {
 			speichern("../../");
+		});
+
+		//Änderungen im Formular für Anhänge speichern
+		$(".speichernAnhang").live("change", function() {
+			var _attachments = $("#_attachments").val();
+			if (_attachments && _attachments.length != 0) {
+				speichereAnhänge("{{id}}");
+			}
 		});
 
 		var Status = get_url_param("Status");
@@ -198,6 +217,21 @@
 
 		$("body").bind("swiperight", function() {
 			nächsteVorigeArt("{{id}}", "vorige");
+		});
+
+		$("[name='LöscheAnhang']").live("click", function(event) {
+			event.preventDefault();
+			var Dateiname = this.id;
+			$db.openDoc("{{id}}", {
+				success: function(Beob) {
+					delete Beob._attachments[Dateiname];
+					$db.saveDoc(Beob, {
+						success: function() {
+							erstelleAttachments("{{id}}");
+						}
+					});
+				}
+			});
 		});
 	}
 	
