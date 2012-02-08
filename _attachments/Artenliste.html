@@ -25,7 +25,6 @@
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-  	<script src="vendor/couchapp/sha1.js" type="text/javascript"></script>
   	<style type="text/css">
   		/*workaround against bad scrolling
   		https://forum.jquery.com/topic/why-jqm-touchscreen-list-scrolling-performance-stinks-and-what-to-do-about-it*/
@@ -164,9 +163,9 @@
 		var L = get_url_param("L");
 		//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 		if (L == "") {
-			viewname = 'evab/Artliste' + ArtGruppe;
+			viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
 		} else {
-			viewname = 'evab/Artliste' + ArtGruppe + '?startkey=["' + L + '"]&endkey=["' + L + '",{}]';
+			viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
 		}
 		$db.view(viewname, {
 			success: function(data) {
@@ -176,7 +175,7 @@
 				var Art;
 				var ArtId;
 				for(i in data.rows) {
-					ArtBezeichnung = data.rows[i].key[1];
+					ArtBezeichnung = data.rows[i].key[2];
 					Art = data.rows[i].value;
 					ArtId = Art._id;
 					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
