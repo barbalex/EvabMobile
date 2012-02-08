@@ -51,9 +51,7 @@
 					<label for="pName">Name:</label>
 					<input id="pName" class="speichern" name="pName" type="text" value="{{pName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
-				<div id="hProjektEditFormHtml">
-
-				</div>
+				<div id="hProjektEditFormHtml"></div>
 			</form>
 			<p id="Hinweistext" class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 			<form id="FormAnhänge" action="" method="post" >
@@ -63,6 +61,7 @@
 				<div data-role="fieldcontain">
 				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
 				    <input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+				    <p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
