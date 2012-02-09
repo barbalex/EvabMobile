@@ -156,40 +156,101 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(Pfad, User, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
+function speichereNeueBeob(Pfad, UserName, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	$db = $.couch.db("evab");
 	var doc = {};
-	if (Von == "BeobListe" || Von == "BeobEdit") {
-		doc.Typ = "Beobachtung";
-	} else {
-		doc.Typ = "hArt";
-	}
-	if (Von == "hArtListe" || Von == "hArtEdit") {
-		doc.hProjektId = hProjektId;
-		doc.hRaumId = hRaumId;
-		doc.hOrtId = hOrtId;
-		doc.hZeitId = hZeitId;
-	}
-	doc.User = User;
+	doc.User = UserName;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = ArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	$db.view('evab/User?key="' + User + '"', {
-		success: function(data) {
-			var User;
-			User = data.rows[0].value;
+	if (Von == "hArtListe" || Von == "hArtEdit") {
+		doc.Typ = "hArt";
+		doc.hProjektId = hProjektId;
+		doc.hRaumId = hRaumId;
+		doc.hOrtId = hOrtId;
+		doc.hZeitId = hZeitId;
+		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
+		speichereNeueBeob_02(Von, doc);
+		return false;
+	} else {
+		//Von == "BeobListe" || Von == "BeobEdit"
+		doc.Typ = "Beobachtung";
+		speichereNeueBeob_03(Von, doc);
+		return false;
+	}
+}
+
+function speichereNeueBeob_02(Von, doc) {
+//Neue Beobachtungen werden gespeichert
+//ausgelöst durch hArtListe.html oder hArtEdit.html
+//dies ist der zweite Schritt:
+//Felder der höheren Hierarchieebenen anfügen
+	$db = $.couch.db("evab");
+	$db.openDoc(doc.hZeitId, {
+		success: function(Zeit) {
+			for (i in Zeit) {
+				//FeldName = i, Feldwert = Zeit[i]
+				//ein paar Felder wollen wir nicht
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+					doc[i] = Zeit[i];
+				}
+			}
+			$db.openDoc(doc.hOrtId, {
+				success: function(Ort) {
+					for (i in Ort) {
+						//ein paar Felder wollen wir nicht
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+							doc[i] = Ort[i];
+						}
+					}
+					$db.openDoc(doc.hRaumId, {
+						success: function(Raum) {
+							for (i in Raum) {
+								//ein paar Felder wollen wir nicht
+								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+									doc[i] = Raum[i];
+								}
+							}
+							$db.openDoc(doc.hProjektId, {
+								success: function(Projekt) {
+									for (i in Projekt) {
+										//ein paar Felder wollen wir nicht
+										if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+											doc[i] = Projekt[i];
+										}
+									}
+									speichereNeueBeob_03(Von, doc);
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+function speichereNeueBeob_03(Von, doc) {
+//Neue Beobachtungen werden gespeichert
+//ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
+//dies ist der letzte Schritt:
+//Autor anfügen und weiter zum Edit-Formular
+	$db = $.couch.db("evab");
+	$db.view('evab/User?key="' + doc.User + '"', {
+		success: function(Userliste) {
+			var User = Userliste.rows[0].value;
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
-					if (Von == "BeobListe" || Von == "BeobEdit") {
-						window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
-					} else {
+					if (Von == "hArtListe" || Von == "hArtEdit") {
 						window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
+					} else {
+						window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
 					}
 				},
 				error: function() {
@@ -221,38 +282,6 @@ $db.openDoc(BeobId, {
 				error: function() {
 					melde("Fehler: Beobachtung nicht gespeichert");
 				 }
-			});
-		}
-	});
-}
-
-function speichereNeueBeobHierarchisch(hProjektId, hRaumId, hOrtId, hZeitId, UserName, aArtGruppe, aArtName, ArtId) {
-//Neue hierarchische Beobachtungen werden gespeichert
-//ausgelöst durch hArtListe.html oder hArtEdit.html
-	$db = $.couch.db("evab");
-	var doc = {};
-	doc.Typ = "hArt";
-	doc.User = UserName;
-	doc.hProjektId = hProjektId;
-	doc.hRaumId = hRaumId;
-	doc.hOrtId = hOrtId;
-	doc.hZeitId = hZeitId;
-	doc.aArtGruppe = aArtGruppe;
-	doc.aArtName = aArtName;
-	doc.aArtId = ArtId;
-	doc.aMeldungTyp = "Feldbeobachtung";
-	$db.view('evab/User?key="' + User + '"', {
-		success: function(data) {
-			var User;
-			User = data.rows[0].value;
-			doc.aAutor = User.Autor;
-			$db.saveDoc(doc, {
-				success: function(data) {
-					window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
-				},
-				error: function() {
-					melde("Art nicht gespeichert.");
-				}
 			});
 		}
 	});

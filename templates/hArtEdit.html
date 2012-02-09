@@ -380,6 +380,36 @@
 	}
 
 	//Speichert alle Daten
+	function speichern(NeuÖffnenIn) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hArt) {
+				var Formularwerte = {};
+				var docId = "{{id}}";
+				Formularwerte = $("#hArtEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					hArt[i] = Formularwerte[i];
+				}
+				hArt.aArtId = aArtId;
+				hArt.aArtName = aArtName;
+				hArt.aArtGruppe = aArtGruppe;
+				$db.saveDoc(hArt, {
+					success: function() {
+						if (NeuÖffnenIn) {
+							window.open("_show/hArtEdit/" + "{{id}}", target="_self");
+						}
+					},
+					error: function() {
+						melde("Fehler: Art nicht gespeichert");
+					 }
+				});
+			}
+		});
+	}
+
+	/*//Speichert alle Daten
 	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
 	function speichern(NeuÖffnenIn) {
 		var hArt = {};
@@ -388,7 +418,7 @@
 		hArt = $("#hArtEditForm").serializeObject();
 		hArt.Typ = "hArt";
 		hArt.User = User;
-		hArt._id = docId;
+		hArt._id = "{{id}}";
 		hArt.hProjektId = "{{hProjektId}}";
 		hArt.hRaumId = "{{hRaumId}}";
 		hArt.hOrtId = "{{hOrtId}}";
@@ -411,7 +441,7 @@
 				});
 			}
 		});
-	}
+	}*/
 
 	//Öffnet die vorige oder nächste Art
 	//vorige der ersten => ArtListe

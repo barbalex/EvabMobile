@@ -27,27 +27,21 @@ function(head, req) {
 		switch (Datensatz.Typ) {
 			case "hProjekt":
 				Datensatz.hProjektId = Datensatz._id;
-				break;
+			break;
 			case "hRaum":
 				Datensatz.hRaumId = Datensatz._id;
-				break;
+			break;
 			case "hOrt":
 				Datensatz.hOrtId = Datensatz._id;
-				break;
+			break;
 			case "hZeit":
 				Datensatz.hZeitId = Datensatz._id;
-				break;
-			case "hArt":
-				Datensatz.BeobId = Datensatz._id;
-				break;
-			case "Beobachtung":
-				Datensatz.BeobId = Datensatz._id;
-				break;
+			break;
+			//für hArt nicht nötig
 		}
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User') {
+			if (name !== '_id' && name !== '_rev' && name !== 'User') {
 				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
@@ -75,8 +69,7 @@ function(head, req) {
 		//für jeden Datensatz die Liste der enthaltenen Felder erstellen
 		FeldNamenEnthalten = [];
 		for (name in Datensatz) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User') {
+			if (name !== '_id' && name !== '_rev' && name !== 'User') {
 				FeldNamenEnthalten.push(name);
 			}
 		}
