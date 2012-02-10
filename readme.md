@@ -63,7 +63,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...mit Lateinischen (Standard) oder Deutschen Namen
-- ...mit artgruppenspezifischen Feldern (Felder der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
+- ...mit artgruppenspezifischen Feldern (in der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
 
 **Datenfelder verwalten:**
 
