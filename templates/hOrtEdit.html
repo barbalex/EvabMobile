@@ -125,15 +125,23 @@
 		oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
 		//Für jedes Feld bei Änderung speichern
-		$("#hOrtEditForm").on("change", ".speichern", function() {
-			speichern("KeineMeldung");
+		$("#hOrtEditForm").on("change", ".speichern", function(event) {
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
 		$("#hOrtEditForm").on("mouseup", ".ui-slider", function(event) {
-			speichern("KeineMeldung");
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Änderungen im Formular für Anhänge speichern
@@ -306,7 +314,7 @@
 			google.maps.event.addListener(marker, 'click', function() {
 			  infowindow.open(map,marker);
 			});
-			speichern("Koordinaten gespeichert");
+			speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
 		}
 
 		//alle Marker löschen
@@ -527,7 +535,103 @@
 		return AnzahlZeiten;
 	}
 
-	function speichern(Meldung) {
+	function speichern(Feldname, Feldwert) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hOrt) {
+				//Werte aus dem Formular aktualisieren
+				if (Feldwert) {
+					hOrt[Feldname] = Feldwert;
+				} else if (hOrt[Feldname]) {
+					delete hOrt[Feldname]
+				}
+				//alles speichern
+				$db.saveDoc(hOrt, {
+					success: function() {
+						speichereOrtfeldInArten(Feldname, Feldwert);
+						speichereOrtfeldInZeiten(Feldname, Feldwert);
+					},
+					error: function() {
+						melde("Fehler: Ort nicht gespeichert");
+					}
+				});
+			}
+		});
+	}
+
+	function speichereOrtfeldInZeiten(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hZeit anpassen
+		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function speichereOrtfeldInArten(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hArt anpassen
+		var viewname = 'evab/hArtIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hOrt) {
+				//Längen- und Breitengrad sind in keinem Feld dargestellt
+				//sie müssen aus ihren Variabeln gespeichert werden
+				hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
+				hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
+				hOrt.oXKoord = oXKoord;
+				hOrt.oYKoord = oYKoord;
+				hOrt.oLagegenauigkeit = oLagegenauigkeit;
+				//alles speichern
+				$db.saveDoc(hOrt, {
+					success: function() {
+						melde("Koordinaten gespeichert");
+					},
+					error: function() {
+						melde("Fehler: Koordinaten nicht gespeichert");
+					}
+				});
+			}
+		});
+	}
+
+	/*function speichern(Meldung, Feldname, Feldwert) {
 		$db = $.couch.db("evab");
 		//Bestehendes Dokument öffnen
 		$db.openDoc("{{id}}", {
@@ -567,7 +671,7 @@
 				});
 			}
 		});
-	}
+	}*/
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 	function erstelleMenu(thiz, User, Pfad){

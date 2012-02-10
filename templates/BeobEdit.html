@@ -187,14 +187,24 @@
 
 			//Für jedes Feld bei Änderung speichern
 			$("#BeobEditForm").on("change", ".speichern", function() {
-				speichern("../../", "BeobEditNichtAufrufen");
+				var Feldname = this.name;
+				//nötig, damit Arrays richtig kommen
+				var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+				var Feldwert = Feldjson[Feldname];
+				speichern(Feldname, Feldwert);
+				//speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Slider-Felder erst bei mouseup speichern
 			//change wird für jeden geswipten Wert ausgelöst!
 			//ungelöstes Problem: swipe reagiert!
 			$("#BeobEditForm").on("mouseup", ".ui-slider", function(event) {
-				speichern("../../", "BeobEditNichtAufrufen");
+				var Feldname = this.name;
+				//nötig, damit Arrays richtig kommen
+				var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+				var Feldwert = Feldjson[Feldname];
+				speichern(Feldname, Feldwert);
+				//speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Änderungen im Formular für Anhänge speichern
@@ -327,7 +337,7 @@
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
-				speichern("../../", "BeobEditNichtAufrufen");
+				speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y);
 			}
 
 			//alle Marker löschen
@@ -532,46 +542,52 @@
 	}
 
 	//Speichert alle Daten
-	//Pfad: Ist "", wenn von ArtenListe.html aus gespeichert wird. Sonst "../../"
-	//BeobEditAufrufen: Bestimmt of das Formular nach dem Speichern geöffnet werden soll. 
-	//Ist "nein" wenn von der Karte aus gespeichert wird. Auch, wenn schon von BeobEdit.html aus gespeichert wird. 
-	//Ist "ja", wenn von ArtenListe.html aus gespeichert wird
-	function speichern(Pfad, BeobEditAufrufen) {
-		var Beob = {};
-		Beob = $("#BeobEditForm").serializeObject();
-		Beob.Typ = "Beobachtung";
-		Beob.User = User;
-		Beob.aArtGruppe = aArtGruppe;
-		Beob.aArtName = aArtName;
-		Beob.aArtId = aArtId;
-		//Längen- und Breitengrad sind in keinem Feld dargestellt
-		//sie müssen aus ihren Variabeln gespeichert werden
-		if (oLongitudeDecDeg && oLatitudeDecDeg) {
-			Beob.oLongitudeDecDeg = oLongitudeDecDeg;
-			Beob.oLatitudeDecDeg = oLatitudeDecDeg;
-		}
-		//Verhindern, dass Infotext gespeichert wird, wenn User die Beobachtung 
-		//vor Bendigung von GetGeolocation verlässt und während der Verortung
-		//gespeichert hat
-		if ($("input#oXKoord").val() == "Position ermitteln...") {
-			delete Beob.oXKoord;
-			delete Beob.oYKoord;
-			delete Beob.oLagegenauigkeit;
-			delete Beob.oObergrenzeHöhe;
-		}
-		$db.openDoc(docId, {
-			success: function(doc) {
-				Beob._id = docId;
-				Beob._rev = doc._rev;
+	function speichern(Feldname, Feldwert) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(Beob) {
+				//Werte aus dem Formular aktualisieren
+				if (Feldwert) {
+					Beob[Feldname] = Feldwert;
+				} else if (Beob[Feldname]) {
+					delete Beob[Feldname]
+				}
+				Beob.aArtGruppe = aArtGruppe;
+				Beob.aArtName = aArtName;
+				Beob.aArtId = aArtId;
+				//alles speichern
 				$db.saveDoc(Beob, {
-					success: function(data) {
-						if (BeobEditAufrufen == "BeobEditAufrufen"){
-							window.open(Pfad + "_show/BeobEdit/" + docId, target="_self");
-						}
+					success: function() {
 					},
 					error: function() {
 						melde("Fehler: Beobachtung nicht gespeichert");
-					 }
+					}
+				});
+			}
+		});
+	}
+
+	function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(Beob) {
+				//Längen- und Breitengrad sind in keinem Feld dargestellt
+				//sie müssen aus ihren Variabeln gespeichert werden
+				Beob.oLongitudeDecDeg = oLongitudeDecDeg;
+				Beob.oLatitudeDecDeg = oLatitudeDecDeg;
+				Beob.oXKoord = oXKoord;
+				Beob.oYKoord = oYKoord;
+				Beob.oLagegenauigkeit = "Auf Luftbild markiert";
+				//alles speichern
+				$db.saveDoc(Beob, {
+					success: function() {
+						melde("Koordinaten gespeichert");
+					},
+					error: function() {
+						melde("Fehler: Koordinaten nicht gespeichert");
+					}
 				});
 			}
 		});

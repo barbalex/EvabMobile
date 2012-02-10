@@ -119,15 +119,23 @@
 		speichereLetzteUrl(User);
 
 		//Für jedes Feld bei Änderung speichern
-		$("#hArtEditForm").on("change", ".speichern", function() {
-			speichern();
+		$("#hArtEditForm").on("change", ".speichern", function(event) {
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
 		$("#hArtEditForm").on("mouseup", ".ui-slider", function(event) {
-			speichern("../../");
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("#" + this.name).serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Änderungen im Formular für Anhänge speichern
@@ -380,26 +388,25 @@
 	}
 
 	//Speichert alle Daten
-	function speichern(NeuÖffnenIn) {
+	function speichern(Feldname, Feldwert) {
 		$db = $.couch.db("evab");
 		//Bestehendes Dokument öffnen
 		$db.openDoc("{{id}}", {
 			success: function(hArt) {
-				var Formularwerte = {};
-				var docId = "{{id}}";
-				Formularwerte = $("#hArtEditForm").serializeObject();
 				//Werte aus dem Formular aktualisieren
-				for (i in Formularwerte) {
-					hArt[i] = Formularwerte[i];
+				if (Feldwert) {
+					hArt[Feldname] = Feldwert;
+				} else if (hArt[Feldname]) {
+					delete hArt[Feldname]
 				}
 				hArt.aArtId = aArtId;
 				hArt.aArtName = aArtName;
 				hArt.aArtGruppe = aArtGruppe;
 				$db.saveDoc(hArt, {
 					success: function() {
-						if (NeuÖffnenIn) {
+						/*if (NeuÖffnenIn) {
 							window.open("_show/hArtEdit/" + "{{id}}", target="_self");
-						}
+						}*/
 					},
 					error: function() {
 						melde("Fehler: Art nicht gespeichert");

@@ -107,12 +107,20 @@
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
 		$("#hZeitEditForm").on("mouseup", ".ui-slider", function(event) {
-			speichern("../../");
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Für jedes Feld bei Änderung speichern
-		$("#hZeitEditForm").on("change", ".speichern", function() {
-			speichern("../../");
+		$("#hZeitEditForm").on("change", ".speichern", function(event) {
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Änderungen im Formular für Anhänge speichern
@@ -289,9 +297,63 @@
 		});
 	}
 
-	function speichern() {
+	function speichern(Feldname, Feldwert) {
+		var Feldwert = $("#" + Feldname).val();
 		if ($("input#zDatum").val() == "") {
-			melde("Sie müssen ein Datum erfassen");
+			melde("Bitte Datum erfassen");
+			document.getElementById("zDatum").focus();
+			return;
+		}
+		if ($("input#zUhrzeit").val() == "") {
+			melde("Bitte Zeit erfassen");
+			document.getElementById("zUhrzeit").focus();
+			return;
+		}
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hZeit) {
+				//Werte aus dem Formular aktualisieren
+				if (Feldwert) {
+					hZeit[Feldname] = Feldwert;
+				} else if (hZeit[Feldname]) {
+					delete hZeit[Feldname]
+				}
+				//alles speichern
+				$db.saveDoc(hZeit, {
+					success: function() {
+						//geändertes Zeit-Feld in hArt anpassen
+						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+						$db.view(viewname, {
+							success: function(data) {
+								var hArtId;
+								for(i in data.rows) {
+									hArtId = data.rows[i].key[1];
+									$db.openDoc(hArtId, {
+										success: function(hArt) {
+											if (Feldwert) {
+												hArt[Feldname] = Feldwert;
+											} else if (hArt[Feldname]) {
+												delete hArt[Feldname];
+											}
+											$db.saveDoc(hArt);
+										}
+									});
+								}
+							}
+						});
+					},
+					error: function() {
+						melde("Fehler: Zeit nicht gespeichert");
+					}
+				});
+			}
+		});
+	}
+
+	/*function speichern(FeldName) {
+		if ($("input#zDatum").val() == "") {
+			melde("Bitte Datum erfassen");
 			document.getElementById("zDatum").focus();
 			return;
 		}
@@ -305,21 +367,47 @@
 		$db.openDoc("{{id}}", {
 			success: function(hZeit) {
 				var Formularwerte = {};
-				var docId = "{{id}}";
 				Formularwerte = $("#hZeitEditForm").serializeObject();
 				//Werte aus dem Formular aktualisieren
 				for (i in Formularwerte) {
-					hZeit[i] = Formularwerte[i];
+					if (Formularwerte[i]) {
+						hZeit[i] = Formularwerte[i];
+					} else if (hZeit[i]) {
+						delete hZeit[i]
+					}
 				}
 				//alles speichern
 				$db.saveDoc(hZeit, {
+					success: function() {
+						//geändertes Zeit-Feld in hArt anpassen
+						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+						$db.view(viewname, {
+							success: function(data) {
+								var i, ArtId;
+								for(i in data.rows) {
+									hArtId = data.rows[i].key[1];
+									$db.openDoc(hArtId, {
+										success: function(hArt) {
+											var Feldwert = $("#" + FeldName).val();
+											if (Feldwert) {
+												hArt[FeldName] = Feldwert;
+											} else if (hArt[FeldName]) {
+												delete hArt[FeldName];
+											}
+											$db.saveDoc(hArt);
+										}
+									});
+								}
+							}
+						});
+					},
 					error: function() {
 						melde("Fehler: Zeit nicht gespeichert");
 					}
 				});
 			}
 		});
-	}
+	}*/
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 	function erstelleMenu(thiz, User, Pfad){

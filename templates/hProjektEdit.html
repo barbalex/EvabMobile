@@ -106,14 +106,22 @@
 
 		//Für jedes Feld bei Änderung speichern
 		$("#hProjektEditForm").on("change", ".speichern", function() {
-			speichern("../../");
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Slider-Felder erst bei mouseup speichern
 		//change wird für jeden geswipten Wert ausgelöst!
 		//ungelöstes Problem: swipe reagiert!
 		$("#hProjektEditForm").on("mouseup", ".ui-slider", function(event) {
-			speichern("../../");
+			var Feldname = this.name;
+			//nötig, damit Arrays richtig kommen
+			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
+			var Feldwert = Feldjson[Feldname];
+			speichern(Feldname, Feldwert);
 		});
 
 		//Änderungen im Formular für Anhänge speichern
@@ -404,21 +412,120 @@
 		});
 	}
 
-	function speichern() {
-		var hProjekt = {};
-		var docId = "{{id}}";
-		hProjekt = $("#hProjektEditForm").serializeObject();
-		hProjekt.Typ = "hProjekt";
-		hProjekt.User = User;
-		hProjekt._id = docId;
-		$db.openDoc(docId, {
-			success: function(doc) {
-				hProjekt._rev = doc._rev;
+	function speichern(Feldname, Feldwert) {
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hProjekt) {
+				if (Feldwert) {
+					hProjekt[Feldname] = Feldwert;
+				} else if (hProjekt[Feldname]) {
+					delete hProjekt[Feldname]
+				}
+				//alles speichern
 				$db.saveDoc(hProjekt, {
+					success: function() {
+						speichereProjektfeldInArten(Feldname, Feldwert);
+						speichereProjektfeldInZeiten(Feldname, Feldwert);
+						speichereProjektfeldInOrten(Feldname, Feldwert);
+						speichereProjektfeldInRäumen(Feldname, Feldwert);
+					},
 					error: function() {
 						melde("Fehler: Projekt nicht gespeichert");
-					 }
+					}
 				});
+			}
+		});
+	}
+
+	function speichereProjektfeldInArten(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hArt anpassen
+		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function speichereProjektfeldInZeiten(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hArt anpassen
+		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function speichereProjektfeldInOrten(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hArt anpassen
+		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	function speichereProjektfeldInRäumen(Feldname, Feldwert) {
+		//geändertes Ort-Feld in hArt anpassen
+		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		$db.view(viewname, {
+			success: function(data) {
+				var hArtId;
+				for(i in data.rows) {
+					hArtId = data.rows[i].key[1];
+					$db.openDoc(hArtId, {
+						success: function(hArt) {
+							if (Feldwert) {
+								hArt[Feldname] = Feldwert;
+							} else if (hArt[Feldname]) {
+								delete hArt[Feldname];
+							}
+							$db.saveDoc(hArt);
+						}
+					});
+				}
 			}
 		});
 	}
