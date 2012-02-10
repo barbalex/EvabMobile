@@ -54,7 +54,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 **Installieren:**
 
 - Direkt auf der [Webseite](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
-- Auf dem PC installieren und lokal arbeiten (Windows, Mac OsX - wenig getestet)
+- Auf dem PC installieren und lokal arbeiten (Windows, Mac OsX - wenig getestet). Vorteil: Viel schneller
 
 **Beobachtungen erfassen...**
 
