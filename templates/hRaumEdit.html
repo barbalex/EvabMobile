@@ -367,27 +367,27 @@
 			document.getElementById("rName").focus();
 			return;
 		}
-		var hRaum = {};
-		var docId = "{{id}}";
-		hRaum = $("#hRaumEditForm").serializeObject();
-		hRaum.Typ = "hRaum";
-		hRaum.User = User;
-		hRaum._id = docId;
-		hRaum.hProjektId = "{{hProjektId}}";
-		$db.openDoc(docId, {
-			success: function(doc) {
-				hRaum._rev = doc._rev;
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hRaum) {
+				var Formularwerte = {};
+				var docId = "{{id}}";
+				Formularwerte = $("#hRaumEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					hRaum[i] = Formularwerte[i];
+				}
+				//alles speichern
 				$db.saveDoc(hRaum, {
-					success: function() {
-					},
 					error: function() {
 						melde("Fehler: Raum nicht gespeichert");
-					 }
+					}
 				});
 			}
 		});
 	}
-
+	
 	//Menü aufbauen
 	function erstelleMenu(thiz, User, Pfad){
 		$(thiz).simpledialog({

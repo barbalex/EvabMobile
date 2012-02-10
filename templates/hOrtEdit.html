@@ -528,32 +528,33 @@
 	}
 
 	function speichern(Meldung) {
-		var hOrt = {};
-		var docId = "{{id}}";
-		hOrt = $("#hOrtEditForm").serializeObject();
-		hOrt.Typ = "hOrt";
-		hOrt.User = User;
-		hOrt._id = docId;
-		hOrt.hProjektId = "{{hProjektId}}";
-		hOrt.hRaumId = "{{hRaumId}}";
-		//Längen- und Breitengrad sind in keinem Feld dargestellt
-		//sie müssen aus ihren Variabeln gespeichert werden
-		if (oLatitudeDecDeg && oLatitudeDecDeg != "" && oLongitudeDecDeg && oLongitudeDecDeg != "") {
-			hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
-			hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
-		}
-		//Verhindern, dass Infotext gespeichert wird, wenn User den Ort 
-		//vor Bendigung von GetGeolocation verlässt und während der Verortung
-		//gespeichert hat
-		if ($("input#oXKoord").val() == "Position ermitteln...") {
-			delete hOrt.oXKoord;
-			delete hOrt.oYKoord;
-			delete hOrt.oLagegenauigkeit;
-			delete hOrt.oObergrenzeHöhe;
-		}
-		$db.openDoc(docId, {
-			success: function(doc) {
-				hOrt._rev = doc._rev;
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hOrt) {
+				var Formularwerte = {};
+				var docId = "{{id}}";
+				Formularwerte = $("#hOrtEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					hOrt[i] = Formularwerte[i];
+				}
+				//Längen- und Breitengrad sind in keinem Feld dargestellt
+				//sie müssen aus ihren Variabeln gespeichert werden
+				if (oLatitudeDecDeg && oLatitudeDecDeg != "" && oLongitudeDecDeg && oLongitudeDecDeg != "") {
+					hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
+					hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
+				}
+				//Verhindern, dass Infotext gespeichert wird, wenn User den Ort 
+				//vor Bendigung von GetGeolocation verlässt und während der Verortung
+				//gespeichert hat
+				if ($("input#oXKoord").val() == "Position ermitteln...") {
+					delete hOrt.oXKoord;
+					delete hOrt.oYKoord;
+					delete hOrt.oLagegenauigkeit;
+					delete hOrt.oObergrenzeHöhe;
+				}
+				//alles speichern
 				$db.saveDoc(hOrt, {
 					success: function() {
 						if (Meldung && Meldung != "KeineMeldung") {
@@ -562,7 +563,7 @@
 					},
 					error: function() {
 						melde("Fehler: Ort nicht gespeichert");
-					 }
+					}
 				});
 			}
 		});

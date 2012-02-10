@@ -484,6 +484,9 @@ function aktualisiereBeobListe(Pfad, User) {
 }
 
 function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
+//Neue Zeiten werden erstellt
+//ausgelöst durch hZeitListe.html oder hZeitEdit.html
+//dies ist der erste Schritt: doc bilden
 	var doc = {};
 	doc.Typ = "hZeit";
 	doc.User = User;
@@ -492,45 +495,114 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 	doc.hOrtId = hOrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	$db.saveDoc(doc, {
-		success: function(data) {
-			window.open("../hZeitEdit/" + data.id + "?Status=neu", target="_self");
-		},
-		error: function() {
-			melde("Fehler: neue Zeit nicht erstellt");
+	//Daten aus höheren Hierarchiestufen ergänzen
+	$db = $.couch.db("evab");
+	$db.openDoc(doc.hOrtId, {
+		success: function(Ort) {
+			for (i in Ort) {
+				//ein paar Felder wollen wir nicht
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+					doc[i] = Ort[i];
+				}
+			}
+			$db.openDoc(doc.hRaumId, {
+				success: function(Raum) {
+					for (i in Raum) {
+						//ein paar Felder wollen wir nicht
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+							doc[i] = Raum[i];
+						}
+					}
+					$db.openDoc(doc.hProjektId, {
+						success: function(Projekt) {
+							for (i in Projekt) {
+								//ein paar Felder wollen wir nicht
+								if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+									doc[i] = Projekt[i];
+								}
+							}
+							//speichern
+							$db.saveDoc(doc, {
+								success: function(data) {
+									window.open("../hZeitEdit/" + data.id + "?Status=neu", target="_self");
+								},
+								error: function() {
+									melde("Fehler: neue Zeit nicht erstellt");
+								}
+							});
+						}
+					});
+				}
+			});
 		}
 	});
 }
 
 function erstelleNeuenOrt(User, hProjektId, hRaumId) {
-	var hOrt = {};
-	hOrt.Typ = "hOrt";
-	hOrt.User = User;
-	hOrt.hProjektId = hProjektId;
-	hOrt.hRaumId = hRaumId;
-	$db.saveDoc(hOrt, {
-		success: function(data) {
-			window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
-		},
-		error: function() {
-			melde("Fehler: neuer Ort nicht erstellt");
-		 }
+	var doc = {};
+	doc.Typ = "hOrt";
+	doc.User = User;
+	doc.hProjektId = hProjektId;
+	doc.hRaumId = hRaumId;
+	//Daten aus höheren Hierarchiestufen ergänzen
+	$db = $.couch.db("evab");
+	$db.openDoc(doc.hRaumId, {
+		success: function(Raum) {
+			for (i in Raum) {
+				//ein paar Felder wollen wir nicht
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+					doc[i] = Raum[i];
+				}
+			}
+			$db.openDoc(doc.hProjektId, {
+				success: function(Projekt) {
+					for (i in Projekt) {
+						//ein paar Felder wollen wir nicht
+						if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+							doc[i] = Projekt[i];
+						}
+					}
+					//speichern
+					$db.saveDoc(doc, {
+						success: function(data) {
+							window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
+						},
+						error: function() {
+							melde("Fehler: neuer Ort nicht erstellt");
+						 }
+					});
+				}
+			});
+		}
 	});
 }
 
 function erstelleNeuenRaum(hProjektId) {
 	$db = $.couch.db("evab");
-	var hRaum = {};
-	hRaum.Typ = "hRaum";
-	hRaum.User = User;
-	hRaum.hProjektId = hProjektId;
-	$db.saveDoc(hRaum, {
-		success: function(data) {
-			window.open("../hRaumEdit/" + data.id + "?Status=neu", target="_self");
-		},
-		error: function() {
-			melde("Fehler: neuer Raum nicht erstellt");
-		 }
+	var doc = {};
+	doc.Typ = "hRaum";
+	doc.User = User;
+	doc.hProjektId = hProjektId;
+	//Daten aus höheren Hierarchiestufen ergänzen
+	$db = $.couch.db("evab");
+	$db.openDoc(doc.hProjektId, {
+		success: function(Projekt) {
+			for (i in Projekt) {
+				//ein paar Felder wollen wir nicht
+				if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+					doc[i] = Projekt[i];
+				}
+			}
+			//speichern
+			$db.saveDoc(doc, {
+				success: function(data) {
+					window.open("../hRaumEdit/" + data.id + "?Status=neu", target="_self");
+				},
+				error: function() {
+					melde("Fehler: neuer Raum nicht erstellt");
+				 }
+			});
+		}
 	});
 }
 

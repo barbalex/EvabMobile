@@ -300,25 +300,22 @@
 			document.getElementById("zUhrzeit").focus();
 			return;
 		}
-		var hZeit = {};
-		var docId = "{{id}}";
-		hZeit = $("#hZeitEditForm").serializeObject();
-		hZeit.Typ = "hZeit";
-		hZeit.User = User;
-		hZeit._id = docId;
-		hZeit.hProjektId = "{{hProjektId}}";
-		hZeit.hRaumId = "{{hRaumId}}";
-		hZeit.hOrtId = "{{hOrtId}}";
-		$db.openDoc(docId, {
-			success: function(doc) {
-				hZeit._rev = doc._rev;
+		$db = $.couch.db("evab");
+		//Bestehendes Dokument öffnen
+		$db.openDoc("{{id}}", {
+			success: function(hZeit) {
+				var Formularwerte = {};
+				var docId = "{{id}}";
+				Formularwerte = $("#hZeitEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					hZeit[i] = Formularwerte[i];
+				}
+				//alles speichern
 				$db.saveDoc(hZeit, {
-					success: function() {
-
-					},
 					error: function() {
 						melde("Fehler: Zeit nicht gespeichert");
-					 }
+					}
 				});
 			}
 		});
