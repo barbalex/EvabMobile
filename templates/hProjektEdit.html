@@ -323,7 +323,7 @@
 	//lösche alle einem Projekt zugeordneten Räume
 	function löscheRäumeVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
-		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -346,7 +346,7 @@
 	//lösche alle einem Projekt zugeordneten Orte
 	function löscheOrteVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
-		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -369,7 +369,7 @@
 	//lösche alle einem Projekt zugeordneten Zeiten
 	function löscheZeitenVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
-		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -392,7 +392,7 @@
 	//lösche alle einem Projekt zugeordneten Arten
 	function löscheArtenVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
-		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '", {}]';
+		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -440,7 +440,7 @@
 
 	function speichereProjektfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
-		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -463,7 +463,7 @@
 
 	function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
-		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -486,7 +486,7 @@
 
 	function speichereProjektfeldInOrten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
-		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -509,7 +509,7 @@
 
 	function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
-		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;

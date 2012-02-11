@@ -468,7 +468,7 @@
 	function löscheArtenVonOrt(hOrtId) { 
 		var AnzArtenGelöscht = 0; 
 		var DokumentGelöscht;
-		var viewname = 'evab/hArtIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '", {}]';
+		var viewname = 'evab/hArtIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -493,7 +493,7 @@
 	function löscheZeitenVonOrt(hOrtId) { 
 		var AnzZeitenGelöscht = 0;
 		var DokumentGelöscht;
-		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '", {}]';
+		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -562,7 +562,7 @@
 
 	function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hZeit anpassen
-		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -585,7 +585,7 @@
 
 	function speichereOrtfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
-		var viewname = 'evab/hArtIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+		var viewname = 'evab/hArtIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;

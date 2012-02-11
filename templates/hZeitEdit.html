@@ -280,7 +280,7 @@
 
 	//lösche alle einer Zeit zugeordnete Arten
 	function löscheArtenVonZeit(hZeitId) { 
-		var viewname = 'evab/hArtIdVonZeit?startkey=["' + hZeitId + '"]&endkey=["' + hZeitId + '", {}]';
+		var viewname = 'evab/hArtIdVonZeit?startkey=["' + hZeitId + '"]&endkey=["' + hZeitId + '",{}]';
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -323,7 +323,7 @@
 				$db.saveDoc(hZeit, {
 					success: function() {
 						//geändertes Zeit-Feld in hArt anpassen
-						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 						$db.view(viewname, {
 							success: function(data) {
 								var hArtId;
@@ -380,7 +380,7 @@
 				$db.saveDoc(hZeit, {
 					success: function() {
 						//geändertes Zeit-Feld in hArt anpassen
-						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '", {}]';
+						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
 						$db.view(viewname, {
 							success: function(data) {
 								var i, ArtId;
