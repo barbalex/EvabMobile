@@ -204,7 +204,7 @@
 
 		//Menu aufbauen
 		$("[name='Menu']").bind('click', function() {
-			erstelleMenu(this, User, Pfad);
+			erstelleMenu(this, User);
 		});
 
 		//Karte managen
@@ -673,8 +673,8 @@
 		});
 	}*/
 
-	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-	function erstelleMenu(thiz, User, Pfad){
+	//Menü aufbauen
+	function erstelleMenu(thiz, User){
 		//Code um Menü aufzubauen
 		$(thiz).simpledialog({
 			'mode' : 'bool',
@@ -682,49 +682,49 @@
 			'fullHTML': 'true',
 	    	'buttons' : {
 			 	'einfacher Modus': {
-			      	click: function () {
-			        	window.open(Pfad + "BeobListe.html", target="_self");
+			      	click: function() {
+			        	window.open("../../BeobListe.html", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "check"
 	      		},
 	      		'neu anmelden': {
-			      	click: function () {
-			        	window.open(Pfad + "index.html?Status=neu", target="_self");
+			      	click: function() {
+			        	window.open("../../index.html?Status=neu", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "home"
 	      		},
 	      		'meine Einstellungen': {
-			      	click: function () {
-			        	öffneMeineEinstellungen(User, Pfad);
+			      	click: function() {
+			        	öffneMeineEinstellungen(User, "../../");
 	        		},
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
 	      		'lokal installieren': {
-			      	click: function () {
-			        	window.open(Pfad + "Installieren.html", target="_self");
+			      	click: function() {
+			        	window.open("../../Installieren.html", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
-	      		'Beobachtungen<br>exportieren': {
-			      	click: function () {
-			        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+	      		'Orte exportieren': {
+			      	click: function() {
+			        	window.open('../../_list/ExportOrt/ExportOrt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
 	        		},
 	        		theme: "a",
 	        		icon: "arrow-r"
 	      		},
 	      		'Felder verwalten': {
-			      	click: function () {
-			        	window.open(Pfad + "FeldListe.html?zurueck=hOrtEdit/" + "{{id}}", target="_self");
+			      	click: function() {
+			        	window.open("../../FeldListe.html?zurueck=hOrtEdit/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "grid"
 	      		},
 	      		'schliessen': {
-	                click: function () { return true; },
+	                click: function() { return true; },
 	                icon: "back",
 	                theme: "c"
 	            }

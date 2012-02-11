@@ -3,7 +3,7 @@ function(head, req) {
 	start({
 		"headers": {
 			"Content-Type": "text/csv",
-			"Content-disposition": "attachment;filename=MeineHierarchischenBeobachtungen.csv",
+			"Content-disposition": "attachment;filename=EvabMobile_Projekte",
 			"Accept-Charset": "utf-8"
 	    }
 	});
@@ -98,4 +98,3 @@ function(head, req) {
 		send(Datenzeile);
 	}
 }
-
