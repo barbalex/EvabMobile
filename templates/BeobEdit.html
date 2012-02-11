@@ -192,7 +192,6 @@
 				var Feldjson = $("[name='" + Feldname + "']").serializeObject();
 				var Feldwert = Feldjson[Feldname];
 				speichern(Feldname, Feldwert);
-				//speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Slider-Felder erst bei mouseup speichern
@@ -204,7 +203,6 @@
 				var Feldjson = $("[name='" + Feldname + "']").serializeObject();
 				var Feldwert = Feldjson[Feldname];
 				speichern(Feldname, Feldwert);
-				//speichern("../../", "BeobEditNichtAufrufen");
 			});
 
 			//Änderungen im Formular für Anhänge speichern
@@ -464,7 +462,7 @@
 		      		},
 		      		'Beobachtungen<br>exportieren': {
 				      	click: function () {
-				        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '", {}, {}, {}, {}, {}]&endkey=["' + User + '"]&descending=true');
+				        	window.open(Pfad + '_list/BeobExport/ArtListeExport?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
 		        		},
 		        		theme: "a",
 		        		icon: "arrow-r"
@@ -564,6 +562,26 @@
 						melde("Fehler: Beobachtung nicht gespeichert");
 					}
 				});
+			}
+		});
+	}
+
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelleBeobEdit(ID, aArtGruppe, User)
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
+		var Beob = {};
+		Beob = $("#BeobEditForm").serializeObject();
+		Beob.Typ = "Beobachtung";
+		Beob.User = User;
+		Beob.aArtGruppe = aArtGruppe;
+		Beob.aArtName = aArtName;
+		Beob.aArtId = aArtId;
+		$db.openDoc(docId, {
+			success: function(doc) {
+				Beob._id = docId;
+				Beob._rev = doc._rev;
+				$db.saveDoc(Beob);
 			}
 		});
 	}

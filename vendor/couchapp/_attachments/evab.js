@@ -678,7 +678,7 @@ function erstelleBeobEdit(ID, aArtGruppe, User) {
 						$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern("../../", "BeobEditNichtAufrufen", "KeineMeldung");
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");

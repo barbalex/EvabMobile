@@ -15,7 +15,7 @@ function(head, req) {
 	var FeldNamenEnthalten = [];
 	var Titelzeile;
 	var Titellänge;
-	var Datensatz, Datensatz;
+	var Datensatz;
 	var Datensätze = [];
 	var Datenzeile;
 	var Datenzeilenlänge;
@@ -47,7 +47,7 @@ function(head, req) {
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User') {
+			if (name !== '_id' && name !== 'User' && name !== '_attachments') {
 				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
@@ -76,7 +76,7 @@ function(head, req) {
 		FeldNamenEnthalten = [];
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User') {
+			if (name !== '_id' && name !== 'User' && name !== '_attachments') {
 				FeldNamenEnthalten.push(name);
 			}
 		}
