@@ -196,7 +196,7 @@ function speichereNeueBeob_02(Von, doc) {
 			for (i in Zeit) {
 				//FeldName = i, Feldwert = Zeit[i]
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 					doc[i] = Zeit[i];
 				}
 			}
@@ -204,7 +204,7 @@ function speichereNeueBeob_02(Von, doc) {
 				success: function(Ort) {
 					for (i in Ort) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 							doc[i] = Ort[i];
 						}
 					}
@@ -212,7 +212,7 @@ function speichereNeueBeob_02(Von, doc) {
 						success: function(Raum) {
 							for (i in Raum) {
 								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 									doc[i] = Raum[i];
 								}
 							}
@@ -220,7 +220,7 @@ function speichereNeueBeob_02(Von, doc) {
 								success: function(Projekt) {
 									for (i in Projekt) {
 										//ein paar Felder wollen wir nicht
-										if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+										if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
 											doc[i] = Projekt[i];
 										}
 									}
@@ -383,7 +383,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 		success: function(Ort) {
 			for (i in Ort) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 					doc[i] = Ort[i];
 				}
 			}
@@ -391,7 +391,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 				success: function(Raum) {
 					for (i in Raum) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 							doc[i] = Raum[i];
 						}
 					}
@@ -399,7 +399,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 						success: function(Projekt) {
 							for (i in Projekt) {
 								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+								if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
 									doc[i] = Projekt[i];
 								}
 							}
@@ -432,7 +432,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 		success: function(Raum) {
 			for (i in Raum) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
 					doc[i] = Raum[i];
 				}
 			}
@@ -440,7 +440,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 				success: function(Projekt) {
 					for (i in Projekt) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
 							doc[i] = Projekt[i];
 						}
 					}
@@ -471,7 +471,7 @@ function erstelleNeuenRaum(hProjektId) {
 		success: function(Projekt) {
 			for (i in Projekt) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
 					doc[i] = Projekt[i];
 				}
 			}

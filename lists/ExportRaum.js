@@ -47,7 +47,7 @@ function(head, req) {
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_attachments') {
+			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
 				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
@@ -60,7 +60,12 @@ function(head, req) {
 	//Titelzeile erstellen
 	Titelzeile = '"';
 	for (i in FeldNamen) {
-		Titelzeile += FeldNamen[i] + '"\t"';
+		//_attachments zu Anhänge umbenennen
+		if (FeldNamen[i] === "_attachments") {
+			Titelzeile += '"Anhänge\t"';
+		} else {
+			Titelzeile += FeldNamen[i] + '"\t"';
+		}
 	}
 
 	//letztes t abschneiden, mit n ersetzen
@@ -76,7 +81,7 @@ function(head, req) {
 		FeldNamenEnthalten = [];
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_attachments') {
+			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
 				FeldNamenEnthalten.push(name);
 			}
 		}
@@ -85,9 +90,22 @@ function(head, req) {
 		//sonst leeren Wert
 		Datenzeile = '"';
 		for (z in FeldNamen) {
-			FeldName = FeldNamen[z];
 			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
-				Datenzeile += eval('Datensatz.' + FeldNamen[z]) + '"\t"';
+				Feld = eval('Datensatz.' + FeldNamen[z]);
+				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
+				if (FeldNamen[z] == "_attachments") {
+					for (x in Feld) {
+						FeldLength = parseInt(Feld[x]['length']);
+						FeldLengthLänge = parseInt(parseInt(FeldLength.length) -3);
+						Datenzeile += x + " (" + Feld[x].content_type + ", " + Math.floor(Feld[x]['length']/1000) + " KB), ";
+					}
+					//letztes Komma und Leerzeichen abschneiden
+					Datenzeilenlänge = (Datenzeile.length -2);
+					Datenzeile = Datenzeile.slice(0, Datenzeilenlänge);
+				} else {
+					Datenzeile += Feld;
+				}
+				Datenzeile += '"\t"';
 			} else {
 				Datenzeile += '"\t"';
 			}

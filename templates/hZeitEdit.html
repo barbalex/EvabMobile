@@ -297,7 +297,6 @@
 	}
 
 	function speichern(Feldname, Feldwert) {
-		var Feldwert = $("#" + Feldname).val();
 		if ($("input#zDatum").val() == "") {
 			melde("Bitte Datum erfassen");
 			document.getElementById("zDatum").focus();
