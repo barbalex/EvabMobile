@@ -21,9 +21,8 @@
     </script>
   	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.util.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js" defer="defer"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -81,7 +80,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		
-		refreshProjListe();
+		erstelleProjektliste();
 
 		speichereLetzteUrl(User);
 
@@ -142,6 +141,51 @@
 		});
 	}
 
+	function erstelleProjektliste() {
+  		$db = $.couch.db("evab");
+		$("#Projekte").empty();
+		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+			success: function(data) {
+				var i;
+				var anzProj = 0;
+				var Proj;
+				var externalPage;
+				var listItem;
+				var ListItemContainer = "";
+				for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+					anzProj += 1;
+				}
+
+				var Titel2 = " Projekte";                //Im Titel der Seite die Anzahl Projekte anzeigen
+				if (anzProj==1){
+					Titel2 = " Projekt";
+				}
+				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
+
+				if (anzProj == 0) {
+					ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink' class='erste'>Erstes Projekt erfassen</a></li>";
+				} else {
+					for(i in data.rows) {               //Liste aufbauen
+						Proj = data.rows[i].value;
+						key = data.rows[i].key;
+						pName = key[1];
+						externalPage = "_show/hProjektEdit/" + Proj._id;
+						listItem = "<li id=\"" + Proj._id + "\" class=\"Projekt\">";
+						listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
+						listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
+						ListItemContainer += listItem;
+					}
+				}
+				$("#Projekte").html(ListItemContainer);
+				$("#Projekte").listview("refresh");
+			}
+		});
+	}
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
 	//Menü aufbauen
 	function erstelleMenu(thiz, User){
 		//Code um Menü aufzubauen
@@ -199,48 +243,6 @@
 	            }
 	    	}
 	  	})
-	}
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-  	function refreshProjListe() {
-  		$db = $.couch.db("evab");
-		$("#Projekte").empty();
-		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
-			success: function(data) {
-				var i;
-				var anzProj = 0;
-				var Proj;
-				var externalPage;
-				var listItem;
-				var ListItemContainer = "";
-				for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-					anzProj += 1;
-				}
-
-				var Titel2 = " Projekte";                //Im Titel der Seite die Anzahl Projekte anzeigen
-				if (anzProj==1){
-					Titel2 = " Projekt";
-				}
-				$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
-
-				if (anzProj == 0) {
-					ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink' class='erste'>Erstes Projekt erfassen</a></li>";
-				} else {
-					for(i in data.rows) {               //Liste aufbauen
-						Proj = data.rows[i].value;
-						key = data.rows[i].key;
-						pName = key[1];
-						externalPage = "_show/hProjektEdit/" + Proj._id;
-						listItem = "<li id=\"" + Proj._id + "\" class=\"Projekt\">";
-						listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
-						listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-						ListItemContainer += listItem;
-					}
-				}
-				$("#Projekte").html(ListItemContainer);
-				$("#Projekte").listview("refresh");
-			}
-		});
 	}
   </script>
 </html>
