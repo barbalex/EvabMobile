@@ -88,7 +88,7 @@
 		
 		prüfeAnmeldung(Pfad);
 		
-		refreshRaumListe();
+		erstelleRaumListe();
 
 		speichereLetzteUrl(User);
 
@@ -219,7 +219,7 @@
 	}
   </script>
   <script type="text/javascript" charset="utf-8">	
-  	function refreshRaumListe() {
+  	function erstelleRaumListe() {
 		$("#Räume").empty();
 		var hProjektId = "{{id}}";
 		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + hProjektId + '"]&endkey=["' + User + '", "' + hProjektId + '" ,{}]', {

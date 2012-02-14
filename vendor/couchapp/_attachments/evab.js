@@ -311,60 +311,6 @@ function erstelleMenuFürFelder(thiz, Pfad) {
   	})
 }
 
-//BeobListe in BeobList.html vollständig neu aufbauen. Wird aufgerufen von: BeobListe.html, BeobEdit.html
-//Pfad muss mitgegeben werden, weil sonst beim Aufruf von BeobEdit der Pfad zu den Bildern nicht klappt...
-function aktualisiereBeobListe(Pfad, User) {
-	$("#beobachtungen").empty();
-	$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-		success: function(data) {
-			var i;
-			var anzBeob = 0;
-			var beob;
-			var ListItemContainer = "";
-			for(i in data.rows) {                    //Beobachtungen zählen
-				anzBeob += 1;
-			}
-
-			var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
-			if (anzBeob == 1) {
-				Titel2 = " Beobachtung";
-			}
-			$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
-
-			if (anzBeob == 0) {
-				ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
-			} else {
-				//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
-				for(i in data.rows) {                //Liste aufbauen
-					beob = data.rows[i].value;
-					key = data.rows[i].key;
-					var Datum = beob.zDatum;
-					var Zeit = beob.zUhrzeit;
-					var ArtGruppe = beob.aArtGruppe;
-					var ImageLink = Pfad + "Artgruppenbilder/" + ArtGruppe + ".png";
-					var ArtName = beob.aArtName;
-					var externalPage = "_show/BeobEdit/" + beob._id;
-					ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-					ListItemContainer += beob._id;
-					ListItemContainer += "\"><a href=\"",
-					ListItemContainer += externalPage;
-					ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
-					ListItemContainer += ImageLink;
-					ListItemContainer += "\" /><h3 class=\"aArtName\">";
-					ListItemContainer += ArtName;
-					ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-					ListItemContainer += Datum;
-					ListItemContainer += "&nbsp; &nbsp;";
-					ListItemContainer += Zeit;
-					ListItemContainer += "<\/p><\/a> <\/li>";
-				}
-			}
-			$("#beobachtungen").html(ListItemContainer);
-			$("#beobachtungen").listview("refresh");
-		}
-	});
-}
-
 function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html

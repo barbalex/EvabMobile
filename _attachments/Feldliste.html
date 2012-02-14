@@ -80,14 +80,10 @@
 				var externalPage;
 				var ListItemContainer = "";
 
-				var anzFelder = 0;            //Im Titel der Seite die Anzahl Beobachtungen anzeigen
-				for(i in data.rows) {                    //Felder zählen
-					anzFelder += 1;
-				}
-				$("#FeldListePageHeader .FeldListePageTitel").text(anzFelder + " Felder");
-
-				for(i in data.rows) {                 //Liste aufbauen
+				var anzFelder = 0;            
+				for(i in data.rows) {                 
 					Feld = data.rows[i].value;
+					//Liste aufbauen
 					//Nur eigene Felder und offizielle
 					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
 						var Hierarchiestufe = Feld.Hierarchiestufe;
@@ -105,8 +101,12 @@
 							"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
 							"<p>" + FeldBeschreibung + "</p>"
 							"<\/a><\/li>";
+						//Felder zählen
+						anzFelder += 1;
 					}
 				}
+				//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+				$("#FeldListePageHeader .FeldListePageTitel").text(anzFelder + " Felder");
 				$("#FeldListe").html(ListItemContainer);
 				$("#FeldListe").listview("refresh");
 			}

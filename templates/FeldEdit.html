@@ -65,6 +65,8 @@
 				}
 				$(".FeldEditHeaderTitel").text("{{Hierarchiestufe}}" + ": " + "{{FeldBeschriftung}}");
 
+				erstelleSelectFeldFolgtNach();
+
 				$db.openDoc("{{id}}", {
 					success: function(Feld) {
 						//ArtGruppen nur in der Hierarchiestufe Art anzeigen
@@ -176,6 +178,10 @@
 						    }
 						});*/
 					}
+				});
+
+				$("#FeldEditForm").on("change", "#FeldFolgtNach", function(event) {
+					setzeReihenfolgeMitVorgänger(this.value)
 				});
 
 				$("#Standardwert").bind("change", function() {
@@ -382,7 +388,6 @@
 			}
 
 			function speichereFeldeigenschaften() {
-				$db = $.couch.db("evab");
 				var Feld = $("#FeldEditForm").serializeObject();
 				//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 				if (Feld.Optionen) {
@@ -417,6 +422,7 @@
 				if (Feld.Formularelement === "textinput" && !Feld.InputTyp) {
 					Feld.InputTyp = "text";
 				}
+				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
 					success: function(doc) {
 						Feld._rev = doc._rev;
@@ -542,6 +548,7 @@
 
 			function löscheFeld(Pfad) {
 				var docId = "{{id}}";
+				$db = $.couch.db("evab");
 				$db.openDoc(docId, {
 					success: function(document) {
 						$db.removeDoc(document, {
@@ -582,6 +589,7 @@
 		//nächstes des letzten => melden
 		//erwartet die ID des aktuellen Datensatzes
 		function geheZumNächstenFeld(User, IdAktuell) {
+			$db = $.couch.db("evab");
 			$db.view('evab/FeldListe', {
 				success: function(data) {
 					var i, y;
@@ -631,6 +639,7 @@
 		//voriges des ersten => FeldListe
 		//erwartet die ID des aktuellen Datensatzes
 		function geheZumVorigenFeld(User, IdAktuell) {
+			$db = $.couch.db("evab");
 			$db.view('evab/FeldListe', {
 				success: function(data) {
 					var i, y;
@@ -661,6 +670,7 @@
 										} else {
 											if (y == 1) {
 												//am ersten Feld angelangt und es ist kein eigenes
+												//wir gehen zur Feldliste
 												geheZurück();
 											}
 										}
@@ -677,6 +687,48 @@
 			});
 		}
 
+		//empfängt den Feldnamen des gewählten Vorgängers
+		//ermittelt dessen Reihenfolge
+		//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
+		//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
+		function setzeReihenfolgeMitVorgänger(FeldNameVorgaenger) {
+			$db = $.couch.db("evab");
+			var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
+			$db.view(viewname, {
+				success: function(data) {
+					var ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
+					$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
+					speichereFeldeigenschaften();
+				}
+			});
+		}
+
+		function erstelleSelectFeldFolgtNach() {
+			//generiert den html-Inhalt für Selectmenus
+			//wird von erstelle_hArtEdit aufgerufen
+			//Nur bei eigenen Feldern anzeigen
+			if ("{{User}}" !== "ZentrenBdKt") {
+				$db.view("evab/FeldListe", {
+					success: function(data) {
+						var i;
+						var Feld; 
+						var Optionen = [];
+						Optionen.push("");
+						for(i in data.rows) {                 
+							Feld = data.rows[i].value;
+							//Liste aufbauen
+							//Nur eigene Felder und offizielle
+							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								Optionen.push(Feld.FeldName);
+							}
+						}
+						HtmlContainer = generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
+						$("#FeldFolgtNachDiv").html(HtmlContainer).trigger("create").trigger("refresh");
+					}
+				});
+			}
+		}
+
 		function geheZurück() {
 			var zurueck = get_url_param("zurueck");
 			if (zurueck.slice(0, 6) == "Felder") {
@@ -687,6 +739,8 @@
 				window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 			}
 		}
+
+		
 		</script>
   		<div data-role="header" data-position="fixed" id="FeldEditHeader">
   			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
@@ -749,6 +803,7 @@
 					<label for="Reihenfolge">Reihenfolge:</label>
 					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" value="{{Reihenfolge}}" placeholder="erforderlich"/>
 				</div>
+				<div id="FeldFolgtNachDiv"></div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
 					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text" value="{{FeldNameEvab}}" />
