@@ -3,7 +3,7 @@ function(head, req) {
 	start({
 		"headers": {
 			"Content-Type": "text/csv",
-			"Content-disposition": "attachment;filename=EvabMobile_Orte",
+			"Content-disposition": "attachment;filename=EvabMobile_Orte.csv",
 			"Accept-Charset": "utf-8"
 	    }
 	});
