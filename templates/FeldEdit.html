@@ -34,10 +34,12 @@
   	<div data-role="page" id="FeldEditPage">
   		<script type="text/javascript">
 			//$(document).ready(function(){
+			//$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
+			$(document).delegate("#FeldEditPage", "pagecreate", function() {
 			//$(document).bind("pageInit", function(){
 			//$("#FeldEditPage").bind("pageInit", function(){
-			jQuery("div:jqmData(role='page'):last").bind('pageInit', function() {
-				
+			//jQuery("div:jqmData(role='page'):last").bind('pageInit', function() {
+
 				var Pfad = "../../";
 				User = "";
 				UserFeldDocId = 0;
@@ -48,7 +50,7 @@
 				
 				setzeSichtbarImModusEinfachUndHierarchisch(User);
 
-				alert("Feldname = " + "{{FeldName}}");
+				//alert("Feldname = " + "{{FeldName}}");
 
 				if ("{{FeldName}}") {
 					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
@@ -625,8 +627,8 @@
 										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
 											//das ist das nächste eigene Feld > öffnen
 											FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
-											//window.open(FeldIdNächstes, target="_self");
-											$.mobile.changePage(FeldIdNächstes);
+											window.open(FeldIdNächstes, target="_self");
+											//$.mobile.changePage(FeldIdNächstes);
 										} else {
 											if (y == AnzFelder) {
 												//am letzten Feld angelangt und es ist kein eigenes
@@ -675,8 +677,8 @@
 										if (Feld.User == User || Feld.User == "ZentrenBdKt") {
 											//das ist das nächstvorherige eigene Feld > öffnen
 											FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
-											//window.open(FeldIdVoriges, target="_self");
-											$.mobile.changePage(FeldIdVoriges);
+											window.open(FeldIdVoriges, target="_self");
+											//$.mobile.changePage(FeldIdVoriges);
 										} else {
 											if (y == 1) {
 												//am ersten Feld angelangt und es ist kein eigenes
