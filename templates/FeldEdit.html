@@ -398,69 +398,67 @@
 			}
 
 			function speichereFeldeigenschaften() {
-				var Feld = $("#FeldEditForm").serializeObject();
-				//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
-				if (Feld.Optionen) {
-					Feld.Optionen = Feld.Optionen.split(",");
-				}
-				/*if (Feld.ArtGruppe) {
-					Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
-				}*/
-				Feld.Typ = "Feld";
-				Feld.User = User;
-				Feld._id = "{{id}}";
-				
-				//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
-				if (!Feld.FeldBeschriftung && Feld.Hierarchiestufe && Feld.FeldName) {
-					Feld.FeldBeschriftung = Feld.FeldName;
-				}
-				//Es braucht eine Reihenfolge
-				if (!Feld.Reihenfolge && Feld.Hierarchiestufe && Feld.FeldName) {
-					Feld.Reihenfolge = 1;
-				}
-				//Es braucht einen Feldtyp
-				if (!Feld.Formularelement && Feld.Hierarchiestufe && Feld.FeldName) {
-					Feld.Formularelement = "textinput";
-					Feld.InputTyp = "text";
-				}
-				//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
-				if (Feld.Formularelement !== "textinput" && Feld.InputTyp) {
-					delete Feld.InputTyp;
-					$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
-				}
-				//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
-				if (Feld.Formularelement === "textinput" && !Feld.InputTyp) {
-					Feld.InputTyp = "text";
-				}
 				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
-					success: function(doc) {
-						Feld._rev = doc._rev;
-						Feld.SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
-						Feld.SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
+					success: function(Feld) {
+						var Formularfelder = $("#FeldEditForm").serializeObject();
+						//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+						if (Formularfelder.Optionen) {
+							Formularfelder.Optionen = Formularfelder.Optionen.split(",");
+						}
+						/*if (Feld.ArtGruppe) {
+							Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
+						}*/
+						//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+						if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+							Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
+						}
+						//Es braucht eine Reihenfolge
+						if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+							Formularfelder.Reihenfolge = 1;
+						}
+						//Es braucht einen Feldtyp
+						if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+							Formularfelder.Formularelement = "textinput";
+							Formularfelder.InputTyp = "text";
+						}
+						//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+						if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
+							delete Formularfelder.InputTyp;
+							$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
+						}
+						//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+						if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
+							Formularfelder.InputTyp = "text";
+						}
 						//Standardwert managen
 						//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 						//darum manuell für diesen User updaten
 						var StandardwertUserImFormular = $("#Standardwert").val();
-						if (doc.Standardwert) {
-							Feld.Standardwert = doc.Standardwert;
+						if (Feld.Standardwert) {
+							Formularfelder.Standardwert = Feld.Standardwert;
 							if (StandardwertUserImFormular != "") {
 								//neuen Standardwert setzen
-								Feld.Standardwert[User] = StandardwertUserImFormular;
+								Formularfelder.Standardwert[User] = StandardwertUserImFormular;
 							} else {
 								//Standardwert ist leer
-								if (eval("Feld.Standardwert." + User)) {
+								if (eval("Formularfelder.Standardwert." + User)) {
 									//bisherigen Standardwert löschen
-									delete Feld.Standardwert[User];
+									delete Formularfelder.Standardwert[User];
 								}
 							}
 						} else {
 							//Bisher gab es gar keinen Standardwert
 							if (StandardwertUserImFormular != "") {
 								//Objekt für Standardwert schaffen und neuen Wert setzen
-								Feld.Standardwert = {};
-								Feld.Standardwert[User] = StandardwertUserImFormular;
+								Formularfelder.Standardwert = {};
+								Formularfelder.Standardwert[User] = StandardwertUserImFormular;
 							}
+						}
+						//Formularfelder in Dokument schreiben
+						for (i in Formularfelder) {
+							//WAS PASSIERT MIT LEEREN BZW. GELÖSCHTEN FELDERN?
+							Feld[i] = Formularfelder[i];
 						}
 						$db.saveDoc(Feld, {
 							success: function() {
