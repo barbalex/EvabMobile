@@ -83,8 +83,6 @@
   </body>
     <script type="text/javascript">
 		$(document).ready(function() {
-
-			$db = $.couch.db("evab");
 			
 			User = "";
 
@@ -141,6 +139,7 @@
 			Userr.Typ = "User";
 			Userr.UserName = "{{UserName}}";
 			Userr._id = "{{id}}";
+			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(doc) {
 					Userr._rev = doc._rev;

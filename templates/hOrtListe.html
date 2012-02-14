@@ -83,10 +83,7 @@
   </body>
 
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady()
-	{
-		$db = $.couch.db("evab");
-		
+	function handleDocumentReady() {
 		var Pfad = "../../";
 		User = "";
 		
@@ -226,6 +223,7 @@
   	function refreshOrtListe() {
 		$("#Orte").empty();
 		var hRaumId = "{{id}}";
+		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + hRaumId + '"]&endkey=["' + User + '", "' + hRaumId + '" ,{}]', {
 			success: function(data) {
 				var i;

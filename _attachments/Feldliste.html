@@ -58,7 +58,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
 		
 		userCtx = null;
 		User = "";
@@ -72,6 +71,7 @@
 		
 		//FeldListe aufbauen
 		//$("#FeldListe").empty();
+		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
 			success: function(data) {
 				var i;                      //prüfen, ob alle benutzt

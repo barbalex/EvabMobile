@@ -125,7 +125,6 @@
 
 	<script type="text/javascript">
 		function handleDocumentReady() {
-			$db = $.couch.db("evab");
 			
 			var Pfad = "";
 			User = "";
@@ -171,7 +170,8 @@
 				//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 				//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 				//wenn nein: direkt die Artenliste aufrufen
-				var viewname = 'evab/Artgruppen?key="' + "{{aArtGruppe}}" + '"'; 
+				var viewname = 'evab/Artgruppen?key="' + "{{aArtGruppe}}" + '"';
+				$db = $.couch.db("evab");
 				$db.view(viewname, {
 					success: function(data) {
 						var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
@@ -399,6 +399,7 @@
 			$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 				event.preventDefault();
 				var Dateiname = this.id;
+				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
 					success: function(Beob) {
 						delete Beob._attachments[Dateiname];
@@ -501,6 +502,7 @@
 		
 		function löscheBeobachtung(event) {
 			// First open doc based on ID in order to get full document
+			$db = $.couch.db("evab");
 			$db.openDoc(docId, {
 				success: function(document) {
 					// Then use the opened doc as reference to remove
@@ -575,6 +577,7 @@
 		Beob.aArtGruppe = aArtGruppe;
 		Beob.aArtName = aArtName;
 		Beob.aArtId = aArtId;
+		$db = $.couch.db("evab");
 		$db.openDoc(docId, {
 			success: function(doc) {
 				Beob._id = docId;
@@ -614,6 +617,7 @@
 	//nächste der letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
+		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 			success: function(data) {
 				var i;

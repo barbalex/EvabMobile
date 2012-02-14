@@ -109,8 +109,6 @@
   
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-  		$db = $.couch.db("evab");
-
 		var Pfad = "../../";
 		User = "";
 		
@@ -349,6 +347,7 @@
 		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
+			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Beob) {
 					delete Beob._attachments[Dateiname];
@@ -436,6 +435,7 @@
 					Rückmeldung += "\rzugehörige Zeiten gelöscht";
 				}
 				// First open doc based on ID in order to get full document
+				$db = $.couch.db("evab");
 				return $db.openDoc(hOrtId, {
 					success: function(document) {
 						// lösche Ort
@@ -468,6 +468,7 @@
 		var AnzArtenGelöscht = 0; 
 		var DokumentGelöscht;
 		var viewname = 'evab/hArtIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -493,6 +494,7 @@
 		var AnzZeitenGelöscht = 0;
 		var DokumentGelöscht;
 		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -519,6 +521,7 @@
 		var hOrtId = "{{id}}";
 		var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + hOrtId + '"';
 		var AnzahlZeiten = 0;
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -562,6 +565,7 @@
 	function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hZeit anpassen
 		var viewname = 'evab/hZeitIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -585,6 +589,7 @@
 	function speichereOrtfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hArtIdVonOrt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -736,6 +741,7 @@
 	//nächster des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
+		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + "{{hRaumId}}" + '"]&endkey=["' + User + '", "' + "{{hRaumId}}" + '" ,{}]', {
 			success: function(data) {
 				var i;

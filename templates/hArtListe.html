@@ -69,8 +69,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
-		
 		var Pfad = "../../";
 		User = "";
 		
@@ -208,6 +206,7 @@
   	function refreshArtListe() {
 		$("#Arten").empty();
 		var hZeitId = "{{id}}";
+		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + User + '", "' + hZeitId + '"]&endkey=["' + User + '", "' + hZeitId + '" ,{}]', {
 			success: function(data) {
 				var i;

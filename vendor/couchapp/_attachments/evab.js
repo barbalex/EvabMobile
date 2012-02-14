@@ -160,7 +160,6 @@ function speichereNeueBeob(Pfad, UserName, aArtGruppe, aArtBezeichnung, ArtId, V
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
-	$db = $.couch.db("evab");
 	var doc = {};
 	doc.User = UserName;
 	doc.aArtGruppe = aArtGruppe;
@@ -264,6 +263,7 @@ function speichereNeueBeob_03(Von, doc) {
 //Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
 //erwartet Von = von welchem Formular aufgerufen wurde
 function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, ArtId, Von) {
+$db = $.couch.db("evab");
 $db.openDoc(BeobId, {
 		success: function(Beob) {
 			if (aArtGruppe) {
@@ -406,7 +406,6 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 }
 
 function erstelleNeuenRaum(hProjektId) {
-	$db = $.couch.db("evab");
 	var doc = {};
 	doc.Typ = "hRaum";
 	doc.User = User;
@@ -438,6 +437,7 @@ function erstelleNeuesProjekt(Pfad) {
 	var hProjekt = {};
 	hProjekt.Typ = "hProjekt";
 	hProjekt.User = User;
+	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
 			window.open(Pfad + "hProjektEdit/" + data.id + "?Status=neu", target="_self");
@@ -449,6 +449,7 @@ function erstelleNeuesProjekt(Pfad) {
 }
 
 function öffneMeineEinstellungen(User, Pfad) {
+	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			UserId = data.rows[0].value._id;
@@ -458,6 +459,7 @@ function öffneMeineEinstellungen(User, Pfad) {
 }
 
 function löscheDokument(DocId) {
+	$db = $.couch.db("evab");
 	return $db.openDoc(DocId, {
 		success: function(document) {
 			$db.removeDoc(document, {
@@ -1219,6 +1221,7 @@ function speichereLetzteUrl(User) {
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
 	var url = window.location.pathname + window.location.search;
+	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			var UserId = data.rows[0].value._id;
@@ -1568,6 +1571,7 @@ function erstelleKarteFürProjektliste(User) {
 //setzt ein passendes Formular mit den feldern _rev und _attachments voraus
 //wird benutzt von: BeobEdit.html
 function speichereAnhänge(id) {
+	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function(data) {
 			$("#_rev").val(data._rev);
@@ -1591,6 +1595,7 @@ function speichereAnhänge(id) {
 //wird benutzt von allen Beobachtungs-Edit-Formularen
 //Status wird benötigt, weil .trigger create nur beim ersten mal funktioniert
 function erstelleAttachments(id) {
+	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function(doc) {
 			var attachments = doc._attachments;
@@ -1619,7 +1624,6 @@ function erstelleAttachments(id) {
 //kreiert ein neues Feld
 //erwartet den Teil des Pfads, der links von FeldEdit ist
 function neuesFeld(User, Pfad) {
-	$db = $.couch.db("evab");
 	var Feld = {};
 	Feld.Typ = "Feld";
 	Feld.User = User;
@@ -1628,6 +1632,7 @@ function neuesFeld(User, Pfad) {
 	//gleich sichtbar stellen
 	Feld.SichtbarImModusEinfach.push(User);
 	Feld.SichtbarImModusHierarchisch.push(User);
+	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function(data) {
 			var id = data.id;

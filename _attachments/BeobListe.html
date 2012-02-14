@@ -73,7 +73,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
 		
 		var Pfad = "";
 		User = "";
@@ -95,6 +94,7 @@
 
 		$('#BeobListeMap').bind("pagecreate", function() {
 			//Karte aufbauen. Zuerst Beobachtungen abfragen
+			$db = $.couch.db("evab");
 			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
 				success: function(data) {
 					var i;
@@ -301,6 +301,7 @@
 	//BeobListe in BeobList.html vollständig neu aufbauen
 	function erstelleBeobListe(User) {
 		$("#beobachtungen").empty();
+		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 			success: function(data) {
 				var i;

@@ -92,8 +92,6 @@
   
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-  		$db = $.couch.db("evab");
-
 		var Pfad = "../../";
 		User = "";
 		
@@ -198,6 +196,7 @@
 		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
+			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Beob) {
 					delete Beob._attachments[Dateiname];
@@ -251,6 +250,7 @@
 		} else {
 			Rückmeldung = "zugehörige Arten gelöscht";
 			// First open doc based on ID in order to get full document
+			$db = $.couch.db("evab");
 			$db.openDoc(hZeitId, {
 				success: function(document) {
 					// Then use the opened doc as reference to remove
@@ -280,6 +280,7 @@
 	//lösche alle einer Zeit zugeordnete Arten
 	function löscheArtenVonZeit(hZeitId) { 
 		var viewname = 'evab/hArtIdVonZeit?startkey=["' + hZeitId + '"]&endkey=["' + hZeitId + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -471,6 +472,7 @@
 	//nächste der letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
+		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + User + '", "' + "{{hOrtId}}" + '"]&endkey=["' + User + '", "' + "{{hOrtId}}" + '" ,{}]', {
 			success: function(data) {
 				var i;

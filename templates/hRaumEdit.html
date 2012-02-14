@@ -96,8 +96,6 @@
   
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-  		$db = $.couch.db("evab");
-
 		var Pfad = "../../";
 		User = "";
 		
@@ -208,6 +206,7 @@
 		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
+			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Beob) {
 					delete Beob._attachments[Dateiname];
@@ -269,7 +268,7 @@
 					return false;
 				} else {
 					Rückmeldung += "\rzugehörige Orte gelöscht";
-					// First open doc based on ID in order to get full document
+					$db = $.couch.db("evab");
 					return $db.openDoc(RaumId, {
 						success: function(document) {
 							// lösche Raum
@@ -303,6 +302,7 @@
 	function löscheOrteVonRaum(RaumId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -326,6 +326,7 @@
 	function löscheZeitenVonRaum(RaumId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -349,6 +350,7 @@
 	function löscheArtenVonRaum(RaumId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -401,6 +403,7 @@
 	function speichereRaumfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hArtIdVonRaum?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -424,6 +427,7 @@
 	function speichereRaumfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hZeitIdVonRaum?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -447,6 +451,7 @@
 	function speichereRaumfeldInOrten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hOrtIdVonRaum?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -530,6 +535,7 @@
 	//nächster des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
+		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + "{{hProjektId}}" + '"]&endkey=["' + User + '", "' + "{{hProjektId}}" + '" ,{}]', {
 			success: function(data) {
 				var i;

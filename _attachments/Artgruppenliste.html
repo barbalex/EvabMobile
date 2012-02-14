@@ -51,7 +51,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
 		
 		UserId = "";
 		var User = get_url_param("User");
@@ -98,6 +97,7 @@
 		$("#ButtonSprache").bind("click", function(event) {       
 			event.preventDefault();
 			var ButtonText = this.text;
+			$db = $.couch.db("evab");
 			$db.openDoc(UserId, {
 				success: function(doc) {
 					if (ButtonText.slice(0, 3) == "Deu") {
@@ -130,6 +130,7 @@
 		var User = get_url_param("User");
 		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/User?key="' + User + '"'; 
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var ButtonSpracheText;
@@ -180,6 +181,7 @@
 		var AnzArten;
 		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				ArtGruppen = data;
@@ -215,6 +217,7 @@
 		var AnzArten;
 		var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 		var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				ArtGruppen = data;
@@ -249,6 +252,7 @@
 		var ArtGruppen;
 		var AnzArten;
 		var viewname = "evab/Artgruppen";
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				ArtGruppen = data;
@@ -289,6 +293,7 @@
 		var ArtGruppen;
 		var AnzArten;
 		var viewname = "evab/Artgruppen";
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				ArtGruppen = data;

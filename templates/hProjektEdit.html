@@ -93,8 +93,6 @@
   
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-  		$db = $.couch.db("evab");
-
 		var Pfad = "../../";
 		User = "";
 		
@@ -198,6 +196,7 @@
 		$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 			event.preventDefault();
 			var Dateiname = this.id;
+			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Beob) {
 					delete Beob._attachments[Dateiname];
@@ -265,7 +264,7 @@
 						return false;
 					} else {
 						Rückmeldung += "\rzugehörige Räume gelöscht";
-						// First open doc based on ID in order to get full document
+						$db = $.couch.db("evab");
 						return $db.openDoc(ProjektId, {
 							success: function(document) {
 								// lösche Projekt
@@ -301,6 +300,7 @@
 	function löscheRäumeVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -324,6 +324,7 @@
 	function löscheOrteVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -347,6 +348,7 @@
 	function löscheZeitenVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -370,6 +372,7 @@
 	function löscheArtenVonProjekt(ProjektId) { 
 		var DokumentGelöscht;
 		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+		$db = $.couch.db("evab");
 		return $db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -418,6 +421,7 @@
 	function speichereProjektfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -441,6 +445,7 @@
 	function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -464,6 +469,7 @@
 	function speichereProjektfeldInOrten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -487,6 +493,7 @@
 	function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var hArtId;
@@ -570,6 +577,7 @@
 	//nächstes des letzten => melden
 	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 	function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
+		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
 			success: function(data) {
 				var i;

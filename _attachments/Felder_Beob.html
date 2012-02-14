@@ -27,7 +27,6 @@
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
     <script type="text/javascript">
 		$(document).ready(function(){
-			$db = $.couch.db("evab");
 			
 			var Pfad = "";
 			User = "";
@@ -41,6 +40,7 @@
 			$("#Feldliste").on("change", "input[name='Felder']", function() {
 				var FeldName = $(this).prop("id");
 				var FeldId = $(this).attr("feldid");
+				$db = $.couch.db("evab");
 				$db.openDoc(FeldId, {
 					success: function(Feld) {
 						var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];

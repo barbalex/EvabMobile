@@ -53,7 +53,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
 		UserId = "";
 		var User = get_url_param("User");
 		var ArtGruppe = get_url_param("aArtGruppe");
@@ -85,6 +84,7 @@
 		$("#ButtonSprache").bind("click", function(event) {       
 			event.preventDefault();
 			var ButtonText = this.text;
+			$db = $.couch.db("evab");
 			$db.openDoc(UserId, {
 				success: function(doc) {
 					if (ButtonText.slice(0, 3) == "Deu") {
@@ -133,7 +133,8 @@
   <script type="text/javascript" charset="utf-8">	
   	function erstelleArtenliste() {
   		var User = get_url_param("User");
-	  	var viewname = 'evab/User?key="' + User + '"'; 
+	  	var viewname = 'evab/User?key="' + User + '"';
+	  	$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				for(i in data.rows) {
@@ -166,6 +167,7 @@
 		} else {
 			viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
 		}
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var i;
@@ -206,6 +208,7 @@
 		} else {
 			viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
 		}
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				var i;

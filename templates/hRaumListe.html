@@ -81,8 +81,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
-		
 		var Pfad = "../../";
 		User = "";
 		
@@ -222,6 +220,7 @@
   	function erstelleRaumListe() {
 		$("#Räume").empty();
 		var hProjektId = "{{id}}";
+		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + User + '", "' + hProjektId + '"]&endkey=["' + User + '", "' + hProjektId + '" ,{}]', {
 			success: function(data) {
 				var i;

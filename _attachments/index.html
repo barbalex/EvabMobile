@@ -58,7 +58,6 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$db = $.couch.db("evab");
 		/*if (!("autofocus" in document.createElement("input"))) {                   hat null Wirkung!
 	      document.getElementById("UserName").focus();
 	    }*/
@@ -128,6 +127,7 @@
 
 	function öffneZuletztBenutzteSeite(User) {
 		//_replicate(name, pass);
+		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + User + '"', {
 			success: function(data) {
 				var doc = data.rows[0].value;
