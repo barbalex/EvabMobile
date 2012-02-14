@@ -1,5 +1,5 @@
 function(doc) {
-	if(doc.Typ == 'hOrt' && doc.hRaumId && doc.User && doc.oName){
+	if(doc.Typ == 'hOrt' && doc.hRaumId && doc.User){
 		emit ([doc.User, doc.hRaumId, doc.oName], doc);
 	}
 }

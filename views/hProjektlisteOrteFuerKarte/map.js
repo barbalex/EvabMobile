@@ -1,5 +1,5 @@
 function(doc) {
-	if(doc.Typ == 'hOrt' && doc.oLongitudeDecDeg && doc.oLatitudeDecDeg && doc.oName){
+	if(doc.Typ == 'hOrt' && doc.oLongitudeDecDeg && doc.oLatitudeDecDeg){
 		emit (doc.User, null);
 	}
 }
