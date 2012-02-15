@@ -486,12 +486,19 @@
 	        		theme: "a",
 	        		icon: "check"
 	      		},
-	      		'neu anmelden': {
+	      		'Felder verwalten': {
 			      	click: function() {
-			        	window.open("../../index.html?Status=neu", target="_self");
+			        	window.open("../../FeldListe.html?zurueck=hRaumEdit/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "home"
+	        		icon: "grid"
+	      		},
+	      		'Räume exportieren': {
+			      	click: function() {
+			        	window.open('../../_list/ExportRaum/ExportRaum?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+	        		},
+	        		theme: "a",
+	        		icon: "arrow-r"
 	      		},
 	      		'meine Einstellungen': {
 			      	click: function() {
@@ -507,19 +514,12 @@
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
-	      		'Räume exportieren': {
+	      		'neu anmelden': {
 			      	click: function() {
-			        	window.open('../../_list/ExportRaum/ExportRaum?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+			        	window.open("../../index.html?Status=neu", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "arrow-r"
-	      		},
-	      		'Felder verwalten': {
-			      	click: function() {
-			        	window.open("../../FeldListe.html?zurueck=hRaumEdit/" + "{{id}}", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "grid"
+	        		icon: "home"
 	      		},
 	      		'schliessen': {
 	                click: function() { return true; },

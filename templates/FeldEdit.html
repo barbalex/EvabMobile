@@ -33,70 +33,15 @@
   <body>
   	<div data-role="page" id="FeldEditPage">
   		<script type="text/javascript">
-			//$(document).ready(function(){
-			//$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
-			$(document).delegate("#FeldEditPage", "pagecreate", function() {
-			//$(document).bind("pageInit", function(){
-			//$("#FeldEditPage").bind("pageInit", function(){
-			//jQuery("div:jqmData(role='page'):last").bind('pageInit', function() {
-
+			//$(document).ready(function() {  //wird erst nach pagebeforeshow aufgerufen! darum pagebeforecreate verwenden
+			//$(document).delegate("#FeldEditPage", "pageInit", function() {     //wird auch nach pagebeforeshow aufgerufen
+			$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
+			
 				var Pfad = "../../";
 				User = "";
-				UserFeldDocId = 0;
 			
 				prüfeAnmeldung(Pfad);
-
-				speichereLetzteUrl(User);
-				
-				setzeSichtbarImModusEinfachUndHierarchisch(User);
-
-				//alert("Feldname = " + "{{FeldName}}");
-
-				if ("{{FeldName}}") {
-					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
-					if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
-						$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
-						$("#Standardwert").attr("disabled", true);
-					} else if ("{{FeldName}}" == "aAutor") {
-						$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
-						$("#Standardwert").attr("disabled", true);
-					} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
-						$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
-						$("#Standardwert").attr("disabled", true);
-					} else if (["zDatum", "zUhrzeit"].indexOf("{{FeldName}}") > -1) {
-						$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
-						$("#Standardwert").attr("disabled", true);
-					}
-				}
-				$(".FeldEditHeaderTitel").text("{{Hierarchiestufe}}" + ": " + "{{FeldBeschriftung}}");
-
 				erstelleSelectFeldFolgtNach();
-
-				$db = $.couch.db("evab");
-				$db.openDoc("{{id}}", {
-					success: function(Feld) {
-						//ArtGruppen nur in der Hierarchiestufe Art anzeigen
-						if ("{{Hierarchiestufe}}" === "Art") {
-							ArtGruppeAufbauen(Feld.ArtGruppe);
-						}
-						//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
-						//darum hier auslesen und setzen
-						if (Feld.Standardwert) {
-							var Standardwert = eval("Feld.Standardwert." + User);
-							if (Standardwert) {
-								$("#Standardwert").val(Standardwert);
-							}
-						}
-					}
-				});
-				
-				//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
-				$("input[name='Hierarchiestufe']").checkboxradio();
-				$("#{{Hierarchiestufe}}").prop("checked",true).checkboxradio("refresh");
-				$("input[name='Formularelement']").checkboxradio();
-				$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
-				$("input[name='InputTyp']").checkboxradio();
-				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
@@ -150,11 +95,11 @@
 							prüfeFeldNamen(User);
 						}
 					} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
-						speichereFeldeigenschaften();
+						speichereFeldeigenschaften(User);
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauen();
 					} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
-						speichereFeldeigenschaften();
+						speichereFeldeigenschaften(User);
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
@@ -166,7 +111,7 @@
 							}
 						});
 					} else {
-						speichereFeldeigenschaften();
+						speichereFeldeigenschaften(User);
 						/*$("#UserFeldForm").validate({      //funktioniert gar nicht!
 							debug: true,
 							onsubmit: false,
@@ -188,7 +133,7 @@
 				});
 
 				$("#FeldEditForm").on("change", "#FeldFolgtNach", function(event) {
-					setzeReihenfolgeMitVorgänger(this.value)
+					setzeReihenfolgeMitVorgänger(User, this.value)
 				});
 
 				$("#Standardwert").bind("change", function() {
@@ -214,7 +159,7 @@
 										}
 									}
 									//alle Werte sind Optionen
-									speichereFeldeigenschaften();
+									speichereStandardwert(User);
 								} else {
 									//Feld ist toggleswitch, selectmenu oder radio. Array darf nur ein Element enthalten
 									if (StandardwertOptionen.length > 1) {
@@ -232,14 +177,14 @@
 											}
 										}
 										//alle Werte sind Optionen
-										speichereFeldeigenschaften();
+										speichereStandardwert(User);
 									}
 								}
 							}
 						});
 					} else {
 						//Feld Optionen ist leer. Alle Werte akzeptieren
-						speichereFeldeigenschaften();
+						speichereStandardwert(User);
 					}
 				});
 
@@ -331,13 +276,63 @@
 					geheZumVorigenFeld(User, "{{id}}");
 				});
 			});
+
+			//$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
+			//$(document).delegate("#FeldEditPage", "pagecreate", function() {
+			//$(document).bind("pageInit", function(){
+			//$("#FeldEditPage").bind("pageInit", function(){
+			//jQuery("div:jqmData(role='page'):last").bind('pageInit', function() {
+			//$(document).live("pagebeforeshow", function(){
+			$(document).delegate("#FeldEditPage", "pagebeforeshow", function() {
+
+				//alert("Feldname = " + "{{FeldName}}" + ", pagebeforeshow läuft");
+
+				speichereLetzteUrl(User);
+				
+				//Sichtbarkeit in Modi Hierarchisch und einfach setzen
+				//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+				//und allfälligen Standardwert anzeigen
+				//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
+				setzeSichtbarInModiUndArtgruppeUndStandardwert(User);
+
+				if ("{{FeldName}}") {
+					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+					if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
+						$("#Standardwert").attr("disabled", true);
+					} else if ("{{FeldName}}" == "aAutor") {
+						$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+						$("#Standardwert").attr("disabled", true);
+					} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
+						$("#Standardwert").attr("disabled", true);
+					} else if (["zDatum", "zUhrzeit"].indexOf("{{FeldName}}") > -1) {
+						$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
+						$("#Standardwert").attr("disabled", true);
+					}
+				}
+				$(".FeldEditHeaderTitel").text("{{Hierarchiestufe}}" + ": " + "{{FeldBeschriftung}}");
+				
+				//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
+				$("input[name='Hierarchiestufe']").checkboxradio();
+				$("#{{Hierarchiestufe}}").prop("checked",true).checkboxradio("refresh");
+				$("input[name='Formularelement']").checkboxradio();
+				$("#{{Formularelement}}").prop("checked",true).checkboxradio("refresh");
+				$("input[name='InputTyp']").checkboxradio();
+				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
+
+				
+			});
 		</script>
 		<script type="text/javascript">
-			function setzeSichtbarImModusEinfachUndHierarchisch(User){
-				//setzt den korrekten Wert im Feld SichtbarImModusHierarchisch
+			function setzeSichtbarInModiUndArtgruppeUndStandardwert(User){
+				//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
+				//könnte man sich diese Abfrage ersparen!
+				//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
 				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
 					success: function(Feld) {
+						//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
 						var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
 						var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
 						//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
@@ -356,6 +351,21 @@
 						}
 						$("select#SichtbarImModusEinfach").slider();
 						$("select#SichtbarImModusEinfach").slider("refresh");
+						
+						//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+						if ("{{Hierarchiestufe}}" === "Art") {
+							ArtGruppeAufbauen(Feld.ArtGruppe);
+						}
+						
+						//allfälligen Standardwert anzeigen
+						//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+						//darum hier auslesen und setzen
+						if (Feld.Standardwert) {
+							var Standardwert = eval("Feld.Standardwert." + User);
+							if (Standardwert) {
+								$("#Standardwert").val(Standardwert);
+							}
+						}
 					}
 				});
 			}
@@ -384,93 +394,15 @@
 									//Feldname ist bei diesem User neu, somit zulässig > speichern
 									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 									speichereSichtbarModusHierarchisch(User, "ja"); 
-									speichereFeldeigenschaften();
+									speichereFeldeigenschaften(User);
 								}
 							} else {
 								//Feldname ist neu, somit zulässig > speichern
 								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 								speichereSichtbarModusHierarchisch(User, "ja"); 
-								speichereFeldeigenschaften();
+								speichereFeldeigenschaften(User);
 							}
 						}
-					}
-				});
-			}
-
-			function speichereFeldeigenschaften() {
-				$db = $.couch.db("evab");
-				$db.openDoc("{{id}}", {
-					success: function(Feld) {
-						var Formularfelder = $("#FeldEditForm").serializeObject();
-						//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
-						if (Formularfelder.Optionen) {
-							Formularfelder.Optionen = Formularfelder.Optionen.split(",");
-						}
-						/*if (Feld.ArtGruppe) {
-							Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
-						}*/
-						//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
-						if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-							Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
-						}
-						//Es braucht eine Reihenfolge
-						if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-							Formularfelder.Reihenfolge = 1;
-						}
-						//Es braucht einen Feldtyp
-						if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-							Formularfelder.Formularelement = "textinput";
-							Formularfelder.InputTyp = "text";
-						}
-						//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
-						if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
-							delete Formularfelder.InputTyp;
-							$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
-						}
-						//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
-						if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
-							Formularfelder.InputTyp = "text";
-						}
-						//Standardwert managen
-						//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
-						//darum manuell für diesen User updaten
-						var StandardwertUserImFormular = $("#Standardwert").val();
-						if (Feld.Standardwert) {
-							Formularfelder.Standardwert = Feld.Standardwert;
-							if (StandardwertUserImFormular != "") {
-								//neuen Standardwert setzen
-								Formularfelder.Standardwert[User] = StandardwertUserImFormular;
-							} else {
-								//Standardwert ist leer
-								if (eval("Formularfelder.Standardwert." + User)) {
-									//bisherigen Standardwert löschen
-									delete Formularfelder.Standardwert[User];
-								}
-							}
-						} else {
-							//Bisher gab es gar keinen Standardwert
-							if (StandardwertUserImFormular != "") {
-								//Objekt für Standardwert schaffen und neuen Wert setzen
-								Formularfelder.Standardwert = {};
-								Formularfelder.Standardwert[User] = StandardwertUserImFormular;
-							}
-						}
-						//Formularfelder in Dokument schreiben
-						for (i in Formularfelder) {
-							//WAS PASSIERT MIT LEEREN BZW. GELÖSCHTEN FELDERN?
-							Feld[i] = Formularfelder[i];
-						}
-						$db.saveDoc(Feld, {
-							success: function() {
-								//melde("Feld gespeichert");
-							},
-							error: function() {
-								melde("Fehler: Feld nicht gespeichert");
-							}
-						});
-					},
-					error: function() {
-						melde("Fehler: Feld nicht gespeichert");
 					}
 				});
 			}
@@ -701,14 +633,14 @@
 		//ermittelt dessen Reihenfolge
 		//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 		//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
-		function setzeReihenfolgeMitVorgänger(FeldNameVorgaenger) {
+		function setzeReihenfolgeMitVorgänger(User, FeldNameVorgaenger) {
 			$db = $.couch.db("evab");
 			var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
 			$db.view(viewname, {
 				success: function(data) {
 					var ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
 					$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
-					speichereFeldeigenschaften();
+					speichereFeldeigenschaften(User);
 				}
 			});
 		}
@@ -749,6 +681,106 @@
 			} else {
 				window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
 			}
+		}
+
+		function speichereStandardwert(User) {
+			$db = $.couch.db("evab");
+			$db.openDoc("{{id}}", {
+				success: function(Feld) {
+					//Standardwert managen
+					//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+					//darum manuell für diesen User updaten
+					var StandardwertUserImFormular = $("#Standardwert").val();
+					if (Feld.Standardwert) {
+						if (StandardwertUserImFormular != "") {
+							//neuen Standardwert setzen
+							Feld.Standardwert[User] = StandardwertUserImFormular;
+						} else {
+							//Standardwert ist leer
+							if (eval("Feld.Standardwert." + User)) {
+								//bisherigen Standardwert löschen
+								delete Feld.Standardwert[User];
+							}
+						}
+					} else {
+						//Bisher gab es noch keinen Standardwert
+						if (StandardwertUserImFormular != "") {
+							//Objekt für Standardwert schaffen und neuen Wert setzen
+							Feld.Standardwert = {};
+							Feld.Standardwert[User] = StandardwertUserImFormular;
+						}
+					}
+					$db.saveDoc(Feld, {
+						success: function() {
+							//melde("Feld gespeichert");
+						},
+						error: function() {
+							melde("Fehler: Feld nicht gespeichert");
+						}
+					});
+				},
+				error: function() {
+					melde("Fehler: Feld nicht gespeichert");
+				}
+			});
+		}
+
+		function speichereFeldeigenschaften(User) {
+			$db = $.couch.db("evab");
+			$db.openDoc("{{id}}", {
+				success: function(Feld) {
+					var Formularfelder = $("#FeldEditForm").serializeObjectNull();
+					//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+					if (Formularfelder.Optionen) {
+						Formularfelder.Optionen = Formularfelder.Optionen.split(",");
+					}
+					/*if (Feld.ArtGruppe) {
+						Feld.ArtGruppe = Feld.ArtGruppe.split(", ");
+					}*/
+					//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
+					}
+					//Es braucht eine Reihenfolge
+					if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Reihenfolge = 1;
+					}
+					//Es braucht einen Feldtyp
+					if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Formularelement = "textinput";
+						Formularfelder.InputTyp = "text";
+					}
+					//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+					if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
+						delete Formularfelder.InputTyp;
+						$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
+					}
+					//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+					if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
+						Formularfelder.InputTyp = "text";
+					}
+					//Formularfelder in Dokument schreiben
+					for (i in Formularfelder) {
+						if (Formularfelder[i]) {	
+							Feld[i] = Formularfelder[i];
+						} else {
+							//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
+							delete Feld[i];
+						}
+					}
+					$db.saveDoc(Feld, {
+						success: function() {
+							//melde("Feld gespeichert");
+						},
+						error: function() {
+							melde("Fehler: Feld nicht gespeichert");
+						}
+					});
+				},
+				error: function() {
+					melde("Fehler: Feld nicht gespeichert");
+				}
+			});
 		}
 
 		

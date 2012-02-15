@@ -438,12 +438,19 @@
 		        		theme: "a",
 		        		icon: "check"
 		      		},
-				 	'neu anmelden': {
+		      		'Felder verwalten': {
 				      	click: function() {
-				        	window.open("../../index.html?Status=neu", target="_self");
+				        	window.open("../../FeldListe.html?zurueck=BeobEdit/" + "{{id}}", target="_self");
 		        		},
 		        		theme: "a",
-		        		icon: "home"
+		        		icon: "grid"
+		      		},
+		      		'Beobachtungen<br>exportieren': {
+				      	click: function() {
+				        	window.open('../../_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+		        		},
+		        		theme: "a",
+		        		icon: "arrow-r"
 		      		},
 		      		'meine Einstellungen': {
 				      	click: function() {
@@ -459,19 +466,12 @@
 		        		theme: "a",
 		        		icon: "gear"
 		      		},
-		      		'Beobachtungen<br>exportieren': {
+				 	'neu anmelden': {
 				      	click: function() {
-				        	window.open('../../_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+				        	window.open("../../index.html?Status=neu", target="_self");
 		        		},
 		        		theme: "a",
-		        		icon: "arrow-r"
-		      		},
-		      		'Felder verwalten': {
-				      	click: function() {
-				        	window.open("../../FeldListe.html?zurueck=BeobEdit/" + "{{id}}", target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "grid"
+		        		icon: "home"
 		      		},
 		      		'schliessen': {
 		                click: function() { return true; },

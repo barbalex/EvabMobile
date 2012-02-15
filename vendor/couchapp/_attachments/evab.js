@@ -1142,6 +1142,32 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
         });
         return o;
     };
+    //friendly helper http://tinyurl.com/6aow6yn
+    //Läuft durch alle Felder im Formular
+    //Feldname und Wert aller Felder werden ins Objekt geschrieben
+    //so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
+    //siehe Beispiel in FeldEdit.html
+    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+    $.fn.serializeObjectNull = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value);
+            } else {
+            	//verhindern, dass Nummern in Strings verwandelt werden
+            	if (this.value > -999999999 && this.value < 999999999) {
+            		o[this.name] = parseInt(this.value);
+            	} else {
+                	o[this.name] = this.value;
+                }
+            }
+        });
+        return o;
+    };
 })(jQuery);
 
 //Codeausführung für Anzahl Millisekunden unterbrechen
@@ -1224,16 +1250,17 @@ function speichereLetzteUrl(User) {
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
-			var UserId = data.rows[0].value._id;
-			$db.openDoc(UserId, {
-				success: function(doc) {
-					//nur speichern, wenn anders als zuletzt
-					if (doc.LetzteUrl != url) {	
+			var LetzteUrl = data.rows[0].value.LetzteUrl;
+			//nur speichern, wenn anders als zuletzt
+			if (LetzteUrl != url) {
+				var UserId = data.rows[0].value._id;
+				$db.openDoc(UserId, {
+					success: function(doc) {
 						doc.LetzteUrl = url;
 						$db.saveDoc(doc);
 					}
-				}
-			});
+				});
+			}
 		}
 	});
 }

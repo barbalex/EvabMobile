@@ -635,48 +635,6 @@
 		});
 	}
 
-	/*function speichern(Meldung, Feldname, Feldwert) {
-		$db = $.couch.db("evab");
-		//Bestehendes Dokument öffnen
-		$db.openDoc("{{id}}", {
-			success: function(hOrt) {
-				var Formularwerte = {};
-				var docId = "{{id}}";
-				Formularwerte = $("#hOrtEditForm").serializeObject();
-				//Werte aus dem Formular aktualisieren
-				for (i in Formularwerte) {
-					hOrt[i] = Formularwerte[i];
-				}
-				//Längen- und Breitengrad sind in keinem Feld dargestellt
-				//sie müssen aus ihren Variabeln gespeichert werden
-				if (oLatitudeDecDeg && oLatitudeDecDeg != "" && oLongitudeDecDeg && oLongitudeDecDeg != "") {
-					hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
-					hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
-				}
-				//Verhindern, dass Infotext gespeichert wird, wenn User den Ort 
-				//vor Bendigung von GetGeolocation verlässt und während der Verortung
-				//gespeichert hat
-				if ($("input#oXKoord").val() == "Position ermitteln...") {
-					delete hOrt.oXKoord;
-					delete hOrt.oYKoord;
-					delete hOrt.oLagegenauigkeit;
-					delete hOrt.oObergrenzeHöhe;
-				}
-				//alles speichern
-				$db.saveDoc(hOrt, {
-					success: function() {
-						if (Meldung && Meldung != "KeineMeldung") {
-							melde(Meldung);
-						}
-					},
-					error: function() {
-						melde("Fehler: Ort nicht gespeichert");
-					}
-				});
-			}
-		});
-	}*/
-
 	//Menü aufbauen
 	function erstelleMenu(thiz, User){
 		//Code um Menü aufzubauen
@@ -692,12 +650,19 @@
 	        		theme: "a",
 	        		icon: "check"
 	      		},
-	      		'neu anmelden': {
+	      		'Felder verwalten': {
 			      	click: function() {
-			        	window.open("../../index.html?Status=neu", target="_self");
+			        	window.open("../../FeldListe.html?zurueck=hOrtEdit/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "home"
+	        		icon: "grid"
+	      		},
+	      		'Orte exportieren': {
+			      	click: function() {
+			        	window.open('../../_list/ExportOrt/ExportOrt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+	        		},
+	        		theme: "a",
+	        		icon: "arrow-r"
 	      		},
 	      		'meine Einstellungen': {
 			      	click: function() {
@@ -713,19 +678,12 @@
 	        		theme: "a",
 	        		icon: "gear"
 	      		},
-	      		'Orte exportieren': {
+	      		'neu anmelden': {
 			      	click: function() {
-			        	window.open('../../_list/ExportOrt/ExportOrt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+			        	window.open("../../index.html?Status=neu", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "arrow-r"
-	      		},
-	      		'Felder verwalten': {
-			      	click: function() {
-			        	window.open("../../FeldListe.html?zurueck=hOrtEdit/" + "{{id}}", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "grid"
+	        		icon: "home"
 	      		},
 	      		'schliessen': {
 	                click: function() { return true; },
