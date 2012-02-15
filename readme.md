@@ -98,7 +98,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
-- Die Anmeldung entfällt, wenn das alte Cookie noch existiert (wird künftig noch verbessert)
+- Die Anmeldung entfällt, wenn das alte Cookie noch existiert (dessen Lebensdauer wird künftig noch verbessert)
 
 **Über Daten und App verfügen:**
 
