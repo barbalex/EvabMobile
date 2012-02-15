@@ -10,8 +10,9 @@ Gängige Fehlerquellen:
 - Die Schrift ist unleserlich
 
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
-Gängige Fehlerquellen:  
+Gängige Probleme:  
 
+- Die Daten werden gar nie digitalisiert
 - Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
