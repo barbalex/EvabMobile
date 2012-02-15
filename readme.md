@@ -47,8 +47,9 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 
 #Ziele für Hobby-ArtbeobachterInnen
-1. Beobachtungen übersichtlich dokumentieren 
-2. Mit den Daten zum Schutz seltener Arten beitragen
+1. Beobachtungen übersichtlich dokumentieren
+2. und zwar sofort und ohne nachträgliche Büroarbeit
+3. Mit den Daten zum Schutz seltener Arten beitragen
 
 
 #Was kann man momentan mit der App machen?
