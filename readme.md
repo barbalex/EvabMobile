@@ -118,7 +118,6 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Artgruppe vorwählen (z.B. für Flora-Aufnahmen, beschleunigt die Arbeit)
-  - Zusätzliche Hierarchie, wo Ort und Zeit getauscht sind. Hier könnten sehr gut Lebensräume kartiert werden. Dazu müssten auf Luftbild/Karte Flächen digitalisiert weden können... (träum weiter)
 - Tempo erhöhen
 
 Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
@@ -127,6 +126,7 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 - Nützliche Layer überlagern (z.B. Schutzgebiete)
 - Mit Linien und Flächen verorten
 - Umriss zeichnen, um darin enthaltene Beobachtungen aufzulisten
+- Zusätzliche Hierarchie, wo Ort und Zeit getauscht sind. Hier könnten sehr gut Lebensräume kartiert werden. Dazu müssten auf Luftbild/Karte Flächen digitalisiert weden können... (träum weiter)
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
