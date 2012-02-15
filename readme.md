@@ -126,7 +126,7 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 - Nützliche Layer überlagern (z.B. Schutzgebiete)
 - Mit Linien und Flächen verorten
 - Umriss zeichnen, um darin enthaltene Beobachtungen aufzulisten
-- Zusätzliche Hierarchie, wo Ort und Zeit getauscht sind. Hier könnten sehr gut Lebensräume kartiert werden. Dazu müssten auf Luftbild/Karte Flächen digitalisiert weden können... (träum weiter)
+- Zusätzliche Hierarchie, wo Ort und Zeit getauscht sind. Wäre ideal um Lebensräume zu kartieren. Dazu müssten auf Luftbild/Karte Flächen digitalisiert weden können... (träum weiter)
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
