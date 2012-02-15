@@ -7,6 +7,7 @@ Gängige Fehlerquellen:
 - Arten sind nicht eindeutig bezeichnet
 - Daten sind unvollständig oder nicht gemäss den Vorgaben des Projekts erfasst
 - Der Ort ist nicht eindeutig, ungenau oder gar falsch (Koordinaten falsch ausgelesen)
+- Die Schrift ist unleserlich
 
 Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall nach wenigen Stunden durch dieselbe Person. Im schlechtesten Fall durch eine andere Person ohne direkten Kontakt zur FeldbeobachterIn. 
 Gängige Fehlerquellen:  
