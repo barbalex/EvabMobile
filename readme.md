@@ -13,7 +13,7 @@ Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall
 Gängige Probleme:  
 
 - Die Daten werden gar nie digitalisiert
-- Falsche Interpretation nicht oder nicht eindeutig erfasster Informationen (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
+- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
