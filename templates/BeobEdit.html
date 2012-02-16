@@ -154,13 +154,28 @@
 					});	
 				});
 
+				//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
+				oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
+				oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
+
 				//Für jedes Feld bei Änderung speichern
 				$("#BeobEditForm").on("change", ".speichern", function() {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					var Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					//speichern(Feldname, Feldwert);
+					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
+						//Wenn Koordinaten und beide erfasst 
+						//zuerst Längen- und Breitengrade berechnen
+						oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
+						oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
+						$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
+						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
+						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val());
+					} else {
+						speichern(Feldname, Feldwert);
+					}
 				});
 
 				//Slider-Felder erst bei mouseup speichern
@@ -183,7 +198,8 @@
 				});
 				
 				$("#zeigeKarte").tap(function(event) {
-					$.mobile.changePage("#BeobEditMap", "slide", false, false);
+					$.mobile.changePage("#BeobEditMap");
+					erstelleKarte();
 				});
 
 				$("#GetGeolocationButton").tap(function(){
@@ -246,29 +262,12 @@
 						}
 					});
 				});
-			});
-			//Code, der bei jedem Aufruf laufen soll (swipen)
-			$(document).delegate("#BeobEditPage", "pagebeforeshow", function() {
-				erstelleBeobEdit("{{id}}", "{{aArtGruppe}}", User);
-
-				speichereLetzteUrl(User);
-
-				refreshArtGruppe("{{aArtGruppe}}");
-				refreshArtName("{{aArtName}}");
-				
-				aArtGruppe = "{{aArtGruppe}}";
-				aArtName = "{{aArtName}}";
-				aArtId = "{{aArtId}}";
-				
-				//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
-				oLongitudeDecDeg = "{{oLongitudeDecDeg}}";
-				oLatitudeDecDeg = "{{oLatitudeDecDeg}}";
 
 				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
 				var markersArray = [];
 				var InfoWindowArray = [];
 
-				$('#BeobEditMap').bind("pagecreate", function() {
+				function erstelleKarte() {
 					var map;
 					var verorted;
 					if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
@@ -337,7 +336,7 @@
 					google.maps.event.addListener(map, 'click', function(event) {
 						placeMarker(event.latLng, map, marker, image, aArtName);
 					});
-				});
+				}
 
 				function placeMarker(location, map, marker, image, aArtName) {
 					//zuerst bisherigen Marker löschen
@@ -398,6 +397,19 @@
 					    }
 					}
 				}
+			});
+			//Code, der bei jedem Aufruf laufen soll (swipen)
+			$(document).delegate("#BeobEditPage", "pagebeforeshow", function() {
+				erstelleBeobEdit("{{id}}", "{{aArtGruppe}}", User);
+
+				speichereLetzteUrl(User);
+
+				refreshArtGruppe("{{aArtGruppe}}");
+				refreshArtName("{{aArtName}}");
+				
+				aArtGruppe = "{{aArtGruppe}}";
+				aArtName = "{{aArtName}}";
+				aArtId = "{{aArtId}}";
 			});
 		</script>
 	</div>
