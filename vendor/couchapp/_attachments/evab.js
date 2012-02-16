@@ -366,6 +366,9 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 	});
 }
 
+//erstellt einen neuen Ort
+//wird aufgerufen von: hOrtEdit.html, hOrtListe.html
+//erwartet User, hProjektId, hRaumId
 function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 	var doc = {};
 	doc.Typ = "hOrt";
@@ -515,7 +518,11 @@ function erstelleBeobEdit(ID, aArtGruppe, User) {
 					erstelleAttachments(ID);
 					//in neuen Datensätzen verorten
 					if (get_url_param("Status") == "neu") {
-						GetGeolocation();
+						//in neuen Datensätzen verorten
+						//aber nur, wenn noch keine Koordinaten drin sind
+						if (!$("#oXKoord").val()) {
+							GetGeolocation();
+						}
 					}
 				}
 			});
@@ -699,7 +706,10 @@ function erstelle_hOrtEdit(ID, User) {
 					erstelleAttachments(ID);
 					if (get_url_param("Status") == "neu") {
 						//in neuen Datensätzen verorten
-						GetGeolocation();
+						//aber nur, wenn noch keine Koordinaten drin sind
+						if (!$("#oXKoord").val()) {
+							GetGeolocation();
+						}
 					}
 				}
 			});
@@ -1178,7 +1188,21 @@ function warte(ms) {
 	while (new Date() < ms){}
 } 
 
-//Position ermitteln
+//Options: retrieve the location every 3 seconds
+watchID = null;
+function GetGeolocation() {
+	//dem Benutzer mitteilen, dass die Position ermittelt wird
+	$("input#oXKoord").val("Position ermitteln...");
+	$("input#oYKoord").val("Position ermitteln...");
+	$("input#oLagegenauigkeit").val("Position ermitteln...");
+	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
+	//nach spätestens 30 Sekunden aufhören zu messen
+	setTimeout("stopGeolocation()", 30000);
+	return watchID;
+}
+
+
+//Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
 	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
 	var oLagegenauigkeit = position.coords.accuracy;
@@ -1208,28 +1232,19 @@ function onGeolocationSuccess(position) {
 	}
 }
 
+//Position ermitteln war nicht erfolgreich
 //onError Callback receives a PositionError object
 function onGeolocationError(error) {
 	melde("Keine Position erhalten" + "\n" + error.message);
 	stopGeolocation();
 }
 
-//Options: retrieve the location every 3 seconds
-watchID = null;
-function GetGeolocation() {
-	$("input#oXKoord").val("Position ermitteln...");
-	$("input#oYKoord").val("Position ermitteln...");
-	$("input#oLagegenauigkeit").val("Position ermitteln...");
-	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
-	//nach spätestens 30 Sekunden aufhören zu messen
-	setTimeout("stopGeolocation()", 30000);
-	return watchID;
-}
-
+//Beendet Ermittlung der Position
 function stopGeolocation() {
     if (watchID != null) {
         navigator.geolocation.clearWatch(watchID);
         watchID = null;
+        //Mitteilungen löschen
         if ($("input#oXKoord").val() == "Position ermitteln...") {
         	$("input#oXKoord").val("");
 			$("input#oYKoord").val("");
