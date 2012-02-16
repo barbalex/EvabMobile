@@ -127,7 +127,17 @@
 			//nötig, damit Arrays richtig kommen
 			var Feldjson = $("[name='" + Feldname + "']").serializeObject();
 			var Feldwert = Feldjson[Feldname];
-			speichern(Feldname, Feldwert);
+			if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
+				//Wenn Koordinaten und beide erfasst 
+				//zuerst Längen- und Breitengrade berechnen
+				oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
+				oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
+				$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
+				$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
+				speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val(), "");
+			} else {
+				speichern(Feldname, Feldwert);
+			}
 		});
 
 		//Slider-Felder erst bei mouseup speichern
@@ -206,7 +216,8 @@
 
 		//Karte managen
 		$("#GeButton").tap(function(event) {
-			$.mobile.changePage("#OrtEditMap", "slide", false, false);
+			$.mobile.changePage("#OrtEditMap");
+			erstelleKarte();
 		});
 
 		$("#GetGeolocationButton").tap(function() {
@@ -217,7 +228,7 @@
 		var markersArray = [];
 		var InfoWindowArray = [];
 
-		$('#OrtEditMap').bind("pagecreate", function() {
+		function erstelleKarte() {
 			var map;
 			var verorted;
 			if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
@@ -271,7 +282,7 @@
 			google.maps.event.addListener(map, 'click', function(event) {
 				placeMarker(event.latLng, map, marker, oName);
 			});
-		});
+		}
 
 		function placeMarker(location, map, marker, oName) {
 			//zuerst bisherigen Marker löschen

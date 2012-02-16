@@ -104,6 +104,7 @@ function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
   return x;
 }
 
+//Wandelt WGS84 in CH-Landeskoordinaten um
 function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
   // Converts degrees dec to sex
   lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
@@ -146,12 +147,59 @@ function DdInChY(Breite, Laenge){
 	return y;
 };
 
+//von CH-Landeskoord zu DecDeg
+
+// Convert CH y/x to WGS lat
+function CHtoWGSlat(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000)/1000000;
+  var x_aux = (x - 200000)/1000000;
+  
+  // Process lat
+  lat = 16.9023892
+       +  3.238272 * x_aux
+       -  0.270978 * Math.pow(y_aux,2)
+       -  0.002528 * Math.pow(x_aux,2)
+       -  0.0447   * Math.pow(y_aux,2) * x_aux
+       -  0.0140   * Math.pow(x_aux,3);
+    
+  // Unit 10000" to 1 " and converts seconds to degrees (dec)
+  lat = lat * 100/36;
+  
+  return lat;
+  
+}
+
+// Convert CH y/x to WGS long
+function CHtoWGSlng(y, x) {
+
+  // Converts militar to civil and  to unit = 1000km
+  // Axiliary values (% Bern)
+  var y_aux = (y - 600000)/1000000;
+  var x_aux = (x - 200000)/1000000;
+  
+  // Process long
+  lng = 2.6779094
+        + 4.728982 * y_aux
+        + 0.791484 * y_aux * x_aux
+        + 0.1306   * y_aux * Math.pow(x_aux,2)
+        - 0.0436   * Math.pow(y_aux,3);
+     
+  // Unit 10000" to 1 " and converts seconds to degrees (dec)
+  lng = lng * 100/36;
+     
+  return lng;
+  
+}
+
 function melde(Meldung) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + Meldung +"</h1></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
-	    .appendTo( $.mobile.pageContainer )
-	    .delay( 2500 )
-	    .fadeOut( 700, function(){
+	    .appendTo($.mobile.pageContainer)
+	    .delay(2500)
+	    .fadeOut(700, function(){
 	    	$(this).remove();
 		});
 };
