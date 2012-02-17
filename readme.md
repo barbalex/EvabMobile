@@ -80,7 +80,7 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 - ...dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert und in Schweizer Landeskoordinaten umgerechnet. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - ...manuell auf Luftbildern von Google. Das Luftbild wird auf die aktuelle Position zentriert
-- ...manuell durch Eingabe von Schweizer Landeskoordinaten. Sie werden in decimal degrees umgewandlet, damit sie vom Gerät für die Darstellung auf Luftbilden ausgelesen werden können
+- ...manuell durch Eingabe von Schweizer Landeskoordinaten. Sie werden - vom Benutzer unbemerkt - in decimal degrees umgewandelt, damit sie vom Gerät für die Darstellung auf Luftbilden ausgelesen werden können
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
 
 **Dokumentieren**
