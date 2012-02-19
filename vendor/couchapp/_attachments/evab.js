@@ -542,6 +542,78 @@ function Manager() {
   }
 }
 
+//generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
+//Mitgeben: id der Art, User, Artgruppe
+function erstelleArtEdit(ID) {
+	$("#ArtEditFormHtml").empty();
+	//holt die Art aus der DB
+	$db = $.couch.db("evab");
+	$db.openDoc(ID, {
+		success: function(Art) {
+			var HtmlContainer = generiereHtmlFuerArtEditForm(Art);
+			//nur anfügen, wenn Felder erstellt wurden
+			if (HtmlContainer != '') {
+				HtmlContainer = "<hr />" + HtmlContainer;
+				$("#ArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+			}
+			$("#Hinweistext").html("");
+		}
+	});
+}
+
+//generiert das Html für das Formular in ArtEdit.html
+//erwartet Art als Objekt
+//der HtmlContainer wird zurück gegeben
+function generiereHtmlFuerArtEditForm(Art) {
+	var HtmlContainer = '';
+	var Titel;
+	var Feldname;
+	var Feldwert;
+	var Datensammlung;
+	for(i in Art) {              
+		if (i.slice(0, 13) == "Datensammlung") {
+			if (Art[i] !== null) {
+				Titel = Art[i].Datensammlung;
+				//collapsible und Liste beginnen
+				if (Titel === "Index") {
+					//der Index soll aufgeklappt sein
+					HtmlContainer += '<div data-role="collapsible" data-collapsed="false"><h3>';
+				} else {
+					HtmlContainer += '<div data-role="collapsible"><h3>';
+				}
+				HtmlContainer += Titel;
+				HtmlContainer += '</h3><ul data-role="listview">';
+				for (y in Art[i]) {
+					if (y !== "Datensammlung") {
+						Feldname = y;
+						Feldwert = Art[i][y];
+						HtmlContainer += generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert);
+					}
+				}
+				//Liste und collapsible beenden
+				HtmlContainer += '</ul></div>';
+			}
+		}
+	}
+	HtmlContainer += '';
+	return HtmlContainer;
+}
+
+//generiert Html für read-only lists für Feldnamen - Feldwerte
+//Erwartet Feldname und Feldwert
+//retourniert Html für eine Zeile
+function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
+	//Liste und ersten Block beginnen
+	var HtmlContainer = '<li><div class="ui-grid-a"><div class="ui-block-a ArteigenschaftFeldname">';
+	HtmlContainer += Feldname;
+	//ersten Block beenden, zweiten beginnen
+	HtmlContainer += ':</div><div class="ui-block-b ArteigenschaftFeldwert">';
+	HtmlContainer += Feldwert;
+	//zweiten Block und Liste beenden
+	HtmlContainer += '</div></div></li>';
+	return HtmlContainer;
+}
+
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Beobachtung, User, Artgruppe
 function erstelleBeobEdit(ID, aArtGruppe, User) {

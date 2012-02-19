@@ -23,7 +23,7 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.validate.js" defer="defer"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/jquery.validate.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js" defer="defer"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
@@ -111,8 +111,8 @@
 							}
 						});
 					} else {
-						speichereFeldeigenschaften(User);
-						/*$("#UserFeldForm").validate({      //funktioniert gar nicht!
+						//speichereFeldeigenschaften(User);
+						/*$("#FeldEditForm").validate({          FUNKTIONIERT NICHT
 							debug: true,
 							onsubmit: false,
 							rules: {
@@ -126,7 +126,7 @@
 								Reihenfolge: "Bitte Reihenfolge erfassen",
 							},
 						    submitHandler: function(form) {
-						        speichereFeldeigenschaften();
+						        speichereFeldeigenschaften(User);
 						    }
 						});*/
 					}
@@ -814,7 +814,7 @@
 			</form>
 				<hr>
 				<h2>Feldeigenschaften</h2>
-			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}" >
+			<form id="FeldEditForm" action="#" method="get" data-identity="{{document}}">
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Hierarchiestufe (erforderlich):</legend>

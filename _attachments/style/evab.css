@@ -56,33 +56,6 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
   font-weight: bold;
 }
 
-/*Diese hier für validate.js*/
-.portrait label.error, .landscape label.error {
-    color: red;
-    font-size: 16px;
-    font-weight: normal;
-    line-height: 1.4;
-    margin-top: 0.5em;
-    width: 100%;
-    float: none;
-}
-
-.landscape label.error { 
-    display: inline-block; 
-    margin-left: 22%; 
-}
-
-.portrait label.error { 
-    margin-left: 0; 
-    display: block; 
-}
-
-em { 
-    color: red; 
-    font-weight: bold; 
-    padding-right: .25em; 
-}
-
 /*Diese hier von main.css übernommen*/
 body {
   font:1em Helvetica, sans-serif;
@@ -167,3 +140,35 @@ div.avatar img {
 input.ui-input-text, textarea.ui-input-text {
   background: #F0F6E8;
 }
+
+/*Diese hier für validate.js*/
+label.error {
+    color: red;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.4;
+    margin-top: 0.5em;
+    width: 100%;
+    float: none;
+}
+
+@media screen and (orientation: portrait){
+    label.error { margin-left: 0; display: block; }
+}
+
+@media screen and (orientation: landscape){
+    label.error { display: inline-block; margin-left: 22%; }
+}
+
+em { color: red; font-weight: bold; padding-right: .25em; }
+
+/*Zweispaltige Listen für Arten formatieren*/
+/*.ui-grid-a .ui-block-a .ArteigenschaftFeldname { width: 25%; }
+.ui-grid-a .ui-block-b .ArteigenschaftFeldwert { width: 75%; }*/
+
+/*.ui-grid-a .ui-block-a { width: 25%; }
+.ui-grid-a .ui-block-b { width: 75%; }*/
+
+
+.ui-grid-a .ArteigenschaftFeldname { width: 35%; }
+.ui-grid-a .ArteigenschaftFeldwert { width: 65%; }

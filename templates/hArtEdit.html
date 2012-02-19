@@ -299,6 +299,13 @@
 	        		theme: "a",
 	        		icon: "check"
 	      		},
+	      		'Arteigenschaften': {
+			      	click: function() {
+			        	window.open("../ArtEdit/" + "{{aArtId}}" + "?zurueck=hArtEdit/" + "{{id}}", target="_self");
+	        		},
+	        		theme: "a",
+	        		icon: "grid"
+	      		},
 	      		'Felder verwalten': {
 			      	click: function() {
 			        	window.open("../../FeldListe.html?zurueck=hArtEdit/" + "{{id}}", target="_self");
@@ -351,16 +358,6 @@
 		'headerFormat': 'YYYY-MM-DD',
 		'monthsOfYear': Monate
 	});
-
-	function refreshArtGruppen(aArtGruppe) {
-		$("select#aArtGruppe").val(aArtGruppe);
-		$("select#aArtGruppe").selectmenu("refresh");
-	}
-	
-	function refreshArtName(aArtName) {
-		$("select#aArtName").val(aArtName);
-		$("select#aArtName").selectmenu("refresh");
-	}
 
 	function löscheBeobachtung(event) {
 		var docId = "{{id}}";
