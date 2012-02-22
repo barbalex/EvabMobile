@@ -160,7 +160,7 @@
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
 		$("#aArtName").bind("click", function(event) {
 			event.preventDefault();
-			zuArtliste(aArtGruppe, "edit", "../../");
+			zuArtliste(aArtGruppe, "edit");
 		});
 
 		//sichtbare Felder wählen
@@ -266,7 +266,7 @@
 		window.open("../../Artgruppenliste.html?User=" + User + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 	}
 
-	function zuArtliste(aArtGruppe, Status, Pfad) {
+	function zuArtliste(aArtGruppe, Status) {
 		//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 		//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 		//wenn nein: direkt die Artenliste aufrufen
@@ -278,7 +278,7 @@
 				if (ArtGruppen_2_L) {
 					window.open("../../Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 				} else {
-					window.open(Pfad + "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&Pfad=" + Pfad + "&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
+					window.open("../../Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + "{{id}}" + "&hProjektId=" + "{{hProjektId}}" + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{hZeitId}}", target="_self");
 				}
 			}
 		});

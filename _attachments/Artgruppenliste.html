@@ -87,6 +87,9 @@
 				case "hArtEdit":
 					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&hProjektId=" + hProjektId + "&hRaumId=" + hRaumId + "&hOrtId=" + hOrtId + "&hZeitId=" + hZeitId;
 					break;
+				case "ArtEdit":
+					link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
+					break;
 			}
 			if (BeobId != "") {
 				link += "&BeobId=" + BeobId;
@@ -144,7 +147,7 @@
 							//Artgruppen werden übergeben, wenn die Art geändert wird, die Artgruppe aber bleiben soll
 							//und die Artgruppe ihre Arten in einer nested list darstellt
 							//sonst wird direkt Artenliste.html aufgerufen
-							erstelleArtgruppenListeFürNestedArtgruppeLat(aArtGruppeÜbergeben);
+							erstelleArtgruppenListeFürNestedArtgruppeLat();
 						} else {
 							erstelleArgruppenListeLat();
 						}
@@ -152,7 +155,7 @@
 					case "Deutsch":
 						$("#ButtonSprache .ui-btn-text").text("Lateinisch");
 						if (aArtGruppeÜbergeben) {
-							erstelleArtgruppenListeFürNestedArtgruppeDeutsch(aArtGruppeÜbergeben);
+							erstelleArtgruppenListeFürNestedArtgruppeDeutsch();
 						} else {
 							erstelleArgruppenListeDeutsch();
 						}
@@ -160,7 +163,7 @@
 					default:
 						$("#ButtonSprache .ui-btn-text").text("Deutsch");
 						if (aArtGruppeÜbergeben) {
-							erstelleArtgruppenListeFürNestedArtgruppeLat(aArtGruppeÜbergeben);
+							erstelleArtgruppenListeFürNestedArtgruppeLat();
 						} else {
 							erstelleArgruppenListeLat();
 						}

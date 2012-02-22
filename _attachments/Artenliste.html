@@ -76,6 +76,9 @@
 			var ArtId = $(this).attr("artid");
 			if (Status == "neu") {
 				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId);
+			} else if (Von == "ArtEdit") {
+				//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
+				window.open("_show/ArtEdit/" + ArtId, target="_self");
 			} else {
 				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
 			}

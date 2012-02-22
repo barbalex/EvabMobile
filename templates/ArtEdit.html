@@ -88,9 +88,43 @@
 			var zurueck = get_url_param('zurueck') || "../BeobListe.html";
 			window.open("../" + zurueck, target="_self");
 		});
+
+		//Artwechsl managen, ausgehend von Artgruppe
+		$("#ArtGruppe").bind("click", function(event) {
+			event.preventDefault();
+			zuArtgruppenliste();
+		});
+
+		//Artwechsel managen, ausgehend von ArtName
+		$("#ArtBezeichnungL").bind("click", function(event) {
+			event.preventDefault();
+			zuArtliste();
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);
+
+	function zuArtgruppenliste() {
+		window.open("../../Artgruppenliste.html?User=" + User + "&Von=ArtEdit", target="_self");
+	}
+
+	function zuArtliste() {
+		//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
+		//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
+		//wenn nein: direkt die Artenliste aufrufen
+		var viewname = 'evab/Artgruppen?key="' + "{{ArtGruppe}}" + '"';
+		$db = $.couch.db("evab");
+		$db.view(viewname, {
+			success: function(data) {
+				var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+				if (ArtGruppen_2_L) {
+					window.open("../../Artgruppenliste.html?User=" + User + "&aArtGruppe=" + "{{ArtGruppe}}" + "&Von=ArtEdit", target="_self");
+				} else {
+					window.open("../../Artenliste.html?User=" + User + "&aArtGruppe=" + "{{ArtGruppe}}" + "&Von=ArtEdit", target="_self");
+				}
+			}
+		});
+	}
 
 	function prüfeAnmeldung(Pfad) {		
 		//User Anmeldung überprüfen
