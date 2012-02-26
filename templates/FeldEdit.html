@@ -139,11 +139,20 @@
 				$("#Standardwert").bind("change", function() {
 					var Optionen = $("#Optionen").val();
 					var Feldwert = this.value;
-					if (Optionen != "") {
+					if (Optionen !== "") {
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
-								var LetzterFeldwert = doc.Standardwert[User];
+								var LetzterFeldwert;
+								if (doc.Standardwert) {
+									if (doc.Standardwert[User]) {
+										LetzterFeldwert = doc.Standardwert[User];
+									} else {
+										LetzterFeldwert = "";
+									}
+								} else {
+									LetzterFeldwert = "";
+								}
 								var Formularelement = doc.Formularelement;
 								//Standardwert in Array verwandeln
 								StandardwertOptionen = Feldwert.split(",");
@@ -160,8 +169,8 @@
 									}
 									//alle Werte sind Optionen
 									speichereStandardwert(User);
-								} else {
-									//Feld ist toggleswitch, selectmenu oder radio. Array darf nur ein Element enthalten
+								} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Formularelement) > -1) {
+									//Array darf nur ein Element enthalten
 									if (StandardwertOptionen.length > 1) {
 										//Array enthält mehrere Optionen, nicht zulässig
 										$("#Standardwert").val(LetzterFeldwert);
@@ -179,6 +188,9 @@
 										//alle Werte sind Optionen
 										speichereStandardwert(User);
 									}
+								} else {
+									//Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
+									speichereStandardwert(User);
 								}
 							}
 						});

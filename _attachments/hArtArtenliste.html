@@ -47,9 +47,15 @@
 
 		var Pfad = "../../";
 		User = "";
-		var ArtGruppe = get_url_param("aArtGruppe");
+		/*var ArtGruppe = get_url_param("aArtGruppe");
 		var Status = get_url_param("Status");
-		var Von = get_url_param("Von");
+		var Von = get_url_param("Von");*/
+
+		var ArtGruppe = get_url_param_this(this, "aArtGruppe");
+		var Status = get_url_param_this(this, "Status");
+		var Von = get_url_param_this(this, "Von");
+
+
 		if (Von == "BeobEdit") {
 			Pfad = "";
 		}

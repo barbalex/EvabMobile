@@ -418,6 +418,29 @@
 		});
 	}
 
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelle_hProjektEdit
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
+		$db = $.couch.db("evab");
+		$db.openDoc("{{id}}", {
+			success: function(hProjekt) {
+				var Formularwerte = {};
+				Formularwerte = $("#hProjektEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					if (Formularwerte[i]) {
+						hProjekt[i] = Formularwerte[i];
+					} else if (hProjekt[i]) {
+						delete hProjekt[i]
+					}
+				}
+				$db.saveDoc(hProjekt);
+			}
+		});
+	}
+
+
 	function speichereProjektfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';

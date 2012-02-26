@@ -413,6 +413,28 @@
 		});
 	}
 
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelle_hArtEdit
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
+		$db = $.couch.db("evab");
+		$db.openDoc("{{id}}", {
+			success: function(hArt) {
+				var Formularwerte = {};
+				Formularwerte = $("#hArtEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					if (Formularwerte[i]) {
+						hArt[i] = Formularwerte[i];
+					} else if (hArt[i]) {
+						delete hArt[i]
+					}
+				}
+				$db.saveDoc(hArt);
+			}
+		});
+	}
+
 	//Öffnet die vorige oder nächste Art
 	//vorige der ersten => ArtListe
 	//nächste der letzten => melden

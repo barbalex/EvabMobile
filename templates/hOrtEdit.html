@@ -310,6 +310,8 @@
 			var y = DdInChY(lat, lng);
 			$("input#oXKoord").val(x);
 			$("input#oYKoord").val(y);
+			$("input#oLatitudeDecDeg").val(lat);
+			$("input#oLongitudeDecDeg").val(lng);
 			$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
 			clearInfoWindows();
 			var contentString = '<div id="content"><div id="bodyContent">'+
@@ -572,6 +574,29 @@
 			}
 		});
 	}
+
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelle_hOrtEdit
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
+		$db = $.couch.db("evab");
+		$db.openDoc("{{id}}", {
+			success: function(hOrt) {
+				var Formularwerte = {};
+				Formularwerte = $("#hOrtEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					if (Formularwerte[i]) {
+						hOrt[i] = Formularwerte[i];
+					} else if (hOrt[i]) {
+						delete hOrt[i]
+					}
+				}
+				$db.saveDoc(hOrt);
+			}
+		});
+	}
+
 
 	function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hZeit anpassen

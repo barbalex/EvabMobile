@@ -39,6 +39,21 @@ function get_url_param(name){
 	var regexS = "[\\?&]"+name+"=([^&#]*)";
 	var regex = new RegExp( regexS );
 	var results = regex.exec( window.location.href );
+	//var results = regex.exec( $(this).data("url") );
+
+	if ( results == null )
+		return "";
+	else
+		return results[1];
+};
+
+function get_url_param_this(thiz, name){
+	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+
+	var regexS = "[\\?&]"+name+"=([^&#]*)";
+	var regex = new RegExp( regexS );
+	//var results = regex.exec( window.location.href );
+	var results = regex.exec( thiz.data("url") );
 
 	if ( results == null )
 		return "";
@@ -701,7 +716,7 @@ function erstelle_hProjektEdit(ID, User) {
 						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern("../../");
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");
@@ -761,7 +776,7 @@ function erstelle_hRaumEdit(ID, User) {
 						$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern("../../");
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");
@@ -819,7 +834,7 @@ function erstelle_hOrtEdit(ID, User) {
 						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern("KeineMeldung");
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");
@@ -884,7 +899,7 @@ function erstelle_hZeitEdit(ID, User) {
 						$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern("../../");
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");
@@ -942,7 +957,7 @@ function erstelle_hArtEdit(ID, aArtGruppe, User) {
 						$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichern();
+							speichereAlles();
 						}
 					}
 					$("#Hinweistext").html("");

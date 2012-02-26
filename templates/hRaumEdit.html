@@ -400,6 +400,29 @@
 		});
 	}
 
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelle_hRaumEdit
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
+		$db = $.couch.db("evab");
+		$db.openDoc("{{id}}", {
+			success: function(hRaum) {
+				var Formularwerte = {};
+				Formularwerte = $("#hRaumEditForm").serializeObject();
+				//Werte aus dem Formular aktualisieren
+				for (i in Formularwerte) {
+					if (Formularwerte[i]) {
+						hRaum[i] = Formularwerte[i];
+					} else if (hRaum[i]) {
+						delete hRaum[i]
+					}
+				}
+				$db.saveDoc(hRaum);
+			}
+		});
+	}
+
+
 	function speichereRaumfeldInArten(Feldname, Feldwert) {
 		//geändertes Ort-Feld in hArt anpassen
 		var viewname = 'evab/hArtIdVonRaum?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';

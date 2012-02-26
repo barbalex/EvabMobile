@@ -350,19 +350,11 @@
 		});
 	}
 
-	/*function speichern(FeldName) {
-		if ($("input#zDatum").val() == "") {
-			melde("Bitte Datum erfassen");
-			document.getElementById("zDatum").focus();
-			return;
-		}
-		if ($("input#zUhrzeit").val() == "") {
-			melde("Bitte Zeit erfassen");
-			document.getElementById("zUhrzeit").focus();
-			return;
-		}
+	//Speichert alle Daten
+	//wird aufgerufen von evab.js, function erstelle_hZeitEdit
+	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
+	function speichereAlles() {
 		$db = $.couch.db("evab");
-		//Bestehendes Dokument öffnen
 		$db.openDoc("{{id}}", {
 			success: function(hZeit) {
 				var Formularwerte = {};
@@ -375,38 +367,10 @@
 						delete hZeit[i]
 					}
 				}
-				//alles speichern
-				$db.saveDoc(hZeit, {
-					success: function() {
-						//geändertes Zeit-Feld in hArt anpassen
-						var viewname = 'evab/hArtIdVonZeit?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
-						$db.view(viewname, {
-							success: function(data) {
-								var i, ArtId;
-								for(i in data.rows) {
-									hArtId = data.rows[i].key[1];
-									$db.openDoc(hArtId, {
-										success: function(hArt) {
-											var Feldwert = $("#" + FeldName).val();
-											if (Feldwert) {
-												hArt[FeldName] = Feldwert;
-											} else if (hArt[FeldName]) {
-												delete hArt[FeldName];
-											}
-											$db.saveDoc(hArt);
-										}
-									});
-								}
-							}
-						});
-					},
-					error: function() {
-						melde("Fehler: Zeit nicht gespeichert");
-					}
-				});
+				$db.saveDoc(hZeit);
 			}
 		});
-	}*/
+	}
 
 	//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 	function erstelleMenu(thiz, User){

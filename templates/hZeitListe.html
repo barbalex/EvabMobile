@@ -87,8 +87,14 @@
 		var url = "../hOrtEdit/" + "{{id}}";
 		$("[name='hOrtLink']").attr('href', url);
 
-		//Neue Zeit erstellen
+		//Neue Zeit erstellen, erste Zeit
 		$("body").on("click", "[name='hZeitNeuLink']", function(event) {
+			event.preventDefault();
+			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
+		});
+
+		//Neue Zeit erstellen, fixer button
+		$('#hZeitNeuLink').bind('click', function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{id}}"); 
 		});
