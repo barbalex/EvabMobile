@@ -424,7 +424,7 @@
 				Formularwerte = $("#hArtEditForm").serializeObject();
 				//Werte aus dem Formular aktualisieren
 				for (i in Formularwerte) {
-					if (Formularwerte[i]) {
+					if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
 						hArt[i] = Formularwerte[i];
 					} else if (hArt[i]) {
 						delete hArt[i]
