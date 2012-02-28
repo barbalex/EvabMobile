@@ -18,13 +18,9 @@
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript">			
 		$(document).bind("mobileinit", function(){
-			$.mobile.loadingMessage = 'chrampfe!'; 
-			$.mobile.defaultPageTransition  = 'none';
-			$.mobile.touchOverflowEnabled = 'true';
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = true;
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
-			$.mobile.fixedToolbars.setTouchToggleEnabled(false);
 		});
     </script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>

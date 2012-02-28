@@ -11,12 +11,9 @@
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
   	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			$.mobile.loadingMessage = 'chrampfe!'; 
-			$.mobile.defaultPageTransition  = 'none';
-			$.mobile.touchOverflowEnabled = 'true';
+		$(document).bind("mobileinit", function() {
+			//$.mobile.defaultPageTransition  = 'none';
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
-			$.mobile.fixedToolbars.setTouchToggleEnabled(false);
 		});
     </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
