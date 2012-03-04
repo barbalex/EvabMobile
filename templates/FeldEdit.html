@@ -91,12 +91,12 @@
 							//wenn nein: In SichtbareFelder nachführen und speichern
 							prüfeFeldNamen(User);
 						}
-					} else if (FeldName == "Hierarchiestufe" && FeldWert == "Art") {
-						speichereFeldeigenschaften(User);
+					} else if (FeldName === "Hierarchiestufe" && FeldWert == "Art") {
+						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauen();
-					} else if (FeldName == "Hierarchiestufe" && FeldWert != "Art") {
-						speichereFeldeigenschaften(User);
+					} else if (FeldName === "Hierarchiestufe" && FeldWert != "Art") {
+						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
@@ -108,7 +108,7 @@
 							}
 						});
 					} else {
-						speichereFeldeigenschaften(User);
+						speichereFeldeigenschaften();
 						/*$("#FeldEditForm").validate({          FUNKTIONIERT NICHT
 							debug: true,
 							onsubmit: false,
@@ -123,14 +123,14 @@
 								Reihenfolge: "Bitte Reihenfolge erfassen",
 							},
 						    submitHandler: function(form) {
-						        speichereFeldeigenschaften(User);
+						        speichereFeldeigenschaften();
 						    }
 						});*/
 					}
 				});
 
 				$("#FeldEditForm").on("change", "#FeldFolgtNach", function(event) {
-					setzeReihenfolgeMitVorgänger(User, this.value)
+					setzeReihenfolgeMitVorgänger(this.value)
 				});
 
 				$("#Standardwert").bind("change", function() {
@@ -403,13 +403,13 @@
 									//Feldname ist bei diesem User neu, somit zulässig > speichern
 									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 									speichereSichtbarModusHierarchisch(User, "ja"); 
-									speichereFeldeigenschaften(User);
+									speichereFeldeigenschaften();
 								}
 							} else {
 								//Feldname ist neu, somit zulässig > speichern
 								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 								speichereSichtbarModusHierarchisch(User, "ja"); 
-								speichereFeldeigenschaften(User);
+								speichereFeldeigenschaften();
 							}
 						}
 					}
@@ -492,7 +492,7 @@
 						ListItemContainer += "\n</fieldset>"
 						$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 						//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-						$.mobile.fixedToolbars.show(true);
+						//$.mobile.fixedToolbars.show(true);
 					}
 				});
 			}
@@ -642,14 +642,14 @@
 		//ermittelt dessen Reihenfolge
 		//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 		//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
-		function setzeReihenfolgeMitVorgänger(User, FeldNameVorgaenger) {
+		function setzeReihenfolgeMitVorgänger(FeldNameVorgaenger) {
 			$db = $.couch.db("evab");
 			var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
 			$db.view(viewname, {
 				success: function(data) {
 					var ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
 					$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
-					speichereFeldeigenschaften(User);
+					speichereFeldeigenschaften();
 				}
 			});
 		}
@@ -734,7 +734,54 @@
 			});
 		}
 
-		function speichereFeldeigenschaften(User) {
+		/*function speichereFeldeigenschaften(Feldname, Feldwert) {
+			$db = $.couch.db("evab");
+			//Bestehendes Dokument öffnen
+			$db.openDoc("{{id}}", {
+				success: function(Feld) {
+					var Formularfelder = $("#FeldEditForm").serializeObjectNull();
+					//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+					if (Feldname === "Optionen") {
+						Feldwert = Feldwert.split(",");
+					}
+					//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
+					}
+					//Es braucht eine Reihenfolge
+					if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Reihenfolge = 1;
+					}
+					//Es braucht einen Feldtyp
+					if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Formularelement = "textinput";
+						Formularfelder.InputTyp = "text";
+					}
+					//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+					if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
+						delete Formularfelder.InputTyp;
+						$("#{{InputTyp}}").prop("checked",false).checkboxradio("refresh");
+					}
+					//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+					if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
+						Formularfelder.InputTyp = "text";
+					}
+					if (Feldwert) {
+						Feld[Feldname] = Feldwert;
+					} else if (Feld[Feldname]) {
+						delete Feld[Feldname]
+					}
+					//alles speichern
+					$db.saveDoc(Feld, {
+						error: function() {
+							melde("Fehler: Feld nicht gespeichert");
+						}
+					});
+				}
+			});
+		}*/
+
+		function speichereFeldeigenschaften() {
 			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Feld) {
@@ -778,9 +825,6 @@
 						}
 					}
 					$db.saveDoc(Feld, {
-						success: function() {
-							//melde("Feld gespeichert");
-						},
 						error: function() {
 							melde("Fehler: Feld nicht gespeichert");
 						}

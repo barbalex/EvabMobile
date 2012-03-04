@@ -1067,7 +1067,7 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<input class="speichernSlider" type="range" name="';
+	HtmlContainer += ':</label>\n\t<input class="speichernSlider" type="range" data-highlight="true" name="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" id="';
 	HtmlContainer += FeldName;
@@ -1269,7 +1269,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
         var o = {};
         var a = this.serializeArray();
         $.each(a, function() {
-        	if (this.value != "") {
+        	if (this.value !== "") {
 	            if (o[this.name]) {
 	                if (!o[this.name].push) {
 	                    o[this.name] = [o[this.name]];
@@ -1793,7 +1793,7 @@ function erstelleAttachments(id) {
 				$("#_attachments").val("");
 			}
 			$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
-			$.mobile.fixedToolbars.show(true);
+			//$.mobile.fixedToolbars.show(true);
 		}
 	});
 }
