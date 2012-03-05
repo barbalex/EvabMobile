@@ -6,7 +6,6 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
-   	<link rel="stylesheet" href="../../style/evab_theme.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
@@ -39,7 +38,7 @@
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -160,7 +159,7 @@
 			        	window.open("../../FeldListe.html?zurueck=hArtListe/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "grid"
+	        		icon: "edit"
 	      		},
 	      		'Beobachtungen<br>exportieren': {
 			      	click: function() {
@@ -169,26 +168,26 @@
 	        		theme: "a",
 	        		icon: "arrow-r"
 	      		},
-	      		'meine Einstellungen': {
+	      		'Einstellungen': {
 			      	click: function() {
 			        	öffneMeineEinstellungen(User, "../../");
 	        		},
 	        		theme: "a",
-	        		icon: "gear"
+	        		icon: "wrench"
 	      		},
 	      		'lokal installieren': {
 			      	click: function() {
 			        	window.open("../../Installieren.html", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "gear"
+	        		icon: "lightning"
 	      		},
 	      		'neu anmelden': {
 			      	click: function() {
 			        	window.open("../../index.html?Status=neu", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "home"
+	        		icon: "person"
 	      		},
 	      		'schliessen': {
 	                click: function() { return true; },

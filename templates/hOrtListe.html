@@ -6,7 +6,6 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
-   	<link rel="stylesheet" href="../../style/evab_theme.css" type="text/css"/>
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
@@ -43,7 +42,7 @@
   		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumLink" name="hRaumLink">zum Raum</a>
   			<h2 class="hOrtListePageTitel">Orte</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -60,7 +59,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink" name="hOrtNeuLink">neuer Ort</a></li>
-					<li><a href="#" id="GeButton" data-icon="star">Karte</a></li>
+					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -70,7 +69,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#hOrtListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">zurück zur Ortliste</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>
@@ -177,7 +176,7 @@
 			        	window.open("../../FeldListe.html?zurueck=hOrtListe/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "grid"
+	        		icon: "edit"
 	      		},
 	      		'Orte exportieren': {
 			      	click: function() {
@@ -186,26 +185,26 @@
 	        		theme: "a",
 	        		icon: "arrow-r"
 	      		},
-	      		'meine Einstellungen': {
+	      		'Einstellungen': {
 			      	click: function() {
 			        	öffneMeineEinstellungen(User, "../../");
 	        		},
 	        		theme: "a",
-	        		icon: "gear"
+	        		icon: "wrench"
 	      		},
 	      		'lokal installieren': {
 			      	click: function() {
 			        	window.open("../../Installieren.html", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "gear"
+	        		icon: "lightning"
 	      		},
 	      		'neu anmelden': {
 			      	click: function() {
 			        	window.open("../../index.html?Status=neu", target="_self");
 	        		},
 	        		theme: "a",
-	        		icon: "home"
+	        		icon: "person"
 	      		},
 	      		'schliessen': {
 	                click: function() { return true; },
