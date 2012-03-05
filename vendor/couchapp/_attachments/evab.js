@@ -210,7 +210,7 @@ function CHtoWGSlng(y, x) {
 }
 
 function melde(Meldung) {
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + Meldung +"</h1></div>")
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>" + Meldung +"</h4></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo($.mobile.pageContainer)
 	    .delay(2500)

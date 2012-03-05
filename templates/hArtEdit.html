@@ -13,7 +13,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
+		$(document).bind("mobileinit", function() {
 			//$.mobile.defaultPageTransition  = 'none';
 			$.mobile.selectmenu.prototype.options.nativeMenu = true; 
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
@@ -31,7 +31,7 @@
   </head>
   <body>
 	<div data-role="page" id="hArtEditPage">
-		<div data-role="header" data-position="fixed">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
 			<h1>Art</h1>
 			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
@@ -76,7 +76,7 @@
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
 		</div>
-		<div data-role="footer" data-position="fixed">
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				

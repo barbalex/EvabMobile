@@ -12,7 +12,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){ 
+		$(document).bind("mobileinit", function() { 
 			//$.mobile.defaultPageTransition  = 'none';
 		});
     </script>	
@@ -24,7 +24,7 @@
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
     <script type="text/javascript">
-		$(document).ready(function(){
+		$(document).ready(function() {
 			
 			var Pfad = "";
 			User = "";
@@ -146,7 +146,7 @@
   </head>
   <body>
   	<div data-role="page" id="Felder_hArtPage">
-  		<div data-role="header" data-position="fixed" id="Felder_hArtPageHeader">
+  		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hArtPageHeader">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext"  id="Felder_hArtPage_href">abbrechen</a>
   			<h2 class="Felder_hArtPageTitel">sichtbare Felder</h2>
   		</div>

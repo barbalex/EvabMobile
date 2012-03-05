@@ -40,7 +40,7 @@
 
   <body>
   	<div data-role="page" id="hOrtListePage">
-  		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-backbtn="false">
+  		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumLink" name="hRaumLink">zum Raum</a>
   			<h2 class="hOrtListePageTitel">Orte</h2>
   			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
@@ -56,7 +56,7 @@
 			<ul id="Orte" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
-		<div data-role="footer" data-position="fixed">
+		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink" name="hOrtNeuLink">neuer Ort</a></li>
@@ -67,7 +67,7 @@
 	</div>
 
 	<div data-role="page" id="hOrtListeMapPage" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#hOrtListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">zurück zur Ortliste</a>
 			<h1>Karte</h1>
 			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
