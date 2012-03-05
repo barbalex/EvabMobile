@@ -277,13 +277,21 @@
 				});
 
 				//swipen steuern
-				$("body").on("swipeleft", "#FeldContent", function() {
+				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function() {
+					geheZumNächstenFeld(User, "{{id}}");
+				});
+
+				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function() {
+					geheZumVorigenFeld(User, "{{id}}");
+				});
+
+				/*$("body").on("swipeleft", "#FeldContent", function() {
 					geheZumNächstenFeld(User, "{{id}}");
 				});
 
 				$("body").on("swiperight", "#FeldContent", function() {
 					geheZumVorigenFeld(User, "{{id}}");
-				});
+				});*/
 			});
 
 			//$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
