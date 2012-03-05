@@ -210,11 +210,11 @@ function CHtoWGSlng(y, x) {
 }
 
 function melde(Meldung) {
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>" + Meldung +"</h4></div>")
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>&nbsp;" + Meldung +"&nbsp;</h4></div>")
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo($.mobile.pageContainer)
 	    .delay(2500)
-	    .fadeOut(700, function(){
+	    .fadeOut(700, function() {
 	    	$(this).remove();
 		});
 };
