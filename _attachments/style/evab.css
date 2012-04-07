@@ -19,6 +19,11 @@
 
 /*jetzt folgen eigene*/
 body {background: #f3f9eb; background-color: #f3f9eb;}
+.ui-overlay-a{background: #f3f9eb;}
+.ui-overlay-b{background: #f3f9eb;}
+.ui-overlay-c{background: #f3f9eb;}
+.ui-overlay-d{background: #f3f9eb;}
+.ui-overlay-e{background: #f3f9eb;}
 
 /*verhindern, dass der Text in der Titelzeile abgeschnitten wird*/
 .ui-header .ui-title {

@@ -102,11 +102,7 @@
 		});
 
 		$("#ProjektListeMapÖffnen").tap(function(event) {
-			$.mobile.changePage("#ProjektListeMap", "slide", false, true);
-		});
-
-		$('#ProjektListeMap').bind("pagecreate", function() {
-			//Karte aufbauen
+			$.mobile.changePage("#ProjektListeMap");
 			erstelleKarteFürProjektliste(User);
 		});
 

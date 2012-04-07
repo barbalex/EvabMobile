@@ -1415,56 +1415,6 @@ function speichereLetzteUrl(User) {
 	});
 }
 
-/*! A fix for the iOS orientationchange zoom bug.
- Script by @scottjehl, rebound by @wilto.
- MIT License.
-*/
-(function(w){
-    var doc = w.document;
-
-    if( !doc.querySelector ){ return; }
-
-    var meta = doc.querySelector( "meta[name=viewport]" ),
-        initialContent = meta && meta.getAttribute( "content" ),
-        disabledZoom = initialContent + ", maximum-scale=1",
-        enabledZoom = initialContent + ", maximum-scale=10",
-        enabled = true,
-        orientation = w.orientation,
-        rotation = 0;
-
-    if( !meta ){ return; }
-
-    function restoreZoom(){
-        meta.setAttribute( "content", enabledZoom );
-        enabled = true;
-    }
-
-    function disableZoom(){
-        meta.setAttribute( "content", disabledZoom );
-        enabled = false;
-    }
-
-    function checkTilt( e ){
-        orientation = Math.abs( w.orientation );
-        rotation = Math.abs( e.gamma );
-
-        if( rotation > 8 && orientation === 0 ){
-            if( enabled ){
-                disableZoom();
-            }   
-        }
-        else {
-            if( !enabled ){
-                restoreZoom();
-            }
-        }
-    }
-
-    w.addEventListener( "orientationchange", restoreZoom, false );
-    w.addEventListener( "deviceorientation", checkTilt, false );
-
-})( this );
-
 function erstelleKarteFürRaum(User, RaumId) {
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
@@ -1494,7 +1444,7 @@ function erstelleKarteFürRaum(User, RaumId) {
 				    mapTypeId: google.maps.MapTypeId.HYBRID
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-				google.maps.event.trigger(map,'resize');
+				//google.maps.event.trigger(map,'resize');
 				var bounds = new google.maps.LatLngBounds();
 				//für alle Orte Marker erstellen
 				var markers = [];

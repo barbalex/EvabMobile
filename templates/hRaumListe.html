@@ -120,11 +120,7 @@
 		});
 
 		$("#RaumListeMapÖffnen").tap(function(event) {
-			$.mobile.changePage("#RaumListeMap", "slide", false, true);
-		});
-
-		$('#RaumListeMap').bind("pagecreate", function() {
-			//Karte aufbauen
+			$.mobile.changePage("#RaumListeMap");
 			erstelleKarteFürProjekt(User, "{{id}}");
 		});
 

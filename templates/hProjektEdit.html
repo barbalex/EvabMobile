@@ -119,11 +119,7 @@
 				});
 
 				$("#ProjektEditMapÖffnen").tap(function(event) {
-					$.mobile.changePage("#ProjektEditMap", "slide", false, true);
-				});
-
-				$('#ProjektEditMap').bind("pagecreate", function() {
-					//Karte aufbauen
+					$.mobile.changePage("#ProjektEditMap");
 					erstelleKarteFürProjekt(User, "{{id}}");
 				});
 

@@ -281,8 +281,12 @@
 		}
 
 		function placeMarker(location, map, marker, oName) {
-			//zuerst bisherigen Marker löschen
-			clearMarkers();
+			//zuerst bisherige Marker löschen
+			if (markersArray) {
+				for (i in markersArray) {
+			    	markersArray[i].setMap(null);
+			    }
+			}
 			var marker = new google.maps.Marker({
 		    	position: location, 
 		    	map: map,
@@ -309,7 +313,12 @@
 			$("input#oLatitudeDecDeg").val(lat);
 			$("input#oLongitudeDecDeg").val(lng);
 			$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
-			clearInfoWindows();
+			//alle InfoWindows löschen
+			if (InfoWindowArray) {
+				for (i in InfoWindowArray) {
+			    	InfoWindowArray[i].setMap(null);
+			    }
+			}
 			var contentString = '<div id="content"><div id="bodyContent">'+
 							'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
 							'</div></div>';
@@ -321,24 +330,6 @@
 			  infowindow.open(map,marker);
 			});
 			speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
-		}
-
-		//alle Marker löschen
-		function clearMarkers() {
-			if (markersArray) {
-				for (i in markersArray) {
-			    	markersArray[i].setMap(null);
-			    }
-			}
-		}
-
-		//alle InfoWindows löschen
-		function clearInfoWindows() {
-			if (InfoWindowArray) {
-				for (i in InfoWindowArray) {
-			    	InfoWindowArray[i].setMap(null);
-			    }
-			}
 		}
 
 		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt

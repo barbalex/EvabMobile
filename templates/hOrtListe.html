@@ -123,11 +123,7 @@
 		});
 
 		$("#GeButton").tap(function(event) {
-			$.mobile.changePage("#hOrtListeMapPage", "slide", false, true);
-		});
-
-		$('#hOrtListeMapPage').bind("pagecreate", function() {
-			//Karte aufbauen
+			$.mobile.changePage("#hOrtListeMapPage");
 			erstelleKarteFürRaum(User, "{{id}}");
 		});
 

@@ -187,11 +187,7 @@
 		});
 
 		$("#RaumEditMapÖffnen").tap(function(event) {
-			$.mobile.changePage("#RaumEditMap", "slide", false, true);
-		});
-
-		$('#RaumEditMap').bind("pagecreate", function() {
-			//Karte aufbauen
+			$.mobile.changePage("#RaumEditMap");
 			erstelleKarteFürRaum(User, "{{id}}");
 		});
 

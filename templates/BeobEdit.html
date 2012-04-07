@@ -288,7 +288,7 @@
 					};
 					var mapcanvas = $('#map_canvas');
 					var map = new google.maps.Map(mapcanvas[0],options);
-					google.maps.event.trigger(map,'resize');
+					//google.maps.event.trigger(map,'resize');
 					var aArtGruppe = $("select#aArtGruppe").val();
 					var aArtName = $("select#aArtName").val();
 					var aAutor = $("input#aAutor").val();
@@ -306,8 +306,6 @@
 						//Marker in Array speichern, damit er gelöscht werden kann
 						markersArray.push(marker); 
 						var contentString = '<div id="content">'+
-						    '<div id="siteNotice">'+
-						    '</div>'+
 						    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
 						    '<div id="bodyContent" class="GmInfowindow">'+
 						    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
@@ -376,7 +374,8 @@
 					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y);
 				}
 
-				//alle Marker löschen
+				//GoogleMap: alle Marker löschen
+				//benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
 				function clearMarkers() {
 					if (markersArray) {
 						for (i in markersArray) {
@@ -385,7 +384,8 @@
 					}
 				}
 
-				//alle InfoWindows löschen
+				//GoogleMap: alle InfoWindows löschen
+				//benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
 				function clearInfoWindows() {
 					if (InfoWindowArray) {
 						for (i in InfoWindowArray) {
@@ -393,7 +393,9 @@
 					    }
 					}
 				}
+
 			});
+			
 			//Code, der bei jedem Aufruf laufen soll (swipen)
 			$(document).delegate("#BeobEditPage", "pagebeforeshow", function() {
 				erstelleBeobEdit("{{id}}", "{{aArtGruppe}}", User);
