@@ -103,12 +103,20 @@
 
 		$("#ProjektListeMapÖffnen").tap(function(event) {
 			$.mobile.changePage("#ProjektListeMap");
+			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+			var contentHeight = $(window).height() - 43;
+			$("#map_canvas").css("height", contentHeight + "px");
+		});
+
+		$('#ProjektListeMap').bind("pageshow", function() {
+			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 			erstelleKarteFürProjektliste(User);
 		});
 
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
+		$('#ProjektListeMap').bind("pagehide", function() {
+			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+			$("#map_canvas").html("");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

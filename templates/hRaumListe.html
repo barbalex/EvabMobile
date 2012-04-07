@@ -121,12 +121,20 @@
 
 		$("#RaumListeMapÖffnen").tap(function(event) {
 			$.mobile.changePage("#RaumListeMap");
-			erstelleKarteFürProjekt(User, "{{id}}");
+			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+			var contentHeight = $(window).height() - 43;
+			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
+		$('#RaumListeMap').bind("pageshow", function() {
+			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
+			erstelleKarteFürProjekt(User, '{{id}}');
+		});
+
+		$('#RaumListeMap').bind("pagehide", function() {
+			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+			$("#map_canvas").html("");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

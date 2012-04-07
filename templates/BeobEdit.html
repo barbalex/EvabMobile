@@ -193,7 +193,18 @@
 				
 				$("#zeigeKarte").tap(function(event) {
 					$.mobile.changePage("#BeobEditMap");
+					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+					var contentHeight = $(window).height() - 43;
+					$("#map_canvas").css("height", contentHeight + "px");
+				});
+
+				$('#BeobEditMap').bind("pageshow", function() {
 					erstelleKarte();
+				});
+
+				$('#BeobEditMap').bind("pagehide", function() {
+					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+					$("#map_canvas").html("");
 				});
 
 				$("#GetGeolocationButton").tap(function(){
@@ -236,10 +247,6 @@
 				$("#BeobEditContent").bind("swiperight", function() {
 					nächsteVorigeBeob("{{id}}", "vorige");
 				});
-
-				//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-				contentHeight = $(window).height() - 43;
-				$("#map_canvas").css("height", contentHeight + "px");
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 					event.preventDefault();

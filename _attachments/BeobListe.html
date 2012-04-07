@@ -84,10 +84,13 @@
 		});
 
 		$("#BeobListeMapÖffnen").tap(function(event) {
-			$.mobile.changePage("#BeobListeMap", "slide", false, true);
+			$.mobile.changePage("#BeobListeMap");
+			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+			contentHeight = $(window).height() - 43;
+			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		$('#BeobListeMap').bind("pagecreate", function() {
+		$('#BeobListeMap').bind("pageshow", function() {
 			//Karte aufbauen. Zuerst Beobachtungen abfragen
 			$db = $.couch.db("evab");
 			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
@@ -189,14 +192,15 @@
 			});
 		});
 
+		$('#BeobListeMap').bind("pagehide", function() {
+			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+			$("#map_canvas").html("");
+		});
+
 		//Menu aufbauen
 		$("[name='Menu']").bind('click', function(){
 			erstelleMenu(this, User);
 		});
-
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
 
 		//Neue Beobachtung managen
 		$("#NeueBeobLink").bind("click", function(event){

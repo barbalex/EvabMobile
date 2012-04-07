@@ -124,12 +124,20 @@
 
 		$("#GeButton").tap(function(event) {
 			$.mobile.changePage("#hOrtListeMapPage");
-			erstelleKarteFürRaum(User, "{{id}}");
+			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+			var contentHeight = $(window).height() - 43;
+			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
+		$('#hOrtListeMapPage').bind("pageshow", function() {
+			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
+			erstelleKarteFürRaum(User, '{{id}}');
+		});
+
+		$('#hOrtListeMapPage').bind("pagehide", function() {
+			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+			$("#map_canvas").html("");
+		});
 	}
 	
 	$(document).ready(handleDocumentReady);

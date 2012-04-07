@@ -213,7 +213,20 @@
 		//Karte managen
 		$("#GeButton").tap(function(event) {
 			$.mobile.changePage("#OrtEditMap");
+			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+			var contentHeight = $(window).height() - 43;
+			$("#map_canvas").css("height", contentHeight + "px");
+			//erstelleKarte();
+		});
+
+		$('#OrtEditMap').bind("pageshow", function() {
+			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 			erstelleKarte();
+		});
+
+		$('#OrtEditMap').bind("pagehide", function() {
+			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+			$("#map_canvas").html("");
 		});
 
 		$("#GetGeolocationButton").tap(function() {
@@ -331,10 +344,6 @@
 			});
 			speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
 		}
-
-		//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 43;
-		$("#map_canvas").css("height", contentHeight + "px");
 
 		$("body").bind("swipeleft", function() {
 			nächsterVorigerOrt("{{id}}", "nächster");
