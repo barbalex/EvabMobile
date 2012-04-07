@@ -98,8 +98,8 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
-- Nach Neuanmeldung wieder an derselben Stelle weiterarbeiten
-- Die Anmeldung entfällt, wenn das alte Cookie noch existiert (dessen Lebensdauer wird bald verbessert)
+- Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
+- ...und kann an derselben Stelle weiterarbeiten
 
 **Über Daten und App verfügen:**
 
