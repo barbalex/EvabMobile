@@ -643,7 +643,9 @@ function erstelleBeobEdit(ID, aArtGruppe, User) {
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
+						//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 						$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+						$("#BeobEditPage").trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichereAlles();

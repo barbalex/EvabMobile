@@ -29,9 +29,8 @@
   <body>
   	<div data-role="page" id="FeldEditPage">
   		<script type="text/javascript">
-			//$(document).ready(function() {  //wird erst nach pagebeforeshow aufgerufen! darum pagebeforecreate verwenden
-			//$(document).delegate("#FeldEditPage", "pageInit", function() {     //wird auch nach pagebeforeshow aufgerufen
-			$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
+			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+			$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			
 				var Pfad = "../../";
 				User = "";
@@ -293,13 +292,8 @@
 				});*/
 			});
 
-			//$(document).delegate("#FeldEditPage", "pagebeforecreate", function() {
-			//$(document).delegate("#FeldEditPage", "pagecreate", function() {
-			//$(document).bind("pageInit", function(){
-			//$("#FeldEditPage").bind("pageInit", function(){
-			//jQuery("div:jqmData(role='page'):last").bind('pageInit', function() {
-			//$(document).live("pagebeforeshow", function(){
-			$(document).delegate("#FeldEditPage", "pagebeforeshow", function() {
+			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
+			$(":jqmData(role='page')").on("pagebeforeshow", function() {
 
 				//alert("Feldname = " + "{{FeldName}}" + ", pagebeforeshow läuft");
 

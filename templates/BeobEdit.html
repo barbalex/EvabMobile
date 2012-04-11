@@ -102,13 +102,28 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+		
 		<script type="text/javascript">
-			//Code, der nur beim ersten Aufruf der Seite laufen soll
-			$(document).delegate("#BeobEditPage", "pagebeforecreate", function() {
+			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+			$(":jqmData(role='page')").on("pageinit", function() {
 				var Pfad = "";
 				User = "";
 			
 				prüfeAnmeldung(Pfad);
+
+				erstelleBeobEdit("{{id}}", "{{aArtGruppe}}", User);
+				
+				speichereLetzteUrl(User);
+
+				refreshArtGruppe("{{aArtGruppe}}");
+				refreshArtName("{{aArtName}}");
+				
+				aArtGruppe = "{{aArtGruppe}}";
+				aArtName = "{{aArtName}}";
+				aArtId = "{{aArtId}}";
+
+				//ausgeschaltet, da wohl nur nützlich, wenn ajax verwendet wird (ohne pagination)
+				//ladeNächsteVorigeBeob("{{id}}");
 				
 				//Neue Beobachtung erfassen
 				$("#NeueBeobLink").bind("click", function(event){
@@ -191,10 +206,13 @@
 					}
 				});
 				
-				$("#zeigeKarte").tap(function(event) {
+				//$(document).on("tap", "#zeigeKarte", function(event) {
+				$("#zeigeKarte").bind('tap', function(event) {
+					event.preventDefault();
 					$.mobile.changePage("#BeobEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
+					//var contentHeight = $(window).height() - 43;
+					var contentHeight = $(window).height();
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
@@ -207,12 +225,14 @@
 					$("#map_canvas").html("");
 				});
 
-				$("#GetGeolocationButton").tap(function(){
+				$("#GetGeolocationButton").bind('click', function(event){
+					event.preventDefault();
 					GetGeolocation();
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#LöschenDialogLink').bind('click', function() {
+				$('#LöschenDialogLink').bind('click', function(event) {
+					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Beobachtung löschen?',
@@ -400,22 +420,9 @@
 					    }
 					}
 				}
-
+				
 			});
 			
-			//Code, der bei jedem Aufruf laufen soll (swipen)
-			$(document).delegate("#BeobEditPage", "pagebeforeshow", function() {
-				erstelleBeobEdit("{{id}}", "{{aArtGruppe}}", User);
-
-				speichereLetzteUrl(User);
-
-				refreshArtGruppe("{{aArtGruppe}}");
-				refreshArtName("{{aArtName}}");
-				
-				aArtGruppe = "{{aArtGruppe}}";
-				aArtName = "{{aArtName}}";
-				aArtId = "{{aArtId}}";
-			});
 		</script>
 	</div>
 
@@ -659,7 +666,7 @@
 							if (i < AnzBeob) {
 								BeobIdNächste = data.rows[parseInt(i)+1].value._id;
 								window.open(BeobIdNächste, target="_self");
-								//$.mobile.changePage(BeobIdNächste);
+								//$.mobile.changePage(BeobIdNächste, { transition: 'slide', reverse: 'false', allowSamePageTransition: 'true', reloadPage: 'true' });
 							} else {
 								melde("Das ist die letzte Beobachtung");
 							}
@@ -668,11 +675,84 @@
 							if (i > 0) {
 								BeobIdVorige = data.rows[i-1].value._id;
 								window.open(BeobIdVorige, target="_self");
-								//$.mobile.changePage(BeobIdVorige);
+								//$.mobile.changePage(BeobIdVorige, { transition: 'slide', reverse: 'true', allowSamePageTransition: 'true', reloadPage: 'true' });
 							} else {
 								window.open("../../BeobListe.html", target="_self")
 							}
 							break;
+						}
+					}
+				}
+			}
+		});
+	}
+
+	//Setzt die URL für die vorige oder nächste Beobachtung
+	//vorige der ersten => BeobListe
+	//nächste der letzten => BeobListe
+	//erwartet die ID des aktuellen Datensatzes
+	function setzeNächsteVorigeBeobUrl(IdAktuell) {
+		$db = $.couch.db("evab");
+		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+			success: function(data) {
+				var i;
+				var BeobIdAktuell;
+				var BeobIdNächste;
+				var BeobIdVorige;
+				var AnzBeob;
+				for(i in data.rows) {
+					BeobIdAktuell = data.rows[i].value._id;
+					var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (BeobIdAktuell == IdAktuell) {
+						if (i < AnzBeob) {
+							BeobIdNächste = data.rows[parseInt(i)+1].value._id;
+							$("a[name='next']").attr('href', BeobIdNächste);
+							//$("a[href='BeobIdNächste']").attr('data-ajax', 'true');
+						} else {
+							//$('#BeobListePage').empty().remove();
+							$("a[name='next']").attr('href', '../../BeobListe.html');
+							//$("a[href='../../BeobListe.html']").attr('data-ajax', 'false');
+						}
+						if (i > 0) {
+							BeobIdVorige = data.rows[i-1].value._id;
+							$("a[name='prev']").attr('href', BeobIdVorige);
+							//$("a[href='BeobIdVorige']").attr('data-ajax', 'true');
+						} else {
+							//$('#BeobListePage').empty().remove();
+							$("a[name='prev']").attr('href', '../../BeobListe.html');
+							//$("a[href='../../BeobListe.html']").attr('data-ajax', 'false');
+						}
+					}
+				}
+			}
+		});
+	}
+
+	//lädt die vorige und nächste Beobachtung in den DOM
+	//die BeobListe wird nicht vorgeladen, da Änderungen an den Daten möglich sind
+	//erwartet die ID des aktuellen Datensatzes
+	//lohnt sich wohl nur, wenn die nächste Seite mit ajax geladen wird
+	//schlau wäre, nur Seiten zu laden, die nicht schon im DOM sind und die geladenen Infos der Funktion nächsteVorigeBeob zu übermitteln
+	function ladeNächsteVorigeBeob(IdAktuell) {
+		$db = $.couch.db("evab");
+		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+			success: function(data) {
+				var i;
+				var BeobIdAktuell;
+				var BeobIdNächste;
+				var BeobIdVorige;
+				var AnzBeob;
+				for(i in data.rows) {
+					BeobIdAktuell = data.rows[i].value._id;
+					var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					if (BeobIdAktuell == IdAktuell) {
+						if (i < AnzBeob) {
+							BeobIdNächste = data.rows[parseInt(i)+1].value._id;
+							$.mobile.loadPage(BeobIdNächste);
+						}
+						if (i > 0) {
+							BeobIdVorige = data.rows[i-1].value._id;
+							$.mobile.loadPage(BeobIdVorige);
 						}
 					}
 				}

@@ -30,14 +30,12 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
-			$(document).delegate("#ProjektEditPage", "pageinit", function() {
+			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+			$(":jqmData(role='page')").on("pagebeforecreate", function() {
 				var Pfad = "../../";
 				User = "";
 				
 				prüfeAnmeldung(Pfad);
-
-				erstelle_hProjektEdit("{{id}}", User);
-				speichereLetzteUrl(User);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function() {
@@ -152,8 +150,10 @@
 				});
 			});
 
-			$(document).delegate("#ProjektEditPage", "pageshow", function() {
-				
+			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
+			$(":jqmData(role='page')").on("pageshow", function() {
+				erstelle_hProjektEdit("{{id}}", User);
+				speichereLetzteUrl(User);
 			});
 
 			function löscheProjekt() {

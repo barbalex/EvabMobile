@@ -67,16 +67,13 @@
 
   </body>
   <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady() {
+  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+	$(":jqmData(role='page')").on("pagebeforecreate", function() {
 		
 		var Pfad = "";
 		User = "";
 		
 		prüfeAnmeldung(Pfad);
-		
-		erstelleBeobListe(User);
-			
-		speichereLetzteUrl(User);
 
 		$("#beobachtungen").on("swipeleft", ".beob", function() {
 			var BeobId = $(this).attr('id');
@@ -211,9 +208,13 @@
 		$("body").bind("swiperight", function() {
 			window.open("hProjektListe.html", target="_self");
 		});
-	}
+	});
 	
-	$(document).ready(handleDocumentReady);
+	//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
+	$(":jqmData(role='page')").on("pagebeforeshow", function() {
+		erstelleBeobListe(User);
+		speichereLetzteUrl(User);
+	});
 	
 	//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 	function erstelleNeueBeob_1_Artgruppenliste() {
