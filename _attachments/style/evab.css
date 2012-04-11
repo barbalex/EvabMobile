@@ -122,6 +122,15 @@ em { color: red; font-weight: bold; padding-right: .25em; }
   white-space: normal !important;
 }
 
+/*Buttons ohne Text vergrössern*/
+.ui-btn-icon-notext {
+width: 26px;
+height: 26px;
+}
+
+.ui-btn-icon-notext .ui-btn-inner .ui-icon {
+margin: 3px 3px 3px 4px;
+}
 
 
 
