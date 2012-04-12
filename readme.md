@@ -68,7 +68,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 - ...wahlweise mit Lateinischen (Standard) oder Deutschen Namen
 - ...mit artgruppenspezifischen Feldern (in der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
 
-**Datenfelder verwalten:**
+**Datenfelder verwalten**
 
 - 162 Felder der öffentlichen Artdatenzentren benutzen. Sie sind geschützt und können nicht verändert werden
 - Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen und eigene Auswahllisten definieren
