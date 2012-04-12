@@ -99,7 +99,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
-- ...und kann an derselben Stelle weiterarbeiten
+- ...und man kann an derselben Stelle weiterarbeiten
 
 **Über Daten und App verfügen:**
 
