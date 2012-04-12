@@ -22,7 +22,7 @@ Gängige Probleme:
 #Motivation
 Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
 
-**<div style="border: 1px solid #AAA; background-color: #f3f3f3; padding: 0.5em; float: left;">Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.</div>**
+<p style="border: 1px solid #AAA; background-color: #f3f3f3; padding: 0.5em; float: left;"><strong>Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.</strong></p>
 
 #Projektidee
 - Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
