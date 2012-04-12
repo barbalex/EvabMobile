@@ -92,7 +92,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Das Projekt mit einen Projektbericht versehen
 - Dem Projekt eine GIS-Datei anfügen, in der die Orte als Linien oder Flächen digitalisiert wurden
 
-**Effizient arbeiten:**
+**Effizient arbeiten**
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
@@ -101,7 +101,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
 - ...und man kann an derselben Stelle weiterarbeiten
 
-**Über Daten und App verfügen:**
+**Über Daten und App verfügen**
 
 - Beobachtungen und Datenfelder exportieren
 - Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
