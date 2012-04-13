@@ -9,11 +9,6 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			//$.mobile.defaultPageTransition  = 'none';
-		});
-    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
@@ -35,9 +30,9 @@
   <body>
   	<div data-role="page" id="FeldListePage">
   		<div id="FeldListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
-  			<a href="#" name="FeldListeBackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+  			<a href="#" id="FeldListeBackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
   			<h2 class="FeldListePageTitel">Felder</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div data-role="content">
 			<ul id="FeldListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
@@ -109,12 +104,12 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function(){
+		$("#FeldListePageHeader").on('click', '#Menu', function(){
 			erstelleMenuFürFelder(this, "");
 		});
 
 		//BackButton steuern
-		$("[name='FeldListeBackButton']").bind('click', function(){
+		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function(){
 			var zurueck = get_url_param('zurueck') || "BeobListe.html";
 			if (zurueck == "BeobListe.html" || zurueck == "hProjektListe.html" || zurueck == "hProjektNeu.html"){
 				window.open(zurueck, target="_self");

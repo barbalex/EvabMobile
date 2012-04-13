@@ -12,8 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function() {
 			$.mobile.selectmenu.prototype.options.nativeMenu = true; 
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 		});
@@ -30,10 +29,10 @@
   </head>
   <body>
 	<div data-role="page" id="hArtEditPage">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
 			<h1>Art</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -75,7 +74,7 @@
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
@@ -141,25 +140,25 @@
 		var Status = get_url_param("Status");
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").bind("click", function(event) {
+		$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste("neu");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-		$("#aArtGruppe").bind("click", function(event) {
+		$("#hArtEditForm").on("click", "#aArtGruppe", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste("edit");
 		});
 
 		//Editieren von Beobachtungen managen, ausgehend von ArtName
-		$("#aArtName").bind("click", function(event) {
+		$("#hArtEditForm").on("click", "#aArtName", function(event) {
 			event.preventDefault();
 			zuArtliste(aArtGruppe, "edit");
 		});
 
 		//sichtbare Felder wählen
-		$("#wähleFelder").bind("click", function(event){
+		$("#hArtEditPageFooter").on("click", "#wähleFelder", function(event){
 			event.preventDefault();
 			window.open("../../Felder_hArt.html?ArtGruppe=" + aArtGruppe + "&zurueck=_show/hArtEdit/" + "{{id}}", target="_self");
 		});
@@ -184,7 +183,7 @@
 		document.getElementById("hArtNeuLink").href = "../hArtNeu/" + "{{hZeitId}}";
 
 		//Code für den Art-Löschen-Dialog
-		$('#LöschenDialogLink').bind('click', function() {
+		$("#hArtEditPageFooter").on('click', '#LöschenDialogLink', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Diese Art löschen?',
@@ -208,15 +207,15 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function() {
+		$('#hArtEditPageHeader').on('click', "#Menu", function() {
 			erstelleMenu(this, User, aArtGruppe);
 		});
 
-		$("body").bind("swipeleft", function() {
+		$(document).on("swipeleft", function() {
 			nächsteVorigeArt("{{id}}", "nächste");
 		});
 
-		$("body").bind("swiperight", function() {
+		$(document).on("swiperight", function() {
 			nächsteVorigeArt("{{id}}", "vorige");
 		});
 

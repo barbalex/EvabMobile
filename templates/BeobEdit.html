@@ -16,7 +16,7 @@
     <script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
+		$(document).on("mobileinit", function(){
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = true;
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
@@ -92,7 +92,7 @@
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
-			<div data-role="navbar" id=""BeobEditPageFooterNavbar>
+			<div data-role="navbar" id="BeobEditPageFooterNavbar">
 				<ul>
 					<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus" class="ui-btn-active">neu</a></li>					
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
@@ -126,19 +126,19 @@
 				//ladeNächsteVorigeBeob("{{id}}");
 				
 				//Neue Beobachtung erfassen
-				$("#NeueBeobLink").bind("click", function(event){
+				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event){
 					event.preventDefault();
 					window.open("../../Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("select#aArtGruppe").tap(function(event){
+				$("#BeobEditForm").on("click", "#aArtGruppe", function(event){
 					event.preventDefault();
 					window.open("../../Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + "{{id}}", target="_self");
 				});
 
 				//sichtbare Felder wählen
-				$("#wähleFelder").bind("click", function(event){
+				$("#BeobEditPageFooterNavbar").on("click", "#wähleFelder", function(event){
 					event.preventDefault();
 					window.open("../../Felder_Beob.html?zurueck=_show/BeobEdit/" + "{{id}}", target="_self");
 				});
@@ -206,8 +206,7 @@
 					}
 				});
 				
-				//$(document).on("tap", "#zeigeKarte", function(event) {
-				$("#zeigeKarte").bind('tap', function(event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#zeigeKarte", function(event) {
 					event.preventDefault();
 					$.mobile.changePage("#BeobEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
@@ -216,22 +215,22 @@
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$('#BeobEditMap').bind("pageshow", function() {
+				$(document).on("pageshow", '#BeobEditMap', function() {
 					erstelleKarte();
 				});
 
-				$('#BeobEditMap').bind("pagehide", function() {
+				$(document).on("pagehide", '#BeobEditMap', function() {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$("#GetGeolocationButton").bind('click', function(event){
+				$("#BeobEditPageFooterNavbar").on('click', "#GetGeolocationButton", function(event) {
 					event.preventDefault();
 					GetGeolocation();
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#LöschenDialogLink').bind('click', function(event) {
+				$('#BeobEditPageFooterNavbar').on('click', '#LöschenDialogLink', function(event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -256,15 +255,15 @@
 				});
 
 				//Menu aufbauen
-				$("[name='Menu']").bind('click', function(){
+				$(document).on('click', "[name='Menu']", function() {
 					erstelleMenu(this, User);
 				});
 
-				$("#BeobEditContent").bind("swipeleft", function() {
+				$(document).on("swipeleft", "#BeobEditContent", function() {
 					nächsteVorigeBeob("{{id}}", "nächste");
 				});
 
-				$("#BeobEditContent").bind("swiperight", function() {
+				$(document).on("swiperight", "#BeobEditContent", function() {
 					nächsteVorigeBeob("{{id}}", "vorige");
 				});
 

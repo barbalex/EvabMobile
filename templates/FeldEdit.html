@@ -10,8 +10,7 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function(){
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 		});
     </script>	
@@ -127,11 +126,11 @@
 					}
 				});
 
-				$("#FeldEditForm").on("change", "#FeldFolgtNach", function(event) {
+				$("#FeldEditForm").on("change", "#FeldFolgtNach", function() {
 					setzeReihenfolgeMitVorgänger(this.value)
 				});
 
-				$("#Standardwert").bind("change", function() {
+				$("#UserFeldForm").on("change", "#Standardwert", function() {
 					var Optionen = $("#Optionen").val();
 					var Feldwert = this.value;
 					if (Optionen !== "") {
@@ -206,7 +205,7 @@
 				});
 
 				//Code für den Feld-Löschen-Dialog
-				$('#LöschenDialogLink').bind('click', function() {
+				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function() {
 					if ("{{User}}" == "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 					} else {
@@ -265,12 +264,12 @@
 				});
 
 				//Menu aufbauen
-				$("[name='Menu']").bind('click', function(){
+				$("#FeldEditHeader").on('click', "#Menu", function(){
 					erstelleMenuFürFelder(this, "../../");
 				});
 
 				//BackButton steuern
-				$("[name='BackButton']").bind('click', function(){
+				$("#FeldEditHeader").on('click', '#BackButton', function(){
 					geheZurück();
 				});
 
@@ -840,9 +839,9 @@
 		
 		</script>
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
-  			<a href="#" id="BackButton" name="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
+  			<a href="#" id="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">

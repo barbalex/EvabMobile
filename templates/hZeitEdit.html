@@ -11,8 +11,7 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function() {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -31,10 +30,10 @@
   </head>
   <body>
 	<div data-role="page" id="ZeitEditPage">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" id="ZeitEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">zur Zeit-Liste</a>
 			<h1>Zeit</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -72,7 +71,7 @@
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="ZeitEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
@@ -138,13 +137,13 @@
 		$("[name='hZeitListeLink']").attr('href', url);
 
 		//Neue Zeit erstellen
-		$('#hZeitNeuLink').bind('click', function(event) {
+		$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 			event.preventDefault();
 			erstelleNeueZeit(User, "{{hProjektId}}", "{{hRaumId}}", "{{hOrtId}}"); 
 		});
 
 		//sichtbare Felder wählen
-		$("#wähleFelder").bind("click", function(event){
+		$("#ZeitEditPageFooter").on("click", "#wähleFelder", function(event){
 			event.preventDefault();
 			window.open("../../Felder_hZeit.html?zurueck=_show/hZeitEdit/" + "{{id}}", target="_self");
 		});
@@ -153,7 +152,7 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Code für den Zeit-Löschen-Dialog
-		$('#LöschenDialogLink').bind('click', function() {
+		$('#ZeitEditPageFooter').on('click', '#LöschenDialogLink', function() {
 			$(this).simpledialog({
 				'mode' : 'bool',
 		    	'prompt' : 'Diese Zeit löschen?',
@@ -177,15 +176,15 @@
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function() {
+		$("#ZeitEditPageHeader").on('click', '#Menu', function() {
 			erstelleMenu(this, User);
 		});
 
-		$("body").bind("swipeleft", function() {
+		$(document).on("swipeleft", function() {
 			nächsteVorigeZeit("{{id}}", "nächste");
 		});
 
-		$("body").bind("swiperight", function() {
+		$(document).on("swiperight", function() {
 			nächsteVorigeZeit("{{id}}", "vorige");
 		});
 

@@ -10,8 +10,7 @@
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 		});
     </script>
@@ -34,11 +33,11 @@
   	</style>	
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="hArtListePage">
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -49,11 +48,11 @@
 				</ul>
 			</div><!-- /navbar -->
   		</div>
-		<div data-role="content">
+		<div data-role="content" id="hArtListePageContent">
 			<ul id="Arten" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="hArtListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
@@ -91,12 +90,12 @@
 		document.getElementById("hArtListeLink").href = "../hArtListe/" + "{{id}}";
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function() {
+		$("#hArtListePageHeader").on('click', '#Menu', function() {
 			erstelleMenu(this, User);
 		});
 
 		//Neue Beobachtung managen
-		$("#hArtNeuLink").bind("click", function(event) {
+		$("#hArtListePageFooter").on("click", "#hArtNeuLink", function(event) {
 			event.preventDefault();
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
@@ -110,7 +109,7 @@
 			erstelleNeueBeob_1_Artgruppenliste();
 		});
 
-		$("body").bind("swiperight", function() {
+		$(document).on("swiperight", function() {
 			window.open("../hZeitListe/" + "{{hOrtId}}", target="_self");
 		});
 	}

@@ -12,8 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function(){
 			$.mobile.selectmenu.prototype.options.nativeMenu = true; 
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 		});
@@ -31,7 +30,7 @@
   <body>
 	<div data-role="page" id="ArtEditPage">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#" name="zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+			<a href="#" id="zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
 			<h1>Arteigenschaften</h1>
 		</div>
 		<div data-role="content" id="ArtEditContent">
@@ -78,19 +77,19 @@
 		speichereLetzteUrl(User);
 
 		//zurück-Button steuern
-		$("[name='zurück']").bind('click', function(){
+		$("#ArtEditPage").on('click', '#zurück', function() {
 			var zurueck = get_url_param('zurueck') || "../BeobListe.html";
 			window.open("../" + zurueck, target="_self");
 		});
 
 		//Artwechsl managen, ausgehend von Artgruppe
-		$("#ArtGruppe").bind("click", function(event) {
+		$("#ArtEditForm").on("click", "#ArtGruppe", function(event) {
 			event.preventDefault();
 			zuArtgruppenliste();
 		});
 
 		//Artwechsel managen, ausgehend von ArtName
-		$("#ArtBezeichnungL").bind("click", function(event) {
+		$("#ArtEditForm").on("click", "#ArtBezeichnungL", function(event) {
 			event.preventDefault();
 			zuArtliste();
 		});

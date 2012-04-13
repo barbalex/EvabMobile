@@ -10,7 +10,7 @@
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
+		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 		});
     </script>
@@ -44,10 +44,10 @@
 			<ul id="beobachtungen" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
 			</ul>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="BeobListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a id="NeueBeobLink" href="BeobNeu.html" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
+					<li><a id="NeueBeobLink" href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
 					<li><a href="#" id="BeobListeMapÖffnen" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
@@ -87,7 +87,7 @@
 			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		$('#BeobListeMap').bind("pageshow", function() {
+		$(document).on("pageshow", '#BeobListeMap', function() {
 			//Karte aufbauen. Zuerst Beobachtungen abfragen
 			$db = $.couch.db("evab");
 			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
@@ -189,23 +189,23 @@
 			});
 		});
 
-		$('#BeobListeMap').bind("pagehide", function() {
+		$(document).on("pagehide", '#BeobListeMap', function() {
 			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 			$("#map_canvas").html("");
 		});
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function(){
+		$(document).on('click', "[name='Menu']", function() {
 			erstelleMenu(this, User);
 		});
 
 		//Neue Beobachtung managen
-		$("#NeueBeobLink").bind("click", function(event){
+		$("#BeobListePageFooter").on("click", "#NeueBeobLink", function(event){
 			event.preventDefault();
-			erstelleNeueBeob_1_Artgruppenliste();
+			erstelleNeueBeob_1_Artgruppenliste(User);
 		});
 
-		$("body").bind("swiperight", function() {
+		$(document).on("swiperight", "#BeobListePage", function() {
 			window.open("hProjektListe.html", target="_self");
 		});
 	});
@@ -217,7 +217,7 @@
 	});
 	
 	//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
-	function erstelleNeueBeob_1_Artgruppenliste() {
+	function erstelleNeueBeob_1_Artgruppenliste(User) {
 		window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
 	}
 	
@@ -320,7 +320,7 @@
 				$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 				if (anzBeob == 0) {
-					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
+					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste(User)" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
 				} else {
 					//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 					for(i in data.rows) {                //Liste aufbauen

@@ -9,11 +9,6 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-  	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			//$.mobile.defaultPageTransition  = 'none';
-		});
-    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
@@ -32,7 +27,7 @@
   	</style>
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="ArtenlistePage">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Art wählen</h1>
@@ -80,7 +75,7 @@
 			}
 		});
 
-		$("#ButtonSprache").bind("click", function(event) {       
+		$("#ArtenlistePage").on("click", "#ButtonSprache", function(event) {       
 			event.preventDefault();
 			var ButtonText = this.text;
 			$db = $.couch.db("evab");

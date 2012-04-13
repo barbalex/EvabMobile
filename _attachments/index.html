@@ -7,12 +7,7 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
-		$(document).bind("mobileinit", function(){
-			//$.mobile.defaultPageTransition  = 'none';
-		});
-    </script>	
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
@@ -72,7 +67,7 @@
 		});
 
 		//Reaktion auf Enter-Taste
-		$("#Passwort").bind("keydown", function(e) {
+		$("#LoginForm").on("keydown", "#Passwort", function(e) {
 			if (e.keyCode === 13) {
 		    	meldeUserAn();
 		    	e.preventDefault();
