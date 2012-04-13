@@ -20,7 +20,7 @@ Gängige Probleme:
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
 
 #Motivation
-Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Als Artdatenverantwortlicher habe ich diese Probleme zu lösen. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sie alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
+Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
 
@@ -61,14 +61,14 @@ Mit der beschriebenen Ausgangslage sind wir in der [Fachstelle Naturschutz des K
 
 **Beobachtungen erfassen...**
 
-- ...von Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- ...von rund 40'000 Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...wahlweise mit Lateinischen (Standard) oder Deutschen Namen
 - ...mit artgruppenspezifischen Feldern (in der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
 
-**Datenfelder verwalten:**
+**Datenfelder verwalten**
 
 - 162 Felder der öffentlichen Artdatenzentren benutzen. Sie sind geschützt und können nicht verändert werden
 - Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen und eigene Auswahllisten definieren
@@ -92,19 +92,19 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Das Projekt mit einen Projektbericht versehen
 - Dem Projekt eine GIS-Datei anfügen, in der die Orte als Linien oder Flächen digitalisiert wurden
 
-**Effizient arbeiten:**
+**Effizient arbeiten**
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
 - Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
-- ...und kann an derselben Stelle weiterarbeiten
+- ...und man kann an derselben Stelle weiterarbeiten
 
-**Über Daten und App verfügen:**
+**Über Daten und App verfügen**
 
 - Beobachtungen und Datenfelder exportieren
-- Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Voraussetzungen: Erfolgreiche Authentifizierung und die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
+- Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Vorausgesetzt wird die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
 - Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet der Webservice, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation selber einzurichten kostet einen Profi aber bloss 20 Minuten
 - [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
