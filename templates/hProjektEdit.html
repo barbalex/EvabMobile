@@ -10,9 +10,9 @@
   	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
@@ -28,7 +28,7 @@
   	<script type="text/javascript" src="../../vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
-	<div data-role="page" id="ProjektEditPage">
+	<div data-role="page" id="ProjektEditPage{{{id}}}">
 		<script type="text/javascript" charset="utf-8">
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pagebeforecreate", function() {
@@ -69,7 +69,7 @@
 				document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
 
 				//Code für den Projekt-Löschen-Dialog
-				$('#LöschenDialogLink').bind('click', function() {
+				$('#hProjektEditFooter').on('click', '#LöschenDialogLink', function() {
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Dieses Projekt löschen?',
@@ -93,42 +93,42 @@
 				});
 
 				//Menu aufbauen
-				$('#Menu').bind('click', function() {
+				$('#hProjektEditHeader').on('click', '#Menu', function() {
 					erstelleMenu(this, User);
 				});
 
 				//neues Projekt erstellen
-				$("[name='hProjektNeuLink']").bind("click", function() {
+				$("#hProjektEditFooter").on("click", "#hProjektNeuLink", function() {
 					erstelleNeuesProjekt("../");
 				});
 
 				//sichtbare Felder wählen
-				$("#wähleFelder").bind("click", function(event){
+				$("#hProjektEditFooter").on("click", "#wähleFelder", function(event){
 					event.preventDefault();
 					window.open("../../Felder_hProjekt.html?zurueck=_show/hProjektEdit/" + "{{id}}", target="_self");
 				});
 
-				$("body").bind("swipeleft", function() {
+				$(document).on("swipeleft", "#hProjektEditContent", function() {
 					nächstesVorigesProjekt("{{id}}", "nächstes");
 				});
 
-				$("body").bind("swiperight", function() {
+				$(document).on("swiperight", "#hProjektEditContent", function() {
 					nächstesVorigesProjekt("{{id}}", "voriges");
 				});
 
-				$("#ProjektEditMapÖffnen").tap(function(event) {
+				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function(event) {
 					$.mobile.changePage("#ProjektEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$('#ProjektEditMap').bind("pageshow", function() {
+				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 					erstelleKarteFürProjekt(User, '{{id}}');
 				});
 
-				$('#ProjektEditMap').bind("pagehide", function() {
+				$(document).on("pagehide", '#ProjektEditMap', function() {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
@@ -579,7 +579,7 @@
 				});
 			}
 		</script>
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="../../hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
 			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
@@ -611,10 +611,10 @@
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" name="hProjektNeuLink" class="ui-btn-active">neu</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
@@ -625,7 +625,7 @@
 
 	<div data-role="page" id="ProjektEditMap" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#ProjektEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
+			<a href="#ProjektEditPage{{{id}}}" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
 			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>

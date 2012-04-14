@@ -16,10 +16,11 @@
     <script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function(){
+		$(document).on("mobileinit", function() {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = true;
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>
     <script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
@@ -31,7 +32,7 @@
   </head>
 
   <body>
-  	<div data-role="page" id="BeobEditPage">
+  	<div data-role="page" id="BeobEditPage{{{id}}}">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="../../BeobListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
@@ -39,6 +40,10 @@
   		</div>
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
+				<div data-role="fieldcontain">
+					<label for="id">id:</label>
+					<input id="id" name="id" type="text" value="{{id}}" required/>
+				</div>
 				<div data-role="fieldcontain">
 					<label for="aArtGruppe" class="select speichern">Artgruppe:</label>
 					<select id="aArtGruppe" name="aArtGruppe" value="{{aArtGruppe}}" data-icon="arrow-r" data-native-menu="true">
@@ -126,19 +131,19 @@
 				//ladeNächsteVorigeBeob("{{id}}");
 				
 				//Neue Beobachtung erfassen
-				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event){
+				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
 					event.preventDefault();
 					window.open("../../Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#BeobEditForm").on("click", "#aArtGruppe", function(event){
+				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
 					window.open("../../Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + "{{id}}", target="_self");
 				});
 
 				//sichtbare Felder wählen
-				$("#BeobEditPageFooterNavbar").on("click", "#wähleFelder", function(event){
+				$("#BeobEditPageFooterNavbar").on("click", "#wähleFelder", function(event) {
 					event.preventDefault();
 					window.open("../../Felder_Beob.html?zurueck=_show/BeobEdit/" + "{{id}}", target="_self");
 				});
@@ -427,7 +432,7 @@
 
 	<div data-role="page" id="BeobEditMap" style="width:100%; height:100% !important;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
+			<a href="#BeobEditPage{{{id}}}" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
 			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
@@ -665,7 +670,7 @@
 							if (i < AnzBeob) {
 								BeobIdNächste = data.rows[parseInt(i)+1].value._id;
 								window.open(BeobIdNächste, target="_self");
-								//$.mobile.changePage(BeobIdNächste, { transition: 'slide', reverse: 'false', allowSamePageTransition: 'true', reloadPage: 'true' });
+								//$.mobile.changePage(BeobIdNächste, { transition: 'slide', reverse: 'false'});
 							} else {
 								melde("Das ist die letzte Beobachtung");
 							}

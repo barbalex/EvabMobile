@@ -9,6 +9,11 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+  	<script type="text/javascript">			
+		$(document).on("mobileinit", function() {
+			$.mobile.buttonMarkup.hoverDelay = 0;
+		});
+    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>

@@ -10,9 +10,9 @@
   	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
   	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
   	<script type="text/javascript">			
-		$(document).bind("mobileinit", function() {
-			//$.mobile.defaultPageTransition  = 'none';
+		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
@@ -51,11 +51,11 @@
 				</ul>
 			</div><!-- /navbar -->
   		</div>
-		<div data-role="content">
+		<div data-role="content" id="hOrtListePageContent">
 			<ul id="Orte" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="hOrtListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink" name="hOrtNeuLink">neuer Ort</a></li>
@@ -105,7 +105,7 @@
 		document.getElementById("hOrtListeLink").href = "../hOrtListe/" + "{{id}}";
 
 		//Menu aufbauen
-		$("[name='Menu']").bind('click', function(){
+		$("#hOrtListePageHeader").on('click', "[name='Menu']", function(){
 			erstelleMenu(this, User);
 		});
 
@@ -118,23 +118,23 @@
 			erstelleNeuenOrt(User, "{{hProjektId}}", "{{id}}");
 		});
 
-		$("body").bind("swiperight", function() {
+		$(document).on("swiperight", "#hOrtListePage", function() {
 			window.open("../hRaumListe/" + "{{hProjektId}}", target="_self");
 		});
 
-		$("#GeButton").tap(function(event) {
+		$("#hOrtListePageFooter").on('click', '#GeButton', function(event) {
 			$.mobile.changePage("#hOrtListeMapPage");
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			var contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		$('#hOrtListeMapPage').bind("pageshow", function() {
+		$(document).on("pageshow", '#hOrtListeMapPage', function() {
 			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 			erstelleKarteFürRaum(User, '{{id}}');
 		});
 
-		$('#hOrtListeMapPage').bind("pagehide", function() {
+		$(document).on("pagehide", '#hOrtListeMapPage', function() {
 			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 			$("#map_canvas").html("");
 		});
