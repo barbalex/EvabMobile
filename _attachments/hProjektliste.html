@@ -85,7 +85,7 @@
 
 		//neues Projekt erstellen
 		$("body").on("click", "[name='hProjektNeuLink']", function() {
-			erstelleNeuesProjekt("_show/");
+			erstelleNeuesProjekt();
 		});
 
 		$("#Projekte").on("swipeleft", ".Projekt", function() {
@@ -94,7 +94,7 @@
 		});
 
 		$("#Projekte").on("swipeleft", ".erste", function() {
-			erstelleNeuesProjekt("_show/");
+			erstelleNeuesProjekt();
 		});
 
 		$("body").bind("swiperight", function() {
@@ -167,7 +167,7 @@
 						Proj = data.rows[i].value;
 						key = data.rows[i].key;
 						pName = key[1];
-						externalPage = "_show/hProjektEdit/" + Proj._id;
+						externalPage = "hProjektEdit.html?id=" + Proj._id;
 						listItem = "<li id=\"" + Proj._id + "\" class=\"Projekt\">";
 						listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
 						listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";

@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<link rel="SHORTCUT ICON" href="../../Bilder/favicon.ico">
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="../../style/jquery.mobile.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/evab.css" type="text/css"/>
-  	<link rel="stylesheet" href="../../style/jquery.mobile.simpledialog.css" type="text/css"/>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
 		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/markerclusterer.js"></script>
-  	<script type="text/javascript" src="../../vendor/couchapp/markerwithlabel.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
+  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
-	<div data-role="page" id="ProjektEditPage{{{id}}}">
+	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
-			$(":jqmData(role='page')").on("pagebeforecreate", function() {
-				var Pfad = "../../";
+			//$(":jqmData(role='page')").on("pagebeforecreate", function() {
+			$(":jqmData(role='page')").on("pageinit", function() {
+				var Pfad = "";
 				User = "";
-				
+				ProjId = get_url_param("id");
 				prüfeAnmeldung(Pfad);
+				erstelle_hProjektEdit(ProjId, User);
+				speichereLetzteUrl(User);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function() {
@@ -61,13 +63,12 @@
 				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
-						speichereAnhänge("{{id}}");
+						speichereAnhänge(ProjId);
 					}
 				});
 
-				//Link zur Raumliste in Navbar setzen
-				document.getElementById("hRaumListeLink").href = "../hRaumListe/" + "{{id}}";
-
+				aktualisiereLinksMitProjId();
+				
 				//Code für den Projekt-Löschen-Dialog
 				$('#hProjektEditFooter').on('click', '#LöschenDialogLink', function() {
 					$(this).simpledialog({
@@ -99,21 +100,21 @@
 
 				//neues Projekt erstellen
 				$("#hProjektEditFooter").on("click", "#hProjektNeuLink", function() {
-					erstelleNeuesProjekt("../");
+					erstelleNeuesProjekt();
 				});
 
 				//sichtbare Felder wählen
 				$("#hProjektEditFooter").on("click", "#wähleFelder", function(event){
 					event.preventDefault();
-					window.open("../../Felder_hProjekt.html?zurueck=_show/hProjektEdit/" + "{{id}}", target="_self");
+					$.mobile.changePage("Felder_hProjekt.html");
 				});
 
 				$(document).on("swipeleft", "#hProjektEditContent", function() {
-					nächstesVorigesProjekt("{{id}}", "nächstes");
+					nächstesVorigesProjekt(ProjId, "nächstes", User);
 				});
 
 				$(document).on("swiperight", "#hProjektEditContent", function() {
-					nächstesVorigesProjekt("{{id}}", "voriges");
+					nächstesVorigesProjekt(ProjId, "voriges", User);
 				});
 
 				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function(event) {
@@ -125,7 +126,7 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt(User, '{{id}}');
+					erstelleKarteFürProjekt(User, ProjId);
 				});
 
 				$(document).on("pagehide", '#ProjektEditMap', function() {
@@ -137,12 +138,12 @@
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc("{{id}}", {
+					$db.openDoc(ProjId, {
 						success: function(Beob) {
 							delete Beob._attachments[Dateiname];
 							$db.saveDoc(Beob, {
 								success: function() {
-									erstelleAttachments("{{id}}");
+									erstelleAttachments(ProjId);
 								}
 							});
 						}
@@ -152,12 +153,11 @@
 
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
 			$(":jqmData(role='page')").on("pageshow", function() {
-				erstelle_hProjektEdit("{{id}}", User);
-				speichereLetzteUrl(User);
+				
 			});
 
 			function löscheProjekt() {
-				var ProjektId = "{{id}}";
+				var ProjektId = ProjId;
 				var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
 				var Rückmeldung;
 				ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
@@ -195,7 +195,7 @@
 											success: function() {
 												Rückmeldung += "\rProjekt gelöscht";
 												melde(Rückmeldung);
-												setTimeout("window.open('../../hProjektListe.html', target = '_self')", 1400);
+												setTimeout("window.open('hProjektListe.html', target = '_self')", 1400);
 												return true;
 											},
 											error: function() {
@@ -318,7 +318,7 @@
 			function speichern(Feldname, Feldwert) {
 				$db = $.couch.db("evab");
 				//Bestehendes Dokument öffnen
-				$db.openDoc("{{id}}", {
+				$db.openDoc(ProjId, {
 					success: function(hProjekt) {
 						if (Feldwert) {
 							hProjekt[Feldname] = Feldwert;
@@ -346,7 +346,7 @@
 			//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
 			function speichereAlles() {
 				$db = $.couch.db("evab");
-				$db.openDoc("{{id}}", {
+				$db.openDoc(ProjId, {
 					success: function(hProjekt) {
 						var Formularwerte = {};
 						Formularwerte = $("#hProjektEditForm").serializeObject();
@@ -366,7 +366,7 @@
 
 			function speichereProjektfeldInArten(Feldname, Feldwert) {
 				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hArtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+				var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjId + '"]&endkey=["' + ProjId + '",{}]';
 				$db = $.couch.db("evab");
 				$db.view(viewname, {
 					success: function(data) {
@@ -390,7 +390,7 @@
 
 			function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+				var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjId + '"]&endkey=["' + ProjId + '",{}]';
 				$db = $.couch.db("evab");
 				$db.view(viewname, {
 					success: function(data) {
@@ -414,7 +414,7 @@
 
 			function speichereProjektfeldInOrten(Feldname, Feldwert) {
 				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+				var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjId + '"]&endkey=["' + ProjId + '",{}]';
 				$db = $.couch.db("evab");
 				$db.view(viewname, {
 					success: function(data) {
@@ -438,7 +438,7 @@
 
 			function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + "{{id}}" + '"]&endkey=["' + "{{id}}" + '",{}]';
+				var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjId + '"]&endkey=["' + ProjId + '",{}]';
 				$db = $.couch.db("evab");
 				$db.view(viewname, {
 					success: function(data) {
@@ -469,42 +469,42 @@
 			    	'buttons' : {
 					 	'einfacher Modus': {
 					      	click: function() {
-					        	window.open("../../BeobListe.html", target="_self");
+					        	window.open("BeobListe.html", target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "check"
 			      		},
 			      		'Felder verwalten': {
 					      	click: function() {
-					        	window.open("../../FeldListe.html?zurueck=hProjektEdit/" + "{{id}}", target="_self");
+					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjId, target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "edit"
 			      		},
 			      		'Projekte exportieren': {
 					      	click: function() {
-					        	window.open('../../_list/ExportProjekt/ExportProjekt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+					        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
 			        		},
 			        		theme: "a",
 			        		icon: "arrow-r"
 			      		},
 			      		'Einstellungen': {
 					      	click: function() {
-					      		öffneMeineEinstellungen(User, "../../");
+					      		öffneMeineEinstellungen(User, "");
 			        		},
 			        		theme: "a",
 			        		icon: "wrench"
 			      		},
 			      		'lokal installieren': {
 					      	click: function() {
-					        	window.open("../../Installieren.html", target="_self");
+					        	window.open("Installieren.html", target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "lightning"
 			      		},
 			      		'neu anmelden': {
 					      	click: function() {
-					        	window.open("../../index.html?Status=neu", target="_self");
+					        	window.open("index.html?Status=neu", target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "person"
@@ -522,7 +522,7 @@
 			//voriges des ersten => ProjektListe
 			//nächstes des letzten => melden
 			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
+			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges, User) {
 				$db = $.couch.db("evab");
 				$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
 					success: function(data) {
@@ -538,20 +538,22 @@
 								switch (NächstesOderVoriges) {
 								case "nächstes":
 									if (i < AnzProj) {
-										ProjIdNächstes = data.rows[parseInt(i)+1].value._id;
-										window.open(ProjIdNächstes, target="_self");
-										//$.mobile.changePage(ProjIdNächstes);
+										ProjId = data.rows[parseInt(i)+1].value._id;
+										erstelle_hProjektEdit(ProjId, User);
+										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
+										aktualisiereLinksMitProjId();
 									} else {
 										melde("Das ist das letzte Projekt");
 									}
 									break;
 								case "voriges":
 									if (i > 0) {
-										ProjIdVoriges = data.rows[i-1].value._id;
-										window.open(ProjIdVoriges, target="_self");
-										//$.mobile.changePage(ProjIdVoriges);
+										ProjId = data.rows[i-1].value._id;
+										erstelle_hProjektEdit(ProjId, User);
+										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
+										aktualisiereLinksMitProjId();
 									} else {
-										window.open("../../hProjektListe.html", target="_self");
+										window.open("hProjektListe.html", target="_self");
 									}
 									break;
 								}
@@ -578,14 +580,19 @@
 				    }
 				});
 			}
+
+			function aktualisiereLinksMitProjId() {
+				//Link zur Raumliste in Navbar setzen
+				document.getElementById("hRaumListeLink").href = "_show/hRaumListe/" + ProjId;
+			}
 		</script>
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="../../hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
+			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
 			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="../../hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
+					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
 					<li><a href="#" rel="external" id="hRaumListeLink">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -594,7 +601,7 @@
 			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
-					<input id="pName" class="speichern" name="pName" type="text" value="{{pName}}" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="pName" class="speichern" name="pName" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
 				</div>
 				<div id="hProjektEditFormHtml"></div>
 			</form>
@@ -625,7 +632,7 @@
 
 	<div data-role="page" id="ProjektEditMap" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#ProjektEditPage{{{id}}}" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
+			<a href="#ProjektEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
 			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>

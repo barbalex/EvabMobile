@@ -116,11 +116,7 @@
 		//BackButton steuern
 		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function(){
 			var zurueck = get_url_param('zurueck') || "BeobListe.html";
-			if (zurueck == "BeobListe.html" || zurueck == "hProjektListe.html" || zurueck == "hProjektNeu.html"){
-				window.open(zurueck, target="_self");
-			} else {
-				window.open("_show/" + zurueck, target="_self");
-			}
+			window.open(zurueck, target="_self");
 		});
 	}
 	

@@ -499,14 +499,14 @@ function erstelleNeuenRaum(hProjektId) {
 	});
 }
 
-function erstelleNeuesProjekt(Pfad) {
+function erstelleNeuesProjekt() {
 	var hProjekt = {};
 	hProjekt.Typ = "hProjekt";
 	hProjekt.User = User;
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
-			window.open(Pfad + "hProjektEdit/" + data.id + "?Status=neu", target="_self");
+			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target="_self");
 		},
 		error: function() {
 			melde("Fehler: neues Projekt nicht erstellt");
@@ -711,6 +711,7 @@ function erstelle_hProjektEdit(ID, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Projekt) {
+					$("#pName").val(Projekt.pName);
 					var HtmlContainer = generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {

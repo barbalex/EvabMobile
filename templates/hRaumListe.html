@@ -87,7 +87,7 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar und Titelleiste setzen
-		var url = "../hProjektEdit/" + "{{id}}";
+		var url = "../../hProjektEdit.html?id=" + "{{id}}";
 		$("[name='hProjektLink']").attr('href', url);
 
 		//neuen Raum erstellen
@@ -100,7 +100,7 @@
 
 		//Menu aufbauen
 		$('#Menu').bind('click', function() {
-			var zurueck = "hRaumListe/" + "{{id}}";
+			var zurueck = "_show/hRaumListe/" + "{{id}}";
 			erstelleMenu(zurueck, this, User);
 		});
 

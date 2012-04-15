@@ -158,7 +158,7 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../hProjektEdit/" + "{{hProjektId}}";
+		document.getElementById("hProjektLink").href = "../../hProjektEdit.html?id=" + "{{hProjektId}}";
 
 		//Link zur RaumListe in Navbar setzen
 		var url = "../hRaumListe/" + "{{hProjektId}}";
@@ -511,7 +511,7 @@
 	      		},
 	      		'Felder verwalten': {
 			      	click: function() {
-			        	window.open("../../FeldListe.html?zurueck=hRaumEdit/" + "{{id}}", target="_self");
+			        	window.open("../../FeldListe.html?zurueck=_show/hRaumEdit/" + "{{id}}", target="_self");
 	        		},
 	        		theme: "a",
 	        		icon: "edit"
