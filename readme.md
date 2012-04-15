@@ -13,11 +13,11 @@ Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall
 Gängige Probleme:  
 
 - Die Daten werden gar nie digitalisiert
-- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert. 
+- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
-  2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung.
+  2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
 
 #Motivation
 Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
@@ -80,7 +80,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 
 - ...dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert und in Schweizer Landeskoordinaten umgerechnet. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - ...manuell auf Luftbildern von Google. Das Luftbild wird auf die aktuelle Position zentriert
-- ...manuell durch Eingabe von Schweizer Landeskoordinaten. Sie werden - vom Benutzer unbemerkt - in decimal degrees umgewandelt, damit sie vom Gerät für die Darstellung auf Luftbilden ausgelesen werden können
+- ...manuell durch Eingabe von Schweizer Landeskoordinaten. Sie werden - vom Benutzer unbemerkt - in decimal degrees umgewandelt, damit sie auf Luftbildern angezeigt werden können
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
 
 **Dokumentieren**
