@@ -90,7 +90,7 @@
 
 		$("#Projekte").on("swipeleft", ".Projekt", function() {
 			var ProjektId = $(this).attr('id');
-			window.open("_show/hRaumListe/" + ProjektId, target="_self");
+			window.open("hRaumListe.html?id=" + ProjektId, target="_self");
 		});
 
 		$("#Projekte").on("swipeleft", ".erste", function() {

@@ -478,7 +478,7 @@ function erstelleNeuenRaum(hProjektId) {
 	doc.hProjektId = hProjektId;
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
-	$db.openDoc(doc.hProjektId, {
+	$db.openDoc(hProjektId, {
 		success: function(Projekt) {
 			for (i in Projekt) {
 				//ein paar Felder wollen wir nicht
@@ -489,7 +489,7 @@ function erstelleNeuenRaum(hProjektId) {
 			//speichern
 			$db.saveDoc(doc, {
 				success: function(data) {
-					window.open("../hRaumEdit/" + data.id + "?Status=neu", target="_self");
+					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 				},
 				error: function() {
 					melde("Fehler: neuer Raum nicht erstellt");
@@ -772,7 +772,17 @@ function erstelle_hProjektEdit(ID, User) {
 						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
+							var Formularwerte = {};
+							Formularwerte = $("#hProjektEditForm").serializeObject();
+							//Werte aus dem Formular aktualisieren
+							for (i in Formularwerte) {
+								if (Formularwerte[i]) {
+									Projekt[i] = Formularwerte[i];
+								} else if (Projekt[i]) {
+									delete Projekt[i]
+								}
+							}
+							$db.saveDoc(Projekt);
 						}
 					}
 					$("#Hinweistext").html("");
@@ -818,7 +828,7 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, User
-function erstelle_hRaumEdit(ID, User) {
+function erstelleRaumEdit(ID, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -831,6 +841,10 @@ function erstelle_hRaumEdit(ID, User) {
 			//Holt den Raum mit der id "ID" aus der DB
 			$db.openDoc(ID, {
 				success: function(Raum) {
+					//Globale Variabeln, die in hRaumEdit ohne DB-Abfrage verfügbar sein sollen
+					hProjektId = Raum.hProjektId;
+					//fixes Feld setzen
+					$("#rName").val(Raum.rName);
 					var HtmlContainer = generiereHtmlFuerRaumEditForm (User, Feldliste, Raum);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
@@ -838,7 +852,17 @@ function erstelle_hRaumEdit(ID, User) {
 						$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
+							var Formularwerte = {};
+							Formularwerte = $("#hRaumEditForm").serializeObject();
+							//Werte aus dem Formular aktualisieren
+							for (i in Formularwerte) {
+								if (Formularwerte[i]) {
+									Raum[i] = Formularwerte[i];
+								} else if (Raum[i]) {
+									delete Raum[i]
+								}
+							}
+							$db.saveDoc(Raum);
 						}
 					}
 					$("#Hinweistext").html("");

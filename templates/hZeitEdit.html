@@ -125,13 +125,13 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../../hProjektEdit.html?id=" + "{{hProjektId}}";
+		$("#hProjektLink").attr("href", "../../hProjektEdit.html?id=" + "{{hProjektId}}");
 
 		//Link zum Raum in Navbar setzen
-		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{hRaumId}}";
+		$("#hRaumLink").attr("href", "../../hRaumEdit.html?id=" + "{{hRaumId}}" + "&ProjektId=" + "{{hProjektId}}");
 
 		//Link zum Ort in Navbar setzen
-		document.getElementById("hOrtLink").href = "../hOrtEdit/" + "{{hOrtId}}";
+		$("#hOrtLink").attr("href", "../hOrtEdit/" + "{{hOrtId}}");
 
 		//Link zur ZeitListe in Navbar setzen
 		var url = "../hZeitListe/" + "{{hOrtId}}";

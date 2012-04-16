@@ -156,10 +156,10 @@
 		});
 
 		//Link zum Projekt in Navbar setzen
-		document.getElementById("hProjektLink").href = "../../hProjektEdit.html?id=" + "{{hProjektId}}";
+		$("#hProjektLink").attr("href", "../../hProjektEdit.html?id=" + "{{hProjektId}}");
 
 		//Link zum Raum in Navbar setzen
-		document.getElementById("hRaumLink").href = "../hRaumEdit/" + "{{hRaumId}}";
+		$("#hRaumLink").attr("href", "../../hRaumEdit.html?id=" + "{{hRaumId}}");
 
 		//Link zur OrtListe in Navbar setzen
 		var url = "../hOrtListe/" + "{{hRaumId}}";
@@ -178,7 +178,7 @@
 		});
 
 		//Link zur Zeit in Navbar setzen
-		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
+		$("#hZeitListeLink").attr("href", "../hZeitListe/" + "{{id}}");
 
 		//Code für den Ort-Löschen-Dialog
 		$('#hOrtEditFooter').on('click', '#LöschenDialogLink', function() {

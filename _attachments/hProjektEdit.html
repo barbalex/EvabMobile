@@ -32,10 +32,9 @@
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			//$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			$(":jqmData(role='page')").on("pageinit", function() {
-				var Pfad = "";
 				User = "";
 				ProjId = get_url_param("id");
-				prüfeAnmeldung(Pfad);
+				prüfeAnmeldung();
 				erstelle_hProjektEdit(ProjId, User);
 				speichereLetzteUrl(User);
 
@@ -370,29 +369,6 @@
 				});
 			}
 
-			//Speichert alle Daten
-			//wird aufgerufen von evab.js, function erstelle_hProjektEdit
-			//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
-			function speichereAlles() {
-				$db = $.couch.db("evab");
-				$db.openDoc(ProjId, {
-					success: function(hProjekt) {
-						var Formularwerte = {};
-						Formularwerte = $("#hProjektEditForm").serializeObject();
-						//Werte aus dem Formular aktualisieren
-						for (i in Formularwerte) {
-							if (Formularwerte[i]) {
-								hProjekt[i] = Formularwerte[i];
-							} else if (hProjekt[i]) {
-								delete hProjekt[i]
-							}
-						}
-						$db.saveDoc(hProjekt);
-					}
-				});
-			}
-
-
 			function speichereProjektfeldInArten(Feldname, Feldwert) {
 				//geändertes Ort-Feld in hArt anpassen
 				var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjId + '"]&endkey=["' + ProjId + '",{}]';
@@ -592,7 +568,7 @@
 				});
 			}
 
-			function prüfeAnmeldung(Pfad) {		
+			function prüfeAnmeldung() {		
 				//User Anmeldung überprüfen
 				//Wenn angemeldet, globale Variable User aktualisieren
 				//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -604,7 +580,7 @@
 				    	if(session.userCtx.name != (undefined || null)) {
 				        	User = session.userCtx.name;
 				        } else {
-							window.open(Pfad + "index.html?Status=neu", target="_self");
+							window.open("index.html?Status=neu", target="_self");
 						}
 				    }
 				});
@@ -612,7 +588,7 @@
 
 			function aktualisiereLinksMitProjId() {
 				//Link zur Raumliste in Navbar setzen
-				document.getElementById("hRaumListeLink").href = "_show/hRaumListe/" + ProjId;
+				$("#hRaumListeLink").attr("href" ,"hRaumListe.html?id=" + ProjId);
 			}
 		</script>
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
