@@ -630,7 +630,7 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 }
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id der Beobachtung, User, Artgruppe
+//Mitgeben: id der Beobachtung, User
 function erstelleBeobEdit(ID, User) {
 	$("#BeobEditFormHtml").empty();
 	$db = $.couch.db("evab");
