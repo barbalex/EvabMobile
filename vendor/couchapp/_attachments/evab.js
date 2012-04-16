@@ -312,7 +312,7 @@ function speichereNeueBeob_03(Von, doc) {
 					if (Von == "hArtListe" || Von == "hArtEdit") {
 						window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
 					} else {
-						window.open("_show/BeobEdit/" + data.id + "?Status=neu", target="_self");
+						window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
 					}
 				},
 				error: function() {
@@ -337,7 +337,7 @@ $db.openDoc(BeobId, {
 			$db.saveDoc(Beob, {
 				success: function(data) {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
-						window.open("_show/BeobEdit/" + BeobId, target="_self");
+						window.open("BeobEdit.html?id=" + BeobId, target="_self");
 					} else {
 						window.open("_show/hArtEdit/" + BeobId, target="_self");
 					}
@@ -631,7 +631,7 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Beobachtung, User, Artgruppe
-function erstelleBeobEdit(ID, aArtGruppe, User) {
+function erstelleBeobEdit(ID, User) {
 	$("#BeobEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -639,7 +639,15 @@ function erstelleBeobEdit(ID, aArtGruppe, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Beob) {
-					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, aArtGruppe, Feldliste, Beob);
+					//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+					aArtGruppe = Beob.aArtGruppe;
+					aArtName = Beob.aArtName;
+					aArtId = Beob.aArtId;
+					oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+
+					setzeFixeFelderInBeobEdit(Beob);
+					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
@@ -667,10 +675,33 @@ function erstelleBeobEdit(ID, aArtGruppe, User) {
 	});
 }
 
+//setzt die Values in die hart codierten Felder im Formular BeobEdit.html
+//erwartet das Objekt Beob, welches die Werte enthält
+function setzeFixeFelderInBeobEdit(Beob) {
+	var aArtGruppe = Beob.aArtGruppe;
+	var aArtName = Beob.aArtName;
+	$("#aArtGruppe").selectmenu();
+	var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
+	$("#aArtGruppe").html(startoption);
+	$("#aArtGruppe").val(aArtGruppe);
+	$("#aArtGruppe").selectmenu("refresh");
+	$("#aArtName").selectmenu();
+	var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
+	$("#aArtName").html(startoption);
+	$("#aArtName").val(aArtName);
+	$("#aArtName").selectmenu("refresh");
+	$("#aAutor").val(Beob.aAutor);
+	$("#oXKoord").val(Beob.oXKoord);
+	$("#oYKoord").val(Beob.oYKoord);
+	$("#oLagegenauigkeit").val(Beob.oLagegenauigkeit);
+	$("#zDatum").val(Beob.zDatum);
+	$("#zUhrzeit").val(Beob.zUhrzeit);
+}
+
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (User, ArtGruppe, Feldliste, Beob) {
+function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -680,6 +711,7 @@ function generiereHtmlFuerBeobEditForm (User, ArtGruppe, Feldliste, Beob) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
+	var ArtGruppe = Beob.aArtGruppe;
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;

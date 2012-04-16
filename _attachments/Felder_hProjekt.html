@@ -25,7 +25,7 @@
   <body>
   	<div data-role="page" id="Felder_hProjektPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hProjektPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext" id="Felder_hProjektPage_href">abbrechen</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hProjektPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -119,24 +119,6 @@
 							$("#Feldliste").html(HtmlContainer).trigger("create");
 							$("input[name='Felder']").checkboxradio();
 						}
-					});
-				}
-
-				function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session){
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
 					});
 				}
 			});

@@ -21,146 +21,11 @@
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-    <script type="text/javascript">
-		$(document).ready(function() {
-			
-			var Pfad = "";
-			User = "";
-		
-			prüfeAnmeldung(Pfad);
-			speichereLetzteUrl(User);
-
-			erstelle_sichtbareFelder(User);
-
-			//Felder speichern (checkbox)
-			$("#Feldliste").on("change", "input[name='Felder']", function() {
-				var FeldName = $(this).prop("id");
-				var FeldId = $(this).attr("feldid");
-				$db = $.couch.db("evab");
-				$db.openDoc(FeldId, {
-					success: function(Feld) {
-						var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];
-						if ($("#" + FeldName).prop("checked") == true) {
-							SichtbarImModusEinfach.push(User);
-						} else {
-							var idx = SichtbarImModusEinfach.indexOf(User);
-							if(idx!=-1) SichtbarImModusEinfach.splice(idx, 1);
-						}
-						Feld.SichtbarImModusEinfach = SichtbarImModusEinfach;
-						$db.saveDoc(Feld, {
-							error: function() {
-								melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-							}
-						});
-					},
-					error: function() {
-						melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-					}
-				});
-			});
-
-			//Link zur Beob in Navbar setzen
-			var url = get_url_param("zurueck");
-			$("#Felder_hBeobPage_href").attr('href', url);
-
-			$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {
-				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
-				öffneFeld(this.id);
-			});
-
-			$("#Feldliste").on("contextmenu", "input[name='Felder']", function(event) {
-				//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
-				öffneFeld(this.id);
-			});
-		});
-	</script>
-	<script type="text/javascript">
-
-	//generiert dynamisch die Felder im Checkbox Felder
-	//checked diejenigen, die der User anzeigen will
-	//Mitgeben: User
-	function erstelle_sichtbareFelder(User) {
-		$("#Feldliste").empty();
-		$db = $.couch.db("evab");
-		//holt die Feldliste aus der DB
-		$db.view('evab/FeldListeBeob', {
-			success: function(data) {
-				var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-				var anzFelder = 0;
-				for (i in data.rows) {
-					var Feld = data.rows[i].value;
-					var FeldName = Feld.FeldName;
-					//Nur eigene und offizielle Felder berücksichtigen
-					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-						//im Formular fix integrierte Felder nicht aufbauen
-						if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
-							anzFelder += 1;
-							var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-							var ListItem = "\n\t\t\<label for='";
-							ListItem += FeldName;
-							ListItem += "'>";
-							ListItem += FeldBeschriftung;
-							ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-							ListItem += "Felder";
-							ListItem += "' id='";
-							ListItem += FeldName;
-							ListItem += "' FeldId='";
-							ListItem += Feld._id;
-							ListItem += "' value='";
-							ListItem += FeldName;
-							ListItem += "' class='custom'";
-							if(Feld.SichtbarImModusEinfach) {
-								if(Feld.SichtbarImModusEinfach.indexOf(User) != -1){
-									//wenn sichtbar, anzeigen
-									ListItem += " checked='checked'";
-								}
-							}
-							ListItem += "/>";
-							HtmlContainer += ListItem;
-						}
-					}
-				}
-				$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
-				HtmlContainer += "\n\t</fieldset>\n</div>"
-				$("#Feldliste").html(HtmlContainer).trigger("create");
-				$("input[name='Felder']").checkboxradio();
-			}
-		});
-	}
-
-	function prüfeAnmeldung(Pfad) {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if(session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open(Pfad + "index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
-
-	function öffneFeld(FeldName) {
-		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
-			success: function(data) {
-				var FeldId = data.rows[0].value._id;
-				window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target="_self");
-			}
-		});
-	}
-	</script>
   </head>
   <body>
   	<div data-role="page" id="Felder_BeobPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_BeobPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="Felder_hBeobPage_href">abbrechen</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_BeobPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -171,6 +36,117 @@
 				</div>
 			</form>
 		</div>
+		<script type="text/javascript">
+			$(":jqmData(role='page')").on("pageinit", function() {
+
+				erstelle_sichtbareFelder(User);
+
+				//Felder speichern (checkbox)
+				$("#Feldliste").on("change", "input[name='Felder']", function() {
+					var FeldName = $(this).prop("id");
+					var FeldId = $(this).attr("feldid");
+					$db = $.couch.db("evab");
+					$db.openDoc(FeldId, {
+						success: function(Feld) {
+							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];
+							if ($("#" + FeldName).prop("checked") == true) {
+								SichtbarImModusEinfach.push(User);
+							} else {
+								var idx = SichtbarImModusEinfach.indexOf(User);
+								if(idx!=-1) SichtbarImModusEinfach.splice(idx, 1);
+							}
+							Feld.SichtbarImModusEinfach = SichtbarImModusEinfach;
+							$db.saveDoc(Feld, {
+								error: function() {
+									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+								}
+							});
+						},
+						error: function() {
+							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+						}
+					});
+				});
+
+
+				//Felder in BeobEdit.html neu aufbauen
+				$(document).on("pagehide", '#Felder_BeobPage', function() {
+					erstelleBeobEdit(BeobId, User);
+				});
+
+				$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {
+					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					öffneFeld(this.id);
+				});
+
+				$("#Feldliste").on("contextmenu", "input[name='Felder']", function(event) {
+					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					öffneFeld(this.id);
+				});
+			});
+		
+			//generiert dynamisch die Felder im Checkbox Felder
+			//checked diejenigen, die der User anzeigen will
+			//Mitgeben: User
+			function erstelle_sichtbareFelder(User) {
+				$("#Feldliste").empty();
+				$db = $.couch.db("evab");
+				//holt die Feldliste aus der DB
+				$db.view('evab/FeldListeBeob', {
+					success: function(data) {
+						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+						var anzFelder = 0;
+						for (i in data.rows) {
+							var Feld = data.rows[i].value;
+							var FeldName = Feld.FeldName;
+							//Nur eigene und offizielle Felder berücksichtigen
+							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								//im Formular fix integrierte Felder nicht aufbauen
+								if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
+									anzFelder += 1;
+									var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+									var ListItem = "\n\t\t\<label for='";
+									ListItem += FeldName;
+									ListItem += "'>";
+									ListItem += FeldBeschriftung;
+									ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+									ListItem += "Felder";
+									ListItem += "' id='";
+									ListItem += FeldName;
+									ListItem += "' FeldId='";
+									ListItem += Feld._id;
+									ListItem += "' value='";
+									ListItem += FeldName;
+									ListItem += "' class='custom'";
+									if(Feld.SichtbarImModusEinfach) {
+										if(Feld.SichtbarImModusEinfach.indexOf(User) != -1){
+											//wenn sichtbar, anzeigen
+											ListItem += " checked='checked'";
+										}
+									}
+									ListItem += "/>";
+									HtmlContainer += ListItem;
+								}
+							}
+						}
+						$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
+						HtmlContainer += "\n\t</fieldset>\n</div>"
+						$("#Feldliste").html(HtmlContainer).trigger("create");
+						$("input[name='Felder']").checkboxradio();
+					}
+				});
+			}
+
+			function öffneFeld(FeldName) {
+				$db = $.couch.db("evab");
+				$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
+					success: function(data) {
+						var FeldId = data.rows[0].value._id;
+						window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target="_self");
+					}
+				});
+			}
+		</script>
 	</div>
   </body>
 </html>
