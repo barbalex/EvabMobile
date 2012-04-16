@@ -117,6 +117,35 @@
 					nächstesVorigesProjekt(ProjId, "voriges", User);
 				});
 
+				//Pagination Pfeil voriger initialisieren
+				$("#ProjektEditPage").on("vclick", "#PaginationPrev", function(event) {
+					event.preventDefault();
+					nächstesVorigesProjekt(ProjId, "voriges", User);
+				});
+
+				//Pagination Pfeil nächster initialisieren
+				$("#ProjektEditPage").on("vclick", "#PaginationNext", function(event) {
+					event.preventDefault();
+					nächstesVorigesProjekt(ProjId, "nächstes", User);
+				});
+
+				//Pagination Pfeiltasten initialisieren
+				$(document).on("keyup", function(e) {
+					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ProjektEditPage').is(':visible') ){
+						// Left arrow
+						if( e.keyCode === $.mobile.keyCode.LEFT ){
+							nächstesVorigesProjekt(ProjId, "voriges", User);
+							e.preventDefault();
+						}
+						// Right arrow
+						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+							nächstesVorigesProjekt(ProjId, "nächstes", User);
+							e.preventDefault();
+						}
+					}
+				});
+
 				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function(event) {
 					$.mobile.changePage("#ProjektEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
@@ -617,6 +646,10 @@
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
+			<ul data-role="pagination">
+				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+			</ul>
 		</div>
 		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">

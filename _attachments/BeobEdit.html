@@ -118,36 +118,6 @@
 				erstelleBeobEdit(BeobId, User);
 				
 				speichereLetzteUrl(User);
-				
-				//Pagination Pfeil voriger initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationPrev", function(event) {
-					event.preventDefault();
-					//alert("hallo");
-					nächsteVorigeBeob(BeobId, 'vorige');
-				});
-
-				//Pagination Pfeil nächster initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationNext", function(event) {
-					event.preventDefault();
-					nächsteVorigeBeob(BeobId, 'nächste');
-				});
-
-				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
-					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#BeobEditPage').is(':visible') ){
-						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
-							nächsteVorigeBeob(BeobId, 'vorige');
-							e.preventDefault();
-						}
-						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
-							nächsteVorigeBeob(BeobId, 'nächste');
-							e.preventDefault();
-						}
-					}
-				});
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
@@ -286,6 +256,35 @@
 
 				$(document).on("swiperight", "#BeobEditContent", function() {
 					nächsteVorigeBeob(BeobId, "vorige");
+				});
+
+				//Pagination Pfeil voriger initialisieren
+				$("#BeobEditPage").on("vclick", "#PaginationPrev", function(event) {
+					event.preventDefault();
+					nächsteVorigeBeob(BeobId, 'vorige');
+				});
+
+				//Pagination Pfeil nächster initialisieren
+				$("#BeobEditPage").on("vclick", "#PaginationNext", function(event) {
+					event.preventDefault();
+					nächsteVorigeBeob(BeobId, 'nächste');
+				});
+
+				//Pagination Pfeiltasten initialisieren
+				$(document).on("keyup", function(e) {
+					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
+					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#BeobEditPage').is(':visible') ){
+						// Left arrow
+						if( e.keyCode === $.mobile.keyCode.LEFT ){
+							nächsteVorigeBeob(BeobId, 'vorige');
+							e.preventDefault();
+						}
+						// Right arrow
+						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+							nächsteVorigeBeob(BeobId, 'nächste');
+							e.preventDefault();
+						}
+					}
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
