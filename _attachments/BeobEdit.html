@@ -133,8 +133,9 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", "#BeobEditPage", function(e) {
-					if( !$( e.target ).is( "input, textarea, select, button" ) ){
+				$(document).on("keyup", function(e) {
+					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
+					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#BeobEditPage').is(':visible') ){
 						// Left arrow
 						if( e.keyCode === $.mobile.keyCode.LEFT ){
 							nächsteVorigeBeob(BeobId, 'vorige');
