@@ -90,6 +90,10 @@
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
+			<ul data-role="pagination">
+				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" id="BeobEditPageFooterNavbar">
@@ -115,6 +119,35 @@
 				
 				speichereLetzteUrl(User);
 				
+				//Pagination Pfeil voriger initialisieren
+				$("#BeobEditPage").on("vclick", "#PaginationPrev", function(event) {
+					event.preventDefault();
+					//alert("hallo");
+					nächsteVorigeBeob(BeobId, 'vorige');
+				});
+
+				//Pagination Pfeil nächster initialisieren
+				$("#BeobEditPage").on("vclick", "#PaginationNext", function(event) {
+					event.preventDefault();
+					nächsteVorigeBeob(BeobId, 'nächste');
+				});
+
+				//Pagination Pfeiltasten initialisieren
+				$(document).on("keyup", "#BeobEditPage", function(e) {
+					if( !$( e.target ).is( "input, textarea, select, button" ) ){
+						// Left arrow
+						if( e.keyCode === $.mobile.keyCode.LEFT ){
+							nächsteVorigeBeob(BeobId, 'vorige');
+							e.preventDefault();
+						}
+						// Right arrow
+						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+							nächsteVorigeBeob(BeobId, 'nächste');
+							e.preventDefault();
+						}
+					}
+				});
+
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
 					event.preventDefault();
@@ -565,28 +598,6 @@
 		});
 	}
 
-	//Speichert alle Daten
-	//wird aufgerufen von evab.js, function erstelleBeobEdit
-	//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
-	function speichereAlles() {
-		$db = $.couch.db("evab");
-		$db.openDoc(BeobId, {
-			success: function(Beob) {
-				var Formularwerte = {};
-				Formularwerte = $("#BeobEditForm").serializeObject();
-				//Werte aus dem Formular aktualisieren
-				for (i in Formularwerte) {
-					if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-						Beob[i] = Formularwerte[i];
-					} else if (Beob[i]) {
-						delete Beob[i]
-					}
-				}
-				$db.saveDoc(Beob);
-			}
-		});
-	}
-
 	function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
 		$db = $.couch.db("evab");
 		//Bestehendes Dokument öffnen
@@ -615,7 +626,7 @@
 	//Öffnet die vorige oder nächste Beobachtung
 	//vorige der ersten => BeobListe
 	//nächste der letzten => melden
-	//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+	//erwartet ob nächster oder voriger gesucht wird
 	function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
 		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
@@ -645,50 +656,9 @@
 								erstelleBeobEdit(BeobId, User);
 								window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
 							} else {
-								window.open("BeobListe.html", target="_self")
+								window.open("BeobListe.html", target="_self");
 							}
 							break;
-						}
-					}
-				}
-			}
-		});
-	}
-
-	//Setzt die URL für die vorige oder nächste Beobachtung
-	//vorige der ersten => BeobListe
-	//nächste der letzten => BeobListe
-	//erwartet die ID des aktuellen Datensatzes
-	function setzeNächsteVorigeBeobUrl(IdAktuell) {
-		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-			success: function(data) {
-				var i;
-				var BeobIdAktuell;
-				var BeobIdNächste;
-				var BeobIdVorige;
-				var AnzBeob;
-				for(i in data.rows) {
-					BeobIdAktuell = data.rows[i].value._id;
-					var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-					if (BeobIdAktuell == IdAktuell) {
-						if (i < AnzBeob) {
-							BeobIdNächste = data.rows[parseInt(i)+1].value._id;
-							$("a[name='next']").attr('href', BeobIdNächste);
-							//$("a[href='BeobIdNächste']").attr('data-ajax', 'true');
-						} else {
-							//$('#BeobListePage').empty().remove();
-							$("a[name='next']").attr('href', 'BeobListe.html');
-							//$("a[href='BeobListe.html']").attr('data-ajax', 'false');
-						}
-						if (i > 0) {
-							BeobIdVorige = data.rows[i-1].value._id;
-							$("a[name='prev']").attr('href', BeobIdVorige);
-							//$("a[href='BeobIdVorige']").attr('data-ajax', 'true');
-						} else {
-							//$('#BeobListePage').empty().remove();
-							$("a[name='prev']").attr('href', 'BeobListe.html');
-							//$("a[href='BeobListe.html']").attr('data-ajax', 'false');
 						}
 					}
 				}

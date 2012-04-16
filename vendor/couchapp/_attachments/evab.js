@@ -630,8 +630,13 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 }
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+//und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, User
 function erstelleBeobEdit(ID, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -656,7 +661,17 @@ function erstelleBeobEdit(ID, User) {
 						$("#BeobEditPage").trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
+							var Formularwerte = {};
+							Formularwerte = $("#BeobEditForm").serializeObject();
+							//Werte aus dem Formular aktualisieren
+							for (i in Formularwerte) {
+								if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+									Beob[i] = Formularwerte[i];
+								} else if (Beob[i]) {
+									delete Beob[i]
+								}
+							}
+							$db.saveDoc(Beob);
 						}
 					}
 					$("#Hinweistext").html("");
@@ -669,6 +684,8 @@ function erstelleBeobEdit(ID, User) {
 							GetGeolocation();
 						}
 					}
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -736,6 +753,10 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, User
 function erstelle_hProjektEdit(ID, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#hProjektEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -756,6 +777,8 @@ function erstelle_hProjektEdit(ID, User) {
 					}
 					$("#Hinweistext").html("");
 					erstelleAttachments(ID);
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -796,6 +819,10 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, User
 function erstelle_hRaumEdit(ID, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#hRaumEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -816,6 +843,8 @@ function erstelle_hRaumEdit(ID, User) {
 					}
 					$("#Hinweistext").html("");
 					erstelleAttachments(ID);
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -856,6 +885,10 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts, User
 function erstelle_hOrtEdit(ID, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#hOrtEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -881,6 +914,8 @@ function erstelle_hOrtEdit(ID, User) {
 							GetGeolocation();
 						}
 					}
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -921,6 +956,10 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit, User
 function erstelle_hZeitEdit(ID, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#hZeitEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -939,6 +978,8 @@ function erstelle_hZeitEdit(ID, User) {
 					}
 					$("#Hinweistext").html("");
 					erstelleAttachments(ID);
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -979,6 +1020,10 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: id der Art, Artgruppe
 function erstelle_hArtEdit(ID, aArtGruppe, User) {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#FormAnhänge').hide();
+	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#Anhänge').empty();
 	$("#hArtEditFormHtml").empty();
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
@@ -997,6 +1042,8 @@ function erstelle_hArtEdit(ID, aArtGruppe, User) {
 					}
 					$("#Hinweistext").html("");
 					erstelleAttachments(ID);
+					//Anhänge wieder einblenden
+					$('#FormAnhänge').show();
 				}
 			});
 		}
@@ -1755,7 +1802,6 @@ function speichereAnhänge(id) {
 //erstellt Anhänge
 //setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
 //wird benutzt von allen Beobachtungs-Edit-Formularen
-//Status wird benötigt, weil .trigger create nur beim ersten mal funktioniert
 function erstelleAttachments(id) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
@@ -1778,7 +1824,6 @@ function erstelleAttachments(id) {
 				$("#_attachments").val("");
 			}
 			$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
-			//$.mobile.fixedToolbars.show(true);
 		}
 	});
 }
@@ -1806,3 +1851,63 @@ function neuesFeld(User, Pfad) {
 		}
 	});
 }
+
+
+
+/*!
+* jQuery Mobile Framework : drag pagination plugin
+* Copyright (c) Filament Group, Inc
+* Authored by Scott Jehl, scott@filamentgroup.com
+* Dual licensed under the MIT or GPL Version 2 licenses.
+*/
+(function( $, undefined ){
+	
+	//auto-init on pagecreate
+	$( document ).bind( "pagecreate", function( e ){
+		$( ":jqmData(role='pagination')", e.target ).pagination();
+	});
+	
+	var pageTitle="";
+	
+	//create widget
+	$.widget( "mobile.pagination", $.mobile.widget, {
+		_create: function() {
+			var $el			= this.element,
+				$page		= $el.closest( ".ui-page" ),
+				$links		= $el.find( "a" ),
+				$origin		= $.mobile.pageContainer,
+				classNS		= "ui-pagination",
+				prevLIClass	= classNS + "-prev",
+				nextLIClass	= classNS + "-next",
+				prevPClass	= "ui-page-prev",
+				nextPClass	= "ui-page-next",
+				snapClass	= classNS + "-snapping",
+				dragClass	= classNS + "-dragging",
+				dragClassOn	= false,
+				$nextPage,
+				$prevPage;
+			
+			$el.addClass( classNS );
+			
+			//set up next and prev buttons
+			
+			$links.each(function(){
+				var reverse = $( this ).closest( "." + prevLIClass ).length;
+			
+				$(this)
+					.buttonMarkup({
+						"role"		: "button",
+						"theme"		: "d",
+						"iconpos"	: "notext",
+						"icon"		: "arrow-" + ( reverse ? "l" : "r")
+					})
+					/*.bind( "vclick", function(){
+						var NächsteOderVorige = ( reverse ? "vorige" : "nächste");
+						nächsteVorigeBeob(BeobId, NächsteOderVorige);
+						return false;
+					});*/
+			});
+		}		
+	});
+	
+}( jQuery ));
