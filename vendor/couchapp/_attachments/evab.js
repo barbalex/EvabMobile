@@ -459,7 +459,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function(data) {
-							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "?Status=neu", target="_self");
+							window.open("hOrtEdit.html?OrtId=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 						},
 						error: function() {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -764,6 +764,7 @@ function erstelleProjektEdit(ID, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Projekt) {
+					//fixe Felder aktualisieren
 					$("#pName").val(Projekt.pName);
 					var HtmlContainer = generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt);
 					//nur anfügen, wenn Felder erstellt wurden
@@ -841,8 +842,6 @@ function erstelleRaumEdit(ID, User) {
 			//Holt den Raum mit der id "ID" aus der DB
 			$db.openDoc(ID, {
 				success: function(Raum) {
-					//Globale Variabeln, die in hRaumEdit ohne DB-Abfrage verfügbar sein sollen
-					hProjektId = Raum.hProjektId;
 					//fixes Feld setzen
 					$("#rName").val(Raum.rName);
 					var HtmlContainer = generiereHtmlFuerRaumEditForm (User, Feldliste, Raum);
@@ -908,7 +907,7 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
 
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts, User
-function erstelle_hOrtEdit(ID, User) {
+function erstelleOrtEdit(ID, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -920,13 +919,31 @@ function erstelle_hOrtEdit(ID, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Ort) {
+					//fixe Felder aktualisieren
+					$("#oName").val(Ort.oName);
+					$("#oXKoord").val(Ort.oXKoord);
+					$("#oYKoord").val(Ort.oYKoord);
+					$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
+					//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
+					oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
+					oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
 					var HtmlContainer = generiereHtmlFuerOrtEditForm (User, Feldliste, Ort);
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
+							var Formularwerte = {};
+							Formularwerte = $("#hOrtEditForm").serializeObject();
+							//Werte aus dem Formular aktualisieren
+							for (i in Formularwerte) {
+								if (Formularwerte[i]) {
+									Ort[i] = Formularwerte[i];
+								} else if (Ort[i]) {
+									delete Ort[i]
+								}
+							}
+							$db.saveDoc(Ort);
 						}
 					}
 					$("#Hinweistext").html("");
