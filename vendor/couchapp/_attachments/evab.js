@@ -459,7 +459,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function(data) {
-							window.open("../hOrtEdit/" + data.id + "?Status=neu", target="_self");
+							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "?Status=neu", target="_self");
 						},
 						error: function() {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -752,7 +752,7 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, User
-function erstelle_hProjektEdit(ID, User) {
+function erstelleProjektEdit(ID, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen

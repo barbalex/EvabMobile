@@ -162,8 +162,7 @@
 		$("#hRaumLink").attr("href", "../../hRaumEdit.html?id=" + "{{hRaumId}}");
 
 		//Link zur OrtListe in Navbar setzen
-		var url = "../hOrtListe/" + "{{hRaumId}}";
-		$("[name='hOrtListeLink']").attr('href', url);
+		$("[name='hOrtListeLink']").attr('href', "../../hOrtListe.html?RaumId=" + "{{hRaumId}}" + "&ProjektId=" + "{{hProjektId}}");
 
 		//neuen Ort erstellen
 		$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
@@ -452,7 +451,7 @@
 							success: function() {
 								Rückmeldung += "\rOrt gelöscht";
 								melde(Rückmeldung);
-								setTimeout("window.open('../hOrtListe/" + hRaumId + "', target='_self')", 1400);
+								setTimeout("window.open('hOrtListe.html?RaumId=" + hRaumId + "&ProjektId=" + ProjektId + "', target='_self')", 1400);
 								return true;
 							},
 							error: function() {

@@ -35,7 +35,7 @@
 				User = "";
 				ProjId = get_url_param("id");
 				prüfeAnmeldung();
-				erstelle_hProjektEdit(ProjId, User);
+				erstelleProjektEdit(ProjId, User);
 				speichereLetzteUrl(User);
 
 				//Für jedes Feld bei Änderung speichern
@@ -544,7 +544,7 @@
 								case "nächstes":
 									if (i < AnzProj) {
 										ProjId = data.rows[parseInt(i)+1].value._id;
-										erstelle_hProjektEdit(ProjId, User);
+										erstelleProjektEdit(ProjId, User);
 										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
@@ -554,7 +554,7 @@
 								case "voriges":
 									if (i > 0) {
 										ProjId = data.rows[i-1].value._id;
-										erstelle_hProjektEdit(ProjId, User);
+										erstelleProjektEdit(ProjId, User);
 										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {

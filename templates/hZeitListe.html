@@ -99,11 +99,11 @@
 		});
 
 		$(document).on("swiperight", function() {
-			window.open("../hOrtListe/" + "{{hRaumId}}", target="_self");
+			window.open("../../hOrtListe.html?RaumId=" + "{{hRaumId}}" + "&ProjektId=" + "{{hProjektId}}", target="_self");
 		});
 
 		//Link zur OrtListe in Navbar setzen
-		document.getElementById("hZeitListeLink").href = "../hZeitListe/" + "{{id}}";
+		$("#hZeitListeLink").attr("href", "../hZeitListe/" + "{{id}}");
 
 		//Menu aufbauen
 		$("#hZeitListePageHeader").on('click', '#Menu', function() {
