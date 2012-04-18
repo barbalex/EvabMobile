@@ -63,7 +63,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
-				ProjektId = get_url_param("id");
+				ProjektId = get_url_param("ProjektId");
 				prüfeAnmeldung();
 				
 				erstelleRaumListe();
@@ -71,7 +71,7 @@
 				speichereLetzteUrl(User);
 
 				//Link zum Projekt in Navbar und Titelleiste setzen
-				var url = "hProjektEdit.html?id=" + ProjektId;
+				var url = "hProjektEdit.html?ProjektId=" + ProjektId;
 				$("[name='hProjektLink']").attr('href', url);
 
 				//neuen Raum erstellen
@@ -80,16 +80,16 @@
 				});
 
 				//Link zur RaumListe in Navbar setzen
-				$("#hRaumListeLink").attr("href", "hRaumListe.html?id=" + ProjektId);
+				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + ProjektId);
 
 				//Menu aufbauen
 				$('#hRaumListePageHeader').on('click','#Menu', function() {
-					var zurueck = "hRaumListe.html?id=" + ProjektId;
+					var zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
 					erstelleMenu(zurueck, this, User);
 				});
 
 				$("#Räume").on("swipeleft", ".Raum", function() {
-					var RaumId = $(this).attr('id');
+					var RaumId = $(this).attr('RaumId');
 					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				});
 
@@ -99,7 +99,6 @@
 
 				$(document).on("swiperight", '#RaumListePage', function() {
 					window.open("hProjektListe.html", target="_self");
-					//$.mobile.changePage("../hRaumListe/" + ProjektId, {transition: "slide", reverse: true});
 				});
 
 				$("#hRaumListePageHeader").on("click", "#RaumListeMapÖffnen", function(event) {
@@ -222,8 +221,8 @@
 									Raum = data.rows[i].value;
 									key = data.rows[i].key;
 									rName = Raum.rName;
-									externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-									listItem = "<li id=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+									externalPage = "hRaumEdit.html?RaumId=" + Raum._id + "&ProjektId=" + ProjektId;
+									listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 									ListItemContainer += listItem;
 								}
 							}

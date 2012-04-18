@@ -44,7 +44,7 @@
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
-					<input id="oName" name="oName" class="speichern" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="oName" name="oName" class="speichern" type="text" placeholder="(Eingabe erforderlich)" required/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoord">X-Koordinate:</label>
@@ -139,10 +139,10 @@
 				});
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur OrtListe in Navbar setzen
 				$("[name='hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
@@ -163,7 +163,7 @@
 
 				function aktualisiereLinksMitOrtId() {
 					//Link zur Zeit in Navbar setzen
-					$("#hZeitListeLink").attr("href", "_show/hZeitListe/" + OrtId);
+					$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 				}
 
 				//Code für den Ort-Löschen-Dialog
@@ -366,7 +366,7 @@
 							e.preventDefault();
 						}
 					}
-				});				
+				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 					event.preventDefault();

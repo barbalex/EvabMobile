@@ -90,10 +90,10 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
-		$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+		$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
 
 		//Link zum Raum in Navbar und Titelleiste setzen
-		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 		//neuen Ort erstellen
 		$("body").on("click", "[name='hOrtNeuLink']", function(){
@@ -101,7 +101,7 @@
 		});
 
 		//Link zur OrtListe in Navbar setzen
-		$("#hOrtListeLink").attr("href", "../hOrtListe/" + RaumId);
+		$("#hOrtListeLink").attr("href", "hOrtListe?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 		//Menu aufbauen
 		$("#hOrtListePageHeader").on('click', "[name='Menu']", function(){
@@ -109,8 +109,8 @@
 		});
 
 		$("#Orte").on("swipeleft", ".Ort", function() {
-			var hOrtId = $(this).attr('id');
-			window.open("../hZeitListe/" + hOrtId, target="_self");
+			var OrtId = $(this).attr('OrtId');
+			window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 		});
 
 		$("#Orte").on("swipeleft", ".erste", function() {
@@ -118,7 +118,7 @@
 		});
 
 		$(document).on("swiperight", "#hOrtListePage", function() {
-			window.open("../hRaumListe.html?id=" + ProjektId, target="_self");
+			window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
 		});
 
 		$("#hOrtListePageFooter").on('click', '#GeButton', function(event) {

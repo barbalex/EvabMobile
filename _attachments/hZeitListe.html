@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).on("mobileinit", function() {
+			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
+		});
+    </script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<style type="text/css">
+  		/*workaround against bad scrolling
+  		https://forum.jquery.com/topic/why-jqm-touchscreen-list-scrolling-performance-stinks-and-what-to-do-about-it*/
+  		*.ui-listview *.ui-btn-up-c,
+		*.ui-listview *.ui-btn-down-c,
+		*.ui-listview *.ui-btn-hover-c
+		  {
+		  border:1px solid  #ccc  ;background:#e6edde ;font-weight:bold;color: #2F3E46  ;text-shadow: 0    1px    1px    #f6f6f6  ;background-image:-webkit-gradient(linear,left top,left bottom,from( #dce6d1 ),to( #c1d3b1 )); background-image:-webkit-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:   -moz-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:    -ms-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:     -o-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:        linear-gradient(top,#dce6d1,#c1d3b1 );
+		  }
+  	</style>
+  </head>
+  <body>
+  	<div data-role="page">
+  		<div data-role="header" id="hZeitListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hOrtLink" name="hOrtLink">zum Ort</a>
+  			<h2 class="hZeitListePageTitel">Zeit</h2>
+  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
+					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink">Zeiten</a></li>
+				</ul>
+			</div><!-- /navbar -->
+  		</div>
+		<div data-role="content">
+			<ul id="Zeiten" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+			</ul>
+		</div>
+		<div data-role="footer" id="hZeitListePageFooter" data-position="fixed" data-tap-toggle="false">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hZeitNeuLink" name="hZeitNeuLink">neue Zeit</a></li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			$(":jqmData(role='page')").on("pageinit", function() {
+				User = "";
+				OrtId = get_url_param("OrtId");
+				RaumId = get_url_param("RaumId");
+				ProjektId = get_url_param("ProjektId");
+				
+				prüfeAnmeldung();
+				
+				erstelleZeitListe();
+
+				speichereLetzteUrl(User);
+
+				//Link zum Projekt in Navbar setzen
+				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+
+				//Link zum Raum in Navbar setzen
+				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+
+				//Link zum Ort in Navbar und Titelleiste setzen
+				var url = "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+				$("[name='hOrtLink']").attr('href', url);
+
+				//Neue Zeit erstellen, erste Zeit und fixer button
+				$("#hZeitListePageFooter").on("click", "[name='hZeitNeuLink']", function(event) {
+					event.preventDefault();
+					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
+				});
+
+				$("#Zeiten").on("swipeleft", ".Zeit", function() {
+					var ZeitId = $(this).attr('ZeitId');
+					window.open("hArtListe?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+				});
+
+				$("#Zeiten").on("swipeleft", ".erste", function() {
+					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
+				});
+
+				$(document).on("swiperight", function() {
+					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+				});
+
+				//Link zur OrtListe in Navbar setzen
+				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+
+				//Menu aufbauen
+				$("#hZeitListePageHeader").on('click', '#Menu', function() {
+					erstelleMenu(this, User);
+				});
+
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session) {
+					    	if(session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
+							}
+					    }
+					});
+				}
+
+				//Menü aufbauen
+				function erstelleMenu(thiz, User){
+					//Code um Menü aufzubauen
+					var zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+					$(thiz).simpledialog({
+						'mode' : 'bool',
+						'prompt' : 'Menü',
+						'fullHTML': 'true',
+				    	'buttons' : {
+						 	'einfacher Modus': {
+						      	click: function() {
+						        	window.open("BeobListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "check"
+				      		},
+				      		'Felder verwalten': {
+						      	click: function() {
+						        	window.open("FeldListe.html?zurueck=" + zurueck, target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "edit"
+				      		},
+				      		'Zeiten exportieren': {
+						      	click: function() {
+						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+				        		},
+				        		theme: "a",
+				        		icon: "arrow-r"
+				      		},
+				      		'Einstellungen': {
+						      	click: function() {
+						        	öffneMeineEinstellungen(User, "");
+				        		},
+				        		theme: "a",
+				        		icon: "wrench"
+				      		},
+				      		'lokal installieren': {
+						      	click: function() {
+						        	window.open("Installieren.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "lightning"
+				      		},
+				      		'neu anmelden': {
+						      	click: function() {
+						        	window.open("index.html?Status=neu", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "person"
+				      		},
+				      		'schliessen': {
+				                click: function() { return true; },
+				                icon: "back",
+				                theme: "c"
+				            }
+				    	}
+				  	})
+				}
+				
+			  	function erstelleZeitListe() {
+					$("#Zeiten").empty();
+					$db = $.couch.db("evab");
+					$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
+						success: function(data) {
+							var i;
+							var anzZeit = 0;
+							var Zeit;
+							var externalPage;
+							var listItem;
+							var ListItemContainer = "";
+							for(i in data.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
+								anzZeit += 1;
+							}
+
+							var Titel2 = " Zeiten";                  //Im Titel der Seite die Anzahl Zeiten anzeigen
+							if (anzZeit == 1){
+								Titel2 = " Zeit";
+							}
+							$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
+
+							if (anzZeit == 0) {
+								ListItemContainer = '<li><a href="javascript:erstelleNeueZeit_mitAllenParametern()" data-transition="slideup" rel="external" class="erste">Erste Zeit erfassen</a></li>';
+							} else {
+								for(i in data.rows) {
+									Zeit = data.rows[i].value;
+									key = data.rows[i].key;
+									var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
+									externalPage = "hZeitEdit.html?ZeitId=" + Zeit._id + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+									listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+									ListItemContainer += listItem;
+								}
+							}
+							$("#Zeiten").html(ListItemContainer);
+							$("#Zeiten").listview("refresh");
+						}
+					});
+				}
+
+				function erstelleNeueZeit_mitAllenParametern() {
+					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
+				}
+			});	
+		</script>
+	</div>
+
+  </body>
+</html>

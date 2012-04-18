@@ -89,8 +89,8 @@
 		});
 
 		$("#Projekte").on("swipeleft", ".Projekt", function() {
-			var ProjektId = $(this).attr('id');
-			window.open("hRaumListe.html?id=" + ProjektId, target="_self");
+			var ProjektId = $(this).attr('ProjektId');
+			window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
 		});
 
 		$("#Projekte").on("swipeleft", ".erste", function() {
@@ -167,8 +167,8 @@
 						Proj = data.rows[i].value;
 						key = data.rows[i].key;
 						pName = key[1];
-						externalPage = "hProjektEdit.html?id=" + Proj._id;
-						listItem = "<li id=\"" + Proj._id + "\" class=\"Projekt\">";
+						externalPage = "hProjektEdit.html?ProjektId=" + Proj._id;
+						listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
 						listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
 						listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;

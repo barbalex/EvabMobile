@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).on("mobileinit", function() {
+			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
+		});
+    </script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<style type="text/css">
+  		/*workaround against bad scrolling
+  		https://forum.jquery.com/topic/why-jqm-touchscreen-list-scrolling-performance-stinks-and-what-to-do-about-it*/
+  		*.ui-listview *.ui-btn-up-c,
+		*.ui-listview *.ui-btn-down-c,
+		*.ui-listview *.ui-btn-hover-c
+		  {
+		  border:1px solid  #ccc  ;background:#e6edde ;font-weight:bold;color: #2F3E46  ;text-shadow: 0    1px    1px    #f6f6f6  ;background-image:-webkit-gradient(linear,left top,left bottom,from( #dce6d1 ),to( #c1d3b1 )); background-image:-webkit-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:   -moz-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:    -ms-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:     -o-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:        linear-gradient(top,#dce6d1,#c1d3b1 );
+		  }
+  	</style>	
+  </head>
+  <body>
+  	<div data-role="page" id="hArtListePage">
+  		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
+  			<h2 class="hArtListePageTitel">Art</h2>
+  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
+					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
+					<li><a href="#" rel="external" id="hZeitLink" name="hZeitLink">Zeit</a></li>
+					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink">Arten</a></li>
+				</ul>
+			</div><!-- /navbar -->
+  		</div>
+		<div data-role="content" id="hArtListePageContent">
+			<ul id="Arten" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+			</ul>
+		</div>
+		<div data-role="footer" id="hArtListePageFooter" data-position="fixed" data-tap-toggle="false">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			$(":jqmData(role='page')").on("pageinit", function() {
+				User = "";
+				
+				ZeitId = get_url_param("ZeitId");
+				OrtId = get_url_param("OrtId");
+				RaumId = get_url_param("RaumId");
+				ProjektId = get_url_param("ProjektId");
+
+				prüfeAnmeldung();
+				
+				refreshArtListe();
+
+				speichereLetzteUrl(User);
+
+				//Link zum Projekt in Navbar setzen
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+
+				//Link zum Raum in Navbar setzen
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + "{{hRaumId}}" + "&ProjektId=" + ProjektId);
+
+				//Link zum Ort in Navbar setzen
+				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + "{{hOrtId}}" + "&RaumId=" + "{{hRaumId}}" + "&ProjektId=" + ProjektId);
+
+				//Link zur Zeit in Navbar und Titelleiste setzen
+				var url = "../hZeitEdit/" + "{{id}}";
+				$("[name='hZeitLink']").attr('href', url);
+
+				//Link zur ArtListe in Navbar setzen
+				$("#hArtListeLink").attr("href", "../hArtListe/" + "{{id}}");
+
+				//Menu aufbauen
+				$("#hArtListePageHeader").on('click', '#Menu', function() {
+					erstelleMenu(this, User);
+				});
+
+				//Neue Beobachtung managen
+				$("#hArtListePageFooter").on("click", "#hArtNeuLink", function(event) {
+					event.preventDefault();
+					erstelleNeueBeob_1_Artgruppenliste();
+				});
+
+				$("#Arten").on("swipeleft", ".beob", function() {
+					var ArtId = $(this).attr('id');
+					window.open("../hArtEdit/" + ArtId, target="_self");
+				});
+
+				$("#Arten").on("swipeleft", ".erste", function() {
+					erstelleNeueBeob_1_Artgruppenliste();
+				});
+
+				$(document).on("swiperight", function() {
+					window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+				});
+
+				function erstelleNeueBeob_1_Artgruppenliste() {
+					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&hProjektId=" + ProjektId + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{id}}", target="_self");
+				}
+
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session) {
+					    	if(session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
+							}
+					    }
+					});
+				}
+
+				//Menü aufbauen
+				function erstelleMenu(thiz, User){
+					//Code um Menü aufzubauen
+					$(thiz).simpledialog({
+						'mode' : 'bool',
+						'prompt' : 'Menü',
+						'fullHTML': 'true',
+				    	'buttons' : {
+						 	'einfacher Modus': {
+						      	click: function() {
+						        	window.open("BeobListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "check"
+				      		},
+				      		'Felder verwalten': {
+						      	click: function() {
+						        	window.open("FeldListe.html?zurueck=_show/hArtListe/" + "{{id}}", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "edit"
+				      		},
+				      		'Beobachtungen<br>exportieren': {
+						      	click: function() {
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+				        		},
+				        		theme: "a",
+				        		icon: "arrow-r"
+				      		},
+				      		'Einstellungen': {
+						      	click: function() {
+						        	öffneMeineEinstellungen(User, "");
+				        		},
+				        		theme: "a",
+				        		icon: "wrench"
+				      		},
+				      		'lokal installieren': {
+						      	click: function() {
+						        	window.open("Installieren.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "lightning"
+				      		},
+				      		'neu anmelden': {
+						      	click: function() {
+						        	window.open("index.html?Status=neu", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "person"
+				      		},
+				      		'schliessen': {
+				                click: function() { return true; },
+				                icon: "back",
+				                theme: "c"
+				            }
+				    	}
+				  	})
+				}
+				
+			  	function refreshArtListe() {
+					$("#Arten").empty();
+					var hZeitId = "{{id}}";
+					$db = $.couch.db("evab");
+					$db.view('evab/hArtListe?startkey=["' + User + '", "' + hZeitId + '"]&endkey=["' + User + '", "' + hZeitId + '" ,{}]', {
+						success: function(data) {
+							var i;
+							var anzArt = 0;
+							var Art;
+							var externalPage;
+							var listItem;
+							var ListItemContainer = "";
+							for(i in data.rows) {                    //Arten zählen. Wenn noch keine: darauf hinweisen
+								anzArt += 1;
+							}
+
+							var Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
+							if (anzArt==1){
+								Titel2 = " Art";
+							}
+							$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
+
+							if (anzArt == 0) {
+								ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external" class="erste">Erste Art erfassen</a></li>';
+							} else {
+								for(i in data.rows) {                //Liste aufbauen
+									Art = data.rows[i].value;
+									key = data.rows[i].key;
+									aArtGruppe = Art.aArtGruppe;
+									ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+									var bArtName = key[2];
+									externalPage = "_show/hArtEdit/" + Art._id;
+									listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+										"<a href=\"" + externalPage + "\" rel=\"external\">" +
+										"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+										"<h3>" + bArtName + "<\/h3>" +
+										"<\/a> <\/li>";
+									ListItemContainer += listItem;
+								}
+							}
+							$("#Arten").html(ListItemContainer);
+							$("#Arten").listview("refresh");
+						}
+					});
+				}
+			});
+		</script>
+	</div>
+  </body>
+</html>

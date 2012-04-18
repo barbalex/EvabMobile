@@ -33,7 +33,7 @@
 			//$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
-				ProjId = get_url_param("id");
+				ProjId = get_url_param("ProjektId");
 				prüfeAnmeldung();
 				erstelleProjektEdit(ProjId, User);
 				speichereLetzteUrl(User);
@@ -481,7 +481,7 @@
 			      		},
 			      		'Felder verwalten': {
 					      	click: function() {
-					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjId, target="_self");
+					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?ProjektId=" + ProjId, target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "edit"
@@ -545,7 +545,7 @@
 									if (i < AnzProj) {
 										ProjId = data.rows[parseInt(i)+1].value._id;
 										erstelleProjektEdit(ProjId, User);
-										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", 'hProjektEdit.html?ProjektId=' + ProjId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
 										melde("Das ist das letzte Projekt");
@@ -555,7 +555,7 @@
 									if (i > 0) {
 										ProjId = data.rows[i-1].value._id;
 										erstelleProjektEdit(ProjId, User);
-										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", 'hProjektEdit.html?ProjektId=' + ProjId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
 										window.open("hProjektListe.html", target="_self");
@@ -588,7 +588,7 @@
 
 			function aktualisiereLinksMitProjId() {
 				//Link zur Raumliste in Navbar setzen
-				$("#hRaumListeLink").attr("href" ,"hRaumListe.html?id=" + ProjId);
+				$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + ProjId);
 			}
 		</script>
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
@@ -606,7 +606,7 @@
 			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
 				<div data-role="fieldcontain">
 					<label for="pName">Name:</label>
-					<input id="pName" class="speichern" name="pName" type="text" placeholder="(Eingabe erforderlich)" required autofocus/>
+					<input id="pName" class="speichern" name="pName" type="text" placeholder="(Eingabe erforderlich)" required/>
 				</div>
 				<div id="hProjektEditFormHtml"></div>
 			</form>

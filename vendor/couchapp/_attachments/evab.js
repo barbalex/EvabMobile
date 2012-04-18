@@ -415,7 +415,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 							//speichern
 							$db.saveDoc(doc, {
 								success: function(data) {
-									window.open("../hZeitEdit/" + data.id + "?Status=neu", target="_self");
+									window.open("hZeitEdit.html?ZeitId=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target="_self");
 								},
 								error: function() {
 									melde("Fehler: neue Zeit nicht erstellt");
@@ -996,7 +996,7 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit, User
-function erstelle_hZeitEdit(ID, User) {
+function erstelleZeitEdit(ID, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -1008,6 +1008,9 @@ function erstelle_hZeitEdit(ID, User) {
 		success: function(Feldliste) {
 			$db.openDoc(ID, {
 				success: function(Zeit) {
+					//fixe Felder aktualisieren
+					$("#zDatum").val(Zeit.zDatum);
+					$("#zUhrzeit").val(Zeit.zUhrzeit);
 					var HtmlContainer = generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit);
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
@@ -1059,8 +1062,8 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 }
 
 //generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: id der Art, Artgruppe
-function erstelle_hArtEdit(ID, aArtGruppe, User) {
+//Mitgeben: id der Beobachtung, User
+function erstellehBeobEdit(hBeobId, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -1070,19 +1073,41 @@ function erstelle_hArtEdit(ID, aArtGruppe, User) {
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeArt', {
 		success: function(Feldliste) {
-			$db.openDoc(ID, {
-				success: function(Beobachtung) {
-					var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, Feldliste, Beobachtung);
+			$db.openDoc(hBeobId, {
+				success: function(Beob) {
+					//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+					aArtGruppe = Beob.aArtGruppe;
+					aArtName = Beob.aArtName;
+					aArtId = Beob.aArtId;
+					//fixe Felder aktualisieren
+					$("#aArtGruppe").val(Beob.aArtGruppe);
+					$("#aArtGruppe").selectmenu();
+					$("#aArtGruppe").selectmenu("refresh");
+					$("#aArtName").val(Beob.aArtName);
+					$("#aArtName").selectmenu();
+					$("#aArtName").selectmenu("refresh");
+					var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, Feldliste, Beob);
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 						if (get_url_param("Status") == "neu") {
 							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 							speichereAlles();
+							var Formularwerte = {};
+							Formularwerte = $("#hArtEditForm").serializeObject();
+							//Werte aus dem Formular aktualisieren
+							for (i in Formularwerte) {
+								if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+									Beob[i] = Formularwerte[i];
+								} else if (Beob[i]) {
+									delete Beob[i]
+								}
+							}
+							$db.saveDoc(Beob);
 						}
 					}
 					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
+					erstelleAttachments(hBeobId);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
 				}
@@ -1165,7 +1190,7 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 }
 
 //generiert den html-Inhalt für Textinputs
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
 	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -1184,7 +1209,7 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 }
 
 //generiert den html-Inhalt für Slider
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
 	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -1205,7 +1230,7 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 }
 
 //generiert den html-Inhalt für Textarea
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -1222,7 +1247,7 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 }
 
 //generiert den html-Inhalt für Toggleswitch
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
@@ -1239,7 +1264,7 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 }
 
 //generiert den html-Inhalt für Checkbox
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
@@ -1277,7 +1302,7 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 }
 
 //generiert den html-Inhalt für Radio
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
@@ -1314,7 +1339,7 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 }
 
 //generiert den html-Inhalt für Selectmenus
-//wird von erstelle_hArtEdit aufgerufen
+//wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
 	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
