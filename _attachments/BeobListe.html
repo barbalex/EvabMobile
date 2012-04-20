@@ -77,7 +77,7 @@
 			window.open("BeobEdit.html?id=" + BeobId, target="_self");
 		});
 
-		$("#BeobListeMapÖffnen").tap(function(event) {
+		$("#BeobListePageFooter").on('click', '#BeobListeMapÖffnen', function(event) {
 			$.mobile.changePage("#BeobListeMap");
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			contentHeight = $(window).height() - 43;

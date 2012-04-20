@@ -143,7 +143,7 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("select#aArtName").tap(function(event){
+				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird

@@ -1884,11 +1884,6 @@ function neuesFeld(User, Pfad) {
 						"iconpos"	: "notext",
 						"icon"		: "arrow-" + ( reverse ? "l" : "r")
 					})
-					/*.bind( "vclick", function(){
-						var NächsteOderVorige = ( reverse ? "vorige" : "nächste");
-						nächsteVorigeBeob(BeobId, NächsteOderVorige);
-						return false;
-					});*/
 			});
 		}		
 	});

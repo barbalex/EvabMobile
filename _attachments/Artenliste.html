@@ -72,7 +72,7 @@
 				speichereNeueBeob(User, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 			} else if (Von == "ArtEdit") {
 				//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
-				window.open("_show/ArtEdit/" + ArtId, target="_self");
+				window.open("ArtEdit.html?ArtId=" + ArtId, target="_self");
 			} else {
 				speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
 			}

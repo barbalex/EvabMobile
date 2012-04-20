@@ -73,18 +73,24 @@
 
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#zurück', function() {
-					var zurueck = zurueck_global || "BeobListe.html";
+					var zurueck;
+					if (zurueck_global == undefined) {
+						zurueck = "BeobListe.html";
+					} else {
+						zurueck = zurueck_global;
+					}
+					//var zurueck = zurueck_global || "BeobListe.html";
 					$.mobile.changePage(zurueck);
 				});
 
 				//Artwechsl managen, ausgehend von Artgruppe
-				$("#ArtEditForm").on("click", "#ArtGruppe", function(event) {
+				$("#ArtEditForm").on("click", "#ArtEdit_ArtGruppe", function(event) {
 					event.preventDefault();
 					zuArtgruppenliste();
 				});
 
 				//Artwechsel managen, ausgehend von ArtName
-				$("#ArtEditForm").on("click", "#ArtBezeichnungL", function(event) {
+				$("#ArtEditForm").on("click", "#ArtEdit_ArtBezeichnungL", function(event) {
 					event.preventDefault();
 					zuArtliste();
 				});
