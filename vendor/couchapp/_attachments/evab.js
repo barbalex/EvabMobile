@@ -543,35 +543,32 @@ function löscheDokument(DocId) {
 	});
 }
 
-Function.prototype.andThen=function(g) {
-  var f=this;
-  return function() {
-    f();g();
-  }
-};
-
-function Manager() {
-  this.callback=function () {}; // do nothing
-  this.registerCallback=function(callbackFunction) {
-    this.callback=(this.callback).andThen(callbackFunction);
-  }
-}
-
 //generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
 //Mitgeben: id der Art, User, Artgruppe
-function erstelleArtEdit(ID) {
+function erstelleArtEdit(ArtId) {
 	$("#ArtEditFormHtml").empty();
 	//holt die Art aus der DB
 	$db = $.couch.db("evab");
-	$db.openDoc(ID, {
+	$db.openDoc(ArtId, {
 		success: function(Art) {
+			//diese Variabeln werden in ArtEdit.html gebraucht
+			ArtEdit_aArtGruppe = Art.ArtGruppe
+			//fixe Felder aktualisieren
+			$("#ArtEdit_ArtGruppe").selectmenu();
+			$("#ArtEdit_ArtGruppe").val(ArtEdit_aArtGruppe);
+			$("#ArtEdit_ArtGruppe").html("<option value='" + ArtEdit_aArtGruppe + "'>" + ArtEdit_aArtGruppe + "</option>");
+			$("#ArtEdit_ArtGruppe").selectmenu("refresh");
+			$("#ArtEdit_ArtBezeichnungL").selectmenu();
+			$("#ArtEdit_ArtBezeichnungL").val(Art.ArtBezeichnungL);
+			$("#ArtEdit_ArtBezeichnungL").html("<option value='" + Art.ArtBezeichnungL + "'>" + Art.ArtBezeichnungL + "</option>");
+			$("#ArtEdit_ArtBezeichnungL").selectmenu("refresh");
 			var HtmlContainer = generiereHtmlFuerArtEditForm(Art);
 			//nur anfügen, wenn Felder erstellt wurden
 			if (HtmlContainer != '') {
 				HtmlContainer = "<hr />" + HtmlContainer;
 				$("#ArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 			}
-			$("#Hinweistext").html("");
+			$("#ArtEdit_Hinweistext").html("");
 		}
 	});
 }
@@ -1565,6 +1562,10 @@ function speichereLetzteUrl(User) {
 	});
 }
 
+
+//erstellt die Google-Map Karte für die Orte eines Raums
+//wird aufgerufen von RaumEdit.html und OrtListe.html
+//erwartet den user und die RaumId
 function erstelleKarteFürRaum(User, RaumId) {
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
@@ -1601,12 +1602,14 @@ function erstelleKarteFürRaum(User, RaumId) {
 				for(i in data.rows) {
 					Ort = data.rows[i].doc;
 					var hOrtId = Ort._id;
+					var hRaumId = Ort.hRaumId;
+					var hProjektId = Ort.hProjektId;
 					var oName = Ort.oName;
 					var oXKoord = Ort.oXKoord;
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "../../_show/hOrtEdit/" + hOrtId;
+					var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt == 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -1658,6 +1661,9 @@ function erstelleKarteFürRaum(User, RaumId) {
 	});
 }
 
+//Erstellt die Google-Map Karte für Orte eines Projekts
+//wird aufgerufen von ProjektEdit.html und RaumListe.html
+//erwartet User und ProjektId
 function erstelleKarteFürProjekt(User, ProjektId) {
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
@@ -1694,105 +1700,14 @@ function erstelleKarteFürProjekt(User, ProjektId) {
 				for(i in data.rows) {
 					Ort = data.rows[i].doc;
 					var hOrtId = Ort._id;
+					var hRaumId = Ort.hRaumId;
+					var hProjektId = Ort.hProjektId;
 					var oName = Ort.oName;
 					var oXKoord = Ort.oXKoord;
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "../../_show/hOrtEdit/" + hOrtId;
-					var latlng2 = new google.maps.LatLng(lat2, lng2);
-					if (anzOrt == 1) {
-						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-						latlng = latlng2;
-					} else {
-						//Kartenausschnitt um diese Koordinate erweitern
-						bounds.extend(latlng2);
-					}
-					var marker = new MarkerWithLabel({ 
-						map: map,
-						position: latlng2,  
-					    title: oName.toString(),
-					    labelContent: oName,
-					    labelAnchor: new google.maps.Point(22, 0),
-					    labelClass: "MapLabel", // the CSS class for the label
-						labelStyle: {opacity: 0.75}
-					});
-					markers.push(marker);
-					var contentString = '<div id="content">'+
-					    '<div id="siteNotice">'+
-					    '</div>'+
-					    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-					    '<div id="bodyContent" class="GmInfowindow">'+
-					    '<p>X-Koordinate: ' + oXKoord + '</p>'+
-					    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-					    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-					    '</div>'+
-					    '</div>';
-					makeListener(map, marker, contentString);
-				}
-				var mcOptions = {maxZoom: 17};
-				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-				if (anzOrt == 1) {
-					//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-					map.setCenter(latlng);
-					map.setZoom(18);
-				} else {
-					//Karte auf Ausschnitt anpassen
-					map.fitBounds(bounds);
-				}
-			}
-			function makeListener(map, marker, contentString) {
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(contentString);
-					infowindow.open(map,marker);
-				});
-			}
-		}
-	});
-}
-
-function erstelleKarteFürProjektliste(User) {
-	$db = $.couch.db("evab");
-	//Zuerst Orte abfragen
-	$db.view('evab/hProjektlisteOrteFuerKarte?key="' + User + '"&include_docs=true', {
-		success: function(data) {
-			var i;
-			var anzOrt = 0;
-			var Ort;
-			var infowindow = new google.maps.InfoWindow();
-			for(i in data.rows) {
-				//Orte zählen
-				anzOrt += 1;
-			}
-			if (anzOrt == 0) {
-				//Keine Orte: Hinweis und zurück
-				melde("Es gibt keine Orte mit Koordinaten");
-				history.back();
-			} else {
-				//Orte vorhanden: Karte aufbauen
-				var lat = 47.383333;
-				var lng = 8.533333;
-				var latlng = new google.maps.LatLng(lat, lng);
-				var options = {
-				    zoom: 15,
-				    center: latlng,
-				    streetViewControl: false,
-				    mapTypeId: google.maps.MapTypeId.HYBRID
-				};
-				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-				google.maps.event.trigger(map,'resize');
-				var bounds = new google.maps.LatLngBounds();
-				//für alle Orte Marker erstellen
-				var markers = [];
-				for(i in data.rows) {
-					Ort = data.rows[i].doc;
-					var hOrtId = Ort._id;
-					var oName = Ort.oName;
-					var oXKoord = Ort.oXKoord;
-					var oYKoord = Ort.oYKoord;
-					var lat2 = Ort.oLatitudeDecDeg;
-					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "_show/hOrtEdit/" + hOrtId;
+					var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt == 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern

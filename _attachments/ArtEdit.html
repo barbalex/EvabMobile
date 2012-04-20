@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<title>EvAB</title>
+  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+	<script type="text/javascript">			
+		$(document).on("mobileinit", function() {
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.page.prototype.options.degradeInputs.time = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
+			$.event.special.swipe.horizontalDistanceThreshold = 250;
+			$.mobile.buttonMarkup.hoverDelay = 0;
+		});
+    </script>	
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
+  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+  </head>
+  <body>
+	<div data-role="page" id="ArtEditPage">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+			<a href="#" id="zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+			<h1>Arteigenschaften</h1>
+		</div>
+		<div data-role="content" id="ArtEditContent">
+			<form id="ArtEditForm" action="#" method="get" autocomplete="off">
+				<div data-role='fieldcontain'>
+					<label for='ArtEdit_ArtGruppe' class='select'>Artgruppe:</label>
+					<select id='ArtEdit_ArtGruppe' data-icon='arrow-r' data-native-menu='true'>
+					</select>
+				</div>
+				<div data-role='fieldcontain'>
+					<label for='ArtEdit_ArtBezeichnungL' class='select'>Artname:</label>
+					<select id='ArtEdit_ArtBezeichnungL' data-icon='arrow-r' data-native-menu='true'>
+					</select>
+				</div>
+				<div id="ArtEditFormHtml" data-role="collapsible-set" data-theme="b" data-content-theme="c">
+
+				</div>
+			</form>
+			<p id="ArtEdit_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Informationen werden aufgebaut...</p>
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			$(":jqmData(role='page')").on("pageinit", function() {
+				
+				User = "";
+				//ArtId wird mit globaler Variable übergeben, weil unveständlicherweise die Übergabe mit url nicht klappt
+				//falls Seite direkt aufgerufen wird, muss die ArtId aber doch aus url geholt werden
+				ArtId = get_url_param("ArtId") || ArtId_global;
+
+				prüfeAnmeldung();
+
+				erstelleArtEdit(ArtId);
+
+				speichereLetzteUrl(User);
+
+				//zurück-Button steuern
+				$("#ArtEditPage").on('click', '#zurück', function() {
+					var zurueck = zurueck_global || "BeobListe.html";
+					$.mobile.changePage(zurueck);
+				});
+
+				//Artwechsl managen, ausgehend von Artgruppe
+				$("#ArtEditForm").on("click", "#ArtGruppe", function(event) {
+					event.preventDefault();
+					zuArtgruppenliste();
+				});
+
+				//Artwechsel managen, ausgehend von ArtName
+				$("#ArtEditForm").on("click", "#ArtBezeichnungL", function(event) {
+					event.preventDefault();
+					zuArtliste();
+				});
+
+				function zuArtgruppenliste() {
+					window.open("Artgruppenliste.html?User=" + User + "&Von=ArtEdit", target="_self");
+				}
+
+				function zuArtliste() {
+					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
+					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
+					//wenn nein: direkt die Artenliste aufrufen
+					var viewname = 'evab/Artgruppen?key="' + ArtEdit_aArtGruppe + '"';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function(data) {
+							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							if (ArtGruppen_2_L) {
+								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit", target="_self");
+							} else {
+								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit", target="_self");
+							}
+						}
+					});
+				}
+
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session) {
+					    	if(session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
+							}
+					    }
+					});
+				}
+			});	
+		</script>
+	</div>
+  </body>
+</html>

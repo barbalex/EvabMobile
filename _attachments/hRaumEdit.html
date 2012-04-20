@@ -7,10 +7,14 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
 		$(document).on("mobileinit", function() {
+			$.mobile.page.prototype.options.degradeInputs.date = 'text';
+			$.mobile.page.prototype.options.degradeInputs.time = 'text';
+			$.mobile.selectmenu.prototype.options.nativeMenu = false;
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
@@ -18,10 +22,12 @@
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
   	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
