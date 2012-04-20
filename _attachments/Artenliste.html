@@ -59,10 +59,10 @@
 			Pfad = "../../";
 		}
 		var BeobId = get_url_param("BeobId") || "";
-		var hProjektId = get_url_param("hProjektId") || "";
-		var hRaumId = get_url_param("hRaumId") || "";
-		var hOrtId = get_url_param("hOrtId") || "";
-		var hZeitId = get_url_param("hZeitId") || "";
+		var ProjektId = get_url_param("ProjektId") || "";
+		var RaumId = get_url_param("RaumId") || "";
+		var OrtId = get_url_param("OrtId") || "";
+		var ZeitId = get_url_param("ZeitId") || "";
 
 		erstelleArtenliste();
 
@@ -71,7 +71,7 @@
 			var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 			var ArtId = $(this).attr("artid");
 			if (Status == "neu") {
-				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId);
+				speichereNeueBeob(Pfad, User, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 			} else if (Von == "ArtEdit") {
 				//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 				window.open("_show/ArtEdit/" + ArtId, target="_self");

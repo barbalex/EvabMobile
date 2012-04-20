@@ -71,14 +71,13 @@
   	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 	$(":jqmData(role='page')").on("pagebeforecreate", function() {
 		
-		var Pfad = "";
 		User = "";
 		
-		prüfeAnmeldung(Pfad);
+		prüfeAnmeldung();
 
 		$("#beobachtungen").on("swipeleft", ".beob", function() {
 			var BeobId = $(this).attr('id');
-			window.open("_show/BeobEdit/" + BeobId, target="_self");
+			window.open("BeobEdit.html?id=" + BeobId, target="_self");
 		});
 
 		$("#BeobListeMapÖffnen").tap(function(event) {
@@ -222,7 +221,7 @@
 		window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
 	}
 	
-	function prüfeAnmeldung(Pfad) {		
+	function prüfeAnmeldung() {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -234,7 +233,7 @@
 		    	if(session.userCtx.name != (undefined || null)) {
 		        	User = session.userCtx.name;
 		        } else {
-					window.open(Pfad + "index.html?Status=neu", target="_self");
+					window.open("index.html?Status=neu", target="_self");
 				}
 		    }
 		});

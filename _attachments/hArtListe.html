@@ -9,7 +9,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
+	<script type="text/javascript">
 		$(document).on("mobileinit", function() {
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
@@ -75,20 +75,20 @@
 				speichereLetzteUrl(User);
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + "{{hRaumId}}" + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + "{{hOrtId}}" + "&RaumId=" + "{{hRaumId}}" + "&ProjektId=" + ProjektId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
-				var url = "../hZeitEdit/" + "{{id}}";
+				var url = "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 				$("[name='hZeitLink']").attr('href', url);
 
 				//Link zur ArtListe in Navbar setzen
-				$("#hArtListeLink").attr("href", "../hArtListe/" + "{{id}}");
+				$("#hArtListeLink").attr("href", "hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#Menu', function() {
@@ -102,8 +102,8 @@
 				});
 
 				$("#Arten").on("swipeleft", ".beob", function() {
-					var ArtId = $(this).attr('id');
-					window.open("../hArtEdit/" + ArtId, target="_self");
+					var hBeobId = $(this).attr('hBeobId');
+					window.open("hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				});
 
 				$("#Arten").on("swipeleft", ".erste", function() {
@@ -115,7 +115,7 @@
 				});
 
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&hProjektId=" + ProjektId + "&hRaumId=" + "{{hRaumId}}" + "&hOrtId=" + "{{hOrtId}}" + "&hZeitId=" + "{{id}}", target="_self");
+					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 				}
 
 				function prüfeAnmeldung() {		
@@ -153,7 +153,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=_show/hArtListe/" + "{{id}}", target="_self");
+						        	window.open("FeldListe.html?zurueck=hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -197,9 +197,8 @@
 				
 			  	function refreshArtListe() {
 					$("#Arten").empty();
-					var hZeitId = "{{id}}";
 					$db = $.couch.db("evab");
-					$db.view('evab/hArtListe?startkey=["' + User + '", "' + hZeitId + '"]&endkey=["' + User + '", "' + hZeitId + '" ,{}]', {
+					$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
 						success: function(data) {
 							var i;
 							var anzArt = 0;
@@ -221,13 +220,13 @@
 								ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external" class="erste">Erste Art erfassen</a></li>';
 							} else {
 								for(i in data.rows) {                //Liste aufbauen
-									Art = data.rows[i].value;
+									hBeob = data.rows[i].value;
 									key = data.rows[i].key;
-									aArtGruppe = Art.aArtGruppe;
+									aArtGruppe = hBeob.aArtGruppe;
 									ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
 									var bArtName = key[2];
-									externalPage = "_show/hArtEdit/" + Art._id;
-									listItem = "<li class=\"beob ui-li-has-thumb\" id=\"" + Art._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+									externalPage = "_show/hArtEdit/" + hBeob._id;
+									listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
 										"<a href=\"" + externalPage + "\" rel=\"external\">" +
 										"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 										"<h3>" + bArtName + "<\/h3>" +

@@ -219,7 +219,7 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(Pfad, UserName, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
+function speichereNeueBeob(UserName, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit

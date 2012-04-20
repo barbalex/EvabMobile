@@ -245,22 +245,22 @@
 				}
 
 				function zuArtgruppenliste(Status) {
-					window.open("Artgruppenliste.html?User=" + User + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&hProjektId=" + ProjektId + "&hRaumId=" + RaumId + "&hOrtId=" + OrtId + "&hZeitId=" + ZeitId, target="_self");
+					window.open("Artgruppenliste.html?User=" + User + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 				}
 
 				function zuArtliste(aArtGruppe, Status) {
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					var viewname = 'evab/Artgruppen?key="' + "{{aArtGruppe}}" + '"';
+					var viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&hProjektId=" + ProjektId + "&hRaumId=" + RaumId + "&hOrtId=" + OrtId + "&hZeitId=" + ZeitId, target="_self");
+								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 							} else {
-								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&hProjektId=" + ProjektId + "&hRaumId=" + RaumId + "&hOrtId=" + OrtId + "&hZeitId=" + ZeitId, target="_self");
+								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 							}
 						}
 					});
@@ -283,21 +283,21 @@
 				      		},
 				      		'Arteigenschaften': {
 						      	click: function() {
-						        	window.open("../ArtEdit/" + "{{aArtId}}" + "?zurueck=hArtEdit/" + hBeobId, target="_self");
+						        	window.open("ArtEdit.html" + aArtId + "?zurueck=hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "question"
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("../../FeldListe.html?zurueck=hArtEdit.html/" + hBeobId, target="_self");
+						        	window.open("FeldListe.html?zurueck=hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function() {
-						        	window.open('../../_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -311,14 +311,14 @@
 				      		},
 				      		'lokal installieren': {
 						      	click: function() {
-						        	window.open("../../Installieren.html", target="_self");
+						        	window.open("Installieren.html", target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
 						      	click: function() {
-						        	window.open("../../index.html?Status=neu", target="_self");
+						        	window.open("index.html?Status=neu", target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"

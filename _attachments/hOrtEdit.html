@@ -403,10 +403,9 @@
 				}
 
 				function löscheOrt() {
-					var hOrtId = OrtId;
 					var ArtenGelöscht, ZeitenGelöscht;
 					var Rückmeldung;
-					ArtenGelöscht = löscheArtenVonOrt(hOrtId);
+					ArtenGelöscht = löscheArtenVonOrt();
 					if (ArtenGelöscht != 0 && ArtenGelöscht == false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
@@ -416,7 +415,7 @@
 						} else {
 							Rückmeldung = "zugehörige Arten gelöscht";
 						}
-						ZeitenGelöscht = löscheZeitenVonOrt(hOrtId);
+						ZeitenGelöscht = löscheZeitenVonOrt();
 						if (ZeitenGelöscht != 0 && ZeitenGelöscht == false) {
 							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
@@ -429,7 +428,7 @@
 							}
 							// First open doc based on ID in order to get full document
 							$db = $.couch.db("evab");
-							return $db.openDoc(hOrtId, {
+							return $db.openDoc(OrtId, {
 								success: function(document) {
 									// lösche Ort
 									return $db.removeDoc(document, {
@@ -457,10 +456,10 @@
 				}
 				
 				//lösche alle einem Ort zugeordnete Arten
-				function löscheArtenVonOrt(hOrtId) { 
+				function löscheArtenVonOrt() { 
 					var AnzArtenGelöscht = 0; 
 					var DokumentGelöscht;
-					var viewname = 'evab/hArtIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
+					var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function(data) {
@@ -483,10 +482,10 @@
 				}
 
 				//lösche alle einem Ort zugeordnete Zeiten
-				function löscheZeitenVonOrt(hOrtId) { 
+				function löscheZeitenVonOrt() { 
 					var AnzZeitenGelöscht = 0;
 					var DokumentGelöscht;
-					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + hOrtId + '"]&endkey=["' + hOrtId + '",{}]';
+					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function(data) {
@@ -511,8 +510,7 @@
 				//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
 				//und gib diesen Wert zurück
 				function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
-					var hOrtId = OrtId;
-					var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + hOrtId + '"';
+					var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
 					var AnzahlZeiten = 0;
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
