@@ -67,16 +67,16 @@
 					var link;
 					switch (Von) {
 						case "BeobEdit":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
+							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "BeobListe":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von;
+							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "hArtListe":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "hArtEdit":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Status=" + Status + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "ArtEdit":
 							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
@@ -85,8 +85,10 @@
 					if (BeobId != "") {
 						link += "&BeobId=" + BeobId;
 					}
-					//window.open(link, target="_self");
 					$.mobile.changePage(link);
+					if (Status == 'neu') {
+						GetGeolocation();
+					}
 				});
 
 				$("#agl_Header").on("click", "#agl_ButtonSprache", function(event) {       

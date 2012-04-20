@@ -310,9 +310,12 @@ function speichereNeueBeob_03(Von, doc) {
 			$db.saveDoc(doc, {
 				success: function(data) {
 					if (Von == "hArtListe" || Von == "hArtEdit") {
-						window.open("hArtEdit.html?hBeobId=" + data.id + "&ZeitId=" + data.hZeitId + "&OrtId=" + data.hOrtId + "&RaumId=" + data.hRaumId + "&ProjektId=" + data.hProjektId + "&Status=neu", target="_self");
+						//window.open("hArtEdit.html?hBeobId=" + data.id + "&ZeitId=" + data.hZeitId + "&OrtId=" + data.hOrtId + "&RaumId=" + data.hRaumId + "&ProjektId=" + data.hProjektId, target="_self");
+						$.mobile.changePage("hArtEdit.html?id=" + data.id);
 					} else {
-						window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
+						//window.open("BeobEdit.html?id=" + data.id, target="_self");
+						$.mobile.changePage("BeobEdit.html?id=" + data.id);
+						GetGeolocation();
 					}
 				},
 				error: function() {
@@ -626,6 +629,34 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 	return HtmlContainer;
 }
 
+//initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
+//wird aufgerufen von BeobEdit.html und Felder_Beob.html
+function initiiereBeobEdit(id) {
+	//hier werden Variablen gesetzt,
+	//in die fixen Felder Werte eingesetzt,
+	//die dynamischen Felder aufgebaut
+	//und die Nav-Links gesetzt (hat hier keine!)
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeBeob', {
+		success: function(Feldliste) {
+			$db.openDoc(id, {
+				success: function(Beob) {
+					//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+					BeobId = Beob._id;
+					aArtGruppe = Beob.aArtGruppe;
+					aArtName = Beob.aArtName;
+					aArtId = Beob.aArtId;
+					oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+					setzeFixeFelderInBeobEdit(Beob);
+					erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User);
+				}
+			});
+		}
+	});
+}
+
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, User
@@ -659,14 +690,6 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
 	}
 	$("#Hinweistext").html("");
 	erstelleAttachments(Beob._id);
-	//in neuen Datensätzen verorten
-	if (get_url_param("Status") == "neu") {
-		//in neuen Datensätzen verorten
-		//aber nur, wenn noch keine Koordinaten drin sind
-		if (!$("#oXKoord").val()) {
-			GetGeolocation();
-		}
-	}
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 }
@@ -1038,6 +1061,57 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 		}
 	}
 	return HtmlContainer;
+}
+
+//managt den Aufbau aller Daten und Felder für hBeobEdit.html
+//erwartet die hBeobId
+//wird aufgerufen von hBeobEdit.html und Felder_Beob.html
+function initiierehBeobEdit(BeobId) {
+	//hier werden Variablen gesetzt,
+	//in die fixen Felder Werte eingesetzt,
+	//die dynamischen Felder aufgebaut
+	//und die Nav-Links gesetzt
+	$db = $.couch.db("evab");
+	//holt die Feldliste aus der DB
+	$db.view('evab/FeldListeArt', {
+		success: function(data) {
+			Feldliste = data;
+			$db.openDoc(BeobId, {
+				success: function(Beob) {
+					//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+					ProjektId = Beob.hProjektId;
+					RaumId = Beob.hRaumId;
+					OrtId = Beob.hOrtId;
+					ZeitId = Beob.hZeitId;
+					hBeobId = Beob._id;
+					aArtGruppe = Beob.aArtGruppe;
+					aArtName = Beob.aArtName;
+					aArtId = Beob.aArtId;
+					//fixe Felder aktualisieren
+					$("#aArtGruppe").selectmenu();
+					$("#aArtGruppe").val(aArtGruppe);
+					$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
+					$("#aArtGruppe").selectmenu("refresh");
+					$("#aArtName").selectmenu();
+					$("#aArtName").val(aArtName);
+					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
+					$("#aArtName").selectmenu("refresh");
+					erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User);
+					//Link zum Projekt in Navbar setzen
+					$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+					//Link zum Raum in Navbar setzen
+					$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					//Link zum Ort in Navbar setzen
+					$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					//Link zur Zeit in Navbar setzen
+					$("#hZeitLink").attr("href", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					//Link zur ArtListe in Navbar setzen
+					var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+					$("[name='hArtListeLink']").attr('href', url);
+				}
+			});
+		}
+	});
 }
 
 //generiert dynamisch die Artgruppen-abhängigen Felder

@@ -80,7 +80,7 @@
 
 				//Felder in BeobEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_BeobPage', function() {
-					erstelleBeobEdit(BeobId, User);
+					initiiereBeobEdit(BeobId);
 				});
 
 				$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {

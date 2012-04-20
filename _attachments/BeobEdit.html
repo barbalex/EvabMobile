@@ -117,45 +117,21 @@
 				prüfeAnmeldung();
 
 				initiiereBeobEdit(get_url_param("id"));
-
-				function initiiereBeobEdit(id) {
-					//hier werden Variablen gesetzt,
-					//in die fixen Felder Werte eingesetzt,
-					//die dynamischen Felder aufgebaut
-					//und die Nav-Links gesetzt (hat hier keine!)
-					$db = $.couch.db("evab");
-					//holt die Feldliste aus der DB
-					$db.view('evab/FeldListeBeob', {
-						success: function(Feldliste) {
-							$db.openDoc(id, {
-								success: function(Beob) {
-									//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-									BeobId = Beob._id;
-									aArtGruppe = Beob.aArtGruppe;
-									aArtName = Beob.aArtName;
-									aArtId = Beob.aArtId;
-									oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-									oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
-									setzeFixeFelderInBeobEdit(Beob);
-									erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User);
-								}
-							});
-						}
-					});
-				}
 				
 				speichereLetzteUrl(User);
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
 					event.preventDefault();
-					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
+					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
+					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					window.open("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+					//window.open("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
 				});
 
 				//sichtbare Felder wählen
