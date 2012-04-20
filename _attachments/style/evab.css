@@ -297,10 +297,10 @@ margin: 3px 3px 3px 4px;
 }
 .ui-pagination .ui-pagination-prev {
   left: 0;
-  top: 150px;
+  top: 160px;
 }
 .ui-pagination .ui-pagination-next {
-  top: 150px;
+  top: 160px;
   right: 0;
 }
 .ui-pagination .ui-pagination-prev a {

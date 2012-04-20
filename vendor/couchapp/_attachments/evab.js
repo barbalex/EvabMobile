@@ -310,7 +310,7 @@ function speichereNeueBeob_03(Von, doc) {
 			$db.saveDoc(doc, {
 				success: function(data) {
 					if (Von == "hArtListe" || Von == "hArtEdit") {
-						window.open("_show/hArtEdit/" + data.id + "?Status=neu", target="_self");
+						window.open("hArtEdit.html?hBeobId=" + data.id + "&ZeitId=" + data.hZeitId + "&OrtId=" + data.hOrtId + "&RaumId=" + data.hRaumId + "&ProjektId=" + data.hProjektId + "&Status=neu", target="_self");
 					} else {
 						window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
 					}
@@ -339,7 +339,7 @@ $db.openDoc(BeobId, {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
 						window.open("BeobEdit.html?id=" + BeobId, target="_self");
 					} else {
-						window.open("_show/hArtEdit/" + BeobId, target="_self");
+						window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target="_self");
 					}
 				},
 				error: function() {
@@ -1080,11 +1080,13 @@ function erstellehBeobEdit(hBeobId, User) {
 					aArtName = Beob.aArtName;
 					aArtId = Beob.aArtId;
 					//fixe Felder aktualisieren
-					$("#aArtGruppe").val(Beob.aArtGruppe);
 					$("#aArtGruppe").selectmenu();
+					$("#aArtGruppe").val(aArtGruppe);
+					$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
 					$("#aArtGruppe").selectmenu("refresh");
-					$("#aArtName").val(Beob.aArtName);
 					$("#aArtName").selectmenu();
+					$("#aArtName").val(aArtName);
+					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
 					$("#aArtName").selectmenu("refresh");
 					var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, Feldliste, Beob);
 					if (HtmlContainer != "") {

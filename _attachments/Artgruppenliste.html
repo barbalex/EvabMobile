@@ -50,13 +50,8 @@
 		
 		UserId = "";
 		var User = get_url_param("User");
-		var Status = get_url_param("Status");
+		var Status = get_url_param("Status") || "edit";
 		var Von = get_url_param("Von");
-		
-		var Pfad = "";		
-		if (Von == "BeobListe") {
-			Pfad = "../../";
-		}
 		var BeobId = get_url_param("BeobId") || "";
 		var ProjektId = get_url_param("ProjektId") || "";
 		var RaumId = get_url_param("RaumId") || "";

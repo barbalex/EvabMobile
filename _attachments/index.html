@@ -12,7 +12,7 @@
 		$(document).on("mobileinit", function() {
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>	
+    </script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
@@ -129,6 +129,8 @@
 			success: function(data) {
 				var doc = data.rows[0].value;
 				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
+				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
+				if (LetzteUrl == "/evab/_design/evab/index.html") {LetzteUrl = "BeobListe.html"}
 				window.open(LetzteUrl, target="_self");
 			}
 		});

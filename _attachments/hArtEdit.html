@@ -47,14 +47,12 @@
 			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
 				<div data-role='fieldcontain'>
 					<label for='aArtGruppe' class='select'>Artgruppe:</label>
-					<select name='aArtGruppe' id='aArtGruppe' class='speichern' data-icon='arrow-r' data-native-menu='true' value="{{aArtGruppe}}">
-						<option value="{{aArtGruppe}}">{{aArtGruppe}}</option>
+					<select name='aArtGruppe' id='aArtGruppe' class='speichern' data-icon='arrow-r' data-native-menu='true'>
 					</select>
 				</div>
 				<div data-role='fieldcontain'>
 					<label for='aArtName' class='select'>Artname:</label>
-					<select name='aArtName' id='aArtName' class='speichern' data-icon='arrow-r' data-native-menu='true' value="{{aArtName}}">
-						<option value="{{aArtName}}">{{aArtName}}</option>
+					<select name='aArtName' id='aArtName' class='speichern' data-icon='arrow-r' data-native-menu='true'>
 					</select>
 				</div>
 				<div id="hArtEditFormHtml">
@@ -73,6 +71,10 @@
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
+			<ul data-role="pagination">
+				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+			</ul>
 		</div>
 		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
@@ -131,24 +133,22 @@
 					}
 				});
 
-				var Status = get_url_param("Status");
-
 				//Neue Beobachtung managen
 				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function(event) {
 					event.preventDefault();
-					zuArtgruppenliste("neu");
+					zuArtgruppenliste();
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#hArtEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					zuArtgruppenliste("edit");
+					zuArtgruppenliste();
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#hArtEditForm").on("click", "#aArtName", function(event) {
 					event.preventDefault();
-					zuArtliste(aArtGruppe, "edit");
+					zuArtliste(aArtGruppe);
 				});
 
 				//sichtbare Felder wählen
@@ -210,6 +210,35 @@
 					nächsteVorigeArt(hBeobId, "vorige");
 				});
 
+				//Pagination Pfeil voriger initialisieren
+				$("#hArtEditPage").on("vclick", "#PaginationPrev", function(event) {
+					event.preventDefault();
+					nächsteVorigeArt(hBeobId, "vorige");
+				});
+
+				//Pagination Pfeil nächster initialisieren
+				$("#hArtEditPage").on("vclick", "#PaginationNext", function(event) {
+					event.preventDefault();
+					nächsteVorigeArt(hBeobId, "nächste");
+				});
+
+				//Pagination Pfeiltasten initialisieren
+				$(document).on("keyup", function(e) {
+					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#hArtEditPage').is(':visible') ){
+						// Left arrow
+						if( e.keyCode === $.mobile.keyCode.LEFT ){
+							nächsteVorigeArt(hBeobId, "vorige");
+							e.preventDefault();
+						}
+						// Right arrow
+						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+							nächsteVorigeArt(hBeobId, "nächste");
+							e.preventDefault();
+						}
+					}
+				});
+
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
 					event.preventDefault();
 					var Dateiname = this.id;
@@ -244,11 +273,11 @@
 					});
 				}
 
-				function zuArtgruppenliste(Status) {
-					window.open("Artgruppenliste.html?User=" + User + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+				function zuArtgruppenliste() {
+					window.open("Artgruppenliste.html?User=" + User + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 				}
 
-				function zuArtliste(aArtGruppe, Status) {
+				function zuArtliste(aArtGruppe) {
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -258,9 +287,9 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 							} else {
-								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=" + Status + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 							}
 						}
 					});
@@ -412,16 +441,18 @@
 									switch (NächsteOderVorige) {
 									case "nächste":
 										if (i < AnzArt) {
-											ArtIdNächste = data.rows[parseInt(i)+1].value._id;
-											window.open(ArtIdNächste, target="_self");
+											hBeobId = data.rows[parseInt(i)+1].value._id;
+											erstellehBeobEdit(hBeobId, User);
+											window.history.pushState("", "", "hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 										} else {
 											melde("Das ist die letzte Art");
 										}
 										break;
 									case "vorige":
 										if (i > 0) {
-											ArtIdVorige = data.rows[i-1].value._id;
-											window.open(ArtIdVorige, target="_self");
+											hBeobId = data.rows[i-1].value._id;
+											erstellehBeobEdit(hBeobId, User);
+											window.history.pushState("", "", "hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 										} else {
 											window.open("hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 										}

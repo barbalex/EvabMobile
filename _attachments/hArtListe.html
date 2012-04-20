@@ -225,7 +225,7 @@
 									aArtGruppe = hBeob.aArtGruppe;
 									ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
 									var bArtName = key[2];
-									externalPage = "_show/hArtEdit/" + hBeob._id;
+									externalPage = "hArtEdit.html?hBeobId=" + hBeob._id + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 									listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
 										"<a href=\"" + externalPage + "\" rel=\"external\">" +
 										"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
