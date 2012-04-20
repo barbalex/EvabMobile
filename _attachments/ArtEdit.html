@@ -58,28 +58,19 @@
 			<p id="ArtEdit_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Informationen werden aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageshow", function() {
 				
 				User = "";
-				//ArtId wird mit globaler Variable übergeben, weil unveständlicherweise die Übergabe mit url nicht klappt
-				//falls Seite direkt aufgerufen wird, muss die ArtId aber doch aus url geholt werden
-				ArtId = get_url_param("ArtId") || ArtId_global;
-
 				prüfeAnmeldung();
 
+				var ArtId = get_url_param("ArtId");
 				erstelleArtEdit(ArtId);
 
 				speichereLetzteUrl(User);
 
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#zurück', function() {
-					var zurueck;
-					if (zurueck_global == undefined) {
-						zurueck = "BeobListe.html";
-					} else {
-						zurueck = zurueck_global;
-					}
-					//var zurueck = zurueck_global || "BeobListe.html";
+					var zurueck = zurueck_global || "BeobListe.html";
 					$.mobile.changePage(zurueck);
 				});
 
@@ -96,7 +87,7 @@
 				});
 
 				function zuArtgruppenliste() {
-					window.open("Artgruppenliste.html?User=" + User + "&Von=ArtEdit", target="_self");
+					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Von=ArtEdit");
 				}
 
 				function zuArtliste() {
@@ -109,9 +100,9 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit", target="_self");
+								$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit");
 							} else {
-								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit", target="_self");
+								$.mobile.changePage("Artenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit");
 							}
 						}
 					});

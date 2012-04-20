@@ -92,22 +92,72 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageshow", function() {
 				
 				User = "";
-
-				hBeobId = get_url_param("hBeobId");
-				ZeitId = get_url_param("ZeitId");
-				OrtId = get_url_param("OrtId");
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
+				var hBeobId;
+				var ProjektId;
+				var RaumId;
+				var OrtId;
+				var ZeitId;
+				var aArtGruppe;
+				var aArtName;
+				var aArtId;
+				var Feldliste;
 
 				prüfeAnmeldung();
 
-				//hier werden als globale Variable gespeichert: aArtGruppe, aArtName, aArtId
-				//und in die fixen Felder Werte eingesetzt
-				//und die dynamischen Felder aufgebaut
-				erstellehBeobEdit(hBeobId, User);
+				initiierehBeobEdit(get_url_param("id"));
+
+				//managt den Aufbau aller Daten und Felder
+				//erwartet die hBeobId
+				function initiierehBeobEdit(BeobId) {
+					//hier werden Variablen gesetzt,
+					//in die fixen Felder Werte eingesetzt,
+					//die dynamischen Felder aufgebaut
+					//und die Nav-Links gesetzt
+					$db = $.couch.db("evab");
+					//holt die Feldliste aus der DB
+					$db.view('evab/FeldListeArt', {
+						success: function(data) {
+							Feldliste = data;
+							$db.openDoc(BeobId, {
+								success: function(Beob) {
+									//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+									ProjektId = Beob.hProjektId;
+									RaumId = Beob.hRaumId;
+									OrtId = Beob.hOrtId;
+									ZeitId = Beob.hZeitId;
+									hBeobId = Beob._id;
+									aArtGruppe = Beob.aArtGruppe;
+									aArtName = Beob.aArtName;
+									aArtId = Beob.aArtId;
+									//fixe Felder aktualisieren
+									$("#aArtGruppe").selectmenu();
+									$("#aArtGruppe").val(aArtGruppe);
+									$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
+									$("#aArtGruppe").selectmenu("refresh");
+									$("#aArtName").selectmenu();
+									$("#aArtName").val(aArtName);
+									$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
+									$("#aArtName").selectmenu("refresh");
+									erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User);
+									//Link zum Projekt in Navbar setzen
+									$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+									//Link zum Raum in Navbar setzen
+									$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+									//Link zum Ort in Navbar setzen
+									$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+									//Link zur Zeit in Navbar setzen
+									$("#hZeitLink").attr("href", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+									//Link zur ArtListe in Navbar setzen
+									var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+									$("[name='hArtListeLink']").attr('href', url);
+								}
+							});
+						}
+					});
+				}
 
 				speichereLetzteUrl(User);
 
@@ -163,22 +213,6 @@
 					//window.open("Felder_hArt.html?ArtGruppe=" + aArtGruppe, target="_self");
 					$.mobile.changePage("Felder_hArt.html?ArtGruppe=" + aArtGruppe);
 				});
-
-				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
-
-				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-
-				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-
-				//Link zur Zeit in Navbar setzen
-				$("#hZeitLink").attr("href", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-
-				//Link zur ArtListe in Navbar setzen
-				var url = "hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-				$("[name='hArtListeLink']").attr('href', url);
 
 				//Code für den Art-Löschen-Dialog
 				$("#hArtEditPageFooter").on('click', '#LöschenDialogLink', function() {
@@ -281,7 +315,7 @@
 				}
 
 				function zuArtgruppenliste() {
-					window.open("Artgruppenliste.html?User=" + User + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 				}
 
 				function zuArtliste(aArtGruppe) {
@@ -294,9 +328,9 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+								$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 							} else {
-								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+								$.mobile.changePage("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 							}
 						}
 					});
@@ -321,9 +355,7 @@
 						      	click: function() {
 						        	//Variabeln übergeben
 						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
-						        	zurueck_global = "hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-						        	//ArtId scheint über url von hArtEdit aus nicht übergeben zu werden...
-						        	ArtId_global = aArtId;
+						        	zurueck_global = "hArtEdit.html?id=" + hBeobId;
 						        	//Seite wechseln
 						        	$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
 				        		},
@@ -332,7 +364,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						        	window.open("FeldListe.html?zurueck=hArtEdit.html?id=" + hBeobId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -373,13 +405,6 @@
 				    	}
 				  	})
 				}
-				
-				Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-			  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
-					'dateFormat': 'YYYY-MM-DD',
-					'headerFormat': 'YYYY-MM-DD',
-					'monthsOfYear': Monate
-				});
 
 				function löscheBeobachtung(event) {
 					var docId = hBeobId;
@@ -391,7 +416,7 @@
 							$db.removeDoc(document, {
 								success: function() {
 									melde("Art gelöscht");
-									window.open("hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 								},
 								error: function() {
 									melde("Fehler: Art nicht gelöscht");
@@ -455,8 +480,9 @@
 									case "nächste":
 										if (i < AnzArt) {
 											hBeobId = data.rows[parseInt(i)+1].value._id;
-											erstellehBeobEdit(hBeobId, User);
-											window.history.pushState("", "", "hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											//erstellehBeobEdit(Feldliste, Beob, User);
+											initiierehBeobEdit(hBeobId);
+											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {
 											melde("Das ist die letzte Art");
 										}
@@ -464,10 +490,11 @@
 									case "vorige":
 										if (i > 0) {
 											hBeobId = data.rows[i-1].value._id;
-											erstellehBeobEdit(hBeobId, User);
-											window.history.pushState("", "", "hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											//erstellehBeobEdit(FeldListe, Beob, User);
+											initiierehBeobEdit(hBeobId);
+											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {
-											window.open("hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+											window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 										}
 										break;
 									}

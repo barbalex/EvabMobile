@@ -629,64 +629,46 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, User
-function erstelleBeobEdit(ID, User) {
+function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").empty();
-	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeBeob', {
-		success: function(Feldliste) {
-			$db.openDoc(ID, {
-				success: function(Beob) {
-					//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-					aArtGruppe = Beob.aArtGruppe;
-					aArtName = Beob.aArtName;
-					aArtId = Beob.aArtId;
-					oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
-
-					setzeFixeFelderInBeobEdit(Beob);
-					var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
-					//nur anfügen, wenn Felder erstellt wurden
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-						//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
-						$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						$("#BeobEditPage").trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							var Formularwerte = {};
-							Formularwerte = $("#BeobEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-									Beob[i] = Formularwerte[i];
-								} else if (Beob[i]) {
-									delete Beob[i]
-								}
-							}
-							$db.saveDoc(Beob);
-						}
-					}
-					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
-					//in neuen Datensätzen verorten
-					if (get_url_param("Status") == "neu") {
-						//in neuen Datensätzen verorten
-						//aber nur, wenn noch keine Koordinaten drin sind
-						if (!$("#oXKoord").val()) {
-							GetGeolocation();
-						}
-					}
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
+	var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
+	//nur anfügen, wenn Felder erstellt wurden
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+		//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
+		$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+		$("#BeobEditPage").trigger("create").trigger("refresh");
+		if (get_url_param("Status") == "neu") {
+			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+			var Formularwerte = {};
+			Formularwerte = $("#BeobEditForm").serializeObject();
+			//Werte aus dem Formular aktualisieren
+			for (i in Formularwerte) {
+				if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+					Beob[i] = Formularwerte[i];
+				} else if (Beob[i]) {
+					delete Beob[i]
 				}
-			});
+			}
+			$db.saveDoc(Beob);
 		}
-	});
+	}
+	$("#Hinweistext").html("");
+	erstelleAttachments(Beob._id);
+	//in neuen Datensätzen verorten
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen verorten
+		//aber nur, wenn noch keine Koordinaten drin sind
+		if (!$("#oXKoord").val()) {
+			GetGeolocation();
+		}
+	}
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
 }
 
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
@@ -1058,67 +1040,43 @@ function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
 	return HtmlContainer;
 }
 
-//generiert in hArtEdit.html dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: id der Beobachtung, User
-function erstellehBeobEdit(hBeobId, User) {
+//generiert dynamisch die Artgruppen-abhängigen Felder
+//Mitgeben: Feldliste, Beobachtung, User
+function erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hArtEditFormHtml").empty();
-	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeArt', {
-		success: function(Feldliste) {
-			$db.openDoc(hBeobId, {
-				success: function(Beob) {
-					//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
-					aArtGruppe = Beob.aArtGruppe;
-					aArtName = Beob.aArtName;
-					aArtId = Beob.aArtId;
-					//fixe Felder aktualisieren
-					$("#aArtGruppe").selectmenu();
-					$("#aArtGruppe").val(aArtGruppe);
-					$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
-					$("#aArtGruppe").selectmenu("refresh");
-					$("#aArtName").selectmenu();
-					$("#aArtName").val(aArtName);
-					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
-					$("#aArtName").selectmenu("refresh");
-					var HtmlContainer = generiereHtmlFuerhArtEditForm (User, aArtGruppe, Feldliste, Beob);
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-						$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
-							var Formularwerte = {};
-							Formularwerte = $("#hArtEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-									Beob[i] = Formularwerte[i];
-								} else if (Beob[i]) {
-									delete Beob[i]
-								}
-							}
-							$db.saveDoc(Beob);
-						}
-					}
-					$("#Hinweistext").html("");
-					erstelleAttachments(hBeobId);
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
+	var HtmlContainer = generiereHtmlFuerhArtEditForm (User, Feldliste, Beob);
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+		$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+		if (get_url_param("Status") == "neu") {
+			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+			var Formularwerte = {};
+			Formularwerte = $("#hArtEditForm").serializeObject();
+			//Werte aus dem Formular aktualisieren
+			for (i in Formularwerte) {
+				if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+					Beob[i] = Formularwerte[i];
+				} else if (Beob[i]) {
+					delete Beob[i]
 				}
-			});
+			}
+			$db.saveDoc(Beob);
 		}
-	});
+	}
+	$("#Hinweistext").html("");
+	erstelleAttachments(Beob._id);
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
 }
 
 //generiert das Html für Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, Beobachtung) {
+function generiereHtmlFuerhArtEditForm (User, Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1128,6 +1086,7 @@ function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, Beobachtung)
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
+	var ArtGruppe = Beob.aArtGruppe;
 	for(i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
@@ -1136,7 +1095,7 @@ function generiereHtmlFuerhArtEditForm (User, ArtGruppe, Feldliste, Beobachtung)
 			if (Status == "neu" && Feld.Standardwert) {
 				FeldWert = eval("Feld.Standardwert." + User) || "";
 			} else {
-				FeldWert = (eval("Beobachtung." + FeldName) || "");
+				FeldWert = (eval("Beob." + FeldName) || "");
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];

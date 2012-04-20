@@ -50,6 +50,289 @@
 				</ul>
 			</div>
 		</div>
+		<script type="text/javascript" charset="utf-8">
+		  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+			$(":jqmData(role='page')").on("pageinit", function() {
+				
+				User = "";
+				
+				prüfeAnmeldung();
+
+				erstelleBeobListe(User);
+				speichereLetzteUrl(User);
+
+				$("#beobachtungen").on("swipeleft", ".beob", function() {
+					var BeobId = $(this).attr('id');
+					window.open("BeobEdit.html?id=" + BeobId, target="_self");
+				});
+
+				$("#BeobListePageFooter").on('click', '#BeobListeMapÖffnen', function(event) {
+					$.mobile.changePage("#BeobListeMap");
+					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+					contentHeight = $(window).height() - 43;
+					$("#map_canvas").css("height", contentHeight + "px");
+				});
+
+				$(document).on("pageshow", '#BeobListeMap', function() {
+					//Karte aufbauen. Zuerst Beobachtungen abfragen
+					$db = $.couch.db("evab");
+					$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
+						success: function(data) {
+							var i;
+							var anzBeob = 0;
+							var beob;
+							var key;
+							var image;
+							var infowindow = new google.maps.InfoWindow();
+							for(i in data.rows) {
+								//Beobachtungen zählen
+								anzBeob += 1;
+							}
+							if (anzBeob == 0) {
+								//Keine Beobachtungen: Hinweis und zurück
+								melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
+								$.mobile.changePage("#BeobListePage");
+							} else {
+								//Beobachtungen vorhanden: Karte aufbauen
+								var lat = 47.383333;
+								var lng = 8.533333;
+								var latlng = new google.maps.LatLng(lat, lng);
+								var options = {
+								    zoom: 15,
+								    center: latlng,
+								    streetViewControl: false,
+								    mapTypeId: google.maps.MapTypeId.HYBRID
+								};
+								var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+								google.maps.event.trigger(map,'resize');
+								var bounds = new google.maps.LatLngBounds();
+								//für alle Beobachtungen Marker erstellen
+								var markers = [];
+								for(i in data.rows) {
+									beob = data.rows[i].doc;
+									var BeobId = beob._id;
+									var Datum = beob.zDatum;
+									var Zeit = beob.zUhrzeit;
+									var ArtGruppe = beob.aArtGruppe;
+									var image = "Artgruppenbilder/" + ArtGruppe + ".png";
+									var ArtName = beob.aArtName;
+									var Autor = beob.aAutor;
+									var lat2 = beob.oLatitudeDecDeg;
+									var lng2 = beob.oLongitudeDecDeg;
+									var externalPage = "BeobEdit.html?id=" + BeobId;
+									var latlng2 = new google.maps.LatLng(lat2, lng2);
+									if (anzBeob == 1) {
+										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+										latlng = latlng2;
+									} else {
+										//Kartenausschnitt um diese Koordinate erweitern
+										bounds.extend(latlng2);
+									}
+									var marker = new MarkerWithLabel({ 
+										map: map,
+										position: latlng2,  
+									    title: ArtName,
+									    icon: image,
+									    labelContent: ArtName,
+									    labelAnchor: new google.maps.Point(22, 0),
+									    labelClass: "MapLabel", // the CSS class for the label
+										labelStyle: {opacity: 0.75}
+									});
+									markers.push(marker);
+									var contentString = '<div id="content">'+
+									    '<div id="siteNotice">'+
+									    '</div>'+
+									    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
+									    '<div id="bodyContent" class="GmInfowindow">'+
+									    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
+									    '<p>Autor: ' + Autor + '</p>'+
+									    '<p>Datum: ' + Datum + '</p>'+
+									    '<p>Zeit: ' + Zeit + '</p>'+
+									    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+									    '</div>'+
+									    '</div>';
+									makeListener(map, marker, contentString);
+								}
+								var mcOptions = {maxZoom: 17};
+								var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+								if (anzBeob == 1) {
+									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									map.setCenter(latlng);
+									map.setZoom(18);
+								} else {
+									//Karte auf Ausschnitt anpassen
+									map.fitBounds(bounds);
+								}
+							}
+							//listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
+							function makeListener(map, marker, contentString){
+								google.maps.event.addListener(marker, 'click', function() {
+									infowindow.setContent(contentString);
+									infowindow.open(map,marker);
+								});
+							}
+						}
+					});
+				});
+
+				$(document).on("pagehide", '#BeobListeMap', function() {
+					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+					$("#map_canvas").html("");
+				});
+
+				//Menu aufbauen
+				$(document).on('click', "[name='Menu']", function() {
+					erstelleMenu(this, User);
+				});
+
+				//Neue Beobachtung managen
+				$("#BeobListePageFooter").on("click", "#NeueBeobLink", function(event){
+					event.preventDefault();
+					erstelleNeueBeob_1_Artgruppenliste(User);
+				});
+
+				$(document).on("swiperight", "#BeobListePage", function() {
+					window.open("hProjektListe.html", target="_self");
+				});
+
+				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
+				function erstelleNeueBeob_1_Artgruppenliste(User) {
+					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
+				}
+				
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session) {
+					    	if(session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
+							}
+					    }
+					});
+				}
+
+				//Menü aufbauen
+				function erstelleMenu(thiz, User) {
+					//Code um Menü aufzubauen
+					$(thiz).simpledialog({
+						'mode' : 'bool',
+						'prompt' : 'Menü',
+						'fullHTML': 'true',
+				    	'buttons' : {
+						 	'hierarchischer Modus': {
+						      	click: function() {
+						        	window.open("hProjektListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "check"
+				      		},
+				      		'Felder verwalten': {
+						      	click: function() {
+						        	window.open("FeldListe.html?zurueck=BeobListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "edit"
+				      		},
+				      		'Beobachtungen<br>exportieren': {
+						      	click: function() {
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+				        		},
+				        		theme: "a",
+				        		icon: "arrow-r"
+				      		},
+				      		'Einstellungen': {
+						      	click: function() {
+						        	öffneMeineEinstellungen(User, "");
+				        		},
+				        		theme: "a",
+				        		icon: "wrench"
+				      		},
+				      		'lokal installieren': {
+						      	click: function() {
+						        	window.open("Installieren.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "lightning"
+				      		},
+						 	'neu anmelden': {
+						      	click: function() {
+						        	window.open("index.html?Status=neu", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "person"
+				      		},
+				      		'schliessen': {
+				                click: function() { return true; },
+				                icon: "back",
+				                theme: "c"
+				            }
+				    	}
+				  	})
+				}
+
+				//BeobListe in BeobList.html vollständig neu aufbauen
+				function erstelleBeobListe(User) {
+					$("#beobachtungen").empty();
+					$db = $.couch.db("evab");
+					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+						success: function(data) {
+							var i;
+							var anzBeob = 0;
+							var beob;
+							var ListItemContainer = "";
+							
+							for(i in data.rows) {                    //Beobachtungen zählen
+								anzBeob += 1;
+							}
+
+							var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+							if (anzBeob == 1) {
+								Titel2 = " Beobachtung";
+							}
+							$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
+
+							if (anzBeob == 0) {
+								ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste(User)" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
+							} else {
+								//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
+								for(i in data.rows) {                //Liste aufbauen
+									beob = data.rows[i].value;
+									key = data.rows[i].key;
+									var Datum = beob.zDatum;
+									var Zeit = beob.zUhrzeit;
+									var ArtGruppe = beob.aArtGruppe;
+									var ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
+									var ArtName = beob.aArtName;
+									var externalPage = "BeobEdit.html?id=" + beob._id;
+									ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+									ListItemContainer += beob._id;
+									ListItemContainer += "\"><a href=\"",
+									ListItemContainer += externalPage;
+									ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+									ListItemContainer += ImageLink;
+									ListItemContainer += "\" /><h3 class=\"aArtName\">";
+									ListItemContainer += ArtName;
+									ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+									ListItemContainer += Datum;
+									ListItemContainer += "&nbsp; &nbsp;";
+									ListItemContainer += Zeit;
+									ListItemContainer += "<\/p><\/a> <\/li>";
+								}
+							}
+							$("#beobachtungen").html(ListItemContainer);
+							$("#beobachtungen").listview("refresh");
+						}
+					});
+				}
+			});
+		</script>
 	</div>
 
 	<div data-role="page" id="BeobListeMap" style="width:100%; height:100%;">
@@ -64,290 +347,4 @@
 	</div>
 
   </body>
-  <script type="text/javascript" charset="utf-8">
-  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
-	$(":jqmData(role='page')").on("pagebeforecreate", function() {
-		
-		User = "";
-		
-		prüfeAnmeldung();
-
-		$("#beobachtungen").on("swipeleft", ".beob", function() {
-			var BeobId = $(this).attr('id');
-			window.open("BeobEdit.html?id=" + BeobId, target="_self");
-		});
-
-		$("#BeobListePageFooter").on('click', '#BeobListeMapÖffnen', function(event) {
-			$.mobile.changePage("#BeobListeMap");
-			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-			contentHeight = $(window).height() - 43;
-			$("#map_canvas").css("height", contentHeight + "px");
-		});
-
-		$(document).on("pageshow", '#BeobListeMap', function() {
-			//Karte aufbauen. Zuerst Beobachtungen abfragen
-			$db = $.couch.db("evab");
-			$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
-				success: function(data) {
-					var i;
-					var anzBeob = 0;
-					var beob;
-					var key;
-					var image;
-					var infowindow = new google.maps.InfoWindow();
-					for(i in data.rows) {
-						//Beobachtungen zählen
-						anzBeob += 1;
-					}
-					if (anzBeob == 0) {
-						//Keine Beobachtungen: Hinweis und zurück
-						melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
-						$.mobile.changePage("#BeobListePage");
-					} else {
-						//Beobachtungen vorhanden: Karte aufbauen
-						var lat = 47.383333;
-						var lng = 8.533333;
-						var latlng = new google.maps.LatLng(lat, lng);
-						var options = {
-						    zoom: 15,
-						    center: latlng,
-						    streetViewControl: false,
-						    mapTypeId: google.maps.MapTypeId.HYBRID
-						};
-						var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-						google.maps.event.trigger(map,'resize');
-						var bounds = new google.maps.LatLngBounds();
-						//für alle Beobachtungen Marker erstellen
-						var markers = [];
-						for(i in data.rows) {
-							beob = data.rows[i].doc;
-							var BeobId = beob._id;
-							var Datum = beob.zDatum;
-							var Zeit = beob.zUhrzeit;
-							var ArtGruppe = beob.aArtGruppe;
-							var image = "Artgruppenbilder/" + ArtGruppe + ".png";
-							var ArtName = beob.aArtName;
-							var Autor = beob.aAutor;
-							var lat2 = beob.oLatitudeDecDeg;
-							var lng2 = beob.oLongitudeDecDeg;
-							var externalPage = "BeobEdit.html?id=" + BeobId;
-							var latlng2 = new google.maps.LatLng(lat2, lng2);
-							if (anzBeob == 1) {
-								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-								latlng = latlng2;
-							} else {
-								//Kartenausschnitt um diese Koordinate erweitern
-								bounds.extend(latlng2);
-							}
-							var marker = new MarkerWithLabel({ 
-								map: map,
-								position: latlng2,  
-							    title: ArtName,
-							    icon: image,
-							    labelContent: ArtName,
-							    labelAnchor: new google.maps.Point(22, 0),
-							    labelClass: "MapLabel", // the CSS class for the label
-								labelStyle: {opacity: 0.75}
-							});
-							markers.push(marker);
-							var contentString = '<div id="content">'+
-							    '<div id="siteNotice">'+
-							    '</div>'+
-							    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
-							    '<div id="bodyContent" class="GmInfowindow">'+
-							    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-							    '<p>Autor: ' + Autor + '</p>'+
-							    '<p>Datum: ' + Datum + '</p>'+
-							    '<p>Zeit: ' + Zeit + '</p>'+
-							    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
-							    '</div>'+
-							    '</div>';
-							makeListener(map, marker, contentString);
-						}
-						var mcOptions = {maxZoom: 17};
-						var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-						if (anzBeob == 1) {
-							//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-							map.setCenter(latlng);
-							map.setZoom(18);
-						} else {
-							//Karte auf Ausschnitt anpassen
-							map.fitBounds(bounds);
-						}
-					}
-					//listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
-					function makeListener(map, marker, contentString){
-						google.maps.event.addListener(marker, 'click', function() {
-							infowindow.setContent(contentString);
-							infowindow.open(map,marker);
-						});
-					}
-				}
-			});
-		});
-
-		$(document).on("pagehide", '#BeobListeMap', function() {
-			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-			$("#map_canvas").html("");
-		});
-
-		//Menu aufbauen
-		$(document).on('click', "[name='Menu']", function() {
-			erstelleMenu(this, User);
-		});
-
-		//Neue Beobachtung managen
-		$("#BeobListePageFooter").on("click", "#NeueBeobLink", function(event){
-			event.preventDefault();
-			erstelleNeueBeob_1_Artgruppenliste(User);
-		});
-
-		$(document).on("swiperight", "#BeobListePage", function() {
-			window.open("hProjektListe.html", target="_self");
-		});
-	});
-	
-	//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
-	$(":jqmData(role='page')").on("pagebeforeshow", function() {
-		erstelleBeobListe(User);
-		speichereLetzteUrl(User);
-	});
-	
-	//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
-	function erstelleNeueBeob_1_Artgruppenliste(User) {
-		window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
-	}
-	
-	function prüfeAnmeldung() {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session) {
-		    	if(session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open("index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
-
-	//Menü aufbauen
-	function erstelleMenu(thiz, User) {
-		//Code um Menü aufzubauen
-		$(thiz).simpledialog({
-			'mode' : 'bool',
-			'prompt' : 'Menü',
-			'fullHTML': 'true',
-	    	'buttons' : {
-			 	'hierarchischer Modus': {
-			      	click: function() {
-			        	window.open("hProjektListe.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "check"
-	      		},
-	      		'Felder verwalten': {
-			      	click: function() {
-			        	window.open("FeldListe.html?zurueck=BeobListe.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "edit"
-	      		},
-	      		'Beobachtungen<br>exportieren': {
-			      	click: function() {
-			        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
-	        		},
-	        		theme: "a",
-	        		icon: "arrow-r"
-	      		},
-	      		'Einstellungen': {
-			      	click: function() {
-			        	öffneMeineEinstellungen(User, "");
-	        		},
-	        		theme: "a",
-	        		icon: "wrench"
-	      		},
-	      		'lokal installieren': {
-			      	click: function() {
-			        	window.open("Installieren.html", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "lightning"
-	      		},
-			 	'neu anmelden': {
-			      	click: function() {
-			        	window.open("index.html?Status=neu", target="_self");
-	        		},
-	        		theme: "a",
-	        		icon: "person"
-	      		},
-	      		'schliessen': {
-	                click: function() { return true; },
-	                icon: "back",
-	                theme: "c"
-	            }
-	    	}
-	  	})
-	}
-
-	//BeobListe in BeobList.html vollständig neu aufbauen
-	function erstelleBeobListe(User) {
-		$("#beobachtungen").empty();
-		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-			success: function(data) {
-				var i;
-				var anzBeob = 0;
-				var beob;
-				var ListItemContainer = "";
-				
-				for(i in data.rows) {                    //Beobachtungen zählen
-					anzBeob += 1;
-				}
-
-				var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
-				if (anzBeob == 1) {
-					Titel2 = " Beobachtung";
-				}
-				$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
-
-				if (anzBeob == 0) {
-					ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste(User)" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
-				} else {
-					//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
-					for(i in data.rows) {                //Liste aufbauen
-						beob = data.rows[i].value;
-						key = data.rows[i].key;
-						var Datum = beob.zDatum;
-						var Zeit = beob.zUhrzeit;
-						var ArtGruppe = beob.aArtGruppe;
-						var ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-						var ArtName = beob.aArtName;
-						var externalPage = "BeobEdit.html?id=" + beob._id;
-						ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-						ListItemContainer += beob._id;
-						ListItemContainer += "\"><a href=\"",
-						ListItemContainer += externalPage;
-						ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
-						ListItemContainer += ImageLink;
-						ListItemContainer += "\" /><h3 class=\"aArtName\">";
-						ListItemContainer += ArtName;
-						ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-						ListItemContainer += Datum;
-						ListItemContainer += "&nbsp; &nbsp;";
-						ListItemContainer += Zeit;
-						ListItemContainer += "<\/p><\/a> <\/li>";
-					}
-				}
-				$("#beobachtungen").html(ListItemContainer);
-				$("#beobachtungen").listview("refresh");
-			}
-		});
-	}
-  </script>
 </html>

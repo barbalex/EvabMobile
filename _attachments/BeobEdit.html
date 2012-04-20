@@ -112,14 +112,37 @@
 		</div><!-- /footer -->
 		
 		<script type="text/javascript">
-			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageshow", function() {
 				User = "";
-				BeobId = get_url_param("id");
 				prüfeAnmeldung();
 
-				//hier werden als globale Variable gespeichert: aArtGruppe, aArtName, aArtId
-				erstelleBeobEdit(BeobId, User);
+				initiiereBeobEdit(get_url_param("id"));
+
+				function initiiereBeobEdit(id) {
+					//hier werden Variablen gesetzt,
+					//in die fixen Felder Werte eingesetzt,
+					//die dynamischen Felder aufgebaut
+					//und die Nav-Links gesetzt (hat hier keine!)
+					$db = $.couch.db("evab");
+					//holt die Feldliste aus der DB
+					$db.view('evab/FeldListeBeob', {
+						success: function(Feldliste) {
+							$db.openDoc(id, {
+								success: function(Beob) {
+									//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+									BeobId = Beob._id;
+									aArtGruppe = Beob.aArtGruppe;
+									aArtName = Beob.aArtName;
+									aArtId = Beob.aArtId;
+									oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+									oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+									setzeFixeFelderInBeobEdit(Beob);
+									erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User);
+								}
+							});
+						}
+					});
+				}
 				
 				speichereLetzteUrl(User);
 
@@ -443,9 +466,218 @@
 					    }
 					}
 				}
+
+				var Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
+				jQuery.extend(jQuery.mobile.datebox.prototype.options, {
+					'dateFormat': 'YYYY-MM-DD',
+					'headerFormat': 'YYYY-MM-DD',
+					'monthsOfYear': Monate
+				});
+
+				//Menü aufbauen
+				function erstelleMenu(thiz, User) {
+					//Code um Menü aufzubauen
+					$(thiz).simpledialog({
+						'mode' : 'bool',
+						'prompt' : 'Menü',
+						'fullHTML': 'true',
+				    	'buttons' : {
+						 	'hierarchischer Modus': {
+						      	click: function() {
+						        	window.open("hProjektListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "check"
+				      		},
+				      		'Arteigenschaften': {
+						      	click: function() {
+						      		//Variabeln übergeben
+						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
+						        	zurueck_global = "BeobEdit.html?id=" + BeobId;
+						        	//Seite wechseln
+						        	$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+				        		},
+				        		theme: "a",
+				        		icon: "question"
+				      		},
+				      		'Felder verwalten': {
+						      	click: function() {
+						        	window.open("FeldListe.html?zurueck=BeobEdit.html?id=" + BeobId, target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "edit"
+				      		},
+				      		'Beobachtungen<br>exportieren': {
+						      	click: function() {
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+				        		},
+				        		theme: "a",
+				        		icon: "arrow-r"
+				      		},
+				      		'Einstellungen': {
+						      	click: function() {
+						        	öffneMeineEinstellungen(User, "")
+				        		},
+				        		theme: "a",
+				        		icon: "wrench"
+				      		},
+				      		'lokal installieren': {
+						      	click: function() {
+						        	window.open("Installieren.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "lightning"
+				      		},
+						 	'neu anmelden': {
+						      	click: function() {
+						        	window.open("index.html?Status=neu", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "person"
+				      		},
+				      		'schliessen': {
+				                click: function() { return true; },
+				                icon: "back",
+				                theme: "c"
+				            }
+				    	}
+				  	})
+				}
 				
+				function löscheBeobachtung(event) {
+					// First open doc based on ID in order to get full document
+					$db = $.couch.db("evab");
+					$db.openDoc(BeobId, {
+						success: function(document) {
+							// Then use the opened doc as reference to remove
+							$db.removeDoc(document, {
+								success: function() {
+									window.open("BeobListe.html", target = '_self');
+								},
+								error: function() {
+									melde("Fehler: Beobachtung nicht gelöscht");
+								}
+							});
+						},
+						error: function() {
+							melde("Fehler: Beobachtung nicht gelöscht");
+						}
+					});
+				}
+
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session){
+					    	if (session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
+							}
+					    }
+					});
+				}
+
+				//Speichert alle Daten
+				function speichern(Feldname, Feldwert) {
+					$db = $.couch.db("evab");
+					//Bestehendes Dokument öffnen
+					$db.openDoc(BeobId, {
+						success: function(Beob) {
+							//Werte aus dem Formular aktualisieren
+							if (Feldwert) {
+								Beob[Feldname] = Feldwert;
+							} else if (Beob[Feldname]) {
+								delete Beob[Feldname]
+							}
+							Beob.aArtGruppe = aArtGruppe;
+							Beob.aArtName = aArtName;
+							Beob.aArtId = aArtId;
+							//alles speichern
+							$db.saveDoc(Beob, {
+								success: function() {
+								},
+								error: function() {
+									melde("Fehler: Beobachtung nicht gespeichert");
+								}
+							});
+						}
+					});
+				}
+
+				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
+					$db = $.couch.db("evab");
+					//Bestehendes Dokument öffnen
+					$db.openDoc(BeobId, {
+						success: function(Beob) {
+							//Längen- und Breitengrad sind in keinem Feld dargestellt
+							//sie müssen aus ihren Variabeln gespeichert werden
+							Beob.oLongitudeDecDeg = oLongitudeDecDeg;
+							Beob.oLatitudeDecDeg = oLatitudeDecDeg;
+							Beob.oXKoord = oXKoord;
+							Beob.oYKoord = oYKoord;
+							Beob.oLagegenauigkeit = "Auf Luftbild markiert";
+							//alles speichern
+							$db.saveDoc(Beob, {
+								success: function() {
+									melde("Koordinaten gespeichert");
+								},
+								error: function() {
+									melde("Fehler: Koordinaten nicht gespeichert");
+								}
+							});
+						}
+					});
+				}
+
+				//Öffnet die vorige oder nächste Beobachtung
+				//vorige der ersten => BeobListe
+				//nächste der letzten => melden
+				//erwartet ob nächster oder voriger gesucht wird
+				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
+					$db = $.couch.db("evab");
+					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+						success: function(data) {
+							var i;
+							var BeobIdAktuell;
+							var BeobIdNächste;
+							var BeobIdVorige;
+							var AnzBeob;
+							for(i in data.rows) {
+								BeobIdAktuell = data.rows[i].value._id;
+								var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+								if (BeobIdAktuell == IdAktuell) {
+									switch (NächsteOderVorige) {
+									case "nächste":
+										if (i < AnzBeob) {
+											BeobId = data.rows[parseInt(i)+1].value._id;
+											initiiereBeobEdit(BeobId);
+											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
+										} else {
+											melde("Das ist die letzte Beobachtung");
+										}
+										break;
+									case "vorige":
+										if (i > 0) {
+											BeobId = data.rows[i-1].value._id;
+											initiiereBeobEdit(BeobId);
+											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
+										} else {
+											window.open("BeobListe.html", target="_self");
+										}
+										break;
+									}
+								}
+							}
+						}
+					});
+				}
 			});
-			
 		</script>
 	</div>
 
@@ -461,219 +693,4 @@
 	</div>
 
   </body>
-
-	<script type="text/javascript">
-		Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-		jQuery.extend(jQuery.mobile.datebox.prototype.options, {
-			'dateFormat': 'YYYY-MM-DD',
-			'headerFormat': 'YYYY-MM-DD',
-			'monthsOfYear': Monate
-		});
-
-		//Menü aufbauen
-		function erstelleMenu(thiz, User) {
-			//Code um Menü aufzubauen
-			$(thiz).simpledialog({
-				'mode' : 'bool',
-				'prompt' : 'Menü',
-				'fullHTML': 'true',
-		    	'buttons' : {
-				 	'hierarchischer Modus': {
-				      	click: function() {
-				        	window.open("hProjektListe.html", target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "check"
-		      		},
-		      		'Arteigenschaften': {
-				      	click: function() {
-				      		//Variabeln übergeben
-				        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
-				        	zurueck_global = "BeobEdit.html?id=" + BeobId;
-				        	//ArtId scheint über url nicht übergeben zu werden...??
-						    ArtId_global = aArtId;
-				        	//Seite wechseln
-				        	$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
-		        		},
-		        		theme: "a",
-		        		icon: "question"
-		      		},
-		      		'Felder verwalten': {
-				      	click: function() {
-				        	window.open("FeldListe.html?zurueck=BeobEdit.html?id=" + BeobId, target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "edit"
-		      		},
-		      		'Beobachtungen<br>exportieren': {
-				      	click: function() {
-				        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
-		        		},
-		        		theme: "a",
-		        		icon: "arrow-r"
-		      		},
-		      		'Einstellungen': {
-				      	click: function() {
-				        	öffneMeineEinstellungen(User, "")
-		        		},
-		        		theme: "a",
-		        		icon: "wrench"
-		      		},
-		      		'lokal installieren': {
-				      	click: function() {
-				        	window.open("Installieren.html", target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "lightning"
-		      		},
-				 	'neu anmelden': {
-				      	click: function() {
-				        	window.open("index.html?Status=neu", target="_self");
-		        		},
-		        		theme: "a",
-		        		icon: "person"
-		      		},
-		      		'schliessen': {
-		                click: function() { return true; },
-		                icon: "back",
-		                theme: "c"
-		            }
-		    	}
-		  	})
-		}
-		
-		function löscheBeobachtung(event) {
-			// First open doc based on ID in order to get full document
-			$db = $.couch.db("evab");
-			$db.openDoc(BeobId, {
-				success: function(document) {
-					// Then use the opened doc as reference to remove
-					$db.removeDoc(document, {
-						success: function() {
-							window.open("BeobListe.html", target = '_self');
-						},
-						error: function() {
-							melde("Fehler: Beobachtung nicht gelöscht");
-						}
-					});
-				},
-				error: function() {
-					melde("Fehler: Beobachtung nicht gelöscht");
-				}
-			});
-		}
-
-	function prüfeAnmeldung() {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if (session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open("index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
-
-	//Speichert alle Daten
-	function speichern(Feldname, Feldwert) {
-		$db = $.couch.db("evab");
-		//Bestehendes Dokument öffnen
-		$db.openDoc(BeobId, {
-			success: function(Beob) {
-				//Werte aus dem Formular aktualisieren
-				if (Feldwert) {
-					Beob[Feldname] = Feldwert;
-				} else if (Beob[Feldname]) {
-					delete Beob[Feldname]
-				}
-				Beob.aArtGruppe = aArtGruppe;
-				Beob.aArtName = aArtName;
-				Beob.aArtId = aArtId;
-				//alles speichern
-				$db.saveDoc(Beob, {
-					success: function() {
-					},
-					error: function() {
-						melde("Fehler: Beobachtung nicht gespeichert");
-					}
-				});
-			}
-		});
-	}
-
-	function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
-		$db = $.couch.db("evab");
-		//Bestehendes Dokument öffnen
-		$db.openDoc(BeobId, {
-			success: function(Beob) {
-				//Längen- und Breitengrad sind in keinem Feld dargestellt
-				//sie müssen aus ihren Variabeln gespeichert werden
-				Beob.oLongitudeDecDeg = oLongitudeDecDeg;
-				Beob.oLatitudeDecDeg = oLatitudeDecDeg;
-				Beob.oXKoord = oXKoord;
-				Beob.oYKoord = oYKoord;
-				Beob.oLagegenauigkeit = "Auf Luftbild markiert";
-				//alles speichern
-				$db.saveDoc(Beob, {
-					success: function() {
-						melde("Koordinaten gespeichert");
-					},
-					error: function() {
-						melde("Fehler: Koordinaten nicht gespeichert");
-					}
-				});
-			}
-		});
-	}
-
-	//Öffnet die vorige oder nächste Beobachtung
-	//vorige der ersten => BeobListe
-	//nächste der letzten => melden
-	//erwartet ob nächster oder voriger gesucht wird
-	function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
-		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-			success: function(data) {
-				var i;
-				var BeobIdAktuell;
-				var BeobIdNächste;
-				var BeobIdVorige;
-				var AnzBeob;
-				for(i in data.rows) {
-					BeobIdAktuell = data.rows[i].value._id;
-					var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-					if (BeobIdAktuell == IdAktuell) {
-						switch (NächsteOderVorige) {
-						case "nächste":
-							if (i < AnzBeob) {
-								BeobId = data.rows[parseInt(i)+1].value._id;
-								erstelleBeobEdit(BeobId, User);
-								window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
-							} else {
-								melde("Das ist die letzte Beobachtung");
-							}
-							break;
-						case "vorige":
-							if (i > 0) {
-								BeobId = data.rows[i-1].value._id;
-								erstelleBeobEdit(BeobId, User);
-								window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
-							} else {
-								window.open("BeobListe.html", target="_self");
-							}
-							break;
-						}
-					}
-				}
-			}
-		});
-	}
-	</script>
 </html>

@@ -64,7 +64,7 @@
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
 				
-				ZeitId = get_url_param("ZeitId");
+				ZeitId = get_url_param("id");
 				OrtId = get_url_param("OrtId");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -89,7 +89,7 @@
 				$("[name='hZeitLink']").attr('href', url);
 
 				//Link zur ArtListe in Navbar setzen
-				$("#hArtListeLink").attr("href", "hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#Menu', function() {
@@ -104,7 +104,7 @@
 
 				$("#Arten").on("swipeleft", ".beob", function() {
 					var hBeobId = $(this).attr('hBeobId');
-					window.open("hArtEdit.html?hBeobId=" + hBeobId + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+					window.open("hArtEdit.html?id=" + hBeobId, target="_self");
 				});
 
 				$("#Arten").on("swipeleft", ".erste", function() {
@@ -116,7 +116,8 @@
 				});
 
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 				}
 
 				function prüfeAnmeldung() {		
@@ -154,7 +155,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hArtListe.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -226,7 +227,7 @@
 									aArtGruppe = hBeob.aArtGruppe;
 									ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
 									var bArtName = key[2];
-									externalPage = "hArtEdit.html?hBeobId=" + hBeob._id + "&ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+									externalPage = "hArtEdit.html?id=" + hBeob._id;
 									listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
 										"<a href=\"" + externalPage + "\" rel=\"external\">" +
 										"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
