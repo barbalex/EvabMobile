@@ -160,7 +160,8 @@
 				//sichtbare Felder wählen
 				$("#hArtEditPageFooter").on("click", "#wähleFelder", function(event){
 					event.preventDefault();
-					window.open("Felder_hArt.html?ArtGruppe=" + aArtGruppe, target="_self");
+					//window.open("Felder_hArt.html?ArtGruppe=" + aArtGruppe, target="_self");
+					$.mobile.changePage("Felder_hArt.html?ArtGruppe=" + aArtGruppe);
 				});
 
 				//Link zum Projekt in Navbar setzen
