@@ -85,13 +85,16 @@
 		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" data-icon="plus" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
+			$(":jqmData(role='page')").on("pagecreate", function() {
+				initiierehBeobEdit(get_url_param("id"));
+			});
 			$(":jqmData(role='page')").on("pageshow", function() {
 				
 				User = "";
@@ -99,7 +102,7 @@
 
 				prüfeAnmeldung();
 
-				initiierehBeobEdit(get_url_param("id"));
+				//initiierehBeobEdit(get_url_param("id"));
 
 				speichereLetzteUrl(User);
 
@@ -261,7 +264,13 @@
 					if (Status == 'neu') {
 						link += "&Status=neu";
 					}
-					$.mobile.changePage(link);
+					if ($('#agl_Page').length > 0) {
+						//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
+						$.mobile.changePage($('#agl_Page'));
+						window.history.pushState("", "", link); //funktioniert in IE erst ab 10!
+					} else {
+						$.mobile.changePage(link);
+					}
 				}
 
 				function zuArtliste(aArtGruppe) {
@@ -274,9 +283,21 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+								if ($('agl_Page').length > 0) {
+									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
+									$.mobile.changePage($('agl_Page'));
+									window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+								} else {
+									$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+								}
 							} else {
-								$.mobile.changePage("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+								if ($('al_Page').length > 0) {
+									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
+									$.mobile.changePage($('al_Page'));
+									window.history.pushState("", "", "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+								} else {
+									$.mobile.changePage("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+								}
 							}
 						}
 					});
@@ -426,7 +447,6 @@
 									case "nächste":
 										if (i < AnzArt) {
 											hBeobId = data.rows[parseInt(i)+1].value._id;
-											//erstellehBeobEdit(Feldliste, Beob, User);
 											initiierehBeobEdit(hBeobId);
 											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {
@@ -436,7 +456,6 @@
 									case "vorige":
 										if (i > 0) {
 											hBeobId = data.rows[i-1].value._id;
-											//erstellehBeobEdit(FeldListe, Beob, User);
 											initiierehBeobEdit(hBeobId);
 											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {

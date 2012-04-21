@@ -237,17 +237,17 @@ function speichereNeueBeob(UserName, aArtGruppe, aArtBezeichnung, ArtId, Von, hP
 		doc.hOrtId = hOrtId;
 		doc.hZeitId = hZeitId;
 		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
-		speichereNeueBeob_02(Von, doc);
+		speichereNeueBeob_02(doc);
 		return false;
 	} else {
 		//Von == "BeobListe" || Von == "BeobEdit"
 		doc.Typ = "Beobachtung";
-		speichereNeueBeob_03(Von, doc);
+		speichereNeueBeob_03(doc);
 		return false;
 	}
 }
 
-function speichereNeueBeob_02(Von, doc) {
+function speichereNeueBeob_02(doc) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 //dies ist der zweite Schritt:
@@ -286,7 +286,7 @@ function speichereNeueBeob_02(Von, doc) {
 											doc[i] = Projekt[i];
 										}
 									}
-									speichereNeueBeob_03(Von, doc);
+									speichereNeueBeob_03(doc);
 								}
 							});
 						}
@@ -297,7 +297,7 @@ function speichereNeueBeob_02(Von, doc) {
 	});
 }
 
-function speichereNeueBeob_03(Von, doc) {
+function speichereNeueBeob_03(doc) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //dies ist der letzte Schritt:
@@ -309,13 +309,22 @@ function speichereNeueBeob_03(Von, doc) {
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
-					if (Von == "hArtListe" || Von == "hArtEdit") {
-						//window.open("hArtEdit.html?hBeobId=" + data.id + "&ZeitId=" + data.hZeitId + "&OrtId=" + data.hOrtId + "&RaumId=" + data.hRaumId + "&ProjektId=" + data.hProjektId, target="_self");
-						$.mobile.changePage("hArtEdit.html?id=" + data.id);
+					if (doc.Typ == 'hArt') {
+						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
+						if ($("#hArtEditPage").length > 0) {
+							$.mobile.changePage($("#hArtEditPage"));
+							initiierehBeobEdit(data.id);
+							window.history.pushState("", "", "hArtEdit.html?id=" + data.id); //funktioniert in IE erst ab 10!
+							$("#al_Page").removeClass('ui-page-active');
+							$("#hArtEditPage").addClass('ui-page-active');
+						} else {
+							//window.open("hArtEdit.html?id=" + data.id, target="_self");
+							$.mobile.changePage("hArtEdit.html?id=" + data.id);
+						}
 					} else {
-						//window.open("BeobEdit.html?id=" + data.id, target="_self");
-						$.mobile.changePage("BeobEdit.html?id=" + data.id);
-						GetGeolocation();
+						window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
+						//$.mobile.changePage("BeobEdit.html?id=" + data.id, {reloadPage:"true", allowSamePageTransition:"true"});
+						//GetGeolocation();
 					}
 				},
 				error: function() {

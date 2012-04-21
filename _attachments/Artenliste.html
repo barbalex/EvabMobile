@@ -34,17 +34,17 @@
   	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
-  	<div data-role="page" id="ArtenlistePage">
+  	<div data-role="page" id="al_Page">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Art wählen</h1>
-			<a href="#" id="ButtonSprache">Lat</a>
+			<a href="#" id="al_ButtonSprache">Lat</a>
 		</div>
 		<div data-role="content">
-			<ul id="ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
+			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
 				
 			</ul>
-			<p id="ArtenListeHinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
+			<p id="al_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function() {
@@ -61,7 +61,7 @@
 
 				erstelleArtenliste();
 
-				$("#ArtenListe").on("click", "[name='ArtListItem']", function(event) {
+				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 					event.preventDefault();
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					var ArtId = $(this).attr("artid");
@@ -69,13 +69,19 @@
 						speichereNeueBeob(User, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 					} else if (Von == "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
-						$.mobile.changePage("ArtEdit.html?ArtId=" + ArtId);
+						if ($('#ArtEditPage').length > 0) {
+							//Wenn ArtEditPage schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
+							$.mobile.changePage($('#ArtEditPage'));
+							window.history.pushState("", "", "ArtEdit.html?ArtId=" + ArtId); //funktioniert in IE erst ab 10!
+						} else {
+							$.mobile.changePage("ArtEdit.html?ArtId=" + ArtId);
+						}
 					} else {
 						speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
 					}
 				});
 
-				$("#ArtenlistePage").on("click", "#ButtonSprache", function(event) {       
+				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
 					event.preventDefault();
 					var ButtonText = this.text;
 					$db = $.couch.db("evab");
@@ -103,7 +109,13 @@
 											}
 											if (ArtGruppen_2) {
 												//window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von, target="_self");
-												$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
+												if ($('#agl_Page').length > 0) {
+													//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
+													$.mobile.changePage($('#agl_Page'));
+													window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
+												} else {
+													$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
+												}
 											} else {
 												erstelleArtenliste();
 											}
@@ -132,15 +144,15 @@
 								var ArtenSprache = data.rows[i].value.ArtenSprache;
 								switch(ArtenSprache) {
 								case "Lateinisch":
-									$("#ButtonSprache .ui-btn-text").text("Deutsch");
+									$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
 									erstelleArtenlisteLateinisch();
 									break;
 								case "Deutsch":
-									$("#ButtonSprache .ui-btn-text").text("Lateinisch");
+									$("#al_ButtonSprache .ui-btn-text").text("Lateinisch");
 									erstelleArtenlisteDeutsch();
 									break;
 								default:
-									$("#ButtonSprache .ui-btn-text").text("Deutsch");
+									$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
 									erstelleArtenlisteLateinisch();
 								}
 							}
@@ -182,9 +194,9 @@
 								}
 								ListItemContainer += "<\/a><\/li>";
 							}
-							$("#ArtenListe").html(ListItemContainer);
-							$("#ArtenListe").listview("refresh");
-							$("#ArtenListeHinweistext").empty().remove();
+							$("#al_ArtenListe").html(ListItemContainer);
+							$("#al_ArtenListe").listview("refresh");
+							$("#al_Hinweistext").empty().remove();
 						}
 					});
 				}
@@ -223,9 +235,9 @@
 								}
 								ListItemContainer += "<\/a><\/li>";
 							}
-							$("#ArtenListe").html(ListItemContainer);
-							$("#ArtenListe").listview("refresh");
-							$("#ArtenListeHinweistext").empty().remove();
+							$("#al_ArtenListe").html(ListItemContainer);
+							$("#al_ArtenListe").listview("refresh");
+							$("#al_Hinweistext").empty().remove();
 						}
 					});
 				}
