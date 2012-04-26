@@ -33,7 +33,7 @@
   	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="hZeitListePage">
   		<div data-role="header" id="hZeitListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hOrtLink" name="hOrtLink">zum Ort</a>
   			<h2 class="hZeitListePageTitel">Zeit</h2>
@@ -54,7 +54,7 @@
 		<div data-role="footer" id="hZeitListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hZeitNeuLink" name="hZeitNeuLink">neue Zeit</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active hzl_NeuLink">neue Zeit</a></li>
 				</ul>
 			</div>
 		</div>
@@ -72,18 +72,21 @@
 				speichereLetzteUrl(User);
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zum Ort in Navbar und Titelleiste setzen
-				var url = "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+				var url = "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 				$("[name='hOrtLink']").attr('href', url);
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
-				$("#hZeitListePageFooter").on("click", "[name='hZeitNeuLink']", function(event) {
+				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
 					event.preventDefault();
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
 				});
 
@@ -93,6 +96,9 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
 				});
 
@@ -105,10 +111,10 @@
 
 				//Menu aufbauen
 				$("#hZeitListePageHeader").on('click', '#Menu', function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -124,10 +130,13 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User){
+				function erstelleMenu(thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					var zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 					$(thiz).simpledialog({
@@ -187,6 +196,9 @@
 				}
 				
 			  	function erstelleZeitListe() {
+			  		if (User == "") {
+						prüfeAnmeldung();
+					}
 					$("#Zeiten").empty();
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
@@ -208,13 +220,13 @@
 							$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
 							if (anzZeit == 0) {
-								ListItemContainer = '<li><a href="javascript:erstelleNeueZeit_mitAllenParametern()" data-transition="slideup" rel="external" class="erste">Erste Zeit erfassen</a></li>';
+								ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
 							} else {
 								for(i in data.rows) {
 									Zeit = data.rows[i].value;
 									key = data.rows[i].key;
 									var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-									externalPage = "hZeitEdit.html?ZeitId=" + Zeit._id + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+									externalPage = "hZeitEdit.html?id=" + Zeit._id + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 									listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
 									ListItemContainer += listItem;
 								}
@@ -223,10 +235,6 @@
 							$("#Zeiten").listview("refresh");
 						}
 					});
-				}
-
-				function erstelleNeueZeit_mitAllenParametern() {
-					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
 				}
 			});	
 		</script>

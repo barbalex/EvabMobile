@@ -56,7 +56,7 @@
 		<div data-role="footer" id="hArtListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hArtNeuLink">neue Art</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active hal_NeuLink">neue Art</a></li>
 				</ul>
 			</div>
 		</div>
@@ -71,21 +71,21 @@
 
 				prüfeAnmeldung();
 				
-				refreshArtListe();
+				erstelleArtliste();
 
 				speichereLetzteUrl(User);
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
-				var url = "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+				var url = "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 				$("[name='hZeitLink']").attr('href', url);
 
 				//Link zur ArtListe in Navbar setzen
@@ -93,34 +93,37 @@
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#Menu', function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				//Neue Beobachtung managen
-				$("#hArtListePageFooter").on("click", "#hArtNeuLink", function(event) {
+				$("#hArtListePage").on("click", ".hal_NeuLink", function(event) {
 					event.preventDefault();
-					erstelleNeueBeob_1_Artgruppenliste();
+					hal_öffneArtgruppenliste();
 				});
+
+				$("#Arten").on("swipeleft", ".erste", function() {
+					hal_öffneArtgruppenliste();
+				});
+
+				function hal_öffneArtgruppenliste() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
+					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+					//$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+				}
 
 				$("#Arten").on("swipeleft", ".beob", function() {
 					var hBeobId = $(this).attr('hBeobId');
 					window.open("hArtEdit.html?id=" + hBeobId, target="_self");
 				});
 
-				$("#Arten").on("swipeleft", ".erste", function() {
-					erstelleNeueBeob_1_Artgruppenliste();
-				});
-
 				$(document).on("swiperight", function() {
 					window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				});
 
-				function erstelleNeueBeob_1_Artgruppenliste() {
-					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
-					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
-				}
-
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -136,10 +139,13 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User){
+				function erstelleMenu(thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -197,7 +203,10 @@
 				  	})
 				}
 				
-			  	function refreshArtListe() {
+			  	function erstelleArtliste() {
+			  		if (User == "") {
+						prüfeAnmeldung();
+					}
 					$("#Arten").empty();
 					$db = $.couch.db("evab");
 					$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
@@ -219,7 +228,7 @@
 							$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 							if (anzArt == 0) {
-								ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste()" data-transition="slideup" rel="external" class="erste">Erste Art erfassen</a></li>';
+								ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
 							} else {
 								for(i in data.rows) {                //Liste aufbauen
 									hBeob = data.rows[i].value;

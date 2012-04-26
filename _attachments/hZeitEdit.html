@@ -92,7 +92,7 @@
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
 
-				ZeitId = get_url_param("ZeitId");
+				ZeitId = get_url_param("id");
 				OrtId = get_url_param("OrtId");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -131,13 +131,13 @@
 				});
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur ZeitListe in Navbar setzen
 				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
@@ -145,6 +145,9 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 					event.preventDefault();
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
 				});
 
@@ -187,7 +190,7 @@
 
 				//Menu aufbauen
 				$("#ZeitEditPageHeader").on('click', '#Menu', function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				$(document).on("swipeleft", '#ZeitEditPage', function() {
@@ -243,7 +246,7 @@
 					});
 				});
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -259,7 +262,7 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
 			  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
@@ -400,7 +403,10 @@
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-				function erstelleMenu(thiz, User){
+				function erstelleMenu(thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -416,7 +422,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -463,6 +469,9 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
 						success: function(data) {
@@ -480,7 +489,7 @@
 										if (i < AnzZeit) {
 											ZeitId = data.rows[parseInt(i)+1].value._id;
 											erstelleZeitEdit(ZeitId, User);
-											window.history.pushState("", "", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitZeitId();
 										} else {
 											melde("Das ist die letzte Zeit");
@@ -490,7 +499,7 @@
 										if (i > 0) {
 											ZeitId = data.rows[i-1].value._id;
 											erstelleZeitEdit(ZeitId, User);
-											window.history.pushState("", "", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitZeitId();
 										} else {
 											window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");

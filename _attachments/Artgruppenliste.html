@@ -36,9 +36,8 @@
   <body>
 	<div data-role="page" data-dom-cache="true" id="agl_Page">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="agl_Header">
-			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
 			<h1>Artgruppe wählen</h1>
-			<a href="#" id="agl_ButtonSprache">Lat</a>
+			<a href="#" id="agl_ButtonSprache" class="ui-btn-right">Lat</a>
 		</div>
 		<div data-role="content">
 			<ul id="agl_ArtgruppenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -46,19 +45,18 @@
 			<p id="agl_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Liste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageshow", function() {
-				
-				var UserId = "";
-				var User = get_url_param("User");
-				var Status = get_url_param("Status") || "edit";
-				var Von = get_url_param("Von");
-				var BeobId = get_url_param("BeobId") || "";
-				var ProjektId = get_url_param("ProjektId") || "";
-				var RaumId = get_url_param("RaumId") || "";
-				var OrtId = get_url_param("OrtId") || "";
-				var ZeitId = get_url_param("ZeitId") || "";
-				
-				erstelleArtgruppenListe();	
+			$(":jqmData(role='page')").on("pagecreate", function() {
+				//UserId = "";
+				if (get_url_param("User")) {
+					User = get_url_param("User");
+				}
+				Status = get_url_param("Status") || "edit";
+				Von = get_url_param("Von");
+				BeobId = get_url_param("BeobId") || "";
+				ProjektId = get_url_param("ProjektId") || "";
+				RaumId = get_url_param("RaumId") || "";
+				OrtId = get_url_param("OrtId") || "";
+				ZeitId = get_url_param("ZeitId") || "";
 
 				$("body").on("click", "[name='ArtgruppenListItem']", function(event) {     
 					event.preventDefault();
@@ -93,38 +91,32 @@
 						$.mobile.changePage(link);
 					}
 				});
+			});
 
-				$("#agl_Header").on("click", "#agl_ButtonSprache", function(event) {       
-					event.preventDefault();
-					var ButtonText = this.text;
-					$db = $.couch.db("evab");
-					$db.openDoc(UserId, {
-						success: function(doc) {
-							if (ButtonText.slice(0, 3) == "Deu") {
-								doc.ArtenSprache = "Deutsch";
-							} else {
-								doc.ArtenSprache = "Lateinisch";
-							}
-							$db.saveDoc(doc, {
-								success: function() {
-									erstelleArtgruppenListe();
-								},
-								error: function() {
-									melde("Fehler: Sprache nicht verändert");
-								 }
-							});
-						},
-						error: function() {
-							melde("Fehler: Sprache nicht verändert");
-						}
-					});
-				});
+			$(":jqmData(role='page')").on("pageshow", function() {
+				UserId = "";
+				User = get_url_param("User");
+				if (User == "") {
+					prüfeAnmeldung();
+				}
+				Status = get_url_param("Status") || "edit";
+				Von = get_url_param("Von");
+				BeobId = get_url_param("BeobId") || "";
+				ProjektId = get_url_param("ProjektId") || "";
+				RaumId = get_url_param("RaumId") || "";
+				OrtId = get_url_param("OrtId") || "";
+				ZeitId = get_url_param("ZeitId") || "";
+
+				erstelleArtgruppenListe();
 
 				function erstelleArtgruppenListe() {
 					//gewünschte Sprache für Arten ermitteln
 					//Listen aufbauen lassen
 					//und butten für Sprache richtig beschriften
 					//var User = get_url_param("User");
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 					var viewname = 'evab/User?key="' + User + '"';
 					$db = $.couch.db("evab");
@@ -320,6 +312,32 @@
 						}
 					});
 				}
+
+				$("#agl_Header").on("click", "#agl_ButtonSprache", function(event) {       
+					event.preventDefault();
+					var ButtonText = this.text;
+					$db = $.couch.db("evab");
+					$db.openDoc(UserId, {
+						success: function(doc) {
+							if (ButtonText.slice(0, 3) == "Deu") {
+								doc.ArtenSprache = "Deutsch";
+							} else {
+								doc.ArtenSprache = "Lateinisch";
+							}
+							$db.saveDoc(doc, {
+								success: function() {
+									erstelleArtgruppenListe();
+								},
+								error: function() {
+									melde("Fehler: Sprache nicht verändert");
+								 }
+							});
+						},
+						error: function() {
+							melde("Fehler: Sprache nicht verändert");
+						}
+					});
+				});
 			});
 		</script>
 	</div>

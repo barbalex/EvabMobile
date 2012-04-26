@@ -68,7 +68,7 @@
 				speichereLetzteUrl(User);
 
 				//Link zum Projekt in Navbar und Titelleiste setzen
-				var url = "hProjektEdit.html?ProjektId=" + ProjektId;
+				var url = "hProjektEdit.html?id=" + ProjektId;
 				$("[name='hProjektLink']").attr('href', url);
 
 				//neuen Raum erstellen
@@ -82,7 +82,7 @@
 				//Menu aufbauen
 				$('#hRaumListePageHeader').on('click','#Menu', function() {
 					var zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
-					erstelleMenu(zurueck, this, User);
+					erstelleMenu(zurueck, this);
 				});
 
 				$("#Räume").on("swipeleft", ".Raum", function() {
@@ -107,6 +107,9 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleKarteFürProjekt(User, ProjektId);
 				});
 
@@ -115,7 +118,7 @@
 					$("#map_canvas").html("");
 				});
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -131,10 +134,13 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenu(zurueck, thiz, User){
+				function erstelleMenu(zurueck, thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -193,6 +199,9 @@
 				}
 
 			  	function erstelleRaumListe() {
+			  		if (User == "") {
+						prüfeAnmeldung();
+					}
 					$("#Räume").empty();
 					$db = $.couch.db("evab");
 					$db.view('evab/hRaumListe?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]', {
@@ -218,7 +227,7 @@
 									Raum = data.rows[i].value;
 									key = data.rows[i].key;
 									rName = Raum.rName;
-									externalPage = "hRaumEdit.html?RaumId=" + Raum._id + "&ProjektId=" + ProjektId;
+									externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
 									listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 									ListItemContainer += listItem;
 								}

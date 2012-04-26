@@ -36,7 +36,7 @@
   	<div data-role="page" id="BeobListePage">
   		<div id="BeobListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<h2 class="BeobListePageTitel">Beobachtungen</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='bl_Menu' name='bl_Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div data-role="content">
 			<ul id="beobachtungen" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -45,8 +45,8 @@
 		<div data-role="footer" id="BeobListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a id="NeueBeobLink" href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" >neue Beobachtung</a></li>
-					<li><a href="#" id="BeobListeMapÖffnen" data-icon="mappin">Karte</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active bl_NeuLink" >neue Beobachtung</a></li>
+					<li><a href="#" id="bl_KarteÖffnen" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -66,14 +66,14 @@
 					window.open("BeobEdit.html?id=" + BeobId, target="_self");
 				});
 
-				$("#BeobListePageFooter").on('click', '#BeobListeMapÖffnen', function(event) {
-					$.mobile.changePage("#BeobListeMap");
+				$("#BeobListePageFooter").on('click', '#bl_KarteÖffnen', function(event) {
+					$.mobile.changePage("#bl_Karte");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#BeobListeMap', function() {
+				$(document).on("pageshow", '#bl_Karte', function() {
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
 					$db = $.couch.db("evab");
 					$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
@@ -175,18 +175,18 @@
 					});
 				});
 
-				$(document).on("pagehide", '#BeobListeMap', function() {
+				$(document).on("pagehide", '#bl_Karte', function() {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='Menu']", function() {
+				$(document).on('click', "[name='bl_Menu']", function() {
 					erstelleMenu(this, User);
 				});
 
 				//Neue Beobachtung managen
-				$("#BeobListePageFooter").on("click", "#NeueBeobLink", function(event){
+				$("#BeobListePage").on("click", ".bl_NeuLink", function(event){
 					event.preventDefault();
 					erstelleNeueBeob_1_Artgruppenliste(User);
 				});
@@ -197,10 +197,16 @@
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste(User) {
-					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
+					if ($("#agl_Page").length > 0) {
+						$.mobile.changePage($("#agl_Page"));
+						window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
+					} else {
+						$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe");
+					}
+					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
 				}
 				
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -216,7 +222,7 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				//Menü aufbauen
 				function erstelleMenu(thiz, User) {
@@ -299,7 +305,7 @@
 							$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 							if (anzBeob == 0) {
-								ListItemContainer = '<li><a href="javascript:erstelleNeueBeob_1_Artgruppenliste(User)" data-transition="slideup" rel="external">Erste Beobachtung erfassen</a></li>';
+								ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
 							} else {
 								//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
 								for(i in data.rows) {                //Liste aufbauen
@@ -335,11 +341,11 @@
 		</script>
 	</div>
 
-	<div data-role="page" id="BeobListeMap" style="width:100%; height:100%;">
+	<div data-role="page" id="bl_Karte" style="width:100%; height:100%;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#BeobListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='bl_Menu_Karte' name='bl_Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

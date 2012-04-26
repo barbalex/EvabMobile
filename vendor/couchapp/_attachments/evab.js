@@ -303,28 +303,45 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
+	if (User == "") {
+		prüfeAnmeldung();
+	}
 	$db.view('evab/User?key="' + doc.User + '"', {
 		success: function(Userliste) {
-			var User = Userliste.rows[0].value;
+			User = Userliste.rows[0].value;
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function(data) {
+					BeobId = data.id;
 					if (doc.Typ == 'hArt') {
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#hArtEditPage").length > 0) {
 							$.mobile.changePage($("#hArtEditPage"));
-							initiierehBeobEdit(data.id);
-							window.history.pushState("", "", "hArtEdit.html?id=" + data.id); //funktioniert in IE erst ab 10!
-							$("#al_Page").removeClass('ui-page-active');
-							$("#hArtEditPage").addClass('ui-page-active');
+							
+							//initiierehBeobEdit(BeobId);
+							//$("#al_Page").removeClass('ui-page-active');
+							//$("#hArtEditPage").addClass('ui-page-active');
 						} else {
 							//window.open("hArtEdit.html?id=" + data.id, target="_self");
 							$.mobile.changePage("hArtEdit.html?id=" + data.id);
 						}
 					} else {
-						window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
+						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
+						if ($("#BeobEditPage").length > 0) {
+							$.mobile.changePage($("#BeobEditPage"));
+							//$.mobile.changePage("BeobEdit.html?id=" + data.id);
+							
+							//alert("BeobId = " + BeobId);
+							//initiiereBeobEdit(BeobId);
+							//$("#al_Page").removeClass('ui-page-active');
+							//$("#BeobEditPage").addClass('ui-page-active');
+						} else {
+							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							//$.mobile.changePage("BeobEdit.html?id=" + data.id);
+						}
+						//window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
 						//$.mobile.changePage("BeobEdit.html?id=" + data.id, {reloadPage:"true", allowSamePageTransition:"true"});
-						//GetGeolocation();
+						GetGeolocation();
 					}
 				},
 				error: function() {
@@ -349,14 +366,24 @@ $db.openDoc(BeobId, {
 			$db.saveDoc(Beob, {
 				success: function(data) {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
-						if ($('#BeobEditPage').length>0) {
+						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
-							GetGeolocation();
+							//alert("BeobId = " + BeobId);
+							initiiereBeobEdit(BeobId);
 						} else {
 							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							//$.mobile.changePage("BeobEdit.html?id=" + BeobId);
 						}
+						GetGeolocation();
 					} else {
-						window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target="_self");
+						if ($('#hArtEditPage').length > 0) {
+							$.mobile.changePage($('#hArtEditPage'));
+							initiierehBeobEdit(BeobId);
+						} else {
+							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							//$.mobile.changePage("hArtEdit.html?id=" + BeobId);
+						}
+						//window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target="_self");
 					}
 				},
 				error: function() {
@@ -533,6 +560,9 @@ function erstelleNeuesProjekt() {
 
 function öffneMeineEinstellungen(User, Pfad) {
 	$db = $.couch.db("evab");
+	if (User == "") {
+		prüfeAnmeldung();
+	}
 	$db.view('evab/User?key="' + User + '"', {
 		success: function(data) {
 			UserId = data.rows[0].value._id;
@@ -666,7 +696,7 @@ function initiiereBeobEdit(id) {
 					oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 					setzeFixeFelderInBeobEdit(Beob);
-					erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User);
+					erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Beob.User);
 					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
 					window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 				}
@@ -1114,7 +1144,7 @@ function initiierehBeobEdit(BeobId) {
 					$("#aArtName").val(aArtName);
 					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
 					$("#aArtName").selectmenu("refresh");
-					erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User);
+					erstelleDynamischeFelderhArtEdit(Feldliste, Beob, Beob.User);
 					//Link zum Projekt in Navbar setzen
 					$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
 					//Link zum Raum in Navbar setzen
@@ -1536,7 +1566,6 @@ function GetGeolocation() {
 	return watchID;
 }
 
-
 //Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
 	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
@@ -1596,22 +1625,34 @@ function speichereLetzteUrl(User) {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	var url = window.location.pathname + window.location.search;
-	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + User + '"', {
-		success: function(data) {
-			var LetzteUrl = data.rows[0].value.LetzteUrl;
-			//nur speichern, wenn anders als zuletzt
-			if (LetzteUrl != url) {
-				var UserId = data.rows[0].value._id;
-				$db.openDoc(UserId, {
-					success: function(doc) {
-						doc.LetzteUrl = url;
-						$db.saveDoc(doc);
+	$.ajax({
+	    url: '/_session',
+	    dataType: 'json',
+	    async: false,
+	    success: function(session){
+	    	if (session.userCtx.name != (undefined || null)) {
+	        	User = session.userCtx.name;
+	        	var url = window.location.pathname + window.location.search;
+				$db = $.couch.db("evab");
+				$db.view('evab/User?key="' + User + '"', {
+					success: function(data) {
+						var LetzteUrl = data.rows[0].value.LetzteUrl;
+						//nur speichern, wenn anders als zuletzt
+						if (LetzteUrl != url) {
+							var UserId = data.rows[0].value._id;
+							$db.openDoc(UserId, {
+								success: function(doc) {
+									doc.LetzteUrl = url;
+									$db.saveDoc(doc);
+								}
+							});
+						}
 					}
 				});
+	        } else {
+				window.open("index.html?Status=neu", target="_self");
 			}
-		}
+	    }
 	});
 }
 
@@ -1885,6 +1926,24 @@ function neuesFeld(User, Pfad) {
 		error: function() {
 			melde("Fehler: Feld nicht erzeugt");
 		}
+	});
+}
+
+function prüfeAnmeldung() {		
+	//User Anmeldung überprüfen
+	//Wenn angemeldet, globale Variable User aktualisieren
+	//Wenn nicht angemeldet, Anmeldedialog öffnen
+	$.ajax({
+	    url: '/_session',
+	    dataType: 'json',
+	    async: false,
+	    success: function(session){
+	    	if (session.userCtx.name != (undefined || null)) {
+	        	User = session.userCtx.name;
+	        } else {
+				window.open("index.html?Status=neu", target="_self");
+			}
+	    }
 	});
 }
 

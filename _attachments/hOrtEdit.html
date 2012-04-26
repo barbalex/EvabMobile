@@ -101,7 +101,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
-				OrtId = get_url_param("OrtId");
+				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				prüfeAnmeldung();
@@ -147,10 +147,10 @@
 				});
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur OrtListe in Navbar setzen
 				$("[name='hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
@@ -158,6 +158,9 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleNeuenOrt(User, ProjektId, RaumId);
 				});
 
@@ -201,7 +204,7 @@
 
 				//Menu aufbauen
 				$(document).on('click', "[name='Menu']", function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				//Karte managen
@@ -392,7 +395,7 @@
 					});
 				});
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -408,7 +411,7 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				function löscheOrt() {
 					var ArtenGelöscht, ZeitenGelöscht;
@@ -635,7 +638,10 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User){
+				function erstelleMenu(thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -651,7 +657,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -698,6 +704,9 @@
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$db = $.couch.db("evab");
 					$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
 						success: function(data) {
@@ -715,7 +724,7 @@
 										if (i < AnzOrt) {
 											OrtId = data.rows[parseInt(i)+1].value._id;
 											erstelleOrtEdit(OrtId, User);
-											window.history.pushState("", "", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitOrtId();
 										} else {
 											melde("Das ist der letzte Ort");
@@ -725,7 +734,7 @@
 										if (i > 0) {
 											OrtId = data.rows[i-1].value._id;
 											erstelleOrtEdit(OrtId, User);
-											window.history.pushState("", "", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+											window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitOrtId();
 										} else {
 											window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");

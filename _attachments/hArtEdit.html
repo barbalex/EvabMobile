@@ -85,26 +85,28 @@
 		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" id="hArtNeuLink" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" id="hArtNeuLink" data-icon="plus" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pagecreate", function() {
-				initiierehBeobEdit(get_url_param("id"));
-			});
 			$(":jqmData(role='page')").on("pageshow", function() {
-				
+				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				var BeobIdÜbergeben = hBeobId || get_url_param("id");
+
+				initiierehBeobEdit(BeobIdÜbergeben);
+				speichereLetzteUrl(User);
+			});
+
+			$(":jqmData(role='page')").on("pagecreate", function() {
+				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
+				hBeobId = "";
+
 				User = "";
 				var Feldliste;
-
 				prüfeAnmeldung();
-
-				//initiierehBeobEdit(get_url_param("id"));
-
-				speichereLetzteUrl(User);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function(event) {
@@ -155,8 +157,7 @@
 				//sichtbare Felder wählen
 				$("#hArtEditPageFooter").on("click", "#wähleFelder", function(event){
 					event.preventDefault();
-					//window.open("Felder_hArt.html?ArtGruppe=" + aArtGruppe, target="_self");
-					$.mobile.changePage("Felder_hArt.html?ArtGruppe=" + aArtGruppe);
+					$.mobile.changePage("Felder_hArt.html");
 				});
 
 				//Code für den Art-Löschen-Dialog
@@ -185,7 +186,10 @@
 
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#Menu", function() {
-					erstelleMenu(this, User, aArtGruppe);
+					if (User == "") {
+						prüfeAnmeldung();
+					}
+					erstelleMenu(this, aArtGruppe);
 				});
 
 				$(document).on("swipeleft", function() {
@@ -241,7 +245,7 @@
 					});
 				});
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -257,9 +261,12 @@
 							}
 					    }
 					});
-				}
+				}*/
 
 				function zuArtgruppenliste(Status) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var link = "Artgruppenliste.html?User=" + User + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					if (Status == 'neu') {
 						link += "&Status=neu";
@@ -274,6 +281,9 @@
 				}
 
 				function zuArtliste(aArtGruppe) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -304,7 +314,10 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User, ArtGruppe){
+				function erstelleMenu(thiz, ArtGruppe){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -322,9 +335,13 @@
 						      	click: function() {
 						        	//Variabeln übergeben
 						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
-						        	zurueck_global = "hArtEdit.html?id=" + hBeobId;
+						        	zurueck_global = "hArtEdit.html";
 						        	//Seite wechseln
-						        	$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        	if ($('#ArtEditPage').length > 0) {
+						        		$.mobile.changePage($('#ArtEditPage'));
+						        	} else {
+						        		$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        	}
 				        		},
 				        		theme: "a",
 				        		icon: "question"
@@ -431,6 +448,9 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$db = $.couch.db("evab");
 					$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
 						success: function(data) {
@@ -448,7 +468,6 @@
 										if (i < AnzArt) {
 											hBeobId = data.rows[parseInt(i)+1].value._id;
 											initiierehBeobEdit(hBeobId);
-											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {
 											melde("Das ist die letzte Art");
 										}
@@ -457,7 +476,6 @@
 										if (i > 0) {
 											hBeobId = data.rows[i-1].value._id;
 											initiierehBeobEdit(hBeobId);
-											window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 										} else {
 											window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 										}

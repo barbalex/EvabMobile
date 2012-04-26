@@ -35,7 +35,7 @@
   <body>
   	<div data-role="page" id="Felder_hArtPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hArtPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" data-rel="back">abbrechen</a>
+  			<a id="Felder_hArtPage_back" href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hArtPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
@@ -48,19 +48,20 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				
-				var Pfad = "";
-				User = "";
-
-				var ArtGruppe = get_url_param('ArtGruppe');
 			
-				prüfeAnmeldung(Pfad);
-				speichereLetzteUrl(User);
-				erstelle_sichtbareFelder(ArtGruppe, User);
+				erstelleSichtbareFelder();
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hArtPage', function() {
-					initiierehBeobEdit(hBeobId);
+					//initiierehBeobEdit(hBeobId);
+				});
+
+				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function() {
+					if ($('#hArtEditPage').length > 0) {
+						$.mobile.changePage($('#hArtEditPage'));
+					} else {
+						$.mobile.changePage("hArtEdit.html?id=" + hBeobId);
+					}
 				});
 
 				//Felder speichern (checkbox)
@@ -91,8 +92,8 @@
 				});
 
 				//generiert dynamisch die (Artgruppen-abhängigen) Felder im Formular Felder_hArt.html
-				//Mitgeben: Artgruppe, User
-				function erstelle_sichtbareFelder(ArtGruppe, User) {
+				//Mitgeben: Artgruppe, User (aus Globalen Variabeln)
+				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					$db = $.couch.db("evab");
 					//Holt, welche Felder angezeigt werden sollen
@@ -111,8 +112,8 @@
 										anzFelder += 1;
 										var FeldName = Feld.FeldName;
 										var FeldBeschriftung = Feld.FeldBeschriftung;
-										if (Feld.ArtGruppe.indexOf(ArtGruppe) == -1) {
-											FeldBeschriftung += " (nicht sichtbar in Artgruppe " + ArtGruppe + ")";
+										if (Feld.ArtGruppe.indexOf(aArtGruppe) == -1) {
+											FeldBeschriftung += " (nicht sichtbar in Artgruppe " + aArtGruppe + ")";
 										}
 										var ListItem = "\n\t\t\<label for='";
 										ListItem += FeldName;
@@ -143,24 +144,6 @@
 							$("#Feldliste").html(HtmlContainer).trigger("create");
 							$("input[name='Felder']").checkboxradio();
 						}
-					});
-				}
-
-				function prüfeAnmeldung(Pfad) {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session){
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open(Pfad + "index.html?Status=neu", target="_self");
-							}
-					    }
 					});
 				}
 			});

@@ -59,20 +59,19 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function() {
-				
-				User = "";
-				prüfeAnmeldung();
 
 				var ArtId = get_url_param("ArtId");
 				erstelleArtEdit(ArtId);
-
-				//speichereLetzteUrl(User);   nicht machen, da der Weg zurück nicht mehr klappt
 
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#zurück', function() {
 					var zurueck = zurueck_global || "BeobListe.html";
 					if (zurueck == "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
+						//initiiereBeobEdit(BeobId);
+					} else if (zurueck == "hArtEdit.html") {
+						$.mobile.changePage($('#hArtEditPage'));
+						//initiiereBeobEdit(hBeobId);
 					} else {
 						$.mobile.changePage(zurueck);
 					}
@@ -91,10 +90,16 @@
 				});
 
 				function zuArtgruppenliste() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Von=ArtEdit");
 				}
 
 				function zuArtliste() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -120,8 +125,8 @@
 					    url: '/_session',
 					    dataType: 'json',
 					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
+					    success: function(session){
+					    	if (session.userCtx.name != (undefined || null)) {
 					        	User = session.userCtx.name;
 					        } else {
 								window.open("index.html?Status=neu", target="_self");

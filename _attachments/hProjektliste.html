@@ -45,17 +45,16 @@
 		<div data-role="footer" id="ProjektListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" name="hProjektNeuLink" class="ui-btn-active" >neues Projekt</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active hpl_NeuLink">neues Projekt</a></li>
 					<li><a href="#" id="ProjektListeMapÖffnen" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				var Pfad = "";
 				User = "";
 				
-				prüfeAnmeldung(Pfad);
+				prüfeAnmeldung();
 				
 				erstelleProjektliste();
 
@@ -63,11 +62,11 @@
 
 				//Menu aufbauen
 				$(document).on('click', '[name="Menu"]', function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				//neues Projekt erstellen
-				$("body").on("click", "[name='hProjektNeuLink']", function() {
+				$("body").on("click", ".hpl_NeuLink", function() {
 					erstelleNeuesProjekt();
 				});
 
@@ -93,7 +92,7 @@
 
 				$(document).on("pageshow", '#ProjektListeMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjektliste(User);
+					erstelleKarteFürProjektliste();
 				});
 
 				$(document).on("pagehide", '#ProjektListeMap', function() {
@@ -101,7 +100,7 @@
 					$("#map_canvas").html("");
 				});
 
-				function prüfeAnmeldung(Pfad) {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -113,13 +112,16 @@
 					    	if(session.userCtx.name != (undefined || null)) {
 					        	User = session.userCtx.name;
 					        } else {
-								window.open(Pfad + "index.html?Status=neu", target="_self");
+								window.open("index.html?Status=neu", target="_self");
 							}
 					    }
 					});
-				}
+				}*/
 
 				function erstelleProjektliste() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 			  		$db = $.couch.db("evab");
 					$("#Projekte").empty();
 					$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
@@ -141,13 +143,13 @@
 							$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 							if (anzProj == 0) {
-								ListItemContainer = "<li><a href='#' data-transition='slideup' rel='external' name='hProjektNeuLink' class='erste'>Erstes Projekt erfassen</a></li>";
+								ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
 							} else {
 								for(i in data.rows) {               //Liste aufbauen
 									Proj = data.rows[i].value;
 									key = data.rows[i].key;
 									pName = key[1];
-									externalPage = "hProjektEdit.html?ProjektId=" + Proj._id;
+									externalPage = "hProjektEdit.html?id=" + Proj._id;
 									listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
 									listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
 									listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
@@ -161,7 +163,10 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User){
+				function erstelleMenu(thiz){
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -219,7 +224,10 @@
 				  	})
 				}
 
-				function erstelleKarteFürProjektliste(User) {
+				function erstelleKarteFürProjektliste() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$db = $.couch.db("evab");
 					//Zuerst Orte abfragen
 					$db.view('evab/hProjektlisteOrteFuerKarte?key="' + User + '"&include_docs=true', {

@@ -39,14 +39,16 @@
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			
-				var Pfad = "../../";
 				User = "";
 			
-				prüfeAnmeldung(Pfad);
+				prüfeAnmeldung();
 				erstelleSelectFeldFolgtNach();
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var FeldWert = this.value;
 					var FeldName = this.name;
 					var AlterFeldWert = this.defaultValue;
@@ -139,6 +141,9 @@
 				});
 
 				$("#UserFeldForm").on("change", "#Standardwert", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var Optionen = $("#Optionen").val();
 					var Feldwert = this.value;
 					if (Optionen !== "") {
@@ -204,16 +209,25 @@
 
 				//Sichtbarkeit Modus hierarchisch speichern
 				$("#SichtbarImModusHierarchisch").change(function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					speichereSichtbarModusHierarchisch(User, this.value);
 				});
 
 				//Sichtbarkeit Modus einfach speichern
 				$("#SichtbarImModusEinfach").change(function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					speichereSichtbarModusEinfach(User, this.value);
 				});
 
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					if ("{{User}}" == "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 					} else {
@@ -228,7 +242,7 @@
 							        	if ("{{FeldName}}" == "") {
 							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 							        		//Feld = eval("Datensatz." + "{{FeldName}}") lieferte einen Fehler!
-							        		löscheFeld(Pfad);
+							        		löscheFeld();
 							        	} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
@@ -246,7 +260,7 @@
 														}
 													}
 													if (anzVorkommen == 0) {
-														löscheFeld(Pfad);
+														löscheFeld();
 													} else {
 														var ds = "Datensätzen";
 														if (anzVorkommen = 1) {
@@ -283,10 +297,16 @@
 
 				//swipen steuern
 				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					geheZumNächstenFeld(User, "{{id}}");
 				});
 
 				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					geheZumVorigenFeld(User, "{{id}}");
 				});
 
@@ -302,7 +322,9 @@
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
 			$(":jqmData(role='page')").on("pagebeforeshow", function() {
 
-				//alert("Feldname = " + "{{FeldName}}" + ", pagebeforeshow läuft");
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 
 				speichereLetzteUrl(User);
 				
@@ -343,6 +365,9 @@
 		</script>
 		<script type="text/javascript">
 			function setzeSichtbarInModiUndArtgruppeUndStandardwert(User){
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
 				//könnte man sich diese Abfrage ersparen!
 				//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
@@ -388,6 +413,9 @@
 			}
 
 			function prüfeFeldNamen(User) {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				var FeldNameAlt = "{{FeldName}}" || "";
 				var FeldNameNeu = $("#FeldName").val();
 				var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
@@ -425,6 +453,9 @@
 			}
 
 			function speichereSichtbarModusHierarchisch(User, SichtbarImModusHierarchisch) {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				var FeldName = $("#FeldName").val();
 				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
@@ -448,6 +479,9 @@
 			}
 
 			function speichereSichtbarModusEinfach(User, SichtbarImModusEinfach) {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				var FeldName = $("#FeldName").val();
 				$db = $.couch.db("evab");
 				$db.openDoc("{{id}}", {
@@ -505,14 +539,14 @@
 				});
 			}
 
-			function löscheFeld(Pfad) {
+			function löscheFeld() {
 				var docId = "{{id}}";
 				$db = $.couch.db("evab");
 				$db.openDoc(docId, {
 					success: function(document) {
 						$db.removeDoc(document, {
 							success: function() {
-								window.open(Pfad + "FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
+								window.open("../../FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 							},
 							error: function() {
 								melde("Fehler: nicht gelöscht");
@@ -526,7 +560,7 @@
 				return false;
 			}
 
-		function prüfeAnmeldung(Pfad) {		
+		function prüfeAnmeldung() {		
 			//User Anmeldung überprüfen
 			//Wenn angemeldet, globale Variable User aktualisieren
 			//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -538,7 +572,7 @@
 			    	if(session.userCtx.name != (undefined || null)) {
 			        	User = session.userCtx.name;
 			        } else {
-						window.open(Pfad + "index.html?Status=neu", target="_self");
+						window.open("../../index.html?Status=neu", target="_self");
 					}
 			    }
 			});
@@ -548,6 +582,9 @@
 		//nächstes des letzten => melden
 		//erwartet die ID des aktuellen Datensatzes
 		function geheZumNächstenFeld(User, IdAktuell) {
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			$db = $.couch.db("evab");
 			$db.view('evab/FeldListe', {
 				success: function(data) {
@@ -598,6 +635,9 @@
 		//voriges des ersten => FeldListe
 		//erwartet die ID des aktuellen Datensatzes
 		function geheZumVorigenFeld(User, IdAktuell) {
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			$db = $.couch.db("evab");
 			$db.view('evab/FeldListe', {
 				success: function(data) {
@@ -666,6 +706,9 @@
 			//generiert den html-Inhalt für Selectmenus
 			//wird von erstelle_hArtEdit aufgerufen
 			//Nur bei eigenen Feldern anzeigen
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			if ("{{User}}" !== "ZentrenBdKt") {
 				$db = $.couch.db("evab");
 				$db.view("evab/FeldListe", {
@@ -701,6 +744,9 @@
 		}
 
 		function speichereStandardwert(User) {
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function(Feld) {

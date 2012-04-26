@@ -47,11 +47,16 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-
-				erstelle_sichtbareFelder(User);
+				if (User == "") {
+					prüfeAnmeldung();
+				}
+				erstelleSichtbareFelder();
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var FeldName = $(this).prop("id");
 					var FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
@@ -78,13 +83,17 @@
 				});
 
 				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function() {
-					$.mobile.changePage($('#BeobEditPage'));
+					if ($('#BeobEditPage').length > 0) {
+						$.mobile.changePage($('#BeobEditPage'));
+					} else {
+						$.mobile.changePage("BeobEdit.html?id=" + BeobId);
+					}
 				});
 
 
 				//Felder in BeobEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_BeobPage', function() {
-					initiiereBeobEdit(BeobId);
+					//initiiereBeobEdit(BeobId);
 				});
 
 				$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {
@@ -102,7 +111,10 @@
 			//generiert dynamisch die Felder im Checkbox Felder
 			//checked diejenigen, die der User anzeigen will
 			//Mitgeben: User
-			function erstelle_sichtbareFelder(User) {
+			function erstelleSichtbareFelder() {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				$("#Feldliste").empty();
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB

@@ -47,16 +47,24 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				erstelle_sichtbareFelder(User);
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hOrtPage', function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleOrtEdit(OrtId, User);
 				});
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					var FeldName = $(this).prop("id");
 					var FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
@@ -87,6 +95,9 @@
 			//checked diejenigen, die der User anzeigen will
 			//Mitgeben: User
 			function erstelle_sichtbareFelder(User) {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				$("#Feldliste").empty();
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB

@@ -39,7 +39,7 @@
 			//$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			$(":jqmData(role='page')").on("pageinit", function() {
 				User = "";
-				ProjektId = get_url_param("ProjektId");
+				ProjektId = get_url_param("id");
 				prüfeAnmeldung();
 				erstelleProjektEdit(ProjektId, User);
 				speichereLetzteUrl(User);
@@ -100,7 +100,7 @@
 
 				//Menu aufbauen
 				$('#hProjektEditHeader').on('click', '#Menu', function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				//neues Projekt erstellen
@@ -115,23 +115,23 @@
 				});
 
 				$(document).on("swipeleft", "#hProjektEditContent", function() {
-					nächstesVorigesProjekt(ProjektId, "nächstes", User);
+					nächstesVorigesProjekt(ProjektId, "nächstes");
 				});
 
 				$(document).on("swiperight", "#hProjektEditContent", function() {
-					nächstesVorigesProjekt(ProjektId, "voriges", User);
+					nächstesVorigesProjekt(ProjektId, "voriges");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#ProjektEditPage").on("vclick", "#PaginationPrev", function(event) {
 					event.preventDefault();
-					nächstesVorigesProjekt(ProjektId, "voriges", User);
+					nächstesVorigesProjekt(ProjektId, "voriges");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#ProjektEditPage").on("vclick", "#PaginationNext", function(event) {
 					event.preventDefault();
-					nächstesVorigesProjekt(ProjektId, "nächstes", User);
+					nächstesVorigesProjekt(ProjektId, "nächstes");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -140,12 +140,12 @@
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ProjektEditPage').is(':visible') ){
 						// Left arrow
 						if( e.keyCode === $.mobile.keyCode.LEFT ){
-							nächstesVorigesProjekt(ProjektId, "voriges", User);
+							nächstesVorigesProjekt(ProjektId, "voriges");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
-							nächstesVorigesProjekt(ProjektId, "nächstes", User);
+							nächstesVorigesProjekt(ProjektId, "nächstes");
 							e.preventDefault();
 						}
 					}
@@ -160,6 +160,9 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					erstelleKarteFürProjekt(User, ProjektId);
 				});
 
@@ -191,7 +194,6 @@
 			});
 
 			function löscheProjekt() {
-				var ProjektId = ProjektId;
 				var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
 				var Rückmeldung;
 				ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
@@ -472,7 +474,10 @@
 			}
 
 			//Menü aufbauen
-			function erstelleMenu(thiz, User){
+			function erstelleMenu(thiz){
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				$(thiz).simpledialog({
 					'mode' : 'bool',
 					'prompt' : 'Menü',
@@ -487,7 +492,7 @@
 			      		},
 			      		'Felder verwalten': {
 					      	click: function() {
-					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?ProjektId=" + ProjektId, target="_self");
+					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target="_self");
 			        		},
 			        		theme: "a",
 			        		icon: "edit"
@@ -533,7 +538,10 @@
 			//voriges des ersten => ProjektListe
 			//nächstes des letzten => melden
 			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges, User) {
+			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				$db = $.couch.db("evab");
 				$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
 					success: function(data) {
@@ -551,7 +559,7 @@
 									if (i < AnzProj) {
 										ProjektId = data.rows[parseInt(i)+1].value._id;
 										erstelleProjektEdit(ProjektId, User);
-										window.history.pushState("", "", 'hProjektEdit.html?ProjektId=' + ProjektId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
 										melde("Das ist das letzte Projekt");
@@ -561,7 +569,7 @@
 									if (i > 0) {
 										ProjektId = data.rows[i-1].value._id;
 										erstelleProjektEdit(ProjektId, User);
-										window.history.pushState("", "", 'hProjektEdit.html?ProjektId=' + ProjektId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
 										window.open("hProjektListe.html", target="_self");
@@ -574,7 +582,7 @@
 				});
 			}
 
-			function prüfeAnmeldung() {		
+			/*function prüfeAnmeldung() {		
 				//User Anmeldung überprüfen
 				//Wenn angemeldet, globale Variable User aktualisieren
 				//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -590,7 +598,7 @@
 						}
 				    }
 				});
-			}
+			}*/
 
 			function aktualisiereLinksMitProjId() {
 				//Link zur Raumliste in Navbar setzen

@@ -58,11 +58,10 @@
 		
 		userCtx = null;
 		User = "";
-		var Pfad = "";
 		//sicherstellen, dass zurueck nie leer ist
 		var zurueck = get_url_param('zurueck') || "BeobListe.html";
 		
-		prüfeAnmeldung(Pfad);
+		prüfeAnmeldung();
 
 		speichereLetzteUrl(User);
 		
@@ -123,7 +122,7 @@
 	
 	$(document).ready(handleDocumentReady);
 
-	function prüfeAnmeldung(Pfad) {		
+	function prüfeAnmeldung() {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -135,7 +134,7 @@
 		    	if(session.userCtx.name != (undefined || null)) {
 		        	User = session.userCtx.name;
 		        } else {
-					window.open(Pfad + "index.html?Status=neu", target="_self");
+					window.open("index.html?Status=neu", target="_self");
 				}
 		    }
 		});

@@ -54,7 +54,7 @@
 		<div data-role="footer" id="hOrtListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hOrtNeuLink" name="hOrtNeuLink">neuer Ort</a></li>
+					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active hol_NeuLink">neuer Ort</a></li>
 					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
@@ -87,13 +87,16 @@
 		speichereLetzteUrl(User);
 
 		//Link zum Projekt in Navbar setzen
-		$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+		$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 		//Link zum Raum in Navbar und Titelleiste setzen
-		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 		//neuen Ort erstellen
-		$("body").on("click", "[name='hOrtNeuLink']", function(){
+		$("body").on("click", ".hol_NeuLink", function(){
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			erstelleNeuenOrt(User, ProjektId, RaumId);
 		});
 
@@ -102,7 +105,7 @@
 
 		//Menu aufbauen
 		$("#hOrtListePageHeader").on('click', "[name='Menu']", function(){
-			erstelleMenu(this, User);
+			erstelleMenu(this);
 		});
 
 		$("#Orte").on("swipeleft", ".Ort", function() {
@@ -111,6 +114,9 @@
 		});
 
 		$("#Orte").on("swipeleft", ".erste", function() {
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			erstelleNeuenOrt(User, ProjektId, RaumId);
 		});
 
@@ -127,6 +133,9 @@
 
 		$(document).on("pageshow", '#hOrtListeMapPage', function() {
 			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
+			if (User == "") {
+				prüfeAnmeldung();
+			}
 			erstelleKarteFürRaum(User, RaumId);
 		});
 
@@ -138,7 +147,7 @@
 	
 	$(document).ready(handleDocumentReady);
 
-	function prüfeAnmeldung(Pfad) {		
+	/*function prüfeAnmeldung(Pfad) {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren
 		//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -154,10 +163,13 @@
 				}
 		    }
 		});
-	}
+	}*/
 
 	//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-	function erstelleMenu(thiz, User){
+	function erstelleMenu(thiz){
+		if (User == "") {
+			prüfeAnmeldung();
+		}
 		//Code um Menü aufzubauen
 		$(thiz).simpledialog({
 			'mode' : 'bool',
@@ -217,6 +229,9 @@
   </script>
   <script type="text/javascript" charset="utf-8">	
   	function erstelleOrtListe() {
+  		if (User == "") {
+			prüfeAnmeldung();
+		}
 		$("#Orte").empty();
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
@@ -237,12 +252,12 @@
 				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 				if (anzOrt == 0) {
-					ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hOrtNeuLink" class="erste">Ersten Ort erfassen</a></li>';
+					ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
 				} else {
 					for(i in data.rows) {                //Liste aufbauen
 						Ort = data.rows[i].value;
 						key = data.rows[i].key;
-						externalPage = "hOrtEdit.html?OrtId=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+						externalPage = "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 						listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 						ListItemContainer += listItem;
 					}

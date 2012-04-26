@@ -39,7 +39,7 @@
   		<div data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="BeobListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='be_Menu' name='be_Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
@@ -102,11 +102,11 @@
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" id="BeobEditPageFooterNavbar">
 				<ul>
-					<li><a href="#" id="NeueBeobLink" data-transition="slideup" data-icon="plus" class="ui-btn-active">neu</a></li>					
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>						
-					<li><a href="#" id="zeigeKarte" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="be_neueBeob" data-icon="plus" class="ui-btn-active">neu</a></li>					
+					<li><a href="#" id="be_löschen" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="be_verorten" data-icon="evab-location">verorten</a></li>						
+					<li><a href="#" id="be_zeigeKarte" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="be_wähleFelder" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -115,34 +115,55 @@
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
-
-				User = "";
 				prüfeAnmeldung();
 
 				//Neue Beobachtung erfassen
-				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
+				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
 					event.preventDefault();
-					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", target="_self");
-					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit");
+					if (User == "") {
+						prüfeAnmeldung();
+					}
+					if ($("#agl_Page").length > 0) {
+						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", reloadPage: true});
+						//alert("User = " + User);
+						//window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
+						//$("#BeobEditPage").removeClass('ui-page-active');
+						//$("#agl_Page").addClass('ui-page-active');
+					} else {
+						$.mobile.changePage("Artgruppenliste.html", {
+				            type: "get",
+				            data: "User=" + User + "&Status=neu&Von=BeobEdit"
+				        });
+					}
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					//window.open("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
-					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
+					if (User == "") {
+						prüfeAnmeldung();
+					}
+					if ($("#agl_Page").length > 0) {
+						$.mobile.changePage($("#agl_Page"));
+						window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+					} else {
+						$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
+					}
 				});
 
 				//sichtbare Felder wählen
-				$("#BeobEditPageFooterNavbar").on("click", "#wähleFelder", function(event) {
+				$("#BeobEditPageFooterNavbar").on("click", "#be_wähleFelder", function(event) {
 					event.preventDefault();
-					//window.open("Felder_Beob.html", target="_self");
+					//alert("be_wähleFelder geklickt");
 					$.mobile.changePage("Felder_Beob.html");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -152,9 +173,13 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								//window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								$.mobile.changePage($("#agl_Page"));
+								window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 							} else {
-								window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								$.mobile.changePage($("#al_Page"));
+								window.history.pushState("", "", "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								//window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
 							}
 						}
 					});	
@@ -199,37 +224,44 @@
 					}
 				});
 				
-				$("#BeobEditPageFooterNavbar").on('click', "#zeigeKarte", function(event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#be_zeigeKarte", function(event) {
 					event.preventDefault();
-					$.mobile.changePage("#BeobEditMap");
+					//alert("be_zeigeKarte geklickt");
+					if ($("#BeobEditMapPage").length > 0) {
+						//alert("changePage zu id");
+						$.mobile.changePage($("#BeobEditMapPage"));
+					} else {
+						//alert("changePage zu url");
+						$.mobile.changePage("#BeobEditMapPage");
+					}
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
 					//var contentHeight = $(window).height();
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#BeobEditMap', function() {
+				$(document).on("pageshow", '#BeobEditMapPage', function() {
 					erstelleKarte();
 				});
 
-				$(document).on("pagehide", '#BeobEditMap', function() {
+				$(document).on("pagehide", '#BeobEditMapPage', function() {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$("#BeobEditPageFooterNavbar").on('click', "#GetGeolocationButton", function(event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#be_verorten", function(event) {
 					event.preventDefault();
 					GetGeolocation();
 				});
 
-				$('#BeobEditMap').on('click', '#BeobEditMap_back', function(event) {
+				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function(event) {
 					event.preventDefault();
 					$.mobile.changePage($('#BeobEditPage'));
 					window.history.pushState("", "", "hArtEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#BeobEditPageFooterNavbar').on('click', '#LöschenDialogLink', function(event) {
+				$('#BeobEditPageFooterNavbar').on('click', '#be_löschen', function(event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -254,8 +286,8 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='Menu']", function() {
-					erstelleMenu(this, User);
+				$(document).on('click', "[name='be_Menu']", function() {
+					erstelleMenu(this);
 				});
 
 				$(document).on("swipeleft", "#BeobEditContent", function() {
@@ -318,6 +350,9 @@
 				//erwartet ob nächster oder voriger gesucht wird
 				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
 					$db = $.couch.db("evab");
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 						success: function(data) {
 							var i;
@@ -334,7 +369,6 @@
 										if (i < AnzBeob) {
 											BeobId = data.rows[parseInt(i)+1].value._id;
 											initiiereBeobEdit(BeobId);
-											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
 										} else {
 											melde("Das ist die letzte Beobachtung");
 										}
@@ -343,7 +377,6 @@
 										if (i > 0) {
 											BeobId = data.rows[i-1].value._id;
 											initiiereBeobEdit(BeobId);
-											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
 										} else {
 											window.open("BeobListe.html", target="_self");
 										}
@@ -387,11 +420,11 @@
 					var mapcanvas = $('#map_canvas');
 					var map = new google.maps.Map(mapcanvas[0],options);
 					//google.maps.event.trigger(map,'resize');
-					var aArtGruppe = $("select#aArtGruppe").val();
-					var aArtName = $("select#aArtName").val();
-					var aAutor = $("input#aAutor").val();
-					var zDatum = $("input#zDatum").val();
-					var zUhrzeit = $("input#zUhrzeit").val();
+					var aArtGruppe = $("#aArtGruppe").val();
+					var aArtName = $("#aArtName").val();
+					var aAutor = $("#aAutor").val();
+					var zDatum = $("#zDatum").val();
+					var zUhrzeit = $("#zUhrzeit").val();
 					var image = "Artgruppenbilder/" + aArtGruppe + ".png";
 					if (verorted == true){
 						var marker = new google.maps.Marker({
@@ -500,7 +533,10 @@
 				});
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User) {
+				function erstelleMenu(thiz) {
+					if (User == "") {
+						prüfeAnmeldung();
+					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -517,7 +553,6 @@
 				      		'Arteigenschaften': {
 						      	click: function() {
 						      		//Variabeln übergeben
-						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
 						        	zurueck_global = "BeobEdit.html";
 						        	//Seite wechseln
 						        	if ($('#ArtEditPage').length > 0) {
@@ -646,7 +681,7 @@
 					});
 				}
 
-				function prüfeAnmeldung() {		
+				/*function prüfeAnmeldung() {		
 					//User Anmeldung überprüfen
 					//Wenn angemeldet, globale Variable User aktualisieren
 					//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -662,25 +697,26 @@
 							}
 					    }
 					});
-				}	
+				}*/	
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function() {
-
+				if (User == "") {
+					prüfeAnmeldung();
+				}
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				var BeobIdÜbergeben = BeobId || get_url_param("id");
 				initiiereBeobEdit(BeobIdÜbergeben);
-				
 				speichereLetzteUrl(User);
 			});
 		</script>
 	</div>
 
-	<div data-role="page" id="BeobEditMap" style="width:100%; height:100% !important;">
+	<div data-role="page" id="BeobEditMapPage" style="width:100%; height:100% !important;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a id="BeobEditMap_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='be_KarteMenu' name='be_Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0"> 
 			<div id="map_canvas" style="width:100%; height:100%"></div>
