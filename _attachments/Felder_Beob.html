@@ -34,7 +34,7 @@
   <body>
   	<div data-role="page" id="Felder_BeobPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_BeobPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
+  			<a id="Felder_BeobPage_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_BeobPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -77,6 +77,10 @@
 					});
 				});
 
+				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function() {
+					$.mobile.changePage($('#BeobEditPage'));
+				});
+
 
 				//Felder in BeobEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_BeobPage', function() {
@@ -90,6 +94,7 @@
 
 				$("#Feldliste").on("contextmenu", "input[name='Felder']", function(event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					event.preventDefault();
 					öffneFeld(this.id);
 				});
 			});

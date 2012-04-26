@@ -349,7 +349,12 @@ $db.openDoc(BeobId, {
 			$db.saveDoc(Beob, {
 				success: function(data) {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
-						window.open("BeobEdit.html?id=" + BeobId, target="_self");
+						if ($('#BeobEditPage').length>0) {
+							$.mobile.changePage($('#BeobEditPage'));
+							GetGeolocation();
+						} else {
+							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+						}
 					} else {
 						window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target="_self");
 					}
@@ -581,6 +586,8 @@ function erstelleArtEdit(ArtId) {
 				$("#ArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 			}
 			$("#ArtEdit_Hinweistext").html("");
+			//url aktualisieren, nötig wenn zwischen mehreren Seiten mit changePage gewechselt wird
+			window.history.pushState("", "", "ArtEdit.html?ArtId=" + ArtId); //funktioniert in IE erst ab 10!
 		}
 	});
 }
@@ -660,6 +667,8 @@ function initiiereBeobEdit(id) {
 					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 					setzeFixeFelderInBeobEdit(Beob);
 					erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User);
+					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+					window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 				}
 			});
 		}
@@ -1117,6 +1126,8 @@ function initiierehBeobEdit(BeobId) {
 					//Link zur ArtListe in Navbar setzen
 					var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 					$("[name='hArtListeLink']").attr('href', url);
+					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+					window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 				}
 			});
 		}

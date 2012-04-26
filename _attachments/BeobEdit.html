@@ -112,13 +112,12 @@
 		</div><!-- /footer -->
 		
 		<script type="text/javascript">
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$(":jqmData(role='page')").on("pagecreate", function() {
+				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
+				BeobId = "";
+
 				User = "";
 				prüfeAnmeldung();
-
-				initiiereBeobEdit(get_url_param("id"));
-				
-				speichereLetzteUrl(User);
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobLink", function(event) {
@@ -201,7 +200,7 @@
 				});
 				
 				$("#BeobEditPageFooterNavbar").on('click', "#zeigeKarte", function(event) {
-					//event.preventDefault();
+					event.preventDefault();
 					$.mobile.changePage("#BeobEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
@@ -221,6 +220,12 @@
 				$("#BeobEditPageFooterNavbar").on('click', "#GetGeolocationButton", function(event) {
 					event.preventDefault();
 					GetGeolocation();
+				});
+
+				$('#BeobEditMap').on('click', '#BeobEditMap_back', function(event) {
+					event.preventDefault();
+					$.mobile.changePage($('#BeobEditPage'));
+					window.history.pushState("", "", "hArtEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
@@ -305,6 +310,50 @@
 						}
 					});
 				});
+
+
+				//Öffnet die vorige oder nächste Beobachtung
+				//vorige der ersten => BeobListe
+				//nächste der letzten => melden
+				//erwartet ob nächster oder voriger gesucht wird
+				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
+					$db = $.couch.db("evab");
+					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+						success: function(data) {
+							var i;
+							var BeobIdAktuell;
+							var BeobIdNächste;
+							var BeobIdVorige;
+							var AnzBeob;
+							for(i in data.rows) {
+								BeobIdAktuell = data.rows[i].value._id;
+								var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+								if (BeobIdAktuell == IdAktuell) {
+									switch (NächsteOderVorige) {
+									case "nächste":
+										if (i < AnzBeob) {
+											BeobId = data.rows[parseInt(i)+1].value._id;
+											initiiereBeobEdit(BeobId);
+											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
+										} else {
+											melde("Das ist die letzte Beobachtung");
+										}
+										break;
+									case "vorige":
+										if (i > 0) {
+											BeobId = data.rows[i-1].value._id;
+											initiiereBeobEdit(BeobId);
+											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
+										} else {
+											window.open("BeobListe.html", target="_self");
+										}
+										break;
+									}
+								}
+							}
+						}
+					});
+				}
 
 				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
 				var markersArray = [];
@@ -469,9 +518,13 @@
 						      	click: function() {
 						      		//Variabeln übergeben
 						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
-						        	zurueck_global = "BeobEdit.html?id=" + BeobId;
+						        	zurueck_global = "BeobEdit.html";
 						        	//Seite wechseln
-						        	$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        	if ($('#ArtEditPage').length > 0) {
+						        		$.mobile.changePage($('#ArtEditPage'));
+						        	} else {
+						        		$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        	}
 				        		},
 				        		theme: "a",
 				        		icon: "question"
@@ -541,24 +594,6 @@
 					});
 				}
 
-				function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session){
-					    	if (session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}
-
 				//Speichert alle Daten
 				function speichern(Feldname, Feldwert) {
 					$db = $.couch.db("evab");
@@ -611,55 +646,39 @@
 					});
 				}
 
-				//Öffnet die vorige oder nächste Beobachtung
-				//vorige der ersten => BeobListe
-				//nächste der letzten => melden
-				//erwartet ob nächster oder voriger gesucht wird
-				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
-					$db = $.couch.db("evab");
-					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-						success: function(data) {
-							var i;
-							var BeobIdAktuell;
-							var BeobIdNächste;
-							var BeobIdVorige;
-							var AnzBeob;
-							for(i in data.rows) {
-								BeobIdAktuell = data.rows[i].value._id;
-								var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (BeobIdAktuell == IdAktuell) {
-									switch (NächsteOderVorige) {
-									case "nächste":
-										if (i < AnzBeob) {
-											BeobId = data.rows[parseInt(i)+1].value._id;
-											initiiereBeobEdit(BeobId);
-											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
-										} else {
-											melde("Das ist die letzte Beobachtung");
-										}
-										break;
-									case "vorige":
-										if (i > 0) {
-											BeobId = data.rows[i-1].value._id;
-											initiiereBeobEdit(BeobId);
-											window.history.pushState("", "", 'BeobEdit.html?id=' + BeobId); //funktioniert in IE erst ab 10!
-										} else {
-											window.open("BeobListe.html", target="_self");
-										}
-										break;
-									}
-								}
+				function prüfeAnmeldung() {		
+					//User Anmeldung überprüfen
+					//Wenn angemeldet, globale Variable User aktualisieren
+					//Wenn nicht angemeldet, Anmeldedialog öffnen
+					$.ajax({
+					    url: '/_session',
+					    dataType: 'json',
+					    async: false,
+					    success: function(session){
+					    	if (session.userCtx.name != (undefined || null)) {
+					        	User = session.userCtx.name;
+					        } else {
+								window.open("index.html?Status=neu", target="_self");
 							}
-						}
+					    }
 					});
-				}
+				}	
+			});
+
+			$(":jqmData(role='page')").on("pageshow", function() {
+
+				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				var BeobIdÜbergeben = BeobId || get_url_param("id");
+				initiiereBeobEdit(BeobIdÜbergeben);
+				
+				speichereLetzteUrl(User);
 			});
 		</script>
 	</div>
 
 	<div data-role="page" id="BeobEditMap" style="width:100%; height:100% !important;">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#BeobEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
+			<a id="BeobEditMap_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
 			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
