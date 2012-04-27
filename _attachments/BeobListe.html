@@ -54,9 +54,9 @@
 		  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function() {
 				
-				User = "";
-				
-				prüfeAnmeldung();
+				if (typeof User == "undefined") {
+					prüfeAnmeldung();
+				}
 
 				erstelleBeobListe(User);
 				speichereLetzteUrl(User);
@@ -74,6 +74,9 @@
 				});
 
 				$(document).on("pageshow", '#bl_Karte', function() {
+					if (typeof User == "undefined") {
+						prüfeAnmeldung();
+					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
 					$db = $.couch.db("evab");
 					$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
@@ -182,13 +185,13 @@
 
 				//Menu aufbauen
 				$(document).on('click', "[name='bl_Menu']", function() {
-					erstelleMenu(this, User);
+					erstelleMenu(this);
 				});
 
 				//Neue Beobachtung managen
 				$("#BeobListePage").on("click", ".bl_NeuLink", function(event){
 					event.preventDefault();
-					erstelleNeueBeob_1_Artgruppenliste(User);
+					erstelleNeueBeob_1_Artgruppenliste();
 				});
 
 				$(document).on("swiperight", "#BeobListePage", function() {
@@ -196,7 +199,14 @@
 				});
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
-				function erstelleNeueBeob_1_Artgruppenliste(User) {
+				function erstelleNeueBeob_1_Artgruppenliste() {
+					if (typeof User == "undefined") {
+						prüfeAnmeldung();
+					}
+					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof BeobListe != "undefined") {
+						BeobListe = undefined;
+					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
 						window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
@@ -205,27 +215,9 @@
 					}
 					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
 				}
-				
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, User) {
+				function erstelleMenu(thiz) {
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -285,10 +277,16 @@
 
 				//BeobListe in BeobList.html vollständig neu aufbauen
 				function erstelleBeobListe(User) {
+					if (typeof User == "undefined") {
+						prüfeAnmeldung();
+					}
 					$("#beobachtungen").empty();
 					$db = $.couch.db("evab");
 					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
 						success: function(data) {
+							//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
+							//bei neuen Beobachtungen wird BeobListe wieder auf undefined gesetzt
+							BeobListe = data;
 							var i;
 							var anzBeob = 0;
 							var beob;

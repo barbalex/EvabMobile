@@ -100,7 +100,6 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -158,7 +157,7 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleNeuenOrt(User, ProjektId, RaumId);
@@ -384,11 +383,11 @@
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(OrtId, {
-						success: function(Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
+						success: function(Ort) {
+							delete Ort._attachments[Dateiname];
+							$db.saveDoc(Ort, {
 								success: function() {
-									erstelleAttachments(OrtId);
+									erstelleAttachments(Ort);
 								}
 							});
 						}
@@ -639,7 +638,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -704,7 +703,7 @@
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");

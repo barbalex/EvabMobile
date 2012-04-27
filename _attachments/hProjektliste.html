@@ -52,7 +52,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				
 				prüfeAnmeldung();
 				
@@ -119,7 +118,7 @@
 				}*/
 
 				function erstelleProjektliste() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 			  		$db = $.couch.db("evab");
@@ -164,7 +163,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -225,7 +224,7 @@
 				}
 
 				function erstelleKarteFürProjektliste() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");

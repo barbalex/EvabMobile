@@ -65,7 +65,12 @@
 
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#zurück', function() {
-					var zurueck = zurueck_global || "BeobListe.html";
+					var zurueck;
+					if (typeof zurueck_global != "undefined") {
+						zurueck = zurueck_global;
+					} else {
+						zurueck = "BeobListe.html";
+					}
 					if (zurueck == "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
 						//initiiereBeobEdit(BeobId);
@@ -90,14 +95,14 @@
 				});
 
 				function zuArtgruppenliste() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Von=ArtEdit");
 				}
 
 				function zuArtliste() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet

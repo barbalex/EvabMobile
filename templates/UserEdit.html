@@ -89,27 +89,6 @@
     <script type="text/javascript">
 		$(document).ready(function() {
 			
-			User = "";
-
-			userCtx = null;
-			$.couch.session({
-				success : function(r) {
-					var userCtx = r.userCtx;
-					User = userCtx.name;
-				}
-			});
-			
-			/*
-			$.ajax({
-			    url: '/_session',
-			    dataType: 'json',
-			    async: false,
-			    success: function(session){
-			        User = session.userCtx.name;
-			    }
-			});
-			*/
-			
 			//Feld Benutzername deaktivieren
 			$('#Benutzername').textinput();
 			$('#Benutzername').textinput('disable');

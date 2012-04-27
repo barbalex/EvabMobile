@@ -86,7 +86,6 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
 				prüfeAnmeldung();
@@ -221,7 +220,7 @@
 
 				$(document).on("pageshow", '#RaumEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleKarteFürRaum(User, RaumId);
@@ -237,11 +236,11 @@
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(RaumId, {
-						success: function(Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
+						success: function(Raum) {
+							delete Raum._attachments[Dateiname];
+							$db.saveDoc(Raum, {
 								success: function() {
-									erstelleAttachments(RaumId);
+									erstelleAttachments(Raum);
 								}
 							});
 						}
@@ -495,7 +494,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -559,7 +558,7 @@
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");

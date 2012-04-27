@@ -59,7 +59,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				ProjektId = get_url_param("ProjektId");
 				prüfeAnmeldung();
 				
@@ -107,7 +106,7 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleKarteFürProjekt(User, ProjektId);
@@ -138,7 +137,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenu(zurueck, thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -199,7 +198,7 @@
 				}
 
 			  	function erstelleRaumListe() {
-			  		if (User == "") {
+			  		if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Räume").empty();

@@ -303,7 +303,7 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
-	if (User == "") {
+	if (typeof User == "undefined") {
 		prüfeAnmeldung();
 	}
 	$db.view('evab/User?key="' + doc.User + '"', {
@@ -560,7 +560,7 @@ function erstelleNeuesProjekt() {
 
 function öffneMeineEinstellungen(User, Pfad) {
 	$db = $.couch.db("evab");
-	if (User == "") {
+	if (typeof User == "undefined") {
 		prüfeAnmeldung();
 	}
 	$db.view('evab/User?key="' + User + '"', {
@@ -678,29 +678,39 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 //initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
 //wird aufgerufen von BeobEdit.html und Felder_Beob.html
 function initiiereBeobEdit(id) {
-	//hier werden Variablen gesetzt,
-	//in die fixen Felder Werte eingesetzt,
-	//die dynamischen Felder aufgebaut
-	//und die Nav-Links gesetzt (hat hier keine!)
-	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeBeob', {
-		success: function(Feldliste) {
-			$db.openDoc(id, {
-				success: function(Beob) {
-					//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-					BeobId = Beob._id;
-					aArtGruppe = Beob.aArtGruppe;
-					aArtName = Beob.aArtName;
-					aArtId = Beob.aArtId;
-					oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-					oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
-					setzeFixeFelderInBeobEdit(Beob);
-					erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Beob.User);
-					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-					window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
-				}
-			});
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (typeof FeldlisteBeobEdit != "undefined") {
+		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
+	} else {
+		//holt die Feldliste aus der DB
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeBeob', {
+			success: function(Feldliste) {
+				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
+				FeldlisteBeobEdit = Feldliste;
+				initiiereBeobEdit_2(id, FeldlisteBeobEdit);
+			}
+		});
+	}
+}
+
+function initiiereBeobEdit_2(id, Feldliste) {
+	$db.openDoc(id, {
+		success: function(Beob) {
+			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+			BeobId = Beob._id;
+			aArtGruppe = Beob.aArtGruppe;
+			aArtName = Beob.aArtName;
+			aArtId = Beob.aArtId;
+			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+			setzeFixeFelderInBeobEdit(Beob);
+			erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Beob.User);
+			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+			window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
+			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+			speichereLetzteUrl();
 		}
 	});
 }
@@ -737,7 +747,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
 		}
 	}
 	$("#Hinweistext").html("");
-	erstelleAttachments(Beob._id);
+	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 }
@@ -837,7 +847,7 @@ function erstelleProjektEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
+					erstelleAttachments(Projekt);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
 				}
@@ -915,7 +925,7 @@ function erstelleRaumEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
+					erstelleAttachments(Raum);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
 				}
@@ -997,7 +1007,7 @@ function erstelleOrtEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
+					erstelleAttachments(Ort);
 					if (get_url_param("Status") == "neu") {
 						//in neuen Datensätzen verorten
 						//aber nur, wenn noch keine Koordinaten drin sind
@@ -1071,7 +1081,7 @@ function erstelleZeitEdit(ID, User) {
 						}
 					}
 					$("#Hinweistext").html("");
-					erstelleAttachments(ID);
+					erstelleAttachments(Zeit);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
 				}
@@ -1192,7 +1202,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User) {
 		}
 	}
 	$("#Hinweistext").html("");
-	erstelleAttachments(Beob._id);
+	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 }
@@ -1619,42 +1629,62 @@ function stopGeolocation() {
     }
 }
 
-function speichereLetzteUrl(User) {
-//empfängt User und Name der letzten Ansicht
+function speichereLetzteUrl() {
+//empfängt User
 //speichert diese im Userdokument
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	$.ajax({
-	    url: '/_session',
-	    dataType: 'json',
-	    async: false,
-	    success: function(session){
-	    	if (session.userCtx.name != (undefined || null)) {
-	        	User = session.userCtx.name;
-	        	var url = window.location.pathname + window.location.search;
-				$db = $.couch.db("evab");
-				$db.view('evab/User?key="' + User + '"', {
-					success: function(data) {
-						var LetzteUrl = data.rows[0].value.LetzteUrl;
-						//nur speichern, wenn anders als zuletzt
-						if (LetzteUrl != url) {
-							var UserId = data.rows[0].value._id;
-							$db.openDoc(UserId, {
-								success: function(doc) {
-									doc.LetzteUrl = url;
-									$db.saveDoc(doc);
-								}
-							});
-						}
-					}
-				});
-	        } else {
-				window.open("index.html?Status=neu", target="_self");
-			}
-	    }
+	if (typeof User == "undefined") {
+		$.ajax({
+		    url: '/_session',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if (session.userCtx.name != (undefined || null)) {
+		        	User = session.userCtx.name;
+		        	speichereLetzteUrl_2();
+		        } else {
+					window.open("index.html?Status=neu", target="_self");
+				}
+		    }
+		});
+	} else {
+		speichereLetzteUrl_2();
+	}
+}
+
+function speichereLetzteUrl_2() {
+	var url = window.location.pathname + window.location.search;
+	$db = $.couch.db("evab");
+	//nur speichern, wann anders als zuletzt
+	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
+		//UserId nur abfragen, wenn nicht schon erfolgt
+		if (typeof UserId == "undefined") {
+			$db.view('evab/User?key="' + User + '"', {
+				success: function(data) {
+					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
+					UserId = data.rows[0].value._id;
+					speichereLetzteUrl_3(url);
+				}
+			});
+		} else {
+			speichereLetzteUrl_3(url);
+		}
+	}
+}
+
+function speichereLetzteUrl_3(url) {
+	$db.openDoc(UserId, {
+		success: function(doc) {
+			doc.LetzteUrl = url;
+			$db.saveDoc(doc);
+			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespaart werden kann
+			LetzteUrl = url;
+		}
 	});
 }
+
 
 
 //erstellt die Google-Map Karte für die Orte eines Raums
@@ -1855,7 +1885,7 @@ function erstelleKarteFürProjekt(User, ProjektId) {
 
 //speichert Anhänge
 //setzt ein passendes Formular mit den feldern _rev und _attachments voraus
-//wird benutzt von: BeobEdit.html
+//wird benutzt von allen Formularen mit Anhängen
 function speichereAnhänge(id) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
@@ -1864,45 +1894,50 @@ function speichereAnhänge(id) {
 			$("#FormAnhänge").ajaxSubmit({
 			    url: "/evab/" + id,
 			    success: function() {
-			    	//show attachments in form
-			    	erstelleAttachments(id);
+			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			    	$db.openDoc(id, {
+						success: function(data2) {
+					    	//show attachments in form
+					    	erstelleAttachments(data2);
+					    }
+					});
 			    },
 			    error: function() {
-			    	//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
-			    	erstelleAttachments(id);
+			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			    	$db.openDoc(id, {
+						success: function(data3) {
+					    	//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
+					    	erstelleAttachments(data3);
+					    }
+					});
 			    }
 			});
 		}
 	});
 }
 
-//erstellt Anhänge
+//erstellt Anhänge, d.h. schaut nach, ob welche existieren und zeigt sie im Formular an
 //setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
 //wird benutzt von allen Beobachtungs-Edit-Formularen
-function erstelleAttachments(id) {
-	$db = $.couch.db("evab");
-	$db.openDoc(id, {
-		success: function(doc) {
-			var attachments = doc._attachments;
-			var rev = doc._rev;
-			var HtmlContainer = "";
-			if (attachments) {
-				$.each(attachments, function(Dateiname, val) {
-					var url = "/evab/" + id + "/" + Dateiname;
-					var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
-					HtmlContainer += "<a href='";
-					HtmlContainer += url;
-					HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
-					HtmlContainer += Dateiname;
-					HtmlContainer += "</a><button name='LöscheAnhang' id='";
-					HtmlContainer += Dateiname;
-					HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
-				});
-				$("#_attachments").val("");
-			}
-			$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
-		}
-	});
+function erstelleAttachments(doc) {
+	var attachments = doc._attachments;
+	var rev = doc._rev;
+	var HtmlContainer = "";
+	if (attachments) {
+		$.each(attachments, function(Dateiname, val) {
+			var url = "/evab/" + doc.id + "/" + Dateiname;
+			var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+			HtmlContainer += "<a href='";
+			HtmlContainer += url;
+			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
+			HtmlContainer += Dateiname;
+			HtmlContainer += "</a><button name='LöscheAnhang' id='";
+			HtmlContainer += Dateiname;
+			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
+		});
+		$("#_attachments").val("");
+	}
+	$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
 }
 
 //kreiert ein neues Feld

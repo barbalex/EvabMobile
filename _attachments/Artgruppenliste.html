@@ -46,7 +46,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				//UserId = "";
 				if (get_url_param("User")) {
 					User = get_url_param("User");
 				}
@@ -96,7 +95,7 @@
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
 				User = get_url_param("User");
-				if (User == "") {
+				if (typeof User == "undefined") {
 					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
@@ -114,7 +113,7 @@
 					//Listen aufbauen lassen
 					//und butten für Sprache richtig beschriften
 					//var User = get_url_param("User");
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");

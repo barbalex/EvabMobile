@@ -62,7 +62,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				
 				ZeitId = get_url_param("id");
 				OrtId = get_url_param("OrtId");
@@ -107,7 +106,7 @@
 				});
 
 				function hal_öffneArtgruppenliste() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
@@ -143,7 +142,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -204,7 +203,7 @@
 				}
 				
 			  	function erstelleArtliste() {
-			  		if (User == "") {
+			  		if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Arten").empty();

@@ -57,11 +57,12 @@
 	function handleDocumentReady() {
 		
 		userCtx = null;
-		User = "";
 		//sicherstellen, dass zurueck nie leer ist
 		var zurueck = get_url_param('zurueck') || "BeobListe.html";
 		
-		prüfeAnmeldung();
+		if (typeof User == "undefined") {
+			prüfeAnmeldung();
+		}
 
 		speichereLetzteUrl(User);
 		
@@ -121,24 +122,6 @@
 	}
 	
 	$(document).ready(handleDocumentReady);
-
-	function prüfeAnmeldung() {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren
-		//Wenn nicht angemeldet, Anmeldedialog öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session){
-		    	if(session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
-		        } else {
-					window.open("index.html?Status=neu", target="_self");
-				}
-		    }
-		});
-	}
 
   </script>
 </html>

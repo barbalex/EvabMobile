@@ -94,17 +94,20 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function() {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				var BeobIdÜbergeben = hBeobId || get_url_param("id");
+				if (typeof hBeobId == "undefined") {
+					hBeobId = get_url_param("id");
+				}
 
-				initiierehBeobEdit(BeobIdÜbergeben);
+				initiierehBeobEdit(hBeobId);
 				speichereLetzteUrl(User);
 			});
 
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
-				hBeobId = "";
+				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				if (typeof hBeobId == "undefined") {
+					hBeobId = get_url_param("id");
+				}
 
-				User = "";
 				var Feldliste;
 				prüfeAnmeldung();
 
@@ -186,7 +189,7 @@
 
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#Menu", function() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleMenu(this, aArtGruppe);
@@ -234,11 +237,11 @@
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(hBeobId, {
-						success: function(Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
+						success: function(hBeob) {
+							delete hBeob._attachments[Dateiname];
+							$db.saveDoc(hBeob, {
 								success: function() {
-									erstelleAttachments(hBeobId);
+									erstelleAttachments(hBeob);
 								}
 							});
 						}
@@ -264,7 +267,7 @@
 				}*/
 
 				function zuArtgruppenliste(Status) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					var link = "Artgruppenliste.html?User=" + User + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
@@ -281,7 +284,7 @@
 				}
 
 				function zuArtliste(aArtGruppe) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -315,7 +318,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz, ArtGruppe){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -448,7 +451,7 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");

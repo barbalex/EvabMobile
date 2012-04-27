@@ -115,13 +115,19 @@
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
-				prüfeAnmeldung();
+				if (typeof User == "undefined") {
+					prüfeAnmeldung();
+				}
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
+					}
+					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof BeobListe != "undefined") {
+						BeobListe = undefined;
 					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", reloadPage: true});
@@ -140,7 +146,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					if ($("#agl_Page").length > 0) {
@@ -161,7 +167,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -336,7 +342,7 @@
 							delete Beob._attachments[Dateiname];
 							$db.saveDoc(Beob, {
 								success: function() {
-									erstelleAttachments(BeobId);
+									erstelleAttachments(Beob);
 								}
 							});
 						}
@@ -349,43 +355,56 @@
 				//nächste der letzten => melden
 				//erwartet ob nächster oder voriger gesucht wird
 				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
-					$db = $.couch.db("evab");
-					if (User == "") {
-						prüfeAnmeldung();
+					//prüfen, ob BeobListe schon existiert
+					//nur abfragen, wenn sie noch nicht existiert
+					if (typeof BeobListe == "undefined") {
+						if (typeof User == "undefined") {
+							prüfeAnmeldung();
+						}
+						$db = $.couch.db("evab");
+						$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+							success: function(data) {
+								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
+								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
+								BeobListe = data;
+								nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige);
+							}
+						});
+					} else {
+						nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige);
 					}
-					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
-						success: function(data) {
-							var i;
-							var BeobIdAktuell;
-							var BeobIdNächste;
-							var BeobIdVorige;
-							var AnzBeob;
-							for(i in data.rows) {
-								BeobIdAktuell = data.rows[i].value._id;
-								var AnzBeob = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (BeobIdAktuell == IdAktuell) {
-									switch (NächsteOderVorige) {
-									case "nächste":
-										if (i < AnzBeob) {
-											BeobId = data.rows[parseInt(i)+1].value._id;
-											initiiereBeobEdit(BeobId);
-										} else {
-											melde("Das ist die letzte Beobachtung");
-										}
-										break;
-									case "vorige":
-										if (i > 0) {
-											BeobId = data.rows[i-1].value._id;
-											initiiereBeobEdit(BeobId);
-										} else {
-											window.open("BeobListe.html", target="_self");
-										}
-										break;
-									}
+				}
+
+				function nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige) {
+					var i;
+					var BeobIdAktuell;
+					var BeobIdNächste;
+					var BeobIdVorige;
+					var AnzBeob;
+					for(i in BeobListe.rows) {
+						BeobIdAktuell = BeobListe.rows[i].value._id;
+						var AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (BeobIdAktuell == IdAktuell) {
+							switch (NächsteOderVorige) {
+							case "nächste":
+								if (i < AnzBeob) {
+									BeobId = BeobListe.rows[parseInt(i)+1].value._id;
+									initiiereBeobEdit(BeobId);
+								} else {
+									melde("Das ist die letzte Beobachtung");
 								}
+								break;
+							case "vorige":
+								if (i > 0) {
+									BeobId = BeobListe.rows[i-1].value._id;
+									initiiereBeobEdit(BeobId);
+								} else {
+									window.open("BeobListe.html", target="_self");
+								}
+								break;
 							}
 						}
-					});
+					}
 				}
 
 				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
@@ -534,7 +553,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -616,6 +635,11 @@
 							// Then use the opened doc as reference to remove
 							$db.removeDoc(document, {
 								success: function() {
+									//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+									//macht eigentlich erst Sinn, wenn die BeobListe mit changePage geöffnet wird
+									if (typeof BeobListe != "undefined") {
+										BeobListe = undefined;
+									}
 									window.open("BeobListe.html", target = '_self');
 								},
 								error: function() {
@@ -701,13 +725,15 @@
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function() {
-				if (User == "") {
+				if (typeof User == "undefined") {
 					prüfeAnmeldung();
 				}
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				var BeobIdÜbergeben = BeobId || get_url_param("id");
-				initiiereBeobEdit(BeobIdÜbergeben);
-				speichereLetzteUrl(User);
+				if (BeobId == "") {
+					BeobId = get_url_param("id");
+				}
+				//Felder aufbauen und letzte url merken
+				initiiereBeobEdit(BeobId);
 			});
 		</script>
 	</div>

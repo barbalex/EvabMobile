@@ -60,7 +60,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				OrtId = get_url_param("OrtId");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -84,7 +83,7 @@
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
@@ -96,7 +95,7 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function() {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
@@ -134,7 +133,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -196,7 +195,7 @@
 				}
 				
 			  	function erstelleZeitListe() {
-			  		if (User == "") {
+			  		if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Zeiten").empty();

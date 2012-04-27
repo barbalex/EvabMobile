@@ -35,10 +35,7 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
-			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
-			//$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 				ProjektId = get_url_param("id");
 				prüfeAnmeldung();
 				erstelleProjektEdit(ProjektId, User);
@@ -160,7 +157,7 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleKarteFürProjekt(User, ProjektId);
@@ -176,11 +173,11 @@
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ProjektId, {
-						success: function(Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
+						success: function(Projekt) {
+							delete Projekt._attachments[Dateiname];
+							$db.saveDoc(Projekt, {
 								success: function() {
-									erstelleAttachments(ProjektId);
+									erstelleAttachments(Projekt);
 								}
 							});
 						}
@@ -475,7 +472,7 @@
 
 			//Menü aufbauen
 			function erstelleMenu(thiz){
-				if (User == "") {
+				if (typeof User == "undefined") {
 					prüfeAnmeldung();
 				}
 				$(thiz).simpledialog({
@@ -539,7 +536,7 @@
 			//nächstes des letzten => melden
 			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
-				if (User == "") {
+				if (typeof User == "undefined") {
 					prüfeAnmeldung();
 				}
 				$db = $.couch.db("evab");

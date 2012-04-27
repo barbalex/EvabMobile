@@ -48,11 +48,13 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
-				if (get_url_param("User")) {
-					User = get_url_param("User");
-				}
-				if (User == "") {
-					prüfeAnmeldung();
+				
+				if (typeof User == "undefined") {
+					if (get_url_param("User") && get_url_param("User") != "") {
+						User = get_url_param("User");
+					} else {
+						prüfeAnmeldung();
+					}
 				}
 				var ArtGruppe = get_url_param("aArtGruppe");
 				var Status = get_url_param("Status") || "edit";
@@ -67,7 +69,7 @@
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
@@ -90,7 +92,7 @@
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					var ButtonText = this.text;
@@ -145,7 +147,7 @@
 
 				function erstelleArtenliste() {
 			  		//var User = get_url_param("User");
-			  		if (User == "") {
+			  		if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 				  	var viewname = 'evab/User?key="' + User + '"';

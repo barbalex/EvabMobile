@@ -90,7 +90,6 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				User = "";
 
 				ZeitId = get_url_param("id");
 				OrtId = get_url_param("OrtId");
@@ -145,7 +144,7 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 					event.preventDefault();
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
@@ -235,11 +234,11 @@
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ZeitId, {
-						success: function(Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
+						success: function(Zeit) {
+							delete Zeit._attachments[Dateiname];
+							$db.saveDoc(Zeit, {
 								success: function() {
-									erstelleAttachments(ZeitId);
+									erstelleAttachments(Zeit);
 								}
 							});
 						}
@@ -404,7 +403,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenu(thiz){
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -469,7 +468,7 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
-					if (User == "") {
+					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
