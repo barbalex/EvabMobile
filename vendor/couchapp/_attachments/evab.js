@@ -597,7 +597,7 @@ function löscheDokument(DocId) {
 //generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
 //Mitgeben: id der Art, User, Artgruppe
 function erstelleArtEdit(ArtId) {
-	$("#ArtEditFormHtml").empty();
+	$("#ArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	//holt die Art aus der DB
 	$db = $.couch.db("evab");
 	$db.openDoc(ArtId, {
@@ -727,7 +727,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#BeobEditFormHtml").empty();
+	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
 	//nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
@@ -820,7 +820,7 @@ function initiiereProjektEdit(ID) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#hProjektEditFormHtml").empty();
+	$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeProjekt', {
@@ -901,7 +901,7 @@ function initiiereRaumEdit(ID) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#hRaumEditFormHtml").empty();
+	$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeRaum', {
@@ -983,7 +983,7 @@ function initiiereOrtEdit(OrtId) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#hOrtEditFormHtml").empty();
+	$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	$db.openDoc(OrtId, {
 		success: function(Ort) {
@@ -1091,7 +1091,7 @@ function initiiereZeitEdit(ID) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#hZeitEditFormHtml").empty();
+	$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	//holt die Feldliste aus der DB
 	$db.view('evab/FeldListeZeit', {
@@ -1217,7 +1217,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
-	$("#hArtEditFormHtml").empty();
+	$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	var HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
