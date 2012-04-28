@@ -78,7 +78,7 @@
 					<input id="zUhrzeit" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}' />
 				</div>
 				<div id="BeobEditFormHtml">
-
+					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
 			<form id="FormAnhänge" action="" method="post" >
@@ -367,15 +367,15 @@
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 								BeobListe = data;
-								nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige);
+								nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
 							}
 						});
 					} else {
-						nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige);
+						nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
 					}
 				}
 
-				function nächsteVorigeBeob_2(BeobListe, IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige) {
 					var i;
 					var BeobIdAktuell;
 					var BeobIdNächste;

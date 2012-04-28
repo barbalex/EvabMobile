@@ -503,6 +503,10 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function(data) {
+							//Globale Variable für OrtListe zurücksetzen, damit die Liste neu aufgebaut wird
+							if (typeof OrtListe != "undefined") {
+								OrtListe = undefined;
+							}
 							window.open("hOrtEdit.html?OrtId=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 						},
 						error: function() {
@@ -746,7 +750,6 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
 			$db.saveDoc(Beob);
 		}
 	}
-	$("#Hinweistext").html("");
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
@@ -846,7 +849,6 @@ function initiiereProjektEdit(ID) {
 							$db.saveDoc(Projekt);
 						}
 					}
-					$("#Hinweistext").html("");
 					erstelleAttachments(Projekt);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
@@ -929,7 +931,6 @@ function initiiereRaumEdit(ID) {
 							$db.saveDoc(Raum);
 						}
 					}
-					$("#Hinweistext").html("");
 					erstelleAttachments(Raum);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
@@ -977,68 +978,85 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts
-function initiiereOrtEdit(ID) {
+function initiiereOrtEdit(OrtId) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hOrtEditFormHtml").empty();
 	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeOrt', {
-		success: function(Feldliste) {
-			$db.openDoc(ID, {
-				success: function(Ort) {
-					//fixe Felder aktualisieren
-					$("#oName").val(Ort.oName);
-					$("#oXKoord").val(Ort.oXKoord);
-					$("#oYKoord").val(Ort.oYKoord);
-					$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
-					//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
-					oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
-					oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
-					var HtmlContainer = generiereHtmlFuerOrtEditForm (Feldliste, Ort);
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							var Formularwerte = {};
-							Formularwerte = $("#hOrtEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i]) {
-									Ort[i] = Formularwerte[i];
-								} else if (Ort[i]) {
-									delete Ort[i]
-								}
-							}
-							$db.saveDoc(Ort);
-						}
+	$db.openDoc(OrtId, {
+		success: function(Ort) {
+			//fixe Felder aktualisieren
+			$("#oName").val(Ort.oName);
+			$("#oXKoord").val(Ort.oXKoord);
+			$("#oYKoord").val(Ort.oYKoord);
+			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
+			//alert("fixe Felder aktualisiert");
+			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
+			oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
+			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
+			//prüfen, ob die Feldliste schon geholt wurde
+			//wenn ja: deren globale Variable verwenden
+			if (typeof FeldlisteOrtEdit != "undefined") {
+				initiiereOrtEdit_2(Ort);
+			} else {
+				$db = $.couch.db("evab");
+				//holt die Feldliste aus der DB
+				$db.view('evab/FeldListeOrt', {
+					success: function(Feldliste) {
+						//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
+						FeldlisteOrtEdit = Feldliste;
+						initiiereOrtEdit_2(Ort);
 					}
-					$("#Hinweistext").html("");
-					erstelleAttachments(Ort);
-					if (get_url_param("Status") == "neu") {
-						//in neuen Datensätzen verorten
-						//aber nur, wenn noch keine Koordinaten drin sind
-						if (!$("#oXKoord").val()) {
-							GetGeolocation();
-						}
-					}
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
-					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-					speichereLetzteUrl();
-				}
-			});
+				});
+			}
 		}
-	});
+	});			
+}
+
+function initiiereOrtEdit_2(Ort) {
+	var HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+		$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+		if (get_url_param("Status") == "neu") {
+			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+			var Formularwerte = {};
+			Formularwerte = $("#hOrtEditForm").serializeObject();
+			//Werte aus dem Formular aktualisieren
+			for (i in Formularwerte) {
+				if (Formularwerte[i]) {
+					Ort[i] = Formularwerte[i];
+				} else if (Ort[i]) {
+					delete Ort[i]
+				}
+			}
+			$db.saveDoc(Ort);
+		}
+	}
+	erstelleAttachments(Ort);
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen verorten
+		//aber nur, wenn noch keine Koordinaten drin sind
+		if (!$("#oXKoord").val()) {
+			GetGeolocation();
+		}
+	}
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
+	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+	window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+	aktualisiereLinksMitOrtId_hoe();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
+
 }
 
 //generiert das Html für das Formular in hOrtEdit.html
-//erwartet Feldliste als Objekt; Ort als Objekt
+//erwartet Feldliste als Objekt (aus der globalen Variable); Ort als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerOrtEditForm (Feldliste, Ort) {
+function generiereHtmlFuerOrtEditForm (Ort) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1048,8 +1066,8 @@ function generiereHtmlFuerOrtEditForm (Feldliste, Ort) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {              
-		Feld = Feldliste.rows[i].value;
+	for(i in FeldlisteOrtEdit.rows) {              
+		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Ort.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
@@ -1092,7 +1110,6 @@ function initiiereZeitEdit(ID) {
 							speichereAlles();
 						}
 					}
-					$("#Hinweistext").html("");
 					erstelleAttachments(Zeit);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
@@ -1220,7 +1237,6 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 			$db.saveDoc(Beob);
 		}
 	}
-	$("#Hinweistext").html("");
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
@@ -1999,6 +2015,14 @@ function prüfeAnmeldung() {
 			}
 	    }
 	});
+}
+
+//aktualisiert OrtId-abhängige Links
+//ist eigene Funktion, weil auch ohne pageshow nötig (beim Datensatzwechsel)
+//wird aufgerufen von: hOrtEdit.html, evab.js
+function aktualisiereLinksMitOrtId_hoe() {
+	//Link zur Zeit in Navbar setzen
+	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 }
 
 

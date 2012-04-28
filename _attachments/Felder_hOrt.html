@@ -92,51 +92,61 @@
 					prüfeAnmeldung();
 				}
 				$("#Feldliste").empty();
-				$db = $.couch.db("evab");
-				//holt die Feldliste aus der DB
-				$db.view('evab/FeldListeOrt', {
-					success: function(data) {
-						var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-						var anzFelder = 0;
-						for (i in data.rows) {
-							var Feld = data.rows[i].value;
-							var FeldName = Feld.FeldName;
-							//Nur eigene und offizielle Felder berücksichtigen
-							if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-								//im Formular fix integrierte Felder nicht aufbauen
-								if (Feld.Hierarchiestufe == "Ort" && FeldName != "oName" && FeldName != "oXKoord" && FeldName != "oYKoord" && FeldName != "oLagegenauigkeit") {
-									anzFelder += 1;
-									var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-									var ListItem = "\n\t\t\<label for='";
-									ListItem += FeldName;
-									ListItem += "'>";
-									ListItem += FeldBeschriftung;
-									ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-									ListItem += "Felder";
-									ListItem += "' id='";
-									ListItem += FeldName;
-									ListItem += "' FeldId='";
-									ListItem += Feld._id;
-									ListItem += "' value='";
-									ListItem += FeldName;
-									ListItem += "' class='custom'";
-									if(Feld.SichtbarImModusHierarchisch) {
-										if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
-											//wenn sichtbar, anzeigen
-											ListItem += " checked='checked'";
-										}
-									}
-									ListItem += "/>";
-									HtmlContainer += ListItem;
+				//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+				if (typeof FeldlisteOrtEdit != "undefined") {
+					erstelleSichtbareFelder_2();
+				} else {
+					$db = $.couch.db("evab");
+					//holt die Feldliste aus der DB
+					$db.view('evab/FeldListeOrt', {
+						success: function(data) {
+							FeldlisteOrtEdit = data;
+							erstelleSichtbareFelder_2();
+						}
+					});
+				}
+			}
+
+			function erstelleSichtbareFelder_2() {
+				var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+				var anzFelder = 0;
+				for (i in FeldlisteOrtEdit.rows) {
+					var Feld = FeldlisteOrtEdit.rows[i].value;
+					var FeldName = Feld.FeldName;
+					//Nur eigene und offizielle Felder berücksichtigen
+					if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+						//im Formular fix integrierte Felder nicht aufbauen
+						if (Feld.Hierarchiestufe == "Ort" && FeldName != "oName" && FeldName != "oXKoord" && FeldName != "oYKoord" && FeldName != "oLagegenauigkeit") {
+							anzFelder += 1;
+							var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+							var ListItem = "\n\t\t\<label for='";
+							ListItem += FeldName;
+							ListItem += "'>";
+							ListItem += FeldBeschriftung;
+							ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+							ListItem += "Felder";
+							ListItem += "' id='";
+							ListItem += FeldName;
+							ListItem += "' FeldId='";
+							ListItem += Feld._id;
+							ListItem += "' value='";
+							ListItem += FeldName;
+							ListItem += "' class='custom'";
+							if(Feld.SichtbarImModusHierarchisch) {
+								if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
+									//wenn sichtbar, anzeigen
+									ListItem += " checked='checked'";
 								}
 							}
+							ListItem += "/>";
+							HtmlContainer += ListItem;
 						}
-						$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
-						HtmlContainer += "\n\t</fieldset>\n</div>"
-						$("#Feldliste").html(HtmlContainer).trigger("create");
-						$("input[name='Felder']").checkboxradio();
 					}
-				});
+				}
+				$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
+				HtmlContainer += "\n\t</fieldset>\n</div>"
+				$("#Feldliste").html(HtmlContainer).trigger("create");
+				$("input[name='Felder']").checkboxradio();
 			}
 		</script>
 	</div>
