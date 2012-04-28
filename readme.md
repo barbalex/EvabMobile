@@ -144,5 +144,5 @@ Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iris
 
 Das App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
 
-Achtung: Funktioniert mit Internet Explorer erst ab Version 9. Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile, Android-Browser auf ICS (Android Version 4), Android Chrome (beta).
-Auf Mobilgeräten ist die Verwendung der Webseite bisher langsam und daher unpraktisch.
+Achtung: Funktioniert mit Internet Explorer erst ab Version 10 (vermutlich). Getestet in: Firefox ab Version 4, Internet Explorer 9, Chrome. Auf Mobilgeräten funktionieren momentan am besten: Firefox mobile, Opera mobile, Safari, Android-Browser auf ICS (Android Version 4), Android Chrome (beta).
+Auf Mobilgeräten ist die Webseite etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Ich feile am Tempo!
