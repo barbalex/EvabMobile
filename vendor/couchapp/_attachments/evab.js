@@ -459,7 +459,7 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 							//speichern
 							$db.saveDoc(doc, {
 								success: function(data) {
-									window.open("hZeitEdit.html?ZeitId=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target="_self");
+									window.open("hZeitEdit.html?id=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target="_self");
 								},
 								error: function() {
 									melde("Fehler: neue Zeit nicht erstellt");
@@ -507,7 +507,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 							if (typeof OrtListe != "undefined") {
 								OrtListe = undefined;
 							}
-							window.open("hOrtEdit.html?OrtId=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
+							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 						},
 						error: function() {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -1086,48 +1086,57 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit
-function initiiereZeitEdit(ID) {
+function initiiereZeitEdit(ZeitId) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeZeit', {
-		success: function(Feldliste) {
-			$db.openDoc(ID, {
-				success: function(Zeit) {
-					//fixe Felder aktualisieren
-					$("#zDatum").val(Zeit.zDatum);
-					$("#zUhrzeit").val(Zeit.zUhrzeit);
-					var HtmlContainer = generiereHtmlFuerZeitEditForm (Feldliste, Zeit);
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-						$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							speichereAlles();
-						}
+	$db.openDoc(ZeitId, {
+		success: function(Zeit) {
+			//fixe Felder aktualisieren
+			$("#zDatum").val(Zeit.zDatum);
+			$("#zUhrzeit").val(Zeit.zUhrzeit);
+			//prüfen, ob die Feldliste schon geholt wurde
+			//wenn ja: deren globale Variable verwenden
+			if (typeof FeldlisteZeitEdit != "undefined") {
+				initiiereZeitEdit_2(Zeit);
+			} else {
+				$db = $.couch.db("evab");
+				//holt die Feldliste aus der DB
+				$db.view('evab/FeldListeZeit', {
+					success: function(Feldliste) {
+						FeldlisteZeitEdit = Feldliste;
+						initiiereZeitEdit_2(Zeit);
 					}
-					erstelleAttachments(Zeit);
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
-					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-					speichereLetzteUrl();
-				}
-			});
+				});
+			}
 		}
 	});
+}
+
+function initiiereZeitEdit_2(Zeit) {
+	var HtmlContainer = generiereHtmlFuerZeitEditForm(Zeit);
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+		$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+		if (get_url_param("Status") == "neu") {
+			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+			speichereAlles();
+		}
+	}
+	erstelleAttachments(Zeit);
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
 }
 
 //generiert das Html für das Formular in hZeitEdit.html
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitEditForm (Feldliste, Zeit) {
-	if (typeof User == "undefined") {
-		prüfeAnmeldung();
-	}
+function generiereHtmlFuerZeitEditForm(Zeit) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1137,13 +1146,13 @@ function generiereHtmlFuerZeitEditForm (Feldliste, Zeit) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {              
-		Feld = Feldliste.rows[i].value;
+	for(i in FeldlisteZeitEdit.rows) {              
+		Feld = FeldlisteZeitEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "zDatum" && FeldName != "zUhrzeit") {
+		if ((Feld.User == Zeit.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) != -1 && FeldName != "zDatum" && FeldName != "zUhrzeit") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
+				FeldWert = eval("Feld.Standardwert." + Zeit.User) || "";
 			} else {
 				FeldWert = (eval("Zeit." + FeldName) || "");
 			}
@@ -1164,48 +1173,50 @@ function initiierehBeobEdit(BeobId) {
 	//die dynamischen Felder aufgebaut
 	//und die Nav-Links gesetzt
 	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeArt', {
-		success: function(data) {
-			Feldliste = data;
-			$db.openDoc(BeobId, {
-				success: function(Beob) {
-					//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
-					ProjektId = Beob.hProjektId;
-					RaumId = Beob.hRaumId;
-					OrtId = Beob.hOrtId;
-					ZeitId = Beob.hZeitId;
-					hBeobId = Beob._id;
-					aArtGruppe = Beob.aArtGruppe;
-					aArtName = Beob.aArtName;
-					aArtId = Beob.aArtId;
-					//fixe Felder aktualisieren
-					$("#aArtGruppe").selectmenu();
-					$("#aArtGruppe").val(aArtGruppe);
-					$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
-					$("#aArtGruppe").selectmenu("refresh");
-					$("#aArtName").selectmenu();
-					$("#aArtName").val(aArtName);
-					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
-					$("#aArtName").selectmenu("refresh");
-					erstelleDynamischeFelderhArtEdit(Feldliste, Beob);
-					//Link zum Projekt in Navbar setzen
-					$("#hae_ProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
-					//Link zum Raum in Navbar setzen
-					$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
-					//Link zum Ort in Navbar setzen
-					$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-					//Link zur Zeit in Navbar setzen
-					$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-					//Link zur ArtListe in Navbar setzen
-					var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-					$("[name='hArtListeLink']").attr('href', url);
-					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-					window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
-					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-					speichereLetzteUrl();
-				}
-			});
+	$db.openDoc(BeobId, {
+		success: function(Beob) {
+			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+			ProjektId = Beob.hProjektId;
+			RaumId = Beob.hRaumId;
+			OrtId = Beob.hOrtId;
+			ZeitId = Beob.hZeitId;
+			hBeobId = Beob._id;
+			aArtGruppe = Beob.aArtGruppe;
+			aArtName = Beob.aArtName;
+			aArtId = Beob.aArtId;
+			//fixe Felder aktualisieren
+			$("#aArtGruppe").selectmenu();
+			$("#aArtGruppe").val(aArtGruppe);
+			$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
+			$("#aArtGruppe").selectmenu("refresh");
+			$("#aArtName").selectmenu();
+			$("#aArtName").val(aArtName);
+			$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
+			$("#aArtName").selectmenu("refresh");
+			//Links in der Navbar setzen
+			$("#hae_ProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+			$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+			$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+			var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+			$("[name='hArtListeLink']").attr('href', url);
+			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+			window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
+			//prüfen, ob die Feldliste schon geholt wurde
+			//wenn ja: deren globale Variable verwenden
+			if (typeof FeldlistehBeobEdit != "undefined") {
+				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
+			} else {
+				//Feldliste aus der DB holen
+				$db = $.couch.db("evab");
+				$db.view('evab/FeldListeArt', {
+					success: function(data) {
+						FeldlistehBeobEdit = data;
+						erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
+						
+					}
+				});
+			}
 		}
 	});
 }
@@ -1240,6 +1251,8 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
 }
 
 //generiert das Html für Formular in hArtEdit.html

@@ -435,43 +435,55 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
+					//prüfen, ob hArtListe schon existiert
+					//nur abfragen, wenn sie noch nicht existiert
+					if (typeof hArtListe == "undefined") {
+						if (typeof User == "undefined") {
+							prüfeAnmeldung();
+						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
+							success: function(data) {
+								//Liste in globaler Variable speichern, um Datenbankzugriffe zu reduzieren
+								hArtListe = data;
+								nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+							}
+						});
+					} else {
+						nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 					}
-					$db = $.couch.db("evab");
-					$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
-						success: function(data) {
-							var i;
-							var ArtIdAktuell;
-							var ArtIdNächste;
-							var ArtIdVorige;
-							var AnzArt;
-							for(i in data.rows) {
-								ArtIdAktuell = data.rows[i].value._id;
-								var AnzArt = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (ArtIdAktuell == IdAktuell) {
-									switch (NächsteOderVorige) {
-									case "nächste":
-										if (i < AnzArt) {
-											hBeobId = data.rows[parseInt(i)+1].value._id;
-											initiierehBeobEdit(hBeobId);
-										} else {
-											melde("Das ist die letzte Art");
-										}
-										break;
-									case "vorige":
-										if (i > 0) {
-											hBeobId = data.rows[i-1].value._id;
-											initiierehBeobEdit(hBeobId);
-										} else {
-											window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
-										}
-										break;
-									}
+				}
+
+				function nächsteVorigeArt_2(IdAktuell, NächsteOderVorige) {
+					var i;
+					var ArtIdAktuell;
+					var ArtIdNächste;
+					var ArtIdVorige;
+					var AnzArt;
+					for(i in hArtListe.rows) {
+						ArtIdAktuell = hArtListe.rows[i].value._id;
+						var AnzArt = hArtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ArtIdAktuell == IdAktuell) {
+							switch (NächsteOderVorige) {
+							case "nächste":
+								if (i < AnzArt) {
+									hBeobId = hArtListe.rows[parseInt(i)+1].value._id;
+									initiierehBeobEdit(hBeobId);
+								} else {
+									melde("Das ist die letzte Art");
 								}
+								break;
+							case "vorige":
+								if (i > 0) {
+									hBeobId = hArtListe.rows[i-1].value._id;
+									initiierehBeobEdit(hBeobId);
+								} else {
+									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+								}
+								break;
 							}
 						}
-					});
+					}
 				}
 			});
 		</script>

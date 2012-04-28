@@ -35,7 +35,7 @@
   <body>
   	<div data-role="page" id="Felder_hZeitPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hZeitPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" data-rel="back">abbrechen</a>
+  			<a id="Felder_hZeitPage_back" href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hZeitPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
@@ -48,6 +48,14 @@
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				erstelleSichtbareFelder();
+
+				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function() {
+					if ($('#ZeitEditPage').length > 0) {
+						$.mobile.changePage($('#ZeitEditPage'));
+					} else {
+						$.mobile.changePage("ZeitEdit.html?id=" + ZeitId);
+					}
+				});
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hZeitPage', function() {
@@ -77,6 +85,10 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
+							//Globale Variable für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							if (typeof FeldlisteZeitEdit != "undefined") {
+								FeldlisteZeitEdit = undefined;
+							}
 						},
 						error: function() {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
@@ -91,51 +103,61 @@
 						prüfeAnmeldung();
 					}
 					$("#Feldliste").empty();
-					$db = $.couch.db("evab");
-					//holt die Feldliste aus der DB
-					$db.view('evab/FeldListeZeit', {
-						success: function(data) {
-							var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-							var anzFelder = 0;
-							for (i in data.rows) {
-								var Feld = data.rows[i].value;
-								var FeldName = Feld.FeldName;
-								//Nur eigene und offizielle Felder berücksichtigen
-								if (Feld.User == User || Feld.User == "ZentrenBdKt") {
-									//im Formular fix integrierte Felder nicht aufbauen
-									if (Feld.Hierarchiestufe == "Zeit" && Feld.FeldName != "zDatum" && Feld.FeldName != "zUhrzeit") {
-										anzFelder += 1;
-										var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-										var ListItem = "\n\t\t\<label for='";
-										ListItem += FeldName;
-										ListItem += "'>";
-										ListItem += FeldBeschriftung;
-										ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-										ListItem += "Felder";
-										ListItem += "' id='";
-										ListItem += FeldName;
-										ListItem += "' FeldId='";
-										ListItem += Feld._id;
-										ListItem += "' value='";
-										ListItem += FeldName;
-										ListItem += "' class='custom'";
-										if(Feld.SichtbarImModusHierarchisch) {
-											if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
-												//wenn sichtbar, anzeigen
-												ListItem += " checked='checked'";
-											}
-										}
-										ListItem += "/>";
-										HtmlContainer += ListItem;
+					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+					if (typeof FeldlisteZeitEdit != "undefined") {
+						erstelleSichtbareFelder_2();
+					} else {
+						//holt die Feldliste aus der DB
+						$db = $.couch.db("evab");
+						$db.view('evab/FeldListeZeit', {
+							success: function(data) {
+								FeldlisteZeitEdit = data;
+								erstelleSichtbareFelder_2();
+							}
+						});
+					}
+				}
+
+				function erstelleSichtbareFelder_2() {
+					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+					var anzFelder = 0;
+					for (i in FeldlisteZeitEdit.rows) {
+						var Feld = FeldlisteZeitEdit.rows[i].value;
+						var FeldName = Feld.FeldName;
+						//Nur eigene und offizielle Felder berücksichtigen
+						if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+							//im Formular fix integrierte Felder nicht aufbauen
+							if (Feld.Hierarchiestufe == "Zeit" && Feld.FeldName != "zDatum" && Feld.FeldName != "zUhrzeit") {
+								anzFelder += 1;
+								var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+								var ListItem = "\n\t\t\<label for='";
+								ListItem += FeldName;
+								ListItem += "'>";
+								ListItem += FeldBeschriftung;
+								ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+								ListItem += "Felder";
+								ListItem += "' id='";
+								ListItem += FeldName;
+								ListItem += "' FeldId='";
+								ListItem += Feld._id;
+								ListItem += "' value='";
+								ListItem += FeldName;
+								ListItem += "' class='custom'";
+								if(Feld.SichtbarImModusHierarchisch) {
+									if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
+										//wenn sichtbar, anzeigen
+										ListItem += " checked='checked'";
 									}
 								}
+								ListItem += "/>";
+								HtmlContainer += ListItem;
 							}
-							$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
-							HtmlContainer += "\n\t</fieldset>\n</div>"
-							$("#Feldliste").html(HtmlContainer).trigger("create");
-							$("input[name='Felder']").checkboxradio();
 						}
-					});
+					}
+					$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
+					HtmlContainer += "\n\t</fieldset>\n</div>"
+					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("input[name='Felder']").checkboxradio();
 				}
 			});
 		</script>

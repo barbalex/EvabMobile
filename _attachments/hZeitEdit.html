@@ -144,6 +144,10 @@
 					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
+					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof ZeitListe != "undefined") {
+						ZeitListe = undefined;
+					}
 					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
 				});
 
@@ -242,24 +246,6 @@
 					});
 				});
 
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
-
 				Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
 			  	jQuery.extend(jQuery.mobile.datebox.prototype.options, {
 					'dateFormat': 'YYYY-MM-DD',
@@ -268,6 +254,10 @@
 				});
 
 				function löscheZeit() {
+					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof ZeitListe != "undefined") {
+						ZeitListe = undefined;
+					}
 					var Rückmeldung;
 					var ArtenGelöscht = löscheArtenVonZeit();
 					if (ArtenGelöscht == false) {
@@ -465,47 +455,58 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
+					//prüfen, ob ZeitListe schon existiert
+					//nur abfragen, wenn sie noch nicht existiert
+					if (typeof ZeitListe == "undefined") {
+						if (typeof User == "undefined") {
+							prüfeAnmeldung();
+						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
+							success: function(data) {
+								ZeitListe = data;
+								nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
+							}
+						});
+					} else {
+						nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
 					}
-					$db = $.couch.db("evab");
-					$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
-						success: function(data) {
-							var i;
-							var ZeitIdAktuell;
-							var ZeitIdNächste;
-							var ZeitIdVorige;
-							var AnzZeit;
-							for(i in data.rows) {
-								ZeitIdAktuell = data.rows[i].value._id;
-								var AnzZeit = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (ZeitIdAktuell == IdAktuell) {
-									switch (NächsteOderVorige) {
-									case "nächste":
-										if (i < AnzZeit) {
-											ZeitId = data.rows[parseInt(i)+1].value._id;
-											initiiereZeitEdit(ZeitId);
-											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
-											aktualisiereLinksMitZeitId();
-										} else {
-											melde("Das ist die letzte Zeit");
-										}
-										break;
-									case "vorige":
-										if (i > 0) {
-											ZeitId = data.rows[i-1].value._id;
-											initiiereZeitEdit(ZeitId);
-											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
-											aktualisiereLinksMitZeitId();
-										} else {
-											window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
-										}
-										break;
-									}
+				}
+
+				function nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige) {
+					var i;
+					var ZeitIdAktuell;
+					var ZeitIdNächste;
+					var ZeitIdVorige;
+					var AnzZeit;
+					for(i in ZeitListe.rows) {
+						ZeitIdAktuell = ZeitListe.rows[i].value._id;
+						var AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ZeitIdAktuell == IdAktuell) {
+							switch (NächsteOderVorige) {
+							case "nächste":
+								if (i < AnzZeit) {
+									ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
+									initiiereZeitEdit(ZeitId);
+									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitZeitId();
+								} else {
+									melde("Das ist die letzte Zeit");
 								}
+								break;
+							case "vorige":
+								if (i > 0) {
+									ZeitId = ZeitListe.rows[i-1].value._id;
+									initiiereZeitEdit(ZeitId);
+									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitZeitId();
+								} else {
+									window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+								}
+								break;
 							}
 						}
-					});
+					}
 				}
 			});	
 		</script>

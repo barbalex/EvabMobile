@@ -35,7 +35,7 @@
   <body>
   	<div data-role="page" id="Felder_hOrtPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hOrtPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">abbrechen</a>
+  			<a id="Felder_hOrtPage_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hOrtPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -48,6 +48,14 @@
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				erstelleSichtbareFelder();
+
+				$("#Felder_hOrtPage").on("click", "#Felder_hOrtPage_back", function() {
+					if ($('#OrtEditPage').length > 0) {
+						$.mobile.changePage($('#OrtEditPage'));
+					} else {
+						$.mobile.changePage("OrtEdit.html?id=" + OrtId);
+					}
+				});
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hOrtPage', function() {
@@ -77,6 +85,10 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
+							//Globale Variable für FeldlisteOrtEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							if (typeof FeldlisteOrtEdit != "undefined") {
+								FeldlisteOrtEdit = undefined;
+							}
 						},
 						error: function() {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
