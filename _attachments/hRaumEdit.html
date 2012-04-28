@@ -88,10 +88,7 @@
 			$(":jqmData(role='page')").on("pageinit", function() {
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
-				prüfeAnmeldung();
-				erstelleRaumEdit(RaumId, User);
-
-				speichereLetzteUrl(User);
+				initiiereRaumEdit(RaumId);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function() {
@@ -577,7 +574,7 @@
 									case "nächster":
 										if (i < AnzRaum) {
 											RaumId = data.rows[parseInt(i)+1].value._id;
-											erstelleRaumEdit(RaumId, User);
+											initiiereRaumEdit(RaumId);
 											window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitRaumId();
 										} else {
@@ -587,7 +584,7 @@
 									case "voriger":
 										if (i > 0) {
 											RaumId = data.rows[i-1].value._id;
-											erstelleRaumEdit(RaumId, User);
+											initiiereRaumEdit(RaumId);
 											window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitRaumId();
 										} else {

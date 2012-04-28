@@ -97,9 +97,7 @@
 				ProjektId = get_url_param("ProjektId");
 				
 				prüfeAnmeldung();
-				erstelleZeitEdit(ZeitId, User);
-
-				speichereLetzteUrl(User);
+				initiiereZeitEdit(ZeitId);
 
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
@@ -380,7 +378,7 @@
 				}
 
 				//Speichert alle Daten
-				//wird aufgerufen von evab.js, function erstelleZeitEdit
+				//wird aufgerufen von evab.js, function initiiereZeitEdit
 				//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
 				function speichereAlles() {
 					$db = $.couch.db("evab");
@@ -487,7 +485,7 @@
 									case "nächste":
 										if (i < AnzZeit) {
 											ZeitId = data.rows[parseInt(i)+1].value._id;
-											erstelleZeitEdit(ZeitId, User);
+											initiiereZeitEdit(ZeitId);
 											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitZeitId();
 										} else {
@@ -497,7 +495,7 @@
 									case "vorige":
 										if (i > 0) {
 											ZeitId = data.rows[i-1].value._id;
-											erstelleZeitEdit(ZeitId, User);
+											initiiereZeitEdit(ZeitId);
 											window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitZeitId();
 										} else {

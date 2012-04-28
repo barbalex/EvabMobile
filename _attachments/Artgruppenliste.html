@@ -111,9 +111,11 @@
 				function erstelleArtgruppenListe() {
 					//gewünschte Sprache für Arten ermitteln
 					//Listen aufbauen lassen
-					//und butten für Sprache richtig beschriften
+					//und button für Sprache richtig beschriften
 					//var User = get_url_param("User");
-					if (typeof User == "undefined") {
+					alert("User = " + User);
+					if (typeof User == "undefined" || User == "" || User == null) {
+						alert("User ist undefined, leer oder null");
 						prüfeAnmeldung();
 					}
 					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");

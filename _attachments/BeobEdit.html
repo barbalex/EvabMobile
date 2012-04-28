@@ -575,9 +575,14 @@
 						        	zurueck_global = "BeobEdit.html";
 						        	//Seite wechseln
 						        	if ($('#ArtEditPage').length > 0) {
-						        		$.mobile.changePage($('#ArtEditPage'));
+						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
+										$.mobile.changePage($('#ArtEditPage'));
+										window.history.pushState("", "", "ArtEdit.html?id=" + aArtId); //funktioniert in IE erst ab 10!
 						        	} else {
-						        		$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        		$.mobile.changePage("ArtEdit.html", {
+						        			type: "get",
+						        			data: "id=" + aArtId
+						        		});
 						        	}
 				        		},
 				        		theme: "a",

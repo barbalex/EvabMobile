@@ -37,9 +37,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				ProjektId = get_url_param("id");
-				prüfeAnmeldung();
-				erstelleProjektEdit(ProjektId, User);
-				speichereLetzteUrl(User);
+				initiiereProjektEdit(ProjektId);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function() {
@@ -555,7 +553,7 @@
 								case "nächstes":
 									if (i < AnzProj) {
 										ProjektId = data.rows[parseInt(i)+1].value._id;
-										erstelleProjektEdit(ProjektId, User);
+										initiiereProjektEdit(ProjektId);
 										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {
@@ -565,7 +563,7 @@
 								case "voriges":
 									if (i > 0) {
 										ProjektId = data.rows[i-1].value._id;
-										erstelleProjektEdit(ProjektId, User);
+										initiiereProjektEdit(ProjektId);
 										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
 										aktualisiereLinksMitProjId();
 									} else {

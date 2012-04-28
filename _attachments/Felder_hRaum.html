@@ -47,17 +47,11 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				if (typeof User == "undefined") {
-					prüfeAnmeldung();
-				}
-				erstelle_sichtbareFelder(User);
+				erstelleSichtbareFelder();
 
 				//Felder in hRaumEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hRaumPage', function() {
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
-					}
-					erstelleRaumEdit(RaumId, User);
+					initiiereRaumEdit(RaumId);
 				});
 
 				//Felder speichern (checkbox)
@@ -92,8 +86,7 @@
 
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
-				//Mitgeben: User
-				function erstelle_sichtbareFelder(User) {
+				function erstelleSichtbareFelder() {
 					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}

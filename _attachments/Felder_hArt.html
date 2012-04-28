@@ -51,11 +51,6 @@
 			
 				erstelleSichtbareFelder();
 
-				//Felder in hOrtEdit.html neu aufbauen
-				$(document).on("pagehide", '#Felder_hArtPage', function() {
-					//initiierehBeobEdit(hBeobId);
-				});
-
 				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function() {
 					if ($('#hArtEditPage').length > 0) {
 						$.mobile.changePage($('#hArtEditPage'));

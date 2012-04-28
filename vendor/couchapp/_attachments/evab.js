@@ -812,7 +812,7 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, User
-function erstelleProjektEdit(ID, User) {
+function initiiereProjektEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -826,7 +826,7 @@ function erstelleProjektEdit(ID, User) {
 				success: function(Projekt) {
 					//fixe Felder aktualisieren
 					$("#pName").val(Projekt.pName);
-					var HtmlContainer = generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt);
+					var HtmlContainer = generiereHtmlFuerProjektEditForm (Feldliste, Projekt);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
@@ -850,6 +850,8 @@ function erstelleProjektEdit(ID, User) {
 					erstelleAttachments(Projekt);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
+					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+					speichereLetzteUrl();
 				}
 			});
 		}
@@ -859,7 +861,10 @@ function erstelleProjektEdit(ID, User) {
 //generiert das Html für das Formular in hProjektEdit.html
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
+function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
+	if (typeof User == "undefined") {
+		prüfeAnmeldung();
+	}
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -869,7 +874,7 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {              
+	for(i in Feldliste.rows) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -889,7 +894,7 @@ function generiereHtmlFuerProjektEditForm (User, Feldliste, Projekt) {
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, User
-function erstelleRaumEdit(ID, User) {
+function initiiereRaumEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -904,7 +909,7 @@ function erstelleRaumEdit(ID, User) {
 				success: function(Raum) {
 					//fixes Feld setzen
 					$("#rName").val(Raum.rName);
-					var HtmlContainer = generiereHtmlFuerRaumEditForm (User, Feldliste, Raum);
+					var HtmlContainer = generiereHtmlFuerRaumEditForm (Feldliste, Raum);
 					//nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
@@ -928,6 +933,8 @@ function erstelleRaumEdit(ID, User) {
 					erstelleAttachments(Raum);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
+					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+					speichereLetzteUrl();
 				}
 			});
 		}
@@ -937,7 +944,10 @@ function erstelleRaumEdit(ID, User) {
 //generiert das Html für das Formular in hRaumEdit.html
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
+function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
+	if (typeof User == "undefined") {
+		prüfeAnmeldung();
+	}
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -947,7 +957,7 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {              
+	for(i in Feldliste.rows) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -966,8 +976,8 @@ function generiereHtmlFuerRaumEditForm (User, Feldliste, Raum) {
 }
 
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Orts, User
-function erstelleOrtEdit(ID, User) {
+//Mitgeben: id des Orts
+function initiiereOrtEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -987,7 +997,7 @@ function erstelleOrtEdit(ID, User) {
 					//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 					oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
 					oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
-					var HtmlContainer = generiereHtmlFuerOrtEditForm (User, Feldliste, Ort);
+					var HtmlContainer = generiereHtmlFuerOrtEditForm (Feldliste, Ort);
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
@@ -1017,6 +1027,8 @@ function erstelleOrtEdit(ID, User) {
 					}
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
+					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+					speichereLetzteUrl();
 				}
 			});
 		}
@@ -1026,7 +1038,7 @@ function erstelleOrtEdit(ID, User) {
 //generiert das Html für das Formular in hOrtEdit.html
 //erwartet Feldliste als Objekt; Ort als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
+function generiereHtmlFuerOrtEditForm (Feldliste, Ort) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1040,9 +1052,9 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
+		if ((Feld.User == Ort.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
+				FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
 			} else {
 				FeldWert = (eval("Ort." + FeldName) || "");
 			}
@@ -1055,8 +1067,8 @@ function generiereHtmlFuerOrtEditForm (User, Feldliste, Ort) {
 }
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id der Zeit, User
-function erstelleZeitEdit(ID, User) {
+//Mitgeben: id der Zeit
+function initiiereZeitEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -1071,7 +1083,7 @@ function erstelleZeitEdit(ID, User) {
 					//fixe Felder aktualisieren
 					$("#zDatum").val(Zeit.zDatum);
 					$("#zUhrzeit").val(Zeit.zUhrzeit);
-					var HtmlContainer = generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit);
+					var HtmlContainer = generiereHtmlFuerZeitEditForm (Feldliste, Zeit);
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
 						$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
@@ -1084,6 +1096,8 @@ function erstelleZeitEdit(ID, User) {
 					erstelleAttachments(Zeit);
 					//Anhänge wieder einblenden
 					$('#FormAnhänge').show();
+					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+					speichereLetzteUrl();
 				}
 			});
 		}
@@ -1093,7 +1107,10 @@ function erstelleZeitEdit(ID, User) {
 //generiert das Html für das Formular in hZeitEdit.html
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitEditForm (User, Feldliste, Zeit) {
+function generiereHtmlFuerZeitEditForm (Feldliste, Zeit) {
+	if (typeof User == "undefined") {
+		prüfeAnmeldung();
+	}
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1154,20 +1171,22 @@ function initiierehBeobEdit(BeobId) {
 					$("#aArtName").val(aArtName);
 					$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
 					$("#aArtName").selectmenu("refresh");
-					erstelleDynamischeFelderhArtEdit(Feldliste, Beob, Beob.User);
+					erstelleDynamischeFelderhArtEdit(Feldliste, Beob);
 					//Link zum Projekt in Navbar setzen
-					$("#hProjektLink").attr("href", "hProjektEdit.html?ProjektId=" + ProjektId);
+					$("#hae_ProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 					//Link zum Raum in Navbar setzen
-					$("#hRaumLink").attr("href", "hRaumEdit.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 					//Link zum Ort in Navbar setzen
-					$("#hOrtLink").attr("href", "hOrtEdit.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 					//Link zur Zeit in Navbar setzen
-					$("#hZeitLink").attr("href", "hZeitEdit.html?ZeitId=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 					//Link zur ArtListe in Navbar setzen
 					var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 					$("[name='hArtListeLink']").attr('href', url);
 					//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
 					window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
+					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+					speichereLetzteUrl();
 				}
 			});
 		}
@@ -1175,14 +1194,14 @@ function initiierehBeobEdit(BeobId) {
 }
 
 //generiert dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: Feldliste, Beobachtung, User
-function erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User) {
+//Mitgeben: Feldliste, Beobachtung
+function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hArtEditFormHtml").empty();
-	var HtmlContainer = generiereHtmlFuerhArtEditForm (User, Feldliste, Beob);
+	var HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
 		$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
@@ -1210,7 +1229,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob, User) {
 //generiert das Html für Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (User, Feldliste, Beob) {
+function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -1225,9 +1244,9 @@ function generiereHtmlFuerhArtEditForm (User, Feldliste, Beob) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {
+		if ((Feld.User == Beob.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) != -1 && Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
+				FeldWert = eval("Feld.Standardwert." + Beob.User) || "";
 			} else {
 				FeldWert = (eval("Beob." + FeldName) || "");
 			}
@@ -1733,7 +1752,7 @@ function erstelleKarteFürRaum(User, RaumId) {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
+					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt == 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -1831,7 +1850,7 @@ function erstelleKarteFürProjekt(User, ProjektId) {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
+					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt == 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern

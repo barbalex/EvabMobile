@@ -47,10 +47,7 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				if (typeof User == "undefined") {
-					prüfeAnmeldung();
-				}
-				erstelle_sichtbareFelder(User);
+				erstelleSichtbareFelder();
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
@@ -82,16 +79,12 @@
 
 				//Felder in hProjektEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hProjektPage', function() {
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
-					}
-					erstelleProjektEdit(ProjId, User);
+					initiiereProjektEdit(ProjektId);
 				});
 
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
-				//Mitgeben: User
-				function erstelle_sichtbareFelder(User) {
+				function erstelleSichtbareFelder() {
 					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}

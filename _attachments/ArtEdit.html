@@ -36,7 +36,7 @@
   <body>
 	<div data-role="page" id="ArtEditPage">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#" id="zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+			<a href="#" id="ae_zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
 			<h1>Arteigenschaften</h1>
 		</div>
 		<div data-role="content" id="ArtEditContent">
@@ -60,25 +60,24 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function() {
 
-				var ArtId = get_url_param("ArtId");
+				ArtId = get_url_param("id");
 				erstelleArtEdit(ArtId);
 
 				//zurück-Button steuern
-				$("#ArtEditPage").on('click', '#zurück', function() {
-					var zurueck;
+				$("#ArtEditPage").on('click', '#ae_zurück', function() {
+					var zurueck = "";
 					if (typeof zurueck_global != "undefined") {
 						zurueck = zurueck_global;
-					} else {
-						zurueck = "BeobListe.html";
 					}
+					alert("zurueck = " + zurueck);
 					if (zurueck == "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
-						//initiiereBeobEdit(BeobId);
+						window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 					} else if (zurueck == "hArtEdit.html") {
 						$.mobile.changePage($('#hArtEditPage'));
-						//initiiereBeobEdit(hBeobId);
+						window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage(zurueck);
+						$.mobile.changePage("BeobListe.html");
 					}
 				});
 
@@ -95,10 +94,19 @@
 				});
 
 				function zuArtgruppenliste() {
-					if (typeof User == "undefined") {
+					if (typeof User == "undefined" || User == "" || User == null) {
+						alert("User ist undefined, leer oder null");
 						prüfeAnmeldung();
 					}
-					$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Von=ArtEdit");
+					if ($('#agl_Page').length > 0) {
+						$.mobile.changePage($('#agl_Page'));
+						window.history.pushState("", "", "User=" + User + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+					} else {
+						$.mobile.changePage("Artgruppenliste.html", {
+							type: "get",
+							data: "User=" + User + "&Von=ArtEdit"
+						});
+					}
 				}
 
 				function zuArtliste() {
@@ -114,9 +122,20 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit");
+								if ($('#agl_Page').length > 0) {
+									$.mobile.changePage($('#agl_Page'));
+									window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+								} else {
+									$.mobile.changePage("Artgruppenliste.html", {
+										type: "get",
+										data: "User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+									});
+								}
 							} else {
-								$.mobile.changePage("Artenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit");
+								$.mobile.changePage("Artenliste.html", {
+									type: "get",
+									data: "User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+								});
 							}
 						}
 					});

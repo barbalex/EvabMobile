@@ -60,11 +60,8 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				ProjektId = get_url_param("ProjektId");
-				prüfeAnmeldung();
-				
 				erstelleRaumListe();
-
-				speichereLetzteUrl(User);
+				speichereLetzteUrl();
 
 				//Link zum Projekt in Navbar und Titelleiste setzen
 				var url = "hProjektEdit.html?id=" + ProjektId;
@@ -116,24 +113,6 @@
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
-
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenu(zurueck, thiz){

@@ -47,17 +47,11 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				if (typeof User == "undefined") {
-					prüfeAnmeldung();
-				}
-				erstelle_sichtbareFelder(User);
+				erstelleSichtbareFelder();
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hZeitPage', function() {
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
-					}
-					erstelleZeitEdit(ZeitId, User);
+					initiiereZeitEdit(ZeitId);
 				});
 
 				//Felder speichern (checkbox)
@@ -92,8 +86,7 @@
 
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
-				//Mitgeben: User
-				function erstelle_sichtbareFelder(User) {
+				function erstelleSichtbareFelder() {
 					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}

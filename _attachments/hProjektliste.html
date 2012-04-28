@@ -53,11 +53,8 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				
-				prüfeAnmeldung();
-				
 				erstelleProjektliste();
-
-				speichereLetzteUrl(User);
+				speichereLetzteUrl();
 
 				//Menu aufbauen
 				$(document).on('click', '[name="Menu"]', function() {
@@ -98,24 +95,6 @@
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
-
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
 
 				function erstelleProjektliste() {
 					if (typeof User == "undefined") {

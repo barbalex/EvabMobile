@@ -38,13 +38,13 @@
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
 			<h1>Art</h1>
-			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='hae_Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
-					<li><a href="#" rel="external" id="hZeitLink">Zeit</a></li>
+					<li><a href="#" rel="external" id="hae_ProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" id="hae_RaumLink">Raum</a></li>
+					<li><a href="#" rel="external" id="hae_OrtLink">Ort</a></li>
+					<li><a href="#" rel="external" id="hae_ZeitLink">Zeit</a></li>
 					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -97,9 +97,7 @@
 				if (typeof hBeobId == "undefined") {
 					hBeobId = get_url_param("id");
 				}
-
 				initiierehBeobEdit(hBeobId);
-				speichereLetzteUrl(User);
 			});
 
 			$(":jqmData(role='page')").on("pagecreate", function() {
@@ -188,7 +186,7 @@
 				});
 
 			  	//Menu aufbauen
-				$('#hArtEditPageHeader').on('click', "#Menu", function() {
+				$('#hArtEditPageHeader').on('click', "#hae_Menu", function() {
 					if (typeof User == "undefined") {
 						prüfeAnmeldung();
 					}
@@ -341,9 +339,14 @@
 						        	zurueck_global = "hArtEdit.html";
 						        	//Seite wechseln
 						        	if ($('#ArtEditPage').length > 0) {
-						        		$.mobile.changePage($('#ArtEditPage'));
+						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
+										$.mobile.changePage($('#ArtEditPage'));
+										window.history.pushState("", "", "ArtEdit.html?id=" + aArtId); //funktioniert in IE erst ab 10!
 						        	} else {
-						        		$.mobile.changePage("ArtEdit.html?ArtId=" + aArtId);
+						        		$.mobile.changePage("ArtEdit.html", {
+						        			type: "get",
+						        			data: "id=" + aArtId
+						        		});
 						        	}
 				        		},
 				        		theme: "a",

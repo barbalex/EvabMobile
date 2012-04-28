@@ -103,9 +103,7 @@
 				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
-				prüfeAnmeldung();
-				erstelleOrtEdit(OrtId, User);
-				speichereLetzteUrl(User);
+				initiiereOrtEdit(OrtId);
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function(event) {
@@ -722,7 +720,7 @@
 									case "nächster":
 										if (i < AnzOrt) {
 											OrtId = data.rows[parseInt(i)+1].value._id;
-											erstelleOrtEdit(OrtId, User);
+											initiiereOrtEdit(OrtId);
 											window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitOrtId();
 										} else {
@@ -732,7 +730,7 @@
 									case "voriger":
 										if (i > 0) {
 											OrtId = data.rows[i-1].value._id;
-											erstelleOrtEdit(OrtId, User);
+											initiiereOrtEdit(OrtId);
 											window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 											aktualisiereLinksMitOrtId();
 										} else {

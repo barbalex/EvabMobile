@@ -49,12 +49,8 @@
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
 				
-				if (typeof User == "undefined") {
-					if (get_url_param("User") && get_url_param("User") != "") {
-						User = get_url_param("User");
-					} else {
-						prüfeAnmeldung();
-					}
+				if (typeof User == "undefined" || User == "" || User == null) {
+					prüfeAnmeldung();
 				}
 				var ArtGruppe = get_url_param("aArtGruppe");
 				var Status = get_url_param("Status") || "edit";
@@ -69,7 +65,8 @@
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof User == "undefined" || User == "" || User == null) {
+						alert("User ist undefined, leer oder null");
 						prüfeAnmeldung();
 					}
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
@@ -81,9 +78,12 @@
 						if ($('#ArtEditPage').length > 0) {
 							//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 							$.mobile.changePage($('#ArtEditPage'));
-							initiierehArtEdit(BeobId);
+							window.history.pushState("", "", "ArtEdit.html?id=" + ArtId); //funktioniert in IE erst ab 10!
 						} else {
-							$.mobile.changePage("ArtEdit.html?ArtId=" + ArtId);
+							$.mobile.changePage("ArtEdit.html", {
+								type: "get",
+								data: "id=" + ArtId
+							});
 						}
 					} else {
 						speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
@@ -92,7 +92,7 @@
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof User == "undefined" || User == "" || User == null) {
 						prüfeAnmeldung();
 					}
 					var ButtonText = this.text;
@@ -147,7 +147,7 @@
 
 				function erstelleArtenliste() {
 			  		//var User = get_url_param("User");
-			  		if (typeof User == "undefined") {
+			  		if (typeof User == "undefined" || User == "" || User == null) {
 						prüfeAnmeldung();
 					}
 				  	var viewname = 'evab/User?key="' + User + '"';
