@@ -216,10 +216,10 @@
 
 				$(document).on("pageshow", '#RaumEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					erstelleKarteFürRaum(User, RaumId);
+					erstelleKarteFürRaum(RaumId);
 				});
 
 				$(document).on("pagehide", '#RaumEditMap', function() {
@@ -242,24 +242,6 @@
 						}
 					});
 				});
-
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
 			  
 				function löscheRaum() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht;
@@ -490,7 +472,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -514,14 +496,14 @@
 				      		},
 				      		'Räume exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -554,11 +536,11 @@
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
-					$db.view('evab/hRaumListe?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]', {
+					$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
 						success: function(data) {
 							var i;
 							var RaumIdAktuell;

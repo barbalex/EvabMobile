@@ -68,9 +68,9 @@
 						success: function(Feld) {
 							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
 							if ($("#" + FeldName).prop("checked") == true) {
-								SichtbarImModusHierarchisch.push(User);
+								SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = SichtbarImModusHierarchisch.indexOf(User);
+								var idx = SichtbarImModusHierarchisch.indexOf(Username);
 								if(idx!=-1) SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
@@ -91,7 +91,7 @@
 				});
 
 				//generiert dynamisch die (Artgruppen-abhängigen) Felder im Formular Felder_hArt.html
-				//Mitgeben: Artgruppe, User (aus Globalen Variabeln)
+				//Mitgeben: Artgruppe, Username (aus Globalen Variabeln)
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
@@ -115,7 +115,7 @@
 					for (i in FeldlistehBeobEdit.rows) {
 						var Feld = FeldlistehBeobEdit.rows[i].value;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 							// nur Artfelder, im Formular enthaltene und die ArtId nicht anzeigen
 							if (Feld.Hierarchiestufe == "Art" && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
 								anzFelder += 1;
@@ -138,7 +138,7 @@
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
 								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
+									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}

@@ -83,10 +83,10 @@
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
+					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
 				});
 
 				$("#Zeiten").on("swipeleft", ".Zeit", function() {
@@ -95,10 +95,10 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					erstelleNeueZeit(User, ProjektId, RaumId, OrtId);
+					erstelleNeueZeit(ProjektId, RaumId, OrtId);
 				});
 
 				$(document).on("swiperight", function() {
@@ -113,27 +113,9 @@
 					erstelleMenu(this);
 				});
 
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
-
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -159,14 +141,14 @@
 				      		},
 				      		'Zeiten exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -195,12 +177,12 @@
 				}
 				
 			  	function erstelleZeitListe() {
-			  		if (typeof User == "undefined") {
+			  		if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Zeiten").empty();
 					$db = $.couch.db("evab");
-					$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
+					$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
 						success: function(data) {
 							var i;
 							var anzZeit = 0;

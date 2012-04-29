@@ -106,11 +106,11 @@
 				});
 
 				function hal_öffneArtgruppenliste() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
-					//$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+					window.open("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
+					//$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 				}
 
 				$("#Arten").on("swipeleft", ".beob", function() {
@@ -122,27 +122,9 @@
 					window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
 				});
 
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session) {
-					    	if(session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/
-
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -167,14 +149,14 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -203,12 +185,12 @@
 				}
 				
 			  	function erstelleArtliste() {
-			  		if (typeof User == "undefined") {
+			  		if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Arten").empty();
 					$db = $.couch.db("evab");
-					$db.view('evab/hArtListe?startkey=["' + User + '", "' + ZeitId + '"]&endkey=["' + User + '", "' + ZeitId + '" ,{}]', {
+					$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
 						success: function(data) {
 							var i;
 							var anzArt = 0;

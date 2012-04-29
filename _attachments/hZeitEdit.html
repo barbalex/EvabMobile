@@ -141,14 +141,14 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof ZeitListe != "undefined") {
 						ZeitListe = undefined;
 					}
-					erstelleNeueZeit(User, ProjektId, RaumId, OrtId); 
+					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
 				});
 
 				//sichtbare Felder wählen
@@ -390,7 +390,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -415,14 +415,14 @@
 				      		},
 				      		'Zeiten exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -458,11 +458,11 @@
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof ZeitListe == "undefined") {
-						if (typeof User == "undefined") {
+						if (typeof Username == "undefined") {
 							prüfeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + User + '", "' + OrtId + '"]&endkey=["' + User + '", "' + OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
 							success: function(data) {
 								ZeitListe = data;
 								nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);

@@ -115,14 +115,14 @@
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
-				if (typeof User == "undefined") {
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -130,15 +130,14 @@
 						BeobListe = undefined;
 					}
 					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit", reloadPage: true});
-						//alert("User = " + User);
-						//window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
+						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobEdit", reloadPage: true});
+						//window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
 						//$("#BeobEditPage").removeClass('ui-page-active');
 						//$("#agl_Page").addClass('ui-page-active');
 					} else {
 						$.mobile.changePage("Artgruppenliste.html", {
 				            type: "get",
-				            data: "User=" + User + "&Status=neu&Von=BeobEdit"
+				            data: "Username=" + Username + "&Status=neu&Von=BeobEdit"
 				        });
 					}
 				});
@@ -146,14 +145,14 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
+						$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
 					}
 				});
 
@@ -167,7 +166,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -179,13 +178,13 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								//window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								//window.open("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
 								$.mobile.changePage($("#agl_Page"));
-								window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 							} else {
 								$.mobile.changePage($("#al_Page"));
-								window.history.pushState("", "", "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
-								//window.open("Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								window.history.pushState("", "", "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								//window.open("Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
 							}
 						}
 					});	
@@ -358,11 +357,11 @@
 					//prüfen, ob BeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof BeobListe == "undefined") {
-						if (typeof User == "undefined") {
+						if (typeof Username == "undefined") {
 							prüfeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+						$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
 							success: function(data) {
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
@@ -553,7 +552,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -597,14 +596,14 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "")
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -708,29 +707,11 @@
 							});
 						}
 					});
-				}
-
-				/*function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session){
-					    	if (session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
-					});
-				}*/	
+				}	
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function() {
-				if (typeof User == "undefined") {
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url

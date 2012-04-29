@@ -56,7 +56,7 @@
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var FeldName = $(this).prop("id");
@@ -66,9 +66,9 @@
 						success: function(Feld) {
 							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
 							if ($("#" + FeldName).prop("checked") == true) {
-								SichtbarImModusHierarchisch.push(User);
+								SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = SichtbarImModusHierarchisch.indexOf(User);
+								var idx = SichtbarImModusHierarchisch.indexOf(Username);
 								if(idx!=-1) SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
@@ -87,7 +87,7 @@
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
 				function erstelleSichtbareFelder() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Feldliste").empty();
@@ -101,7 +101,7 @@
 								var Feld = data.rows[i].value;
 								var FeldName = Feld.FeldName;
 								//Nur eigene und offizielle Felder berücksichtigen
-								if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 									//im Formular fix integrierte Felder nicht aufbauen
 									if (Feld.Hierarchiestufe == "Raum" && FeldName != "rName") {
 										anzFelder += 1;
@@ -120,7 +120,7 @@
 										ListItem += FeldName;
 										ListItem += "' class='custom'";
 										if(Feld.SichtbarImModusHierarchisch) {
-											if(Feld.SichtbarImModusHierarchisch.indexOf(User) != -1){
+											if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
 												//wenn sichtbar, anzeigen
 												ListItem += " checked='checked'";
 											}

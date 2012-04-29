@@ -69,7 +69,7 @@
 					if (typeof zurueck_global != "undefined") {
 						zurueck = zurueck_global;
 					}
-					alert("zurueck = " + zurueck);
+					//alert("zurueck = " + zurueck);
 					if (zurueck == "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
 						window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
@@ -94,23 +94,22 @@
 				});
 
 				function zuArtgruppenliste() {
-					if (typeof User == "undefined" || User == "" || User == null) {
-						alert("User ist undefined, leer oder null");
+					if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
 					if ($('#agl_Page').length > 0) {
 						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", "User=" + User + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Username=" + Username + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
 					} else {
 						$.mobile.changePage("Artgruppenliste.html", {
 							type: "get",
-							data: "User=" + User + "&Von=ArtEdit"
+							data: "Username=" + Username + "&Von=ArtEdit"
 						});
 					}
 				}
 
 				function zuArtliste() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -124,38 +123,20 @@
 							if (ArtGruppen_2_L) {
 								if ($('#agl_Page').length > 0) {
 									$.mobile.changePage($('#agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
 								} else {
 									$.mobile.changePage("Artgruppenliste.html", {
 										type: "get",
-										data: "User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+										data: "Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
 									});
 								}
 							} else {
 								$.mobile.changePage("Artenliste.html", {
 									type: "get",
-									data: "User=" + User + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+									data: "Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
 								});
 							}
 						}
-					});
-				}
-
-				function prüfeAnmeldung() {		
-					//User Anmeldung überprüfen
-					//Wenn angemeldet, globale Variable User aktualisieren
-					//Wenn nicht angemeldet, Anmeldedialog öffnen
-					$.ajax({
-					    url: '/_session',
-					    dataType: 'json',
-					    async: false,
-					    success: function(session){
-					    	if (session.userCtx.name != (undefined || null)) {
-					        	User = session.userCtx.name;
-					        } else {
-								window.open("index.html?Status=neu", target="_self");
-							}
-					    }
 					});
 				}
 			});	

@@ -103,10 +103,10 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					erstelleKarteFürProjekt(User, ProjektId);
+					erstelleKarteFürProjekt(ProjektId);
 				});
 
 				$(document).on('pagehide', '#RaumListeMap', function() {
@@ -116,7 +116,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenu(zurueck, thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -141,14 +141,14 @@
 				      		},
 				      		'Räume exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -177,12 +177,12 @@
 				}
 
 			  	function erstelleRaumListe() {
-			  		if (typeof User == "undefined") {
+			  		if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#Räume").empty();
 					$db = $.couch.db("evab");
-					$db.view('evab/hRaumListe?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]', {
+					$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
 						success: function(data) {
 							var i;
 							var anzRaum = 0;

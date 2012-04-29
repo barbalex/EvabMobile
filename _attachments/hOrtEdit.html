@@ -99,6 +99,7 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function() {
+				
 				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -154,14 +155,10 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					//Globale Variable für OrtListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof OrtListe != "undefined") {
-						OrtListe = undefined;
-					}
-					erstelleNeuenOrt(User, ProjektId, RaumId);
+					erstelleNeuenOrt(ProjektId, RaumId);
 				});
 
 				//sichtbare Felder wählen
@@ -396,10 +393,11 @@
 				function löscheOrt() {
 					var ArtenGelöscht, ZeitenGelöscht;
 					var Rückmeldung;
-					//Globale Variable für OrtListe zurücksetzen, damit die Liste neu aufgebaut wird
+					//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof OrtListe != "undefined") {
 						OrtListe = undefined;
 					}
+					sessionStorage.removeItem("OrtListe");
 					ArtenGelöscht = löscheArtenVonOrt();
 					if (ArtenGelöscht != 0 && ArtenGelöscht == false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
@@ -623,7 +621,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -648,14 +646,14 @@
 				      		},
 				      		'Orte exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -691,16 +689,26 @@
 					//prüfen, ob OrtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof OrtListe == "undefined") {
-						if (typeof User == "undefined") {
-							prüfeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
-							success: function(data) {
-								OrtListe = data;
-								nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+						//vielleicht hat hOrtListe.html eine OrtListe übergeben?
+						if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
+							//Objekte werden als Strings übergeben, müssen geparst werden
+							OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
+							nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+						} else {
+							if (typeof Username == "undefined") {
+								prüfeAnmeldung();
 							}
-						});
+							$db = $.couch.db("evab");
+							$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
+								success: function(data) {
+									OrtListe = data;
+									nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+								}
+							});
+						}
+						//OrtListe für hOrtListe.html bereitstellen
+						//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+						sessionStorage.setItem("OrtListe", JSON.stringify(OrtListe));
 					} else {
 						nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 					}
@@ -714,6 +722,7 @@
 					var AnzOrt;
 					for(i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
+						//alert("OrtIdAktuell = " + OrtIdAktuell);
 						var AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (OrtIdAktuell == IdAktuell) {
 							switch (NächsterOderVoriger) {

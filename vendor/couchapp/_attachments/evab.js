@@ -303,7 +303,7 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
-	if (typeof User == "undefined") {
+	if (typeof Username == "undefined") {
 		prüfeAnmeldung();
 	}
 	$db.view('evab/User?key="' + doc.User + '"', {
@@ -418,13 +418,16 @@ function erstelleMenuFürFelder(thiz, Pfad) {
   	})
 }
 
-function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
+function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
+	if (typeof Username == "undefined") {
+		prüfeAnmeldung();
+	}
 	var doc = {};
 	doc.Typ = "hZeit";
-	doc.User = User;
+	doc.User = Username;
 	doc.hProjektId = hProjektId;
 	doc.hRaumId = hRaumId;
 	doc.hOrtId = hOrtId;
@@ -475,11 +478,14 @@ function erstelleNeueZeit(User, hProjektId, hRaumId, hOrtId) {
 
 //erstellt einen neuen Ort
 //wird aufgerufen von: hOrtEdit.html, hOrtListe.html
-//erwartet User, hProjektId, hRaumId
-function erstelleNeuenOrt(User, hProjektId, hRaumId) {
+//erwartet Username, hProjektId, hRaumId
+function erstelleNeuenOrt(hProjektId, hRaumId) {
+	if (typeof Username == "undefined") {
+		prüfeAnmeldung();
+	}
 	var doc = {};
 	doc.Typ = "hOrt";
-	doc.User = User;
+	doc.User = Username;
 	doc.hProjektId = hProjektId;
 	doc.hRaumId = hRaumId;
 	//Daten aus höheren Hierarchiestufen ergänzen
@@ -503,9 +509,10 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function(data) {
-							//Globale Variable für OrtListe zurücksetzen, damit die Liste neu aufgebaut wird
+							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							if (typeof OrtListe != "undefined") {
 								OrtListe = undefined;
+								sessionStorage.removeItem("OrtListe");
 							}
 							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 						},
@@ -522,7 +529,7 @@ function erstelleNeuenOrt(User, hProjektId, hRaumId) {
 function erstelleNeuenRaum(hProjektId) {
 	var doc = {};
 	doc.Typ = "hRaum";
-	doc.User = User;
+	doc.User = Username;
 	doc.hProjektId = hProjektId;
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
@@ -550,7 +557,7 @@ function erstelleNeuenRaum(hProjektId) {
 function erstelleNeuesProjekt() {
 	var hProjekt = {};
 	hProjekt.Typ = "hProjekt";
-	hProjekt.User = User;
+	hProjekt.User = Username;
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
@@ -562,12 +569,12 @@ function erstelleNeuesProjekt() {
 	});
 }
 
-function öffneMeineEinstellungen(User, Pfad) {
+function öffneMeineEinstellungen(Pfad) {
 	$db = $.couch.db("evab");
-	if (typeof User == "undefined") {
+	if (typeof Username == "undefined") {
 		prüfeAnmeldung();
 	}
-	$db.view('evab/User?key="' + User + '"', {
+	$db.view('evab/User?key="' + Username + '"', {
 		success: function(data) {
 			UserId = data.rows[0].value._id;
 			window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
@@ -595,7 +602,7 @@ function löscheDokument(DocId) {
 }
 
 //generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
-//Mitgeben: id der Art, User, Artgruppe
+//Mitgeben: id der Art, Username, Artgruppe
 function erstelleArtEdit(ArtId) {
 	$("#ArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	//holt die Art aus der DB
@@ -721,14 +728,14 @@ function initiiereBeobEdit_2(id, Feldliste) {
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
-//Mitgeben: id der Beobachtung, User
-function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, User) {
+//Mitgeben: id der Beobachtung, Username
+function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-	var HtmlContainer = generiereHtmlFuerBeobEditForm (User, Feldliste, Beob);
+	var HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
 	//nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -781,7 +788,7 @@ function setzeFixeFelderInBeobEdit(Beob) {
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
+function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 	var Feld = {};
 	var i;
 	var FeldName;
@@ -796,11 +803,11 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(User) != -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
+		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(Username) != -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
 			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			if (Feld.Hierarchiestufe != "Art" || Feld.ArtGruppe.indexOf(ArtGruppe)>=0) {
 				if (Status == "neu" && Feld.Standardwert) {
-					FeldWert = eval("Feld.Standardwert." + User) || "";
+					FeldWert = eval("Feld.Standardwert." + Username) || "";
 				} else {
 					FeldWert = (eval("Beob." + FeldName) || "");
 				}
@@ -814,7 +821,7 @@ function generiereHtmlFuerBeobEditForm (User, Feldliste, Beob) {
 }
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Projekts, User
+//Mitgeben: id des Projekts, Username
 function initiiereProjektEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
@@ -864,7 +871,7 @@ function initiiereProjektEdit(ID) {
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
-	if (typeof User == "undefined") {
+	if (typeof Username == "undefined") {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -880,9 +887,9 @@ function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "pName") {
+		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "pName") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
+				FeldWert = eval("Feld.Standardwert." + Username) || "";
 			} else {
 				FeldWert = (eval("Projekt." + FeldName) || "");
 			}
@@ -895,7 +902,7 @@ function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
 }
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Raums, User
+//Mitgeben: id des Raums, Username
 function initiiereRaumEdit(ID) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
@@ -946,7 +953,7 @@ function initiiereRaumEdit(ID) {
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
-	if (typeof User == "undefined") {
+	if (typeof Username == "undefined") {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -962,9 +969,9 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(User) != -1 && FeldName != "rName") {
+		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "rName") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + User) || "";
+				FeldWert = eval("Feld.Standardwert." + Username) || "";
 			} else {
 				FeldWert = (eval("Raum." + FeldName) || "");
 			}
@@ -1678,19 +1685,19 @@ function stopGeolocation() {
 }
 
 function speichereLetzteUrl() {
-//empfängt User
+//empfängt Username
 //speichert diese im Userdokument
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	if (typeof User == "undefined") {
+	if (typeof Username == "undefined") {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function(session){
 		    	if (session.userCtx.name != (undefined || null)) {
-		        	User = session.userCtx.name;
+		        	Username = session.userCtx.name;
 		        	speichereLetzteUrl_2();
 		        } else {
 					window.open("index.html?Status=neu", target="_self");
@@ -1709,7 +1716,7 @@ function speichereLetzteUrl_2() {
 	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
 		//UserId nur abfragen, wenn nicht schon erfolgt
 		if (typeof UserId == "undefined") {
-			$db.view('evab/User?key="' + User + '"', {
+			$db.view('evab/User?key="' + Username + '"', {
 				success: function(data) {
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
 					UserId = data.rows[0].value._id;
@@ -1738,10 +1745,13 @@ function speichereLetzteUrl_3(url) {
 //erstellt die Google-Map Karte für die Orte eines Raums
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
-function erstelleKarteFürRaum(User, RaumId) {
+function erstelleKarteFürRaum(RaumId) {
+	if (typeof Username == "undefined") {
+		prüfeAnmeldung();
+	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]&include_docs=true', {
 		success: function(data) {
 			var i;
 			var anzOrt = 0;
@@ -1835,11 +1845,14 @@ function erstelleKarteFürRaum(User, RaumId) {
 
 //Erstellt die Google-Map Karte für Orte eines Projekts
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
-//erwartet User und ProjektId
-function erstelleKarteFürProjekt(User, ProjektId) {
+//erwartet Username und ProjektId
+function erstelleKarteFürProjekt(ProjektId) {
+	if (typeof Username == "undefined") {
+		prüfeAnmeldung();
+	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + User + '", "' + ProjektId + '"]&endkey=["' + User + '", "' + ProjektId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]&include_docs=true', {
 		success: function(data) {
 			var i;
 			var anzOrt = 0;
@@ -1990,15 +2003,15 @@ function erstelleAttachments(doc) {
 
 //kreiert ein neues Feld
 //erwartet den Teil des Pfads, der links von FeldEdit ist
-function neuesFeld(User, Pfad) {
+function neuesFeld(Username, Pfad) {
 	var Feld = {};
 	Feld.Typ = "Feld";
-	Feld.User = User;
+	Feld.User = Username;
 	Feld.SichtbarImModusEinfach = [];
 	Feld.SichtbarImModusHierarchisch = [];
 	//gleich sichtbar stellen
-	Feld.SichtbarImModusEinfach.push(User);
-	Feld.SichtbarImModusHierarchisch.push(User);
+	Feld.SichtbarImModusEinfach.push(Username);
+	Feld.SichtbarImModusHierarchisch.push(Username);
 	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function(data) {
@@ -2013,8 +2026,8 @@ function neuesFeld(User, Pfad) {
 }
 
 function prüfeAnmeldung() {		
-	//User Anmeldung überprüfen
-	//Wenn angemeldet, globale Variable User aktualisieren
+	//Username Anmeldung überprüfen
+	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
 	$.ajax({
 	    url: '/_session',
@@ -2022,7 +2035,8 @@ function prüfeAnmeldung() {
 	    async: false,
 	    success: function(session){
 	    	if (session.userCtx.name != (undefined || null)) {
-	        	User = session.userCtx.name;
+	        	Username = session.userCtx.name;
+	        	sessionStorage.setItem("Username", Username);
 	        } else {
 				window.open("index.html?Status=neu", target="_self");
 			}

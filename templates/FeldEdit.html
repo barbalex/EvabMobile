@@ -25,13 +25,12 @@
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="../../vendor/couchapp/jquery.validate.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.mobile.simpledialog.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+	<script type="text/javascript" src="../../vendor/couchapp/markerclusterer.js"></script>
+  	<script type="text/javascript" src="../../vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
   	<div data-role="page" id="FeldEditPage">
@@ -39,12 +38,11 @@
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pagebeforecreate", function() {
 			
-				prüfeAnmeldung();
 				erstelleSelectFeldFolgtNach();
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var FeldWert = this.value;
@@ -61,7 +59,7 @@
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
-							$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+							$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
 								success: function(data) {
 									var i;
 									var anzVorkommen = 0;
@@ -78,7 +76,7 @@
 										//prüfen, ob der Feldname schon existiert
 										//wenn ja: melden, zurückstellen
 										//wenn nein: In SichtbareFelder nachführen und speichern
-										prüfeFeldNamen(User);
+										prüfeFeldNamen(Username);
 									} else {
 										var ds = "Datensätzen";
 										if (anzVorkommen = 1) {
@@ -94,7 +92,7 @@
 							//prüfen, ob der Feldname schon existiert
 							//wenn ja: melden, zurückstellen
 							//wenn nein: In SichtbareFelder nachführen und speichern
-							prüfeFeldNamen(User);
+							prüfeFeldNamen(Username);
 						}
 					} else if (FeldName === "Hierarchiestufe" && FeldWert == "Art") {
 						speichereFeldeigenschaften();
@@ -114,23 +112,6 @@
 						});
 					} else {
 						speichereFeldeigenschaften();
-						/*$("#FeldEditForm").validate({          FUNKTIONIERT NICHT
-							debug: true,
-							onsubmit: false,
-							rules: {
-								FeldName: "required",
-								Beschriftung: "required",
-								Reihenfolge: "required",
-							},
-							messages: {
-								FeldName: "Bitte Feldnamen erfassen",
-								Beschriftung: "Bitte Beschriftung erfassen",
-								Reihenfolge: "Bitte Reihenfolge erfassen",
-							},
-						    submitHandler: function(form) {
-						        speichereFeldeigenschaften();
-						    }
-						});*/
 					}
 				});
 
@@ -139,7 +120,7 @@
 				});
 
 				$("#UserFeldForm").on("change", "#Standardwert", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var Optionen = $("#Optionen").val();
@@ -150,8 +131,8 @@
 							success: function(doc) {
 								var LetzterFeldwert;
 								if (doc.Standardwert) {
-									if (doc.Standardwert[User]) {
-										LetzterFeldwert = doc.Standardwert[User];
+									if (doc.Standardwert[Username]) {
+										LetzterFeldwert = doc.Standardwert[Username];
 									} else {
 										LetzterFeldwert = "";
 									}
@@ -173,7 +154,7 @@
 										}
 									}
 									//alle Werte sind Optionen
-									speichereStandardwert(User);
+									speichereStandardwert(Username);
 								} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Formularelement) > -1) {
 									//Array darf nur ein Element enthalten
 									if (StandardwertOptionen.length > 1) {
@@ -191,39 +172,39 @@
 											}
 										}
 										//alle Werte sind Optionen
-										speichereStandardwert(User);
+										speichereStandardwert(Username);
 									}
 								} else {
 									//Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
-									speichereStandardwert(User);
+									speichereStandardwert(Username);
 								}
 							}
 						});
 					} else {
 						//Feld Optionen ist leer. Alle Werte akzeptieren
-						speichereStandardwert(User);
+						speichereStandardwert(Username);
 					}
 				});
 
 				//Sichtbarkeit Modus hierarchisch speichern
 				$("#SichtbarImModusHierarchisch").change(function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					speichereSichtbarModusHierarchisch(User, this.value);
+					speichereSichtbarModusHierarchisch(Username, this.value);
 				});
 
 				//Sichtbarkeit Modus einfach speichern
 				$("#SichtbarImModusEinfach").change(function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					speichereSichtbarModusEinfach(User, this.value);
+					speichereSichtbarModusEinfach(Username, this.value);
 				});
 
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					if ("{{User}}" == "ZentrenBdKt") {
@@ -244,7 +225,7 @@
 							        	} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
-											$db.view('evab/FeldSuche?key="' + User + '"&include_docs=true', {
+											$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
 												success: function(data) {
 													var i;
 													var anzVorkommen = 0;
@@ -295,77 +276,29 @@
 
 				//swipen steuern
 				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					geheZumNächstenFeld(User, "{{id}}");
+					geheZumNächstenFeld(Username, "{{id}}");
 				});
 
 				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					geheZumVorigenFeld(User, "{{id}}");
+					geheZumVorigenFeld(Username, "{{id}}");
 				});
 
 				/*$("body").on("swipeleft", "#FeldContent", function() {
-					geheZumNächstenFeld(User, "{{id}}");
+					geheZumNächstenFeld(Username, "{{id}}");
 				});
 
 				$("body").on("swiperight", "#FeldContent", function() {
-					geheZumVorigenFeld(User, "{{id}}");
+					geheZumVorigenFeld(Username, "{{id}}");
 				});*/
 
-				function setzeSichtbarInModiUndArtgruppeUndStandardwert(User){
-					if (typeof User == "undefined") {
-						prüfeAnmeldung();
-					}
-					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
-					//könnte man sich diese Abfrage ersparen!
-					//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
-					$db = $.couch.db("evab");
-					$db.openDoc("{{id}}", {
-						success: function(Feld) {
-							//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
-							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
-							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
-							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
-							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(User) != -1) {
-								$("select#SichtbarImModusHierarchisch").val("ja");
-							} else {
-								$("select#SichtbarImModusHierarchisch").val("nein");
-							}
-							$("select#SichtbarImModusHierarchisch").slider();
-							$("select#SichtbarImModusHierarchisch").slider("refresh");
-							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusEinfach noch nicht
-							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(User) != -1) {
-								$("select#SichtbarImModusEinfach").val("ja");
-							} else {
-								$("select#SichtbarImModusEinfach").val("nein");
-							}
-							$("select#SichtbarImModusEinfach").slider();
-							$("select#SichtbarImModusEinfach").slider("refresh");
-							
-							//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
-							if ("{{Hierarchiestufe}}" === "Art") {
-								ArtGruppeAufbauen(Feld.ArtGruppe);
-							}
-							
-							//allfälligen Standardwert anzeigen
-							//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
-							//darum hier auslesen und setzen
-							if (Feld.Standardwert) {
-								var Standardwert = eval("Feld.Standardwert." + User);
-								if (Standardwert) {
-									$("#Standardwert").val(Standardwert);
-								}
-							}
-						}
-					});
-				}
-
-				function prüfeFeldNamen(User) {
-					if (typeof User == "undefined") {
+				function prüfeFeldNamen(Username) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var FeldNameAlt = "{{FeldName}}" || "";
@@ -382,7 +315,7 @@
 								if (data.rows[i].value) {
 									Feld = data.rows[i].value;
 									//ist es ein eigenes oder ein offizielles?
-									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+									if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 										//ja > dieser Name ist nicht zulässig
 										$("#FeldName").val(FeldNameAlt);
 										$("#FeldName").focus();
@@ -390,13 +323,13 @@
 									} else {
 										//Feldname ist bei diesem User neu, somit zulässig > speichern
 										//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-										speichereSichtbarModusHierarchisch(User, "ja"); 
+										speichereSichtbarModusHierarchisch(Username, "ja"); 
 										speichereFeldeigenschaften();
 									}
 								} else {
 									//Feldname ist neu, somit zulässig > speichern
 									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-									speichereSichtbarModusHierarchisch(User, "ja"); 
+									speichereSichtbarModusHierarchisch(Username, "ja"); 
 									speichereFeldeigenschaften();
 								}
 							}
@@ -404,8 +337,8 @@
 					});
 				}
 
-				function speichereSichtbarModusHierarchisch(User, SichtbarImModusHierarchisch) {
-					if (typeof User == "undefined") {
+				function speichereSichtbarModusHierarchisch(Username, SichtbarImModusHierarchisch) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
@@ -413,9 +346,9 @@
 					$db.openDoc("{{id}}", {
 						success: function(Feld) {
 							if (SichtbarImModusHierarchisch == "ja") {
-								Feld.SichtbarImModusHierarchisch.push(User);
+								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = Feld.SichtbarImModusHierarchisch.indexOf(User);
+								var idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
 								if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
@@ -430,8 +363,8 @@
 					});
 				}
 
-				function speichereSichtbarModusEinfach(User, SichtbarImModusEinfach) {
-					if (typeof User == "undefined") {
+				function speichereSichtbarModusEinfach(Username, SichtbarImModusEinfach) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
@@ -439,9 +372,9 @@
 					$db.openDoc("{{id}}", {
 						success: function(Feld) {
 							if (SichtbarImModusEinfach == "ja") {
-								Feld.SichtbarImModusEinfach.push(User);
+								Feld.SichtbarImModusEinfach.push(Username);
 							} else {
-								var idx = Feld.SichtbarImModusEinfach.indexOf(User);
+								var idx = Feld.SichtbarImModusEinfach.indexOf(Username);
 								if(idx!=-1) Feld.SichtbarImModusEinfach.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
@@ -516,8 +449,8 @@
 				//Öffnet das nächste Feld
 				//nächstes des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumNächstenFeld(User, IdAktuell) {
-					if (typeof User == "undefined") {
+				function geheZumNächstenFeld(Username, IdAktuell) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -531,7 +464,7 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
 									if (FeldIdAktuell == IdAktuell) {
@@ -543,7 +476,7 @@
 												//alle verbleibenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+												if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 													//das ist das nächste eigene Feld > öffnen
 													FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
 													window.open(FeldIdNächstes, target="_self");
@@ -569,8 +502,8 @@
 				//Öffnet das vorige Feld
 				//voriges des ersten => FeldListe
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumVorigenFeld(User, IdAktuell) {
-					if (typeof User == "undefined") {
+				function geheZumVorigenFeld(Username, IdAktuell) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -584,7 +517,7 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
 									if (FeldIdAktuell == IdAktuell) {
@@ -596,7 +529,7 @@
 												//alle vorhergehenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+												if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 													//das ist das nächstvorherige eigene Feld > öffnen
 													FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
 													window.open(FeldIdVoriges, target="_self");
@@ -641,7 +574,7 @@
 					//generiert den html-Inhalt für Selectmenus
 					//wird von erstelle_hArtEdit aufgerufen
 					//Nur bei eigenen Feldern anzeigen
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					if ("{{User}}" !== "ZentrenBdKt") {
@@ -656,7 +589,7 @@
 									Feld = data.rows[i].value;
 									//Liste aufbauen
 									//Nur eigene Felder und offizielle
-									if (Feld.User == User || Feld.User == "ZentrenBdKt") {
+									if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 										Optionen.push(Feld.FeldName);
 									}
 								}
@@ -678,8 +611,8 @@
 					}
 				}
 
-				function speichereStandardwert(User) {
-					if (typeof User == "undefined") {
+				function speichereStandardwert(Username) {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -692,12 +625,12 @@
 							if (Feld.Standardwert) {
 								if (StandardwertUserImFormular != "") {
 									//neuen Standardwert setzen
-									Feld.Standardwert[User] = StandardwertUserImFormular;
+									Feld.Standardwert[Username] = StandardwertUserImFormular;
 								} else {
 									//Standardwert ist leer
-									if (eval("Feld.Standardwert." + User)) {
+									if (eval("Feld.Standardwert." + Username)) {
 										//bisherigen Standardwert löschen
-										delete Feld.Standardwert[User];
+										delete Feld.Standardwert[Username];
 									}
 								}
 							} else {
@@ -705,7 +638,7 @@
 								if (StandardwertUserImFormular != "") {
 									//Objekt für Standardwert schaffen und neuen Wert setzen
 									Feld.Standardwert = {};
-									Feld.Standardwert[User] = StandardwertUserImFormular;
+									Feld.Standardwert[Username] = StandardwertUserImFormular;
 								}
 							}
 							$db.saveDoc(Feld, {
@@ -828,11 +761,7 @@
 			});
 
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
-			$(":jqmData(role='page')").on("pagebeforeshow", function() {
-
-				if (typeof User == "undefined") {
-					prüfeAnmeldung();
-				}
+			$(":jqmData(role='page')").on("pageshow", function() {
 
 				speichereLetzteUrl();
 				
@@ -840,7 +769,7 @@
 				//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
 				//und allfälligen Standardwert anzeigen
 				//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
-				setzeSichtbarInModiUndArtgruppeUndStandardwert(User);
+				setzeSichtbarInModiUndArtgruppeUndStandardwert();
 
 				if ("{{FeldName}}") {
 					//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
@@ -868,7 +797,53 @@
 				$("input[name='InputTyp']").checkboxradio();
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
-				
+				function setzeSichtbarInModiUndArtgruppeUndStandardwert(){
+					if (typeof Username == "undefined") {
+						prüfeAnmeldung();
+					}
+					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
+					//könnte man sich diese Abfrage ersparen!
+					//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
+					$db = $.couch.db("evab");
+					$db.openDoc("{{id}}", {
+						success: function(Feld) {
+							//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
+							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
+							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
+							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
+							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(Username) != -1) {
+								$("select#SichtbarImModusHierarchisch").val("ja");
+							} else {
+								$("select#SichtbarImModusHierarchisch").val("nein");
+							}
+							$("select#SichtbarImModusHierarchisch").slider();
+							$("select#SichtbarImModusHierarchisch").slider("refresh");
+							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusEinfach noch nicht
+							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(Username) != -1) {
+								$("select#SichtbarImModusEinfach").val("ja");
+							} else {
+								$("select#SichtbarImModusEinfach").val("nein");
+							}
+							$("select#SichtbarImModusEinfach").slider();
+							$("select#SichtbarImModusEinfach").slider("refresh");
+							
+							//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+							if ("{{Hierarchiestufe}}" === "Art") {
+								ArtGruppeAufbauen(Feld.ArtGruppe);
+							}
+							
+							//allfälligen Standardwert anzeigen
+							//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+							//darum hier auslesen und setzen
+							if (Feld.Standardwert) {
+								var Standardwert = eval("Feld.Standardwert." + Username);
+								if (Standardwert) {
+									$("#Standardwert").val(Standardwert);
+								}
+							}
+						}
+					});
+				}
 			});
 		</script>
 		<script type="text/javascript">
@@ -1020,7 +995,7 @@
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="FeldEditFooter">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld(User, '../');" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" onClick="Javascript:neuesFeld(Username, '../');" data-icon="plus" class="ui-btn-active">neu</a></li>			
 					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->

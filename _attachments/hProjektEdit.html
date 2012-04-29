@@ -155,10 +155,10 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
-					erstelleKarteFürProjekt(User, ProjektId);
+					erstelleKarteFürProjekt(ProjektId);
 				});
 
 				$(document).on("pagehide", '#ProjektEditMap', function() {
@@ -470,7 +470,7 @@
 
 			//Menü aufbauen
 			function erstelleMenu(thiz){
-				if (typeof User == "undefined") {
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 				$(thiz).simpledialog({
@@ -494,14 +494,14 @@
 			      		},
 			      		'Projekte exportieren': {
 					      	click: function() {
-					        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+					        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 			        		},
 			        		theme: "a",
 			        		icon: "arrow-r"
 			      		},
 			      		'Einstellungen': {
 					      	click: function() {
-					      		öffneMeineEinstellungen(User, "");
+					      		öffneMeineEinstellungen("");
 			        		},
 			        		theme: "a",
 			        		icon: "wrench"
@@ -534,11 +534,11 @@
 			//nächstes des letzten => melden
 			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
-				if (typeof User == "undefined") {
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 				$db = $.couch.db("evab");
-				$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+				$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
 					success: function(data) {
 						var i;
 						var ProjIdAktuell;
@@ -576,24 +576,6 @@
 					}
 				});
 			}
-
-			/*function prüfeAnmeldung() {		
-				//User Anmeldung überprüfen
-				//Wenn angemeldet, globale Variable User aktualisieren
-				//Wenn nicht angemeldet, Anmeldedialog öffnen
-				$.ajax({
-				    url: '/_session',
-				    dataType: 'json',
-				    async: false,
-				    success: function(session) {
-				    	if(session.userCtx.name != (undefined || null)) {
-				        	User = session.userCtx.name;
-				        } else {
-							window.open("index.html?Status=neu", target="_self");
-						}
-				    }
-				});
-			}*/
 
 			function aktualisiereLinksMitProjId() {
 				//Link zur Raumliste in Navbar setzen

@@ -49,7 +49,7 @@
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
 				
-				if (typeof User == "undefined" || User == "" || User == null) {
+				if (typeof Username == "undefined" || Username == "" || Username == null) {
 					prüfeAnmeldung();
 				}
 				var ArtGruppe = get_url_param("aArtGruppe");
@@ -65,14 +65,13 @@
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 					event.preventDefault();
-					if (typeof User == "undefined" || User == "" || User == null) {
-						alert("User ist undefined, leer oder null");
+					if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					var ArtId = $(this).attr("artid");
 					if (Status == "neu") {
-						speichereNeueBeob(User, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
+						speichereNeueBeob(Username, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 					} else if (Von == "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						if ($('#ArtEditPage').length > 0) {
@@ -92,7 +91,7 @@
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
 					event.preventDefault();
-					if (typeof User == "undefined" || User == "" || User == null) {
+					if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
 					var ButtonText = this.text;
@@ -120,13 +119,13 @@
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
 											}
 											if (ArtGruppen_2) {
-												//window.open("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von, target="_self");
+												//window.open("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von, target="_self");
 												if ($('#agl_Page').length > 0) {
 													//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 													$.mobile.changePage($('#agl_Page'));
-													window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
+													window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
 												} else {
-													$.mobile.changePage("Artgruppenliste.html?User=" + User + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
+													$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
 												}
 											} else {
 												erstelleArtenliste();
@@ -146,11 +145,10 @@
 				});
 
 				function erstelleArtenliste() {
-			  		//var User = get_url_param("User");
-			  		if (typeof User == "undefined" || User == "" || User == null) {
+			  		if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
-				  	var viewname = 'evab/User?key="' + User + '"';
+				  	var viewname = 'evab/User?key="' + Username + '"';
 				  	$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function(data) {

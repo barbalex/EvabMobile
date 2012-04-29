@@ -91,10 +91,10 @@
 
 		//neuen Ort erstellen
 		$("body").on("click", ".hol_NeuLink", function(){
-			if (typeof User == "undefined") {
+			if (typeof Username == "undefined") {
 				prüfeAnmeldung();
 			}
-			erstelleNeuenOrt(User, ProjektId, RaumId);
+			erstelleNeuenOrt(ProjektId, RaumId);
 		});
 
 		//Link zur OrtListe in Navbar setzen
@@ -111,10 +111,10 @@
 		});
 
 		$("#Orte").on("swipeleft", ".erste", function() {
-			if (typeof User == "undefined") {
+			if (typeof Username == "undefined") {
 				prüfeAnmeldung();
 			}
-			erstelleNeuenOrt(User, ProjektId, RaumId);
+			erstelleNeuenOrt(ProjektId, RaumId);
 		});
 
 		$(document).on("swiperight", "#hOrtListePage", function() {
@@ -130,10 +130,10 @@
 
 		$(document).on("pageshow", '#hOrtListeMapPage', function() {
 			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-			if (typeof User == "undefined") {
+			if (typeof Username == "undefined") {
 				prüfeAnmeldung();
 			}
-			erstelleKarteFürRaum(User, RaumId);
+			erstelleKarteFürRaum(RaumId);
 		});
 
 		$(document).on("pagehide", '#hOrtListeMapPage', function() {
@@ -146,7 +146,7 @@
 
 	//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 	function erstelleMenu(thiz){
-		if (typeof User == "undefined") {
+		if (typeof Username == "undefined") {
 			prüfeAnmeldung();
 		}
 		//Code um Menü aufzubauen
@@ -171,14 +171,14 @@
 	      		},
 	      		'Orte exportieren': {
 			      	click: function() {
-			        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+			        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 	        		},
 	        		theme: "a",
 	        		icon: "arrow-r"
 	      		},
 	      		'Einstellungen': {
 			      	click: function() {
-			        	öffneMeineEinstellungen(User, "");
+			        	öffneMeineEinstellungen("");
 	        		},
 	        		theme: "a",
 	        		icon: "wrench"
@@ -208,43 +208,58 @@
   </script>
   <script type="text/javascript" charset="utf-8">	
   	function erstelleOrtListe() {
-  		if (typeof User == "undefined") {
-			prüfeAnmeldung();
-		}
 		$("#Orte").empty();
-		$db = $.couch.db("evab");
-		$db.view('evab/hOrtListe?startkey=["' + User + '", "' + RaumId + '"]&endkey=["' + User + '", "' + RaumId + '" ,{}]', {
-			success: function(data) {
-				var i;
-				var anzOrt = 0;
-				var Ort;
-				var externalPage;
-				var listItem;
-				var ListItemContainer = "";
-				for(i in data.rows) {                    //Orte zählen. Wenn noch keine: darauf hinweisen
-					anzOrt += 1;
-				}
-				var Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
-				if (anzOrt == 1){
-					Titel2 = " Ort";
-				}
-				$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
-
-				if (anzOrt == 0) {
-					ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
-				} else {
-					for(i in data.rows) {                //Liste aufbauen
-						Ort = data.rows[i].value;
-						key = data.rows[i].key;
-						externalPage = "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-						listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
-						ListItemContainer += listItem;
-					}
-				}
-				$("#Orte").html(ListItemContainer);
-				$("#Orte").listview("refresh");
+		//vielleicht hat hOrtListe.html eine OrtListe übergeben?
+		if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
+			//Objekte werden als Strings übergeben, müssen geparst werden
+			OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
+			erstelleOrtListe_2();
+		} else {
+			if (typeof Username == "undefined") {
+				prüfeAnmeldung();
 			}
-		});
+			$db = $.couch.db("evab");
+			$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
+				success: function(data) {
+					OrtListe = data;
+					//OrtListe für hOrtEdit bereitstellen
+					//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+					sessionStorage.setItem("OrtListe", JSON.stringify(data));
+					erstelleOrtListe_2();
+				}
+			});
+		}
+	}
+
+	function erstelleOrtListe_2() {
+		var i;
+		var anzOrt = 0;
+		var Ort;
+		var externalPage;
+		var listItem;
+		var ListItemContainer = "";
+		for(i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
+			anzOrt += 1;
+		}
+		var Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
+		if (anzOrt == 1){
+			Titel2 = " Ort";
+		}
+		$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
+
+		if (anzOrt == 0) {
+			ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
+		} else {
+			for(i in OrtListe.rows) {                //Liste aufbauen
+				Ort = OrtListe.rows[i].value;
+				key = OrtListe.rows[i].key;
+				externalPage = "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
+		}
+		$("#Orte").html(ListItemContainer);
+		$("#Orte").listview("refresh");
 	}
   </script>
 </html>

@@ -61,7 +61,7 @@
 
 	    //Wenn möglich alten cookie für die Anmeldung verwenden
 	    //ausser User hat via Menü bewusst neu anmelden wollen
-	    //User = "";
+
 	    var Status = get_url_param("Status");
 	    if (Status != "neu") {
 	    	prüfeAnmeldung();
@@ -110,9 +110,10 @@
 		$.couch.session({
 			success : function(r) {
 				var userCtx = r.userCtx;
-				User = userCtx.name;
+				Username = userCtx.name;
+				sessionStorage.setItem("Username", Username);
 				if (userCtx.name) {
-					öffneZuletztBenutzteSeite(User);
+					öffneZuletztBenutzteSeite(Username);
 				} else if (userCtx.roles.indexOf("_admin") != -1) {
 					melde("Oops, die Datenbank hat keine Benutzer!");
 				} else {
@@ -122,10 +123,10 @@
 		});
 	}
 
-	function öffneZuletztBenutzteSeite(User) {
+	function öffneZuletztBenutzteSeite(Username) {
 		//_replicate(name, pass);
 		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + User + '"', {
+		$db.view('evab/User?key="' + Username + '"', {
 			success: function(data) {
 				var doc = data.rows[0].value;
 				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
@@ -133,24 +134,6 @@
 				if (LetzteUrl == "/evab/_design/evab/index.html") {LetzteUrl = "BeobListe.html"}
 				window.open(LetzteUrl, target="_self");
 			}
-		});
-	}
-
-	function prüfeAnmeldung() {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function(session) {
-		    	User = session.userCtx.name;
-		    	if(session.userCtx.name != (undefined || null)) {
-		        	öffneZuletztBenutzteSeite(User);
-		       	} else {
-		       		$("#UserName").focus();
-		       	}
-		    }
 		});
 	}
 

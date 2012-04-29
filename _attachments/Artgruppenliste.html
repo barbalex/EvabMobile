@@ -46,8 +46,8 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				if (get_url_param("User")) {
-					User = get_url_param("User");
+				if (get_url_param("Username")) {
+					Username = get_url_param("Username");
 				}
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
@@ -64,19 +64,19 @@
 					var link;
 					switch (Von) {
 						case "BeobEdit":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "BeobListe":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "hArtListe":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "hArtEdit":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "ArtEdit":
-							link = "Artenliste.html?User=" + User + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
+							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
 							break;
 					}
 					if (BeobId != "") {
@@ -94,8 +94,8 @@
 
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
-				User = get_url_param("User");
-				if (typeof User == "undefined") {
+				Username = get_url_param("Username");
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
@@ -112,14 +112,12 @@
 					//gewünschte Sprache für Arten ermitteln
 					//Listen aufbauen lassen
 					//und button für Sprache richtig beschriften
-					//var User = get_url_param("User");
-					alert("User = " + User);
-					if (typeof User == "undefined" || User == "" || User == null) {
-						alert("User ist undefined, leer oder null");
+					//var Username = get_url_param("Username");
+					if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
 					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
-					var viewname = 'evab/User?key="' + User + '"';
+					var viewname = 'evab/User?key="' + Username + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function(data) {

@@ -54,11 +54,11 @@
 		  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function() {
 				
-				if (typeof User == "undefined") {
+				if (typeof Username == "undefined") {
 					prüfeAnmeldung();
 				}
 
-				erstelleBeobListe(User);
+				erstelleBeobListe();
 				speichereLetzteUrl();
 
 				$("#beobachtungen").on("swipeleft", ".beob", function() {
@@ -74,12 +74,12 @@
 				});
 
 				$(document).on("pageshow", '#bl_Karte', function() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
 					$db = $.couch.db("evab");
-					$db.view('evab/BeobListeLatLng?key="' + User + '"&include_docs=true', {
+					$db.view('evab/BeobListeLatLng?key="' + Username + '"&include_docs=true', {
 						success: function(data) {
 							var i;
 							var anzBeob = 0;
@@ -200,7 +200,7 @@
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -209,11 +209,11 @@
 					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe");
+						$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe");
 					}
-					//window.open("Artgruppenliste.html?User=" + User + "&Status=neu&Von=BeobListe", target="_self");
+					//window.open("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe", target="_self");
 				}
 
 				//Menü aufbauen
@@ -240,14 +240,14 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -276,13 +276,13 @@
 				}
 
 				//BeobListe in BeobList.html vollständig neu aufbauen
-				function erstelleBeobListe(User) {
-					if (typeof User == "undefined") {
+				function erstelleBeobListe() {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$("#beobachtungen").empty();
 					$db = $.couch.db("evab");
-					$db.view('evab/BeobListe?startkey=["' + User + '",{}]&endkey=["' + User + '"]&descending=true', {
+					$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
 						success: function(data) {
 							//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 							//bei neuen Beobachtungen wird BeobListe wieder auf undefined gesetzt

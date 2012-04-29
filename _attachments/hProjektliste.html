@@ -97,12 +97,12 @@
 				});
 
 				function erstelleProjektliste() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 			  		$db = $.couch.db("evab");
 					$("#Projekte").empty();
-					$db.view('evab/hProjListe?startkey=["' + User + '"]&endkey=["' + User + '",{}]', {
+					$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
 						success: function(data) {
 							var i;
 							var anzProj = 0;
@@ -142,7 +142,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -167,14 +167,14 @@
 				      		},
 				      		'Projekte exportieren': {
 						      	click: function() {
-						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + User + '",{},{},{},{},{}]&endkey=["' + User + '"]&descending=true');
+						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
 						      	click: function() {
-						        	öffneMeineEinstellungen(User, "");
+						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
@@ -203,12 +203,12 @@
 				}
 
 				function erstelleKarteFürProjektliste() {
-					if (typeof User == "undefined") {
+					if (typeof Username == "undefined") {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
 					//Zuerst Orte abfragen
-					$db.view('evab/hProjektlisteOrteFuerKarte?key="' + User + '"&include_docs=true', {
+					$db.view('evab/hProjektlisteOrteFuerKarte?key="' + Username + '"&include_docs=true', {
 						success: function(data) {
 							var i;
 							var anzOrt = 0;
