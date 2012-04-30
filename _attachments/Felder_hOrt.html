@@ -108,8 +108,8 @@
 				if (typeof FeldlisteOrtEdit != "undefined") {
 					erstelleSichtbareFelder_2();
 				} else {
-					$db = $.couch.db("evab");
 					//holt die Feldliste aus der DB
+					$db = $.couch.db("evab");
 					$db.view('evab/FeldListeOrt', {
 						success: function(data) {
 							FeldlisteOrtEdit = data;

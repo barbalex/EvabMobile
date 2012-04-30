@@ -835,57 +835,69 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, Username
-function initiiereProjektEdit(ID) {
+function initiiereProjektEdit(ProjektId) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeProjekt', {
-		success: function(Feldliste) {
-			$db.openDoc(ID, {
-				success: function(Projekt) {
-					//fixe Felder aktualisieren
-					$("#pName").val(Projekt.pName);
-					var HtmlContainer = generiereHtmlFuerProjektEditForm (Feldliste, Projekt);
-					//Linie nur anfügen, wenn Felder erstellt wurden
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-					} else {
-						HtmlContainer = "";
+	$db.openDoc(ProjektId, {
+		success: function(Projekt) {
+			//fixe Felder aktualisieren
+			$("#pName").val(Projekt.pName);
+			//prüfen, ob die Feldliste schon geholt wurde
+			//wenn ja: deren globale Variable verwenden
+			if (typeof FeldlisteProjektEdit !== "undefined") {
+				initiiereProjektEdit_2(Projekt);
+			} else {
+				$db = $.couch.db("evab");
+				//holt die Feldliste aus der DB
+				$db.view('evab/FeldListeProjekt', {
+					success: function(Feldliste) {
+						FeldlisteProjektEdit = Feldliste;
+						initiiereProjektEdit_2(Projekt);
 					}
-					$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-					if (get_url_param("Status") == "neu") {
-						//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-						var Formularwerte = {};
-						Formularwerte = $("#hProjektEditForm").serializeObject();
-						//Werte aus dem Formular aktualisieren
-						for (i in Formularwerte) {
-							if (Formularwerte[i]) {
-								Projekt[i] = Formularwerte[i];
-							} else if (Projekt[i]) {
-								delete Projekt[i]
-							}
-						}
-						$db.saveDoc(Projekt);
-					}
-					erstelleAttachments(Projekt);
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
-					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-					speichereLetzteUrl();
-				}
-			});
+				});
+			}
 		}
-	});
+	});	
+}
+
+function initiiereProjektEdit_2(Projekt) {
+	var HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
+	//Linie nur anfügen, wenn Felder erstellt wurden
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+	} else {
+		HtmlContainer = "";
+	}
+	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		var Formularwerte = {};
+		Formularwerte = $("#hProjektEditForm").serializeObject();
+		//Werte aus dem Formular aktualisieren
+		for (i in Formularwerte) {
+			if (Formularwerte[i]) {
+				Projekt[i] = Formularwerte[i];
+			} else if (Projekt[i]) {
+				delete Projekt[i]
+			}
+		}
+		$db.saveDoc(Projekt);
+	}
+	erstelleAttachments(Projekt);
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
 }
 
 //generiert das Html für das Formular in hProjektEdit.html
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
+function generiereHtmlFuerProjektEditForm (Projekt) {
 	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
@@ -898,8 +910,8 @@ function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {
-		Feld = Feldliste.rows[i].value;
+	for(i in FeldlisteProjektEdit.rows) {
+		Feld = FeldlisteProjektEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "pName") {
@@ -1016,7 +1028,6 @@ function initiiereOrtEdit(OrtId) {
 			$("#oXKoord").val(Ort.oXKoord);
 			$("#oYKoord").val(Ort.oYKoord);
 			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
-			//alert("fixe Felder aktualisiert");
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 			oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";

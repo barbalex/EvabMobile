@@ -35,7 +35,7 @@
   <body>
   	<div data-role="page" id="Felder_hProjektPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hProjektPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-rel="back" data-iconpos="notext">abbrechen</a>
+  			<a href="#"id="Felder_hProjektPage_back" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hProjektPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -46,8 +46,86 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageshow", function() {
 				erstelleSichtbareFelder();
+
+				//generiert dynamisch die Felder im Checkbox Felder
+				//checked diejenigen, die der User anzeigen will
+				function erstelleSichtbareFelder() {
+					$("#Feldliste").empty();
+					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+					if (typeof FeldlisteProjektEdit !== "undefined") {
+						erstelleSichtbareFelder_2();
+					} else {
+						//holt die Feldliste aus der DB
+						$db = $.couch.db("evab");
+						$db.view('evab/FeldListeProjekt', {
+							success: function(data) {
+								FeldlisteProjektEdit = data;
+								erstelleSichtbareFelder_2();
+							}
+						});
+					}
+				}
+
+				function erstelleSichtbareFelder_2() {
+					if (typeof Username === "undefined" || !Username) {
+						prüfeAnmeldung();
+					}
+					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+					var anzFelder = 0;
+					for (i in FeldlisteProjektEdit.rows) {
+						var Feld = FeldlisteProjektEdit.rows[i].value;
+						var FeldName = Feld.FeldName;
+						//Nur eigene und offizielle Felder berücksichtigen
+						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+							//im Formular fix integrierte Felder nicht aufbauen
+							if (Feld.Hierarchiestufe == "Projekt" && FeldName != "pName") {
+								anzFelder += 1;
+								var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+								var ListItem = "\n\t\t\<label for='";
+								ListItem += FeldName;
+								ListItem += "'>";
+								ListItem += FeldBeschriftung;
+								ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+								ListItem += "Felder";
+								ListItem += "' id='";
+								ListItem += FeldName;
+								ListItem += "' FeldId='";
+								ListItem += Feld._id;
+								ListItem += "' value='";
+								ListItem += FeldName;
+								ListItem += "' class='custom'";
+								if(Feld.SichtbarImModusHierarchisch) {
+									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
+										//wenn sichtbar, anzeigen
+										ListItem += " checked='checked'";
+									}
+								}
+								ListItem += "/>";
+								HtmlContainer += ListItem;
+							}
+						}
+					}
+					$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
+					HtmlContainer += "\n\t</fieldset>\n</div>"
+					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("input[name='Felder']").checkboxradio();
+				}
+			});
+			
+			$(":jqmData(role='page')").on("pageinit", function() {
+				
+				$("#Felder_hProjektPage").on("click", "#Felder_hProjektPage_back", function() {
+					if ($('#ProjektEditPage').length > 0) {
+						$.mobile.changePage($('#ProjektEditPage'));
+					} else {
+						$.mobile.changePage("ProjektEdit.html", {
+							type: "get",
+							data: "id=" + ProjektId
+						});
+					}
+				});
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
@@ -70,6 +148,10 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
+							//Globale Variable für FeldlisteProjektEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							if (typeof FeldlisteProjektEdit !== "undefined") {
+								FeldlisteProjektEdit = undefined;
+							}
 						},
 						error: function() {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
@@ -82,59 +164,6 @@
 					initiiereProjektEdit(ProjektId);
 				});
 
-				//generiert dynamisch die Felder im Checkbox Felder
-				//checked diejenigen, die der User anzeigen will
-				function erstelleSichtbareFelder() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-					$("#Feldliste").empty();
-					$db = $.couch.db("evab");
-					//holt die Feldliste aus der DB
-					$db.view('evab/FeldListeProjekt', {
-						success: function(data) {
-							var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-							var anzFelder = 0;
-							for (i in data.rows) {
-								var Feld = data.rows[i].value;
-								var FeldName = Feld.FeldName;
-								//Nur eigene und offizielle Felder berücksichtigen
-								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
-									//im Formular fix integrierte Felder nicht aufbauen
-									if (Feld.Hierarchiestufe == "Projekt" && FeldName != "pName") {
-										anzFelder += 1;
-										var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-										var ListItem = "\n\t\t\<label for='";
-										ListItem += FeldName;
-										ListItem += "'>";
-										ListItem += FeldBeschriftung;
-										ListItem += "</label>\n\t\t\<input type='checkbox' name='";
-										ListItem += "Felder";
-										ListItem += "' id='";
-										ListItem += FeldName;
-										ListItem += "' FeldId='";
-										ListItem += Feld._id;
-										ListItem += "' value='";
-										ListItem += FeldName;
-										ListItem += "' class='custom'";
-										if(Feld.SichtbarImModusHierarchisch) {
-											if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
-												//wenn sichtbar, anzeigen
-												ListItem += " checked='checked'";
-											}
-										}
-										ListItem += "/>";
-										HtmlContainer += ListItem;
-									}
-								}
-							}
-							$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
-							HtmlContainer += "\n\t</fieldset>\n</div>"
-							$("#Feldliste").html(HtmlContainer).trigger("create");
-							$("input[name='Felder']").checkboxradio();
-						}
-					});
-				}
 			});
 		</script>
 	</div>
