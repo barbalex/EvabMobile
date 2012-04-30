@@ -64,7 +64,7 @@
 
 	    var Status = get_url_param("Status");
 	    if (Status != "neu") {
-	    	prüfeAnmeldung();
+	    	prüfeAnmeldung_index();
 	    }
 
 		$("#SubmitButton").tap(function(event) {
@@ -120,6 +120,25 @@
 					melde("Sie konnten nicht eingeloggt werden");
 				}
 			}
+		});
+	}
+
+	function prüfeAnmeldung_index() {		
+		//User Anmeldung überprüfen
+		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
+		$.ajax({
+		    url: '/_session',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session) {
+		    	Username = session.userCtx.name;
+		    	sessionStorage.setItem("Username", Username);
+		    	if(session.userCtx.name != (undefined || null)) {
+		        	öffneZuletztBenutzteSeite(Username);
+		       	} else {
+		       		$("#UserName").focus();
+		       	}
+		    }
 		});
 	}
 

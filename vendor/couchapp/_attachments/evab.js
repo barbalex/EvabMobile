@@ -303,7 +303,7 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	$db.view('evab/User?key="' + doc.User + '"', {
@@ -422,7 +422,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	var doc = {};
@@ -480,7 +480,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt(hProjektId, hRaumId) {
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	var doc = {};
@@ -570,16 +570,21 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen(Pfad) {
-	$db = $.couch.db("evab");
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
-	$db.view('evab/User?key="' + Username + '"', {
-		success: function(data) {
-			UserId = data.rows[0].value._id;
-			window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
-		}
-	});
+	if (typeof sessionStorage.getItem("UserId") === "undefined" || Username === null) {
+		$db = $.couch.db("evab");
+		$db.view('evab/User?key="' + Username + '"', {
+			success: function(data) {
+				UserId = data.rows[0].value._id;
+				sessionStorage.setItem("UserId", UserId);
+				window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+			}
+		});
+	} else {
+		window.open(Pfad + "_show/UserEdit/" + sessionStorage.getItem("UserId"), target="_self");
+	}
 }
 
 function löscheDokument(DocId) {
@@ -871,7 +876,7 @@ function initiiereProjektEdit(ID) {
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -953,7 +958,7 @@ function initiiereRaumEdit(ID) {
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -1690,7 +1695,7 @@ function speichereLetzteUrl() {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	if (typeof Username == "undefined") {
+	if (typeof sessionStorage.getItem("Username") === "undefined" || sessionStorage.getItem("Username") === null) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
@@ -1698,6 +1703,7 @@ function speichereLetzteUrl() {
 		    success: function(session){
 		    	if (session.userCtx.name != (undefined || null)) {
 		        	Username = session.userCtx.name;
+		        	sessionStorage.setItem("Username", Username);
 		        	speichereLetzteUrl_2();
 		        } else {
 					window.open("index.html?Status=neu", target="_self");
@@ -1715,15 +1721,17 @@ function speichereLetzteUrl_2() {
 	//nur speichern, wann anders als zuletzt
 	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
 		//UserId nur abfragen, wenn nicht schon erfolgt
-		if (typeof UserId == "undefined") {
-			$db.view('evab/User?key="' + Username + '"', {
+		if (typeof sessionStorage.getItem("UserId") === "undefined" || sessionStorage.getItem("UserId") === null) {
+			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
 				success: function(data) {
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
 					UserId = data.rows[0].value._id;
+					sessionStorage.setItem("UserId", UserId);
 					speichereLetzteUrl_3(url);
 				}
 			});
 		} else {
+			UserId = sessionStorage.getItem("UserId");
 			speichereLetzteUrl_3(url);
 		}
 	}
@@ -1746,7 +1754,7 @@ function speichereLetzteUrl_3(url) {
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
 function erstelleKarteFürRaum(RaumId) {
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -1847,7 +1855,7 @@ function erstelleKarteFürRaum(RaumId) {
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
 //erwartet Username und ProjektId
 function erstelleKarteFürProjekt(ProjektId) {
-	if (typeof Username == "undefined") {
+	if (typeof Username === "undefined" || Username === null || Username === "") {
 		prüfeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -2029,19 +2037,24 @@ function prüfeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	$.ajax({
-	    url: '/_session',
-	    dataType: 'json',
-	    async: false,
-	    success: function(session){
-	    	if (session.userCtx.name != (undefined || null)) {
-	        	Username = session.userCtx.name;
-	        	sessionStorage.setItem("Username", Username);
-	        } else {
-				window.open("index.html?Status=neu", target="_self");
-			}
-	    }
-	});
+	if (typeof sessionStorage.getItem("Username") === "undefined" || sessionStorage.getItem("Username") === null) {
+		alert("evab.js prüfeAnmeldung: session wird neu abgerufen");
+		$.ajax({
+		    url: '/_session',
+		    dataType: 'json',
+		    async: false,
+		    success: function(session){
+		    	if (session.userCtx.name != (undefined || null)) {
+		        	Username = session.userCtx.name;
+		        	sessionStorage.setItem("Username", Username);
+		        } else {
+					window.open("index.html?Status=neu", target="_self");
+				}
+		    }
+		});
+	} else {
+		Username = sessionStorage.getItem("Username");
+	}
 }
 
 //aktualisiert OrtId-abhängige Links

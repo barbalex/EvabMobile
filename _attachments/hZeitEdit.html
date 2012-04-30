@@ -141,7 +141,7 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -390,7 +390,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenu(thiz){
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -458,7 +458,7 @@
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof ZeitListe == "undefined") {
-						if (typeof Username == "undefined") {
+						if (typeof Username === "undefined" || Username === null || Username === "") {
 							prüfeAnmeldung();
 						}
 						$db = $.couch.db("evab");

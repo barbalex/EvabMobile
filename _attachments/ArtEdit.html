@@ -109,7 +109,7 @@
 				}
 
 				function zuArtliste() {
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet

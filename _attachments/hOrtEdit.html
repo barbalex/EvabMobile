@@ -155,7 +155,7 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					erstelleNeuenOrt(ProjektId, RaumId);
@@ -621,7 +621,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -688,27 +688,27 @@
 				function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
 					//prüfen, ob OrtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof OrtListe == "undefined") {
+					if (typeof OrtListe === "undefined") {
 						//vielleicht hat hOrtListe.html eine OrtListe übergeben?
 						if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
 							OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
 							nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 						} else {
-							if (typeof Username == "undefined") {
+							if (typeof Username === "undefined" || Username === null || Username === "") {
 								prüfeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
 								success: function(data) {
 									OrtListe = data;
+									//OrtListe für hOrtListe.html bereitstellen
+									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+									sessionStorage.setItem("OrtListe", JSON.stringify(OrtListe));
 									nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 								}
 							});
 						}
-						//OrtListe für hOrtListe.html bereitstellen
-						//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-						sessionStorage.setItem("OrtListe", JSON.stringify(OrtListe));
 					} else {
 						nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 					}

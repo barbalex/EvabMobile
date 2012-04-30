@@ -115,14 +115,14 @@
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
-				if (typeof Username == "undefined") {
+				if (typeof Username === "undefined" || Username === null || Username === "") {
 					prüfeAnmeldung();
 				}
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
 					event.preventDefault();
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -145,7 +145,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					if ($("#agl_Page").length > 0) {
@@ -166,7 +166,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -357,7 +357,7 @@
 					//prüfen, ob BeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof BeobListe == "undefined") {
-						if (typeof Username == "undefined") {
+						if (typeof Username === "undefined" || Username === null || Username === "") {
 							prüfeAnmeldung();
 						}
 						$db = $.couch.db("evab");
@@ -552,7 +552,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof Username == "undefined") {
+					if (typeof Username === "undefined" || Username === null || Username === "") {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -711,7 +711,7 @@
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function() {
-				if (typeof Username == "undefined") {
+				if (typeof Username === "undefined" || Username === null || Username === "") {
 					prüfeAnmeldung();
 				}
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url

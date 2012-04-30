@@ -95,7 +95,7 @@
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
 				Username = get_url_param("Username");
-				if (typeof Username == "undefined") {
+				if (typeof Username === "undefined" || Username === null || Username === "") {
 					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
