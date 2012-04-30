@@ -47,14 +47,14 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				if (typeof Username === "undefined" || Username === null || Username === "") {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				erstelleSichtbareFelder();
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var FeldName = $(this).prop("id");
@@ -109,7 +109,7 @@
 			//generiert dynamisch die Felder im Checkbox Felder
 			//checked diejenigen, die der User anzeigen will
 			function erstelleSichtbareFelder() {
-				if (typeof Username === "undefined" || Username === null || Username === "") {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				$("#Feldliste").empty();

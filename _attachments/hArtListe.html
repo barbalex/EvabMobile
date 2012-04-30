@@ -106,7 +106,7 @@
 				});
 
 				function hal_öffneArtgruppenliste() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					window.open("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
@@ -124,7 +124,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -185,7 +185,7 @@
 				}
 				
 			  	function erstelleArtliste() {
-			  		if (typeof Username === "undefined" || Username === null || Username === "") {
+			  		if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$("#Arten").empty();

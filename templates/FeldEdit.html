@@ -42,7 +42,7 @@
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" && !Username) {
 						prüfeAnmeldung();
 					}
 					var FeldWert = this.value;
@@ -120,7 +120,7 @@
 				});
 
 				$("#UserFeldForm").on("change", "#Standardwert", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" && !Username) {
 						prüfeAnmeldung();
 					}
 					var Optionen = $("#Optionen").val();
@@ -188,23 +188,17 @@
 
 				//Sichtbarkeit Modus hierarchisch speichern
 				$("#SichtbarImModusHierarchisch").change(function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
-						prüfeAnmeldung();
-					}
-					speichereSichtbarModusHierarchisch(Username, this.value);
+					speichereSichtbarModusHierarchisch(this.value);
 				});
 
 				//Sichtbarkeit Modus einfach speichern
 				$("#SichtbarImModusEinfach").change(function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
-						prüfeAnmeldung();
-					}
-					speichereSichtbarModusEinfach(Username, this.value);
+					speichereSichtbarModusEinfach(this.value);
 				});
 
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" && !Username) {
 						prüfeAnmeldung();
 					}
 					if ("{{User}}" == "ZentrenBdKt") {
@@ -276,29 +270,23 @@
 
 				//swipen steuern
 				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
-						prüfeAnmeldung();
-					}
-					geheZumNächstenFeld(Username, "{{id}}");
+					geheZumNächstenFeld("{{id}}");
 				});
 
 				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
-						prüfeAnmeldung();
-					}
-					geheZumVorigenFeld(Username, "{{id}}");
+					geheZumVorigenFeld("{{id}}");
 				});
 
 				/*$("body").on("swipeleft", "#FeldContent", function() {
-					geheZumNächstenFeld(Username, "{{id}}");
+					geheZumNächstenFeld("{{id}}");
 				});
 
 				$("body").on("swiperight", "#FeldContent", function() {
-					geheZumVorigenFeld(Username, "{{id}}");
+					geheZumVorigenFeld("{{id}}");
 				});*/
 
 				function prüfeFeldNamen(Username) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var FeldNameAlt = "{{FeldName}}" || "";
@@ -323,13 +311,13 @@
 									} else {
 										//Feldname ist bei diesem User neu, somit zulässig > speichern
 										//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-										speichereSichtbarModusHierarchisch(Username, "ja"); 
+										speichereSichtbarModusHierarchisch("ja"); 
 										speichereFeldeigenschaften();
 									}
 								} else {
 									//Feldname ist neu, somit zulässig > speichern
 									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-									speichereSichtbarModusHierarchisch(Username, "ja"); 
+									speichereSichtbarModusHierarchisch("ja"); 
 									speichereFeldeigenschaften();
 								}
 							}
@@ -337,8 +325,8 @@
 					});
 				}
 
-				function speichereSichtbarModusHierarchisch(Username, SichtbarImModusHierarchisch) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
@@ -363,8 +351,8 @@
 					});
 				}
 
-				function speichereSichtbarModusEinfach(Username, SichtbarImModusEinfach) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
@@ -449,8 +437,8 @@
 				//Öffnet das nächste Feld
 				//nächstes des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumNächstenFeld(Username, IdAktuell) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+				function geheZumNächstenFeld(IdAktuell) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -502,8 +490,8 @@
 				//Öffnet das vorige Feld
 				//voriges des ersten => FeldListe
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumVorigenFeld(Username, IdAktuell) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+				function geheZumVorigenFeld(IdAktuell) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -574,7 +562,7 @@
 					//generiert den html-Inhalt für Selectmenus
 					//wird von erstelle_hArtEdit aufgerufen
 					//Nur bei eigenen Feldern anzeigen
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					if ("{{User}}" !== "ZentrenBdKt") {
@@ -612,7 +600,7 @@
 				}
 
 				function speichereStandardwert(Username) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -798,7 +786,7 @@
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 				function setzeSichtbarInModiUndArtgruppeUndStandardwert(){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,

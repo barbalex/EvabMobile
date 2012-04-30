@@ -54,7 +54,7 @@
 		  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function() {
 				
-				if (typeof Username === "undefined" || Username === null || Username === "") {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 
@@ -74,7 +74,7 @@
 				});
 
 				$(document).on("pageshow", '#bl_Karte', function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
@@ -200,7 +200,7 @@
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -277,7 +277,7 @@
 
 				//BeobListe in BeobList.html vollständig neu aufbauen
 				function erstelleBeobListe() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$("#beobachtungen").empty();

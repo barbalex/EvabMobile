@@ -83,7 +83,7 @@
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
@@ -95,7 +95,7 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleNeueZeit(ProjektId, RaumId, OrtId);
@@ -115,7 +115,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -177,7 +177,7 @@
 				}
 				
 			  	function erstelleZeitListe() {
-			  		if (typeof Username === "undefined" || Username === null || Username === "") {
+			  		if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$("#Zeiten").empty();

@@ -137,7 +137,7 @@
 
 	//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 	function erstelleMenu(thiz){
-		if (typeof Username === "undefined" || Username === null || Username === "") {
+		if (typeof Username === "undefined" || !Username) {
 			prüfeAnmeldung();
 		}
 		//Code um Menü aufzubauen
@@ -206,7 +206,7 @@
 			OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
 			erstelleOrtListe_2();
 		} else {
-			if (typeof Username === "undefined" || Username === null || Username === "") {
+			if (typeof Username === "undefined" || !Username) {
 				prüfeAnmeldung();
 			}
 			$db = $.couch.db("evab");

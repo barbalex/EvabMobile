@@ -155,7 +155,7 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleNeuenOrt(ProjektId, RaumId);
@@ -621,7 +621,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -695,7 +695,7 @@
 							OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
 							nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 						} else {
-							if (typeof Username === "undefined" || Username === null || Username === "") {
+							if (typeof Username === "undefined" || !Username) {
 								prüfeAnmeldung();
 							}
 							$db = $.couch.db("evab");

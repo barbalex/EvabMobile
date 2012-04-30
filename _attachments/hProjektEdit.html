@@ -155,7 +155,7 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleKarteFürProjekt(ProjektId);
@@ -470,7 +470,7 @@
 
 			//Menü aufbauen
 			function erstelleMenu(thiz){
-				if (typeof Username === "undefined" || Username === null || Username === "") {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				$(thiz).simpledialog({
@@ -534,7 +534,7 @@
 			//nächstes des letzten => melden
 			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
-				if (typeof Username === "undefined" || Username === null || Username === "") {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				$db = $.couch.db("evab");

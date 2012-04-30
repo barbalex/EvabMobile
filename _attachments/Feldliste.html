@@ -60,7 +60,7 @@
 		//sicherstellen, dass zurueck nie leer ist
 		var zurueck = get_url_param('zurueck') || "BeobListe.html";
 		
-		if (typeof Username === "undefined" || Username === null || Username === "") {
+		if (typeof Username === "undefined" || !Username) {
 			prüfeAnmeldung();
 		}
 

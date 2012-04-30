@@ -186,7 +186,7 @@
 
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#hae_Menu", function() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleMenu(this, aArtGruppe);
@@ -246,7 +246,7 @@
 				});
 
 				function zuArtgruppenliste(Status) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var link = "Artgruppenliste.html?Username=" + Username + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
@@ -263,7 +263,7 @@
 				}
 
 				function zuArtliste(aArtGruppe) {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
@@ -297,7 +297,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz, ArtGruppe){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -438,7 +438,7 @@
 					//prüfen, ob hArtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof hArtListe == "undefined") {
-						if (typeof Username === "undefined" || Username === null || Username === "") {
+						if (typeof Username === "undefined" || !Username) {
 							prüfeAnmeldung();
 						}
 						$db = $.couch.db("evab");

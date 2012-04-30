@@ -303,7 +303,7 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	$db.view('evab/User?key="' + doc.User + '"', {
@@ -422,7 +422,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	var doc = {};
@@ -480,7 +480,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt(hProjektId, hRaumId) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	var doc = {};
@@ -570,7 +570,7 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen(Pfad) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	if (typeof sessionStorage.getItem("UserId") === "undefined" || Username === null) {
@@ -876,7 +876,7 @@ function initiiereProjektEdit(ID) {
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Feldliste, Projekt) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -958,7 +958,7 @@ function initiiereRaumEdit(ID) {
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	var Feld = {};
@@ -1754,7 +1754,7 @@ function speichereLetzteUrl_3(url) {
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
 function erstelleKarteFürRaum(RaumId) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -1855,7 +1855,7 @@ function erstelleKarteFürRaum(RaumId) {
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
 //erwartet Username und ProjektId
 function erstelleKarteFürProjekt(ProjektId) {
-	if (typeof Username === "undefined" || Username === null || Username === "") {
+	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
 	$db = $.couch.db("evab");

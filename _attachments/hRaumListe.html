@@ -103,7 +103,7 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function() {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					erstelleKarteFürProjekt(ProjektId);
@@ -116,7 +116,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenu(zurueck, thiz){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -177,7 +177,7 @@
 				}
 
 			  	function erstelleRaumListe() {
-			  		if (typeof Username === "undefined" || Username === null || Username === "") {
+			  		if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$("#Räume").empty();

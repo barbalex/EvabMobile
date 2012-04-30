@@ -97,7 +97,7 @@
 				});
 
 				function erstelleProjektliste() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 			  		$db = $.couch.db("evab");
@@ -142,7 +142,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -203,7 +203,7 @@
 				}
 
 				function erstelleKarteFürProjektliste() {
-					if (typeof Username === "undefined" || Username === null || Username === "") {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					$db = $.couch.db("evab");
