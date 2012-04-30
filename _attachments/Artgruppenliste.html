@@ -46,7 +46,7 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				if (typeof Username == "undefined" || Username == "" || Username == null) {
+				if (typeof Username == "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
@@ -64,19 +64,19 @@
 					var link;
 					switch (Von) {
 						case "BeobEdit":
-							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "BeobListe":
-							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "hArtListe":
-							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "hArtEdit":
-							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "ArtEdit":
-							link = "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
+							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
 							break;
 					}
 					if (BeobId != "") {
@@ -126,12 +126,18 @@
 								UserId = User._id;
 								sessionStorage.setItem("UserId", UserId);
 								sessionStorage.setItem("Autor", User.Autor);
+								erstelleArtgruppenListe_2();
 							}
 						});
+					} else {
+						ArtenSprache = sessionStorage.getItem("ArtenSprache");
+						erstelleArtgruppenListe_2();
 					}
-					ArtenSprache = sessionStorage.getItem("ArtenSprache");
+				}
+
+				function erstelleArtgruppenListe_2() {
+					//je nach Sprache Artgruppenliste aufbauen
 					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
-					var ButtonSpracheText;
 					switch(ArtenSprache) {
 					case "Lateinisch":
 						$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
@@ -228,85 +234,109 @@
 				}
 
 				function erstelleArgruppenListeLat() {
+					//Artgruppenliste verfügbar machen
+					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
+						var viewname = 'evab/Artgruppen';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function(data) {
+								Artgruppenliste = data;
+								//Artgruppenliste bereitstellen
+								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.setItem("Artgruppenliste", JSON.stringify(Artgruppenliste));
+								erstelleArgruppenListeLat_2();
+							}
+						});
+					} else {
+						Artgruppenliste = JSON.parse(sessionStorage.getItem("Artgruppenliste"));
+						erstelleArgruppenListeLat_2();
+					}
+				}
+
+				function erstelleArgruppenListeLat_2() {
 					var i;
 					var y;
 					var ListItemContainer = "";
 					var ArtGruppe;
 					var row;
 					var ArtGruppen_2_L;
-					var ArtGruppen;
 					var AnzArten;
-					var viewname = "evab/Artgruppen";
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function(data) {
-							ArtGruppen = data;
-							for(i in data.rows) {
-								ArtGruppe = ArtGruppen.rows[i].key;
-								row = ArtGruppen.rows[i].value;
-								AnzArten = row.AnzArten;
-								ArtGruppen_2_L = row.ArtGruppen_2_L;
-								if (ArtGruppen_2_L != undefined) {
-									ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
-									ListItemContainer += "<ul>";
-									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-									ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-									for(y in ArtGruppen_2_L) {
-										ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
-										ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
-									}
-									ListItemContainer += "</ul><\/li>";
-								} else {
-									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-									ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-								}
+					for(i in Artgruppenliste.rows) {
+						ArtGruppe = Artgruppenliste.rows[i].key;
+						row = Artgruppenliste.rows[i].value;
+						AnzArten = row.AnzArten;
+						ArtGruppen_2_L = row.ArtGruppen_2_L;
+						if (ArtGruppen_2_L != undefined) {
+							ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
+							ListItemContainer += "<ul>";
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+							for(y in ArtGruppen_2_L) {
+								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
+								ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
 							}
-							$("#agl_ArtgruppenListe").html(ListItemContainer);
-							$("#agl_ArtgruppenListe").listview("refresh");
-							$("#agl_Hinweistext").empty().remove();
+							ListItemContainer += "</ul><\/li>";
+						} else {
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 						}
-					});
+					}
+					$("#agl_ArtgruppenListe").html(ListItemContainer);
+					$("#agl_ArtgruppenListe").listview("refresh");
+					$("#agl_Hinweistext").empty().remove();
 				}
 
 				function erstelleArgruppenListeDeutsch() {
+					//Artgruppenliste verfügbar machen
+					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
+						var viewname = 'evab/Artgruppen';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function(data) {
+								Artgruppenliste = data;
+								//Artgruppenliste bereitstellen
+								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.setItem("Artgruppenliste", JSON.stringify(Artgruppenliste));
+								erstelleArgruppenListeDeutsch_2();
+							}
+						});
+					} else {
+						Artgruppenliste = JSON.parse(sessionStorage.getItem("Artgruppenliste"));
+						erstelleArgruppenListeDeutsch_2();
+					}
+				}
+
+				function erstelleArgruppenListeDeutsch_2() {
 					var i;
 					var y;
 					var ListItemContainer = "";
 					var ArtGruppe;
 					var row;
 					var ArtGruppen_2_D;
-					var ArtGruppen;
 					var AnzArten;
-					var viewname = "evab/Artgruppen";
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function(data) {
-							ArtGruppen = data;
-							for(i in data.rows) {
-								ArtGruppe = ArtGruppen.rows[i].key;
-								row = ArtGruppen.rows[i].value;
-								AnzArten = row.AnzArtenDeutsch;
-								ArtGruppen_2_D = row.ArtGruppen_2_D;
-								if (ArtGruppen_2_D) {
-									ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
-									ListItemContainer += "<ul>";
-									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-									ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-									for(y in ArtGruppen_2_D) {
-										ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
-										ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
-									}
-									ListItemContainer += "</ul><\/li>";
-								} else {
-									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-									ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-								}
+					for(i in Artgruppenliste.rows) {
+						ArtGruppe = Artgruppenliste.rows[i].key;
+						row = Artgruppenliste.rows[i].value;
+						AnzArten = row.AnzArtenDeutsch;
+						ArtGruppen_2_D = row.ArtGruppen_2_D;
+						if (ArtGruppen_2_D) {
+							ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
+							ListItemContainer += "<ul>";
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+							for(y in ArtGruppen_2_D) {
+								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
+								ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
 							}
-							$("#agl_ArtgruppenListe").html(ListItemContainer);
-							$("#agl_ArtgruppenListe").listview("refresh");
-							$("#agl_Hinweistext").empty().remove();
+							ListItemContainer += "</ul><\/li>";
+						} else {
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 						}
-					});
+					}
+					$("#agl_ArtgruppenListe").html(ListItemContainer);
+					$("#agl_ArtgruppenListe").listview("refresh");
+					$("#agl_Hinweistext").empty().remove();
 				}
 
 				$("#agl_Header").on("click", "#agl_ButtonSprache", function(event) {       

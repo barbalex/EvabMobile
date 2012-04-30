@@ -115,13 +115,12 @@
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
 											}
 											if (ArtGruppen_2) {
-												//window.open("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von, target="_self");
 												if ($('#agl_Page').length > 0) {
 													//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 													$.mobile.changePage($('#agl_Page'));
-													window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
+													window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
 												} else {
-													$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
+													$.mobile.changePage("Artgruppenliste.html?aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
 												}
 											} else {
 												erstelleArtenliste();
@@ -141,7 +140,7 @@
 				});
 
 				function erstelleArtenliste() {
-			  		if (typeof Username == "undefined" || Username == "" || Username == null) {
+			  		if (typeof Username == "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
