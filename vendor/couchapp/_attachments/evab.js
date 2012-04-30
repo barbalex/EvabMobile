@@ -570,6 +570,11 @@ function erstelleNeuesProjekt() {
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
+			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			if (typeof Projektliste != "undefined") {
+				Projektliste = undefined;
+				sessionStorage.removeItem("Projektliste");
+			}
 			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target="_self");
 		},
 		error: function() {

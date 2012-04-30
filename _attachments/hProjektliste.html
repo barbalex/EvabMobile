@@ -97,47 +97,62 @@
 				});
 
 				function erstelleProjektliste() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-			  		$db = $.couch.db("evab");
 					$("#Projekte").empty();
-					$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
-						success: function(data) {
-							var i;
-							var anzProj = 0;
-							var Proj;
-							var externalPage;
-							var listItem;
-							var ListItemContainer = "";
-							for(i in data.rows) {                    //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-								anzProj += 1;
-							}
-
-							var Titel2 = " Projekte";                //Im Titel der Seite die Anzahl Projekte anzeigen
-							if (anzProj==1){
-								Titel2 = " Projekt";
-							}
-							$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
-
-							if (anzProj == 0) {
-								ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
-							} else {
-								for(i in data.rows) {               //Liste aufbauen
-									Proj = data.rows[i].value;
-									key = data.rows[i].key;
-									pName = key[1];
-									externalPage = "hProjektEdit.html?id=" + Proj._id;
-									listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-									listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
-									listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-									ListItemContainer += listItem;
-								}
-							}
-							$("#Projekte").html(ListItemContainer);
-							$("#Projekte").listview("refresh");
+					//hat ProjektEdit.html eine ProjektListe übergeben?
+					if (typeof sessionStorage.getItem("ProjektListe") !== "undefined" && sessionStorage.getItem("ProjektListe")) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						ProjektListe = JSON.parse(sessionStorage.getItem("ProjektListe"));
+						erstelleProjektliste_2();
+					} else {
+						if (typeof Username === "undefined" || !Username) {
+							prüfeAnmeldung();
 						}
-					});
+				  		$db = $.couch.db("evab");
+						$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
+							success: function(data) {
+								Projektliste = data;
+								//Projektliste für ProjektEdit bereitstellen
+								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.setItem("Projektliste", JSON.stringify(Projektliste));
+								erstelleProjektliste_2();
+							}
+						});
+					}
+				}
+
+				function erstelleProjektliste_2() {
+					var i;
+					var anzProj = 0;
+					var Proj;
+					var externalPage;
+					var listItem;
+					var ListItemContainer = "";
+					for(i in Projektliste.rows) {             //Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+						anzProj += 1;
+					}
+
+					var Titel2 = " Projekte";                //Im Titel der Seite die Anzahl Projekte anzeigen
+					if (anzProj==1){
+						Titel2 = " Projekt";
+					}
+					$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
+
+					if (anzProj == 0) {
+						ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
+					} else {
+						for(i in Projektliste.rows) {               //Liste aufbauen
+							Proj = Projektliste.rows[i].value;
+							key = Projektliste.rows[i].key;
+							pName = key[1];
+							externalPage = "hProjektEdit.html?id=" + Proj._id;
+							listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
+							listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
+							listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
+							ListItemContainer += listItem;
+						}
+					}
+					$("#Projekte").html(ListItemContainer);
+					$("#Projekte").listview("refresh");
 				}
 
 				//Menü aufbauen

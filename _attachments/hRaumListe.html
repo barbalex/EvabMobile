@@ -52,7 +52,7 @@
 		<div data-role="footer" id="hRaumListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" class="ui-btn-active" id="hRaumNeuLink" name="hRaumNeuLink">neuer Raum</a></li>
+					<li><a href="#" data-icon="plus" rel="external" class="ui-btn-active" name="hRaumNeuLink">neuer Raum</a></li>
 					<li><a href="#" id="RaumListeMapÖffnen" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
@@ -175,7 +175,7 @@
 
 			  	function erstelleRaumListe() {
 					$("#Räume").empty();
-					//vielleicht hat hRaumListe.html eine OrtListe übergeben?
+					//hat hRaumEdit.html eine RaumListe übergeben?
 					if (typeof sessionStorage.getItem("RaumListe") !== "undefined" && sessionStorage.getItem("RaumListe")) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
 						RaumListe = JSON.parse(sessionStorage.getItem("RaumListe"));

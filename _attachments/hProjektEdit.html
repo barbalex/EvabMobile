@@ -39,6 +39,7 @@
 				ProjektId = get_url_param("id");
 				initiiereProjektEdit(ProjektId);
 			});
+
 			$(":jqmData(role='page')").on("pageinit", function() {
 				ProjektId = get_url_param("id");
 
@@ -181,406 +182,430 @@
 						}
 					});
 				});
-			});
 
-			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
-			$(":jqmData(role='page')").on("pageshow", function() {
-				
-			});
-
-			function löscheProjekt() {
-				var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
-				var Rückmeldung;
-				ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
-				if (ArtenGelöscht == false) {
-					melde("Fehler: Zugehörige Arten nicht gelöscht");
-					return false;
-				} else {
-					Rückmeldung = "zugehörige Arten gelöscht";
-					ZeitenGelöscht = löscheZeitenVonProjekt(ProjektId);
-					if (ZeitenGelöscht == false) {
-						Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
-						melde(Rückmeldung);
+				function löscheProjekt() {
+					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
+					var Rückmeldung;
+					//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof ProjektListe !== "undefined") {
+						ProjektListe = undefined;
+					}
+					sessionStorage.removeItem("ProjektListe");
+					ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
+					if (ArtenGelöscht == false) {
+						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
-						Rückmeldung += "\rzugehörige Zeiten gelöscht";
-						OrteGelöscht = löscheOrteVonProjekt(ProjektId);
-						if (OrteGelöscht == false) {
-							Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
+						Rückmeldung = "zugehörige Arten gelöscht";
+						ZeitenGelöscht = löscheZeitenVonProjekt(ProjektId);
+						if (ZeitenGelöscht == false) {
+							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
 							return false;
 						} else {
-							Rückmeldung += "\rzugehörige Orte gelöscht";
-							RäumeGelöscht = löscheRäumeVonProjekt(ProjektId);
-							if (RäumeGelöscht == false) {
-								Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
+							Rückmeldung += "\rzugehörige Zeiten gelöscht";
+							OrteGelöscht = löscheOrteVonProjekt(ProjektId);
+							if (OrteGelöscht == false) {
+								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
 								melde(Rückmeldung);
 								return false;
 							} else {
-								Rückmeldung += "\rzugehörige Räume gelöscht";
-								$db = $.couch.db("evab");
-								return $db.openDoc(ProjektId, {
-									success: function(document) {
-										// lösche Projekt
-										return $db.removeDoc(document, {
-											success: function() {
-												Rückmeldung += "\rProjekt gelöscht";
-												melde(Rückmeldung);
-												setTimeout("window.open('hProjektListe.html', target = '_self')", 1400);
-												return true;
-											},
-											error: function() {
-												Rückmeldung += "\rFehler: Projekt nicht gelöscht";
-												melde(Rückmeldung);
-												return false;
-											}
-										});
-									},
-									error: function() {
-										Rückmeldung += "\rFehler: Projekt nicht gelöscht";
-										melde(Rückmeldung);
-										return false;
+								Rückmeldung += "\rzugehörige Orte gelöscht";
+								RäumeGelöscht = löscheRäumeVonProjekt(ProjektId);
+								if (RäumeGelöscht == false) {
+									Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
+									melde(Rückmeldung);
+									return false;
+								} else {
+									Rückmeldung += "\rzugehörige Räume gelöscht";
+									$db = $.couch.db("evab");
+									return $db.openDoc(ProjektId, {
+										success: function(document) {
+											// lösche Projekt
+											return $db.removeDoc(document, {
+												success: function() {
+													Rückmeldung += "\rProjekt gelöscht";
+													melde(Rückmeldung);
+													setTimeout("window.open('hProjektListe.html', target = '_self')", 1400);
+													return true;
+												},
+												error: function() {
+													Rückmeldung += "\rFehler: Projekt nicht gelöscht";
+													melde(Rückmeldung);
+													return false;
+												}
+											});
+										},
+										error: function() {
+											Rückmeldung += "\rFehler: Projekt nicht gelöscht";
+											melde(Rückmeldung);
+											return false;
+										}
+									});
+								}
+
+							}
+
+						}
+					}
+				}
+
+				//lösche alle einem Projekt zugeordneten Räume
+				function löscheRäumeVonProjekt(ProjektId) { 
+					var DokumentGelöscht;
+					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					return $db.view(viewname, {
+						success: function(data) {
+							var i;
+							var RaumId;
+							for(i in data.rows) {
+								RaumId = data.rows[i].key[1];
+								DokumentGelöscht = löscheDokument(RaumId);
+								if (DokumentGelöscht == false) {
+									return false;
+								}
+							}
+							return true;
+						},
+						error: function() {
+							return false;
+						}
+					});
+				}
+
+				//lösche alle einem Projekt zugeordneten Orte
+				function löscheOrteVonProjekt(ProjektId) { 
+					var DokumentGelöscht;
+					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					return $db.view(viewname, {
+						success: function(data) {
+							var i;
+							var OrtId;
+							for(i in data.rows) {
+								OrtId = data.rows[i].key[1];
+								DokumentGelöscht = löscheDokument(OrtId);
+								if (DokumentGelöscht == false) {
+									return false;
+								}
+							}
+							return true;
+						},
+						error: function() {
+							return false;
+						}
+					});
+				}	
+
+				//lösche alle einem Projekt zugeordneten Zeiten
+				function löscheZeitenVonProjekt(ProjektId) { 
+					var DokumentGelöscht;
+					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					return $db.view(viewname, {
+						success: function(data) {
+							var i;
+							var ZeitId;
+							for(i in data.rows) {
+								ZeitId = data.rows[i].key[1];
+								DokumentGelöscht = löscheDokument(ZeitId);
+								if (DokumentGelöscht == false) {
+									return false;
+								}
+							}
+							return true;
+						},
+						error: function() {
+							return false;
+						}
+					});
+				}
+
+				//lösche alle einem Projekt zugeordneten Arten
+				function löscheArtenVonProjekt(ProjektId) { 
+					var DokumentGelöscht;
+					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					return $db.view(viewname, {
+						success: function(data) {
+							var i;
+							var ArtId;
+							for(i in data.rows) {
+								ArtId = data.rows[i].key[1];
+								DokumentGelöscht = löscheDokument(ArtId);
+								if (DokumentGelöscht == false) {
+									return false;
+								}
+							}
+							return true;
+						},
+						error: function() {
+							return false;
+						}
+					});
+				}
+
+				function speichern(Feldname, Feldwert) {
+					$db = $.couch.db("evab");
+					//Bestehendes Dokument öffnen
+					$db.openDoc(ProjektId, {
+						success: function(hProjekt) {
+							if (Feldwert) {
+								hProjekt[Feldname] = Feldwert;
+							} else if (hProjekt[Feldname]) {
+								delete hProjekt[Feldname]
+							}
+							//alles speichern
+							$db.saveDoc(hProjekt, {
+								success: function() {
+									speichereProjektfeldInArten(Feldname, Feldwert);
+									speichereProjektfeldInZeiten(Feldname, Feldwert);
+									speichereProjektfeldInOrten(Feldname, Feldwert);
+									speichereProjektfeldInRäumen(Feldname, Feldwert);
+								},
+								error: function() {
+									melde("Fehler: Projekt nicht gespeichert");
+								}
+							});
+						}
+					});
+				}
+
+				function speichereProjektfeldInArten(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function(data) {
+							var hArtId;
+							for(i in data.rows) {
+								hArtId = data.rows[i].key[1];
+								$db.openDoc(hArtId, {
+									success: function(hArt) {
+										if (Feldwert) {
+											hArt[Feldname] = Feldwert;
+										} else if (hArt[Feldname]) {
+											delete hArt[Feldname];
+										}
+										$db.saveDoc(hArt);
 									}
 								});
 							}
-
 						}
+					});
+				}
 
+				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function(data) {
+							var hArtId;
+							for(i in data.rows) {
+								hArtId = data.rows[i].key[1];
+								$db.openDoc(hArtId, {
+									success: function(hArt) {
+										if (Feldwert) {
+											hArt[Feldname] = Feldwert;
+										} else if (hArt[Feldname]) {
+											delete hArt[Feldname];
+										}
+										$db.saveDoc(hArt);
+									}
+								});
+							}
+						}
+					});
+				}
+
+				function speichereProjektfeldInOrten(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function(data) {
+							var hArtId;
+							for(i in data.rows) {
+								hArtId = data.rows[i].key[1];
+								$db.openDoc(hArtId, {
+									success: function(hArt) {
+										if (Feldwert) {
+											hArt[Feldname] = Feldwert;
+										} else if (hArt[Feldname]) {
+											delete hArt[Feldname];
+										}
+										$db.saveDoc(hArt);
+									}
+								});
+							}
+						}
+					});
+				}
+
+				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function(data) {
+							var hArtId;
+							for(i in data.rows) {
+								hArtId = data.rows[i].key[1];
+								$db.openDoc(hArtId, {
+									success: function(hArt) {
+										if (Feldwert) {
+											hArt[Feldname] = Feldwert;
+										} else if (hArt[Feldname]) {
+											delete hArt[Feldname];
+										}
+										$db.saveDoc(hArt);
+									}
+								});
+							}
+						}
+					});
+				}
+
+				//Menü aufbauen
+				function erstelleMenu(thiz){
+					if (typeof Username === "undefined" || !Username) {
+						prüfeAnmeldung();
+					}
+					$(thiz).simpledialog({
+						'mode' : 'bool',
+						'prompt' : 'Menü',
+						'fullHTML': 'true',
+				    	'buttons' : {
+						 	'einfacher Modus': {
+						      	click: function() {
+						        	window.open("BeobListe.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "check"
+				      		},
+				      		'Felder verwalten': {
+						      	click: function() {
+						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "edit"
+				      		},
+				      		'Projekte exportieren': {
+						      	click: function() {
+						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+				        		},
+				        		theme: "a",
+				        		icon: "arrow-r"
+				      		},
+				      		'Einstellungen': {
+						      	click: function() {
+						      		öffneMeineEinstellungen("");
+				        		},
+				        		theme: "a",
+				        		icon: "wrench"
+				      		},
+				      		'lokal installieren': {
+						      	click: function() {
+						        	window.open("Installieren.html", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "lightning"
+				      		},
+				      		'neu anmelden': {
+						      	click: function() {
+						        	window.open("index.html?Status=neu", target="_self");
+				        		},
+				        		theme: "a",
+				        		icon: "person"
+				      		},
+				      		'schliessen': {
+				                click: function() { return true; },
+				                icon: "back",
+				                theme: "c"
+				            }
+				    	}
+				  	})
+				}
+
+				//Öffnet das vorige oder nächste Projekt
+				//voriges des ersten => ProjektListe.html
+				//nächstes des letzten => melden
+				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
+					//prüfen, ob Projektliste schon existiert
+					//nur abfragen, wenn sie noch nicht existiert
+					if (typeof Projektliste !== "undefined") {
+						//globale Variable Projektliste existiert noch
+						nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+					} else {
+						//hat hProjektListe.html eine Projektliste übergeben?
+						if (typeof sessionStorage.getItem("Projektliste") !== "undefined" && sessionStorage.getItem("Projektliste")) {
+							//Objekte werden als Strings übergeben, müssen geparst werden
+							Projektliste = JSON.parse(sessionStorage.getItem("Projektliste"));
+							nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+						} else {
+							//keine Projektliste übergeben
+							//neu aus DB erstellen
+							if (typeof Username === "undefined" || !Username) {
+								prüfeAnmeldung();
+							}
+							$db = $.couch.db("evab");
+							$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
+								success: function(data) {
+									//Projektliste bereitstellen
+									Projektliste = data;
+									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+									sessionStorage.setItem("Projektliste", JSON.stringify(Projektliste));
+									nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+								}
+							});
+						}
 					}
 				}
-			}
 
-			//lösche alle einem Projekt zugeordneten Räume
-			function löscheRäumeVonProjekt(ProjektId) { 
-				var DokumentGelöscht;
-				var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				return $db.view(viewname, {
-					success: function(data) {
-						var i;
-						var RaumId;
-						for(i in data.rows) {
-							RaumId = data.rows[i].key[1];
-							DokumentGelöscht = löscheDokument(RaumId);
-							if (DokumentGelöscht == false) {
-								return false;
-							}
-						}
-						return true;
-					},
-					error: function() {
-						return false;
-					}
-				});
-			}
-
-			//lösche alle einem Projekt zugeordneten Orte
-			function löscheOrteVonProjekt(ProjektId) { 
-				var DokumentGelöscht;
-				var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				return $db.view(viewname, {
-					success: function(data) {
-						var i;
-						var OrtId;
-						for(i in data.rows) {
-							OrtId = data.rows[i].key[1];
-							DokumentGelöscht = löscheDokument(OrtId);
-							if (DokumentGelöscht == false) {
-								return false;
-							}
-						}
-						return true;
-					},
-					error: function() {
-						return false;
-					}
-				});
-			}	
-
-			//lösche alle einem Projekt zugeordneten Zeiten
-			function löscheZeitenVonProjekt(ProjektId) { 
-				var DokumentGelöscht;
-				var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				return $db.view(viewname, {
-					success: function(data) {
-						var i;
-						var ZeitId;
-						for(i in data.rows) {
-							ZeitId = data.rows[i].key[1];
-							DokumentGelöscht = löscheDokument(ZeitId);
-							if (DokumentGelöscht == false) {
-								return false;
-							}
-						}
-						return true;
-					},
-					error: function() {
-						return false;
-					}
-				});
-			}
-
-			//lösche alle einem Projekt zugeordneten Arten
-			function löscheArtenVonProjekt(ProjektId) { 
-				var DokumentGelöscht;
-				var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				return $db.view(viewname, {
-					success: function(data) {
-						var i;
-						var ArtId;
-						for(i in data.rows) {
-							ArtId = data.rows[i].key[1];
-							DokumentGelöscht = löscheDokument(ArtId);
-							if (DokumentGelöscht == false) {
-								return false;
-							}
-						}
-						return true;
-					},
-					error: function() {
-						return false;
-					}
-				});
-			}
-
-			function speichern(Feldname, Feldwert) {
-				$db = $.couch.db("evab");
-				//Bestehendes Dokument öffnen
-				$db.openDoc(ProjektId, {
-					success: function(hProjekt) {
-						if (Feldwert) {
-							hProjekt[Feldname] = Feldwert;
-						} else if (hProjekt[Feldname]) {
-							delete hProjekt[Feldname]
-						}
-						//alles speichern
-						$db.saveDoc(hProjekt, {
-							success: function() {
-								speichereProjektfeldInArten(Feldname, Feldwert);
-								speichereProjektfeldInZeiten(Feldname, Feldwert);
-								speichereProjektfeldInOrten(Feldname, Feldwert);
-								speichereProjektfeldInRäumen(Feldname, Feldwert);
-							},
-							error: function() {
-								melde("Fehler: Projekt nicht gespeichert");
-							}
-						});
-					}
-				});
-			}
-
-			function speichereProjektfeldInArten(Feldname, Feldwert) {
-				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				$db.view(viewname, {
-					success: function(data) {
-						var hArtId;
-						for(i in data.rows) {
-							hArtId = data.rows[i].key[1];
-							$db.openDoc(hArtId, {
-								success: function(hArt) {
-									if (Feldwert) {
-										hArt[Feldname] = Feldwert;
-									} else if (hArt[Feldname]) {
-										delete hArt[Feldname];
-									}
-									$db.saveDoc(hArt);
+				function nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges) {
+					var i;
+					var ProjIdAktuell;
+					var ProjIdNächstes;
+					var ProjIdVoriges;
+					var AnzProj;
+					for(i in Projektliste.rows) {
+						ProjIdAktuell = Projektliste.rows[i].value._id;
+						var AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ProjIdAktuell == IdAktuell) {
+							switch (NächstesOderVoriges) {
+							case "nächstes":
+								if (i < AnzProj) {
+									ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
+									initiiereProjektEdit(ProjektId);
+									window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitProjId();
+								} else {
+									melde("Das ist das letzte Projekt");
 								}
-							});
-						}
-					}
-				});
-			}
-
-			function speichereProjektfeldInZeiten(Feldname, Feldwert) {
-				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				$db.view(viewname, {
-					success: function(data) {
-						var hArtId;
-						for(i in data.rows) {
-							hArtId = data.rows[i].key[1];
-							$db.openDoc(hArtId, {
-								success: function(hArt) {
-									if (Feldwert) {
-										hArt[Feldname] = Feldwert;
-									} else if (hArt[Feldname]) {
-										delete hArt[Feldname];
-									}
-									$db.saveDoc(hArt);
+								break;
+							case "voriges":
+								if (i > 0) {
+									ProjektId = Projektliste.rows[i-1].value._id;
+									initiiereProjektEdit(ProjektId);
+									window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitProjId();
+								} else {
+									window.open("hProjektListe.html", target="_self");
 								}
-							});
+								break;
+							}
 						}
 					}
-				});
-			}
-
-			function speichereProjektfeldInOrten(Feldname, Feldwert) {
-				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				$db.view(viewname, {
-					success: function(data) {
-						var hArtId;
-						for(i in data.rows) {
-							hArtId = data.rows[i].key[1];
-							$db.openDoc(hArtId, {
-								success: function(hArt) {
-									if (Feldwert) {
-										hArt[Feldname] = Feldwert;
-									} else if (hArt[Feldname]) {
-										delete hArt[Feldname];
-									}
-									$db.saveDoc(hArt);
-								}
-							});
-						}
-					}
-				});
-			}
-
-			function speichereProjektfeldInRäumen(Feldname, Feldwert) {
-				//geändertes Ort-Feld in hArt anpassen
-				var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
-				$db = $.couch.db("evab");
-				$db.view(viewname, {
-					success: function(data) {
-						var hArtId;
-						for(i in data.rows) {
-							hArtId = data.rows[i].key[1];
-							$db.openDoc(hArtId, {
-								success: function(hArt) {
-									if (Feldwert) {
-										hArt[Feldname] = Feldwert;
-									} else if (hArt[Feldname]) {
-										delete hArt[Feldname];
-									}
-									$db.saveDoc(hArt);
-								}
-							});
-						}
-					}
-				});
-			}
-
-			//Menü aufbauen
-			function erstelleMenu(thiz){
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
 				}
-				$(thiz).simpledialog({
-					'mode' : 'bool',
-					'prompt' : 'Menü',
-					'fullHTML': 'true',
-			    	'buttons' : {
-					 	'einfacher Modus': {
-					      	click: function() {
-					        	window.open("BeobListe.html", target="_self");
-			        		},
-			        		theme: "a",
-			        		icon: "check"
-			      		},
-			      		'Felder verwalten': {
-					      	click: function() {
-					        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target="_self");
-			        		},
-			        		theme: "a",
-			        		icon: "edit"
-			      		},
-			      		'Projekte exportieren': {
-					      	click: function() {
-					        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
-			        		},
-			        		theme: "a",
-			        		icon: "arrow-r"
-			      		},
-			      		'Einstellungen': {
-					      	click: function() {
-					      		öffneMeineEinstellungen("");
-			        		},
-			        		theme: "a",
-			        		icon: "wrench"
-			      		},
-			      		'lokal installieren': {
-					      	click: function() {
-					        	window.open("Installieren.html", target="_self");
-			        		},
-			        		theme: "a",
-			        		icon: "lightning"
-			      		},
-			      		'neu anmelden': {
-					      	click: function() {
-					        	window.open("index.html?Status=neu", target="_self");
-			        		},
-			        		theme: "a",
-			        		icon: "person"
-			      		},
-			      		'schliessen': {
-			                click: function() { return true; },
-			                icon: "back",
-			                theme: "c"
-			            }
-			    	}
-			  	})
-			}
 
-			//Öffnet das vorige oder nächste Projekt
-			//voriges des ersten => ProjektListe
-			//nächstes des letzten => melden
-			//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-			function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
+				function aktualisiereLinksMitProjId() {
+					//Link zur Raumliste in Navbar setzen
+					$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + ProjektId);
 				}
-				$db = $.couch.db("evab");
-				$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
-					success: function(data) {
-						var i;
-						var ProjIdAktuell;
-						var ProjIdNächstes;
-						var ProjIdVoriges;
-						var AnzProj;
-						for(i in data.rows) {
-							ProjIdAktuell = data.rows[i].value._id;
-							var AnzProj = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-							if (ProjIdAktuell == IdAktuell) {
-								switch (NächstesOderVoriges) {
-								case "nächstes":
-									if (i < AnzProj) {
-										ProjektId = data.rows[parseInt(i)+1].value._id;
-										initiiereProjektEdit(ProjektId);
-										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
-										aktualisiereLinksMitProjId();
-									} else {
-										melde("Das ist das letzte Projekt");
-									}
-									break;
-								case "voriges":
-									if (i > 0) {
-										ProjektId = data.rows[i-1].value._id;
-										initiiereProjektEdit(ProjektId);
-										window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
-										aktualisiereLinksMitProjId();
-									} else {
-										window.open("hProjektListe.html", target="_self");
-									}
-									break;
-								}
-							}
-						}
-					}
-				});
-			}
-
-			function aktualisiereLinksMitProjId() {
-				//Link zur Raumliste in Navbar setzen
-				$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + ProjektId);
-			}
+			});
 		</script>
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
@@ -622,7 +647,7 @@
 		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
+					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
