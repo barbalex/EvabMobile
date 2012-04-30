@@ -87,7 +87,10 @@
 					if ($('#BeobEditPage').length > 0) {
 						$.mobile.changePage($('#BeobEditPage'));
 					} else {
-						$.mobile.changePage("BeobEdit.html?id=" + BeobId);
+						$.mobile.changePage("BeobEdit.html", {
+							type: "get",
+							data: "id=" + BeobId
+						});
 					}
 				});
 

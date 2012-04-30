@@ -53,7 +53,10 @@
 					if ($('#OrtEditPage').length > 0) {
 						$.mobile.changePage($('#OrtEditPage'));
 					} else {
-						$.mobile.changePage("OrtEdit.html?id=" + OrtId);
+						$.mobile.changePage("OrtEdit.html", {
+							type: "get",
+							data: "id=" + OrtId
+						});
 					}
 				});
 

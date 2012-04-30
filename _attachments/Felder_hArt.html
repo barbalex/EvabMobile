@@ -55,7 +55,10 @@
 					if ($('#hArtEditPage').length > 0) {
 						$.mobile.changePage($('#hArtEditPage'));
 					} else {
-						$.mobile.changePage("hArtEdit.html?id=" + hBeobId);
+						$.mobile.changePage("hArtEdit.html", {
+							type: "get",
+							datA: "id=" + hBeobId
+						});
 					}
 				});
 

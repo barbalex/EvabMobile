@@ -53,7 +53,10 @@
 					if ($('#ZeitEditPage').length > 0) {
 						$.mobile.changePage($('#ZeitEditPage'));
 					} else {
-						$.mobile.changePage("ZeitEdit.html?id=" + ZeitId);
+						$.mobile.changePage("ZeitEdit.html", {
+							type: "get",
+							data: "id=" + ZeitId
+						});
 					}
 				});
 

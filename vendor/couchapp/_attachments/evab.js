@@ -324,7 +324,10 @@ function speichereNeueBeob_03(doc) {
 							//$("#hArtEditPage").addClass('ui-page-active');
 						} else {
 							//window.open("hArtEdit.html?id=" + data.id, target="_self");
-							$.mobile.changePage("hArtEdit.html?id=" + data.id);
+							$.mobile.changePage("hArtEdit.html", {
+								type: "get",
+								data: "id=" + data.id
+							});
 						}
 					} else {
 						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
@@ -744,26 +747,28 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	var HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
-	//nur anfügen, wenn Felder erstellt wurden
+	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
-		//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
-		$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-		$("#BeobEditPage").trigger("create").trigger("refresh");
-		if (get_url_param("Status") == "neu") {
-			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-			var Formularwerte = {};
-			Formularwerte = $("#BeobEditForm").serializeObject();
-			//Werte aus dem Formular aktualisieren
-			for (i in Formularwerte) {
-				if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-					Beob[i] = Formularwerte[i];
-				} else if (Beob[i]) {
-					delete Beob[i]
-				}
+	} else {
+		HtmlContainer = "";
+	}
+	//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
+	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#BeobEditPage").trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		var Formularwerte = {};
+		Formularwerte = $("#BeobEditForm").serializeObject();
+		//Werte aus dem Formular aktualisieren
+		for (i in Formularwerte) {
+			if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+				Beob[i] = Formularwerte[i];
+			} else if (Beob[i]) {
+				delete Beob[i]
 			}
-			$db.saveDoc(Beob);
 		}
+		$db.saveDoc(Beob);
 	}
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
@@ -845,24 +850,26 @@ function initiiereProjektEdit(ID) {
 					//fixe Felder aktualisieren
 					$("#pName").val(Projekt.pName);
 					var HtmlContainer = generiereHtmlFuerProjektEditForm (Feldliste, Projekt);
-					//nur anfügen, wenn Felder erstellt wurden
+					//Linie nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
-						$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							var Formularwerte = {};
-							Formularwerte = $("#hProjektEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i]) {
-									Projekt[i] = Formularwerte[i];
-								} else if (Projekt[i]) {
-									delete Projekt[i]
-								}
+					} else {
+						HtmlContainer = "";
+					}
+					$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+					if (get_url_param("Status") == "neu") {
+						//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+						var Formularwerte = {};
+						Formularwerte = $("#hProjektEditForm").serializeObject();
+						//Werte aus dem Formular aktualisieren
+						for (i in Formularwerte) {
+							if (Formularwerte[i]) {
+								Projekt[i] = Formularwerte[i];
+							} else if (Projekt[i]) {
+								delete Projekt[i]
 							}
-							$db.saveDoc(Projekt);
 						}
+						$db.saveDoc(Projekt);
 					}
 					erstelleAttachments(Projekt);
 					//Anhänge wieder einblenden
@@ -927,24 +934,26 @@ function initiiereRaumEdit(ID) {
 					//fixes Feld setzen
 					$("#rName").val(Raum.rName);
 					var HtmlContainer = generiereHtmlFuerRaumEditForm (Feldliste, Raum);
-					//nur anfügen, wenn Felder erstellt wurden
+					//Linie nur anfügen, wenn Felder erstellt wurden
 					if (HtmlContainer != "") {
 						HtmlContainer = "<hr />" + HtmlContainer;
-						$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-						if (get_url_param("Status") == "neu") {
-							//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-							var Formularwerte = {};
-							Formularwerte = $("#hRaumEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i]) {
-									Raum[i] = Formularwerte[i];
-								} else if (Raum[i]) {
-									delete Raum[i]
-								}
+					} else {
+						HtmlContainer = "";
+					}
+					$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+					if (get_url_param("Status") == "neu") {
+						//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+						var Formularwerte = {};
+						Formularwerte = $("#hRaumEditForm").serializeObject();
+						//Werte aus dem Formular aktualisieren
+						for (i in Formularwerte) {
+							if (Formularwerte[i]) {
+								Raum[i] = Formularwerte[i];
+							} else if (Raum[i]) {
+								delete Raum[i]
 							}
-							$db.saveDoc(Raum);
 						}
+						$db.saveDoc(Raum);
 					}
 					erstelleAttachments(Raum);
 					//Anhänge wieder einblenden
@@ -1032,23 +1041,26 @@ function initiiereOrtEdit(OrtId) {
 
 function initiiereOrtEdit_2(Ort) {
 	var HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
+	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
-		$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-		if (get_url_param("Status") == "neu") {
-			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-			var Formularwerte = {};
-			Formularwerte = $("#hOrtEditForm").serializeObject();
-			//Werte aus dem Formular aktualisieren
-			for (i in Formularwerte) {
-				if (Formularwerte[i]) {
-					Ort[i] = Formularwerte[i];
-				} else if (Ort[i]) {
-					delete Ort[i]
-				}
+	} else {
+		HtmlContainer = "";
+	}
+	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		var Formularwerte = {};
+		Formularwerte = $("#hOrtEditForm").serializeObject();
+		//Werte aus dem Formular aktualisieren
+		for (i in Formularwerte) {
+			if (Formularwerte[i]) {
+				Ort[i] = Formularwerte[i];
+			} else if (Ort[i]) {
+				delete Ort[i]
 			}
-			$db.saveDoc(Ort);
 		}
+		$db.saveDoc(Ort);
 	}
 	erstelleAttachments(Ort);
 	if (get_url_param("Status") == "neu") {
@@ -1133,13 +1145,16 @@ function initiiereZeitEdit(ZeitId) {
 
 function initiiereZeitEdit_2(Zeit) {
 	var HtmlContainer = generiereHtmlFuerZeitEditForm(Zeit);
+	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
-		$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-		if (get_url_param("Status") == "neu") {
-			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-			speichereAlles();
-		}
+	} else {
+		HtmlContainer = "";
+	}
+	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		speichereAlles();
 	}
 	erstelleAttachments(Zeit);
 	//Anhänge wieder einblenden
@@ -1245,23 +1260,26 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	$('#Anhänge').empty();
 	$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	var HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
+	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
-		$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-		if (get_url_param("Status") == "neu") {
-			//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-			var Formularwerte = {};
-			Formularwerte = $("#hArtEditForm").serializeObject();
-			//Werte aus dem Formular aktualisieren
-			for (i in Formularwerte) {
-				if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-					Beob[i] = Formularwerte[i];
-				} else if (Beob[i]) {
-					delete Beob[i]
-				}
+	} else {
+		HtmlContainer = "";
+	}
+	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		var Formularwerte = {};
+		Formularwerte = $("#hArtEditForm").serializeObject();
+		//Werte aus dem Formular aktualisieren
+		for (i in Formularwerte) {
+			if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+				Beob[i] = Formularwerte[i];
+			} else if (Beob[i]) {
+				delete Beob[i]
 			}
-			$db.saveDoc(Beob);
 		}
+		$db.saveDoc(Beob);
 	}
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden

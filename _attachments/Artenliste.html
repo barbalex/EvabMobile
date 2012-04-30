@@ -120,7 +120,10 @@
 													$.mobile.changePage($('#agl_Page'));
 													window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
 												} else {
-													$.mobile.changePage("Artgruppenliste.html?aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von);
+													$.mobile.changePage("Artgruppenliste.html", {
+														type: "get",
+														data: "aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von
+													});
 												}
 											} else {
 												erstelleArtenliste();

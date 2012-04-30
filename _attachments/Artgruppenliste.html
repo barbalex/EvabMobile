@@ -64,19 +64,19 @@
 					var link;
 					switch (Von) {
 						case "BeobEdit":
-							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "BeobListe":
-							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
+							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
 							break;
 						case "hArtListe":
-							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "hArtEdit":
-							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
+							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId + "&Status=" + Status;
 							break;
 						case "ArtEdit":
-							link = "Artenliste.html?aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
+							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
 							break;
 					}
 					if (BeobId != "") {
@@ -85,9 +85,12 @@
 					if ($('al_Page').length > 0) {
 						//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 						$.mobile.changePage($('al_Page'));
-						window.history.pushState("", "", link); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artenliste.html?" + link); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage(link);
+						$.mobile.changePage("Artenliste.html", {
+							type: "get",
+							data: link
+						});
 					}
 				});
 			});

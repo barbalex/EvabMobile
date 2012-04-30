@@ -242,16 +242,19 @@
 				});
 
 				function zuArtgruppenliste(Status) {
-					var link = "Artgruppenliste.html?Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					var link = "Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					if (Status == 'neu') {
 						link += "&Status=neu";
 					}
 					if ($('#agl_Page').length > 0) {
 						//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", link); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html?" + link); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage(link);
+						$.mobile.changePage("Artgruppenliste.html", {
+							type: "get",
+							data: link
+						});
 					}
 				}
 
@@ -270,7 +273,10 @@
 									$.mobile.changePage($('agl_Page'));
 									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+									$.mobile.changePage("Artgruppenliste.html", {
+										type: "get",
+										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId
+									});
 								}
 							} else {
 								if ($('al_Page').length > 0) {
@@ -278,7 +284,10 @@
 									$.mobile.changePage($('al_Page'));
 									window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+									$.mobile.changePage("Artenliste.html", {
+										type: "get",
+										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId
+									});
 								}
 							}
 						}

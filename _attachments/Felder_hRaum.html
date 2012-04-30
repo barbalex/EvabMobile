@@ -35,7 +35,7 @@
   <body>
   	<div data-role="page" id="Felder_hRaumPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hRaumPageHeader">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" data-rel="back">abbrechen</a>
+  			<a href="#" id="Felder_hRaumPage_back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hRaumPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -48,6 +48,17 @@
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
 				erstelleSichtbareFelder();
+
+				$("#Felder_hRaumPage").on("click", "#Felder_hRaumPage_back", function() {
+					if ($('#RaumEditPage').length > 0) {
+						$.mobile.changePage($('#RaumEditPage'));
+					} else {
+						$.mobile.changePage("RaumEdit.html", {
+							type: "get",
+							data: "id=" + RaumId
+						});
+					}
+				});
 
 				//Felder in hRaumEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hRaumPage', function() {
