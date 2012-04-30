@@ -458,7 +458,7 @@
 										//von hier aus vorwärts das nächste eigene oder offizielle suchen
 										if (i < AnzFelder) {
 											//das aktuelle Feld ist nicht das letzte
-											for (y = parseInt(i)+1; y <== AnzFelder; y++) {
+											for (y = parseInt(i)+1; y <= AnzFelder; y++) {
 												//alle verbleibenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
@@ -511,7 +511,7 @@
 										//von hier aus rückwärts das nächste eigene oder offizielle suchen
 										if (i > 0) {
 											//das aktuelle Feld ist nicht das erste 
-											for (y = parseInt(i)-1; y >== 0; y--) {
+											for (y = parseInt(i)-1; y >= 0; y--) {
 												//alle vorhergehenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
