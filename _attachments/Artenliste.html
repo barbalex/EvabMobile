@@ -64,9 +64,9 @@
 					event.preventDefault();
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					var ArtId = $(this).attr("artid");
-					if (Status == "neu") {
+					if (Status === "neu") {
 						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
-					} else if (Von == "ArtEdit") {
+					} else if (Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						if ($('#ArtEditPage').length > 0) {
 							//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
@@ -109,7 +109,7 @@
 										success: function(data) {
 											//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
 											var ArtGruppen_2;
-											if (ButtonText.slice(0, 3) == "Deu") {
+											if (ButtonText.slice(0, 3) === "Deu") {
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_D;
 											} else {
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
@@ -143,7 +143,7 @@
 				});
 
 				function erstelleArtenliste() {
-			  		if (typeof Username == "undefined" || !Username) {
+			  		if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
@@ -180,7 +180,7 @@
 					var ArtGruppe = get_url_param("aArtGruppe");
 					var L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (L == "") {
+					if (!L) {
 						viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
 					} else {
 						viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
@@ -221,7 +221,7 @@
 					var ArtGruppe = get_url_param("aArtGruppe");
 					var L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (L == "") {
+					if (!L) {
 						viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
 					} else {
 						viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';

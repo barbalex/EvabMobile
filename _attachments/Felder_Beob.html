@@ -54,7 +54,7 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteBeobEdit != "undefined") {
+					if (typeof FeldlisteBeobEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
 					} else {
 						$db = $.couch.db("evab");
@@ -78,9 +78,9 @@
 						var Feld = FeldlisteBeobEdit.rows[i].value;
 						var FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
-							if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
+							if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 								anzFelder += 1;
 								var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
 								var ListItem = "\n\t\t\<label for='";
@@ -127,11 +127,11 @@
 					$db.openDoc(FeldId, {
 						success: function(Feld) {
 							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];
-							if ($("#" + FeldName).prop("checked") == true) {
+							if ($("#" + FeldName).prop("checked") === true) {
 								SichtbarImModusEinfach.push(Username);
 							} else {
 								var idx = SichtbarImModusEinfach.indexOf(Username);
-								if(idx!=-1) SichtbarImModusEinfach.splice(idx, 1);
+								if(idx !== -1) SichtbarImModusEinfach.splice(idx, 1);
 							}
 							Feld.SichtbarImModusEinfach = SichtbarImModusEinfach;
 							$db.saveDoc(Feld, {
@@ -140,7 +140,7 @@
 								}
 							});
 							//Globale Variable für FeldlisteBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteBeobEdit != "undefined") {
+							if (typeof FeldlisteBeobEdit !== "undefined") {
 								FeldlisteBeobEdit = undefined;
 							}
 						},

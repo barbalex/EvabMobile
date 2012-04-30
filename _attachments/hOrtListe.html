@@ -199,7 +199,7 @@
   <script type="text/javascript" charset="utf-8">
   	function erstelleOrtListe() {
 		$("#Orte").empty();
-		//vielleicht hat hOrtListe.html eine OrtListe übergeben?
+		//hat hOrtEdit.html eine OrtListe übergeben?
 		if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
 			//Objekte werden als Strings übergeben, müssen geparst werden
 			OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
@@ -211,8 +211,8 @@
 			$db = $.couch.db("evab");
 			$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
 				success: function(data) {
-					OrtListe = data;
 					//OrtListe für hOrtEdit bereitstellen
+					OrtListe = data;
 					//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 					sessionStorage.setItem("OrtListe", JSON.stringify(data));
 					erstelleOrtListe_2();

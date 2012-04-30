@@ -72,7 +72,7 @@
 											anzVorkommen += 1;
 										}
 									}
-									if (anzVorkommen == 0) {
+									if (anzVorkommen === 0) {
 										//prüfen, ob der Feldname schon existiert
 										//wenn ja: melden, zurückstellen
 										//wenn nein: In SichtbareFelder nachführen und speichern
@@ -94,17 +94,17 @@
 							//wenn nein: In SichtbareFelder nachführen und speichern
 							prüfeFeldNamen(Username);
 						}
-					} else if (FeldName === "Hierarchiestufe" && FeldWert == "Art") {
+					} else if (FeldName === "Hierarchiestufe" && FeldWert === "Art") {
 						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauen();
-					} else if (FeldName === "Hierarchiestufe" && FeldWert != "Art") {
+					} else if (FeldName === "Hierarchiestufe" && FeldWert !== "Art") {
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
 								var letzteHierarchiestufe = doc.Hierarchiestufe;
-								if (letzteHierarchiestufe == "Art") {
+								if (letzteHierarchiestufe === "Art") {
 									//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 									$("#Artgruppenliste").empty();
 								}
@@ -125,7 +125,7 @@
 					}
 					var Optionen = $("#Optionen").val();
 					var Feldwert = this.value;
-					if (Optionen !== "") {
+					if (Optionen) {
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function(doc) {
@@ -146,7 +146,7 @@
 								if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
 									//alle Werte des Arrays müssen Optionen sein
 									for (i in StandardwertOptionen) {
-										if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
+										if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
 											//ein Wert ist keine Option, abbrechen
 											$("#Standardwert").val(LetzterFeldwert);
 											melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
@@ -164,7 +164,7 @@
 									} else {
 										//Array enthält eine einzige Option
 										for (i in StandardwertOptionen) {
-											if (Optionen.indexOf(StandardwertOptionen[i]) == -1) {
+											if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
 												//der Wert ist keine Option, abbrechen
 												$("#Standardwert").val(LetzterFeldwert);
 												melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
@@ -201,7 +201,7 @@
 					if (typeof Username === "undefined" && !Username) {
 						prüfeAnmeldung();
 					}
-					if ("{{User}}" == "ZentrenBdKt") {
+					if ("{{User}}" === "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 					} else {
 						$(this).simpledialog({
@@ -212,7 +212,7 @@
 							 	'ja': {
 							      	click: function() {
 							        	$('#dialogoutput').text('ja');
-							        	if ("{{FeldName}}" == "") {
+							        	if ("{{FeldName}}" === "") {
 							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 							        		//Feld = eval("Datensatz." + "{{FeldName}}") lieferte einen Fehler!
 							        		löscheFeld();
@@ -232,11 +232,11 @@
 															anzVorkommen += 1;
 														}
 													}
-													if (anzVorkommen == 0) {
+													if (anzVorkommen === 0) {
 														löscheFeld();
 													} else {
 														var ds = "Datensätzen";
-														if (anzVorkommen = 1) {
+														if (anzVorkommen === 1) {
 															ds = "Datensatz";
 														}
 														melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
@@ -303,7 +303,7 @@
 								if (data.rows[i].value) {
 									Feld = data.rows[i].value;
 									//ist es ein eigenes oder ein offizielles?
-									if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+									if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 										//ja > dieser Name ist nicht zulässig
 										$("#FeldName").val(FeldNameAlt);
 										$("#FeldName").focus();
@@ -333,11 +333,11 @@
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function(Feld) {
-							if (SichtbarImModusHierarchisch == "ja") {
+							if (SichtbarImModusHierarchisch === "ja") {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
 								var idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+								if(idx !== -1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
 								error: function() {
@@ -359,11 +359,11 @@
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function(Feld) {
-							if (SichtbarImModusEinfach == "ja") {
+							if (SichtbarImModusEinfach === "ja") {
 								Feld.SichtbarImModusEinfach.push(Username);
 							} else {
 								var idx = Feld.SichtbarImModusEinfach.indexOf(Username);
-								if(idx!=-1) Feld.SichtbarImModusEinfach.splice(idx, 1);
+								if(idx !== -1) Feld.SichtbarImModusEinfach.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
 								error: function() {
@@ -394,7 +394,7 @@
 								listItem += ArtGruppe;
 								listItem += "' value='";
 								listItem += ArtGruppe;
-								if(ArtGruppenArray.indexOf(ArtGruppe)!=-1) {
+								if(ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
 									listItem += "' checked='checked";
 								}
 								listItem += "'/>\n<label for='";
@@ -406,8 +406,6 @@
 							}
 							ListItemContainer += "\n</fieldset>"
 							$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
-							//Fehler korrigieren: Untere Navbar wird nur teilweise angezeigt
-							//$.mobile.fixedToolbars.show(true);
 						}
 					});
 				}
@@ -452,25 +450,25 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+								if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
-									if (FeldIdAktuell == IdAktuell) {
+									if (FeldIdAktuell === IdAktuell) {
 										//das ist das aktuelle Feld
 										//von hier aus vorwärts das nächste eigene oder offizielle suchen
 										if (i < AnzFelder) {
 											//das aktuelle Feld ist nicht das letzte
-											for (y = parseInt(i)+1; y <= AnzFelder; y++) {
+											for (y = parseInt(i)+1; y <== AnzFelder; y++) {
 												//alle verbleibenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächste eigene Feld > öffnen
 													FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
 													window.open(FeldIdNächstes, target="_self");
 													//$.mobile.changePage(FeldIdNächstes);
 												} else {
-													if (y == AnzFelder) {
+													if (y === AnzFelder) {
 														//am letzten Feld angelangt und es ist kein eigenes
 														melde("Das ist das letzte Feld");
 													}
@@ -505,25 +503,25 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+								if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
-									if (FeldIdAktuell == IdAktuell) {
+									if (FeldIdAktuell === IdAktuell) {
 										//das ist das aktuelle Feld
 										//von hier aus rückwärts das nächste eigene oder offizielle suchen
 										if (i > 0) {
 											//das aktuelle Feld ist nicht das erste 
-											for (y = parseInt(i)-1; y >= 0; y--) {
+											for (y = parseInt(i)-1; y >== 0; y--) {
 												//alle vorhergehenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächstvorherige eigene Feld > öffnen
 													FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
 													window.open(FeldIdVoriges, target="_self");
 													//$.mobile.changePage(FeldIdVoriges);
 												} else {
-													if (y == 1) {
+													if (y === 1) {
 														//am ersten Feld angelangt und es ist kein eigenes
 														//wir gehen zur Feldliste
 														geheZurück();
@@ -577,7 +575,7 @@
 									Feld = data.rows[i].value;
 									//Liste aufbauen
 									//Nur eigene Felder und offizielle
-									if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+									if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 										Optionen.push(Feld.FeldName);
 									}
 								}
@@ -590,7 +588,7 @@
 
 				function geheZurück() {
 					var zurueck = get_url_param("zurueck");
-					if (zurueck.slice(0, 6) == "Felder") {
+					if (zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
 						window.open("../../" + zurueck, target="_self");
 						
@@ -764,7 +762,7 @@
 					if (["aArtGruppe", "aArtName"].indexOf("{{FeldName}}") > -1) {
 						$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
 						$("#Standardwert").attr("disabled", true);
-					} else if ("{{FeldName}}" == "aAutor") {
+					} else if ("{{FeldName}}" === "aAutor") {
 						$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
 						$("#Standardwert").attr("disabled", true);
 					} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf("{{FeldName}}") > -1) {
@@ -799,7 +797,7 @@
 							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
 							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
 							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
-							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(Username) != -1) {
+							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 								$("select#SichtbarImModusHierarchisch").val("ja");
 							} else {
 								$("select#SichtbarImModusHierarchisch").val("nein");
@@ -807,7 +805,7 @@
 							$("select#SichtbarImModusHierarchisch").slider();
 							$("select#SichtbarImModusHierarchisch").slider("refresh");
 							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusEinfach noch nicht
-							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(Username) != -1) {
+							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(Username) !== -1) {
 								$("select#SichtbarImModusEinfach").val("ja");
 							} else {
 								$("select#SichtbarImModusEinfach").val("nein");

@@ -108,7 +108,7 @@
 			//jedes Feld bei Änderung speichern
 			$(".Feld").change(function(){
 				speichern();
-				if (this.name = ArtenSprache) {
+				if (this.name === ArtenSprache) {
 					sessionStorage.setItem("ArtenSprache", this.value);
 				}
 			});
@@ -117,7 +117,7 @@
 	<script type="text/javascript">
 		//Objekt heisst Userr weil Variable Username schon verwendet wird
 		function speichern() {
-			if ($("input#Autor").val() == ""){
+			if (!$("input#Autor").val()){
 				melde("Bitte Autor eingeben");
 				return;
 			}

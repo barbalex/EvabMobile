@@ -91,7 +91,7 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$("#hArtEditPage").on("pageshow", function() {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof hBeobId == "undefined") {
 					hBeobId = get_url_param("id");
@@ -99,7 +99,7 @@
 				initiierehBeobEdit(hBeobId);
 			});
 
-			$(":jqmData(role='page')").on("pagecreate", function() {
+			$("#hArtEditPage").on("pageinit", function() {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof hBeobId == "undefined") {
 					hBeobId = get_url_param("id");
@@ -185,7 +185,7 @@
 
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#hae_Menu", function() {
-					erstelleMenu(this, aArtGruppe);
+					erstelleMenu_hae(this, aArtGruppe);
 				});
 
 				$(document).on("swipeleft", function() {
@@ -242,6 +242,11 @@
 				});
 
 				function zuArtgruppenliste(Status) {
+					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof hArtListe != "undefined") {
+						hArtListe = undefined;
+					}
+					sessionStorage.removeItem("hArtListe");
 					var link = "Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					if (Status == 'neu') {
 						link += "&Status=neu";
@@ -295,7 +300,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz, ArtGruppe){
+				function erstelleMenu_hae(thiz, ArtGruppe){
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
@@ -375,13 +380,16 @@
 				  	})
 				}
 
-				function löscheBeobachtung(event) {
+				function löscheBeobachtung() {
 					var docId = hBeobId;
-					// First open doc based on hBeobId in order to get full document
+					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof hArtListe !== "undefined") {
+						hArtListe = undefined;
+					}
+					sessionStorage.removeItem("hArtListe");
 					$db = $.couch.db("evab");
 					$db.openDoc(docId, {
 						success: function(document) {
-							// Then use the opened doc as reference to remove
 							$db.removeDoc(document, {
 								success: function() {
 									melde("Art gelöscht");
@@ -435,20 +443,30 @@
 				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
 					//prüfen, ob hArtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof hArtListe == "undefined") {
-						if (typeof Username === "undefined" || !Username) {
-							prüfeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
-							success: function(data) {
-								//Liste in globaler Variable speichern, um Datenbankzugriffe zu reduzieren
-								hArtListe = data;
-								nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
-							}
-						});
-					} else {
+					if (typeof hArtListe !== "undefined") {
+						//hArtListe liegt als Variable vor
 						nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+					} else {
+						//hat hArtListe.html eine ArtListe übergeben?
+						if (typeof sessionStorage.getItem("hArtListe") !== "undefined" && sessionStorage.getItem("hArtListe")) {
+							hArtListe = JSON.parse(sessionStorage.getItem("hArtListe"));
+							nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+						} else {
+							//keine Ortliste vorhanden
+							//neu aus DB erstellen
+							if (typeof Username === "undefined" || !Username) {
+								prüfeAnmeldung();
+							}
+							$db = $.couch.db("evab");
+							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
+								success: function(data) {
+									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+									hArtListe = data;
+									sessionStorage.setItem("hArtListe", JSON.stringify(hArtListe));
+									nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+								}
+							});
+						}
 					}
 				}
 

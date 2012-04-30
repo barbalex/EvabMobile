@@ -115,6 +115,7 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function() {
+				
 				$("#Felder_hOrtPage").on("click", "#Felder_hOrtPage_back", function() {
 					if ($('#OrtEditPage').length > 0) {
 						$.mobile.changePage($('#OrtEditPage'));
@@ -150,7 +151,7 @@
 								}
 							});
 							//Globale Variable für FeldlisteOrtEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteOrtEdit != "undefined") {
+							if (typeof FeldlisteOrtEdit !== "undefined") {
 								FeldlisteOrtEdit = undefined;
 							}
 						},

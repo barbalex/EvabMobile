@@ -46,7 +46,7 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				if (typeof Username == "undefined" || !Username) {
+				if (typeof Username === "undefined" || !Username) {
 					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
@@ -79,7 +79,7 @@
 							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
 							break;
 					}
-					if (BeobId != "") {
+					if (BeobId) {
 						link += "&BeobId=" + BeobId;
 					}
 					if ($('al_Page').length > 0) {
@@ -269,7 +269,7 @@
 						row = Artgruppenliste.rows[i].value;
 						AnzArten = row.AnzArten;
 						ArtGruppen_2_L = row.ArtGruppen_2_L;
-						if (ArtGruppen_2_L != undefined) {
+						if (ArtGruppen_2_L) {
 							ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
 							ListItemContainer += "<ul>";
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
@@ -348,7 +348,7 @@
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
 						success: function(doc) {
-							if (ButtonText.slice(0, 3) == "Deu") {
+							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
 								sessionStorage.setItem("ArtenSprache", "Deutsch");
 							} else {

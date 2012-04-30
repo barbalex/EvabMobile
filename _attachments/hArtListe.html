@@ -90,20 +90,25 @@
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#Menu', function() {
-					erstelleMenu(this);
+					erstelleMenu_hal(this);
 				});
 
 				//Neue Beobachtung managen
 				$("#hArtListePage").on("click", ".hal_NeuLink", function(event) {
 					event.preventDefault();
-					hal_öffneArtgruppenliste();
+					öffneArtgruppenliste_hal();
 				});
 
 				$("#Arten").on("swipeleft", ".erste", function() {
-					hal_öffneArtgruppenliste();
+					öffneArtgruppenliste_hal();
 				});
 
-				function hal_öffneArtgruppenliste() {
+				function öffneArtgruppenliste_hal() {
+					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof hArtListe != "undefined") {
+						hArtListe = undefined;
+					}
+					sessionStorage.removeItem("hArtListe");
 					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 				}
 
@@ -117,7 +122,7 @@
 				});
 
 				//Menü aufbauen
-				function erstelleMenu(thiz){
+				function erstelleMenu_hal(thiz){
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
@@ -178,51 +183,65 @@
 				}
 				
 			  	function erstelleArtliste() {
-			  		if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-					$("#Arten").empty();
-					$db = $.couch.db("evab");
-					$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
-						success: function(data) {
-							var i;
-							var anzArt = 0;
-							var Art;
-							var externalPage;
-							var listItem;
-							var ListItemContainer = "";
-							for(i in data.rows) {                    //Arten zählen. Wenn noch keine: darauf hinweisen
-								anzArt += 1;
-							}
-
-							var Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
-							if (anzArt==1){
-								Titel2 = " Art";
-							}
-							$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
-
-							if (anzArt == 0) {
-								ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
-							} else {
-								for(i in data.rows) {                //Liste aufbauen
-									hBeob = data.rows[i].value;
-									key = data.rows[i].key;
-									aArtGruppe = hBeob.aArtGruppe;
-									ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
-									var bArtName = key[2];
-									externalPage = "hArtEdit.html?id=" + hBeob._id;
-									listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
-										"<a href=\"" + externalPage + "\" rel=\"external\">" +
-										"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-										"<h3>" + bArtName + "<\/h3>" +
-										"<\/a> <\/li>";
-									ListItemContainer += listItem;
-								}
-							}
-							$("#Arten").html(ListItemContainer);
-							$("#Arten").listview("refresh");
+			  		$("#Arten").empty();
+			  		//hat hArtEdit.html eine hArtListe übergeben?
+					if (typeof sessionStorage.getItem("hArtListe") !== "undefined" && sessionStorage.getItem("hArtListe")) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						hArtListe = JSON.parse(sessionStorage.getItem("hArtListe"));
+						erstelleArtliste_2();
+					} else {
+				  		if (typeof Username === "undefined" || !Username) {
+							prüfeAnmeldung();
 						}
-					});
+						$db = $.couch.db("evab");
+						$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
+							success: function(data) {
+								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+								hArtListe = data;
+								sessionStorage.setItem("hArtListe", JSON.stringify(hArtListe));
+								erstelleArtliste_2();
+							}
+						});
+					}
+				}
+
+				function erstelleArtliste_2() {
+					var i;
+					var anzArt = 0;
+					var Art;
+					var externalPage;
+					var listItem;
+					var ListItemContainer = "";
+					for(i in hArtListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
+						anzArt += 1;
+					}
+
+					var Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
+					if (anzArt === 1){
+						Titel2 = " Art";
+					}
+					$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
+
+					if (anzArt === 0) {
+						ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
+					} else {
+						for(i in hArtListe.rows) {                //Liste aufbauen
+							hBeob = hArtListe.rows[i].value;
+							key = hArtListe.rows[i].key;
+							aArtGruppe = hBeob.aArtGruppe;
+							ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+							var bArtName = key[2];
+							externalPage = "hArtEdit.html?id=" + hBeob._id;
+							listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+								"<a href=\"" + externalPage + "\" rel=\"external\">" +
+								"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+								"<h3>" + bArtName + "<\/h3>" +
+								"<\/a> <\/li>";
+							ListItemContainer += listItem;
+						}
+					}
+					$("#Arten").html(ListItemContainer);
+					$("#Arten").listview("refresh");
 				}
 			});
 		</script>

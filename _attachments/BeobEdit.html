@@ -114,7 +114,7 @@
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function() {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (BeobId == "") {
+				if (!BeobId) {
 					BeobId = get_url_param("id");
 				}
 				//Felder aufbauen und letzte url merken
@@ -149,6 +149,11 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
+					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof BeobListe !== "undefined") {
+						BeobListe = undefined;
+					}
+					sessionStorage.removeItem("BeobListe");
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
 						window.history.pushState("", "", "Artgruppenliste.html?Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
@@ -169,6 +174,11 @@
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
+					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					if (typeof BeobListe !== "undefined") {
+						BeobListe = undefined;
+					}
+					sessionStorage.removeItem("BeobListe");
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -222,7 +232,7 @@
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function(event) {
 					var _attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					if (_attachments && _attachments.length !== 0) {
 						speichereAnhänge(BeobId);
 					}
 				});
@@ -391,7 +401,7 @@
 					for(i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
 						var AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (BeobIdAktuell == IdAktuell) {
+						if (BeobIdAktuell === IdAktuell) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzBeob) {
@@ -421,7 +431,7 @@
 				function erstelleKarte() {
 					var map;
 					var verorted;
-					if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
+					if (oLatitudeDecDeg && oLongitudeDecDeg) {
 						var lat = oLatitudeDecDeg;
 						var lng = oLongitudeDecDeg;
 						verorted = true;
@@ -431,7 +441,7 @@
 						verorted = false;
 					}
 					var ZoomLevel;
-					if (verorted == true) {
+					if (verorted === true) {
 						ZoomLevel = 15;
 					} else {
 						ZoomLevel = 12;
@@ -452,7 +462,7 @@
 					var zDatum = $("#zDatum").val();
 					var zUhrzeit = $("#zUhrzeit").val();
 					var image = "Artgruppenbilder/" + aArtGruppe + ".png";
-					if (verorted == true){
+					if (verorted === true){
 						var marker = new google.maps.Marker({
 							position: latlng, 
 						    map: map, 
@@ -679,8 +689,6 @@
 							Beob.aArtId = aArtId;
 							//alles speichern
 							$db.saveDoc(Beob, {
-								success: function() {
-								},
 								error: function() {
 									melde("Fehler: Beobachtung nicht gespeichert");
 								}

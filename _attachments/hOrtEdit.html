@@ -89,7 +89,7 @@
 		<div data-role="footer" id="hOrtEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" data-icon="plus" rel="external" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
@@ -99,13 +99,16 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function() {
-				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				initiiereOrtEdit(OrtId);
 			});
+
 			$(":jqmData(role='page')").on("pageinit", function() {
-				OrtId = get_url_param("id");
+				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
+				if (typeof OrtId == "undefined") {
+					OrtId = get_url_param("id");
+				}
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 
@@ -200,7 +203,7 @@
 
 				//Menu aufbauen
 				$(document).on('click', "[name='Menu']", function() {
-					erstelleMenu(this);
+					erstelleMenu_hoe(this);
 				});
 
 				//Karte managen
@@ -621,7 +624,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz){
+				function erstelleMenu_hoe(thiz){
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
@@ -706,8 +709,8 @@
 							$db = $.couch.db("evab");
 							$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
 								success: function(data) {
-									OrtListe = data;
 									//OrtListe für hOrtListe.html bereitstellen
+									OrtListe = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 									sessionStorage.setItem("OrtListe", JSON.stringify(OrtListe));
 									nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
@@ -756,7 +759,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#OrtEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='MenuOrtEditMap' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

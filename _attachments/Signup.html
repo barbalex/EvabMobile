@@ -84,17 +84,17 @@
 		$("#SubmitButton").tap(function(event){
 			var UserName = $('input[name=UserName]').val();
 			var Passwort = $('input[name=Passwort]').val();
-			var Passwort2 =$('input[name=Passwort2]').val();
-			var Autor =$("input#Autor").val();
-			if (UserName == "") {
+			var Passwort2 = $('input[name=Passwort2]').val();
+			var Autor = $("input#Autor").val();
+			if (!UserName) {
 				melde("Bitte Benutzernamen eingeben");
-			} else if (Passwort==""){
+			} else if (!Passwort) {
 				melde("Bitte Passwort eingeben");
-			} else if (Passwort2==""){
+			} else if (!Passwort2) {
 				melde("Bitte Passwort bestätigen");
-			} else if (Passwort != Passwort2) {
+			} else if (Passwort !== Passwort2) {
 				melde("Passwort ist falsch bestätigt");
-			} else if (Autor==""){
+			} else if (!Autor) {
 				melde("Bitte Autor eingeben");
 			} else {
 				erstelleKonto(UserName, Passwort, Autor);
@@ -151,7 +151,7 @@
 				if (userCtx.name) {
 					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
 					setTimeout("window.open('BeobListe.html', target='_self')", 2800);
-				} else if (userCtx.roles.indexOf("_admin") != -1) {
+				} else if (userCtx.roles.indexOf("_admin") !== -1) {
 					melde("Fehler: Anmeldung gescheitert");
 				} else {
 					melde("Fehler: Anmeldung gescheitert");
@@ -167,7 +167,7 @@
 		doc.Autor = $("input#Autor").val();
 		doc.Datenverwendung = Datenverwendung;
 		doc.ArtenSprache = "Lateinisch";
-		if ($("input#Email").val() != "") {
+		if ($("input#Email").val()) {
 			doc.Email = $("input#Email").val();
 		}
 		$db = $.couch.db("evab");
@@ -194,7 +194,7 @@
 				for(i in data.rows) {
 					Feld = data.rows[i].value;
 					//Nur offizielle Felder berücksichtigen
-					if (Feld.User == "ZentrenBdKt") {
+					if (Feld.User === "ZentrenBdKt") {
 						$db.openDoc(Feld._id, {
 							success: function(Feld) {
 								Feld.SichtbarImModusHierarchisch.push(Username);

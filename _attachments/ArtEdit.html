@@ -58,22 +58,24 @@
 			<p id="ArtEdit_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Informationen werden aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$("#ArtEditPage").on("pageshow", function() {
 
 				ArtId = get_url_param("id");
 				erstelleArtEdit(ArtId);
+			});
 
+			$("#ArtEditPage").on("pageinit", function() {
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#ae_zurück', function() {
 					var zurueck = "";
-					if (typeof zurueck_global != "undefined") {
+					if (typeof zurueck_global !== "undefined") {
 						zurueck = zurueck_global;
 					}
 					//alert("zurueck = " + zurueck);
-					if (zurueck == "BeobEdit.html") {
+					if (zurueck === "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
 						window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
-					} else if (zurueck == "hArtEdit.html") {
+					} else if (zurueck === "hArtEdit.html") {
 						$.mobile.changePage($('#hArtEditPage'));
 						window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 					} else {
@@ -133,7 +135,7 @@
 						}
 					});
 				}
-			});	
+			});
 		</script>
 	</div>
   </body>

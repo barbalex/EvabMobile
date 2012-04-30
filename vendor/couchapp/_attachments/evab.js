@@ -234,7 +234,7 @@ function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, 
 	doc.aArtId = ArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	if (Von == "hArtListe" || Von == "hArtEdit") {
+	if (Von === "hArtListe" || Von === "hArtEdit") {
 		doc.Typ = "hArt";
 		doc.hProjektId = hProjektId;
 		doc.hRaumId = hRaumId;
@@ -242,12 +242,10 @@ function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, 
 		doc.hZeitId = hZeitId;
 		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
 		speichereNeueBeob_02(doc);
-		return false;
 	} else {
 		//Von == "BeobListe" || Von == "BeobEdit"
 		doc.Typ = "Beobachtung";
 		speichereNeueBeob_03(doc);
-		return false;
 	}
 }
 
@@ -323,11 +321,11 @@ function speichereNeueBeob_03(doc) {
 							//$("#al_Page").removeClass('ui-page-active');
 							//$("#hArtEditPage").addClass('ui-page-active');
 						} else {
-							//window.open("hArtEdit.html?id=" + data.id, target="_self");
-							$.mobile.changePage("hArtEdit.html", {
+							window.open("hArtEdit.html?id=" + data.id, target="_self");
+							/*$.mobile.changePage("hArtEdit.html", {
 								type: "get",
 								data: "id=" + data.id
-							});
+							});*/
 						}
 					} else {
 						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
@@ -1055,11 +1053,11 @@ function initiiereOrtEdit(OrtId) {
 			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteOrtEdit != "undefined") {
+			if (typeof FeldlisteOrtEdit !== "undefined") {
 				initiiereOrtEdit_2(Ort);
 			} else {
-				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB
+				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeOrt', {
 					success: function(Feldliste) {
 						//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
@@ -1106,7 +1104,7 @@ function initiiereOrtEdit_2(Ort) {
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-	window.history.pushState("", "", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+	window.history.pushState("", "", "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 	aktualisiereLinksMitOrtId_hoe();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
@@ -1263,11 +1261,9 @@ function initiierehBeobEdit(BeobId) {
 			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 			var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 			$("[name='hArtListeLink']").attr('href', url);
-			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-			window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlistehBeobEdit != "undefined") {
+			if (typeof FeldlistehBeobEdit !== "undefined") {
 				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
 			} else {
 				//Feldliste aus der DB holen
@@ -1317,6 +1313,8 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
+	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
+	window.history.pushState("", "", "hArtEdit.html?id=" + Beob._id); //funktioniert in IE erst ab 10!
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
