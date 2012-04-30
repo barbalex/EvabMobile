@@ -35,9 +35,12 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$("#ProjektEditPage").on("pageshow", function() {
 				ProjektId = get_url_param("id");
 				initiiereProjektEdit(ProjektId);
+			});
+			$(":jqmData(role='page')").on("pageinit", function() {
+				ProjektId = get_url_param("id");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function() {

@@ -98,12 +98,16 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
-				
+			$("#OrtEditPage").on("pageshow", function() {
 				OrtId = get_url_param("id");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				initiiereOrtEdit(OrtId);
+			});
+			$(":jqmData(role='page')").on("pageinit", function() {
+				OrtId = get_url_param("id");
+				RaumId = get_url_param("RaumId");
+				ProjektId = get_url_param("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function(event) {

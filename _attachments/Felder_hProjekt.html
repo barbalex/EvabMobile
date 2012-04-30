@@ -46,7 +46,7 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$("#Felder_hProjektPage").on("pageshow", function() {
 				erstelleSichtbareFelder();
 
 				//generiert dynamisch die Felder im Checkbox Felder
@@ -158,12 +158,6 @@
 						}
 					});
 				});
-
-				//Felder in hProjektEdit.html neu aufbauen
-				$(document).on("pagehide", '#Felder_hProjektPage', function() {
-					initiiereProjektEdit(ProjektId);
-				});
-
 			});
 		</script>
 	</div>

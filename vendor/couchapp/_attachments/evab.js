@@ -930,52 +930,64 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, Username
-function initiiereRaumEdit(ID) {
+function initiiereRaumEdit(RaumId) {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	//holt die Feldliste aus der DB
-	$db.view('evab/FeldListeRaum', {
-		success: function(Feldliste) {
-			//Holt den Raum mit der id "ID" aus der DB
-			$db.openDoc(ID, {
-				success: function(Raum) {
-					//fixes Feld setzen
-					$("#rName").val(Raum.rName);
-					var HtmlContainer = generiereHtmlFuerRaumEditForm (Feldliste, Raum);
-					//Linie nur anfügen, wenn Felder erstellt wurden
-					if (HtmlContainer != "") {
-						HtmlContainer = "<hr />" + HtmlContainer;
-					} else {
-						HtmlContainer = "";
+	//Holt den Raum mit der id "RaumId" aus der DB
+	$db.openDoc(RaumId, {
+		success: function(Raum) {
+			//fixes Feld setzen
+			$("#rName").val(Raum.rName);
+			//prüfen, ob die Feldliste schon geholt wurde
+			//wenn ja: deren globale Variable verwenden
+			if (typeof FeldlisteRaumEdit !== "undefined") {
+				initiiereRaumEdit_2(Raum);
+			} else {
+				//holt die Feldliste aus der DB
+				$db = $.couch.db("evab");
+				$db.view('evab/FeldListeRaum', {
+					success: function(Feldliste) {
+						FeldlisteRaumEdit = Feldliste;
+						initiiereRaumEdit_2(Raum);
 					}
-					$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-					if (get_url_param("Status") == "neu") {
-						//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-						var Formularwerte = {};
-						Formularwerte = $("#hRaumEditForm").serializeObject();
-						//Werte aus dem Formular aktualisieren
-						for (i in Formularwerte) {
-							if (Formularwerte[i]) {
-								Raum[i] = Formularwerte[i];
-							} else if (Raum[i]) {
-								delete Raum[i]
-							}
-						}
-						$db.saveDoc(Raum);
-					}
-					erstelleAttachments(Raum);
-					//Anhänge wieder einblenden
-					$('#FormAnhänge').show();
-					//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-					speichereLetzteUrl();
-				}
-			});
+				});
+			}
 		}
 	});
+}
+
+function initiiereRaumEdit_2(Raum) {
+	var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteRaumEdit, Raum);
+	//Linie nur anfügen, wenn Felder erstellt wurden
+	if (HtmlContainer != "") {
+		HtmlContainer = "<hr />" + HtmlContainer;
+	} else {
+		HtmlContainer = "";
+	}
+	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	if (get_url_param("Status") == "neu") {
+		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		var Formularwerte = {};
+		Formularwerte = $("#hRaumEditForm").serializeObject();
+		//Werte aus dem Formular aktualisieren
+		for (i in Formularwerte) {
+			if (Formularwerte[i]) {
+				Raum[i] = Formularwerte[i];
+			} else if (Raum[i]) {
+				delete Raum[i]
+			}
+		}
+		$db.saveDoc(Raum);
+	}
+	erstelleAttachments(Raum);
+	//Anhänge wieder einblenden
+	$('#FormAnhänge').show();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
 }
 
 //generiert das Html für das Formular in hRaumEdit.html

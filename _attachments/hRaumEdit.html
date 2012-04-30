@@ -84,10 +84,15 @@
 		</div><!-- /footer -->
 
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$("#RaumEditPage").on("pageshow", function() {
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
 				initiiereRaumEdit(RaumId);
+			});
+			
+			$(":jqmData(role='page')").on("pageinit", function() {
+				RaumId = get_url_param("id");
+				ProjektId = get_url_param("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function() {
