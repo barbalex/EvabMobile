@@ -89,7 +89,7 @@
 				ProjektId = get_url_param("ProjektId");
 				initiiereRaumEdit(RaumId);
 			});
-			
+
 			$(":jqmData(role='page')").on("pageinit", function() {
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
@@ -248,6 +248,11 @@
 				function löscheRaum() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht;
 					var Rückmeldung;
+					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof RaumListe !== "undefined") {
+						RaumListe = undefined;
+					}
+					sessionStorage.removeItem("RaumListe");
 					ArtenGelöscht = löscheArtenVonRaum(RaumId);
 					if (ArtenGelöscht == false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
@@ -538,47 +543,71 @@
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerRaum(IdAktuell, NächsterOderVoriger) {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-					$db = $.couch.db("evab");
-					$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
-						success: function(data) {
-							var i;
-							var RaumIdAktuell;
-							var RaumIdNächster;
-							var RaumIdVoriger;
-							var AnzRaum;
-							for(i in data.rows) {
-								RaumIdAktuell = data.rows[i].value._id;
-								var AnzRaum = data.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (RaumIdAktuell == IdAktuell) {
-									switch (NächsterOderVoriger) {
-									case "nächster":
-										if (i < AnzRaum) {
-											RaumId = data.rows[parseInt(i)+1].value._id;
-											initiiereRaumEdit(RaumId);
-											window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
-											aktualisiereLinksMitRaumId();
-										} else {
-											melde("Das ist der letzte Raum");
-										}
-										break;
-									case "voriger":
-										if (i > 0) {
-											RaumId = data.rows[i-1].value._id;
-											initiiereRaumEdit(RaumId);
-											window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
-											aktualisiereLinksMitRaumId();
-										} else {
-											window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
-										}
-										break;
-									}
+					//prüfen, ob RaumListe schon existiert
+					//nur abfragen, wenn sie noch nicht existiert
+					if (typeof RaumListe !== "undefined") {
+						//globale Variable RaumListe existiert noch
+						nächsterVorigerRaum_2(IdAktuell, NächsterOderVoriger);
+					} else {
+						//hat hRaumListe.html eine RaumListe übergeben?
+						if (typeof sessionStorage.getItem("RaumListe") !== "undefined" && sessionStorage.getItem("RaumListe")) {
+							//Objekte werden als Strings übergeben, müssen geparst werden
+							RaumListe = JSON.parse(sessionStorage.getItem("RaumListe"));
+							nächsterVorigerRaum_2(IdAktuell, NächsterOderVoriger);
+						} else {
+							//keine Raumliste übergeben
+							//neu aus DB erstellen
+							if (typeof Username === "undefined" || !Username) {
+								prüfeAnmeldung();
+							}
+							$db = $.couch.db("evab");
+							$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
+								success: function(data) {
+									RaumListe = data;
+									//RaumListe bereitstellen
+									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+									sessionStorage.setItem("RaumListe", JSON.stringify(RaumListe));
+									nächsterVorigerRaum_2(IdAktuell, NächsterOderVoriger);
 								}
+							});
+						}
+					}
+				}
+
+				function nächsterVorigerRaum_2(IdAktuell, NächsterOderVoriger) {
+					var i;
+					var RaumIdAktuell;
+					var RaumIdNächster;
+					var RaumIdVoriger;
+					var AnzRaum;
+					for(i in RaumListe.rows) {
+						RaumIdAktuell = RaumListe.rows[i].value._id;
+						var AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (RaumIdAktuell == IdAktuell) {
+							switch (NächsterOderVoriger) {
+							case "nächster":
+								if (i < AnzRaum) {
+									RaumId = RaumListe.rows[parseInt(i)+1].value._id;
+									initiiereRaumEdit(RaumId);
+									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitRaumId();
+								} else {
+									melde("Das ist der letzte Raum");
+								}
+								break;
+							case "voriger":
+								if (i > 0) {
+									RaumId = RaumListe.rows[i-1].value._id;
+									initiiereRaumEdit(RaumId);
+									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									aktualisiereLinksMitRaumId();
+								} else {
+									window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
+								}
+								break;
 							}
 						}
-					});
+					}
 				}
 
 			});

@@ -174,43 +174,58 @@
 				}
 
 			  	function erstelleRaumListe() {
-			  		if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					$("#Räume").empty();
-					$db = $.couch.db("evab");
-					$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
-						success: function(data) {
-							var i;
-							var anzRaum = 0;
-							var Raum;
-							var externalPage;
-							var listItem;
-							var ListItemContainer = "";
-							for(i in data.rows) {                    //Räume zählen
-								anzRaum += 1;
-							}
-							var Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
-							if (anzRaum == 1) {
-								Titel2 = " Raum";
-							}
-							$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
-							if (anzRaum == 0) {
-								ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
-							} else {
-								for(i in data.rows) {                //Liste aufbauen
-									Raum = data.rows[i].value;
-									key = data.rows[i].key;
-									rName = Raum.rName;
-									externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-									listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-									ListItemContainer += listItem;
-								}
-							}
-							$("#Räume").html(ListItemContainer);
-							$("#Räume").listview("refresh");
+					//vielleicht hat hRaumListe.html eine OrtListe übergeben?
+					if (typeof sessionStorage.getItem("RaumListe") !== "undefined" && sessionStorage.getItem("RaumListe")) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						RaumListe = JSON.parse(sessionStorage.getItem("RaumListe"));
+						erstelleRaumListe_2();
+					} else {
+						if (typeof Username === "undefined" || !Username) {
+							prüfeAnmeldung();
 						}
-					});
+						$db = $.couch.db("evab");
+						$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
+							success: function(data) {
+								RaumListe = data;
+								//RaumListe für haumEdit bereitstellen
+								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.setItem("RaumListe", JSON.stringify(RaumListe));
+								erstelleRaumListe_2();
+							}
+						});
+					}
+				}
+
+				function erstelleRaumListe_2() {
+					var i;
+					var anzRaum = 0;
+					var Raum;
+					var externalPage;
+					var listItem;
+					var ListItemContainer = "";
+					for(i in RaumListe.rows) {                    //Räume zählen
+						anzRaum += 1;
+					}
+					var Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
+					if (anzRaum == 1) {
+						Titel2 = " Raum";
+					}
+					$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
+					if (anzRaum == 0) {
+						ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
+					} else {
+						for(i in RaumListe.rows) {                //Liste aufbauen
+							Raum = RaumListe.rows[i].value;
+							key = RaumListe.rows[i].key;
+							rName = Raum.rName;
+							externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
+							listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+							ListItemContainer += listItem;
+						}
+					}
+					$("#Räume").html(ListItemContainer);
+					$("#Räume").listview("refresh");
 				}
 			});
 		</script>

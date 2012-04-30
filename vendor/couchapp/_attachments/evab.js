@@ -548,6 +548,11 @@ function erstelleNeuenRaum(hProjektId) {
 			//speichern
 			$db.saveDoc(doc, {
 				success: function(data) {
+					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof RaumListe != "undefined") {
+						RaumListe = undefined;
+						sessionStorage.removeItem("RaumListe");
+					}
 					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 				},
 				error: function() {
