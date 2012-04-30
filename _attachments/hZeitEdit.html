@@ -95,7 +95,6 @@
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				
-				prüfeAnmeldung();
 				initiiereZeitEdit(ZeitId);
 
 				//Slider-Felder erst bei mouseup speichern
@@ -141,9 +140,6 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof ZeitListe != "undefined") {
 						ZeitListe = undefined;

@@ -53,10 +53,6 @@
 		<script type="text/javascript" charset="utf-8">
 		  	//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function() {
-				
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
 
 				erstelleBeobListe();
 				speichereLetzteUrl();
@@ -200,20 +196,19 @@
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe != "undefined") {
 						BeobListe = undefined;
 					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe");
+						$.mobile.changePage("Artgruppenliste.html", {
+							type: "get",
+							data: "Status=neu&Von=BeobListe"
+						});
 					}
-					//window.open("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobListe", target="_self");
 				}
 
 				//Menü aufbauen

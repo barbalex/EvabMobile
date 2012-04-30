@@ -115,29 +115,23 @@
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof BeobListe != "undefined") {
+					if (typeof BeobListe !== "undefined") {
 						BeobListe = undefined;
 					}
 					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobEdit", reloadPage: true});
-						//window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
+						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?Status=neu&Von=BeobEdit", reloadPage: true});
+						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
 						//$("#BeobEditPage").removeClass('ui-page-active');
 						//$("#agl_Page").addClass('ui-page-active');
 					} else {
 						$.mobile.changePage("Artgruppenliste.html", {
 				            type: "get",
-				            data: "Username=" + Username + "&Status=neu&Von=BeobEdit"
+				            data: "Status=neu&Von=BeobEdit"
 				        });
 					}
 				});
@@ -145,30 +139,26 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html?Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId);
+						$.mobile.changePage("Artgruppenliste.html", {
+							type: "get",
+							data: "Status=edit&Von=BeobEdit&BeobId=" + BeobId
+						});
 					}
 				});
 
 				//sichtbare Felder wählen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_wähleFelder", function(event) {
 					event.preventDefault();
-					//alert("be_wähleFelder geklickt");
 					$.mobile.changePage("Felder_Beob.html");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function(event){
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -178,13 +168,11 @@
 						success: function(data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
-								//window.open("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
 								$.mobile.changePage($("#agl_Page"));
-								window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 							} else {
 								$.mobile.changePage($("#al_Page"));
-								window.history.pushState("", "", "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
-								//window.open("Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId, target="_self");
+								window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
 							}
 						}
 					});	
@@ -555,7 +543,6 @@
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
-					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
@@ -711,9 +698,6 @@
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function() {
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (BeobId == "") {
 					BeobId = get_url_param("id");

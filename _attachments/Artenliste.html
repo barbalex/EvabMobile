@@ -49,9 +49,6 @@
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
 				
-				if (typeof Username == "undefined" || Username == "" || Username == null) {
-					prüfeAnmeldung();
-				}
 				var ArtGruppe = get_url_param("aArtGruppe");
 				var Status = get_url_param("Status") || "edit";
 				var Von = get_url_param("Von");
@@ -65,13 +62,10 @@
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 					event.preventDefault();
-					if (typeof Username == "undefined" || Username == "" || Username == null) {
-						prüfeAnmeldung();
-					}
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					var ArtId = $(this).attr("artid");
 					if (Status == "neu") {
-						speichereNeueBeob(Username, ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
+						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 					} else if (Von == "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						if ($('#ArtEditPage').length > 0) {
@@ -91,7 +85,7 @@
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
 					event.preventDefault();
-					if (typeof Username == "undefined" || Username == "" || Username == null) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
 					var ButtonText = this.text;
@@ -100,8 +94,10 @@
 						success: function(doc) {
 							if (ButtonText.slice(0, 3) == "Deu") {
 								doc.ArtenSprache = "Deutsch";
+								sessionStorage.setItem("ArtenSprache", "Deutsch");
 							} else {
 								doc.ArtenSprache = "Lateinisch";
+								sessionStorage.setItem("ArtenSprache", "Lateinisch");
 							}
 							$db.saveDoc(doc, {
 								success: function() {
@@ -148,29 +144,34 @@
 			  		if (typeof Username == "undefined" || Username == "" || Username == null) {
 						prüfeAnmeldung();
 					}
-				  	var viewname = 'evab/User?key="' + Username + '"';
-				  	$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function(data) {
-							for(i in data.rows) {
-								UserId = data.rows[i].value._id;
-								var ArtenSprache = data.rows[i].value.ArtenSprache;
-								switch(ArtenSprache) {
-								case "Lateinisch":
-									$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
-									erstelleArtenlisteLateinisch();
-									break;
-								case "Deutsch":
-									$("#al_ButtonSprache .ui-btn-text").text("Lateinisch");
-									erstelleArtenlisteDeutsch();
-									break;
-								default:
-									$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
-									erstelleArtenlisteLateinisch();
-								}
+					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
+					//sonst aus der sessionStorage
+					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
+					  	var viewname = 'evab/User?key="' + Username + '"';
+					  	$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function(data) {
+								User = data.rows[0].value;
+								ArtenSprache = User.ArtenSprache;
+								sessionStorage.setItem("ArtenSprache", ArtenSprache);
+								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
+								UserId = User._id;
+								sessionStorage.setItem("UserId", UserId);
+								sessionStorage.setItem("Autor", User.Autor);
 							}
-						}
-					});
+						});
+					}
+					ArtenSprache = sessionStorage.getItem("ArtenSprache");
+					switch(ArtenSprache) {
+					case "Lateinisch":
+						$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
+						erstelleArtenlisteLateinisch();
+						break;
+					case "Deutsch":
+						$("#al_ButtonSprache .ui-btn-text").text("Lateinisch");
+						erstelleArtenlisteDeutsch();
+						break;
+					}
 				}
 
 				function erstelleArtenlisteLateinisch() {

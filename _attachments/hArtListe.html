@@ -67,8 +67,6 @@
 				OrtId = get_url_param("OrtId");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
-
-				prüfeAnmeldung();
 				
 				erstelleArtliste();
 
@@ -106,11 +104,7 @@
 				});
 
 				function hal_öffneArtgruppenliste() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-					window.open("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
-					//$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target="_self");
 				}
 
 				$("#Arten").on("swipeleft", ".beob", function() {
@@ -127,7 +121,6 @@
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
-					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',

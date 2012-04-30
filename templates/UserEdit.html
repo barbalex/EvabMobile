@@ -108,6 +108,9 @@
 			//jedes Feld bei Änderung speichern
 			$(".Feld").change(function(){
 				speichern();
+				if (this.name = ArtenSprache) {
+					sessionStorage.setItem("ArtenSprache", this.value);
+				}
 			});
 		});
 	</script>

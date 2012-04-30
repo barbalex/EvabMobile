@@ -94,24 +94,18 @@
 				});
 
 				function zuArtgruppenliste() {
-					if (typeof Username == "undefined" || Username == "" || Username == null) {
-						prüfeAnmeldung();
-					}
 					if ($('#agl_Page').length > 0) {
 						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", "Username=" + Username + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Von=ArtEdit"); //funktioniert in IE erst ab 10!
 					} else {
 						$.mobile.changePage("Artgruppenliste.html", {
 							type: "get",
-							data: "Username=" + Username + "&Von=ArtEdit"
+							data: "Von=ArtEdit"
 						});
 					}
 				}
 
 				function zuArtliste() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -123,17 +117,17 @@
 							if (ArtGruppen_2_L) {
 								if ($('#agl_Page').length > 0) {
 									$.mobile.changePage($('#agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
 								} else {
 									$.mobile.changePage("Artgruppenliste.html", {
 										type: "get",
-										data: "Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+										data: "aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
 									});
 								}
 							} else {
 								$.mobile.changePage("Artenliste.html", {
 									type: "get",
-									data: "Username=" + Username + "&aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
+									data: "aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
 								});
 							}
 						}

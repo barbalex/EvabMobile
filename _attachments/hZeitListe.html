@@ -64,8 +64,6 @@
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				
-				prüfeAnmeldung();
-				
 				erstelleZeitListe();
 
 				speichereLetzteUrl();
@@ -83,9 +81,6 @@
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
 				});
 
@@ -95,9 +90,6 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					erstelleNeueZeit(ProjektId, RaumId, OrtId);
 				});
 

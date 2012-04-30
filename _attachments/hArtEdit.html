@@ -106,7 +106,6 @@
 				}
 
 				var Feldliste;
-				prüfeAnmeldung();
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function(event) {
@@ -186,9 +185,6 @@
 
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#hae_Menu", function() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					erstelleMenu(this, aArtGruppe);
 				});
 
@@ -246,10 +242,7 @@
 				});
 
 				function zuArtgruppenliste(Status) {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
-					var link = "Artgruppenliste.html?Username=" + Username + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					var link = "Artgruppenliste.html?Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
 					if (Status == 'neu') {
 						link += "&Status=neu";
 					}
@@ -263,9 +256,6 @@
 				}
 
 				function zuArtliste(aArtGruppe) {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -278,17 +268,17 @@
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artgruppenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+									$.mobile.changePage("Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 								}
 							} else {
 								if ($('al_Page').length > 0) {
 									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('al_Page'));
-									window.history.pushState("", "", "Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artenliste.html?Username=" + Username + "&aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
+									$.mobile.changePage("Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId);
 								}
 							}
 						}
@@ -300,7 +290,6 @@
 					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
-					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',

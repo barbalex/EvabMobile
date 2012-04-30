@@ -155,9 +155,6 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					erstelleNeuenOrt(ProjektId, RaumId);
 				});
 

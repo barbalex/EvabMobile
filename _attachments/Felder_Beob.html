@@ -47,9 +47,6 @@
 		</div>
 		<script type="text/javascript">
 			$(":jqmData(role='page')").on("pageinit", function() {
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
 				erstelleSichtbareFelder();
 
 				//Felder speichern (checkbox)
@@ -109,9 +106,6 @@
 			//generiert dynamisch die Felder im Checkbox Felder
 			//checked diejenigen, die der User anzeigen will
 			function erstelleSichtbareFelder() {
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
 				$("#Feldliste").empty();
 				//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 				if (typeof FeldlisteBeobEdit != "undefined") {
@@ -129,6 +123,9 @@
 			}
 
 			function erstelleSichtbareFelder_2() {
+				if (typeof Username === "undefined" || !Username) {
+					prüfeAnmeldung();
+				}
 				var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 				var anzFelder = 0;
 				for (i in FeldlisteBeobEdit.rows) {

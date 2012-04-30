@@ -46,8 +46,8 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function() {
-				if (get_url_param("Username")) {
-					Username = get_url_param("Username");
+				if (typeof Username == "undefined" || Username == "" || Username == null) {
+					prüfeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
@@ -94,10 +94,7 @@
 
 			$(":jqmData(role='page')").on("pageshow", function() {
 				UserId = "";
-				Username = get_url_param("Username");
-				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
-				}
+
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
 				BeobId = get_url_param("BeobId") || "";
@@ -112,50 +109,50 @@
 					//gewünschte Sprache für Arten ermitteln
 					//Listen aufbauen lassen
 					//und button für Sprache richtig beschriften
-					//var Username = get_url_param("Username");
-					if (typeof Username == "undefined" || Username == "" || Username == null) {
+					if (typeof Username === "undefined" || !Username) {
 						prüfeAnmeldung();
 					}
-					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
-					var viewname = 'evab/User?key="' + Username + '"';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function(data) {
-							var ButtonSpracheText;
-							for(i in data.rows) {
-								ArtenSprache = data.rows[i].value.ArtenSprache;
-								UserId = data.rows[i].value._id;
-								switch(ArtenSprache) {
-								case "Lateinisch":
-									$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
-									if (aArtGruppeÜbergeben) {
-										//Artgruppen werden übergeben, wenn die Art geändert wird, die Artgruppe aber bleiben soll
-										//und die Artgruppe ihre Arten in einer nested list darstellt
-										//sonst wird direkt Artenliste.html aufgerufen
-										erstelleArtgruppenListeFürNestedArtgruppeLat();
-									} else {
-										erstelleArgruppenListeLat();
-									}
-									break;
-								case "Deutsch":
-									$("#agl_ButtonSprache .ui-btn-text").text("Lateinisch");
-									if (aArtGruppeÜbergeben) {
-										erstelleArtgruppenListeFürNestedArtgruppeDeutsch();
-									} else {
-										erstelleArgruppenListeDeutsch();
-									}
-									break;
-								default:
-									$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
-									if (aArtGruppeÜbergeben) {
-										erstelleArtgruppenListeFürNestedArtgruppeLat();
-									} else {
-										erstelleArgruppenListeLat();
-									}
-								}
+					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
+					//sonst aus der sessionStorage
+					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
+						var viewname = 'evab/User?key="' + Username + '"';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function(data) {
+								User = data.rows[0].value;
+								ArtenSprache = User.ArtenSprache;
+								sessionStorage.setItem("ArtenSprache", ArtenSprache);
+								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
+								UserId = User._id;
+								sessionStorage.setItem("UserId", UserId);
+								sessionStorage.setItem("Autor", User.Autor);
 							}
+						});
+					}
+					ArtenSprache = sessionStorage.getItem("ArtenSprache");
+					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					var ButtonSpracheText;
+					switch(ArtenSprache) {
+					case "Lateinisch":
+						$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
+						if (aArtGruppeÜbergeben) {
+							//Artgruppen werden übergeben, wenn die Art geändert wird, die Artgruppe aber bleiben soll
+							//und die Artgruppe ihre Arten in einer nested list darstellt
+							//sonst wird direkt Artenliste.html aufgerufen
+							erstelleArtgruppenListeFürNestedArtgruppeLat();
+						} else {
+							erstelleArgruppenListeLat();
 						}
-					});
+						break;
+					case "Deutsch":
+						$("#agl_ButtonSprache .ui-btn-text").text("Lateinisch");
+						if (aArtGruppeÜbergeben) {
+							erstelleArtgruppenListeFürNestedArtgruppeDeutsch();
+						} else {
+							erstelleArgruppenListeDeutsch();
+						}
+						break;
+					}
 				}
 
 				function erstelleArtgruppenListeFürNestedArtgruppeLat() {
@@ -320,8 +317,10 @@
 						success: function(doc) {
 							if (ButtonText.slice(0, 3) == "Deu") {
 								doc.ArtenSprache = "Deutsch";
+								sessionStorage.setItem("ArtenSprache", "Deutsch");
 							} else {
 								doc.ArtenSprache = "Lateinisch";
+								sessionStorage.setItem("ArtenSprache", "Lateinisch");
 							}
 							$db.saveDoc(doc, {
 								success: function() {

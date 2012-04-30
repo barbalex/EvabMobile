@@ -219,12 +219,16 @@ function melde(Meldung) {
 		});
 };
 
-function speichereNeueBeob(UserName, aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
+function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
+//aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
+	if (typeof Username === "undefined" || !Username) {
+		prüfeAnmeldung();
+	}
 	var doc = {};
-	doc.User = UserName;
+	doc.User = Username;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = ArtId;
@@ -303,9 +307,6 @@ function speichereNeueBeob_03(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
-	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
-	}
 	$db.view('evab/User?key="' + doc.User + '"', {
 		success: function(Userliste) {
 			User = Userliste.rows[0].value;
@@ -573,12 +574,14 @@ function öffneMeineEinstellungen(Pfad) {
 	if (typeof Username === "undefined" || !Username) {
 		prüfeAnmeldung();
 	}
-	if (typeof sessionStorage.getItem("UserId") === "undefined" || Username === null) {
+	if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
 			success: function(data) {
+				var User = data.rows[0].value;
 				UserId = data.rows[0].value._id;
 				sessionStorage.setItem("UserId", UserId);
+				sessionStorage.setItem("Autor", User.Autor);
 				window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
 			}
 		});
@@ -1721,12 +1724,16 @@ function speichereLetzteUrl_2() {
 	//nur speichern, wann anders als zuletzt
 	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
 		//UserId nur abfragen, wenn nicht schon erfolgt
-		if (typeof sessionStorage.getItem("UserId") === "undefined" || sessionStorage.getItem("UserId") === null) {
+		if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
 				success: function(data) {
+					var User = data.rows[0].value;
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
-					UserId = data.rows[0].value._id;
+					UserId = User._id;
 					sessionStorage.setItem("UserId", UserId);
+					//weitere anderswo benutzte Variabeln verfügbar machen
+					sessionStorage.setItem("ArtenSprache", User.ArtenSprache);
+					sessionStorage.setItem("Autor", User.Autor);
 					speichereLetzteUrl_3(url);
 				}
 			});
@@ -1739,9 +1746,9 @@ function speichereLetzteUrl_2() {
 
 function speichereLetzteUrl_3(url) {
 	$db.openDoc(UserId, {
-		success: function(doc) {
-			doc.LetzteUrl = url;
-			$db.saveDoc(doc);
+		success: function(User) {
+			User.LetzteUrl = url;
+			$db.saveDoc(User);
 			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespaart werden kann
 			LetzteUrl = url;
 		}
@@ -2011,7 +2018,10 @@ function erstelleAttachments(doc) {
 
 //kreiert ein neues Feld
 //erwartet den Teil des Pfads, der links von FeldEdit ist
-function neuesFeld(Username, Pfad) {
+function neuesFeld(Pfad) {
+	if (typeof Username === "undefined" || !Username) {
+		prüfeAnmeldung();
+	}
 	var Feld = {};
 	Feld.Typ = "Feld";
 	Feld.User = Username;
@@ -2037,8 +2047,7 @@ function prüfeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	if (typeof sessionStorage.getItem("Username") === "undefined" || sessionStorage.getItem("Username") === null) {
-		alert("evab.js prüfeAnmeldung: session wird neu abgerufen");
+	if (typeof sessionStorage.getItem("Username") === "undefined" || !sessionStorage.getItem("Username")) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
