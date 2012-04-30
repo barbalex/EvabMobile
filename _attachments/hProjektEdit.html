@@ -186,11 +186,11 @@
 				function löscheProjekt() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
 					var Rückmeldung;
-					//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof ProjektListe !== "undefined") {
-						ProjektListe = undefined;
+					//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof Projektliste !== "undefined") {
+						Projektliste = undefined;
 					}
-					sessionStorage.removeItem("ProjektListe");
+					sessionStorage.removeItem("Projektliste");
 					ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
 					if (ArtenGelöscht == false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");

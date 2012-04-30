@@ -200,6 +200,7 @@
 					if (typeof BeobListe != "undefined") {
 						BeobListe = undefined;
 					}
+					sessionStorage.removeItem("BeobListe");
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
 						window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
@@ -272,63 +273,74 @@
 
 				//BeobListe in BeobList.html vollständig neu aufbauen
 				function erstelleBeobListe() {
-					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
-					}
 					$("#beobachtungen").empty();
-					$db = $.couch.db("evab");
-					$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
-						success: function(data) {
-							//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
-							//bei neuen Beobachtungen wird BeobListe wieder auf undefined gesetzt
-							BeobListe = data;
-							var i;
-							var anzBeob = 0;
-							var beob;
-							var ListItemContainer = "";
-							
-							for(i in data.rows) {                    //Beobachtungen zählen
-								anzBeob += 1;
-							}
-
-							var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
-							if (anzBeob == 1) {
-								Titel2 = " Beobachtung";
-							}
-							$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
-
-							if (anzBeob == 0) {
-								ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
-							} else {
-								//data.rows.reverse();                 //zuletzt erfasste sind zuoberst
-								for(i in data.rows) {                //Liste aufbauen
-									beob = data.rows[i].value;
-									key = data.rows[i].key;
-									var Datum = beob.zDatum;
-									var Zeit = beob.zUhrzeit;
-									var ArtGruppe = beob.aArtGruppe;
-									var ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-									var ArtName = beob.aArtName;
-									var externalPage = "BeobEdit.html?id=" + beob._id;
-									ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-									ListItemContainer += beob._id;
-									ListItemContainer += "\"><a href=\"",
-									ListItemContainer += externalPage;
-									ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
-									ListItemContainer += ImageLink;
-									ListItemContainer += "\" /><h3 class=\"aArtName\">";
-									ListItemContainer += ArtName;
-									ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-									ListItemContainer += Datum;
-									ListItemContainer += "&nbsp; &nbsp;";
-									ListItemContainer += Zeit;
-									ListItemContainer += "<\/p><\/a> <\/li>";
-								}
-							}
-							$("#beobachtungen").html(ListItemContainer);
-							$("#beobachtungen").listview("refresh");
+					//hat BeobEdit.html eine BeobListe übergeben?
+					if (typeof sessionStorage.getItem("BeobListe") !== "undefined" && sessionStorage.getItem("BeobListe")) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						BeobListe = JSON.parse(sessionStorage.getItem("BeobListe"));
+						erstelleBeobListe_2()
+					} else {
+						if (typeof Username === "undefined" || !Username) {
+							prüfeAnmeldung();
 						}
-					});
+						$db = $.couch.db("evab");
+						$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
+							success: function(data) {
+								//BeobListe für BeobEdit bereitstellen
+								BeobListe = data;
+								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.setItem("BeobListe", JSON.stringify(BeobListe));
+								erstelleBeobListe_2()
+							}
+						});
+					}
+				}
+
+				function erstelleBeobListe_2() {
+					var i;
+					var anzBeob = 0;
+					var beob;
+					var ListItemContainer = "";
+					
+					for(i in BeobListe.rows) {                    //Beobachtungen zählen
+						anzBeob += 1;
+					}
+
+					var Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+					if (anzBeob == 1) {
+						Titel2 = " Beobachtung";
+					}
+					$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
+
+					if (anzBeob == 0) {
+						ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
+					} else {
+						for(i in BeobListe.rows) {                //Liste aufbauen
+							beob = BeobListe.rows[i].value;
+							key = BeobListe.rows[i].key;
+							var Datum = beob.zDatum;
+							var Zeit = beob.zUhrzeit;
+							var ArtGruppe = beob.aArtGruppe;
+							var ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
+							var ArtName = beob.aArtName;
+							var externalPage = "BeobEdit.html?id=" + beob._id;
+							ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+							ListItemContainer += beob._id;
+							ListItemContainer += "\"><a href=\"",
+							ListItemContainer += externalPage;
+							ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+							ListItemContainer += ImageLink;
+							ListItemContainer += "\" /><h3 class=\"aArtName\">";
+							ListItemContainer += ArtName;
+							ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+							ListItemContainer += Datum;
+							ListItemContainer += "&nbsp; &nbsp;";
+							ListItemContainer += Zeit;
+							ListItemContainer += "<\/p><\/a> <\/li>";
+						}
+					}
+					$("#beobachtungen").html(ListItemContainer);
+					$("#beobachtungen").listview("refresh");
 				}
 			});
 		</script>

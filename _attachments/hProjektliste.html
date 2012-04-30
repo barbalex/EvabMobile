@@ -98,10 +98,10 @@
 
 				function erstelleProjektliste() {
 					$("#Projekte").empty();
-					//hat ProjektEdit.html eine ProjektListe übergeben?
-					if (typeof sessionStorage.getItem("ProjektListe") !== "undefined" && sessionStorage.getItem("ProjektListe")) {
+					//hat ProjektEdit.html eine Projektliste übergeben?
+					if (typeof sessionStorage.getItem("Projektliste") !== "undefined" && sessionStorage.getItem("Projektliste")) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
-						ProjektListe = JSON.parse(sessionStorage.getItem("ProjektListe"));
+						Projektliste = JSON.parse(sessionStorage.getItem("Projektliste"));
 						erstelleProjektliste_2();
 					} else {
 						if (typeof Username === "undefined" || !Username) {
@@ -110,8 +110,8 @@
 				  		$db = $.couch.db("evab");
 						$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
 							success: function(data) {
-								Projektliste = data;
 								//Projektliste für ProjektEdit bereitstellen
+								Projektliste = data;
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 								sessionStorage.setItem("Projektliste", JSON.stringify(Projektliste));
 								erstelleProjektliste_2();

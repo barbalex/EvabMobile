@@ -516,8 +516,8 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							if (typeof OrtListe != "undefined") {
 								OrtListe = undefined;
-								sessionStorage.removeItem("OrtListe");
 							}
+							sessionStorage.removeItem("OrtListe");
 							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 						},
 						error: function() {
@@ -551,8 +551,8 @@ function erstelleNeuenRaum(hProjektId) {
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof RaumListe != "undefined") {
 						RaumListe = undefined;
-						sessionStorage.removeItem("RaumListe");
 					}
+					sessionStorage.removeItem("RaumListe");
 					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
 				},
 				error: function() {
@@ -571,10 +571,10 @@ function erstelleNeuesProjekt() {
 	$db.saveDoc(hProjekt, {
 		success: function(data) {
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			if (typeof Projektliste != "undefined") {
+			if (typeof Projektliste !== "undefined") {
 				Projektliste = undefined;
-				sessionStorage.removeItem("Projektliste");
 			}
+			sessionStorage.removeItem("Projektliste");
 			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target="_self");
 		},
 		error: function() {

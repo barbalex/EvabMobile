@@ -112,6 +112,15 @@
 		</div><!-- /footer -->
 		
 		<script type="text/javascript">
+			$("#BeobEditPage").on("pageshow", function() {
+				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				if (BeobId == "") {
+					BeobId = get_url_param("id");
+				}
+				//Felder aufbauen und letzte url merken
+				initiiereBeobEdit(BeobId);
+			});
+
 			$(":jqmData(role='page')").on("pagecreate", function() {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
@@ -123,6 +132,7 @@
 					if (typeof BeobListe !== "undefined") {
 						BeobListe = undefined;
 					}
+					sessionStorage.removeItem("BeobListe");
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?Status=neu&Von=BeobEdit", reloadPage: true});
 						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
@@ -344,21 +354,31 @@
 				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
 					//prüfen, ob BeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof BeobListe == "undefined") {
-						if (typeof Username === "undefined" || !Username) {
-							prüfeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
-							success: function(data) {
-								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
-								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
-								BeobListe = data;
-								nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
-							}
-						});
-					} else {
+					if (typeof BeobListe !== "undefined") {
+						//globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+					} else {
+						//hat BeobListe.html eine BeobListe übergeben?
+						if (typeof sessionStorage.getItem("BeobListe") !== "undefined" && sessionStorage.getItem("BeobListe")) {
+							BeobListe = JSON.parse(sessionStorage.getItem("BeobListe"));
+							nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+						} else {
+							//keine Projektliste übergeben
+							//neu aus DB erstellen
+							if (typeof Username === "undefined" || !Username) {
+								prüfeAnmeldung();
+							}
+							$db = $.couch.db("evab");
+							$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
+								success: function(data) {
+									//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
+									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
+									BeobListe = data;
+									sessionStorage.setItem("BeobListe", JSON.stringify(BeobListe));
+									nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+								}
+							});
+						}
 					}
 				}
 
@@ -618,19 +638,17 @@
 				  	})
 				}
 				
-				function löscheBeobachtung(event) {
-					// First open doc based on ID in order to get full document
+				function löscheBeobachtung() {
+					//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof BeobListe !== "undefined") {
+						BeobListe = undefined;
+					}
+					sessionStorage.removeItem("BeobListe");
 					$db = $.couch.db("evab");
 					$db.openDoc(BeobId, {
 						success: function(document) {
-							// Then use the opened doc as reference to remove
 							$db.removeDoc(document, {
 								success: function() {
-									//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-									//macht eigentlich erst Sinn, wenn die BeobListe mit changePage geöffnet wird
-									if (typeof BeobListe != "undefined") {
-										BeobListe = undefined;
-									}
 									window.open("BeobListe.html", target = '_self');
 								},
 								error: function() {
@@ -695,15 +713,6 @@
 						}
 					});
 				}	
-			});
-
-			$(":jqmData(role='page')").on("pageshow", function() {
-				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (BeobId == "") {
-					BeobId = get_url_param("id");
-				}
-				//Felder aufbauen und letzte url merken
-				initiiereBeobEdit(BeobId);
 			});
 		</script>
 	</div>
