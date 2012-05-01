@@ -65,20 +65,23 @@
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldName = $(this).prop("id");
-					var FeldId = $(this).attr("feldid");
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
 						success: function (Feld) {
-							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
-							if ($("#" + FeldName).prop("checked") == true) {
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
+							if ($("#" + FeldName).prop("checked") === true) {
 								SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx!=-1) SichtbarImModusHierarchisch.splice(idx, 1);
+								idx = SichtbarImModusHierarchisch.indexOf(Username);
+								if(idx !== -1) {
+									SichtbarImModusHierarchisch.splice(idx, 1);
+								}
 							}
 							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
 							$db.saveDoc(Feld, {
@@ -87,7 +90,7 @@
 								}
 							});
 							//Globale Variable für FeldlistehBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlistehBeobEdit != "undefined") {
+							if (typeof FeldlistehBeobEdit !== "undefined") {
 								FeldlistehBeobEdit = undefined;
 							}
 						},
@@ -102,7 +105,7 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlistehBeobEdit != "undefined") {
+					if (typeof FeldlistehBeobEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
@@ -117,24 +120,25 @@
 				}
 
 				function erstelleSichtbareFelder_2() {
+					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-					var anzFelder = 0;
+					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+					anzFelder = 0;
 					for (i in FeldlistehBeobEdit.rows) {
-						var Feld = FeldlistehBeobEdit.rows[i].value;
+						Feld = FeldlistehBeobEdit.rows[i].value;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 							// nur Artfelder, im Formular enthaltene und die ArtId nicht anzeigen
-							if (Feld.Hierarchiestufe == "Art" && (Feld.FeldName != "aArtGruppe") && (Feld.FeldName != "aArtName") && (Feld.FeldName != "aArtId")) {
+							if (Feld.Hierarchiestufe === "Art" && (Feld.FeldName !== "aArtGruppe") && (Feld.FeldName !== "aArtName") && (Feld.FeldName !== "aArtId")) {
 								anzFelder += 1;
-								var FeldName = Feld.FeldName;
-								var FeldBeschriftung = Feld.FeldBeschriftung;
-								if (Feld.ArtGruppe.indexOf(aArtGruppe) == -1) {
+								FeldName = Feld.FeldName;
+								FeldBeschriftung = Feld.FeldBeschriftung;
+								if (Feld.ArtGruppe.indexOf(aArtGruppe) === -1) {
 									FeldBeschriftung += " (nicht sichtbar in Artgruppe " + aArtGruppe + ")";
 								}
-								var ListItem = "\n\t\t\<label for='";
+								ListItem = "\n\t\t\<label for='";
 								ListItem += FeldName;
 								ListItem += "'>";
 								ListItem += FeldBeschriftung;
@@ -148,7 +152,7 @@
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
 								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
+									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1){
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}

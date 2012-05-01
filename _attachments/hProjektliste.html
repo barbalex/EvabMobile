@@ -123,26 +123,23 @@
 					}
 
 					function erstelleProjektliste_2() {
-						var i;
-						var anzProj = 0;
-						var Proj;
-						var externalPage;
-						var listItem;
-						var ListItemContainer = "";
-						for(i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+						var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
+						anzProj = 0;
+						ListItemContainer = "";
+						for (i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
 							anzProj += 1;
 						}
 
-						var Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
-						if (anzProj==1){
+						Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
+						if (anzProj === 1){
 							Titel2 = " Projekt";
 						}
 						$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
-						if (anzProj == 0) {
+						if (anzProj === 0) {
 							ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
 						} else {
-							for(i in Projektliste.rows) {			//Liste aufbauen
+							for (i in Projektliste.rows) {			//Liste aufbauen
 								Proj = Projektliste.rows[i].value;
 								key = Projektliste.rows[i].key;
 								pName = key[1];
@@ -231,7 +228,7 @@
 								var anzOrt = 0;
 								var Ort;
 								var infowindow = new google.maps.InfoWindow();
-								for(i in data.rows) {
+								for (i in data.rows) {
 									//Orte zählen
 									anzOrt += 1;
 								}
@@ -255,7 +252,7 @@
 									var bounds = new google.maps.LatLngBounds();
 									//für alle Orte Marker erstellen
 									var markers = [];
-									for(i in data.rows) {
+									for (i in data.rows) {
 										Ort = data.rows[i].doc;
 										var hOrtId = Ort._id;
 										var hRaumId = Ort.hRaumId;

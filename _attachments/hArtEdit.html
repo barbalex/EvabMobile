@@ -93,7 +93,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (typeof hBeobId == "undefined") {
+				if (typeof hBeobId === "undefined") {
 					hBeobId = get_url_param("id");
 				}
 				initiierehBeobEdit(hBeobId);
@@ -101,18 +101,17 @@
 
 			$("#hArtEditPage").on("pageinit", function () {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (typeof hBeobId == "undefined") {
+				if (typeof hBeobId === "undefined") {
 					hBeobId = get_url_param("id");
 				}
 
-				var Feldliste;
-
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
@@ -120,17 +119,19 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hArtEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("#" + this.name).serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("#" + this.name).serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
-					var _attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					var _attachments;
+					_attachments = $("#_attachments").val();
+					if (_attachments && _attachments.length !== 0) {
 						speichereAnhänge(hBeobId);
 					}
 				});
@@ -213,14 +214,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#hArtEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible') ) {
 						// Left arrow
 						if( e.keyCode === $.mobile.keyCode.LEFT ){
 							nächsteVorigeArt(hBeobId, "vorige");
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsteVorigeArt(hBeobId, "nächste");
 							e.preventDefault();
 						}
@@ -228,8 +229,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(hBeobId, {
 						success: function (hBeob) {
@@ -245,12 +247,13 @@
 
 				function zuArtgruppenliste(Status) {
 					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hArtListe != "undefined") {
+					var link;
+					if (typeof hArtListe !== "undefined") {
 						hArtListe = undefined;
 					}
 					sessionStorage.removeItem("hArtListe");
-					var link = "Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
-					if (Status == 'neu') {
+					link = "Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					if (Status === 'neu') {
 						link += "&Status=neu";
 					}
 					if ($('#agl_Page').length > 0) {
@@ -266,14 +269,16 @@
 				}
 
 				function zuArtliste(aArtGruppe) {
+					var viewname;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					var viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							var ArtGruppen_2_L;
+							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
@@ -383,7 +388,8 @@
 				}
 
 				function löscheBeobachtung() {
-					var docId = hBeobId;
+					var docId;
+					docId = hBeobId;
 					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof hArtListe !== "undefined") {
 						hArtListe = undefined;
@@ -478,7 +484,7 @@
 					var ArtIdNächste;
 					var ArtIdVorige;
 					var AnzArt;
-					for(i in hArtListe.rows) {
+					for (i in hArtListe.rows) {
 						ArtIdAktuell = hArtListe.rows[i].value._id;
 						var AnzArt = hArtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ArtIdAktuell == IdAktuell) {

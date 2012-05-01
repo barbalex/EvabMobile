@@ -263,7 +263,7 @@
 						success: function (data) {
 							var i;
 							var RaumId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								RaumId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(RaumId);
 								if (DokumentGelöscht == false) {
@@ -287,7 +287,7 @@
 						success: function (data) {
 							var i;
 							var OrtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								OrtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(OrtId);
 								if (DokumentGelöscht == false) {
@@ -311,7 +311,7 @@
 						success: function (data) {
 							var i;
 							var ZeitId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
 								if (DokumentGelöscht == false) {
@@ -335,7 +335,7 @@
 						success: function (data) {
 							var i;
 							var ArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
 								if (DokumentGelöscht == false) {
@@ -383,7 +383,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -407,7 +407,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -431,7 +431,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -455,7 +455,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -575,7 +575,7 @@
 					var ProjIdNächstes;
 					var ProjIdVoriges;
 					var AnzProj;
-					for(i in Projektliste.rows) {
+					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].value._id;
 						var AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ProjIdAktuell == IdAktuell) {

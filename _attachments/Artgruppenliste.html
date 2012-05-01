@@ -179,14 +179,14 @@
 					$db.view(viewname, {
 						success: function (data) {
 							ArtGruppen = data;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtGruppe = ArtGruppen.rows[i].key;
 								row = ArtGruppen.rows[i].value;
 								AnzArten = row.AnzArten;
 								ArtGruppen_2_L = row.ArtGruppen_2_L;
 								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 								ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-								for(y in ArtGruppen_2_L) {
+								for (y in ArtGruppen_2_L) {
 									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
 									ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
 								}
@@ -215,14 +215,14 @@
 					$db.view(viewname, {
 						success: function (data) {
 							ArtGruppen = data;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtGruppe = ArtGruppen.rows[i].key;
 								row = ArtGruppen.rows[i].value;
 								AnzArten = row.AnzArtenDeutsch;
 								ArtGruppen_2_D = row.ArtGruppen_2_D;
 								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 								ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-								for(y in ArtGruppen_2_D) {
+								for (y in ArtGruppen_2_D) {
 									ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
 									ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
 								}
@@ -264,7 +264,7 @@
 					var row;
 					var ArtGruppen_2_L;
 					var AnzArten;
-					for(i in Artgruppenliste.rows) {
+					for (i in Artgruppenliste.rows) {
 						ArtGruppe = Artgruppenliste.rows[i].key;
 						row = Artgruppenliste.rows[i].value;
 						AnzArten = row.AnzArten;
@@ -274,7 +274,7 @@
 							ListItemContainer += "<ul>";
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-							for(y in ArtGruppen_2_L) {
+							for (y in ArtGruppen_2_L) {
 								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
 								ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
 							}
@@ -317,7 +317,7 @@
 					var row;
 					var ArtGruppen_2_D;
 					var AnzArten;
-					for(i in Artgruppenliste.rows) {
+					for (i in Artgruppenliste.rows) {
 						ArtGruppe = Artgruppenliste.rows[i].key;
 						row = Artgruppenliste.rows[i].value;
 						AnzArten = row.AnzArtenDeutsch;
@@ -327,7 +327,7 @@
 							ListItemContainer += "<ul>";
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-							for(y in ArtGruppen_2_D) {
+							for (y in ArtGruppen_2_D) {
 								ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
 								ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
 							}

@@ -183,7 +183,7 @@
 							var externalPage;
 							var listItem;
 							var ListItemContainer = "";
-							for(i in data.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
+							for (i in data.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
 								anzZeit += 1;
 							}
 
@@ -196,7 +196,7 @@
 							if (anzZeit == 0) {
 								ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
 							} else {
-								for(i in data.rows) {
+								for (i in data.rows) {
 									Zeit = data.rows[i].value;
 									key = data.rows[i].key;
 									var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];

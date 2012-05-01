@@ -207,7 +207,7 @@
 					var externalPage;
 					var listItem;
 					var ListItemContainer = "";
-					for(i in RaumListe.rows) {                    //Räume zählen
+					for (i in RaumListe.rows) {                    //Räume zählen
 						anzRaum += 1;
 					}
 					var Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
@@ -218,7 +218,7 @@
 					if (anzRaum == 0) {
 						ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 					} else {
-						for(i in RaumListe.rows) {                //Liste aufbauen
+						for (i in RaumListe.rows) {                //Liste aufbauen
 							Raum = RaumListe.rows[i].value;
 							key = RaumListe.rows[i].key;
 							rName = Raum.rName;

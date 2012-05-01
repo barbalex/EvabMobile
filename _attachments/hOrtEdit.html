@@ -466,7 +466,7 @@
 						success: function (data) {
 							var i;
 							var ArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
 								if (DokumentGelöscht == false) {
@@ -492,7 +492,7 @@
 						success: function (data) {
 							var i;
 							var ZeitId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
 								if (DokumentGelöscht == false) {
@@ -517,7 +517,7 @@
 					return $db.view(viewname, {
 						success: function (data) {
 							var i;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								AnzahlZeiten = data.rows[i].value;
 							}
 							return AnzahlZeiten;
@@ -561,7 +561,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -585,7 +585,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							var hArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
 									success: function (hArt) {
@@ -730,7 +730,7 @@
 					var OrtIdNächster;
 					var OrtIdVoriger;
 					var AnzOrt;
-					for(i in OrtListe.rows) {
+					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
 						var AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (OrtIdAktuell == IdAktuell) {

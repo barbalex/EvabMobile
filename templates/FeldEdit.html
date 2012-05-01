@@ -65,7 +65,7 @@
 									var anzVorkommen = 0;
 									var Datensatz;
 									var Feld;
-									for(i in data.rows) {
+									for (i in data.rows) {
 										Datensatz = data.rows[i].doc; 
 										Feld = eval("Datensatz." + "{{FeldName}}");
 										if (Feld) {
@@ -226,7 +226,7 @@
 													var anzVorkommen = 0;
 													var Datensatz;
 													var Feld;
-													for(i in data.rows) {
+													for (i in data.rows) {
 														Datensatz = data.rows[i].doc;
 														Feld = eval("Datensatz." + "{{FeldName}}");
 														if (Feld) {
@@ -301,7 +301,7 @@
 							var i;
 							var key;
 							var Feld;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								//kommt ein Feld mit diesem Namen schon vor?
 								if (data.rows[i].value) {
 									Feld = data.rows[i].value;
@@ -391,7 +391,7 @@
 							var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
 							var listItem;
 							var ArtGruppenArray = ArtGruppenArrayIn || [];
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtGruppe = data.rows[i].key;
 								listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
 								listItem += ArtGruppe;
@@ -449,7 +449,7 @@
 							var FeldIdAktuell;
 							var FeldIdNächstes;
 							var AnzFelder = data.rows.length -1;  
-							for(i in data.rows) {
+							for (i in data.rows) {
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -502,7 +502,7 @@
 							var FeldIdAktuell;
 							var FeldIdVoriges;
 							var AnzFelder = data.rows.length -1;  
-							for(i in data.rows) {
+							for (i in data.rows) {
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -574,7 +574,7 @@
 								var Feld; 
 								var Optionen = [];
 								Optionen.push("");
-								for(i in data.rows) {                 
+								for (i in data.rows) {                 
 									Feld = data.rows[i].value;
 									//Liste aufbauen
 									//Nur eigene Felder und offizielle

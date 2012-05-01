@@ -213,7 +213,7 @@
 					var externalPage;
 					var listItem;
 					var ListItemContainer = "";
-					for(i in hArtListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
+					for (i in hArtListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
 						anzArt += 1;
 					}
 
@@ -226,7 +226,7 @@
 					if (anzArt === 0) {
 						ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
 					} else {
-						for(i in hArtListe.rows) {                //Liste aufbauen
+						for (i in hArtListe.rows) {                //Liste aufbauen
 							hBeob = hArtListe.rows[i].value;
 							key = hArtListe.rows[i].key;
 							aArtGruppe = hBeob.aArtGruppe;

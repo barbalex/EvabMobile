@@ -231,7 +231,7 @@
 		var externalPage;
 		var listItem;
 		var ListItemContainer = "";
-		for(i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
+		for (i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
 			anzOrt += 1;
 		}
 		var Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
@@ -243,7 +243,7 @@
 		if (anzOrt == 0) {
 			ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
 		} else {
-			for(i in OrtListe.rows) {                //Liste aufbauen
+			for (i in OrtListe.rows) {                //Liste aufbauen
 				Ort = OrtListe.rows[i].value;
 				key = OrtListe.rows[i].key;
 				externalPage = "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;

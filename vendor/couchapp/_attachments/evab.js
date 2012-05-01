@@ -661,7 +661,7 @@ function generiereHtmlFuerArtEditForm(Art) {
 	var Feldname;
 	var Feldwert;
 	var Datensammlung;
-	for(i in Art) {              
+	for (i in Art) {              
 		if (i.slice(0, 13) == "Datensammlung") {
 			if (Art[i] !== null) {
 				Titel = Art[i].Datensammlung;
@@ -820,7 +820,7 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	var ArtGruppe = Beob.aArtGruppe;
-	for(i in Feldliste.rows) {              
+	for (i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -918,7 +918,7 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in FeldlisteProjektEdit.rows) {
+	for (i in FeldlisteProjektEdit.rows) {
 		Feld = FeldlisteProjektEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1014,7 +1014,7 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in Feldliste.rows) {
+	for (i in Feldliste.rows) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1124,7 +1124,7 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in FeldlisteOrtEdit.rows) {              
+	for (i in FeldlisteOrtEdit.rows) {              
 		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1207,7 +1207,7 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	var ListItem = "";
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
-	for(i in FeldlisteZeitEdit.rows) {              
+	for (i in FeldlisteZeitEdit.rows) {              
 		Feld = FeldlisteZeitEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1333,7 +1333,7 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	var HtmlContainer = "";
 	var Status = get_url_param("Status");
 	var ArtGruppe = Beob.aArtGruppe;
-	for(i in Feldliste.rows) {              
+	for (i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1483,7 +1483,7 @@ function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optione
 function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 	var i;
 	var HtmlContainer = "";
-	for(i in Optionen) {
+	for (i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t\t<label for='";
 		ListItem += Option;
@@ -1521,7 +1521,7 @@ function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) 
 function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 	var i;
 	var HtmlContainer = "";
-	for(i in Optionen) {
+	for (i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t\t<label for='";
 		ListItem += Option;
@@ -1574,7 +1574,7 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	var i;
 	var HtmlContainer = "\n\t\t<option value=''></option>";
-	for(i in Optionen) {
+	for (i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t<option value='";
 		ListItem += Option;
@@ -1596,7 +1596,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	var i;
 	var HtmlContainer = "\n\t\t<option value=''></option>";
-	for(i in Optionen) {
+	for (i in Optionen) {
 		var Option = Optionen[i];
 		var ListItem = "\n\t\t<option value='";
 		ListItem += Option;
@@ -1821,7 +1821,7 @@ function erstelleKarteFürRaum(RaumId) {
 			var anzOrt = 0;
 			var Ort;
 			var infowindow = new google.maps.InfoWindow();
-			for(i in data.rows) {
+			for (i in data.rows) {
 				//Orte zählen
 				anzOrt += 1;
 			}
@@ -1845,7 +1845,7 @@ function erstelleKarteFürRaum(RaumId) {
 				var bounds = new google.maps.LatLngBounds();
 				//für alle Orte Marker erstellen
 				var markers = [];
-				for(i in data.rows) {
+				for (i in data.rows) {
 					Ort = data.rows[i].doc;
 					var hOrtId = Ort._id;
 					var hRaumId = Ort.hRaumId;
@@ -1922,7 +1922,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 			var anzOrt = 0;
 			var Ort;
 			var infowindow = new google.maps.InfoWindow();
-			for(i in data.rows) {
+			for (i in data.rows) {
 				//Orte zählen
 				anzOrt += 1;
 			}
@@ -1946,7 +1946,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 				var bounds = new google.maps.LatLngBounds();
 				//für alle Orte Marker erstellen
 				var markers = [];
-				for(i in data.rows) {
+				for (i in data.rows) {
 					Ort = data.rows[i].doc;
 					var hOrtId = Ort._id;
 					var hRaumId = Ort.hRaumId;

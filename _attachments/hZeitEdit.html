@@ -299,7 +299,7 @@
 						success: function (data) {
 							var i;
 							var ArtId;
-							for(i in data.rows) {
+							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								löscheDokument(ArtId);
 							}
@@ -340,7 +340,7 @@
 									$db.view(viewname, {
 										success: function (data) {
 											var hArtId;
-											for(i in data.rows) {
+											for (i in data.rows) {
 												hArtId = data.rows[i].key[1];
 												$db.openDoc(hArtId, {
 													success: function (hArt) {
@@ -477,7 +477,7 @@
 					var ZeitIdNächste;
 					var ZeitIdVorige;
 					var AnzZeit;
-					for(i in ZeitListe.rows) {
+					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
 						var AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ZeitIdAktuell == IdAktuell) {
