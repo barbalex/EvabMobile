@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -61,7 +61,7 @@
 		var zurueck = get_url_param('zurueck') || "BeobListe.html";
 		
 		if (typeof Username === "undefined" || !Username) {
-			prüfeAnmeldung();
+			pruefeAnmeldung();
 		}
 
 		speichereLetzteUrl();
@@ -70,7 +70,7 @@
 		//$("#FeldListe").empty();
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
-			success: function(data) {
+			success: function (data) {
 				var i;                      //prüfen, ob alle benutzt
 				var Feld;
 				var ImageLink;
@@ -110,14 +110,14 @@
 		});
 
 		//Menu aufbauen
-		$("#FeldListePageHeader").on('click', '#Menu', function(){
+		$("#FeldListePageHeader").on('click', '#Menu', function (){
 			erstelleMenuFürFelder(this, "");
 		});
 
 		//BackButton steuern
-		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function(){
+		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (){
 			var zurueck = get_url_param('zurueck') || "BeobListe.html";
-			window.open(zurueck, target="_self");
+			window.open(zurueck, target = "_self");
 		});
 	}
 	

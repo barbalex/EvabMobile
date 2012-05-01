@@ -9,7 +9,7 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>
@@ -64,15 +64,15 @@
 
 	    var Status = get_url_param("Status");
 	    if (Status !== "neu") {
-	    	prüfeAnmeldung_index();
+	    	pruefeAnmeldung_index();
 	    }
 
-		$("#SubmitButton").tap(function(event) {
+		$("#SubmitButton").tap(function (event) {
 			meldeUserAn();
 		});
 
 		//Reaktion auf Enter-Taste
-		$("#LoginForm").on("keydown", "#Passwort", function(e) {
+		$("#LoginForm").on("keydown", "#Passwort", function (e) {
 			if (e.keyCode === 13) {
 		    	meldeUserAn();
 		    	e.preventDefault();
@@ -96,10 +96,10 @@
 			$.couch.login({
 				name : UserName,
 				password : Passwort,
-				success : function(r) {
+				success : function (r) {
 					authentifiziereUser();
 				},
-				error: function() {
+				error: function () {
 					melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
 				}
 			});
@@ -108,7 +108,7 @@
 	
 	function authentifiziereUser() {
 		$.couch.session({
-			success : function(r) {
+			success : function (r) {
 				var userCtx = r.userCtx;
 				Username = userCtx.name;
 				sessionStorage.setItem("Username", Username);
@@ -123,14 +123,14 @@
 		});
 	}
 
-	function prüfeAnmeldung_index() {		
+	function pruefeAnmeldung_index() {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
-		    success: function(session) {
+		    success: function (session) {
 		    	Username = session.userCtx.name;
 		    	sessionStorage.setItem("Username", Username);
 		    	if(session.userCtx.name !== (undefined || null)) {
@@ -146,12 +146,12 @@
 		//_replicate(name, pass);
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
-			success: function(data) {
+			success: function (data) {
 				var doc = data.rows[0].value;
 				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
 				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 				if (LetzteUrl === "/evab/_design/evab/index.html") {LetzteUrl = "BeobListe.html"}
-				window.open(LetzteUrl, target="_self");
+				window.open(LetzteUrl, target = "_self");
 			}
 		});
 	}

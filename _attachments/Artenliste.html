@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
   	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -46,7 +46,7 @@
 			<p id="al_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$(":jqmData(role='page')").on("pageshow", function () {
 				UserId = "";
 				
 				var ArtGruppe = get_url_param("aArtGruppe");
@@ -60,7 +60,7 @@
 
 				erstelleArtenliste();
 
-				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
+				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
 					event.preventDefault();
 					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					var ArtId = $(this).attr("artid");
@@ -83,15 +83,15 @@
 					}
 				});
 
-				$("#al_Page").on("click", "#al_ButtonSprache", function(event) {       
+				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {       
 					event.preventDefault();
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var ButtonText = this.text;
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
-						success: function(doc) {
+						success: function (doc) {
 							if (ButtonText.slice(0, 3) == "Deu") {
 								doc.ArtenSprache = "Deutsch";
 								sessionStorage.setItem("ArtenSprache", "Deutsch");
@@ -100,13 +100,13 @@
 								sessionStorage.setItem("ArtenSprache", "Lateinisch");
 							}
 							$db.saveDoc(doc, {
-								success: function() {
+								success: function () {
 									//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 									//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 									//wenn nein: direkt die Artenliste aktualisieren
 									var viewname = 'evab/Artgruppen?key="' + ArtGruppe + '"'; 
 									$db.view(viewname, {
-										success: function(data) {
+										success: function (data) {
 											//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
 											var ArtGruppen_2;
 											if (ButtonText.slice(0, 3) === "Deu") {
@@ -131,12 +131,12 @@
 										}
 									});	
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Sprache nicht verändert");
 								 }
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Sprache nicht verändert");
 						}
 					});
@@ -144,7 +144,7 @@
 
 				function erstelleArtenliste() {
 			  		if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
@@ -152,7 +152,7 @@
 					  	var viewname = 'evab/User?key="' + Username + '"';
 					  	$db = $.couch.db("evab");
 						$db.view(viewname, {
-							success: function(data) {
+							success: function (data) {
 								User = data.rows[0].value;
 								ArtenSprache = User.ArtenSprache;
 								sessionStorage.setItem("ArtenSprache", ArtenSprache);
@@ -187,7 +187,7 @@
 					}
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ListItemContainer = "";
 							var ArtBezeichnung;
@@ -228,7 +228,7 @@
 					}
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ListItemContainer = "";
 							var ArtBezeichnung;

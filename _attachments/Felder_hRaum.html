@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -46,14 +46,14 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$("#Felder_hRaumPage").on("pageshow", function() {
+			$("#Felder_hRaumPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
 
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
 				function erstelleSichtbareFelder() {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
@@ -63,7 +63,7 @@
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeRaum', {
-							success: function(data) {
+							success: function (data) {
 								FeldlisteRaumEdit = data;
 								erstelleSichtbareFelder_2();
 							}
@@ -73,7 +73,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					var anzFelder = 0;
@@ -117,9 +117,10 @@
 				}
 			});
 
-			$("#Felder_hRaumPage").on("pageinit", function() {
+			$("#Felder_hRaumPage").on("pageinit", function () {
 
-				$("#Felder_hRaumPage").on("click", "#Felder_hRaumPage_back", function() {
+				$("#Felder_hRaumPage").on("click", "#Felder_hRaumPage_back", function (event) {
+					event.preventDefault();
 					if ($('#RaumEditPage').length > 0) {
 						$.mobile.changePage($('#RaumEditPage'));
 					} else {
@@ -131,15 +132,15 @@
 				});
 
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function() {
+				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldName = $(this).prop("id");
 					var FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
-						success: function(Feld) {
+						success: function (Feld) {
 							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
 							if ($("#" + FeldName).prop("checked") == true) {
 								SichtbarImModusHierarchisch.push(Username);
@@ -149,7 +150,7 @@
 							}
 							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
@@ -158,7 +159,7 @@
 								FeldlisteRaumEdit = undefined;
 							}
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 						}
 					});

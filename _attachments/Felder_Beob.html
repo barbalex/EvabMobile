@@ -10,7 +10,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -46,7 +46,7 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$("#Felder_BeobPage").on("pageshow", function() {
+			$("#Felder_BeobPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
 
 				//generiert dynamisch die Felder im Checkbox Felder
@@ -60,7 +60,7 @@
 						$db = $.couch.db("evab");
 						//holt die Feldliste aus der DB
 						$db.view('evab/FeldListeBeob', {
-							success: function(data) {
+							success: function (data) {
 								FeldlisteBeobEdit = data;
 								erstelleSichtbareFelder_2();
 							}
@@ -70,7 +70,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					var anzFelder = 0;
@@ -114,18 +114,18 @@
 				}
 			});
 
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function() {
+				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldName = $(this).prop("id");
 					var FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
-						success: function(Feld) {
+						success: function (Feld) {
 							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];
 							if ($("#" + FeldName).prop("checked") === true) {
 								SichtbarImModusEinfach.push(Username);
@@ -135,7 +135,7 @@
 							}
 							Feld.SichtbarImModusEinfach = SichtbarImModusEinfach;
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
@@ -144,13 +144,13 @@
 								FeldlisteBeobEdit = undefined;
 							}
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 						}
 					});
 				});
 
-				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function() {
+				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function () {
 					if ($('#BeobEditPage').length > 0) {
 						$.mobile.changePage($('#BeobEditPage'));
 					} else {
@@ -161,12 +161,12 @@
 					}
 				});
 
-				$("#Feldliste").on("taphold", "input[name='Felder']", function(event) {
+				$("#Feldliste").on("taphold", "input[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					öffneFeld(this.id);
 				});
 
-				$("#Feldliste").on("contextmenu", "input[name='Felder']", function(event) {
+				$("#Feldliste").on("contextmenu", "input[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					event.preventDefault();
 					öffneFeld(this.id);
@@ -176,9 +176,9 @@
 			function öffneFeld(FeldName) {
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
-					success: function(data) {
+					success: function (data) {
 						var FeldId = data.rows[0].value._id;
-						window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target="_self");
+						window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target = "_self");
 					}
 				});
 			}

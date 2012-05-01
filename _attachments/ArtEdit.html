@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -58,15 +58,15 @@
 			<p id="ArtEdit_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Informationen werden aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$("#ArtEditPage").on("pageshow", function() {
+			$("#ArtEditPage").on("pageshow", function () {
 
 				ArtId = get_url_param("id");
 				erstelleArtEdit(ArtId);
 			});
 
-			$("#ArtEditPage").on("pageinit", function() {
+			$("#ArtEditPage").on("pageinit", function () {
 				//zurück-Button steuern
-				$("#ArtEditPage").on('click', '#ae_zurück', function() {
+				$("#ArtEditPage").on('click', '#ae_zurück', function () {
 					var zurueck = "";
 					if (typeof zurueck_global !== "undefined") {
 						zurueck = zurueck_global;
@@ -84,13 +84,13 @@
 				});
 
 				//Artwechsl managen, ausgehend von Artgruppe
-				$("#ArtEditForm").on("click", "#ArtEdit_ArtGruppe", function(event) {
+				$("#ArtEditForm").on("click", "#ArtEdit_ArtGruppe", function (event) {
 					event.preventDefault();
 					zuArtgruppenliste();
 				});
 
 				//Artwechsel managen, ausgehend von ArtName
-				$("#ArtEditForm").on("click", "#ArtEdit_ArtBezeichnungL", function(event) {
+				$("#ArtEditForm").on("click", "#ArtEdit_ArtBezeichnungL", function (event) {
 					event.preventDefault();
 					zuArtliste();
 				});
@@ -114,7 +114,7 @@
 					var viewname = 'evab/Artgruppen?key="' + ArtEdit_aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								if ($('#agl_Page').length > 0) {

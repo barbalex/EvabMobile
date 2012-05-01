@@ -9,7 +9,7 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
     </script>	
@@ -81,7 +81,7 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$("#SubmitButton").tap(function(event){
+		$("#SubmitButton").tap(function (event){
 			var UserName = $('input[name=UserName]').val();
 			var Passwort = $('input[name=Passwort]').val();
 			var Passwort2 = $('input[name=Passwort2]').val();
@@ -103,7 +103,7 @@
 
 		//Datenverwendung managen
 		Datenverwendung = "JaAber";
-		$("input[name='Datenverwendung']").change(function(){
+		$("input[name='Datenverwendung']").change(function (){
 			Datenverwendung = $(this).attr("id");
 		});
 	}
@@ -117,12 +117,12 @@
 		$.couch.signup({
 				name: UserName, Autor: Autor, email: email
 		  	}, Passwort, {
-		  	success : function() {
+		  	success : function () {
 		  		speichereUserInEvab(UserName);
 		  		erstelleSichtbareFelder(UserName);
 		  		meldeUserAn(UserName, Passwort);
 		  	},
-		  	error : function() {
+		  	error : function () {
 		  		melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
 		  	}
 		});
@@ -132,12 +132,12 @@
 		$.couch.login({
 			name : UserName,
 			password : Passwort,
-			success : function(r) {
+			success : function (r) {
 				authentifiziereUser();
 			},
-			error: function() {
+			error: function () {
 				melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
-				setTimeout('window.open("index.html?Status=neu", target="_self")', 2800);
+				setTimeout('window.open("index.html?Status=neu", target = "_self")', 2800);
 			}
 		});      
 	}
@@ -146,7 +146,7 @@
 	function authentifiziereUser() {
 		var userCtx;
 		$.couch.session({
-			success : function(r) {
+			success : function (r) {
 				userCtx = r.userCtx;
 				if (userCtx.name) {
 					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
@@ -172,10 +172,10 @@
 		}
 		$db = $.couch.db("evab");
 		$db.saveDoc(doc, {
-			success: function(data) {
+			success: function (data) {
 				//melde("Yuhui, Ihr User wurde erstellt");
 			},
-			error: function() {
+			error: function () {
 				melde("Oh je, Ihr User konnte nicht erstellt werden");
 			}
 		});
@@ -188,7 +188,7 @@
 		$db = $.couch.db("evab");
 		var viewname = 'evab/FeldListeFeldName';
 		$db.view(viewname, {
-			success: function(data) {
+			success: function (data) {
 				var i;
 				var Feld;
 				for(i in data.rows) {
@@ -196,7 +196,7 @@
 					//Nur offizielle Felder berücksichtigen
 					if (Feld.User === "ZentrenBdKt") {
 						$db.openDoc(Feld._id, {
-							success: function(Feld) {
+							success: function (Feld) {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 								$db.saveDoc(Feld);
 							}

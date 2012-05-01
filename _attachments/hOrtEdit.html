@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -93,18 +93,18 @@
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderOrtEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$("#OrtEditPage").on("pageshow", function() {
+			$("#OrtEditPage").on("pageshow", function () {
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
 				initiiereOrtEdit(OrtId);
 			});
 
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof OrtId == "undefined") {
 					OrtId = get_url_param("id");
@@ -113,7 +113,7 @@
 				ProjektId = get_url_param("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
-				$("#hOrtEditForm").on("change", ".speichern", function(event) {
+				$("#hOrtEditForm").on("change", ".speichern", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -134,7 +134,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#hOrtEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#hOrtEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -143,7 +143,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(OrtId);
@@ -160,13 +160,13 @@
 				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//neuen Ort erstellen
-				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function(event) {
+				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function (event) {
 					event.preventDefault();
 					erstelleNeuenOrt(ProjektId, RaumId);
 				});
 
 				//sichtbare Felder wählen
-				$("#hOrtEditFooter").on("click", "#wähleFelder", function(event){
+				$("#hOrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event){
 					event.preventDefault();
 					$.mobile.changePage("Felder_hOrt.html");
 				});
@@ -177,7 +177,7 @@
 				aktualisiereLinksMitOrtId_hoe();
 
 				//Code für den Ort-Löschen-Dialog
-				$('#hOrtEditFooter').on('click', '#LöschenDialogLink', function() {
+				$('#hOrtEditFooter').on('click', '#LöschenDialogLink', function () {
 					var AnzZeiten;
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -185,7 +185,7 @@
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheOrt();
 				        		},
@@ -193,7 +193,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -202,12 +202,12 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='Menu']", function() {
+				$(document).on('click', "[name='Menu']", function () {
 					erstelleMenu_hoe(this);
 				});
 
 				//Karte managen
-				$('#hOrtEditFooter').on('click', '#GeButton', function(event) {
+				$('#hOrtEditFooter').on('click', '#GeButton', function (event) {
 					$.mobile.changePage("#OrtEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
@@ -215,17 +215,17 @@
 					//erstelleKarte();
 				});
 
-				$(document).on("pageshow", '#OrtEditMap', function() {
+				$(document).on("pageshow", '#OrtEditMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 					erstelleKarte();
 				});
 
-				$(document).on("pagehide", '#OrtEditMap', function() {
+				$(document).on("pagehide", '#OrtEditMap', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$('#hOrtEditFooter').on('click', '#GetGeolocationButton', function() {
+				$('#hOrtEditFooter').on('click', '#GetGeolocationButton', function () {
 					GetGeolocation();
 				});
 
@@ -277,14 +277,14 @@
 						    content: contentString
 						});
 						InfoWindowArray.push(infowindow);
-						google.maps.event.addListener(marker, 'click', function() {
+						google.maps.event.addListener(marker, 'click', function () {
 						  infowindow.open(map,marker);
 						});
-						google.maps.event.addListener(marker, "dragend", function(event) {
+						google.maps.event.addListener(marker, "dragend", function (event) {
 							SetLocation(event.latLng, map, marker);
 						});
 					}
-					google.maps.event.addListener(map, 'click', function(event) {
+					google.maps.event.addListener(map, 'click', function (event) {
 						placeMarker(event.latLng, map, marker, oName);
 					});
 				}
@@ -304,7 +304,7 @@
 					});
 					//Marker in Array speichern, damit er gelöscht werden kann
 					markersArray.push(marker);
-					google.maps.event.addListener(marker, "dragend", function(event) {
+					google.maps.event.addListener(marker, "dragend", function (event) {
 						SetLocation(event.latLng, map, marker);
 					});
 					SetLocation(location, map, marker);
@@ -335,34 +335,34 @@
 					    content: contentString
 					});
 					InfoWindowArray.push(infowindow);
-					google.maps.event.addListener(marker, 'click', function() {
+					google.maps.event.addListener(marker, 'click', function () {
 					  infowindow.open(map,marker);
 					});
 					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
 				}
 
-				$(document).on("swipeleft", "#OrtEditPage", function() {
+				$(document).on("swipeleft", "#OrtEditPage", function () {
 					nächsterVorigerOrt(OrtId, "nächster");
 				});
 
-				$(document).on("swiperight", "#OrtEditPage", function() {
+				$(document).on("swiperight", "#OrtEditPage", function () {
 					nächsterVorigerOrt(OrtId, "voriger");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#OrtEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#OrtEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächsterVorigerOrt(OrtId, "voriger");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#OrtEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#OrtEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächsterVorigerOrt(OrtId, "nächster");
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#OrtEditPage').is(':visible') ){
 						// Left arrow
@@ -378,15 +378,15 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(OrtId, {
-						success: function(Ort) {
+						success: function (Ort) {
 							delete Ort._attachments[Dateiname];
 							$db.saveDoc(Ort, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(Ort);
 								}
 							});
@@ -426,23 +426,23 @@
 							// First open doc based on ID in order to get full document
 							$db = $.couch.db("evab");
 							return $db.openDoc(OrtId, {
-								success: function(document) {
+								success: function (document) {
 									// lösche Ort
 									return $db.removeDoc(document, {
-										success: function() {
+										success: function () {
 											Rückmeldung += "\rOrt gelöscht";
 											melde(Rückmeldung);
 											setTimeout("window.open('hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId + "', target='_self')", 1400);
 											return true;
 										},
-										error: function() {
+										error: function () {
 											Rückmeldung += "\rFehler: Ort nicht gelöscht";
 											melde(Rückmeldung);
 											return false;
 										}
 									});
 								},
-								error: function() {
+								error: function () {
 									Rückmeldung += "\rFehler: Ort nicht gelöscht";
 									melde(Rückmeldung);
 									return false;
@@ -459,7 +459,7 @@
 					var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ArtId;
 							for(i in data.rows) {
@@ -472,7 +472,7 @@
 							}
 							return AnzArtenGelöscht;          //WIESE KLAPPT DAS NICHT?
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -485,7 +485,7 @@
 					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ZeitId;
 							for(i in data.rows) {
@@ -498,7 +498,7 @@
 							}
 							return AnzZeitenGelöscht;            //WIESE KLAPPT DAS NICHT?
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -511,14 +511,14 @@
 					var AnzahlZeiten = 0;
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							for(i in data.rows) {
 								AnzahlZeiten = data.rows[i].value;
 							}
 							return AnzahlZeiten;
 						},
-						error: function() {
+						error: function () {
 							return AnzahlZeiten;
 						}
 					});
@@ -529,7 +529,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(OrtId, {
-						success: function(hOrt) {
+						success: function (hOrt) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
 								hOrt[Feldname] = Feldwert;
@@ -538,11 +538,11 @@
 							}
 							//alles speichern
 							$db.saveDoc(hOrt, {
-								success: function() {
+								success: function () {
 									speichereOrtfeldInArten(Feldname, Feldwert);
 									speichereOrtfeldInZeiten(Feldname, Feldwert);
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Ort nicht gespeichert");
 								}
 							});
@@ -555,12 +555,12 @@
 					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -579,12 +579,12 @@
 					var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -602,7 +602,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(OrtId, {
-						success: function(hOrt) {
+						success: function (hOrt) {
 							//Längen- und Breitengrad sind in keinem Feld dargestellt
 							//sie müssen aus ihren Variabeln gespeichert werden
 							hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
@@ -612,10 +612,10 @@
 							hOrt.oLagegenauigkeit = oLagegenauigkeit;
 							//alles speichern
 							$db.saveDoc(hOrt, {
-								success: function() {
+								success: function () {
 									melde("Koordinaten gespeichert");
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Koordinaten nicht gespeichert");
 								}
 							});
@@ -626,7 +626,7 @@
 				//Menü aufbauen
 				function erstelleMenu_hoe(thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
@@ -635,49 +635,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Orte exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -704,11 +704,11 @@
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
 							if (typeof Username === "undefined" || !Username) {
-								prüfeAnmeldung();
+								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
-								success: function(data) {
+								success: function (data) {
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -744,7 +744,7 @@
 									OrtId = OrtListe.rows[i-1].value._id;
 									initiiereOrtEdit(OrtId);
 								} else {
-									window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+									window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 								}
 								break;
 							}

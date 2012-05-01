@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function(){
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -36,14 +36,14 @@
   	<div data-role="page" id="FeldEditPage">
   		<script type="text/javascript">
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
-			$(":jqmData(role='page')").on("pagebeforecreate", function() {
+			$(":jqmData(role='page')").on("pagebeforecreate", function () {
 			
 				erstelleSelectFeldFolgtNach();
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
-				$("#FeldEditForm").on("change", ".Feldeigenschaften", function() {
+				$("#FeldEditForm").on("change", ".Feldeigenschaften", function () {
 					if (typeof Username === "undefined" && !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldWert = this.value;
 					var FeldName = this.name;
@@ -60,7 +60,7 @@
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
 							$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
-								success: function(data) {
+								success: function (data) {
 									var i;
 									var anzVorkommen = 0;
 									var Datensatz;
@@ -102,7 +102,7 @@
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
-							success: function(doc) {
+							success: function (doc) {
 								var letzteHierarchiestufe = doc.Hierarchiestufe;
 								if (letzteHierarchiestufe === "Art") {
 									//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
@@ -115,20 +115,20 @@
 					}
 				});
 
-				$("#FeldEditForm").on("change", "#FeldFolgtNach", function() {
+				$("#FeldEditForm").on("change", "#FeldFolgtNach", function () {
 					setzeReihenfolgeMitVorgänger(this.value)
 				});
 
-				$("#UserFeldForm").on("change", "#Standardwert", function() {
+				$("#UserFeldForm").on("change", "#Standardwert", function () {
 					if (typeof Username === "undefined" && !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var Optionen = $("#Optionen").val();
 					var Feldwert = this.value;
 					if (Optionen) {
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
-							success: function(doc) {
+							success: function (doc) {
 								var LetzterFeldwert;
 								if (doc.Standardwert) {
 									if (doc.Standardwert[Username]) {
@@ -187,19 +187,19 @@
 				});
 
 				//Sichtbarkeit Modus hierarchisch speichern
-				$("#SichtbarImModusHierarchisch").change(function() {
+				$("#SichtbarImModusHierarchisch").change(function () {
 					speichereSichtbarModusHierarchisch(this.value);
 				});
 
 				//Sichtbarkeit Modus einfach speichern
-				$("#SichtbarImModusEinfach").change(function() {
+				$("#SichtbarImModusEinfach").change(function () {
 					speichereSichtbarModusEinfach(this.value);
 				});
 
 				//Code für den Feld-Löschen-Dialog
-				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function() {
+				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function () {
 					if (typeof Username === "undefined" && !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					if ("{{User}}" === "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
@@ -210,7 +210,7 @@
 					    	'forceInput': 'false',
 					    	'buttons' : {
 							 	'ja': {
-							      	click: function() {
+							      	click: function () {
 							        	$('#dialogoutput').text('ja');
 							        	if ("{{FeldName}}" === "") {
 							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
@@ -220,7 +220,7 @@
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
 											$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
-												success: function(data) {
+												success: function (data) {
 													var i;
 													var anzVorkommen = 0;
 													var Datensatz;
@@ -249,7 +249,7 @@
 					        		theme: "c"
 					      		},
 					      		'nein': {
-					        		click: function() {
+					        		click: function () {
 					          			$('#dialogoutput').text('nein');
 					        		}
 					      		}
@@ -259,42 +259,42 @@
 				});
 
 				//Menu aufbauen
-				$("#FeldEditHeader").on('click', "#Menu", function(){
+				$("#FeldEditHeader").on('click', "#Menu", function (){
 					erstelleMenuFürFelder(this, "../../");
 				});
 
 				//BackButton steuern
-				$("#FeldEditHeader").on('click', '#BackButton', function(){
+				$("#FeldEditHeader").on('click', '#BackButton', function (){
 					geheZurück();
 				});
 
 				//swipen steuern
-				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function() {
+				$("div:jqmData(role='page'):last").on("swipeleft", "#FeldContent", function () {
 					geheZumNächstenFeld("{{id}}");
 				});
 
-				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function() {
+				$("div:jqmData(role='page'):last").on("swiperight", "#FeldContent", function () {
 					geheZumVorigenFeld("{{id}}");
 				});
 
-				/*$("body").on("swipeleft", "#FeldContent", function() {
+				/*$("body").on("swipeleft", "#FeldContent", function () {
 					geheZumNächstenFeld("{{id}}");
 				});
 
-				$("body").on("swiperight", "#FeldContent", function() {
+				$("body").on("swiperight", "#FeldContent", function () {
 					geheZumVorigenFeld("{{id}}");
 				});*/
 
 				function prüfeFeldNamen(Username) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldNameAlt = "{{FeldName}}" || "";
 					var FeldNameNeu = $("#FeldName").val();
 					var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var key;
 							var Feld;
@@ -327,12 +327,12 @@
 
 				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							if (SichtbarImModusHierarchisch === "ja") {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
@@ -340,12 +340,12 @@
 								if(idx !== -1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gespeichert");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gespeichert");
 						}
 					});
@@ -353,12 +353,12 @@
 
 				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldName = $("#FeldName").val();
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							if (SichtbarImModusEinfach === "ja") {
 								Feld.SichtbarImModusEinfach.push(Username);
 							} else {
@@ -366,12 +366,12 @@
 								if(idx !== -1) Feld.SichtbarImModusEinfach.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gespeichert");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gespeichert");
 						}
 					});
@@ -382,7 +382,7 @@
 					$("select#ArtGruppe").empty();
 					var viewname = "evab/Artgruppen";
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ArtGruppe;
 							var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
@@ -414,17 +414,17 @@
 					var docId = "{{id}}";
 					$db = $.couch.db("evab");
 					$db.openDoc(docId, {
-						success: function(document) {
+						success: function (document) {
 							$db.removeDoc(document, {
-								success: function() {
+								success: function () {
 									window.open("../../FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gelöscht");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gelöscht");
 						}
 					});
@@ -437,11 +437,11 @@
 				//erwartet die ID des aktuellen Datensatzes
 				function geheZumNächstenFeld(IdAktuell) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
 					$db.view('evab/FeldListe', {
-						success: function(data) {
+						success: function (data) {
 							var i, y;
 							var FeldIdAktuell;
 							var FeldIdNächstes;
@@ -465,7 +465,7 @@
 												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächste eigene Feld > öffnen
 													FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
-													window.open(FeldIdNächstes, target="_self");
+													window.open(FeldIdNächstes, target = "_self");
 													//$.mobile.changePage(FeldIdNächstes);
 												} else {
 													if (y === AnzFelder) {
@@ -490,11 +490,11 @@
 				//erwartet die ID des aktuellen Datensatzes
 				function geheZumVorigenFeld(IdAktuell) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
 					$db.view('evab/FeldListe', {
-						success: function(data) {
+						success: function (data) {
 							var i, y;
 							var FeldIdAktuell;
 							var FeldIdVoriges;
@@ -518,7 +518,7 @@
 												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächstvorherige eigene Feld > öffnen
 													FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
-													window.open(FeldIdVoriges, target="_self");
+													window.open(FeldIdVoriges, target = "_self");
 													//$.mobile.changePage(FeldIdVoriges);
 												} else {
 													if (y === 1) {
@@ -548,7 +548,7 @@
 					$db = $.couch.db("evab");
 					var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
 							$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
 							speichereFeldeigenschaften();
@@ -561,12 +561,12 @@
 					//wird von erstelle_hArtEdit aufgerufen
 					//Nur bei eigenen Feldern anzeigen
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					if ("{{User}}" !== "ZentrenBdKt") {
 						$db = $.couch.db("evab");
 						$db.view("evab/FeldListe", {
-							success: function(data) {
+							success: function (data) {
 								var i;
 								var Feld; 
 								var Optionen = [];
@@ -590,20 +590,20 @@
 					var zurueck = get_url_param("zurueck");
 					if (zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
-						window.open("../../" + zurueck, target="_self");
+						window.open("../../" + zurueck, target = "_self");
 						
 					} else {
-						window.open("../../FeldListe.html?zurueck=" + zurueck, target="_self");
+						window.open("../../FeldListe.html?zurueck=" + zurueck, target = "_self");
 					}
 				}
 
 				function speichereStandardwert(Username) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							//Standardwert managen
 							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 							//darum manuell für diesen User updaten
@@ -628,15 +628,15 @@
 								}
 							}
 							$db.saveDoc(Feld, {
-								success: function() {
+								success: function () {
 									//melde("Feld gespeichert");
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Feld nicht gespeichert");
 						}
 					});
@@ -646,7 +646,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							var Formularfelder = $("#FeldEditForm").serializeObjectNull();
 							//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 							if (Feldname === "Optionen") {
@@ -681,7 +681,7 @@
 							}
 							//alles speichern
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
 								}
 							});
@@ -692,7 +692,7 @@
 				function speichereFeldeigenschaften() {
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							var Formularfelder = $("#FeldEditForm").serializeObjectNull();
 							//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 							if (Formularfelder.Optionen) {
@@ -733,12 +733,12 @@
 								}
 							}
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Feld nicht gespeichert");
 						}
 					});
@@ -747,7 +747,7 @@
 			});
 
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$(":jqmData(role='page')").on("pageshow", function () {
 
 				speichereLetzteUrl();
 				
@@ -785,14 +785,14 @@
 
 				function setzeSichtbarInModiUndArtgruppeUndStandardwert(){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
 					//könnte man sich diese Abfrage ersparen!
 					//in einer Funktion zusammengefasst, weil dasselbe Dokument abgefragt werden muss
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
-						success: function(Feld) {
+						success: function (Feld) {
 							//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
 							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
 							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;

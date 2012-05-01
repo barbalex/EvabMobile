@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -86,12 +86,12 @@
 				<ul>
 					<li><a href="#" id="hArtNeuLink" data-icon="plus" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderhBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$("#hArtEditPage").on("pageshow", function() {
+			$("#hArtEditPage").on("pageshow", function () {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof hBeobId == "undefined") {
 					hBeobId = get_url_param("id");
@@ -99,7 +99,7 @@
 				initiierehBeobEdit(hBeobId);
 			});
 
-			$("#hArtEditPage").on("pageinit", function() {
+			$("#hArtEditPage").on("pageinit", function () {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof hBeobId == "undefined") {
 					hBeobId = get_url_param("id");
@@ -108,7 +108,7 @@
 				var Feldliste;
 
 				//Für jedes Feld bei Änderung speichern
-				$("#hArtEditForm").on("change", ".speichern", function(event) {
+				$("#hArtEditForm").on("change", ".speichern", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -119,7 +119,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#hArtEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#hArtEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("#" + this.name).serializeObject();
@@ -128,7 +128,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(hBeobId);
@@ -136,38 +136,38 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function(event) {
+				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function (event) {
 					event.preventDefault();
 					zuArtgruppenliste('neu');
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#hArtEditForm").on("click", "#aArtGruppe", function(event) {
+				$("#hArtEditForm").on("click", "#aArtGruppe", function (event) {
 					event.preventDefault();
 					zuArtgruppenliste('edit');
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#hArtEditForm").on("click", "#aArtName", function(event) {
+				$("#hArtEditForm").on("click", "#aArtName", function (event) {
 					event.preventDefault();
 					zuArtliste(aArtGruppe);
 				});
 
 				//sichtbare Felder wählen
-				$("#hArtEditPageFooter").on("click", "#wähleFelder", function(event){
+				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event){
 					event.preventDefault();
 					$.mobile.changePage("Felder_hArt.html");
 				});
 
 				//Code für den Art-Löschen-Dialog
-				$("#hArtEditPageFooter").on('click', '#LöschenDialogLink', function() {
+				$("#hArtEditPageFooter").on('click', '#LöschenDialogLink', function () {
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Diese Art löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheBeobachtung();
 				        		},
@@ -175,7 +175,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -184,32 +184,32 @@
 				});
 
 			  	//Menu aufbauen
-				$('#hArtEditPageHeader').on('click', "#hae_Menu", function() {
+				$('#hArtEditPageHeader').on('click', "#hae_Menu", function () {
 					erstelleMenu_hae(this, aArtGruppe);
 				});
 
-				$(document).on("swipeleft", function() {
+				$(document).on("swipeleft", function () {
 					nächsteVorigeArt(hBeobId, "nächste");
 				});
 
-				$(document).on("swiperight", function() {
+				$(document).on("swiperight", function () {
 					nächsteVorigeArt(hBeobId, "vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#hArtEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#hArtEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächsteVorigeArt(hBeobId, "vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#hArtEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#hArtEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächsteVorigeArt(hBeobId, "nächste");
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#hArtEditPage').is(':visible') ){
 						// Left arrow
@@ -225,15 +225,15 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(hBeobId, {
-						success: function(hBeob) {
+						success: function (hBeob) {
 							delete hBeob._attachments[Dateiname];
 							$db.saveDoc(hBeob, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(hBeob);
 								}
 							});
@@ -270,7 +270,7 @@
 					var viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								if ($('agl_Page').length > 0) {
@@ -302,7 +302,7 @@
 				//Menü aufbauen
 				function erstelleMenu_hae(thiz, ArtGruppe){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -310,14 +310,14 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Arteigenschaften': {
-						      	click: function() {
+						      	click: function () {
 						        	//Variabeln übergeben
 						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
 						        	zurueck_global = "hArtEdit.html";
@@ -337,42 +337,42 @@
 				        		icon: "question"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hArtEdit.html?id=" + hBeobId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=hArtEdit.html?id=" + hBeobId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Beobachtungen<br>exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("../../");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -389,18 +389,18 @@
 					sessionStorage.removeItem("hArtListe");
 					$db = $.couch.db("evab");
 					$db.openDoc(docId, {
-						success: function(document) {
+						success: function (document) {
 							$db.removeDoc(document, {
-								success: function() {
+								success: function () {
 									melde("Art gelöscht");
-									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Art nicht gelöscht");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Art nicht gelöscht");
 						}
 					});
@@ -412,7 +412,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(hBeobId, {
-						success: function(hArt) {
+						success: function (hArt) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
 								hArt[Feldname] = Feldwert;
@@ -423,12 +423,12 @@
 							hArt.aArtName = aArtName;
 							hArt.aArtGruppe = aArtGruppe;
 							$db.saveDoc(hArt, {
-								success: function() {
+								success: function () {
 									/*if (NeuÖffnenIn) {
-										window.open("_show/hArtEdit/" + hBeobId, target="_self");
+										window.open("_show/hArtEdit/" + hBeobId, target = "_self");
 									}*/
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Art nicht gespeichert");
 								 }
 							});
@@ -455,11 +455,11 @@
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
 							if (typeof Username === "undefined" || !Username) {
-								prüfeAnmeldung();
+								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
-								success: function(data) {
+								success: function (data) {
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 									hArtListe = data;
 									sessionStorage.setItem("hArtListe", JSON.stringify(hArtListe));
@@ -494,7 +494,7 @@
 									hBeobId = hArtListe.rows[i-1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
-									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 								}
 								break;
 							}

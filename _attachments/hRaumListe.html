@@ -11,7 +11,7 @@
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
   	<script type="text/javascript">
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -37,7 +37,7 @@
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hProjektLink" name="hProjektLink">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
-  			<a href='#' id='Menu' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
+  			<a href='#' name='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink" name="hProjektLink">Projekt</a></li>
@@ -58,7 +58,7 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				ProjektId = get_url_param("ProjektId");
 				erstelleRaumListe();
 				speichereLetzteUrl();
@@ -68,7 +68,8 @@
 				$("[name='hProjektLink']").attr('href', url);
 
 				//neuen Raum erstellen
-				$("body").on("click", "[name='hRaumNeuLink']", function() {
+				$("body").on("click", "[name='hRaumNeuLink']", function (event) {
+					event.preventDefault();
 					erstelleNeuenRaum(ProjektId);
 				});
 
@@ -76,45 +77,47 @@
 				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + ProjektId);
 
 				//Menu aufbauen
-				$('#hRaumListePageHeader').on('click','#Menu', function() {
+				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
+					event.preventDefault();
 					var zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
-					erstelleMenu(zurueck, this);
+					erstelleMenuRaumListe(zurueck, this);
 				});
 
-				$("#Räume").on("swipeleft", ".Raum", function() {
+				$("#Räume").on("swipeleft", ".Raum", function () {
 					var RaumId = $(this).attr('RaumId');
-					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				});
 
-				$("#Räume").on("swipeleft", ".erste", function() {
+				$("#Räume").on("swipeleft", ".erste", function () {
 					erstelleNeuenRaum(ProjektId);
 				});
 
-				$(document).on("swiperight", '#RaumListePage', function() {
-					window.open("hProjektListe.html", target="_self");
+				$(document).on("swiperight", '#RaumListePage', function () {
+					window.open("hProjektListe.html", target = "_self");
 				});
 
-				$("#hRaumListePageFooter").on("click", "#RaumListeMapÖffnen", function(event) {
+				$("#hRaumListePageFooter").on("click", "#RaumListeMapÖffnen", function (event) {
+					event.preventDefault();
 					$.mobile.changePage("#RaumListeMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on('pageshow', '#RaumListeMap', function() {
+				$(document).on('pageshow', '#RaumListeMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 					erstelleKarteFürProjekt(ProjektId);
 				});
 
-				$(document).on('pagehide', '#RaumListeMap', function() {
+				$(document).on('pagehide', '#RaumListeMap', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenu(zurueck, thiz){
+				function erstelleMenuRaumListe(zurueck, thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
@@ -123,49 +126,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=" + zurueck, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=" + zurueck, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Räume exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -182,11 +185,11 @@
 						erstelleRaumListe_2();
 					} else {
 						if (typeof Username === "undefined" || !Username) {
-							prüfeAnmeldung();
+							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
 						$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
-							success: function(data) {
+							success: function (data) {
 								RaumListe = data;
 								//RaumListe für haumEdit bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -235,7 +238,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#RaumListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuRaumListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

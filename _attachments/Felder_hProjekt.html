@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -46,7 +46,7 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$("#Felder_hProjektPage").on("pageshow", function() {
+			$("#Felder_hProjektPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
 
 				//generiert dynamisch die Felder im Checkbox Felder
@@ -60,7 +60,7 @@
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeProjekt', {
-							success: function(data) {
+							success: function (data) {
 								FeldlisteProjektEdit = data;
 								erstelleSichtbareFelder_2();
 							}
@@ -70,7 +70,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					var anzFelder = 0;
@@ -114,9 +114,10 @@
 				}
 			});
 			
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				
-				$("#Felder_hProjektPage").on("click", "#Felder_hProjektPage_back", function() {
+				$("#Felder_hProjektPage").on("click", "#Felder_hProjektPage_back", function (event) {
+					event.preventDefault();
 					if ($('#ProjektEditPage').length > 0) {
 						$.mobile.changePage($('#ProjektEditPage'));
 					} else {
@@ -128,15 +129,15 @@
 				});
 
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function() {
+				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					var FeldName = $(this).prop("id");
 					var FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
-						success: function(Feld) {
+						success: function (Feld) {
 							if ($("#" + FeldName).prop("checked") == true) {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
@@ -144,7 +145,7 @@
 								if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
-								error: function() {
+								error: function () {
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
@@ -153,7 +154,7 @@
 								FeldlisteProjektEdit = undefined;
 							}
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 						}
 					});

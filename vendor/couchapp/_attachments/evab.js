@@ -214,7 +214,7 @@ function melde(Meldung) {
 	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 	    .appendTo($.mobile.pageContainer)
 	    .delay(2500)
-	    .fadeOut(700, function() {
+	    .fadeOut(700, function () {
 	    	$(this).remove();
 		});
 };
@@ -225,7 +225,7 @@ function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, 
 //aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var doc = {};
 	doc.User = Username;
@@ -256,7 +256,7 @@ function speichereNeueBeob_02(doc) {
 //Felder der höheren Hierarchieebenen anfügen
 	$db = $.couch.db("evab");
 	$db.openDoc(doc.hZeitId, {
-		success: function(Zeit) {
+		success: function (Zeit) {
 			for (i in Zeit) {
 				//FeldName = i, Feldwert = Zeit[i]
 				//ein paar Felder wollen wir nicht
@@ -265,7 +265,7 @@ function speichereNeueBeob_02(doc) {
 				}
 			}
 			$db.openDoc(doc.hOrtId, {
-				success: function(Ort) {
+				success: function (Ort) {
 					for (i in Ort) {
 						//ein paar Felder wollen wir nicht
 						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
@@ -273,7 +273,7 @@ function speichereNeueBeob_02(doc) {
 						}
 					}
 					$db.openDoc(doc.hRaumId, {
-						success: function(Raum) {
+						success: function (Raum) {
 							for (i in Raum) {
 								//ein paar Felder wollen wir nicht
 								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
@@ -281,7 +281,7 @@ function speichereNeueBeob_02(doc) {
 								}
 							}
 							$db.openDoc(doc.hProjektId, {
-								success: function(Projekt) {
+								success: function (Projekt) {
 									for (i in Projekt) {
 										//ein paar Felder wollen wir nicht
 										if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
@@ -306,11 +306,11 @@ function speichereNeueBeob_03(doc) {
 //Autor anfügen und weiter zum Edit-Formular
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + doc.User + '"', {
-		success: function(Userliste) {
+		success: function (Userliste) {
 			User = Userliste.rows[0].value;
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
-				success: function(data) {
+				success: function (data) {
 					BeobId = data.id;
 					if (doc.Typ == 'hArt') {
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
@@ -321,7 +321,7 @@ function speichereNeueBeob_03(doc) {
 							//$("#al_Page").removeClass('ui-page-active');
 							//$("#hArtEditPage").addClass('ui-page-active');
 						} else {
-							window.open("hArtEdit.html?id=" + data.id, target="_self");
+							window.open("hArtEdit.html?id=" + data.id, target = "_self");
 							/*$.mobile.changePage("hArtEdit.html", {
 								type: "get",
 								data: "id=" + data.id
@@ -338,15 +338,15 @@ function speichereNeueBeob_03(doc) {
 							//$("#al_Page").removeClass('ui-page-active');
 							//$("#BeobEditPage").addClass('ui-page-active');
 						} else {
-							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 							//$.mobile.changePage("BeobEdit.html?id=" + data.id);
 						}
-						//window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target="_self");
+						//window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 						//$.mobile.changePage("BeobEdit.html?id=" + data.id, {reloadPage:"true", allowSamePageTransition:"true"});
 						GetGeolocation();
 					}
 				},
-				error: function() {
+				error: function () {
 					melde("Beobachtung nicht gespeichert.");
 				}
 			});
@@ -359,21 +359,21 @@ function speichereNeueBeob_03(doc) {
 function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, ArtId, Von) {
 $db = $.couch.db("evab");
 $db.openDoc(BeobId, {
-		success: function(Beob) {
+		success: function (Beob) {
 			if (aArtGruppe) {
 				Beob.aArtGruppe = aArtGruppe;
 			}
 			Beob.aArtName = aArtName;
 			Beob.aArtId = ArtId;
 			$db.saveDoc(Beob, {
-				success: function(data) {
+				success: function (data) {
 					if (Von == "BeobListe" || Von == "BeobEdit") {
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
 							//alert("BeobId = " + BeobId);
 							initiiereBeobEdit(BeobId);
 						} else {
-							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 							//$.mobile.changePage("BeobEdit.html?id=" + BeobId);
 						}
 						GetGeolocation();
@@ -382,13 +382,13 @@ $db.openDoc(BeobId, {
 							$.mobile.changePage($('#hArtEditPage'));
 							initiierehBeobEdit(BeobId);
 						} else {
-							window.open("BeobEdit.html?id=" + BeobId, target="_self");
+							window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 							//$.mobile.changePage("hArtEdit.html?id=" + BeobId);
 						}
-						//window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target="_self");
+						//window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target = "_self");
 					}
 				},
-				error: function() {
+				error: function () {
 					melde("Fehler: Beobachtung nicht gespeichert");
 				 }
 			});
@@ -425,7 +425,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var doc = {};
 	doc.Typ = "hZeit";
@@ -438,7 +438,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
 	$db.openDoc(doc.hOrtId, {
-		success: function(Ort) {
+		success: function (Ort) {
 			for (i in Ort) {
 				//ein paar Felder wollen wir nicht
 				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
@@ -446,7 +446,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 				}
 			}
 			$db.openDoc(doc.hRaumId, {
-				success: function(Raum) {
+				success: function (Raum) {
 					for (i in Raum) {
 						//ein paar Felder wollen wir nicht
 						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
@@ -454,7 +454,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 						}
 					}
 					$db.openDoc(doc.hProjektId, {
-						success: function(Projekt) {
+						success: function (Projekt) {
 							for (i in Projekt) {
 								//ein paar Felder wollen wir nicht
 								if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
@@ -463,10 +463,10 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 							}
 							//speichern
 							$db.saveDoc(doc, {
-								success: function(data) {
-									window.open("hZeitEdit.html?id=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target="_self");
+								success: function (data) {
+									window.open("hZeitEdit.html?id=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target = "_self");
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: neue Zeit nicht erstellt");
 								}
 							});
@@ -483,7 +483,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt(hProjektId, hRaumId) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var doc = {};
 	doc.Typ = "hOrt";
@@ -493,7 +493,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
 	$db.openDoc(doc.hRaumId, {
-		success: function(Raum) {
+		success: function (Raum) {
 			for (i in Raum) {
 				//ein paar Felder wollen wir nicht
 				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
@@ -501,7 +501,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 				}
 			}
 			$db.openDoc(doc.hProjektId, {
-				success: function(Projekt) {
+				success: function (Projekt) {
 					for (i in Projekt) {
 						//ein paar Felder wollen wir nicht
 						if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
@@ -510,15 +510,15 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 					}
 					//speichern
 					$db.saveDoc(doc, {
-						success: function(data) {
+						success: function (data) {
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							if (typeof OrtListe != "undefined") {
 								OrtListe = undefined;
 							}
 							sessionStorage.removeItem("OrtListe");
-							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
+							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target = "_self");
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
 						 }
 					});
@@ -536,7 +536,7 @@ function erstelleNeuenRaum(hProjektId) {
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
 	$db.openDoc(hProjektId, {
-		success: function(Projekt) {
+		success: function (Projekt) {
 			for (i in Projekt) {
 				//ein paar Felder wollen wir nicht
 				if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
@@ -545,15 +545,15 @@ function erstelleNeuenRaum(hProjektId) {
 			}
 			//speichern
 			$db.saveDoc(doc, {
-				success: function(data) {
+				success: function (data) {
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof RaumListe != "undefined") {
 						RaumListe = undefined;
 					}
 					sessionStorage.removeItem("RaumListe");
-					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target="_self");
+					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target = "_self");
 				},
-				error: function() {
+				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
 				 }
 			});
@@ -567,15 +567,15 @@ function erstelleNeuesProjekt() {
 	hProjekt.User = Username;
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
-		success: function(data) {
+		success: function (data) {
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			if (typeof Projektliste !== "undefined") {
 				Projektliste = undefined;
 			}
 			sessionStorage.removeItem("Projektliste");
-			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target="_self");
+			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 		},
-		error: function() {
+		error: function () {
 			melde("Fehler: neues Projekt nicht erstellt");
 		 }
 	});
@@ -583,38 +583,38 @@ function erstelleNeuesProjekt() {
 
 function öffneMeineEinstellungen(Pfad) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
-			success: function(data) {
+			success: function (data) {
 				var User = data.rows[0].value;
 				UserId = data.rows[0].value._id;
 				sessionStorage.setItem("UserId", UserId);
 				sessionStorage.setItem("Autor", User.Autor);
-				window.open(Pfad + "_show/UserEdit/" + UserId, target="_self");
+				window.open(Pfad + "_show/UserEdit/" + UserId, target = "_self");
 			}
 		});
 	} else {
-		window.open(Pfad + "_show/UserEdit/" + sessionStorage.getItem("UserId"), target="_self");
+		window.open(Pfad + "_show/UserEdit/" + sessionStorage.getItem("UserId"), target = "_self");
 	}
 }
 
 function löscheDokument(DocId) {
 	$db = $.couch.db("evab");
 	return $db.openDoc(DocId, {
-		success: function(document) {
+		success: function (document) {
 			$db.removeDoc(document, {
-				success: function(document) {
+				success: function (document) {
 					return true;
 				},
-				error: function(document) {
+				error: function (document) {
 					return false;
 				}
 			});
 		},
-		error: function(document) {
+		error: function (document) {
 			return false;
 		}
 	});
@@ -627,7 +627,7 @@ function erstelleArtEdit(ArtId) {
 	//holt die Art aus der DB
 	$db = $.couch.db("evab");
 	$db.openDoc(ArtId, {
-		success: function(Art) {
+		success: function (Art) {
 			//diese Variabeln werden in ArtEdit.html gebraucht
 			ArtEdit_aArtGruppe = Art.ArtGruppe
 			//fixe Felder aktualisieren
@@ -716,7 +716,7 @@ function initiiereBeobEdit(id) {
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob', {
-			success: function(Feldliste) {
+			success: function (Feldliste) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				FeldlisteBeobEdit = Feldliste;
 				initiiereBeobEdit_2(id, FeldlisteBeobEdit);
@@ -727,7 +727,7 @@ function initiiereBeobEdit(id) {
 
 function initiiereBeobEdit_2(id, Feldliste) {
 	$db.openDoc(id, {
-		success: function(Beob) {
+		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			BeobId = Beob._id;
 			aArtGruppe = Beob.aArtGruppe;
@@ -851,7 +851,7 @@ function initiiereProjektEdit(ProjektId) {
 	$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	$db.openDoc(ProjektId, {
-		success: function(Projekt) {
+		success: function (Projekt) {
 			//fixe Felder aktualisieren
 			$("#pName").val(Projekt.pName);
 			//prüfen, ob die Feldliste schon geholt wurde
@@ -862,7 +862,7 @@ function initiiereProjektEdit(ProjektId) {
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeProjekt', {
-					success: function(Feldliste) {
+					success: function (Feldliste) {
 						FeldlisteProjektEdit = Feldliste;
 						initiiereProjektEdit_2(Projekt);
 					}
@@ -907,7 +907,7 @@ function initiiereProjektEdit_2(Projekt) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Projekt) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var Feld = {};
 	var i;
@@ -947,7 +947,7 @@ function initiiereRaumEdit(RaumId) {
 	$db = $.couch.db("evab");
 	//Holt den Raum mit der id "RaumId" aus der DB
 	$db.openDoc(RaumId, {
-		success: function(Raum) {
+		success: function (Raum) {
 			//fixes Feld setzen
 			$("#rName").val(Raum.rName);
 			//prüfen, ob die Feldliste schon geholt wurde
@@ -958,7 +958,7 @@ function initiiereRaumEdit(RaumId) {
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeRaum', {
-					success: function(Feldliste) {
+					success: function (Feldliste) {
 						FeldlisteRaumEdit = Feldliste;
 						initiiereRaumEdit_2(Raum);
 					}
@@ -1003,7 +1003,7 @@ function initiiereRaumEdit_2(Raum) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var Feld = {};
 	var i;
@@ -1042,7 +1042,7 @@ function initiiereOrtEdit(OrtId) {
 	$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	$db.openDoc(OrtId, {
-		success: function(Ort) {
+		success: function (Ort) {
 			//fixe Felder aktualisieren
 			$("#oName").val(Ort.oName);
 			$("#oXKoord").val(Ort.oXKoord);
@@ -1059,7 +1059,7 @@ function initiiereOrtEdit(OrtId) {
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeOrt', {
-					success: function(Feldliste) {
+					success: function (Feldliste) {
 						//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 						FeldlisteOrtEdit = Feldliste;
 						initiiereOrtEdit_2(Ort);
@@ -1152,7 +1152,7 @@ function initiiereZeitEdit(ZeitId) {
 	$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	$db.openDoc(ZeitId, {
-		success: function(Zeit) {
+		success: function (Zeit) {
 			//fixe Felder aktualisieren
 			$("#zDatum").val(Zeit.zDatum);
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
@@ -1164,7 +1164,7 @@ function initiiereZeitEdit(ZeitId) {
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeZeit', {
-					success: function(Feldliste) {
+					success: function (Feldliste) {
 						FeldlisteZeitEdit = Feldliste;
 						initiiereZeitEdit_2(Zeit);
 					}
@@ -1235,7 +1235,7 @@ function initiierehBeobEdit(BeobId) {
 	//und die Nav-Links gesetzt
 	$db = $.couch.db("evab");
 	$db.openDoc(BeobId, {
-		success: function(Beob) {
+		success: function (Beob) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			ProjektId = Beob.hProjektId;
 			RaumId = Beob.hRaumId;
@@ -1269,7 +1269,7 @@ function initiierehBeobEdit(BeobId) {
 				//Feldliste aus der DB holen
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeArt', {
-					success: function(data) {
+					success: function (data) {
 						FeldlistehBeobEdit = data;
 						erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
 						
@@ -1612,15 +1612,15 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-(function($) {
+(function ($) {
     // friendly helper http://tinyurl.com/6aow6yn
     //Läuft durch alle Felder im Formular
     //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
     //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-    $.fn.serializeObject = function() {
+    $.fn.serializeObject = function () {
         var o = {};
         var a = this.serializeArray();
-        $.each(a, function() {
+        $.each(a, function () {
         	if (this.value !== "") {
 	            if (o[this.name]) {
 	                if (!o[this.name].push) {
@@ -1645,10 +1645,10 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
     //so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
     //siehe Beispiel in FeldEdit.html
     //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-    $.fn.serializeObjectNull = function() {
+    $.fn.serializeObjectNull = function () {
         var o = {};
         var a = this.serializeArray();
-        $.each(a, function() {
+        $.each(a, function () {
             if (o[this.name]) {
                 if (!o[this.name].push) {
                     o[this.name] = [o[this.name]];
@@ -1752,13 +1752,13 @@ function speichereLetzteUrl() {
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
-		    success: function(session){
+		    success: function (session){
 		    	if (session.userCtx.name != (undefined || null)) {
 		        	Username = session.userCtx.name;
 		        	sessionStorage.setItem("Username", Username);
 		        	speichereLetzteUrl_2();
 		        } else {
-					window.open("index.html?Status=neu", target="_self");
+					window.open("index.html?Status=neu", target = "_self");
 				}
 		    }
 		});
@@ -1775,7 +1775,7 @@ function speichereLetzteUrl_2() {
 		//UserId nur abfragen, wenn nicht schon erfolgt
 		if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
-				success: function(data) {
+				success: function (data) {
 					var User = data.rows[0].value;
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
 					UserId = User._id;
@@ -1795,7 +1795,7 @@ function speichereLetzteUrl_2() {
 
 function speichereLetzteUrl_3(url) {
 	$db.openDoc(UserId, {
-		success: function(User) {
+		success: function (User) {
 			User.LetzteUrl = url;
 			$db.saveDoc(User);
 			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespaart werden kann
@@ -1811,12 +1811,12 @@ function speichereLetzteUrl_3(url) {
 //erwartet den user und die RaumId
 function erstelleKarteFürRaum(RaumId) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
 	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]&include_docs=true', {
-		success: function(data) {
+		success: function (data) {
 			var i;
 			var anzOrt = 0;
 			var Ort;
@@ -1898,7 +1898,7 @@ function erstelleKarteFürRaum(RaumId) {
 				}
 			}
 			function makeListener(map, marker, contentString) {
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'click', function () {
 					infowindow.setContent(contentString);
 					infowindow.open(map,marker);
 				});
@@ -1912,12 +1912,12 @@ function erstelleKarteFürRaum(RaumId) {
 //erwartet Username und ProjektId
 function erstelleKarteFürProjekt(ProjektId) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
 	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]&include_docs=true', {
-		success: function(data) {
+		success: function (data) {
 			var i;
 			var anzOrt = 0;
 			var Ort;
@@ -1999,7 +1999,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 				}
 			}
 			function makeListener(map, marker, contentString) {
-				google.maps.event.addListener(marker, 'click', function() {
+				google.maps.event.addListener(marker, 'click', function () {
 					infowindow.setContent(contentString);
 					infowindow.open(map,marker);
 				});
@@ -2014,23 +2014,23 @@ function erstelleKarteFürProjekt(ProjektId) {
 function speichereAnhänge(id) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
-		success: function(data) {
+		success: function (data) {
 			$("#_rev").val(data._rev);
 			$("#FormAnhänge").ajaxSubmit({
 			    url: "/evab/" + id,
-			    success: function() {
+			    success: function () {
 			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			    	$db.openDoc(id, {
-						success: function(data2) {
+						success: function (data2) {
 					    	//show attachments in form
 					    	erstelleAttachments(data2);
 					    }
 					});
 			    },
-			    error: function() {
+			    error: function () {
 			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			    	$db.openDoc(id, {
-						success: function(data3) {
+						success: function (data3) {
 					    	//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
 					    	erstelleAttachments(data3);
 					    }
@@ -2049,7 +2049,7 @@ function erstelleAttachments(doc) {
 	var rev = doc._rev;
 	var HtmlContainer = "";
 	if (attachments) {
-		$.each(attachments, function(Dateiname, val) {
+		$.each(attachments, function (Dateiname, val) {
 			var url = "/evab/" + doc.id + "/" + Dateiname;
 			var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<a href='";
@@ -2069,7 +2069,7 @@ function erstelleAttachments(doc) {
 //erwartet den Teil des Pfads, der links von FeldEdit ist
 function neuesFeld(Pfad) {
 	if (typeof Username === "undefined" || !Username) {
-		prüfeAnmeldung();
+		pruefeAnmeldung();
 	}
 	var Feld = {};
 	Feld.Typ = "Feld";
@@ -2081,18 +2081,18 @@ function neuesFeld(Pfad) {
 	Feld.SichtbarImModusHierarchisch.push(Username);
 	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
-		success: function(data) {
+		success: function (data) {
 			var id = data.id;
 			var zurueck = get_url_param("zurueck");
-			window.open(Pfad + "FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target="_self");
+			window.open(Pfad + "FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target = "_self");
 		},
-		error: function() {
+		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
 		}
 	});
 }
 
-function prüfeAnmeldung() {		
+function pruefeAnmeldung() {		
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -2101,12 +2101,12 @@ function prüfeAnmeldung() {
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
-		    success: function(session){
+		    success: function (session){
 		    	if (session.userCtx.name != (undefined || null)) {
 		        	Username = session.userCtx.name;
 		        	sessionStorage.setItem("Username", Username);
 		        } else {
-					window.open("index.html?Status=neu", target="_self");
+					window.open("index.html?Status=neu", target = "_self");
 				}
 		    }
 		});
@@ -2131,10 +2131,10 @@ function aktualisiereLinksMitOrtId_hoe() {
 * Authored by Scott Jehl, scott@filamentgroup.com
 * Dual licensed under the MIT or GPL Version 2 licenses.
 */
-(function( $, undefined ){
+(function ( $, undefined ){
 	
 	//auto-init on pagecreate
-	$( document ).bind( "pagecreate", function( e ){
+	$( document ).bind( "pagecreate", function ( e ){
 		$( ":jqmData(role='pagination')", e.target ).pagination();
 	});
 	
@@ -2142,7 +2142,7 @@ function aktualisiereLinksMitOrtId_hoe() {
 	
 	//create widget
 	$.widget( "mobile.pagination", $.mobile.widget, {
-		_create: function() {
+		_create: function () {
 			var $el			= this.element,
 				$page		= $el.closest( ".ui-page" ),
 				$links		= $el.find( "a" ),
@@ -2162,7 +2162,7 @@ function aktualisiereLinksMitOrtId_hoe() {
 			
 			//set up next and prev buttons
 			
-			$links.each(function(){
+			$links.each(function (){
 				var reverse = $( this ).closest( "." + prevLIClass ).length;
 			
 				$(this)

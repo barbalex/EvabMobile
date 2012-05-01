@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -83,12 +83,12 @@
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderZeitEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 
 				ZeitId = get_url_param("id");
 				OrtId = get_url_param("OrtId");
@@ -100,7 +100,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#hZeitEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#hZeitEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -109,7 +109,7 @@
 				});
 
 				//Für jedes Feld bei Änderung speichern
-				$("#hZeitEditForm").on("change", ".speichern", function(event) {
+				$("#hZeitEditForm").on("change", ".speichern", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -118,7 +118,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(ZeitId);
@@ -138,7 +138,7 @@
 				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Neue Zeit erstellen
-				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function(event) {
+				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
 					event.preventDefault();
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof ZeitListe != "undefined") {
@@ -148,7 +148,7 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#ZeitEditPageFooter").on("click", "#wähleFelder", function(event){
+				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event){
 					event.preventDefault();
 					$.mobile.changePage("Felder_hZeit.html");
 				});
@@ -161,14 +161,14 @@
 				}
 
 				//Code für den Zeit-Löschen-Dialog
-				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLink', function() {
+				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLink', function () {
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Diese Zeit löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheZeit();
 				        		},
@@ -176,7 +176,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -185,32 +185,32 @@
 				});
 
 				//Menu aufbauen
-				$("#ZeitEditPageHeader").on('click', '#Menu', function() {
+				$("#ZeitEditPageHeader").on('click', '#Menu', function () {
 					erstelleMenu(this);
 				});
 
-				$(document).on("swipeleft", '#ZeitEditPage', function() {
+				$(document).on("swipeleft", '#ZeitEditPage', function () {
 					nächsteVorigeZeit(ZeitId, "nächste");
 				});
 
-				$(document).on("swiperight", '#ZeitEditPage', function() {
+				$(document).on("swiperight", '#ZeitEditPage', function () {
 					nächsteVorigeZeit(ZeitId, "vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#ZeitEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#ZeitEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit(ZeitId, "vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#ZeitEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#ZeitEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit(ZeitId, "nächste");
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ZeitEditPage').is(':visible') ){
 						// Left arrow
@@ -226,15 +226,15 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ZeitId, {
-						success: function(Zeit) {
+						success: function (Zeit) {
 							delete Zeit._attachments[Dateiname];
 							$db.saveDoc(Zeit, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(Zeit);
 								}
 							});
@@ -264,23 +264,23 @@
 						// First open doc based on ID in order to get full document
 						$db = $.couch.db("evab");
 						$db.openDoc(ZeitId, {
-							success: function(document) {
+							success: function (document) {
 								// Then use the opened doc as reference to remove
 								$db.removeDoc(document, {
-									success: function() {
+									success: function () {
 										Rückmeldung += "<br>Zeit gelöscht";
 										melde(Rückmeldung);
 										setTimeout("window.open('hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId + "', target='_self')", 2800);
 										return true;
 									},
-									error: function() {
+									error: function () {
 										Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
 										melde(Rückmeldung);
 										return false;
 									}
 								});
 							},
-							error: function() {
+							error: function () {
 								Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
 								melde(Rückmeldung);
 								return false;
@@ -294,7 +294,7 @@
 					var viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ArtId;
 							for(i in data.rows) {
@@ -303,7 +303,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -323,7 +323,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(ZeitId, {
-						success: function(hZeit) {
+						success: function (hZeit) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
 								hZeit[Feldname] = Feldwert;
@@ -332,16 +332,16 @@
 							}
 							//alles speichern
 							$db.saveDoc(hZeit, {
-								success: function() {
+								success: function () {
 									//geändertes Zeit-Feld in hArt anpassen
 									var viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
 									$db.view(viewname, {
-										success: function(data) {
+										success: function (data) {
 											var hArtId;
 											for(i in data.rows) {
 												hArtId = data.rows[i].key[1];
 												$db.openDoc(hArtId, {
-													success: function(hArt) {
+													success: function (hArt) {
 														if (Feldwert) {
 															hArt[Feldname] = Feldwert;
 														} else if (hArt[Feldname]) {
@@ -354,7 +354,7 @@
 										}
 									});
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Zeit nicht gespeichert");
 								}
 							});
@@ -368,7 +368,7 @@
 				function speichereAlles() {
 					$db = $.couch.db("evab");
 					$db.openDoc(ZeitId, {
-						success: function(hZeit) {
+						success: function (hZeit) {
 							var Formularwerte = {};
 							Formularwerte = $("#hZeitEditForm").serializeObject();
 							//Werte aus dem Formular aktualisieren
@@ -387,7 +387,7 @@
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenu(thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
@@ -396,49 +396,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Zeiten exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -455,11 +455,11 @@
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof ZeitListe == "undefined") {
 						if (typeof Username === "undefined" || !Username) {
-							prüfeAnmeldung();
+							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
 						$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
-							success: function(data) {
+							success: function (data) {
 								ZeitListe = data;
 								nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
 							}
@@ -497,7 +497,7 @@
 									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitZeitId();
 								} else {
-									window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+									window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 								}
 								break;
 							}

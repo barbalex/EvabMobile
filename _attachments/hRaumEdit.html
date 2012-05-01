@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -37,7 +37,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumListeLink" name="hRaumListeLink">zur Raum-Liste</a>
 			<h2>Raum</h2>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
+			<a href='#' name='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -78,24 +78,24 @@
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="RaumEditMapÖffnen" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 
 		<script type="text/javascript" charset="utf-8">
-			$("#RaumEditPage").on("pageshow", function() {
+			$("#RaumEditPage").on("pageshow", function () {
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
 				initiiereRaumEdit(RaumId);
 			});
 
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				RaumId = get_url_param("id");
 				ProjektId = get_url_param("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
-				$("#hRaumEditForm").on("change", ".speichern", function() {
+				$("#hRaumEditForm").on("change", ".speichern", function () {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -106,7 +106,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#hRaumEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#hRaumEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -115,7 +115,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(RaumId);
@@ -123,14 +123,15 @@
 				});
 
 				//Code für den Raum-Löschen-Dialog
-				$('#hRaumEditFooter').on('click', '#LöschenDialogLink', function() {
+				$('#hRaumEditFooter').on('click', '#LöschenDialogLink', function (event) {
+					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Diesen Raum löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheRaum();
 				        		},
@@ -138,7 +139,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -147,7 +148,8 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='Menu']", function() {
+				$(document).on('click', "[name='MenuRaumEdit']", function (event) {
+					event.preventDefault();
 					erstelleMenu(this);
 				});
 
@@ -158,7 +160,8 @@
 				$("[name='hRaumListeLink']").attr('href', "hRaumListe.html?ProjektId=" + ProjektId);
 
 				//neuen Raum erstellen
-				$("#hRaumEditFooter").on("click", "#hRaumNeuLink", function() {
+				$("#hRaumEditFooter").on("click", "#hRaumNeuLink", function (event) {
+					event.preventDefault();
 					erstelleNeuenRaum(ProjektId);
 				});
 
@@ -170,33 +173,33 @@
 				}
 
 				//sichtbare Felder wählen
-				$("#hRaumEditFooter").on("click", "#wähleFelder", function(event){
+				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event){
 					event.preventDefault();
 					$.mobile.changePage("Felder_hRaum.html");
 				});
 
-				$(document).on("swipeleft", "#RaumEditPage", function() {
+				$(document).on("swipeleft", "#RaumEditPage", function () {
 					nächsterVorigerRaum(RaumId, "nächster");
 				});
 
-				$(document).on("swiperight", "#RaumEditPage", function() {
+				$(document).on("swiperight", "#RaumEditPage", function () {
 					nächsterVorigerRaum(RaumId, "voriger");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#RaumEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#RaumEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächsterVorigerRaum(RaumId, "voriger");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#RaumEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#RaumEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächsterVorigerRaum(RaumId, "nächster");
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#RaumEditPage').is(':visible') ){
 						// Left arrow
@@ -212,32 +215,33 @@
 					}
 				});
 
-				$("#hRaumEditFooter").on("click", "#RaumEditMapÖffnen", function(event) {
+				$("#hRaumEditFooter").on("click", "#RaumEditMapÖffnen", function (event) {
+					event.preventDefault();
 					$.mobile.changePage("#RaumEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#RaumEditMap', function() {
+				$(document).on("pageshow", '#RaumEditMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 					erstelleKarteFürRaum(RaumId);
 				});
 
-				$(document).on("pagehide", '#RaumEditMap', function() {
+				$(document).on("pagehide", '#RaumEditMap', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(RaumId, {
-						success: function(Raum) {
+						success: function (Raum) {
 							delete Raum._attachments[Dateiname];
 							$db.saveDoc(Raum, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(Raum);
 								}
 							});
@@ -275,23 +279,23 @@
 								Rückmeldung += "\rzugehörige Orte gelöscht";
 								$db = $.couch.db("evab");
 								return $db.openDoc(RaumId, {
-									success: function(document) {
+									success: function (document) {
 										// lösche Raum
 										return $db.removeDoc(document, {
-											success: function() {
+											success: function () {
 												Rückmeldung += "\rRaum gelöscht";
 												melde(Rückmeldung);
 												setTimeout("window.open('hRaumListe.html?ProjektId=' + ProjektId, target='_self')", 1400);
 												return true;
 											},
-											error: function() {
+											error: function () {
 												Rückmeldung += "\rFehler: Raum nicht gelöscht";
 												melde(Rückmeldung);
 												return false;
 											}
 										});
 									},
-									error: function() {
+									error: function () {
 										Rückmeldung += "\rFehler: Raum nicht gelöscht";
 										melde(Rückmeldung);
 										return false;
@@ -309,7 +313,7 @@
 					var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var OrtId;
 							for(i in data.rows) {
@@ -321,7 +325,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -333,7 +337,7 @@
 					var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ZeitId;
 							for(i in data.rows) {
@@ -345,7 +349,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -357,7 +361,7 @@
 					var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ArtId;
 							for(i in data.rows) {
@@ -369,7 +373,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -384,7 +388,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(RaumId, {
-						success: function(hRaum) {
+						success: function (hRaum) {
 							if (Feldwert) {
 								hRaum[Feldname] = Feldwert;
 							} else if (hRaum[Feldname]) {
@@ -392,12 +396,12 @@
 							}
 							//alles speichern
 							$db.saveDoc(hRaum, {
-								success: function() {
+								success: function () {
 									speichereRaumfeldInArten(Feldname, Feldwert);
 									speichereRaumfeldInZeiten(Feldname, Feldwert);
 									speichereRaumfeldInOrten(Feldname, Feldwert);
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Raum nicht gespeichert");
 								}
 							});
@@ -410,12 +414,12 @@
 					var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -434,12 +438,12 @@
 					var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -458,12 +462,12 @@
 					var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -480,7 +484,7 @@
 				//Menü aufbauen
 				function erstelleMenu(thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -488,49 +492,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Räume exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -558,11 +562,11 @@
 							//keine Raumliste übergeben
 							//neu aus DB erstellen
 							if (typeof Username === "undefined" || !Username) {
-								prüfeAnmeldung();
+								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
-								success: function(data) {
+								success: function (data) {
 									RaumListe = data;
 									//RaumListe bereitstellen
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -602,7 +606,7 @@
 									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitRaumId();
 								} else {
-									window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
+									window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
 								}
 								break;
 							}
@@ -618,7 +622,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#RaumEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuRaumEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

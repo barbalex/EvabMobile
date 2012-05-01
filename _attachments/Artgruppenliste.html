@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -45,9 +45,9 @@
 			<p id="agl_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Liste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pagecreate", function() {
+			$(":jqmData(role='page')").on("pagecreate", function () {
 				if (typeof Username === "undefined" || !Username) {
-					prüfeAnmeldung();
+					pruefeAnmeldung();
 				}
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
@@ -57,7 +57,7 @@
 				OrtId = get_url_param("OrtId") || "";
 				ZeitId = get_url_param("ZeitId") || "";
 
-				$("body").on("click", "[name='ArtgruppenListItem']", function(event) {     
+				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {     
 					event.preventDefault();
 					var aArtGruppe = $(this).attr("ArtGruppe");
 					var L = $(this).attr("L") || "";
@@ -95,7 +95,7 @@
 				});
 			});
 
-			$(":jqmData(role='page')").on("pageshow", function() {
+			$(":jqmData(role='page')").on("pageshow", function () {
 				UserId = "";
 
 				Status = get_url_param("Status") || "edit";
@@ -113,7 +113,7 @@
 					//Listen aufbauen lassen
 					//und button für Sprache richtig beschriften
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
@@ -121,7 +121,7 @@
 						var viewname = 'evab/User?key="' + Username + '"';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
-							success: function(data) {
+							success: function (data) {
 								User = data.rows[0].value;
 								ArtenSprache = User.ArtenSprache;
 								sessionStorage.setItem("ArtenSprache", ArtenSprache);
@@ -177,7 +177,7 @@
 					var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							ArtGruppen = data;
 							for(i in data.rows) {
 								ArtGruppe = ArtGruppen.rows[i].key;
@@ -213,7 +213,7 @@
 					var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							ArtGruppen = data;
 							for(i in data.rows) {
 								ArtGruppe = ArtGruppen.rows[i].key;
@@ -242,7 +242,7 @@
 						var viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
-							success: function(data) {
+							success: function (data) {
 								Artgruppenliste = data;
 								//Artgruppenliste bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -295,7 +295,7 @@
 						var viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
-							success: function(data) {
+							success: function (data) {
 								Artgruppenliste = data;
 								//Artgruppenliste bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -342,12 +342,12 @@
 					$("#agl_Hinweistext").empty().remove();
 				}
 
-				$("#agl_Header").on("click", "#agl_ButtonSprache", function(event) {       
+				$("#agl_Header").on("click", "#agl_ButtonSprache", function (event) {       
 					event.preventDefault();
 					var ButtonText = this.text;
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
-						success: function(doc) {
+						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
 								sessionStorage.setItem("ArtenSprache", "Deutsch");
@@ -356,15 +356,15 @@
 								sessionStorage.setItem("ArtenSprache", "Lateinisch");
 							}
 							$db.saveDoc(doc, {
-								success: function() {
+								success: function () {
 									erstelleArtgruppenListe();
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Sprache nicht verändert");
 								 }
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Sprache nicht verändert");
 						}
 					});

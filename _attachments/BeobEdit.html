@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
     <script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
     <script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -106,13 +106,13 @@
 					<li><a href="#" id="be_löschen" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="be_verorten" data-icon="evab-location">verorten</a></li>						
 					<li><a href="#" id="be_zeigeKarte" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="be_wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		
 		<script type="text/javascript">
-			$("#BeobEditPage").on("pageshow", function() {
+			$("#BeobEditPage").on("pageshow", function () {
 				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (!BeobId) {
 					BeobId = get_url_param("id");
@@ -121,12 +121,12 @@
 				initiiereBeobEdit(BeobId);
 			});
 
-			$(":jqmData(role='page')").on("pagecreate", function() {
+			$(":jqmData(role='page')").on("pagecreate", function () {
 				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
 				BeobId = "";
 
 				//Neue Beobachtung erfassen
-				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function(event) {
+				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function (event) {
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
@@ -147,7 +147,7 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#BeobEditForm").on("click", "#aArtGruppe", function(event) {
+				$("#BeobEditForm").on("click", "#aArtGruppe", function (event) {
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
@@ -166,13 +166,13 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#BeobEditPageFooterNavbar").on("click", "#be_wähleFelder", function(event) {
+				$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_Beob.html");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#BeobEditForm").on('click', '#aArtName', function(event){
+				$("#BeobEditForm").on('click', '#aArtName', function (event){
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
@@ -185,7 +185,7 @@
 					var viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								$.mobile.changePage($("#agl_Page"));
@@ -199,7 +199,7 @@
 				});
 
 				//Für jedes Feld bei Änderung speichern
-				$("#BeobEditForm").on("change", ".speichern", function() {
+				$("#BeobEditForm").on("change", ".speichern", function () {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -221,7 +221,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#BeobEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#BeobEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -230,14 +230,14 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function(event) {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function (event) {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
 						speichereAnhänge(BeobId);
 					}
 				});
 				
-				$("#BeobEditPageFooterNavbar").on('click', "#be_zeigeKarte", function(event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#be_zeigeKarte", function (event) {
 					event.preventDefault();
 					//alert("be_zeigeKarte geklickt");
 					if ($("#BeobEditMapPage").length > 0) {
@@ -253,28 +253,28 @@
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#BeobEditMapPage', function() {
+				$(document).on("pageshow", '#BeobEditMapPage', function () {
 					erstelleKarte();
 				});
 
-				$(document).on("pagehide", '#BeobEditMapPage', function() {
+				$(document).on("pagehide", '#BeobEditMapPage', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$("#BeobEditPageFooterNavbar").on('click', "#be_verorten", function(event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#be_verorten", function (event) {
 					event.preventDefault();
 					GetGeolocation();
 				});
 
-				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function(event) {
+				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function (event) {
 					event.preventDefault();
 					$.mobile.changePage($('#BeobEditPage'));
 					window.history.pushState("", "", "hArtEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#BeobEditPageFooterNavbar').on('click', '#be_löschen', function(event) {
+				$('#BeobEditPageFooterNavbar').on('click', '#be_löschen', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -282,7 +282,7 @@
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheBeobachtung();
 				        		},
@@ -290,7 +290,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -299,32 +299,32 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='be_Menu']", function() {
+				$(document).on('click', "[name='be_Menu']", function () {
 					erstelleMenu(this);
 				});
 
-				$(document).on("swipeleft", "#BeobEditContent", function() {
+				$(document).on("swipeleft", "#BeobEditContent", function () {
 					nächsteVorigeBeob(BeobId, "nächste");
 				});
 
-				$(document).on("swiperight", "#BeobEditContent", function() {
+				$(document).on("swiperight", "#BeobEditContent", function () {
 					nächsteVorigeBeob(BeobId, "vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#BeobEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob(BeobId, 'vorige');
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#BeobEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob(BeobId, 'nächste');
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#BeobEditPage').is(':visible') ){
 						// Left arrow
@@ -340,15 +340,15 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(BeobId, {
-						success: function(Beob) {
+						success: function (Beob) {
 							delete Beob._attachments[Dateiname];
 							$db.saveDoc(Beob, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(Beob);
 								}
 							});
@@ -376,11 +376,11 @@
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
 							if (typeof Username === "undefined" || !Username) {
-								prüfeAnmeldung();
+								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
-								success: function(data) {
+								success: function (data) {
 									//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 									BeobListe = data;
@@ -416,7 +416,7 @@
 									BeobId = BeobListe.rows[i-1].value._id;
 									initiiereBeobEdit(BeobId);
 								} else {
-									window.open("BeobListe.html", target="_self");
+									window.open("BeobListe.html", target = "_self");
 								}
 								break;
 							}
@@ -485,14 +485,14 @@
 						    content: contentString
 						});
 						InfoWindowArray.push(infowindow);
-						google.maps.event.addListener(marker, 'click', function() {
+						google.maps.event.addListener(marker, 'click', function () {
 						  infowindow.open(map,marker);
 						});
-						google.maps.event.addListener(marker, "dragend", function(event) {
+						google.maps.event.addListener(marker, "dragend", function (event) {
 							SetLocation(event.latLng, map, marker);
 						});
 					}
-					google.maps.event.addListener(map, 'click', function(event) {
+					google.maps.event.addListener(map, 'click', function (event) {
 						placeMarker(event.latLng, map, marker, image, aArtName);
 					});
 				}
@@ -509,7 +509,7 @@
 					});
 					//Marker in Array speichern, damit er gelöscht werden kann
 					markersArray.push(marker);
-					google.maps.event.addListener(marker, "dragend", function(event) {
+					google.maps.event.addListener(marker, "dragend", function (event) {
 						SetLocation(event.latLng, map, marker);
 					});
 					SetLocation(location, map, marker);
@@ -535,7 +535,7 @@
 					    content: contentString
 					});
 					InfoWindowArray.push(infowindow);
-					google.maps.event.addListener(marker, 'click', function() {
+					google.maps.event.addListener(marker, 'click', function () {
 					  infowindow.open(map,marker);
 					});
 					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y);
@@ -571,7 +571,7 @@
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -579,14 +579,14 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'hierarchischer Modus': {
-						      	click: function() {
-						        	window.open("hProjektListe.html", target="_self");
+						      	click: function () {
+						        	window.open("hProjektListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Arteigenschaften': {
-						      	click: function() {
+						      	click: function () {
 						      		//Variabeln übergeben
 						        	zurueck_global = "BeobEdit.html";
 						        	//Seite wechseln
@@ -605,42 +605,42 @@
 				        		icon: "question"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=BeobEdit.html?id=" + BeobId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=BeobEdit.html?id=" + BeobId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Beobachtungen<br>exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 						 	'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -656,17 +656,17 @@
 					sessionStorage.removeItem("BeobListe");
 					$db = $.couch.db("evab");
 					$db.openDoc(BeobId, {
-						success: function(document) {
+						success: function (document) {
 							$db.removeDoc(document, {
-								success: function() {
+								success: function () {
 									window.open("BeobListe.html", target = '_self');
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Beobachtung nicht gelöscht");
 								}
 							});
 						},
-						error: function() {
+						error: function () {
 							melde("Fehler: Beobachtung nicht gelöscht");
 						}
 					});
@@ -677,7 +677,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(BeobId, {
-						success: function(Beob) {
+						success: function (Beob) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
 								Beob[Feldname] = Feldwert;
@@ -689,7 +689,7 @@
 							Beob.aArtId = aArtId;
 							//alles speichern
 							$db.saveDoc(Beob, {
-								error: function() {
+								error: function () {
 									melde("Fehler: Beobachtung nicht gespeichert");
 								}
 							});
@@ -701,7 +701,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(BeobId, {
-						success: function(Beob) {
+						success: function (Beob) {
 							//Längen- und Breitengrad sind in keinem Feld dargestellt
 							//sie müssen aus ihren Variabeln gespeichert werden
 							Beob.oLongitudeDecDeg = oLongitudeDecDeg;
@@ -711,10 +711,10 @@
 							Beob.oLagegenauigkeit = "Auf Luftbild markiert";
 							//alles speichern
 							$db.saveDoc(Beob, {
-								success: function() {
+								success: function () {
 									melde("Koordinaten gespeichert");
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Koordinaten nicht gespeichert");
 								}
 							});

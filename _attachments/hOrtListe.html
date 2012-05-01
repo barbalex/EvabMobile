@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
   	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -38,7 +38,7 @@
   		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumLink" name="hRaumLink">zum Raum</a>
   			<h2 class="hOrtListePageTitel">Orte</h2>
-  			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' name='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -65,7 +65,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#hOrtListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">zurück zur Ortliste</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>
@@ -90,7 +90,8 @@
 		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 		//neuen Ort erstellen
-		$("body").on("click", ".hol_NeuLink", function(){
+		$("body").on("click", ".hol_NeuLink", function (event) {
+			event.preventDefault();
 			erstelleNeuenOrt(ProjektId, RaumId);
 		});
 
@@ -98,36 +99,38 @@
 		$("#hOrtListeLink").attr("href", "hOrtListe?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 		//Menu aufbauen
-		$("#hOrtListePageHeader").on('click', "[name='Menu']", function(){
-			erstelleMenu(this);
+		$("#hOrtListePageHeader").on('click', "[name='MenuOrtListe']", function (event) {
+			event.preventDefault();
+			erstelleMenuOrtListe(this);
 		});
 
-		$("#Orte").on("swipeleft", ".Ort", function() {
+		$("#Orte").on("swipeleft", ".Ort", function () {
 			var OrtId = $(this).attr('OrtId');
-			window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+			window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 		});
 
-		$("#Orte").on("swipeleft", ".erste", function() {
+		$("#Orte").on("swipeleft", ".erste", function () {
 			erstelleNeuenOrt(ProjektId, RaumId);
 		});
 
-		$(document).on("swiperight", "#hOrtListePage", function() {
-			window.open("hRaumListe.html?ProjektId=" + ProjektId, target="_self");
+		$(document).on("swiperight", "#hOrtListePage", function () {
+			window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
 		});
 
-		$("#hOrtListePageFooter").on('click', '#GeButton', function(event) {
+		$("#hOrtListePageFooter").on('click', '#GeButton', function (event) {
+			event.preventDefault();
 			$.mobile.changePage("#hOrtListeMapPage");
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 			var contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
-		$(document).on("pageshow", '#hOrtListeMapPage', function() {
+		$(document).on("pageshow", '#hOrtListeMapPage', function () {
 			//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 			erstelleKarteFürRaum(RaumId);
 		});
 
-		$(document).on("pagehide", '#hOrtListeMapPage', function() {
+		$(document).on("pagehide", '#hOrtListeMapPage', function () {
 			//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 			$("#map_canvas").html("");
 		});
@@ -136,9 +139,9 @@
 	$(document).ready(handleDocumentReady);
 
 	//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-	function erstelleMenu(thiz){
+	function erstelleMenuOrtListe(thiz){
 		if (typeof Username === "undefined" || !Username) {
-			prüfeAnmeldung();
+			pruefeAnmeldung();
 		}
 		$(thiz).simpledialog({
 			'mode' : 'bool',
@@ -146,49 +149,49 @@
 			'fullHTML': 'true',
 	    	'buttons' : {
 			 	'einfacher Modus': {
-			      	click: function() {
-			        	window.open("BeobListe.html", target="_self");
+			      	click: function () {
+			        	window.open("BeobListe.html", target = "_self");
 	        		},
 	        		theme: "a",
 	        		icon: "check"
 	      		},
 	      		'Felder verwalten': {
-			      	click: function() {
-			        	window.open("FeldListe.html?zurueck=hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+			      	click: function () {
+			        	window.open("FeldListe.html?zurueck=hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 	        		},
 	        		theme: "a",
 	        		icon: "edit"
 	      		},
 	      		'Orte exportieren': {
-			      	click: function() {
+			      	click: function () {
 			        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 	        		},
 	        		theme: "a",
 	        		icon: "arrow-r"
 	      		},
 	      		'Einstellungen': {
-			      	click: function() {
+			      	click: function () {
 			        	öffneMeineEinstellungen("");
 	        		},
 	        		theme: "a",
 	        		icon: "wrench"
 	      		},
 	      		'lokal installieren': {
-			      	click: function() {
-			        	window.open("Installieren.html", target="_self");
+			      	click: function () {
+			        	window.open("Installieren.html", target = "_self");
 	        		},
 	        		theme: "a",
 	        		icon: "lightning"
 	      		},
 	      		'neu anmelden': {
-			      	click: function() {
-			        	window.open("index.html?Status=neu", target="_self");
+			      	click: function () {
+			        	window.open("index.html?Status=neu", target = "_self");
 	        		},
 	        		theme: "a",
 	        		icon: "person"
 	      		},
 	      		'schliessen': {
-	                click: function() { return true; },
+	                click: function () { return true; },
 	                icon: "back",
 	                theme: "c"
 	            }
@@ -206,11 +209,11 @@
 			erstelleOrtListe_2();
 		} else {
 			if (typeof Username === "undefined" || !Username) {
-				prüfeAnmeldung();
+				pruefeAnmeldung();
 			}
 			$db = $.couch.db("evab");
 			$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
-				success: function(data) {
+				success: function (data) {
 					//OrtListe für hOrtEdit bereitstellen
 					OrtListe = data;
 					//Objekte werden als Strings übergeben, müssen in String umgewandelt werden

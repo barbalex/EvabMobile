@@ -12,7 +12,7 @@
   	<style type="text/css">.ui-icon-evab-location {background-image:url('../../Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -87,7 +87,7 @@
 
   </body>
     <script type="text/javascript">
-		$(document).ready(function() {
+		$(document).ready(function () {
 			
 			//Feld Benutzername deaktivieren
 			$('#Benutzername').textinput();
@@ -106,7 +106,7 @@
 			$("#{{ArtenSprache}}").prop("checked",true).checkboxradio("refresh");
 
 			//jedes Feld bei Änderung speichern
-			$(".Feld").change(function(){
+			$(".Feld").change(function (){
 				speichern();
 				if (this.name === ArtenSprache) {
 					sessionStorage.setItem("ArtenSprache", this.value);
@@ -128,10 +128,10 @@
 			Userr._id = "{{id}}";
 			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
-				success: function(doc) {
+				success: function (doc) {
 					Userr._rev = doc._rev;
 					$db.saveDoc(Userr, {
-						error: function() {
+						error: function () {
 							melde("Fehler: User nicht gespeichert");
 						 }
 					});

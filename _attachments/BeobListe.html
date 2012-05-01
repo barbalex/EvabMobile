@@ -11,7 +11,7 @@
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
   	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -51,31 +51,31 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 
 				erstelleBeobListe();
 				speichereLetzteUrl();
 
-				$("#beobachtungen").on("swipeleft", ".beob", function() {
+				$("#beobachtungen").on("swipeleft", ".beob", function () {
 					var BeobId = $(this).attr('id');
-					window.open("BeobEdit.html?id=" + BeobId, target="_self");
+					window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 				});
 
-				$("#BeobListePageFooter").on('click', '#bl_KarteÖffnen', function(event) {
+				$("#BeobListePageFooter").on('click', '#bl_KarteÖffnen', function (event) {
 					$.mobile.changePage("#bl_Karte");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#bl_Karte', function() {
+				$(document).on("pageshow", '#bl_Karte', function () {
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
 					$db = $.couch.db("evab");
 					$db.view('evab/BeobListeLatLng?key="' + Username + '"&include_docs=true', {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var anzBeob = 0;
 							var beob;
@@ -164,7 +164,7 @@
 							}
 							//listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
 							function makeListener(map, marker, contentString){
-								google.maps.event.addListener(marker, 'click', function() {
+								google.maps.event.addListener(marker, 'click', function () {
 									infowindow.setContent(contentString);
 									infowindow.open(map,marker);
 								});
@@ -173,24 +173,24 @@
 					});
 				});
 
-				$(document).on("pagehide", '#bl_Karte', function() {
+				$(document).on("pagehide", '#bl_Karte', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='bl_Menu']", function() {
+				$(document).on('click', "[name='bl_Menu']", function () {
 					erstelleMenu(this);
 				});
 
 				//Neue Beobachtung managen
-				$("#BeobListePage").on("click", ".bl_NeuLink", function(event){
+				$("#BeobListePage").on("click", ".bl_NeuLink", function (event){
 					event.preventDefault();
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
 
-				$(document).on("swiperight", "#BeobListePage", function() {
-					window.open("hProjektListe.html", target="_self");
+				$(document).on("swiperight", "#BeobListePage", function () {
+					window.open("hProjektListe.html", target = "_self");
 				});
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
@@ -220,49 +220,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'hierarchischer Modus': {
-						      	click: function() {
-						        	window.open("hProjektListe.html", target="_self");
+						      	click: function () {
+						        	window.open("hProjektListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Beobachtungen<br>exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 						 	'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -280,11 +280,11 @@
 						erstelleBeobListe_2()
 					} else {
 						if (typeof Username === "undefined" || !Username) {
-							prüfeAnmeldung();
+							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
 						$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
-							success: function(data) {
+							success: function (data) {
 								//BeobListe für BeobEdit bereitstellen
 								BeobListe = data;
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden

@@ -11,7 +11,7 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -35,16 +35,16 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
-			$("#ProjektEditPage").on("pageshow", function() {
+			$("#ProjektEditPage").on("pageshow", function () {
 				ProjektId = get_url_param("id");
 				initiiereProjektEdit(ProjektId);
 			});
 
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				ProjektId = get_url_param("id");
 
 				//Für jedes Feld bei Änderung speichern
-				$("#hProjektEditForm").on("change", ".speichern", function() {
+				$("#hProjektEditForm").on("change", ".speichern", function () {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -55,7 +55,7 @@
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
-				$("#hProjektEditForm").on("mouseup", ".ui-slider", function(event) {
+				$("#hProjektEditForm").on("mouseup", ".ui-slider", function (event) {
 					var Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
 					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
@@ -64,7 +64,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function() {
+				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(ProjektId);
@@ -74,14 +74,15 @@
 				aktualisiereLinksMitProjId();
 				
 				//Code für den Projekt-Löschen-Dialog
-				$('#hProjektEditFooter').on('click', '#LöschenDialogLink', function() {
+				$('#hProjektEditFooter').on('click', '#LöschenDialogLink', function (event) {
+					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Dieses Projekt löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
-						      	click: function() {
+						      	click: function () {
 						        	$('#dialogoutput').text('ja');
 						        	löscheProjekt();
 				        		},
@@ -89,7 +90,7 @@
 				        		theme: "c"
 				      		},
 				      		'nein': {
-				        		click: function() {
+				        		click: function () {
 				          			$('#dialogoutput').text('nein');
 				        		}
 				      		}
@@ -98,43 +99,45 @@
 				});
 
 				//Menu aufbauen
-				$('#hProjektEditHeader').on('click', '#Menu', function() {
-					erstelleMenu(this);
+				$('#hProjektEditHeader').on('click', '[name="MenuProjektEdit"]', function (event) {
+					event.preventDefault();
+					erstelleMenuProjektEdit(this);
 				});
 
 				//neues Projekt erstellen
-				$("#hProjektEditFooter").on("click", "#hProjektNeuLink", function() {
+				$("#hProjektEditFooter").on("click", "#hProjektNeuLink", function (event) {
+					event.preventDefault();
 					erstelleNeuesProjekt();
 				});
 
 				//sichtbare Felder wählen
-				$("#hProjektEditFooter").on("click", "#wähleFelder", function(event){
+				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event){
 					event.preventDefault();
 					$.mobile.changePage("Felder_hProjekt.html");
 				});
 
-				$(document).on("swipeleft", "#hProjektEditContent", function() {
+				$(document).on("swipeleft", "#hProjektEditContent", function () {
 					nächstesVorigesProjekt(ProjektId, "nächstes");
 				});
 
-				$(document).on("swiperight", "#hProjektEditContent", function() {
+				$(document).on("swiperight", "#hProjektEditContent", function () {
 					nächstesVorigesProjekt(ProjektId, "voriges");
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#ProjektEditPage").on("vclick", "#PaginationPrev", function(event) {
+				$("#ProjektEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
 					nächstesVorigesProjekt(ProjektId, "voriges");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#ProjektEditPage").on("vclick", "#PaginationNext", function(event) {
+				$("#ProjektEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
 					nächstesVorigesProjekt(ProjektId, "nächstes");
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function(e) {
+				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ProjektEditPage').is(':visible') ){
 						// Left arrow
@@ -150,32 +153,33 @@
 					}
 				});
 
-				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function(event) {
+				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function (event) {
+					event.preventDefault();
 					$.mobile.changePage("#ProjektEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
-				$(document).on("pageshow", '#ProjektEditMap', function() {
+				$(document).on("pageshow", '#ProjektEditMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
 					erstelleKarteFürProjekt(ProjektId);
 				});
 
-				$(document).on("pagehide", '#ProjektEditMap', function() {
+				$(document).on("pagehide", '#ProjektEditMap', function () {
 					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#map_canvas").html("");
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function(event) {
+				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
 					var Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ProjektId, {
-						success: function(Projekt) {
+						success: function (Projekt) {
 							delete Projekt._attachments[Dateiname];
 							$db.saveDoc(Projekt, {
-								success: function() {
+								success: function () {
 									erstelleAttachments(Projekt);
 								}
 							});
@@ -220,23 +224,23 @@
 									Rückmeldung += "\rzugehörige Räume gelöscht";
 									$db = $.couch.db("evab");
 									return $db.openDoc(ProjektId, {
-										success: function(document) {
+										success: function (document) {
 											// lösche Projekt
 											return $db.removeDoc(document, {
-												success: function() {
+												success: function () {
 													Rückmeldung += "\rProjekt gelöscht";
 													melde(Rückmeldung);
 													setTimeout("window.open('hProjektListe.html', target = '_self')", 1400);
 													return true;
 												},
-												error: function() {
+												error: function () {
 													Rückmeldung += "\rFehler: Projekt nicht gelöscht";
 													melde(Rückmeldung);
 													return false;
 												}
 											});
 										},
-										error: function() {
+										error: function () {
 											Rückmeldung += "\rFehler: Projekt nicht gelöscht";
 											melde(Rückmeldung);
 											return false;
@@ -256,7 +260,7 @@
 					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var RaumId;
 							for(i in data.rows) {
@@ -268,7 +272,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -280,7 +284,7 @@
 					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var OrtId;
 							for(i in data.rows) {
@@ -292,7 +296,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -304,7 +308,7 @@
 					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ZeitId;
 							for(i in data.rows) {
@@ -316,7 +320,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -328,7 +332,7 @@
 					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var ArtId;
 							for(i in data.rows) {
@@ -340,7 +344,7 @@
 							}
 							return true;
 						},
-						error: function() {
+						error: function () {
 							return false;
 						}
 					});
@@ -350,7 +354,7 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(ProjektId, {
-						success: function(hProjekt) {
+						success: function (hProjekt) {
 							if (Feldwert) {
 								hProjekt[Feldname] = Feldwert;
 							} else if (hProjekt[Feldname]) {
@@ -358,13 +362,13 @@
 							}
 							//alles speichern
 							$db.saveDoc(hProjekt, {
-								success: function() {
+								success: function () {
 									speichereProjektfeldInArten(Feldname, Feldwert);
 									speichereProjektfeldInZeiten(Feldname, Feldwert);
 									speichereProjektfeldInOrten(Feldname, Feldwert);
 									speichereProjektfeldInRäumen(Feldname, Feldwert);
 								},
-								error: function() {
+								error: function () {
 									melde("Fehler: Projekt nicht gespeichert");
 								}
 							});
@@ -377,12 +381,12 @@
 					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -401,12 +405,12 @@
 					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -425,12 +429,12 @@
 					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -449,12 +453,12 @@
 					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
-						success: function(data) {
+						success: function (data) {
 							var hArtId;
 							for(i in data.rows) {
 								hArtId = data.rows[i].key[1];
 								$db.openDoc(hArtId, {
-									success: function(hArt) {
+									success: function (hArt) {
 										if (Feldwert) {
 											hArt[Feldname] = Feldwert;
 										} else if (hArt[Feldname]) {
@@ -469,9 +473,9 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz){
+				function erstelleMenuProjektEdit(thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -479,49 +483,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Projekte exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						      		öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -549,11 +553,11 @@
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
 							if (typeof Username === "undefined" || !Username) {
-								prüfeAnmeldung();
+								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
 							$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
-								success: function(data) {
+								success: function (data) {
 									//Projektliste bereitstellen
 									Projektliste = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
@@ -593,7 +597,7 @@
 									window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitProjId();
 								} else {
-									window.open("hProjektListe.html", target="_self");
+									window.open("hProjektListe.html", target = "_self");
 								}
 								break;
 							}
@@ -610,7 +614,7 @@
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
-			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
@@ -650,7 +654,7 @@
 					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="wähleFelder" data-icon="info">Felder</a></li>
+					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -660,7 +664,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#ProjektEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='Menu2' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

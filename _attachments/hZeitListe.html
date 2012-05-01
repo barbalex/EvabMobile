@@ -11,7 +11,7 @@
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">
-		$(document).on("mobileinit", function() {
+		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
 			$.mobile.selectmenu.prototype.options.nativeMenu = false;
@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function() {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				OrtId = get_url_param("OrtId");
 				RaumId = get_url_param("RaumId");
 				ProjektId = get_url_param("ProjektId");
@@ -79,36 +79,36 @@
 				$("[name='hOrtLink']").attr('href', url);
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
-				$("#hZeitListePage").on("click", ".hzl_NeuLink", function(event) {
+				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
 					event.preventDefault();
 					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
 				});
 
-				$("#Zeiten").on("swipeleft", ".Zeit", function() {
+				$("#Zeiten").on("swipeleft", ".Zeit", function () {
 					var ZeitId = $(this).attr('ZeitId');
-					window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+					window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				});
 
-				$("#Zeiten").on("swipeleft", ".erste", function() {
+				$("#Zeiten").on("swipeleft", ".erste", function () {
 					erstelleNeueZeit(ProjektId, RaumId, OrtId);
 				});
 
-				$(document).on("swiperight", function() {
-					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target="_self");
+				$(document).on("swiperight", function () {
+					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				});
 
 				//Link zur OrtListe in Navbar setzen
 				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Menu aufbauen
-				$("#hZeitListePageHeader").on('click', '#Menu', function() {
+				$("#hZeitListePageHeader").on('click', '#Menu', function () {
 					erstelleMenu(this);
 				});
 
 				//Menü aufbauen
 				function erstelleMenu(thiz){
 					if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
 					var zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
@@ -118,49 +118,49 @@
 						'fullHTML': 'true',
 				    	'buttons' : {
 						 	'einfacher Modus': {
-						      	click: function() {
-						        	window.open("BeobListe.html", target="_self");
+						      	click: function () {
+						        	window.open("BeobListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "check"
 				      		},
 				      		'Felder verwalten': {
-						      	click: function() {
-						        	window.open("FeldListe.html?zurueck=" + zurueck, target="_self");
+						      	click: function () {
+						        	window.open("FeldListe.html?zurueck=" + zurueck, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Zeiten exportieren': {
-						      	click: function() {
+						      	click: function () {
 						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
 				      		},
 				      		'Einstellungen': {
-						      	click: function() {
+						      	click: function () {
 						        	öffneMeineEinstellungen("");
 				        		},
 				        		theme: "a",
 				        		icon: "wrench"
 				      		},
 				      		'lokal installieren': {
-						      	click: function() {
-						        	window.open("Installieren.html", target="_self");
+						      	click: function () {
+						        	window.open("Installieren.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "lightning"
 				      		},
 				      		'neu anmelden': {
-						      	click: function() {
-						        	window.open("index.html?Status=neu", target="_self");
+						      	click: function () {
+						        	window.open("index.html?Status=neu", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
 				      		},
 				      		'schliessen': {
-				                click: function() { return true; },
+				                click: function () { return true; },
 				                icon: "back",
 				                theme: "c"
 				            }
@@ -170,12 +170,12 @@
 				
 			  	function erstelleZeitListe() {
 			  		if (typeof Username === "undefined" || !Username) {
-						prüfeAnmeldung();
+						pruefeAnmeldung();
 					}
 					$("#Zeiten").empty();
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
-						success: function(data) {
+						success: function (data) {
 							var i;
 							var anzZeit = 0;
 							var Zeit;
