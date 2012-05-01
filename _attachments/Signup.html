@@ -81,7 +81,8 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		$("#SubmitButton").tap(function (event){
+		$("#SubmitButton").tap(function (event) {
+			event.preventDefault();
 			var UserName = $('input[name=UserName]').val();
 			var Passwort = $('input[name=Passwort]').val();
 			var Passwort2 = $('input[name=Passwort2]').val();

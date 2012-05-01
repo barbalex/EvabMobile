@@ -38,7 +38,7 @@
   		<div id="FeldListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="FeldListeBackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
   			<h2 class="FeldListePageTitel">Felder</h2>
-  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuFeldListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div data-role="content">
 			<ul id="FeldListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
@@ -110,12 +110,14 @@
 		});
 
 		//Menu aufbauen
-		$("#FeldListePageHeader").on('click', '#Menu', function (){
+		$("#FeldListePageHeader").on('click', '#MenuFeldListe', function (event) {
+			event.preventDefault();
 			erstelleMenuFürFelder(this, "");
 		});
 
 		//BackButton steuern
-		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (){
+		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (event) {
+			event.preventDefault();
 			var zurueck = get_url_param('zurueck') || "BeobListe.html";
 			window.open(zurueck, target = "_self");
 		});

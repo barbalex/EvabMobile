@@ -150,7 +150,8 @@
 					});
 				});
 
-				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function () {
+				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function (event) {
+					event.preventDefault();
 					if ($('#BeobEditPage').length > 0) {
 						$.mobile.changePage($('#BeobEditPage'));
 					} else {

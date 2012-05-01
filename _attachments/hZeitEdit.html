@@ -37,7 +37,7 @@
 		<div data-role="header" id="ZeitEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">zur Zeit-Liste</a>
 			<h1>Zeit</h1>
-			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='MenuZeitEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -82,7 +82,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöschenDialogLinkZeitEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="waehleFelderZeitEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -161,7 +161,8 @@
 				}
 
 				//Code für den Zeit-Löschen-Dialog
-				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLink', function () {
+				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLinkZeitEdit', function (event) {
+					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Diese Zeit löschen?',
@@ -185,8 +186,9 @@
 				});
 
 				//Menu aufbauen
-				$("#ZeitEditPageHeader").on('click', '#Menu', function () {
-					erstelleMenu(this);
+				$("#ZeitEditPageHeader").on('click', '#MenuZeitEdit', function (event) {
+					event.preventDefault();
+					erstelleMenuZeitEdit(this);
 				});
 
 				$(document).on("swipeleft", '#ZeitEditPage', function () {
@@ -385,7 +387,7 @@
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-				function erstelleMenu(thiz){
+				function erstelleMenuZeitEdit(thiz){
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}

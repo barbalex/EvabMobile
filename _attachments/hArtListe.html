@@ -38,7 +38,7 @@
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
-  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuhBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -89,7 +89,8 @@
 				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Menu aufbauen
-				$("#hArtListePageHeader").on('click', '#Menu', function () {
+				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
+					event.preventDefault();
 					erstelleMenu_hal(this);
 				});
 

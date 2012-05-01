@@ -74,7 +74,7 @@
 				aktualisiereLinksMitProjId();
 				
 				//Code für den Projekt-Löschen-Dialog
-				$('#hProjektEditFooter').on('click', '#LöschenDialogLink', function (event) {
+				$('#hProjektEditFooter').on('click', '#LöschenDialogLinkProjektEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -652,7 +652,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöschenDialogLinkProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
 				</ul>

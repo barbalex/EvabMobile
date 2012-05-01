@@ -38,7 +38,7 @@
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
 			<h1>Art</h1>
-			<a href='#' id='hae_Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='MenuhBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hae_ProjektLink">Projekt</a></li>
@@ -85,7 +85,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hArtNeuLink" data-icon="plus" class="ui-btn-active">neu</a></li>				
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöschenDialogLinkhBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="waehleFelderhBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -154,13 +154,14 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event){
+				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hArt.html");
 				});
 
 				//Code für den Art-Löschen-Dialog
-				$("#hArtEditPageFooter").on('click', '#LöschenDialogLink', function () {
+				$("#hArtEditPageFooter").on('click', '#LöschenDialogLinkhBeobEdit', function (event) {
+					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Diese Art löschen?',
@@ -184,7 +185,8 @@
 				});
 
 			  	//Menu aufbauen
-				$('#hArtEditPageHeader').on('click', "#hae_Menu", function () {
+				$('#hArtEditPageHeader').on('click', "#MenuhBeobEdit", function (event) {
+					event.preventDefault();
 					erstelleMenu_hae(this, aArtGruppe);
 				});
 

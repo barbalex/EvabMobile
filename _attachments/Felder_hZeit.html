@@ -49,7 +49,8 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				erstelleSichtbareFelder();
 
-				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function () {
+				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function (event) {
+					event.preventDefault();
 					if ($('#ZeitEditPage').length > 0) {
 						$.mobile.changePage($('#ZeitEditPage'));
 					} else {

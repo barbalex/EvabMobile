@@ -37,7 +37,7 @@
   		<div data-role="header" id="hZeitListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hOrtLink" name="hOrtLink">zum Ort</a>
   			<h2 class="hZeitListePageTitel">Zeit</h2>
-  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuZeitListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
@@ -101,7 +101,8 @@
 				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Menu aufbauen
-				$("#hZeitListePageHeader").on('click', '#Menu', function () {
+				$("#hZeitListePageHeader").on('click', '#MenuZeitListe', function (event) {
+					event.preventDefault();
 					erstelleMenu(this);
 				});
 

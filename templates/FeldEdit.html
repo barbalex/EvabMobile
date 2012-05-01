@@ -197,7 +197,8 @@
 				});
 
 				//Code für den Feld-Löschen-Dialog
-				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function () {
+				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function (event) {
+					event.preventDefault();
 					if (typeof Username === "undefined" && !Username) {
 						pruefeAnmeldung();
 					}
@@ -259,12 +260,14 @@
 				});
 
 				//Menu aufbauen
-				$("#FeldEditHeader").on('click', "#Menu", function (){
+				$("#FeldEditHeader").on('click', "#MenuFeldEdit", function (event) {
+					event.preventDefault();
 					erstelleMenuFürFelder(this, "../../");
 				});
 
 				//BackButton steuern
-				$("#FeldEditHeader").on('click', '#BackButton', function (){
+				$("#FeldEditHeader").on('click', '#BackButton', function (event) {
+					event.preventDefault();
 					geheZurück();
 				});
 
@@ -839,7 +842,7 @@
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
   			<a href="#" id="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
-  			<a href='#' id='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">

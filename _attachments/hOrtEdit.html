@@ -38,7 +38,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hoe_hOrtListeLink">zur Ort-Liste</a>
 			<h1>Ort</h1>
-			<a href='#' id='Menu' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hoe_hProjektLink" rel="external">Projekt</a></li>
@@ -90,8 +90,8 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-icon="plus" rel="external" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="GetGeolocationButton" data-icon="evab-location">verorten</a></li>					
+					<li><a href="#" id="LöschenDialogLinkOrtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="VerortungOrtEdit" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderOrtEdit" data-icon="info">Felder</a></li>
 				</ul>
@@ -177,7 +177,8 @@
 				aktualisiereLinksMitOrtId_hoe();
 
 				//Code für den Ort-Löschen-Dialog
-				$('#hOrtEditFooter').on('click', '#LöschenDialogLink', function () {
+				$('#hOrtEditFooter').on('click', '#LöschenDialogLinkOrtEdit', function (event) {
+					event.preventDefault();
 					var AnzZeiten;
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -202,12 +203,14 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='Menu']", function () {
-					erstelleMenu_hoe(this);
+				$(document).on('click', "[name='MenuOrtEdit']", function (event) {
+					event.preventDefault();
+					erstelleMenuOrtEdit(this);
 				});
 
 				//Karte managen
 				$('#hOrtEditFooter').on('click', '#GeButton', function (event) {
+					event.preventDefault();
 					$.mobile.changePage("#OrtEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 					var contentHeight = $(window).height() - 43;
@@ -225,7 +228,8 @@
 					$("#map_canvas").html("");
 				});
 
-				$('#hOrtEditFooter').on('click', '#GetGeolocationButton', function () {
+				$('#hOrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
+					event.preventDefault();
 					GetGeolocation();
 				});
 
@@ -624,7 +628,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu_hoe(thiz){
+				function erstelleMenuOrtEdit(thiz){
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -759,7 +763,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a href="#OrtEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='MenuOrtEditMap' name='Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
 			<div id="map_canvas" style="width:100%; height:100%;"></div>

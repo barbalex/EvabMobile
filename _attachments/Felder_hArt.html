@@ -51,7 +51,8 @@
 			
 				erstelleSichtbareFelder();
 
-				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function () {
+				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function (event) {
+					event.preventDefault();
 					if ($('#hArtEditPage').length > 0) {
 						$.mobile.changePage($('#hArtEditPage'));
 					} else {

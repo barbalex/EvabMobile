@@ -76,7 +76,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLink" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöschenDialogLinkRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="RaumEditMapÖffnen" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
 				</ul>
@@ -123,7 +123,7 @@
 				});
 
 				//Code für den Raum-Löschen-Dialog
-				$('#hRaumEditFooter').on('click', '#LöschenDialogLink', function (event) {
+				$('#hRaumEditFooter').on('click', '#LöschenDialogLinkRaumEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',

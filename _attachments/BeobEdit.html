@@ -39,7 +39,7 @@
   		<div data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="BeobListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
-  			<a href='#' id='be_Menu' name='be_Menu' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' name='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" data-identity="{{document}}" autocomplete="off">
@@ -103,7 +103,7 @@
 			<div data-role="navbar" id="BeobEditPageFooterNavbar">
 				<ul>
 					<li><a href="#" id="be_neueBeob" data-icon="plus" class="ui-btn-active">neu</a></li>					
-					<li><a href="#" id="be_löschen" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöschenDialogLinkBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="be_verorten" data-icon="evab-location">verorten</a></li>						
 					<li><a href="#" id="be_zeigeKarte" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderBeobEdit" data-icon="info">Felder</a></li>
@@ -274,7 +274,7 @@
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#BeobEditPageFooterNavbar').on('click', '#be_löschen', function (event) {
+				$('#BeobEditPageFooterNavbar').on('click', '#LöschenDialogLinkBeobEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -299,7 +299,8 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='be_Menu']", function () {
+				$(document).on('click', "[name='MenuBeobEdit']", function (event) {
+					event.preventDefault();
 					erstelleMenu(this);
 				});
 
@@ -729,7 +730,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
 			<a id="BeobEditMap_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
 			<h1>Karte</h1>
-			<a href='#' id='be_KarteMenu' name='be_Menu' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' name='MenuBeobEdit' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
 		<div data-role="content" style="width:100%; height:100%; padding:0"> 
 			<div id="map_canvas" style="width:100%; height:100%"></div>
