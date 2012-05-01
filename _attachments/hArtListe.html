@@ -82,8 +82,7 @@
 				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
-				var url = "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-				$("[name='hZeitLink']").attr('href', url);
+				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zur ArtListe in Navbar setzen
 				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
@@ -106,7 +105,7 @@
 
 				function öffneArtgruppenliste_hal() {
 					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hArtListe != "undefined") {
+					if (typeof hArtListe !== "undefined") {
 						hArtListe = undefined;
 					}
 					sessionStorage.removeItem("hArtListe");
@@ -114,7 +113,8 @@
 				}
 
 				$("#Arten").on("swipeleft", ".beob", function () {
-					var hBeobId = $(this).attr('hBeobId');
+					var hBeobId;
+					hBeobId = $(this).attr('hBeobId');
 					window.open("hArtEdit.html?id=" + hBeobId, target = "_self");
 				});
 
@@ -207,17 +207,14 @@
 				}
 
 				function erstelleArtliste_2() {
-					var i;
-					var anzArt = 0;
-					var Art;
-					var externalPage;
-					var listItem;
-					var ListItemContainer = "";
+					var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
+					anzArt = 0;
+					ListItemContainer = "";
 					for (i in hArtListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
 						anzArt += 1;
 					}
 
-					var Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
+					Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
 					if (anzArt === 1){
 						Titel2 = " Art";
 					}
@@ -231,7 +228,7 @@
 							key = hArtListe.rows[i].key;
 							aArtGruppe = hBeob.aArtGruppe;
 							ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
-							var bArtName = key[2];
+							bArtName = key[2];
 							externalPage = "hArtEdit.html?id=" + hBeob._id;
 							listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
 								"<a href=\"" + externalPage + "\" rel=\"external\">" +

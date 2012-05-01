@@ -173,6 +173,7 @@
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function (event){
+					var viewname;
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
@@ -182,11 +183,12 @@
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					var viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							var ArtGruppen_2_L;
+							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								$.mobile.changePage($("#agl_Page"));
 								window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
@@ -200,10 +202,11 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#BeobEditForm").on("change", ".speichern", function () {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					//speichern(Feldname, Feldwert);
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst 
@@ -222,22 +225,25 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#BeobEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function (event) {
-					var _attachments = $("#_attachments").val();
+					var _attachments;
+					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
 						speichereAnhänge(BeobId);
 					}
 				});
 				
 				$("#BeobEditPageFooterNavbar").on('click', "#be_zeigeKarte", function (event) {
+					var contentHeight;
 					event.preventDefault();
 					//alert("be_zeigeKarte geklickt");
 					if ($("#BeobEditMapPage").length > 0) {
@@ -248,8 +254,8 @@
 						$.mobile.changePage("#BeobEditMapPage");
 					}
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
-					//var contentHeight = $(window).height();
+					contentHeight = $(window).height() - 43;
+					//contentHeight = $(window).height();
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
@@ -342,8 +348,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(BeobId, {
 						success: function (Beob) {
@@ -394,14 +401,10 @@
 				}
 
 				function nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige) {
-					var i;
-					var BeobIdAktuell;
-					var BeobIdNächste;
-					var BeobIdVorige;
-					var AnzBeob;
+					var i, BeobIdAktuell, BeobIdNächste, BeobIdVorige, AnzBeob;
 					for (i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
-						var AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (BeobIdAktuell === IdAktuell) {
 							switch (NächsteOderVorige) {
 							case "nächste":
@@ -517,22 +520,23 @@
 				}
 
 				function SetLocation(LatLng, map, marker) {
-					var lat = LatLng.lat();
-					var lng = LatLng.lng();
+					var lat, lng, x, y, contentString, infowindow;
+					lat = LatLng.lat();
+					lng = LatLng.lng();
 					oLatitudeDecDeg = lat;
 					oLongitudeDecDeg = lng;
-					var x = DdInChX(lat, lng);
-					var y = DdInChY(lat, lng);
+					x = DdInChX(lat, lng);
+					y = DdInChY(lat, lng);
 					$("input#oXKoord").val(x);
 					$("input#oYKoord").val(y);
 					$("input#oLatitudeDecDeg").val(lat);
 					$("input#oLongitudeDecDeg").val(lng);
 					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
 					clearInfoWindows();
-					var contentString = '<div id="content"><div id="bodyContent">'+
+					contentString = '<div id="content"><div id="bodyContent">'+
 									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
 									'</div></div>';
-					var infowindow = new google.maps.InfoWindow({
+					infowindow = new google.maps.InfoWindow({
 					    content: contentString
 					});
 					InfoWindowArray.push(infowindow);

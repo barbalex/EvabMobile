@@ -425,7 +425,7 @@
 							if (Feldwert) {
 								hArt[Feldname] = Feldwert;
 							} else if (hArt[Feldname]) {
-								delete hArt[Feldname]
+								delete hArt[Feldname];
 							}
 							hArt.aArtId = aArtId;
 							hArt.aArtName = aArtName;
@@ -479,15 +479,11 @@
 				}
 
 				function nächsteVorigeArt_2(IdAktuell, NächsteOderVorige) {
-					var i;
-					var ArtIdAktuell;
-					var ArtIdNächste;
-					var ArtIdVorige;
-					var AnzArt;
+					var i, ArtIdAktuell, ArtIdNächste, ArtIdVorige, AnzArt;
 					for (i in hArtListe.rows) {
 						ArtIdAktuell = hArtListe.rows[i].value._id;
-						var AnzArt = hArtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ArtIdAktuell == IdAktuell) {
+						AnzArt = hArtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ArtIdAktuell === IdAktuell) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzArt) {

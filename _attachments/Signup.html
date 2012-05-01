@@ -82,11 +82,12 @@
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
 		$("#SubmitButton").tap(function (event) {
+			var UserName, Passwort, Passwort2, Autor;
 			event.preventDefault();
-			var UserName = $('input[name=UserName]').val();
-			var Passwort = $('input[name=Passwort]').val();
-			var Passwort2 = $('input[name=Passwort2]').val();
-			var Autor = $("input#Autor").val();
+			UserName = $('input[name=UserName]').val();
+			Passwort = $('input[name=Passwort]').val();
+			Passwort2 = $('input[name=Passwort2]').val();
+			Autor = $("input#Autor").val();
 			if (!UserName) {
 				melde("Bitte Benutzernamen eingeben");
 			} else if (!Passwort) {
@@ -113,8 +114,9 @@
   </script>
   <script type="text/javascript" charset="utf-8">	
 	function erstelleKonto(UserName, Passwort, Autor) {
-		//User in _user eintragen                                    
-		var email = $("input#Email").val();                                      
+		//User in _user eintragen
+		var email;
+		email = $("input#Email").val();                                      
 		$.couch.signup({
 				name: UserName, Autor: Autor, email: email
 		  	}, Passwort, {
@@ -162,7 +164,8 @@
 	}
 	
 	function speichereUserInEvab(UserName) {
-		var doc = {};
+		var doc;
+		doc = {};
 		doc.Typ = "User";
 		doc.UserName = UserName;
 		doc.Autor = $("input#Autor").val();
@@ -183,15 +186,15 @@
 	}
 
 	function erstelleSichtbareFelder(Username) {
-		//setzt alle Felder im Modus Hierarchisch sichtbar
-		//Erwartet den UserNamen
-		//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
+	//setzt alle Felder im Modus Hierarchisch sichtbar
+	//Erwartet den UserNamen
+	//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
+		var viewname;
 		$db = $.couch.db("evab");
-		var viewname = 'evab/FeldListeFeldName';
+		viewname = 'evab/FeldListeFeldName';
 		$db.view(viewname, {
 			success: function (data) {
-				var i;
-				var Feld;
+				var i, Feld;
 				for (i in data.rows) {
 					Feld = data.rows[i].value;
 					//Nur offizielle Felder berücksichtigen

@@ -57,11 +57,11 @@
 				OrtId = get_url_param("OrtId") || "";
 				ZeitId = get_url_param("ZeitId") || "";
 
-				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {     
+				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
+					var aArtGruppe, L, link;
 					event.preventDefault();
-					var aArtGruppe = $(this).attr("ArtGruppe");
-					var L = $(this).attr("L") || "";
-					var link;
+					aArtGruppe = $(this).attr("ArtGruppe");
+					L = $(this).attr("L") || "";
 					switch (Von) {
 						case "BeobEdit":
 							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
@@ -109,16 +109,17 @@
 				erstelleArtgruppenListe();
 
 				function erstelleArtgruppenListe() {
-					//gewünschte Sprache für Arten ermitteln
-					//Listen aufbauen lassen
-					//und button für Sprache richtig beschriften
+				//gewünschte Sprache für Arten ermitteln
+				//Listen aufbauen lassen
+				//und button für Sprache richtig beschriften
+					var viewname;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
 					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
-						var viewname = 'evab/User?key="' + Username + '"';
+						viewname = 'evab/User?key="' + Username + '"';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
@@ -140,7 +141,8 @@
 
 				function erstelleArtgruppenListe_2() {
 					//je nach Sprache Artgruppenliste aufbauen
-					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					var aArtGruppeÜbergeben;
+					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
 					switch(ArtenSprache) {
 					case "Lateinisch":
 						$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
@@ -165,16 +167,10 @@
 				}
 
 				function erstelleArtgruppenListeFürNestedArtgruppeLat() {
-					var i;
-					var y;
-					var ListItemContainer = "";
-					var ArtGruppe;
-					var row;
-					var ArtGruppen_2_L;
-					var ArtGruppen;
-					var AnzArten;
-					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
-					var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
+					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_L, ArtGruppen, AnzArten, aArtGruppeÜbergeben, viewname;
+					ListItemContainer = "";
+					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -201,16 +197,10 @@
 				}
 
 				function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
-					var i;
-					var y;
-					var ListItemContainer = "";
-					var ArtGruppe;
-					var row;
-					var ArtGruppen_2_D;
-					var ArtGruppen;
-					var AnzArten;
-					var aArtGruppeÜbergeben = get_url_param("aArtGruppe");
-					var viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
+					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_D, ArtGruppen, AnzArten, aArtGruppeÜbergeben, viewname;
+					ListItemContainer = "";
+					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -238,8 +228,9 @@
 
 				function erstelleArgruppenListeLat() {
 					//Artgruppenliste verfügbar machen
+					var viewname;
 					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
-						var viewname = 'evab/Artgruppen';
+						viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
@@ -257,13 +248,8 @@
 				}
 
 				function erstelleArgruppenListeLat_2() {
-					var i;
-					var y;
-					var ListItemContainer = "";
-					var ArtGruppe;
-					var row;
-					var ArtGruppen_2_L;
-					var AnzArten;
+					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_L, AnzArten;
+					ListItemContainer = "";
 					for (i in Artgruppenliste.rows) {
 						ArtGruppe = Artgruppenliste.rows[i].key;
 						row = Artgruppenliste.rows[i].value;
@@ -291,8 +277,9 @@
 
 				function erstelleArgruppenListeDeutsch() {
 					//Artgruppenliste verfügbar machen
+					var viewname;
 					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
-						var viewname = 'evab/Artgruppen';
+						viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
@@ -310,13 +297,8 @@
 				}
 
 				function erstelleArgruppenListeDeutsch_2() {
-					var i;
-					var y;
-					var ListItemContainer = "";
-					var ArtGruppe;
-					var row;
-					var ArtGruppen_2_D;
-					var AnzArten;
+					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_D, AnzArten;
+					ListItemContainer = "";
 					for (i in Artgruppenliste.rows) {
 						ArtGruppe = Artgruppenliste.rows[i].key;
 						row = Artgruppenliste.rows[i].value;
@@ -342,9 +324,10 @@
 					$("#agl_Hinweistext").empty().remove();
 				}
 
-				$("#agl_Header").on("click", "#agl_ButtonSprache", function (event) {       
+				$("#agl_Header").on("click", "#agl_ButtonSprache", function (event) {
+					var ButtonText;
 					event.preventDefault();
-					var ButtonText = this.text;
+					ButtonText = this.text;
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
 						success: function (doc) {

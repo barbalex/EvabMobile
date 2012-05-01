@@ -115,22 +115,22 @@
 		});
 	</script>
 	<script type="text/javascript">
-		//Objekt heisst Userr weil Variable Username schon verwendet wird
 		function speichern() {
+			var User;
 			if (!$("input#Autor").val()){
 				melde("Bitte Autor eingeben");
 				return;
 			}
-			var Userr = {};
-			Userr = $("#UserEditForm").serializeObject();
-			Userr.Typ = "User";
-			Userr.UserName = "{{UserName}}";
-			Userr._id = "{{id}}";
+			User = {};
+			User = $("#UserEditForm").serializeObject();
+			User.Typ = "User";
+			User.UserName = "{{UserName}}";
+			User._id = "{{id}}";
 			$db = $.couch.db("evab");
 			$db.openDoc("{{id}}", {
 				success: function (doc) {
-					Userr._rev = doc._rev;
-					$db.saveDoc(Userr, {
+					User._rev = doc._rev;
+					$db.saveDoc(User, {
 						error: function () {
 							melde("Fehler: User nicht gespeichert");
 						 }
@@ -138,7 +138,5 @@
 				}
 			});
 		}
-		
 	</script>
-  
 </html>

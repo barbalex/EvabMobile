@@ -55,27 +55,23 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
+		var zurueck;
 		
 		userCtx = null;
 		//sicherstellen, dass zurueck nie leer ist
-		var zurueck = get_url_param('zurueck') || "BeobListe.html";
-		
-		if (typeof Username === "undefined" || !Username) {
-			pruefeAnmeldung();
-		}
+		zurueck = get_url_param('zurueck') || "BeobListe.html";
 
 		speichereLetzteUrl();
 		
 		//FeldListe aufbauen
-		//$("#FeldListe").empty();
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
 			success: function (data) {
-				var i;                      //prüfen, ob alle benutzt
-				var Feld;
-				var ImageLink;
-				var externalPage;
-				var ListItemContainer = "";
+				if (typeof Username === "undefined" || !Username) {
+					pruefeAnmeldung();
+				}
+				var i, Feld, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
+				ListItemContainer = "";
 
 				var anzFelder = 0;            
 				for (i in data.rows) {                 
@@ -83,14 +79,14 @@
 					//Liste aufbauen
 					//Nur eigene Felder und offizielle
 					if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
-						var Hierarchiestufe = Feld.Hierarchiestufe;
-						var FeldBeschriftung = Feld.FeldBeschriftung;
-						var FeldBeschreibung ="";
+						Hierarchiestufe = Feld.Hierarchiestufe;
+						FeldBeschriftung = Feld.FeldBeschriftung;
+						FeldBeschreibung = "";
 						if (Feld.FeldBeschreibung){
 							FeldBeschreibung = Feld.FeldBeschreibung;
 						}
 						ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-						var zurueck = get_url_param('zurueck') || "BeobListe.html";
+						zurueck = get_url_param('zurueck') || "BeobListe.html";
 						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
 						ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 							"<a href='" + externalPage + "' rel='external'>" +
@@ -118,7 +114,7 @@
 		//BackButton steuern
 		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (event) {
 			event.preventDefault();
-			var zurueck = get_url_param('zurueck') || "BeobListe.html";
+			zurueck = get_url_param('zurueck') || "BeobListe.html";
 			window.open(zurueck, target = "_self");
 		});
 	}

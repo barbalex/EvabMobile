@@ -57,7 +57,8 @@
 				speichereLetzteUrl();
 
 				$("#beobachtungen").on("swipeleft", ".beob", function () {
-					var BeobId = $(this).attr('id');
+					var BeobId;
+					BeobId = $(this).attr('id');
 					window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 				});
 
@@ -77,7 +78,7 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/BeobListeLatLng?key="' + Username + '"&include_docs=true', {
 						success: function (data) {
-							var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, options, map, bounds, , marker, markers;
+							var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, options, map, bounds, marker, markers;
 							anzBeob = 0;
 							infowindow = new google.maps.InfoWindow();
 							for (i in data.rows) {

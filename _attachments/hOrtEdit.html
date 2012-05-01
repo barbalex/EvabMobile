@@ -114,10 +114,11 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst 
 						//zuerst Längen- und Breitengrade berechnen
@@ -135,16 +136,18 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hOrtEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
-					var _attachments = $("#_attachments").val();
+					var _attachments;
+					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(OrtId);
 					}
@@ -179,7 +182,6 @@
 				//Code für den Ort-Löschen-Dialog
 				$('#hOrtEditFooter').on('click', '#LöschenDialogLinkOrtEdit', function (event) {
 					event.preventDefault();
-					var AnzZeiten;
 					$(this).simpledialog({
 						'mode' : 'bool',
 				    	'prompt' : 'Ort sammt<br>Zeiten und Arten<br>löschen?',
@@ -210,12 +212,12 @@
 
 				//Karte managen
 				$('#hOrtEditFooter').on('click', '#GeButton', function (event) {
+					var contentHeight;
 					event.preventDefault();
 					$.mobile.changePage("#OrtEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
+					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
-					//erstelleKarte();
 				});
 
 				$(document).on("pageshow", '#OrtEditMap', function () {
@@ -294,13 +296,14 @@
 				}
 
 				function placeMarker(location, map, marker, oName) {
+					var marker;
 					//zuerst bisherige Marker löschen
 					if (markersArray) {
 						for (i in markersArray) {
 					    	markersArray[i].setMap(null);
 					    }
 					}
-					var marker = new google.maps.Marker({
+					marker = new google.maps.Marker({
 				    	position: location, 
 				    	map: map,
 				    	title: oName,
@@ -315,12 +318,13 @@
 				}
 
 				function SetLocation(LatLng, map, marker) {
-					var lat = LatLng.lat();
-					var lng = LatLng.lng();
-					oLatitudeDecDeg = lat;
-					oLongitudeDecDeg = lng;
-					var x = DdInChX(lat, lng);
-					var y = DdInChY(lat, lng);
+					var lat, lng, x, y, contentString, infowindow;
+					lat = LatLng.lat();
+					lng = LatLng.lng();
+					oLatitudeDecDeg = lat;		//globale Variable, wird beim Speichern verwendet
+					oLongitudeDecDeg = lng;		//globale Variable, wird beim Speichern verwendet
+					x = DdInChX(lat, lng);
+					y = DdInChY(lat, lng);
 					$("input#oXKoord").val(x);
 					$("input#oYKoord").val(y);
 					$("input#oLatitudeDecDeg").val(lat);
@@ -332,10 +336,10 @@
 					    	InfoWindowArray[i].setMap(null);
 					    }
 					}
-					var contentString = '<div id="content"><div id="bodyContent">'+
+					contentString = '<div id="content"><div id="bodyContent">'+
 									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
 									'</div></div>';
-					var infowindow = new google.maps.InfoWindow({
+					infowindow = new google.maps.InfoWindow({
 					    content: contentString
 					});
 					InfoWindowArray.push(infowindow);
@@ -383,8 +387,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(OrtId, {
 						success: function (Ort) {
@@ -399,8 +404,7 @@
 				});
 
 				function löscheOrt() {
-					var ArtenGelöscht, ZeitenGelöscht;
-					var Rückmeldung;
+					var ArtenGelöscht, ZeitenGelöscht, Rückmeldung;
 					//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof OrtListe !== "undefined") {
 						OrtListe = undefined;
@@ -457,15 +461,14 @@
 				}
 				
 				//lösche alle einem Ort zugeordnete Arten
-				function löscheArtenVonOrt() { 
-					var AnzArtenGelöscht = 0; 
-					var DokumentGelöscht;
-					var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+				function löscheArtenVonOrt() {
+					var AnzArtenGelöscht, viewname;
+					AnzArtenGelöscht = 0;
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ArtId;
+							var i, ArtId, DokumentGelöscht;
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
@@ -483,15 +486,14 @@
 				}
 
 				//lösche alle einem Ort zugeordnete Zeiten
-				function löscheZeitenVonOrt() { 
-					var AnzZeitenGelöscht = 0;
-					var DokumentGelöscht;
-					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+				function löscheZeitenVonOrt() {
+					var AnzZeitenGelöscht, viewname;
+					AnzZeitenGelöscht = 0;
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ZeitId;
+							var i, ZeitId, DokumentGelöscht;
 							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
@@ -511,8 +513,9 @@
 				//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
 				//und gib diesen Wert zurück
 				function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
-					var viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
-					var AnzahlZeiten = 0;
+					var viewname, AnzahlZeiten;
+					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
+					AnzahlZeiten = 0;
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -556,7 +559,8 @@
 
 				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hZeit anpassen
-					var viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					var viewname;
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -580,7 +584,8 @@
 
 				function speichereOrtfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					var viewname;
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -725,14 +730,10 @@
 				}
 
 				function nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger) {
-					var i;
-					var OrtIdAktuell;
-					var OrtIdNächster;
-					var OrtIdVoriger;
-					var AnzOrt;
+					var i, OrtIdAktuell, OrtIdNächster, OrtIdVoriger, AnzOrt;
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
-						var AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (OrtIdAktuell == IdAktuell) {
 							switch (NächsterOderVoriger) {
 							case "nächster":

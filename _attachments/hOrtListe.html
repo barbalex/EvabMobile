@@ -105,7 +105,8 @@
 		});
 
 		$("#Orte").on("swipeleft", ".Ort", function () {
-			var OrtId = $(this).attr('OrtId');
+			var OrtId;
+			OrtId = $(this).attr('OrtId');
 			window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 		});
 
@@ -118,10 +119,11 @@
 		});
 
 		$("#hOrtListePageFooter").on('click', '#GeButton', function (event) {
+			var contentHeight;
 			event.preventDefault();
 			$.mobile.changePage("#hOrtListeMapPage");
 			//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-			var contentHeight = $(window).height() - 43;
+			contentHeight = $(window).height() - 43;
 			$("#map_canvas").css("height", contentHeight + "px");
 		});
 
@@ -225,16 +227,13 @@
 	}
 
 	function erstelleOrtListe_2() {
-		var i;
-		var anzOrt = 0;
-		var Ort;
-		var externalPage;
-		var listItem;
-		var ListItemContainer = "";
+		var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
+		anzOrt = 0;
+		ListItemContainer = "";
 		for (i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
 			anzOrt += 1;
 		}
-		var Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
+		Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
 		if (anzOrt == 1){
 			Titel2 = " Ort";
 		}

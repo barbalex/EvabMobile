@@ -90,7 +90,7 @@
 								}
 							});
 							//Globale Variable für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteZeitEdit != "undefined") {
+							if (typeof FeldlisteZeitEdit !== "undefined") {
 								FeldlisteZeitEdit = undefined;
 							}
 						},
@@ -105,7 +105,7 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteZeitEdit != "undefined") {
+					if (typeof FeldlisteZeitEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB

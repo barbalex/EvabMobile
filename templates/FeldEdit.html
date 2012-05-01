@@ -42,12 +42,13 @@
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function () {
+					var FeldWert, FeldName, AlterFeldWert;
 					if (typeof Username === "undefined" && !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldWert = this.value;
-					var FeldName = this.name;
-					var AlterFeldWert = this.defaultValue;
+					FeldWert = this.value;
+					FeldName = this.name;
+					AlterFeldWert = this.defaultValue;
 					if ("{{User}}" === "ZentrenBdKt") {
 						//Felder der Datenzentren dürfen nicht verändert werden
 						//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
@@ -61,13 +62,11 @@
 							$db = $.couch.db("evab");
 							$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
 								success: function (data) {
-									var i;
-									var anzVorkommen = 0;
-									var Datensatz;
-									var Feld;
+									var i, anzVorkommen, Datensatz, Feld, ds;
+									anzVorkommen = 0;
 									for (i in data.rows) {
 										Datensatz = data.rows[i].doc; 
-										Feld = eval("Datensatz." + "{{FeldName}}");
+										Feld = Datensatz["{{FeldName}}"];
 										if (Feld) {
 											anzVorkommen += 1;
 										}
@@ -78,8 +77,8 @@
 										//wenn nein: In SichtbareFelder nachführen und speichern
 										prüfeFeldNamen(Username);
 									} else {
-										var ds = "Datensätzen";
-										if (anzVorkommen = 1) {
+										ds = "Datensätzen";
+										if (anzVorkommen === 1) {
 											ds = "Datensatz";
 										}
 										$("#FeldName").val("{{FeldName}}");
@@ -103,7 +102,8 @@
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function (doc) {
-								var letzteHierarchiestufe = doc.Hierarchiestufe;
+								var letzteHierarchiestufe;
+								letzteHierarchiestufe = doc.Hierarchiestufe;
 								if (letzteHierarchiestufe === "Art") {
 									//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 									$("#Artgruppenliste").empty();
@@ -120,16 +120,17 @@
 				});
 
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
+					var Optionen, Feldwert;
 					if (typeof Username === "undefined" && !Username) {
 						pruefeAnmeldung();
 					}
-					var Optionen = $("#Optionen").val();
-					var Feldwert = this.value;
+					Optionen = $("#Optionen").val();
+					Feldwert = this.value;
 					if (Optionen) {
 						$db = $.couch.db("evab");
 						$db.openDoc("{{id}}", {
 							success: function (doc) {
-								var LetzterFeldwert;
+								var LetzterFeldwert, Formularelement;
 								if (doc.Standardwert) {
 									if (doc.Standardwert[Username]) {
 										LetzterFeldwert = doc.Standardwert[Username];
@@ -139,7 +140,7 @@
 								} else {
 									LetzterFeldwert = "";
 								}
-								var Formularelement = doc.Formularelement;
+								Formularelement = doc.Formularelement;
 								//Standardwert in Array verwandeln
 								StandardwertOptionen = Feldwert.split(",");
 								//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
@@ -213,22 +214,19 @@
 							 	'ja': {
 							      	click: function () {
 							        	$('#dialogoutput').text('ja');
-							        	if ("{{FeldName}}" === "") {
+							        	if (!"{{FeldName}}") {
 							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-							        		//Feld = eval("Datensatz." + "{{FeldName}}") lieferte einen Fehler!
 							        		löscheFeld();
 							        	} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
 											$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
 												success: function (data) {
-													var i;
-													var anzVorkommen = 0;
-													var Datensatz;
-													var Feld;
+													var i, anzVorkommen, Datensatz, Feld, ds;
+													anzVorkommen = 0;
 													for (i in data.rows) {
 														Datensatz = data.rows[i].doc;
-														Feld = eval("Datensatz." + "{{FeldName}}");
+														Feld = Datensatz["{{FeldName}}"];
 														if (Feld) {
 															anzVorkommen += 1;
 														}
@@ -236,7 +234,7 @@
 													if (anzVorkommen === 0) {
 														löscheFeld();
 													} else {
-														var ds = "Datensätzen";
+														ds = "Datensätzen";
 														if (anzVorkommen === 1) {
 															ds = "Datensatz";
 														}
@@ -289,18 +287,17 @@
 				});*/
 
 				function prüfeFeldNamen(Username) {
+					var FeldNameAlt, FeldNameNeu, viewname;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldNameAlt = "{{FeldName}}" || "";
-					var FeldNameNeu = $("#FeldName").val();
-					var viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
+					FeldNameAlt = "{{FeldName}}" || "";
+					FeldNameNeu = $("#FeldName").val();
+					viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i;
-							var key;
-							var Feld;
+							var i, key, Feld;
 							for (i in data.rows) {
 								//kommt ein Feld mit diesem Namen schon vor?
 								if (data.rows[i].value) {
@@ -329,17 +326,19 @@
 				}
 
 				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
+					var FeldName;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldName = $("#FeldName").val();
+					FeldName = $("#FeldName").val();
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function (Feld) {
+							var idx;
 							if (SichtbarImModusHierarchisch === "ja") {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
+								idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
 								if(idx !== -1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
@@ -355,17 +354,19 @@
 				}
 
 				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
+					var FeldName;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldName = $("#FeldName").val();
+					FeldName = $("#FeldName").val();
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function (Feld) {
+							var idx;
 							if (SichtbarImModusEinfach === "ja") {
 								Feld.SichtbarImModusEinfach.push(Username);
 							} else {
-								var idx = Feld.SichtbarImModusEinfach.indexOf(Username);
+								idx = Feld.SichtbarImModusEinfach.indexOf(Username);
 								if(idx !== -1) Feld.SichtbarImModusEinfach.splice(idx, 1);
 							}
 							$db.saveDoc(Feld, {
@@ -381,16 +382,15 @@
 				}
 				
 				function ArtGruppeAufbauen(ArtGruppenArrayIn) {
+					var viewname;
 					$db = $.couch.db("evab");
 					$("select#ArtGruppe").empty();
-					var viewname = "evab/Artgruppen";
+					viewname = "evab/Artgruppen";
 					$db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ArtGruppe;
-							var ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
-							var listItem;
-							var ArtGruppenArray = ArtGruppenArrayIn || [];
+							var i, ArtGruppe, ListItemContainer, listItem, ArtGruppenArray;
+							ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
+							ArtGruppenArray = ArtGruppenArrayIn || [];
 							for (i in data.rows) {
 								ArtGruppe = data.rows[i].key;
 								listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
@@ -414,7 +414,8 @@
 				}
 
 				function löscheFeld() {
-					var docId = "{{id}}";
+					var docId;
+					docId = "{{id}}";
 					$db = $.couch.db("evab");
 					$db.openDoc(docId, {
 						success: function (document) {
@@ -445,10 +446,8 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/FeldListe', {
 						success: function (data) {
-							var i, y;
-							var FeldIdAktuell;
-							var FeldIdNächstes;
-							var AnzFelder = data.rows.length -1;  
+							var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder;
+							AnzFelder = data.rows.length -1;  
 							for (i in data.rows) {
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
@@ -498,10 +497,8 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/FeldListe', {
 						success: function (data) {
-							var i, y;
-							var FeldIdAktuell;
-							var FeldIdVoriges;
-							var AnzFelder = data.rows.length -1;  
+							var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder;
+							AnzFelder = data.rows.length -1;  
 							for (i in data.rows) {
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
@@ -548,11 +545,13 @@
 				//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 				//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
 				function setzeReihenfolgeMitVorgänger(FeldNameVorgaenger) {
+					var viewname;
 					$db = $.couch.db("evab");
-					var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
+					viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
 					$db.view(viewname, {
 						success: function (data) {
-							var ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
+							var ReihenfolgeVorgaenger;
+							ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
 							$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
 							speichereFeldeigenschaften();
 						}
@@ -570,9 +569,8 @@
 						$db = $.couch.db("evab");
 						$db.view("evab/FeldListe", {
 							success: function (data) {
-								var i;
-								var Feld; 
-								var Optionen = [];
+								var i, Feld, Optionen; 
+								Optionen = [];
 								Optionen.push("");
 								for (i in data.rows) {                 
 									Feld = data.rows[i].value;
@@ -590,7 +588,8 @@
 				}
 
 				function geheZurück() {
-					var zurueck = get_url_param("zurueck");
+					var zurueck;
+					zurueck = get_url_param("zurueck");
 					if (zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
 						window.open("../../" + zurueck, target = "_self");
@@ -610,30 +609,28 @@
 							//Standardwert managen
 							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 							//darum manuell für diesen User updaten
-							var StandardwertUserImFormular = $("#Standardwert").val();
+							var StandardwertUserImFormular;
+							StandardwertUserImFormular = $("#Standardwert").val();
 							if (Feld.Standardwert) {
-								if (StandardwertUserImFormular != "") {
+								if (StandardwertUserImFormular) {
 									//neuen Standardwert setzen
 									Feld.Standardwert[Username] = StandardwertUserImFormular;
 								} else {
 									//Standardwert ist leer
-									if (eval("Feld.Standardwert." + Username)) {
+									if (Feld.Standardwert[Username]) {
 										//bisherigen Standardwert löschen
 										delete Feld.Standardwert[Username];
 									}
 								}
 							} else {
 								//Bisher gab es noch keinen Standardwert
-								if (StandardwertUserImFormular != "") {
+								if (StandardwertUserImFormular) {
 									//Objekt für Standardwert schaffen und neuen Wert setzen
 									Feld.Standardwert = {};
 									Feld.Standardwert[Username] = StandardwertUserImFormular;
 								}
 							}
 							$db.saveDoc(Feld, {
-								success: function () {
-									//melde("Feld gespeichert");
-								},
 								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
 								}
@@ -696,7 +693,8 @@
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function (Feld) {
-							var Formularfelder = $("#FeldEditForm").serializeObjectNull();
+							var Formularfelder;
+							Formularfelder = $("#FeldEditForm").serializeObjectNull();
 							//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 							if (Formularfelder.Optionen) {
 								Formularfelder.Optionen = Formularfelder.Optionen.split(",");
@@ -796,9 +794,10 @@
 					$db = $.couch.db("evab");
 					$db.openDoc("{{id}}", {
 						success: function (Feld) {
+							var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
 							//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
-							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
-							var SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
+							SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
 							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
 							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 								$("select#SichtbarImModusHierarchisch").val("ja");
@@ -825,7 +824,7 @@
 							//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
 							//darum hier auslesen und setzen
 							if (Feld.Standardwert) {
-								var Standardwert = eval("Feld.Standardwert." + Username);
+								Standardwert = Feld.Standardwert[Username];
 								if (Standardwert) {
 									$("#Standardwert").val(Standardwert);
 								}

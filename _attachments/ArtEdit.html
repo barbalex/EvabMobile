@@ -67,8 +67,9 @@
 			$("#ArtEditPage").on("pageinit", function () {
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#ae_zurück', function (event) {
+					var zurueck;
 					event.preventDefault();
-					var zurueck = "";
+					zurueck = "";
 					if (typeof zurueck_global !== "undefined") {
 						zurueck = zurueck_global;
 					}
@@ -112,11 +113,12 @@
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					var viewname = 'evab/Artgruppen?key="' + ArtEdit_aArtGruppe + '"';
+					var viewname, ArtGruppen_2_L;
+					viewname = 'evab/Artgruppen?key="' + ArtEdit_aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							if (ArtGruppen_2_L) {
 								if ($('#agl_Page').length > 0) {
 									$.mobile.changePage($('#agl_Page'));

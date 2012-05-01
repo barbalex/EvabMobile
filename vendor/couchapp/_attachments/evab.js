@@ -2,26 +2,28 @@
 Diese Funktionen werden in evab auf mehreren Seiten benutzt
 */
 
-function erstelleNeuesDatum(){                               
-	var jetzt = new Date();
-	var Jahr = jetzt.getFullYear();
-	var Mnt = jetzt.getMonth()+1;
-	var MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt);
-	var Tag = jetzt.getDate();
-	var TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag);
-	var Datum = Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
+function erstelleNeuesDatum() {
+	var jetzt, Jahr, Mnt, MntAusgabe, Tag, TagAusgabe, Datum;
+	jetzt = new Date();
+	Jahr = jetzt.getFullYear();
+	Mnt = jetzt.getMonth()+1;
+	MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt);
+	Tag = jetzt.getDate();
+	TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag);
+	Datum = Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
 	return Datum;
 };
 
-function erstelleNeueUhrzeit(){                               
-	var jetzt = new Date();
-	var Std = jetzt.getHours();
-	var StdAusgabe = ((Std < 10) ? "0" + Std : Std);
-	var Min = jetzt.getMinutes();
-	var MinAusgabe = ((Min < 10) ? "0" + Min : Min);
-	var Sek = jetzt.getSeconds();
-	var SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek);
-	var Zeit = StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
+function erstelleNeueUhrzeit() {
+	var jetzt, Std, StdAusgabe, Min, MinAusgabe, Sek, SekAusgabe, Zeit;
+	jetzt = new Date();
+	Std = jetzt.getHours();
+	StdAusgabe = ((Std < 10) ? "0" + Std : Std);
+	Min = jetzt.getMinutes();
+	MinAusgabe = ((Min < 10) ? "0" + Min : Min);
+	Sek = jetzt.getSeconds();
+	SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek);
+	Zeit = StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
 	return Zeit;
 };
 
@@ -34,179 +36,173 @@ URL: http://www.example.com/?titel=test&trinken=bier&essen=schweinshaxe
 wasEssenWir = get_url_param('essen');
 */
 function get_url_param(name){
+	var regexS, regex, results;
 	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
 
-	var regexS = "[\\?&]"+name+"=([^&#]*)";
-	var regex = new RegExp( regexS );
-	var results = regex.exec( window.location.href );
-	//var results = regex.exec( $(this).data("url") );
+	regexS = "[\\?&]"+name+"=([^&#]*)";
+	regex = new RegExp( regexS );
+	results = regex.exec( window.location.href );
+	//results = regex.exec( $(this).data("url") );
 
-	if ( results == null )
+	if (!results) {
 		return "";
-	else
+	} else {
 		return results[1];
-};
-
-function get_url_param_this(thiz, name){
-	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-
-	var regexS = "[\\?&]"+name+"=([^&#]*)";
-	var regex = new RegExp( regexS );
-	//var results = regex.exec( window.location.href );
-	var results = regex.exec( thiz.data("url") );
-
-	if ( results == null )
-		return "";
-	else
-		return results[1];
-};
+	}
+}
 
 
 //wandelt decimal degrees (vom GPS) in WGS84 um
-function DdInWgs84BreiteGrad(Breite){
+function DdInWgs84BreiteGrad(Breite) {
+	var BreiteGrad;
  	BreiteGrad = Math.floor(Breite);
     return BreiteGrad;
-};
+}
 
-function DdInWgs84BreiteMin(Breite){
+function DdInWgs84BreiteMin(Breite) {
+	var BreiteGrad, BreiteMin;
  	BreiteGrad = Math.floor(Breite);
     BreiteMin = Math.floor((Breite-BreiteGrad)*60);
     return BreiteMin;
-};
+}
 
-function DdInWgs84BreiteSec(Breite){
+function DdInWgs84BreiteSec(Breite) {
+	var BreiteGrad, BreiteMin, BreiteSec;
  	BreiteGrad = Math.floor(Breite);
     BreiteMin = Math.floor((Breite-BreiteGrad)*60);
     BreiteSec =  (Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100);
     return BreiteSec;
-};
+}
 
-function DdInWgs84LaengeGrad(Laenge){
+function DdInWgs84LaengeGrad(Laenge) {
+	var LaengeGrad;
     LaengeGrad = Math.floor(Laenge);
     return LaengeGrad;
-};
+}
 
-function DdInWgs84LaengeMin(Laenge){
+function DdInWgs84LaengeMin(Laenge) {
+	var LaengeGrad, LaengeMin;
     LaengeGrad = Math.floor(Laenge);
     LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
     return LaengeMin;
-};
+}
 
-function DdInWgs84LaengeSec(Laenge){
+function DdInWgs84LaengeSec(Laenge) {
+	var LaengeGrad, LaengeMin, LaengeSec;
     LaengeGrad = Math.floor(Laenge);
     LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
     LaengeSec = (Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100);
     return LaengeSec;
-};
+}
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
 function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-  // Converts degrees dec to sex
-  lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
-  lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
+	var lat_aux, lng_aux;
+	// Converts degrees dec to sex
+	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
+	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
   
-  // Axiliary values (% Bern)
-  var lat_aux = (lat - 169028.66)/10000;
-  var lng_aux = (lng - 26782.5)/10000;
+	// Axiliary values (% Bern)
+	lat_aux = (lat - 169028.66)/10000;
+	lng_aux = (lng - 26782.5)/10000;
 
-  x = 200147.07
-   + 308807.95 * lat_aux 
-   +   3745.25 * Math.pow(lng_aux,2)
-   +     76.63 * Math.pow(lat_aux,2)
-   -    194.56 * Math.pow(lng_aux,2) * lat_aux
-   +    119.79 * Math.pow(lat_aux,3);
-     
-  return x;
+	x = 200147.07
+	  + 308807.95 * lat_aux 
+	  +   3745.25 * Math.pow(lng_aux,2)
+	  +     76.63 * Math.pow(lat_aux,2)
+	  -    194.56 * Math.pow(lng_aux,2) * lat_aux
+	  +    119.79 * Math.pow(lat_aux,3);
+	     
+	return x;
 }
 
 //Wandelt WGS84 in CH-Landeskoordinaten um
 function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-  // Converts degrees dec to sex
-  lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
-  lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
-  
-  // Axiliary values (% Bern)
-  var lat_aux = (lat - 169028.66)/10000;
-  var lng_aux = (lng - 26782.5)/10000;
-  
-  // Process Y
-  y = 600072.37 
-     + 211455.93 * lng_aux 
-     -  10938.51 * lng_aux * lat_aux
-     -      0.36 * lng_aux * Math.pow(lat_aux,2)
-     -     44.54 * Math.pow(lng_aux,3);
-     
-  return y;
+	var lat_aux, lng_aux;
+	// Converts degrees dec to sex
+	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
+	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
+
+	// Axiliary values (% Bern)
+	lat_aux = (lat - 169028.66)/10000;
+	lng_aux = (lng - 26782.5)/10000;
+
+	// Process Y
+	y = 600072.37 
+	   + 211455.93 * lng_aux 
+	     -  10938.51 * lng_aux * lat_aux
+	   -      0.36 * lng_aux * Math.pow(lat_aux,2)
+	   -     44.54 * Math.pow(lng_aux,3);
+	   
+	return y;
 }
 
 //wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
-function DdInChX(Breite, Laenge){
-	var BreiteGrad = DdInWgs84BreiteGrad(Breite);
-	var BreiteMin = DdInWgs84BreiteMin(Breite);
-	var BreiteSec = DdInWgs84BreiteSec(Breite);
-	var LaengeGrad = DdInWgs84LaengeGrad(Laenge);
-	var LaengeMin = DdInWgs84LaengeMin(Laenge);
-	var LaengeSec = DdInWgs84LaengeSec(Laenge);
-	var x = Math.floor(Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
+function DdInChX(Breite, Laenge) {
+	var BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec, x;
+	BreiteGrad = DdInWgs84BreiteGrad(Breite);
+	BreiteMin = DdInWgs84BreiteMin(Breite);
+	BreiteSec = DdInWgs84BreiteSec(Breite);
+	LaengeGrad = DdInWgs84LaengeGrad(Laenge);
+	LaengeMin = DdInWgs84LaengeMin(Laenge);
+	LaengeSec = DdInWgs84LaengeSec(Laenge);
+	x = Math.floor(Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 	return x;
-};
+}
 
-function DdInChY(Breite, Laenge){
-	var BreiteGrad = DdInWgs84BreiteGrad(Breite);
-	var BreiteMin = DdInWgs84BreiteMin(Breite);
-	var BreiteSec = DdInWgs84BreiteSec(Breite);
-	var LaengeGrad = DdInWgs84LaengeGrad(Laenge);
-	var LaengeMin = DdInWgs84LaengeMin(Laenge);
-	var LaengeSec = DdInWgs84LaengeSec(Laenge);
-	var y = Math.floor(Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
+function DdInChY(Breite, Laenge) {
+	var BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec, y;
+	BreiteGrad = DdInWgs84BreiteGrad(Breite);
+	BreiteMin = DdInWgs84BreiteMin(Breite);
+	BreiteSec = DdInWgs84BreiteSec(Breite);
+	LaengeGrad = DdInWgs84LaengeGrad(Laenge);
+	LaengeMin = DdInWgs84LaengeMin(Laenge);
+	LaengeSec = DdInWgs84LaengeSec(Laenge);
+	y = Math.floor(Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 	return y;
-};
+}
 
 //von CH-Landeskoord zu DecDeg
 
 // Convert CH y/x to WGS lat
 function CHtoWGSlat(y, x) {
+	// Converts militar to civil and to unit = 1000km
+	var y_aux, x_aux;
+	// Axiliary values (% Bern)
+	y_aux = (y - 600000)/1000000;
+	x_aux = (x - 200000)/1000000;
 
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
-  var y_aux = (y - 600000)/1000000;
-  var x_aux = (x - 200000)/1000000;
-  
-  // Process lat
-  lat = 16.9023892
-       +  3.238272 * x_aux
-       -  0.270978 * Math.pow(y_aux,2)
-       -  0.002528 * Math.pow(x_aux,2)
-       -  0.0447   * Math.pow(y_aux,2) * x_aux
-       -  0.0140   * Math.pow(x_aux,3);
-    
-  // Unit 10000" to 1 " and converts seconds to degrees (dec)
-  lat = lat * 100/36;
-  
-  return lat;
-  
+	// Process lat
+	lat = 16.9023892
+	     +  3.238272 * x_aux
+	     -  0.270978 * Math.pow(y_aux,2)
+	     -  0.002528 * Math.pow(x_aux,2)
+	     -  0.0447   * Math.pow(y_aux,2) * x_aux
+	     -  0.0140   * Math.pow(x_aux,3);
+	  
+	// Unit 10000" to 1 " and converts seconds to degrees (dec)
+	lat = lat * 100/36;
+	return lat;
 }
 
 // Convert CH y/x to WGS long
 function CHtoWGSlng(y, x) {
+	// Converts militar to civil and to unit = 1000km
+	var y_aux, x_aux;
+	// Axiliary values (% Bern)
+	y_aux = (y - 600000)/1000000;
+	x_aux = (x - 200000)/1000000;
 
-  // Converts militar to civil and  to unit = 1000km
-  // Axiliary values (% Bern)
-  var y_aux = (y - 600000)/1000000;
-  var x_aux = (x - 200000)/1000000;
-  
-  // Process long
-  lng = 2.6779094
-        + 4.728982 * y_aux
-        + 0.791484 * y_aux * x_aux
-        + 0.1306   * y_aux * Math.pow(x_aux,2)
-        - 0.0436   * Math.pow(y_aux,3);
-     
-  // Unit 10000" to 1 " and converts seconds to degrees (dec)
-  lng = lng * 100/36;
-     
-  return lng;
-  
+	// Process long
+	lng = 2.6779094
+	    + 4.728982 * y_aux
+	    + 0.791484 * y_aux * x_aux
+	    + 0.1306   * y_aux * Math.pow(x_aux,2)
+	    - 0.0436   * Math.pow(y_aux,3);
+	 
+	// Unit 10000" to 1 " and converts seconds to degrees (dec)
+	lng = lng * 100/36;
+	return lng;
 }
 
 function melde(Meldung) {
@@ -217,17 +213,18 @@ function melde(Meldung) {
 	    .fadeOut(700, function () {
 	    	$(this).remove();
 		});
-};
+}
 
 function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
+	var doc;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var doc = {};
+	doc = {};
 	doc.User = Username;
 	doc.aArtGruppe = aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
@@ -424,10 +421,11 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
+	var doc;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var doc = {};
+	doc = {};
 	doc.Typ = "hZeit";
 	doc.User = Username;
 	doc.hProjektId = hProjektId;
@@ -482,10 +480,11 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt(hProjektId, hRaumId) {
+	var doc;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var doc = {};
+	doc = {};
 	doc.Typ = "hOrt";
 	doc.User = Username;
 	doc.hProjektId = hProjektId;
@@ -512,7 +511,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 					$db.saveDoc(doc, {
 						success: function (data) {
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							if (typeof OrtListe != "undefined") {
+							if (typeof OrtListe !== "undefined") {
 								OrtListe = undefined;
 							}
 							sessionStorage.removeItem("OrtListe");
@@ -529,7 +528,11 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 }
 
 function erstelleNeuenRaum(hProjektId) {
-	var doc = {};
+	var doc;
+	if (typeof Username === "undefined" || !Username) {
+		pruefeAnmeldung();
+	}
+	doc = {};
 	doc.Typ = "hRaum";
 	doc.User = Username;
 	doc.hProjektId = hProjektId;
@@ -547,7 +550,7 @@ function erstelleNeuenRaum(hProjektId) {
 			$db.saveDoc(doc, {
 				success: function (data) {
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof RaumListe != "undefined") {
+					if (typeof RaumListe !== "undefined") {
 						RaumListe = undefined;
 					}
 					sessionStorage.removeItem("RaumListe");
@@ -589,7 +592,8 @@ function öffneMeineEinstellungen(Pfad) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
 			success: function (data) {
-				var User = data.rows[0].value;
+				var User;
+				User = data.rows[0].value;
 				UserId = data.rows[0].value._id;
 				sessionStorage.setItem("UserId", UserId);
 				sessionStorage.setItem("Autor", User.Autor);
@@ -628,6 +632,7 @@ function erstelleArtEdit(ArtId) {
 	$db = $.couch.db("evab");
 	$db.openDoc(ArtId, {
 		success: function (Art) {
+			var HtmlContainer;
 			//diese Variabeln werden in ArtEdit.html gebraucht
 			ArtEdit_aArtGruppe = Art.ArtGruppe
 			//fixe Felder aktualisieren
@@ -639,7 +644,7 @@ function erstelleArtEdit(ArtId) {
 			$("#ArtEdit_ArtBezeichnungL").val(Art.ArtBezeichnungL);
 			$("#ArtEdit_ArtBezeichnungL").html("<option value='" + Art.ArtBezeichnungL + "'>" + Art.ArtBezeichnungL + "</option>");
 			$("#ArtEdit_ArtBezeichnungL").selectmenu("refresh");
-			var HtmlContainer = generiereHtmlFuerArtEditForm(Art);
+			HtmlContainer = generiereHtmlFuerArtEditForm(Art);
 			//nur anfügen, wenn Felder erstellt wurden
 			if (HtmlContainer != '') {
 				HtmlContainer = "<hr />" + HtmlContainer;
@@ -656,11 +661,8 @@ function erstelleArtEdit(ArtId) {
 //erwartet Art als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerArtEditForm(Art) {
-	var HtmlContainer = '';
-	var Titel;
-	var Feldname;
-	var Feldwert;
-	var Datensammlung;
+	var HtmlContainer, Titel, Feldname, Feldwert, Datensammlung;
+	HtmlContainer = '';
 	for (i in Art) {              
 		if (i.slice(0, 13) == "Datensammlung") {
 			if (Art[i] !== null) {
@@ -694,8 +696,9 @@ function generiereHtmlFuerArtEditForm(Art) {
 //Erwartet Feldname und Feldwert
 //retourniert Html für eine Zeile
 function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
+	var HtmlContainer;
 	//Liste und ersten Block beginnen
-	var HtmlContainer = '<li><div class="ui-grid-a"><div class="ui-block-a ArteigenschaftFeldname">';
+	HtmlContainer = '<li><div class="ui-grid-a"><div class="ui-block-a ArteigenschaftFeldname">';
 	HtmlContainer += Feldname;
 	//ersten Block beenden, zweiten beginnen
 	HtmlContainer += ':</div><div class="ui-block-b ArteigenschaftFeldwert">';
@@ -710,7 +713,7 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 function initiiereBeobEdit(id) {
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
-	if (typeof FeldlisteBeobEdit != "undefined") {
+	if (typeof FeldlisteBeobEdit !== "undefined") {
 		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
 	} else {
 		//holt die Feldliste aus der DB
@@ -749,12 +752,13 @@ function initiiereBeobEdit_2(id, Feldliste) {
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, Username
 function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
+	var HtmlContainer, Formularwerte;
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-	var HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
+	HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -766,7 +770,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	$("#BeobEditPage").trigger("create").trigger("refresh");
 	if (get_url_param("Status") == "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		var Formularwerte = {};
+		Formularwerte = {};
 		Formularwerte = $("#BeobEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
@@ -786,17 +790,13 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 //erwartet das Objekt Beob, welches die Werte enthält
 function setzeFixeFelderInBeobEdit(Beob) {
-	var aArtGruppe = Beob.aArtGruppe;
-	var aArtName = Beob.aArtName;
 	$("#aArtGruppe").selectmenu();
-	var startoption = "<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>";
-	$("#aArtGruppe").html(startoption);
-	$("#aArtGruppe").val(aArtGruppe);
+	$("#aArtGruppe").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
+	$("#aArtGruppe").val(Beob.aArtGruppe);
 	$("#aArtGruppe").selectmenu("refresh");
 	$("#aArtName").selectmenu();
-	var startoption = "<option value='" + aArtName + "'>" + aArtName + "</option>";
-	$("#aArtName").html(startoption);
-	$("#aArtName").val(aArtName);
+	$("#aArtName").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
+	$("#aArtName").val(Beob.aArtName);
 	$("#aArtName").selectmenu("refresh");
 	$("#aAutor").val(Beob.aAutor);
 	$("#oXKoord").val(Beob.oXKoord);
@@ -810,16 +810,12 @@ function setzeFixeFelderInBeobEdit(Beob) {
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
-	var ArtGruppe = Beob.aArtGruppe;
+	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe;
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
+	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
@@ -828,9 +824,11 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			if (Feld.Hierarchiestufe != "Art" || Feld.ArtGruppe.indexOf(ArtGruppe)>=0) {
 				if (Status == "neu" && Feld.Standardwert) {
-					FeldWert = eval("Feld.Standardwert." + Username) || "";
+					//FeldWert = eval("Feld.Standardwert." + Username) || "";
+					FeldWert = Feld.Standardwert[Username] || "";
 				} else {
-					FeldWert = (eval("Beob." + FeldName) || "");
+					//FeldWert = (eval("Beob." + FeldName) || "");
+					FeldWert = Beob[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -873,7 +871,8 @@ function initiiereProjektEdit(ProjektId) {
 }
 
 function initiiereProjektEdit_2(Projekt) {
-	var HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
+	var HtmlContainer, Formularwerte;
+	HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -883,7 +882,7 @@ function initiiereProjektEdit_2(Projekt) {
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (get_url_param("Status") == "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		var Formularwerte = {};
+		Formularwerte = {};
 		Formularwerte = $("#hProjektEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
@@ -906,27 +905,25 @@ function initiiereProjektEdit_2(Projekt) {
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Projekt) {
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
 	for (i in FeldlisteProjektEdit.rows) {
 		Feld = FeldlisteProjektEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "pName") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + Username) || "";
+				//FeldWert = eval("Feld.Standardwert." + Username) || "";
+				FeldWert = Feld.Standardwert[Username] || "";
 			} else {
-				FeldWert = (eval("Projekt." + FeldName) || "");
+				//FeldWert = (eval("Projekt." + FeldName) || "");
+				FeldWert = Projekt[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -969,7 +966,8 @@ function initiiereRaumEdit(RaumId) {
 }
 
 function initiiereRaumEdit_2(Raum) {
-	var HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteRaumEdit, Raum);
+	var HtmlContainer, Formularwerte;
+	HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteRaumEdit, Raum);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -979,7 +977,7 @@ function initiiereRaumEdit_2(Raum) {
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (get_url_param("Status") == "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		var Formularwerte = {};
+		Formularwerte = {};
 		Formularwerte = $("#hRaumEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
@@ -1002,27 +1000,25 @@ function initiiereRaumEdit_2(Raum) {
 //erwartet Feldliste als Objekt; Raum als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
 	for (i in Feldliste.rows) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "rName") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + Username) || "";
+				//FeldWert = eval("Feld.Standardwert." + Username) || "";
+				FeldWert = Feld.Standardwert[Username] || "";
 			} else {
-				FeldWert = (eval("Raum." + FeldName) || "");
+				//FeldWert = (eval("Raum." + FeldName) || "");
+				FeldWert = Raum[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1071,7 +1067,8 @@ function initiiereOrtEdit(OrtId) {
 }
 
 function initiiereOrtEdit_2(Ort) {
-	var HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
+	var HtmlContainer, Formularwerte;
+	HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1081,7 +1078,7 @@ function initiiereOrtEdit_2(Ort) {
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (get_url_param("Status") == "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		var Formularwerte = {};
+		Formularwerte = {};
 		Formularwerte = $("#hOrtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
@@ -1115,24 +1112,22 @@ function initiiereOrtEdit_2(Ort) {
 //erwartet Feldliste als Objekt (aus der globalen Variable); Ort als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerOrtEditForm (Ort) {
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
 	for (i in FeldlisteOrtEdit.rows) {              
 		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Ort.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
+				//FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
+				FeldWert = Feld.Standardwert[Ort.User] || "";
 			} else {
-				FeldWert = (eval("Ort." + FeldName) || "");
+				//FeldWert = (eval("Ort." + FeldName) || "");
+				FeldWert = Ort[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1158,7 +1153,7 @@ function initiiereZeitEdit(ZeitId) {
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteZeitEdit != "undefined") {
+			if (typeof FeldlisteZeitEdit !== "undefined") {
 				initiiereZeitEdit_2(Zeit);
 			} else {
 				$db = $.couch.db("evab");
@@ -1198,24 +1193,22 @@ function initiiereZeitEdit_2(Zeit) {
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerZeitEditForm(Zeit) {
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
 	for (i in FeldlisteZeitEdit.rows) {              
 		Feld = FeldlisteZeitEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Zeit.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) != -1 && FeldName != "zDatum" && FeldName != "zUhrzeit") {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + Zeit.User) || "";
+				//FeldWert = eval("Feld.Standardwert." + Zeit.User) || "";
+				FeldWert = Feld.Standardwert[Zeit.User] || "";
 			} else {
-				FeldWert = (eval("Zeit." + FeldName) || "");
+				//FeldWert = (eval("Zeit." + FeldName) || "");
+				FeldWert = Zeit[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1259,8 +1252,7 @@ function initiierehBeobEdit(BeobId) {
 			$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 			$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-			var url = "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-			$("[name='hArtListeLink']").attr('href', url);
+			$("[name='hArtListeLink']").attr('href', "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlistehBeobEdit !== "undefined") {
@@ -1283,12 +1275,13 @@ function initiierehBeobEdit(BeobId) {
 //generiert dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: Feldliste, Beobachtung
 function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
+	var HtmlContainer, Formularwerte;
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-	var HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
+	HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer != "") {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1298,7 +1291,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (get_url_param("Status") == "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		var Formularwerte = {};
+		Formularwerte = {};
 		Formularwerte = $("#hArtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
@@ -1323,25 +1316,23 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
-	var Feld = {};
-	var i;
-	var FeldName;
-	var FeldBeschriftung;
-	var SliderMinimum;
-	var SliderMaximum;
-	var ListItem = "";
-	var HtmlContainer = "";
-	var Status = get_url_param("Status");
-	var ArtGruppe = Beob.aArtGruppe;
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status, ArtGruppe;
+	Feld = {};
+	ListItem = "";
+	HtmlContainer = "";
+	Status = get_url_param("Status");
+	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User == Beob.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) != -1 && Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {
 			if (Status == "neu" && Feld.Standardwert) {
-				FeldWert = eval("Feld.Standardwert." + Beob.User) || "";
+				//FeldWert = eval("Feld.Standardwert." + Beob.User) || "";
+				FeldWert = Feld.Standardwert[Beob.User] || "";
 			} else {
-				FeldWert = (eval("Beob." + FeldName) || "");
+				//FeldWert = (eval("Beob." + FeldName) || "");
+				FeldWert = Beob[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1396,7 +1387,8 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 //generiert den html-Inhalt für Textinputs
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer;
+	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -1415,7 +1407,8 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 //generiert den html-Inhalt für Slider
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer;
+	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -1436,7 +1429,8 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 //generiert den html-Inhalt für Textarea
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer;
+	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -1453,7 +1447,8 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 //generiert den html-Inhalt für Toggleswitch
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	var HtmlContainer;
+	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "'>";
 	HtmlContainer += FeldBeschriftung;
@@ -1470,7 +1465,8 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 //generiert den html-Inhalt für Checkbox
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer;
+	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
@@ -1481,22 +1477,22 @@ function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optione
 //generiert den html-Inhalt für Optionen von Checkbox
 //wird von generiereHtmlFuerCheckbox aufgerufen
 function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
-	var i;
-	var HtmlContainer = "";
+	var i, HtmlContainer, Optionn, ListItem;
+	HtmlContainer = "";
 	for (i in Optionen) {
-		var Option = Optionen[i];
-		var ListItem = "\n\t\t\t<label for='";
-		ListItem += Option;
+		Optionn = Optionen[i];
+		ListItem = "\n\t\t\t<label for='";
+		ListItem += Optionn;
 		ListItem += "'>";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
 		ListItem += FeldName;
 		ListItem += "' id='";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "' value='";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "' class='custom speichern'";
-		if(FeldWert.indexOf(Option) >=0) {
+		if (FeldWert.indexOf(Optionn) >=0) {
 			ListItem += " checked='checked'";
 		}
 		ListItem += "/>";
@@ -1508,7 +1504,8 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 //generiert den html-Inhalt für Radio
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer;
+	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
@@ -1519,21 +1516,21 @@ function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) 
 //generiert den html-Inhalt für Optionen von Radio
 //wird von generiereHtmlFuerRadio aufgerufen
 function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
-	var i;
-	var HtmlContainer = "";
+	var i, HtmlContainer, Optionn, ListItem;
+	HtmlContainer = "";
 	for (i in Optionen) {
-		var Option = Optionen[i];
-		var ListItem = "\n\t\t\t<label for='";
-		ListItem += Option;
+		Optionn = Optionen[i];
+		ListItem = "\n\t\t\t<label for='";
+		ListItem += Optionn;
 		ListItem += "'>";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "</label>\n\t\t\t<input class='speichern' type='radio' name='";
 		ListItem += FeldName;
 		ListItem += "' id='";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "' value='";
-		ListItem += Option;
-		if(FeldWert == Option){
+		ListItem += Optionn;
+		if(FeldWert == Optionn){
 			ListItem += "' checked='checked";
 		}
 		ListItem += "'/>";
@@ -1545,7 +1542,8 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 //generiert den html-Inhalt für Selectmenus
 //wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	var HtmlContainer;
+	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' class='select'>";
 	HtmlContainer += FeldBeschriftung;
@@ -1572,18 +1570,18 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 //generiert den html-Inhalt für Optionen von Selectmenu
 //wird von generiereHtmlFuerSelectmenu aufgerufen
 function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
-	var i;
-	var HtmlContainer = "\n\t\t<option value=''></option>";
+	var i, HtmlContainer, Optionn, ListItem;
+	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
-		var Option = Optionen[i];
-		var ListItem = "\n\t\t<option value='";
-		ListItem += Option;
+		Optionn = Optionen[i];
+		ListItem = "\n\t\t<option value='";
+		ListItem += Optionn;
 		ListItem += "' class='speichern'";
-		if(FeldWert == Option){
+		if(FeldWert == Optionn){
 			ListItem += " selected='selected'";
 		}
 		ListItem += ">";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "</option>";
 		HtmlContainer += ListItem;
 	}
@@ -1594,18 +1592,18 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 //wird von generiereHtmlFuerSelectmenu aufgerufen
 //FeldWert ist ein Array
 function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
-	var i;
-	var HtmlContainer = "\n\t\t<option value=''></option>";
+	var i, HtmlContainer, Optionn, ListItem;
+	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
-		var Option = Optionen[i];
-		var ListItem = "\n\t\t<option value='";
-		ListItem += Option;
+		Optionn = Optionen[i];
+		ListItem = "\n\t\t<option value='";
+		ListItem += Optionn;
 		ListItem += "' class='speichern'";
-		if(FeldWert.indexOf(Option)!=-1){
+		if(FeldWert.indexOf(Optionn)!=-1){
 			ListItem += " selected='selected'";
 		}
 		ListItem += ">";
-		ListItem += Option;
+		ListItem += Optionn;
 		ListItem += "</option>";
 		HtmlContainer += ListItem;
 	}
@@ -1618,8 +1616,9 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
     //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
     //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
     $.fn.serializeObject = function () {
-        var o = {};
-        var a = this.serializeArray();
+    	var o, a;
+        o = {};
+        a = this.serializeArray();
         $.each(a, function () {
         	if (this.value !== "") {
 	            if (o[this.name]) {
@@ -1646,8 +1645,9 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
     //siehe Beispiel in FeldEdit.html
     //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
     $.fn.serializeObjectNull = function () {
-        var o = {};
-        var a = this.serializeArray();
+    	var o, a;
+        o = {};
+        a = this.serializeArray();
         $.each(a, function () {
             if (o[this.name]) {
                 if (!o[this.name].push) {
@@ -1672,12 +1672,11 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 //grauenhafte Methode - blockiert die CPU!!
 function warte(ms) {
 	ms += new Date().getTime();
-	while (new Date() < ms){}
+	while (new Date() < ms) {}
 } 
 
-//Options: retrieve the location every 3 seconds
-watchID = null;
 function GetGeolocation() {
+	watchID = null;
 	//dem Benutzer mitteilen, dass die Position ermittelt wird
 	$("input#oXKoord").val("Position ermitteln...");
 	$("input#oYKoord").val("Position ermitteln...");
@@ -1690,15 +1689,16 @@ function GetGeolocation() {
 
 //Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
+	var oLagegenauigkeit, Höhe, x, y;
 	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
-	var oLagegenauigkeit = position.coords.accuracy;
+	oLagegenauigkeit = position.coords.accuracy;
 	if (oLagegenauigkeit < 100) {
 		oLongitudeDecDeg = position.coords.longitude;
 		oLatitudeDecDeg = position.coords.latitude;
-		var Höhe = position.coords.altitude;
+		Höhe = position.coords.altitude;
 		$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-		var x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-		var y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
+		x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
+		y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
 		$("input#oXKoord").val(x);
 		$("input#oYKoord").val(y);
 		if (Höhe > 0) {
@@ -1727,7 +1727,7 @@ function onGeolocationError(error) {
 
 //Beendet Ermittlung der Position
 function stopGeolocation() {
-    if (watchID != null) {
+    if (watchID !== null) {
         navigator.geolocation.clearWatch(watchID);
         watchID = null;
         //Mitteilungen löschen
@@ -1768,7 +1768,8 @@ function speichereLetzteUrl() {
 }
 
 function speichereLetzteUrl_2() {
-	var url = window.location.pathname + window.location.search;
+	var url, User;
+	url = window.location.pathname + window.location.search;
 	$db = $.couch.db("evab");
 	//nur speichern, wann anders als zuletzt
 	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
@@ -1776,7 +1777,7 @@ function speichereLetzteUrl_2() {
 		if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
 				success: function (data) {
-					var User = data.rows[0].value;
+					User = data.rows[0].value;
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
 					UserId = User._id;
 					sessionStorage.setItem("UserId", UserId);
@@ -1788,17 +1789,17 @@ function speichereLetzteUrl_2() {
 			});
 		} else {
 			UserId = sessionStorage.getItem("UserId");
-			speichereLetzteUrl_3(url);
+			speichereLetzteUrl_3(url, User);
 		}
 	}
 }
 
-function speichereLetzteUrl_3(url) {
+function speichereLetzteUrl_3(url, User) {
 	$db.openDoc(UserId, {
 		success: function (User) {
 			User.LetzteUrl = url;
 			$db.saveDoc(User);
-			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespaart werden kann
+			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespart werden kann
 			LetzteUrl = url;
 		}
 	});
@@ -1817,9 +1818,8 @@ function erstelleKarteFürRaum(RaumId) {
 	//Zuerst Orte abfragen
 	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]&include_docs=true', {
 		success: function (data) {
-			var i;
-			var anzOrt = 0;
-			var Ort;
+			var i, anzOrt, Ort;
+			anzOrt = 0;
 			var infowindow = new google.maps.InfoWindow();
 			for (i in data.rows) {
 				//Orte zählen
@@ -1918,15 +1918,14 @@ function erstelleKarteFürProjekt(ProjektId) {
 	//Zuerst Orte abfragen
 	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]&include_docs=true', {
 		success: function (data) {
-			var i;
-			var anzOrt = 0;
-			var Ort;
+			var i, anzOrt, Ort;
+			anzOrt = 0;
 			var infowindow = new google.maps.InfoWindow();
 			for (i in data.rows) {
 				//Orte zählen
 				anzOrt += 1;
 			}
-			if (anzOrt == 0) {
+			if (anzOrt === 0) {
 				//Keine Orte: Hinweis und zurück
 				melde("Dieses Projekt enthält keine Orte mit Koordinaten");
 				history.back();
@@ -1989,7 +1988,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 				}
 				var mcOptions = {maxZoom: 17};
 				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-				if (anzOrt == 1) {
+				if (anzOrt === 1) {
 					//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 					map.setCenter(latlng);
 					map.setZoom(18);
@@ -2045,13 +2044,14 @@ function speichereAnhänge(id) {
 //setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
 //wird benutzt von allen Beobachtungs-Edit-Formularen
 function erstelleAttachments(doc) {
-	var attachments = doc._attachments;
-	var rev = doc._rev;
-	var HtmlContainer = "";
+	var attachments, rev, HtmlContainer, url, url_zumLöschen;
+	attachments = doc._attachments;
+	rev = doc._rev;
+	HtmlContainer = "";
 	if (attachments) {
 		$.each(attachments, function (Dateiname, val) {
-			var url = "/evab/" + doc.id + "/" + Dateiname;
-			var url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+			url = "/evab/" + doc.id + "/" + Dateiname;
+			url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<a href='";
 			HtmlContainer += url;
 			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
@@ -2068,10 +2068,11 @@ function erstelleAttachments(doc) {
 //kreiert ein neues Feld
 //erwartet den Teil des Pfads, der links von FeldEdit ist
 function neuesFeld(Pfad) {
+	var Feld;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	var Feld = {};
+	Feld = {};
 	Feld.Typ = "Feld";
 	Feld.User = Username;
 	Feld.SichtbarImModusEinfach = [];
@@ -2082,9 +2083,7 @@ function neuesFeld(Pfad) {
 	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function (data) {
-			var id = data.id;
-			var zurueck = get_url_param("zurueck");
-			window.open(Pfad + "FeldEdit/" + id + "?Status=neu?zurueck=" + zurueck, target = "_self");
+			window.open(Pfad + "FeldEdit/" + data.id + "?Status=neu?zurueck=" + get_url_param("zurueck"), target = "_self");
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
@@ -2134,11 +2133,11 @@ function aktualisiereLinksMitOrtId_hoe() {
 (function ( $, undefined ){
 	
 	//auto-init on pagecreate
-	$( document ).bind( "pagecreate", function ( e ){
-		$( ":jqmData(role='pagination')", e.target ).pagination();
+	$( document ).bind( "pagecreate", function (e) {
+		$( ":jqmData(role='pagination')", e.target).pagination();
 	});
 	
-	var pageTitle="";
+	var pageTitle = "";
 	
 	//create widget
 	$.widget( "mobile.pagination", $.mobile.widget, {
@@ -2162,7 +2161,7 @@ function aktualisiereLinksMitOrtId_hoe() {
 			
 			//set up next and prev buttons
 			
-			$links.each(function (){
+			$links.each(function () {
 				var reverse = $( this ).closest( "." + prevLIClass ).length;
 			
 				$(this)

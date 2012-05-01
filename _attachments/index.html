@@ -85,8 +85,9 @@
   </script>
   <script type="text/javascript" charset="utf-8">	
 	function meldeUserAn() {
-		var UserName = $('input[name=UserName]').val();
-		var Passwort = $('input[name=Passwort]').val();
+		var UserName, Passwort;
+		UserName = $('input[name=UserName]').val();
+		Passwort = $('input[name=Passwort]').val();
 		if (!UserName) {
 			$("#UserName").focus();
 			melde("Bitte Benutzernamen eingeben");
@@ -110,11 +111,12 @@
 	function authentifiziereUser() {
 		$.couch.session({
 			success : function (r) {
-				var userCtx = r.userCtx;
+				var userCtx;
+				userCtx = r.userCtx;
 				Username = userCtx.name;
 				sessionStorage.setItem("Username", Username);
 				if (userCtx.name) {
-					öffneZuletztBenutzteSeite(Username);
+					oeffneZuletztBenutzteSeite(Username);
 				} else if (userCtx.roles.indexOf("_admin") !== -1) {
 					melde("Oops, die Datenbank hat keine Benutzer!");
 				} else {
@@ -134,8 +136,8 @@
 		    success: function (session) {
 		    	Username = session.userCtx.name;
 		    	sessionStorage.setItem("Username", Username);
-		    	if(session.userCtx.name !== (undefined || null)) {
-		        	öffneZuletztBenutzteSeite(Username);
+		    	if(session.userCtx.name) {
+		        	oeffneZuletztBenutzteSeite(Username);
 		       	} else {
 		       		$("#UserName").focus();
 		       	}
@@ -143,23 +145,19 @@
 		});
 	}
 
-	function öffneZuletztBenutzteSeite(Username) {
+	function oeffneZuletztBenutzteSeite(Username) {
 		//_replicate(name, pass);
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
 			success: function (data) {
-				var doc = data.rows[0].value;
-				var LetzteUrl = doc.LetzteUrl || "BeobListe.html";
+				var doc, LetzteUrl;
+				doc = data.rows[0].value;
+				LetzteUrl = doc.LetzteUrl || "BeobListe.html";
 				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 				if (LetzteUrl === "/evab/_design/evab/index.html") {LetzteUrl = "BeobListe.html"}
 				window.open(LetzteUrl, target = "_self");
 			}
 		});
-	}
-
-	function _replicate(name, pass){
-		//$.couch.replicate("http://barbalex:dLhdMg12@barbalex.couchone.com/evab", "http://ch_barbalex_evab:123@127.0.0.1:5984/evab",{continuous:true});
-		//$.couch.replicate("http://ch_barbalex_evab:123@127.0.0.1:5984/evab", "http://barbalex:dLhdMg12@barbalex.couchone.com/evab",{continuous:true});
 	}
   </script>
 </html>

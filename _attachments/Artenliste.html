@@ -47,23 +47,25 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function () {
+				var Artgruppe, Status, Von, BeobId, ProjektId, RaumId, OrtId, ZeitId;
 				UserId = "";
 				
-				var ArtGruppe = get_url_param("aArtGruppe");
-				var Status = get_url_param("Status") || "edit";
-				var Von = get_url_param("Von");
-				var BeobId = get_url_param("BeobId") || "";
-				var ProjektId = get_url_param("ProjektId") || "";
-				var RaumId = get_url_param("RaumId") || "";
-				var OrtId = get_url_param("OrtId") || "";
-				var ZeitId = get_url_param("ZeitId") || "";
+				ArtGruppe = get_url_param("aArtGruppe");
+				Status = get_url_param("Status") || "edit";
+				Von = get_url_param("Von");
+				BeobId = get_url_param("BeobId") || "";
+				ProjektId = get_url_param("ProjektId") || "";
+				RaumId = get_url_param("RaumId") || "";
+				OrtId = get_url_param("OrtId") || "";
+				ZeitId = get_url_param("ZeitId") || "";
 
 				erstelleArtenliste();
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
+					var ArtBezeichnung, ArtId;
 					event.preventDefault();
-					var ArtBezeichnung = $(this).attr("ArtBezeichnung");
-					var ArtId = $(this).attr("artid");
+					ArtBezeichnung = $(this).attr("ArtBezeichnung");
+					ArtId = $(this).attr("artid");
 					if (Status === "neu") {
 						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
 					} else if (Von === "ArtEdit") {
@@ -83,12 +85,13 @@
 					}
 				});
 
-				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {       
+				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {
+					var ButtonText;
 					event.preventDefault();
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var ButtonText = this.text;
+					ButtonText = this.text;
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
 						success: function (doc) {
@@ -101,13 +104,14 @@
 							}
 							$db.saveDoc(doc, {
 								success: function () {
-									//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
-									//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
-									//wenn nein: direkt die Artenliste aktualisieren
-									var viewname = 'evab/Artgruppen?key="' + ArtGruppe + '"'; 
+								//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
+								//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
+								//wenn nein: direkt die Artenliste aktualisieren
+									var viewname;
+									viewname = 'evab/Artgruppen?key="' + ArtGruppe + '"'; 
 									$db.view(viewname, {
 										success: function (data) {
-											//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
+										//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
 											var ArtGruppen_2;
 											if (ButtonText.slice(0, 3) === "Deu") {
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_D;
@@ -143,13 +147,14 @@
 				});
 
 				function erstelleArtenliste() {
+					var viewname;
 			  		if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
 					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
-					  	var viewname = 'evab/User?key="' + Username + '"';
+					  	viewname = 'evab/User?key="' + Username + '"';
 					  	$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
@@ -177,8 +182,9 @@
 				}
 
 				function erstelleArtenlisteLateinisch() {
-					var ArtGruppe = get_url_param("aArtGruppe");
-					var L = get_url_param("L");
+					var ArtGruppe, L;
+					ArtGruppe = get_url_param("aArtGruppe");
+					L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 					if (!L) {
 						viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
@@ -188,11 +194,8 @@
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ListItemContainer = "";
-							var ArtBezeichnung;
-							var Art;
-							var ArtId;
+							var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
+							ListItemContainer = "";
 							for (i in data.rows) {
 								ArtBezeichnung = data.rows[i].key[2];
 								Art = data.rows[i].value;
@@ -218,8 +221,9 @@
 				}
 
 				function erstelleArtenlisteDeutsch() {
-					var ArtGruppe = get_url_param("aArtGruppe");
-					var L = get_url_param("L");
+					var ArtGruppe, L;
+					ArtGruppe = get_url_param("aArtGruppe");
+					L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 					if (!L) {
 						viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
@@ -229,11 +233,8 @@
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ListItemContainer = "";
-							var ArtBezeichnung;
-							var Art;
-							var ArtId;
+							var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
+							ListItemContainer = "";
 							for (i in data.rows) {
 								ArtBezeichnung = data.rows[i].key[2];
 								Art = data.rows[i].value;

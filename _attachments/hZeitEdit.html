@@ -141,7 +141,7 @@
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
 					event.preventDefault();
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof ZeitListe != "undefined") {
+					if (typeof ZeitListe !== "undefined") {
 						ZeitListe = undefined;
 					}
 					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
@@ -214,7 +214,7 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ZeitEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible') ){
 						// Left arrow
 						if( e.keyCode === $.mobile.keyCode.LEFT ){
 							nächsteVorigeZeit(ZeitId, "vorige");
@@ -253,7 +253,7 @@
 
 				function löscheZeit() {
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof ZeitListe != "undefined") {
+					if (typeof ZeitListe !== "undefined") {
 						ZeitListe = undefined;
 					}
 					var Rückmeldung;
