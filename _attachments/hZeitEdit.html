@@ -101,25 +101,28 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hZeitEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hZeitEditForm").on("change", ".speichern", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
-					var _attachments = $("#_attachments").val();
+					var _attachments;
+					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length != 0) {
 						speichereAnhänge(ZeitId);
 					}
@@ -229,8 +232,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ZeitId, {
 						success: function (Zeit) {

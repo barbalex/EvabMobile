@@ -69,21 +69,22 @@
 				}
 
 				function erstelleSichtbareFelder_2() {
+					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-					var anzFelder = 0;
+					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+					anzFelder = 0;
 					for (i in FeldlisteProjektEdit.rows) {
-						var Feld = FeldlisteProjektEdit.rows[i].value;
-						var FeldName = Feld.FeldName;
+						Feld = FeldlisteProjektEdit.rows[i].value;
+						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
 						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
 							if (Feld.Hierarchiestufe == "Projekt" && FeldName != "pName") {
 								anzFelder += 1;
-								var FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-								var ListItem = "\n\t\t\<label for='";
+								FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+								ListItem = "\n\t\t\<label for='";
 								ListItem += FeldName;
 								ListItem += "'>";
 								ListItem += FeldBeschriftung;
