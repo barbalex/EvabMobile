@@ -88,7 +88,7 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$("#ZeitEditPage").on("pageinit", function () {
+			$("#ZeitEditPage").on("pageshow", function () {
 				ZeitId = sessionStorage.getItem("ZeitId");
 				initiiereZeitEdit(ZeitId);
 			});
@@ -101,11 +101,15 @@
 						erstinitiiereZeitEdit(ZeitId);
 					} else {
 						ZeitId = sessionStorage.getItem("ZeitId");
+						OrtId = sessionStorage.getItem("OrtId");
+						RaumId = sessionStorage.getItem("RaumId");
+						ProjektId = sessionStorage.getItem("ProjektId");
 					}
+				} else {
+					OrtId = sessionStorage.getItem("OrtId");
+					RaumId = sessionStorage.getItem("RaumId");
+					ProjektId = sessionStorage.getItem("ProjektId");
 				}
-				OrtId = sessionStorage.getItem("OrtId");
-				RaumId = sessionStorage.getItem("RaumId");
-				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!

@@ -786,9 +786,13 @@ function initiiereBeobEdit_2(id, Feldliste) {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			BeobId = Beob._id;
+			sessionStorage.setItem("BeobId", BeobId);
 			aArtGruppe = Beob.aArtGruppe;
+			sessionStorage.setItem("aArtGruppe", aArtGruppe);
 			aArtName = Beob.aArtName;
+			sessionStorage.setItem("aArtName", aArtName);
 			aArtId = Beob.aArtId;
+			sessionStorage.setItem("aArtId", aArtId);
 			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 			setzeFixeFelderInBeobEdit(Beob);
@@ -1197,6 +1201,23 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		}
 	}
 	return HtmlContainer;
+}
+
+function erstinitiiereZeitEdit(ZeitId) {	
+	$db = $.couch.db("evab");
+	$db.openDoc(ZeitId, {
+		success: function (Zeit) {
+			//Variabeln bereitstellen
+			ProjektId = Zeit.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Zeit.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
+			OrtId = Zeit.hOrtId;
+			sessionStorage.setItem("OrtId", OrtId);
+			ZeitId = Zeit._id;
+			sessionStorage.setItem("ZeitId", ZeitId);
+		}
+	});
 }
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
