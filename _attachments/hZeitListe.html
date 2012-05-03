@@ -60,9 +60,9 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				OrtId = get_url_param("OrtId");
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
+				OrtId = sessionStorage.getItem("OrtId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 				
 				erstelleZeitListe();
 
@@ -72,10 +72,10 @@
 				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
 
 				//Link zum Ort in Navbar und Titelleiste setzen
-				$("[name='hOrtLink']").attr('href', "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("[name='hOrtLink']").attr('href', "hOrtEdit.html?id=" + OrtId);
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
@@ -86,7 +86,16 @@
 				$("#Zeiten").on("swipeleft", ".Zeit", function () {
 					var ZeitId;
 					ZeitId = $(this).attr('ZeitId');
-					window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+					sessionStorage.setItem("ZeitId", ZeitId);
+					window.open("hArtListe.html?id=" + ZeitId, target = "_self");
+				});
+
+				$("#Zeiten").on("click", ".Zeit", function (event) {
+					var ZeitId;
+					event.preventDefault();
+					ZeitId = $(this).attr('ZeitId');
+					sessionStorage.setItem("ZeitId", ZeitId);
+					window.open("hZeitEdit.html?id=" + ZeitId, target = "_self");
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function () {
@@ -94,11 +103,11 @@
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+					window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
 				});
 
 				//Link zur OrtListe in Navbar setzen
-				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId);
 
 				//Menu aufbauen
 				$("#hZeitListePageHeader").on('click', '#MenuZeitListe', function (event) {
@@ -113,7 +122,7 @@
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
-					zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+					zurueck = "hZeitListe.html?OrtId=" + OrtId;
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
@@ -198,8 +207,7 @@
 									Zeit = data.rows[i].value;
 									key = data.rows[i].key;
 									zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-									externalPage = "hZeitEdit.html?id=" + Zeit._id + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-									listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+									listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
 									ListItemContainer += listItem;
 								}
 							}

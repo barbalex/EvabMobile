@@ -59,7 +59,7 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = get_url_param("ProjektId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 				erstelleRaumListe();
 				speichereLetzteUrl();
 
@@ -86,7 +86,16 @@
 				$("#Räume").on("swipeleft", ".Raum", function () {
 					var RaumId;
 					RaumId = $(this).attr('RaumId');
-					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+					sessionStorage.setItem("RaumId", RaumId);
+					window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
+				});
+
+				$("#Räume").on("click", ".Raum", function (event) {
+					var RaumId;
+					event.preventDefault();
+					RaumId = $(this).attr('RaumId');
+					sessionStorage.setItem("RaumId", RaumId);
+					window.open("hRaumEdit.html?id=" + RaumId, target = "_self");
 				});
 
 				$("#Räume").on("swipeleft", ".erste", function () {
@@ -221,8 +230,9 @@
 							Raum = RaumListe.rows[i].value;
 							key = RaumListe.rows[i].key;
 							rName = Raum.rName;
-							externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-							listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+							//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
+							//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+							listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 							ListItemContainer += listItem;
 						}
 					}

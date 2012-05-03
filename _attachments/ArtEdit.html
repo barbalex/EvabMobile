@@ -60,7 +60,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$("#ArtEditPage").on("pageshow", function () {
 
-				ArtId = get_url_param("id");
+				ArtId = sessionStorage.getItem("ArtId");
 				erstelleArtEdit(ArtId);
 			});
 

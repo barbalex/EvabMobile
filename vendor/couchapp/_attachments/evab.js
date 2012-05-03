@@ -310,6 +310,14 @@ function speichereNeueBeob_03(doc) {
 				success: function (data) {
 					BeobId = data.id;
 					if (doc.Typ === 'hArt') {
+						//Variabeln verfügbar machen
+						hBeobId = data.id;
+						sessionStorage.setItem("hBeobId", hBeobId);
+						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof hArtListe !== "undefined") {
+							hArtListe = undefined;
+						}
+						sessionStorage.removeItem("hArtListe");
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#hArtEditPage").length > 0) {
 							$.mobile.changePage($("#hArtEditPage"));
@@ -325,6 +333,14 @@ function speichereNeueBeob_03(doc) {
 							});*/
 						}
 					} else {
+						//Variabeln verfügbar machen
+						BeobId = data.id;
+						sessionStorage.setItem("BeobId", BeobId);
+						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof BeobListe !== "undefined") {
+							BeobListe = undefined;
+						}
+						sessionStorage.removeItem("BeobListe");
 						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#BeobEditPage").length > 0) {
 							$.mobile.changePage($("#BeobEditPage"));
@@ -365,6 +381,14 @@ $db.openDoc(BeobId, {
 			$db.saveDoc(Beob, {
 				success: function (data) {
 					if (Von === "BeobListe" || Von === "BeobEdit") {
+						//Variabeln verfügbar machen
+						BeobId = data.id;
+						sessionStorage.setItem("BeobId", BeobId);
+						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof BeobListe !== "undefined") {
+							BeobListe = undefined;
+						}
+						sessionStorage.removeItem("BeobListe");
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
 							//alert("BeobId = " + BeobId);
@@ -375,6 +399,14 @@ $db.openDoc(BeobId, {
 						}
 						GetGeolocation();
 					} else {
+						//Variabeln verfügbar machen
+						hBeobId = data.id;
+						sessionStorage.setItem("hBeobId", hBeobId);
+						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof hArtListe !== "undefined") {
+							hArtListe = undefined;
+						}
+						sessionStorage.removeItem("hArtListe");
 						if ($('#hArtEditPage').length > 0) {
 							$.mobile.changePage($('#hArtEditPage'));
 							initiierehBeobEdit(BeobId);
@@ -382,7 +414,7 @@ $db.openDoc(BeobId, {
 							window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 							//$.mobile.changePage("hArtEdit.html?id=" + BeobId);
 						}
-						//window.open("hArtEdit.html?hBeobId=" + Beob._id + "&ZeitId=" + Beob.hZeitId + "&OrtId=" + Beob.hOrtId + "&RaumId=" + Beob.hRaumId + "&ProjektId=" + Beob.hProjektId, target = "_self");
+						//window.open("hArtEdit.html?hBeobId=" + Beob._id, target = "_self");
 					}
 				},
 				error: function () {
@@ -461,8 +493,16 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 							}
 							//speichern
 							$db.saveDoc(doc, {
-								success: function (data) {
-									window.open("hZeitEdit.html?id=" + data.id + "&OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId, target = "_self");
+								success: function (Zeit) {
+									//Variabeln verfügbar machen
+									ZeitId = Zeit.id;
+									sessionStorage.setItem("ZeitId", ZeitId);
+									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+									if (typeof ZeitListe !== "undefined") {
+										ZeitListe = undefined;
+									}
+									sessionStorage.removeItem("ZeitListe");
+									window.open("hZeitEdit.html?id=" + Zeit.id, target = "_self");
 								},
 								error: function () {
 									melde("Fehler: neue Zeit nicht erstellt");
@@ -510,12 +550,15 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function (data) {
+							//Variabeln verfügbar machen
+							OrtId = data.id;
+							sessionStorage.setItem("OrtId", OrtId);
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							if (typeof OrtListe !== "undefined") {
 								OrtListe = undefined;
 							}
 							sessionStorage.removeItem("OrtListe");
-							window.open("hOrtEdit.html?id=" + data.id + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId + "&Status=neu", target = "_self");
+							window.open("hOrtEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 						},
 						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -549,12 +592,15 @@ function erstelleNeuenRaum(hProjektId) {
 			//speichern
 			$db.saveDoc(doc, {
 				success: function (data) {
+					//Variabeln verfügbar machen
+					RaumId = data.id;
+					sessionStorage.setItem("RaumId", RaumId);
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof RaumListe !== "undefined") {
 						RaumListe = undefined;
 					}
 					sessionStorage.removeItem("RaumListe");
-					window.open("hRaumEdit.html?id=" + data.id + "&ProjektId=" + hProjektId + "&Status=neu", target = "_self");
+					window.open("hRaumEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 				},
 				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
@@ -565,12 +611,19 @@ function erstelleNeuenRaum(hProjektId) {
 }
 
 function erstelleNeuesProjekt() {
-	var hProjekt = {};
+	var hProjekt;
+	hProjekt = {};
+	if (typeof Username === "undefined" || !Username) {
+		pruefeAnmeldung();
+	}
 	hProjekt.Typ = "hProjekt";
 	hProjekt.User = Username;
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function (data) {
+			//Variabeln verfügbar machen
+			ProjektId = data.id;
+			sessionStorage.setItem("ProjektId", ProjektId);
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			if (typeof Projektliste !== "undefined") {
 				Projektliste = undefined;
@@ -852,6 +905,9 @@ function initiiereProjektEdit(ProjektId) {
 		success: function (Projekt) {
 			//fixe Felder aktualisieren
 			$("#pName").val(Projekt.pName);
+			//Variabeln bereitstellen
+			ProjektId = Projekt._id;
+			sessionStorage.setItem("ProjektId", ProjektId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteProjektEdit !== "undefined") {
@@ -945,6 +1001,11 @@ function initiiereRaumEdit(RaumId) {
 		success: function (Raum) {
 			//fixes Feld setzen
 			$("#rName").val(Raum.rName);
+			//Variabeln bereitstellen
+			ProjektId = Raum.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Raum._id;
+			sessionStorage.setItem("RaumId", RaumId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteRaumEdit !== "undefined") {
@@ -1040,6 +1101,13 @@ function initiiereOrtEdit(OrtId) {
 			$("#oXKoord").val(Ort.oXKoord);
 			$("#oYKoord").val(Ort.oYKoord);
 			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
+			//Variabeln bereitstellen
+			ProjektId = Ort.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Ort.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
+			OrtId = Ort._id;
+			sessionStorage.setItem("OrtId", OrtId);
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 			oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
@@ -1095,7 +1163,7 @@ function initiiereOrtEdit_2(Ort) {
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-	window.history.pushState("", "", "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+	window.history.pushState("", "", "hOrtEdit.html?id=" + Ort._id); //funktioniert in IE erst ab 10!
 	aktualisiereLinksMitOrtId_hoe();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
@@ -1145,6 +1213,15 @@ function initiiereZeitEdit(ZeitId) {
 			//fixe Felder aktualisieren
 			$("#zDatum").val(Zeit.zDatum);
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
+			//Variabeln bereitstellen
+			ProjektId = Zeit.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Zeit.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
+			OrtId = Zeit.hOrtId;
+			sessionStorage.setItem("OrtId", OrtId);
+			ZeitId = Zeit._id;
+			sessionStorage.setItem("ZeitId", ZeitId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteZeitEdit !== "undefined") {
@@ -1210,6 +1287,53 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	return HtmlContainer;
 }
 
+//Wenn die hBeobListe.html direkt als erste Seite aufgerufen wird, 
+//wird die ZeitId aus der url gelesen und initiierehBeobListe() übergeben
+//hier werden die Variabeln bereitgestellt
+function erstinitiierehBeobListe(ZeitId) {
+	$db = $.couch.db("evab");
+	$db.openDoc(ZeitId, {
+		success: function (Zeit) {
+			//Variabeln bereitstellen
+			ProjektId = Zeit.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Zeit.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
+			OrtId = Zeit.hOrtId;
+			sessionStorage.setItem("OrtId", OrtId);
+			ZeitId = Zeit._id;
+			sessionStorage.setItem("ZeitId", ZeitId);
+		}
+	});
+}
+
+function erstinitiierehBeobEdit(BeobId) {
+	//hier werden Variablen gesetzt,
+	$db = $.couch.db("evab");
+	$db.openDoc(BeobId, {
+		success: function (Beob) {
+			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+			//Variabeln bereitstellen
+			ProjektId = Beob.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
+			RaumId = Beob.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
+			OrtId = Beob.hOrtId;
+			sessionStorage.setItem("OrtId", OrtId);
+			ZeitId = Beob.hZeitId;
+			sessionStorage.setItem("ZeitId", ZeitId);
+			hBeobId = Beob._id;
+			sessionStorage.setItem("hBeobId", hBeobId);
+			aArtGruppe = Beob.aArtGruppe;
+			sessionStorage.setItem("aArtGruppe", aArtGruppe);
+			aArtName = Beob.aArtName;
+			sessionStorage.setItem("aArtName", aArtName);
+			aArtId = Beob.aArtId;
+			sessionStorage.setItem("aArtId", aArtId);
+		}
+	});
+}
+
 //managt den Aufbau aller Daten und Felder für hBeobEdit.html
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html und Felder_Beob.html
@@ -1222,14 +1346,23 @@ function initiierehBeobEdit(BeobId) {
 	$db.openDoc(BeobId, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+			//Variabeln bereitstellen
 			ProjektId = Beob.hProjektId;
+			sessionStorage.setItem("ProjektId", ProjektId);
 			RaumId = Beob.hRaumId;
+			sessionStorage.setItem("RaumId", RaumId);
 			OrtId = Beob.hOrtId;
+			sessionStorage.setItem("OrtId", OrtId);
 			ZeitId = Beob.hZeitId;
+			sessionStorage.setItem("ZeitId", ZeitId);
 			hBeobId = Beob._id;
+			sessionStorage.setItem("hBeobId", hBeobId);
 			aArtGruppe = Beob.aArtGruppe;
+			sessionStorage.setItem("aArtGruppe", aArtGruppe);
 			aArtName = Beob.aArtName;
+			sessionStorage.setItem("aArtName", aArtName);
 			aArtId = Beob.aArtId;
+			sessionStorage.setItem("aArtId", aArtId);
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
 			$("#aArtGruppe").val(aArtGruppe);
@@ -1241,10 +1374,10 @@ function initiierehBeobEdit(BeobId) {
 			$("#aArtName").selectmenu("refresh");
 			//Links in der Navbar setzen
 			$("#hae_ProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
-			$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
-			$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
-			$("[name='hArtListeLink']").attr('href', "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+			$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
+			$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
+			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId);
+			$("[name='hArtListeLink']").attr('href', "hArtListe.html?id=" + ZeitId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlistehBeobEdit !== "undefined") {
@@ -1709,7 +1842,7 @@ function onGeolocationSuccess(position) {
 //Position ermitteln war nicht erfolgreich
 //onError Callback receives a PositionError object
 function onGeolocationError(error) {
-	melde("Keine Position erhalten" + "\n" + error.message);
+	melde("Keine Position erhalten\n" + error.message);
 	stopGeolocation();
 }
 
@@ -1843,7 +1976,7 @@ function erstelleKarteFürRaum(RaumId) {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
+					var externalPage = "hOrtEdit.html?id=" + hOrtId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -1943,7 +2076,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
+					var externalPage = "hOrtEdit.html?id=" + hOrtId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -2107,7 +2240,7 @@ function pruefeAnmeldung() {
 //wird aufgerufen von: hOrtEdit.html, evab.js
 function aktualisiereLinksMitOrtId_hoe() {
 	//Link zur Zeit in Navbar setzen
-	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId);
 }
 
 

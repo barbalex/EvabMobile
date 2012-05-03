@@ -88,14 +88,24 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageinit", function () {
-
-				ZeitId = get_url_param("id");
-				OrtId = get_url_param("OrtId");
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
-				
+			$("#ZeitEditPage").on("pageinit", function () {
+				ZeitId = sessionStorage.getItem("ZeitId");
 				initiiereZeitEdit(ZeitId);
+			});
+			$(":jqmData(role='page')").on("pageinit", function () {
+				//Beim allerersten Aufruf muss die ZeitId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//ZeitId ist dann undefined und sessionStorage.getItem("ZeitId") ist null
+				if (typeof ZeitId === "undefined") {
+					if (typeof sessionStorage.getItem("ZeitId") === "undefined" || !sessionStorage.getItem("ZeitId")) {
+						ZeitId = get_url_param("id");
+						erstinitiiereZeitEdit(ZeitId);
+					} else {
+						ZeitId = sessionStorage.getItem("ZeitId");
+					}
+				}
+				OrtId = sessionStorage.getItem("OrtId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
@@ -132,13 +142,13 @@
 				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
 
 				//Link zur ZeitListe in Navbar setzen
-				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + OrtId);
 
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
@@ -160,7 +170,7 @@
 
 				function aktualisiereLinksMitZeitId() {
 					//Link zur Art in Navbar setzen
-					$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId);
 				}
 
 				//Code für den Zeit-Löschen-Dialog
@@ -168,7 +178,7 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Diese Zeit löschen?',
+				    	'prompt' : 'Zeit sammt Arten löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
@@ -256,11 +266,7 @@
 				});
 
 				function löscheZeit() {
-					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					var Rückmeldung, ArtenGelöscht;
-					if (typeof ZeitListe !== "undefined") {
-						ZeitListe = undefined;
-					}
 					ArtenGelöscht = löscheArtenVonZeit();
 					if (ArtenGelöscht === false) {
 						melde("Fehler: zugehörige Arten nicht gelöscht");
@@ -271,12 +277,18 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(ZeitId, {
 							success: function (document) {
-								// Then use the opened doc as reference to remove
+								// Zeit löschen
 								$db.removeDoc(document, {
 									success: function () {
-										Rückmeldung += "<br>Zeit gelöscht";
-										melde(Rückmeldung);
-										setTimeout("window.open('hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId + "', target='_self')", 2800);
+										//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+										if (typeof ZeitListe !== "undefined") {
+											ZeitListe = undefined;
+										}
+										sessionStorage.removeItem("ZeitListe");
+										sessionStorage.removeItem("ZeitId");
+										//Rückmeldung += "<br>Zeit gelöscht";
+										//melde(Rückmeldung);
+										setTimeout("window.open('hZeitListe.html?OrtId=" + OrtId + "', target='_self')", 2800);
 										return true;
 									},
 									error: function () {
@@ -416,7 +428,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -492,7 +504,7 @@
 								if (i < AnzZeit) {
 									ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
 									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitZeitId();
 								} else {
 									melde("Das ist die letzte Zeit");
@@ -502,10 +514,10 @@
 								if (i > 0) {
 									ZeitId = ZeitListe.rows[i-1].value._id;
 									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitZeitId();
 								} else {
-									window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+									window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
 								}
 								break;
 							}
@@ -515,6 +527,5 @@
 			});	
 		</script>
 	</div>
- 
   </body>
 </html>

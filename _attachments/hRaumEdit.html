@@ -85,14 +85,13 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$("#RaumEditPage").on("pageshow", function () {
-				RaumId = get_url_param("id");
-				ProjektId = get_url_param("ProjektId");
+				RaumId = sessionStorage.getItem("RaumId");
 				initiiereRaumEdit(RaumId);
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				RaumId = get_url_param("id");
-				ProjektId = get_url_param("ProjektId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function () {
@@ -130,7 +129,7 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Diesen Raum löschen?',
+				    	'prompt' : 'Raum sammt Orten, Zeiten und Arten löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
@@ -172,7 +171,7 @@
 
 				function aktualisiereLinksMitRaumId() {
 					//Link zur Ortliste in Navbar setzen
-					$("#hOrtListeLink").attr("href", "hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+					$("#hOrtListeLink").attr("href", "hOrtListe.html?RaumId=" + RaumId);
 				}
 
 				//sichtbare Felder wählen
@@ -256,11 +255,6 @@
 			  
 				function löscheRaum() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, Rückmeldung;
-					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof RaumListe !== "undefined") {
-						RaumListe = undefined;
-					}
-					sessionStorage.removeItem("RaumListe");
 					ArtenGelöscht = löscheArtenVonRaum(RaumId);
 					if (ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
@@ -287,8 +281,14 @@
 										// lösche Raum
 										return $db.removeDoc(document, {
 											success: function () {
-												Rückmeldung += "\rRaum gelöscht";
-												melde(Rückmeldung);
+												//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+												if (typeof RaumListe !== "undefined") {
+													RaumListe = undefined;
+												}
+												sessionStorage.removeItem("RaumListe");
+												sessionStorage.removeItem("RaumId");
+												//Rückmeldung += "\rRaum gelöscht";
+												//melde(Rückmeldung);
 												setTimeout("window.open('hRaumListe.html?ProjektId=' + ProjektId, target='_self')", 1400);
 												return true;
 											},
@@ -506,7 +506,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hRaumEdit.html?id=" + RaumId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -595,7 +595,7 @@
 								if (i < AnzRaum) {
 									RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitRaumId();
 								} else {
 									melde("Das ist der letzte Raum");
@@ -605,7 +605,7 @@
 								if (i > 0) {
 									RaumId = RaumListe.rows[i-1].value._id;
 									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId + "&ProjektId=" + ProjektId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
 									aktualisiereLinksMitRaumId();
 								} else {
 									window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");

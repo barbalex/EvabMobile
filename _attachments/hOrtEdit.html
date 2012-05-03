@@ -99,18 +99,18 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function () {
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
+				//RaumId = sessionStorage.getItem("RaumId");
+				//ProjektId = get_url_param("ProjektId");
 				initiiereOrtEdit(OrtId);
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof OrtId === "undefined") {
-					OrtId = get_url_param("id");
+					OrtId = sessionStorage.getItem("OrtId");
 				}
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
@@ -157,10 +157,10 @@
 				$("#hoe_hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
 
 				//Link zur OrtListe in Navbar setzen
-				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId);
 
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function (event) {
@@ -405,11 +405,6 @@
 
 				function löscheOrt() {
 					var ArtenGelöscht, ZeitenGelöscht, Rückmeldung;
-					//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof OrtListe !== "undefined") {
-						OrtListe = undefined;
-					}
-					sessionStorage.removeItem("OrtListe");
 					ArtenGelöscht = löscheArtenVonOrt();
 					if (ArtenGelöscht !== 0 && ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
@@ -438,9 +433,15 @@
 									// lösche Ort
 									return $db.removeDoc(document, {
 										success: function () {
-											Rückmeldung += "\rOrt gelöscht";
-											melde(Rückmeldung);
-											setTimeout("window.open('hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId + "', target='_self')", 1400);
+											//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+											if (typeof OrtListe !== "undefined") {
+												OrtListe = undefined;
+											}
+											sessionStorage.removeItem("OrtListe");
+											sessionStorage.removeItem("OrtId");
+											//Rückmeldung += "\rOrt gelöscht";
+											//melde(Rückmeldung);
+											setTimeout("window.open('hOrtListe.html?RaumId=" + RaumId + "', target='_self')", 1400);
 											return true;
 										},
 										error: function () {
@@ -477,7 +478,7 @@
 								}
 								AnzArtenGelöscht += 1;
 							}
-							return AnzArtenGelöscht;          //WIESE KLAPPT DAS NICHT?
+							return AnzArtenGelöscht;          //WIESO KLAPPT DAS NICHT?
 						},
 						error: function () {
 							return false;
@@ -659,7 +660,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -756,7 +757,7 @@
 									OrtId = OrtListe.rows[i-1].value._id;
 									initiiereOrtEdit(OrtId);
 								} else {
-									window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+									window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
 								}
 								break;
 							}

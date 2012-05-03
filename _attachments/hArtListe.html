@@ -62,11 +62,19 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				
-				ZeitId = get_url_param("id");
-				OrtId = get_url_param("OrtId");
-				RaumId = get_url_param("RaumId");
-				ProjektId = get_url_param("ProjektId");
+				//Beim allerersten Aufruf muss die ZeitId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//ZeitId ist dann undefined und sessionStorage.getItem("ZeitId") ist null
+				if (typeof ZeitId === "undefined") {
+					if (typeof sessionStorage.getItem("ZeitId") === "undefined" || !sessionStorage.getItem("ZeitId")) {
+						ZeitId = get_url_param("id");
+						erstinitiierehBeobListe(ZeitId);
+					} else {
+						ZeitId = sessionStorage.getItem("ZeitId");
+					}
+				}
+				OrtId = sessionStorage.getItem("OrtId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 				
 				erstelleArtliste();
 
@@ -76,16 +84,16 @@
 				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
-				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + ZeitId);
 
 				//Link zur ArtListe in Navbar setzen
-				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId);
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
@@ -109,17 +117,18 @@
 						hArtListe = undefined;
 					}
 					sessionStorage.removeItem("hArtListe");
-					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId, target = "_self");
+					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe", target = "_self");
 				}
 
-				$("#Arten").on("swipeleft", ".beob", function () {
+				$("#Arten").on("swipeleft click", ".beob", function () {
 					var hBeobId;
 					hBeobId = $(this).attr('hBeobId');
+					sessionStorage.setItem("hBeobId", hBeobId);
 					window.open("hArtEdit.html?id=" + hBeobId, target = "_self");
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+					window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
 				});
 
 				//Menü aufbauen
@@ -141,7 +150,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + ZeitId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -229,9 +238,8 @@
 							aArtGruppe = hBeob.aArtGruppe;
 							ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
 							bArtName = key[2];
-							externalPage = "hArtEdit.html?id=" + hBeob._id;
 							listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
-								"<a href=\"" + externalPage + "\" rel=\"external\">" +
+								"<a href=\"#\">" +
 								"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 								"<h3>" + bArtName + "<\/h3>" +
 								"<\/a> <\/li>";

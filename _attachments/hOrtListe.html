@@ -76,8 +76,8 @@
 
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		RaumId = get_url_param("RaumId");
-		ProjektId = get_url_param("ProjektId");
+		RaumId = sessionStorage.getItem("RaumId");
+		ProjektId = sessionStorage.getItem("ProjektId");
 		
 		erstelleOrtListe();
 
@@ -87,7 +87,7 @@
 		$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
 
 		//Link zum Raum in Navbar und Titelleiste setzen
-		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
+		$("[name='hRaumLink']").attr('href', "hRaumEdit.html?id=" + RaumId);
 
 		//neuen Ort erstellen
 		$("body").on("click", ".hol_NeuLink", function (event) {
@@ -96,7 +96,7 @@
 		});
 
 		//Link zur OrtListe in Navbar setzen
-		$("#hOrtListeLink").attr("href", "hOrtListe?RaumId=" + RaumId + "&ProjektId=" + ProjektId);
+		$("#hOrtListeLink").attr("href", "hOrtListe?RaumId=" + RaumId);
 
 		//Menu aufbauen
 		$("#hOrtListePageHeader").on('click', "[name='MenuOrtListe']", function (event) {
@@ -107,7 +107,16 @@
 		$("#Orte").on("swipeleft", ".Ort", function () {
 			var OrtId;
 			OrtId = $(this).attr('OrtId');
-			window.open("hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+			sessionStorage.setItem("OrtId", OrtId);
+			window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
+		});
+
+		$("#Orte").on("click", ".Ort", function (event) {
+			var OrtId;
+			event.preventDefault();
+			OrtId = $(this).attr('OrtId');
+			sessionStorage.setItem("OrtId", OrtId);
+			window.open("hOrtEdit.html?id=" + OrtId, target = "_self");
 		});
 
 		$("#Orte").on("swipeleft", ".erste", function () {
@@ -159,7 +168,7 @@
 	      		},
 	      		'Felder verwalten': {
 			      	click: function () {
-			        	window.open("FeldListe.html?zurueck=hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+			        	window.open("FeldListe.html?zurueck=hOrtListe.html?RaumId=" + RaumId, target = "_self");
 	        		},
 	        		theme: "a",
 	        		icon: "edit"
@@ -245,8 +254,7 @@
 			for (i in OrtListe.rows) {                //Liste aufbauen
 				Ort = OrtListe.rows[i].value;
 				key = OrtListe.rows[i].key;
-				externalPage = "hOrtEdit.html?id=" + Ort._id + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
 		}

@@ -36,12 +36,12 @@
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
-				ProjektId = get_url_param("id");
+				ProjektId = sessionStorage.getItem("ProjektId");
 				initiiereProjektEdit(ProjektId);
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = get_url_param("id");
+				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
@@ -81,7 +81,7 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Dieses Projekt löschen?',
+				    	'prompt' : 'Projekt sammt Räumen, Orten, Zeiten und Arten löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
@@ -194,11 +194,6 @@
 
 				function löscheProjekt() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht, Rückmeldung;
-					//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof Projektliste !== "undefined") {
-						Projektliste = undefined;
-					}
-					sessionStorage.removeItem("Projektliste");
 					ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
 					if (ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
@@ -232,8 +227,14 @@
 											// lösche Projekt
 											return $db.removeDoc(document, {
 												success: function () {
-													Rückmeldung += "\rProjekt gelöscht";
-													melde(Rückmeldung);
+													//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+													if (typeof Projektliste !== "undefined") {
+														Projektliste = undefined;
+													}
+													sessionStorage.removeItem("Projektliste");
+													sessionStorage.removeItem("ProjektId");
+													//Rückmeldung += "\rProjekt gelöscht";
+													//melde(Rückmeldung);
 													setTimeout("window.open('hProjektListe.html', target = '_self')", 1400);
 													return true;
 												},

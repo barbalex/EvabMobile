@@ -92,18 +92,34 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
-				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//hBeobId ist dann undefined und sessionStorage.getItem("hBeobId") ist null
 				if (typeof hBeobId === "undefined") {
-					hBeobId = get_url_param("id");
+					if (typeof sessionStorage.getItem("hBeobId") === "undefined" || !sessionStorage.getItem("hBeobId")) {
+						hBeobId = get_url_param("id");
+						erstinitiierehBeobEdit(hBeobId);
+					} else {
+						hBeobId = sessionStorage.getItem("hBeobId");
+					}
 				}
 				initiierehBeobEdit(hBeobId);
 			});
 
 			$("#hArtEditPage").on("pageinit", function () {
-				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
+				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//hBeobId ist dann undefined und sessionStorage.getItem("hBeobId") ist null
 				if (typeof hBeobId === "undefined") {
-					hBeobId = get_url_param("id");
+					if (typeof sessionStorage.getItem("hBeobId") === "undefined" || !sessionStorage.getItem("hBeobId")) {
+						hBeobId = get_url_param("id");
+						erstinitiierehBeobEdit(hBeobId);
+					} else {
+						hBeobId = sessionStorage.getItem("hBeobId");
+					}
 				}
+				ZeitId = sessionStorage.getItem("ZeitId");
+				OrtId = sessionStorage.getItem("OrtId");
+				RaumId = sessionStorage.getItem("RaumId");
+				ProjektId = sessionStorage.getItem("ProjektId");
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
@@ -165,7 +181,7 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Diese Art löschen?',
+				    	'prompt' : 'Art löschen?',
 				    	'forceInput': 'false',
 				    	'buttons' : {
 						 	'ja': {
@@ -252,7 +268,7 @@
 						hArtListe = undefined;
 					}
 					sessionStorage.removeItem("hArtListe");
-					link = "Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId;
+					link = "Von=hArtEdit";
 					if (Status === 'neu') {
 						link += "&Status=neu";
 					}
@@ -283,22 +299,22 @@
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"); //funktioniert in IE erst ab 10!
 								} else {
 									$.mobile.changePage("Artgruppenliste.html", {
 										type: "get",
-										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId
+										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"
 									});
 								}
 							} else {
 								if ($('al_Page').length > 0) {
 									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('al_Page'));
-									window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"); //funktioniert in IE erst ab 10!
 								} else {
 									$.mobile.changePage("Artenliste.html", {
 										type: "get",
-										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit&BeobId=" + hBeobId + "&ProjektId=" + ProjektId + "&RaumId=" + RaumId + "&OrtId=" + OrtId + "&ZeitId=" + ZeitId
+										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"
 									});
 								}
 							}
@@ -345,7 +361,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtEdit.html?id=" + hBeobId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hArtEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -390,18 +406,19 @@
 				function löscheBeobachtung() {
 					var docId;
 					docId = hBeobId;
-					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hArtListe !== "undefined") {
-						hArtListe = undefined;
-					}
-					sessionStorage.removeItem("hArtListe");
 					$db = $.couch.db("evab");
 					$db.openDoc(docId, {
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									melde("Art gelöscht");
-									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+									//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+									if (typeof hArtListe !== "undefined") {
+										hArtListe = undefined;
+									}
+									sessionStorage.removeItem("hArtListe");
+									sessionStorage.removeItem("hBeobId");
+									//melde("Art gelöscht");
+									window.open("hArtListe.html?id=" + ZeitId, target = "_self");
 								},
 								error: function () {
 									melde("Fehler: Art nicht gelöscht");
@@ -431,11 +448,6 @@
 							hArt.aArtName = aArtName;
 							hArt.aArtGruppe = aArtGruppe;
 							$db.saveDoc(hArt, {
-								success: function () {
-									/*if (NeuÖffnenIn) {
-										window.open("_show/hArtEdit/" + hBeobId, target = "_self");
-									}*/
-								},
 								error: function () {
 									melde("Fehler: Art nicht gespeichert");
 								 }
@@ -498,7 +510,7 @@
 									hBeobId = hArtListe.rows[i-1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
-									window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
+									window.open("hArtListe.html?id=" + ZeitId, target = "_self");
 								}
 								break;
 							}

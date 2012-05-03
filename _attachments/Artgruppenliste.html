@@ -51,11 +51,11 @@
 				}
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
-				BeobId = get_url_param("BeobId") || "";
-				ProjektId = get_url_param("ProjektId") || "";
-				RaumId = get_url_param("RaumId") || "";
-				OrtId = get_url_param("OrtId") || "";
-				ZeitId = get_url_param("ZeitId") || "";
+				BeobId = sessionStorage.getItem("BeobId") || "";
+				ProjektId = sessionStorage.getItem("ProjektId") || "";
+				RaumId = sessionStorage.getItem("RaumId") || "";
+				OrtId = sessionStorage.getItem("OrtId") || "";
+				ZeitId = sessionStorage.getItem("ZeitId") || "";
 
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
@@ -100,11 +100,11 @@
 
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
-				BeobId = get_url_param("BeobId") || "";
-				ProjektId = get_url_param("ProjektId") || "";
-				RaumId = get_url_param("RaumId") || "";
-				OrtId = get_url_param("OrtId") || "";
-				ZeitId = get_url_param("ZeitId") || "";
+				BeobId = sessionStorage.getItem("BeobId") || "";
+				ProjektId = sessionStorage.getItem("ProjektId") || "";
+				RaumId = sessionStorage.getItem("RaumId") || "";
+				OrtId = sessionStorage.getItem("OrtId") || "";
+				ZeitId = sessionStorage.getItem("ZeitId") || "";
 
 				erstelleArtgruppenListe();
 

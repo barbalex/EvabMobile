@@ -70,7 +70,16 @@
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
 						var ProjektId;
 						ProjektId = $(this).attr('ProjektId');
+						sessionStorage.setItem("ProjektId", ProjektId);
 						window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
+					});
+
+					$("#Projekte").on("click", ".Projekt", function (event) {
+						var ProjektId;
+						event.preventDefault();
+						ProjektId = $(this).attr('ProjektId');
+						sessionStorage.setItem("ProjektId", ProjektId);
+						window.open("hProjektEdit.html?id=" + ProjektId, target = "_self");
 					});
 
 					$("#Projekte").on("swipeleft", ".erste", function () {
@@ -145,9 +154,8 @@
 								Proj = Projektliste.rows[i].value;
 								key = Projektliste.rows[i].key;
 								pName = key[1];
-								externalPage = "hProjektEdit.html?id=" + Proj._id;
 								listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-								listItem += "<a href=\"" + externalPage + "\" rel=\"external\">";
+								listItem += "<a href=\"#\">";
 								listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
 								ListItemContainer += listItem;
 							}
@@ -263,7 +271,7 @@
 										var oYKoord = Ort.oYKoord;
 										var lat2 = Ort.oLatitudeDecDeg;
 										var lng2 = Ort.oLongitudeDecDeg;
-										var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
+										var externalPage = "hOrtEdit.html?OrtId=" + hOrtId;
 										var latlng2 = new google.maps.LatLng(lat2, lng2);
 										if (anzOrt === 1) {
 											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
