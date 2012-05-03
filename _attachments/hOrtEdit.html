@@ -106,7 +106,7 @@
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (typeof OrtId == "undefined") {
+				if (typeof OrtId === "undefined") {
 					OrtId = get_url_param("id");
 				}
 				RaumId = get_url_param("RaumId");
@@ -148,7 +148,7 @@
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					if (_attachments && _attachments.length !== 0) {
 						speichereAnhänge(OrtId);
 					}
 				});
@@ -169,7 +169,7 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#hOrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event){
+				$("#hOrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hOrt.html");
 				});
@@ -242,7 +242,7 @@
 				function erstelleKarte() {
 					var map;
 					var verorted;
-					if (oLatitudeDecDeg != "" && oLongitudeDecDeg != "") {
+					if (oLatitudeDecDeg && oLongitudeDecDeg) {
 						var lat = oLatitudeDecDeg;
 						var lng = oLongitudeDecDeg;
 						verorted = true;
@@ -252,7 +252,7 @@
 						verorted = false;
 					}
 					var ZoomLevel;
-					if (verorted == true) {
+					if (verorted === true) {
 						ZoomLevel = 15;
 					} else {
 						ZoomLevel = 12;
@@ -267,7 +267,7 @@
 					var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 					google.maps.event.trigger(map,'resize');
 					var oName = $("input#oName").val();
-					if (verorted == true){
+					if (verorted === true) {
 						var marker = new google.maps.Marker({
 							position: latlng, 
 						    map: map, 
@@ -372,14 +372,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#OrtEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächsterVorigerOrt(OrtId, "voriger");
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsterVorigerOrt(OrtId, "nächster");
 							e.preventDefault();
 						}
@@ -411,7 +411,7 @@
 					}
 					sessionStorage.removeItem("OrtListe");
 					ArtenGelöscht = löscheArtenVonOrt();
-					if (ArtenGelöscht != 0 && ArtenGelöscht == false) {
+					if (ArtenGelöscht !== 0 && ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
@@ -421,7 +421,7 @@
 							Rückmeldung = "zugehörige Arten gelöscht";
 						}
 						ZeitenGelöscht = löscheZeitenVonOrt();
-						if (ZeitenGelöscht != 0 && ZeitenGelöscht == false) {
+						if (ZeitenGelöscht !== 0 && ZeitenGelöscht === false) {
 							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
 							return false;
@@ -472,7 +472,7 @@
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 								AnzArtenGelöscht += 1;
@@ -497,7 +497,7 @@
 							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 								AnzZeitenGelöscht += 1;
@@ -533,6 +533,13 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
+					if (!$("#oName").val()) {
+						melde("Bitte Ortnamen eingeben");
+						setTimeout(function() { 
+							$('#oName').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return;
+					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(OrtId, {
@@ -633,7 +640,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenuOrtEdit(thiz){
+				function erstelleMenuOrtEdit(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -734,7 +741,7 @@
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
 						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (OrtIdAktuell == IdAktuell) {
+						if (OrtIdAktuell === IdAktuell) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (i < AnzOrt) {

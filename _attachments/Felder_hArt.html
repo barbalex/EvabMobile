@@ -79,7 +79,7 @@
 								SichtbarImModusHierarchisch.push(Username);
 							} else {
 								idx = SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx !== -1) {
+								if (idx !== -1) {
 									SichtbarImModusHierarchisch.splice(idx, 1);
 								}
 							}
@@ -151,8 +151,8 @@
 								ListItem += "' value='";
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
-								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1){
+								if (Feld.SichtbarImModusHierarchisch) {
+									if (Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}

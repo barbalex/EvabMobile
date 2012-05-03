@@ -35,13 +35,13 @@ Hier noch ein Verwendungsbeispiel:
 URL: http://www.example.com/?titel=test&trinken=bier&essen=schweinshaxe
 wasEssenWir = get_url_param('essen');
 */
-function get_url_param(name){
+function get_url_param(name) {
 	var regexS, regex, results;
 	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
 
 	regexS = "[\\?&]"+name+"=([^&#]*)";
-	regex = new RegExp( regexS );
-	results = regex.exec( window.location.href );
+	regex = new RegExp(regexS);
+	results = regex.exec(window.location.href);
 	//results = regex.exec( $(this).data("url") );
 
 	if (!results) {
@@ -257,7 +257,7 @@ function speichereNeueBeob_02(doc) {
 			for (i in Zeit) {
 				//FeldName = i, Feldwert = Zeit[i]
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 					doc[i] = Zeit[i];
 				}
 			}
@@ -265,7 +265,7 @@ function speichereNeueBeob_02(doc) {
 				success: function (Ort) {
 					for (i in Ort) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 							doc[i] = Ort[i];
 						}
 					}
@@ -273,7 +273,7 @@ function speichereNeueBeob_02(doc) {
 						success: function (Raum) {
 							for (i in Raum) {
 								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 									doc[i] = Raum[i];
 								}
 							}
@@ -281,7 +281,7 @@ function speichereNeueBeob_02(doc) {
 								success: function (Projekt) {
 									for (i in Projekt) {
 										//ein paar Felder wollen wir nicht
-										if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
+										if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
 											doc[i] = Projekt[i];
 										}
 									}
@@ -309,7 +309,7 @@ function speichereNeueBeob_03(doc) {
 			$db.saveDoc(doc, {
 				success: function (data) {
 					BeobId = data.id;
-					if (doc.Typ == 'hArt') {
+					if (doc.Typ === 'hArt') {
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#hArtEditPage").length > 0) {
 							$.mobile.changePage($("#hArtEditPage"));
@@ -364,7 +364,7 @@ $db.openDoc(BeobId, {
 			Beob.aArtId = ArtId;
 			$db.saveDoc(Beob, {
 				success: function (data) {
-					if (Von == "BeobListe" || Von == "BeobEdit") {
+					if (Von === "BeobListe" || Von === "BeobEdit") {
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
 							//alert("BeobId = " + BeobId);
@@ -439,7 +439,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 		success: function (Ort) {
 			for (i in Ort) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 					doc[i] = Ort[i];
 				}
 			}
@@ -447,7 +447,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 				success: function (Raum) {
 					for (i in Raum) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 							doc[i] = Raum[i];
 						}
 					}
@@ -455,7 +455,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 						success: function (Projekt) {
 							for (i in Projekt) {
 								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
+								if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
 									doc[i] = Projekt[i];
 								}
 							}
@@ -495,7 +495,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 		success: function (Raum) {
 			for (i in Raum) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
 					doc[i] = Raum[i];
 				}
 			}
@@ -503,7 +503,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 				success: function (Projekt) {
 					for (i in Projekt) {
 						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
+						if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
 							doc[i] = Projekt[i];
 						}
 					}
@@ -542,7 +542,7 @@ function erstelleNeuenRaum(hProjektId) {
 		success: function (Projekt) {
 			for (i in Projekt) {
 				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) == -1) {
+				if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
 					doc[i] = Projekt[i];
 				}
 			}
@@ -646,7 +646,7 @@ function erstelleArtEdit(ArtId) {
 			$("#ArtEdit_ArtBezeichnungL").selectmenu("refresh");
 			HtmlContainer = generiereHtmlFuerArtEditForm(Art);
 			//nur anfügen, wenn Felder erstellt wurden
-			if (HtmlContainer != '') {
+			if (HtmlContainer) {
 				HtmlContainer = "<hr />" + HtmlContainer;
 				$("#ArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 			}
@@ -664,8 +664,8 @@ function generiereHtmlFuerArtEditForm(Art) {
 	var HtmlContainer, Titel, Feldname, Feldwert, Datensammlung;
 	HtmlContainer = '';
 	for (i in Art) {              
-		if (i.slice(0, 13) == "Datensammlung") {
-			if (Art[i] !== null) {
+		if (i.slice(0, 13) === "Datensammlung") {
+			if (Art[i]) {
 				Titel = Art[i].Datensammlung;
 				//collapsible und Liste beginnen
 				if (Titel === "Index") {
@@ -760,7 +760,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	} else {
 		HtmlContainer = "";
@@ -768,7 +768,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	$("#BeobEditPage").trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#BeobEditForm").serializeObject();
@@ -820,10 +820,10 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(Username) != -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) == -1) {
+		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-			if (Feld.Hierarchiestufe != "Art" || Feld.ArtGruppe.indexOf(ArtGruppe)>=0) {
-				if (Status == "neu" && Feld.Standardwert) {
+			if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
+				if (Status === "neu" && Feld.Standardwert) {
 					//FeldWert = eval("Feld.Standardwert." + Username) || "";
 					FeldWert = Feld.Standardwert[Username] || "";
 				} else {
@@ -874,13 +874,11 @@ function initiiereProjektEdit_2(Projekt) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
-	} else {
-		HtmlContainer = "";
 	}
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hProjektEditForm").serializeObject();
@@ -917,8 +915,8 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 		Feld = FeldlisteProjektEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "pName") {
-			if (Status == "neu" && Feld.Standardwert) {
+		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1 && FeldName !== "pName") {
+			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Username) || "";
 				FeldWert = Feld.Standardwert[Username] || "";
 			} else {
@@ -969,13 +967,11 @@ function initiiereRaumEdit_2(Raum) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerRaumEditForm (FeldlisteRaumEdit, Raum);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
-	} else {
-		HtmlContainer = "";
 	}
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hRaumEditForm").serializeObject();
@@ -1012,8 +1008,8 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Username || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1 && FeldName != "rName") {
-			if (Status == "neu" && Feld.Standardwert) {
+		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1 && FeldName !== "rName") {
+			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Username) || "";
 				FeldWert = Feld.Standardwert[Username] || "";
 			} else {
@@ -1070,13 +1066,11 @@ function initiiereOrtEdit_2(Ort) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
-	} else {
-		HtmlContainer = "";
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hOrtEditForm").serializeObject();
@@ -1091,7 +1085,7 @@ function initiiereOrtEdit_2(Ort) {
 		$db.saveDoc(Ort);
 	}
 	erstelleAttachments(Ort);
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen verorten
 		//aber nur, wenn noch keine Koordinaten drin sind
 		if (!$("#oXKoord").val()) {
@@ -1121,8 +1115,8 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Ort.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) != -1 && (FeldName != "oName") && (FeldName != "oXKoord") && (FeldName != "oYKoord") && (FeldName != "oLagegenauigkeit")) {
-			if (Status == "neu" && Feld.Standardwert) {
+		if ((Feld.User === Ort.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
 				FeldWert = Feld.Standardwert[Ort.User] || "";
 			} else {
@@ -1172,13 +1166,11 @@ function initiiereZeitEdit(ZeitId) {
 function initiiereZeitEdit_2(Zeit) {
 	var HtmlContainer = generiereHtmlFuerZeitEditForm(Zeit);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
-	} else {
-		HtmlContainer = "";
 	}
 	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		speichereAlles();
 	}
@@ -1202,8 +1194,8 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 		Feld = FeldlisteZeitEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Zeit.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) != -1 && FeldName != "zDatum" && FeldName != "zUhrzeit") {
-			if (Status == "neu" && Feld.Standardwert) {
+		if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
+			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Zeit.User) || "";
 				FeldWert = Feld.Standardwert[Zeit.User] || "";
 			} else {
@@ -1283,13 +1275,11 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer != "") {
+	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
-	} else {
-		HtmlContainer = "";
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") == "neu") {
+	if (get_url_param("Status") === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hArtEditForm").serializeObject();
@@ -1326,8 +1316,8 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User == Beob.User || Feld.User == "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) != -1 && Feld.ArtGruppe.indexOf(ArtGruppe)>=0 && (FeldName != "aArtId") && (FeldName != "aArtGruppe") && (FeldName != "aArtName")) {
-			if (Status == "neu" && Feld.Standardwert) {
+		if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Beob.User) || "";
 				FeldWert = Feld.Standardwert[Beob.User] || "";
 			} else {
@@ -1492,7 +1482,7 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += "' value='";
 		ListItem += Optionn;
 		ListItem += "' class='custom speichern'";
-		if (FeldWert.indexOf(Optionn) >=0) {
+		if (FeldWert.indexOf(Optionn) >= 0) {
 			ListItem += " checked='checked'";
 		}
 		ListItem += "/>";
@@ -1530,7 +1520,7 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 		ListItem += Optionn;
 		ListItem += "' value='";
 		ListItem += Optionn;
-		if(FeldWert == Optionn){
+		if (FeldWert === Optionn) {
 			ListItem += "' checked='checked";
 		}
 		ListItem += "'/>";
@@ -1554,11 +1544,11 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 	HtmlContainer += "' value='";
 	HtmlContainer += FeldWert.toString();
 	HtmlContainer += "' data-native-menu='false'";
-	if(MultipleSingleSelect == "MultipleSelect"){
+	if (MultipleSingleSelect === "MultipleSelect") {
 		HtmlContainer += " multiple='multiple'";
 	}
 	HtmlContainer += " class='speichern'>";
-	if(MultipleSingleSelect == "MultipleSelect"){
+	if (MultipleSingleSelect === "MultipleSelect") {
 		HtmlContainer += generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen);
 	} else {
 		HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
@@ -1577,7 +1567,7 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 		ListItem = "\n\t\t<option value='";
 		ListItem += Optionn;
 		ListItem += "' class='speichern'";
-		if(FeldWert == Optionn){
+		if (FeldWert === Optionn) {
 			ListItem += " selected='selected'";
 		}
 		ListItem += ">";
@@ -1599,7 +1589,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 		ListItem = "\n\t\t<option value='";
 		ListItem += Optionn;
 		ListItem += "' class='speichern'";
-		if(FeldWert.indexOf(Optionn)!=-1){
+		if (FeldWert.indexOf(Optionn) !== -1) {
 			ListItem += " selected='selected'";
 		}
 		ListItem += ">";
@@ -1627,8 +1617,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	                }
 	                o[this.name].push(this.value);
 	            } else {
-	            	//verhindern, dass Nummern in Strings verwandelt werden
-	            	if (this.value > -999999999 && this.value < 999999999) {
+	            	if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
 	            		o[this.name] = parseInt(this.value);
 	            	} else {
 	                	o[this.name] = this.value;
@@ -1655,8 +1644,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
                 }
                 o[this.name].push(this.value);
             } else {
-            	//verhindern, dass Nummern in Strings verwandelt werden
-            	if (this.value > -999999999 && this.value < 999999999) {
+            	if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
             		o[this.name] = parseInt(this.value);
             	} else {
                 	o[this.name] = this.value;
@@ -1731,7 +1719,7 @@ function stopGeolocation() {
         navigator.geolocation.clearWatch(watchID);
         watchID = null;
         //Mitteilungen löschen
-        if ($("input#oXKoord").val() == "Position ermitteln...") {
+        if ($("input#oXKoord").val() === "Position ermitteln...") {
         	$("input#oXKoord").val("");
 			$("input#oYKoord").val("");
         	$("input#oLagegenauigkeit").val("");
@@ -1747,13 +1735,13 @@ function speichereLetzteUrl() {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	if (typeof sessionStorage.getItem("Username") === "undefined" || sessionStorage.getItem("Username") === null) {
+	if (typeof sessionStorage.getItem("Username") === ("undefined" || null)) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
-		    success: function (session){
-		    	if (session.userCtx.name != (undefined || null)) {
+		    success: function (session) {
+		    	if (session.userCtx.name !== (undefined || null)) {
 		        	Username = session.userCtx.name;
 		        	sessionStorage.setItem("Username", Username);
 		        	speichereLetzteUrl_2();
@@ -1772,7 +1760,7 @@ function speichereLetzteUrl_2() {
 	url = window.location.pathname + window.location.search;
 	$db = $.couch.db("evab");
 	//nur speichern, wann anders als zuletzt
-	if (typeof LetzteUrl == "undefined" || LetzteUrl != url) {
+	if (typeof LetzteUrl === "undefined" || LetzteUrl !== url) {
 		//UserId nur abfragen, wenn nicht schon erfolgt
 		if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
 			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
@@ -1825,7 +1813,7 @@ function erstelleKarteFürRaum(RaumId) {
 				//Orte zählen
 				anzOrt += 1;
 			}
-			if (anzOrt == 0) {
+			if (anzOrt === 0) {
 				//Keine Orte: Hinweis und zurück
 				melde("Dieser Raum enthält keine Orte mit Koordinaten");
 				history.back();
@@ -1857,7 +1845,7 @@ function erstelleKarteFürRaum(RaumId) {
 					var lng2 = Ort.oLongitudeDecDeg;
 					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
-					if (anzOrt == 1) {
+					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 						latlng = latlng2;
 					} else {
@@ -1888,7 +1876,7 @@ function erstelleKarteFürRaum(RaumId) {
 				}
 				var mcOptions = {maxZoom: 17};
 				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-				if (anzOrt == 1) {
+				if (anzOrt === 1) {
 					//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 					map.setCenter(latlng);
 					map.setZoom(18);
@@ -1957,7 +1945,7 @@ function erstelleKarteFürProjekt(ProjektId) {
 					var lng2 = Ort.oLongitudeDecDeg;
 					var externalPage = "hOrtEdit.html?id=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
-					if (anzOrt == 1) {
+					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 						latlng = latlng2;
 					} else {
@@ -2100,8 +2088,8 @@ function pruefeAnmeldung() {
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
-		    success: function (session){
-		    	if (session.userCtx.name != (undefined || null)) {
+		    success: function (session) {
+		    	if (session.userCtx.name !== (undefined || null)) {
 		        	Username = session.userCtx.name;
 		        	sessionStorage.setItem("Username", Username);
 		        } else {
@@ -2130,21 +2118,21 @@ function aktualisiereLinksMitOrtId_hoe() {
 * Authored by Scott Jehl, scott@filamentgroup.com
 * Dual licensed under the MIT or GPL Version 2 licenses.
 */
-(function ( $, undefined ){
+(function ($, undefined) {
 	
 	//auto-init on pagecreate
-	$( document ).bind( "pagecreate", function (e) {
-		$( ":jqmData(role='pagination')", e.target).pagination();
+	$(document).bind("pagecreate", function (e) {
+		$(":jqmData(role='pagination')", e.target).pagination();
 	});
 	
 	var pageTitle = "";
 	
 	//create widget
-	$.widget( "mobile.pagination", $.mobile.widget, {
+	$.widget("mobile.pagination", $.mobile.widget, {
 		_create: function () {
 			var $el			= this.element,
-				$page		= $el.closest( ".ui-page" ),
-				$links		= $el.find( "a" ),
+				$page		= $el.closest(".ui-page"),
+				$links		= $el.find("a"),
 				$origin		= $.mobile.pageContainer,
 				classNS		= "ui-pagination",
 				prevLIClass	= classNS + "-prev",
@@ -2157,19 +2145,19 @@ function aktualisiereLinksMitOrtId_hoe() {
 				$nextPage,
 				$prevPage;
 			
-			$el.addClass( classNS );
+			$el.addClass(classNS);
 			
 			//set up next and prev buttons
 			
 			$links.each(function () {
-				var reverse = $( this ).closest( "." + prevLIClass ).length;
+				var reverse = $(this).closest("." + prevLIClass).length;
 			
 				$(this)
 					.buttonMarkup({
 						"role"		: "button",
 						"theme"		: "d",
 						"iconpos"	: "notext",
-						"icon"		: "arrow-" + ( reverse ? "l" : "r")
+						"icon"		: "arrow-" + (reverse ? "l" : "r")
 					})
 			});
 		}		

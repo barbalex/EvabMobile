@@ -106,9 +106,9 @@
 			$("#{{ArtenSprache}}").prop("checked",true).checkboxradio("refresh");
 
 			//jedes Feld bei Änderung speichern
-			$(".Feld").change(function (){
+			$(".Feld").change(function () {
 				speichern();
-				if (this.name === ArtenSprache) {
+				if (this.name === "ArtenSprache") {
 					sessionStorage.setItem("ArtenSprache", this.value);
 				}
 			});
@@ -117,8 +117,11 @@
 	<script type="text/javascript">
 		function speichern() {
 			var User;
-			if (!$("input#Autor").val()){
+			if (!$("#Autor").val()) {
 				melde("Bitte Autor eingeben");
+				setTimeout(function() { 
+					$('#Autor').focus(); 
+				}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 				return;
 			}
 			User = {};

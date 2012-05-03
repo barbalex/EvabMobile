@@ -141,7 +141,7 @@
 	$(document).ready(handleDocumentReady);
 
 	//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-	function erstelleMenuOrtListe(thiz){
+	function erstelleMenuOrtListe(thiz) {
 		if (typeof Username === "undefined" || !Username) {
 			pruefeAnmeldung();
 		}
@@ -234,12 +234,12 @@
 			anzOrt += 1;
 		}
 		Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
-		if (anzOrt == 1){
+		if (anzOrt === 1) {
 			Titel2 = " Ort";
 		}
 		$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
-		if (anzOrt == 0) {
+		if (anzOrt === 0) {
 			ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
 		} else {
 			for (i in OrtListe.rows) {                //Liste aufbauen

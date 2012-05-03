@@ -214,9 +214,9 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible') ) {
+					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächsteVorigeArt(hBeobId, "vorige");
 							e.preventDefault();
 						}
@@ -307,7 +307,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu_hae(thiz, ArtGruppe){
+				function erstelleMenu_hae(thiz, ArtGruppe) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}

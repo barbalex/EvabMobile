@@ -79,9 +79,9 @@
 						Feld = FeldlisteProjektEdit.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
-							if (Feld.Hierarchiestufe == "Projekt" && FeldName != "pName") {
+							if (Feld.Hierarchiestufe === "Projekt" && FeldName !== "pName") {
 								anzFelder += 1;
 								FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
 								ListItem = "\n\t\t\<label for='";
@@ -97,8 +97,8 @@
 								ListItem += "' value='";
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
-								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
+								if (Feld.SichtbarImModusHierarchisch) {
+									if (Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}
@@ -131,19 +131,23 @@
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldName = $(this).prop("id");
-					var FeldId = $(this).attr("feldid");
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
 						success: function (Feld) {
-							if ($("#" + FeldName).prop("checked") == true) {
+							var idx;
+							if ($("#" + FeldName).prop("checked") === true) {
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx!=-1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+								idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
+								if (idx !== -1) {
+									Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+								}
 							}
 							$db.saveDoc(Feld, {
 								error: function () {

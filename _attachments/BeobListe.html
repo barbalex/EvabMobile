@@ -184,7 +184,7 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#BeobListePage").on("click", ".bl_NeuLink", function (event){
+				$("#BeobListePage").on("click", ".bl_NeuLink", function (event) {
 					event.preventDefault();
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
@@ -310,7 +310,7 @@
 					}
 					$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
-					if (anzBeob == 0) {
+					if (anzBeob === 0) {
 						ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
 					} else {
 						for (i in BeobListe.rows) {                //Liste aufbauen

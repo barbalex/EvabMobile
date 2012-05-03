@@ -123,7 +123,7 @@
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					if (_attachments && _attachments.length > 0) {
 						speichereAnhänge(ZeitId);
 					}
 				});
@@ -151,7 +151,7 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event){
+				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hZeit.html");
 				});
@@ -217,14 +217,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächsteVorigeZeit(ZeitId, "vorige");
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsteVorigeZeit(ZeitId, "nächste");
 							e.preventDefault();
 						}
@@ -257,12 +257,12 @@
 
 				function löscheZeit() {
 					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+					var Rückmeldung, ArtenGelöscht;
 					if (typeof ZeitListe !== "undefined") {
 						ZeitListe = undefined;
 					}
-					var Rückmeldung;
-					var ArtenGelöscht = löscheArtenVonZeit();
-					if (ArtenGelöscht == false) {
+					ArtenGelöscht = löscheArtenVonZeit();
+					if (ArtenGelöscht === false) {
 						melde("Fehler: zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
@@ -296,13 +296,13 @@
 				}
 
 				//lösche alle einer Zeit zugeordnete Arten
-				function löscheArtenVonZeit() { 
-					var viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
+				function löscheArtenVonZeit() {
+					var viewname;
+					viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ArtId;
+							var i, ArtId;
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								löscheDokument(ArtId);
@@ -316,14 +316,18 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
-					if ($("input#zDatum").val() == "") {
+					if (!$("input#zDatum").val()) {
 						melde("Bitte Datum erfassen");
-						document.getElementById("zDatum").focus();
+						setTimeout(function() { 
+							$('#zDatum').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
 					}
-					if ($("input#zUhrzeit").val() == "") {
+					if (!$("input#zUhrzeit").val()) {
 						melde("Bitte Zeit erfassen");
-						document.getElementById("zUhrzeit").focus();
+						setTimeout(function() { 
+							$('#zUhrzeit').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
 					}
 					$db = $.couch.db("evab");
@@ -340,7 +344,8 @@
 							$db.saveDoc(hZeit, {
 								success: function () {
 									//geändertes Zeit-Feld in hArt anpassen
-									var viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
+									var viewname;
+									viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
 									$db.view(viewname, {
 										success: function (data) {
 											var hArtId;
@@ -375,7 +380,8 @@
 					$db = $.couch.db("evab");
 					$db.openDoc(ZeitId, {
 						success: function (hZeit) {
-							var Formularwerte = {};
+							var Formularwerte;
+							Formularwerte = {};
 							Formularwerte = $("#hZeitEditForm").serializeObject();
 							//Werte aus dem Formular aktualisieren
 							for (i in Formularwerte) {
@@ -391,7 +397,7 @@
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
-				function erstelleMenuZeitEdit(thiz){
+				function erstelleMenuZeitEdit(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -459,7 +465,7 @@
 				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof ZeitListe == "undefined") {
+					if (typeof ZeitListe === "undefined") {
 						if (typeof Username === "undefined" || !Username) {
 							pruefeAnmeldung();
 						}
@@ -476,15 +482,11 @@
 				}
 
 				function nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige) {
-					var i;
-					var ZeitIdAktuell;
-					var ZeitIdNächste;
-					var ZeitIdVorige;
-					var AnzZeit;
+					var i, ZeitIdAktuell, ZeitIdNächste, ZeitIdVorige, AnzZeit;
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
-						var AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ZeitIdAktuell == IdAktuell) {
+						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ZeitIdAktuell === IdAktuell) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzZeit) {

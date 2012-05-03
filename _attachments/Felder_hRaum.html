@@ -82,9 +82,9 @@
 						Feld = FeldlisteRaumEdit.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User == Username || Feld.User == "ZentrenBdKt") {
+						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
-							if (Feld.Hierarchiestufe == "Raum" && FeldName != "rName") {
+							if (Feld.Hierarchiestufe === "Raum" && FeldName !== "rName") {
 								anzFelder += 1;
 								FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
 								ListItem = "\n\t\t\<label for='";
@@ -100,8 +100,8 @@
 								ListItem += "' value='";
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
-								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
+								if (Feld.SichtbarImModusHierarchisch) {
+									if (Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}
@@ -134,20 +134,24 @@
 
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
-					var FeldName = $(this).prop("id");
-					var FeldId = $(this).attr("feldid");
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
 						success: function (Feld) {
-							var SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
+							var SichtbarImModusHierarchisch, idx;
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
 							if ($("#" + FeldName).prop("checked") == true) {
 								SichtbarImModusHierarchisch.push(Username);
 							} else {
-								var idx = SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx!=-1) SichtbarImModusHierarchisch.splice(idx, 1);
+								idx = SichtbarImModusHierarchisch.indexOf(Username);
+								if (idx !== -1) {
+									SichtbarImModusHierarchisch.splice(idx, 1);
+								}
 							}
 							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
 							$db.saveDoc(Feld, {

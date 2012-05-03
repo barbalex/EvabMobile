@@ -45,10 +45,11 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
@@ -56,17 +57,19 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hProjektEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
-					var _attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					var _attachments;
+					_attachments = $("#_attachments").val();
+					if (_attachments && _attachments.length > 0) {
 						speichereAnhänge(ProjektId);
 					}
 				});
@@ -111,7 +114,7 @@
 				});
 
 				//sichtbare Felder wählen
-				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event){
+				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hProjekt.html");
 				});
@@ -139,14 +142,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#ProjektEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächstesVorigesProjekt(ProjektId, "voriges");
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächstesVorigesProjekt(ProjektId, "nächstes");
 							e.preventDefault();
 						}
@@ -154,10 +157,11 @@
 				});
 
 				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function (event) {
+					var contentHeight;
 					event.preventDefault();
 					$.mobile.changePage("#ProjektEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
+					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
@@ -172,8 +176,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(ProjektId, {
 						success: function (Projekt) {
@@ -188,35 +193,34 @@
 				});
 
 				function löscheProjekt() {
-					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht;
-					var Rückmeldung;
+					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht, Rückmeldung;
 					//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof Projektliste !== "undefined") {
 						Projektliste = undefined;
 					}
 					sessionStorage.removeItem("Projektliste");
 					ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
-					if (ArtenGelöscht == false) {
+					if (ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
 						Rückmeldung = "zugehörige Arten gelöscht";
 						ZeitenGelöscht = löscheZeitenVonProjekt(ProjektId);
-						if (ZeitenGelöscht == false) {
+						if (ZeitenGelöscht === false) {
 							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
 							return false;
 						} else {
 							Rückmeldung += "\rzugehörige Zeiten gelöscht";
 							OrteGelöscht = löscheOrteVonProjekt(ProjektId);
-							if (OrteGelöscht == false) {
+							if (OrteGelöscht === false) {
 								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
 								melde(Rückmeldung);
 								return false;
 							} else {
 								Rückmeldung += "\rzugehörige Orte gelöscht";
 								RäumeGelöscht = löscheRäumeVonProjekt(ProjektId);
-								if (RäumeGelöscht == false) {
+								if (RäumeGelöscht === false) {
 									Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
 									melde(Rückmeldung);
 									return false;
@@ -256,17 +260,16 @@
 
 				//lösche alle einem Projekt zugeordneten Räume
 				function löscheRäumeVonProjekt(ProjektId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var RaumId;
+							var i, RaumId;
 							for (i in data.rows) {
 								RaumId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(RaumId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -280,17 +283,16 @@
 
 				//lösche alle einem Projekt zugeordneten Orte
 				function löscheOrteVonProjekt(ProjektId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var OrtId;
+							var i, OrtId;
 							for (i in data.rows) {
 								OrtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(OrtId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -304,17 +306,16 @@
 
 				//lösche alle einem Projekt zugeordneten Zeiten
 				function löscheZeitenVonProjekt(ProjektId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ZeitId;
+							var i, ZeitId;
 							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -328,17 +329,16 @@
 
 				//lösche alle einem Projekt zugeordneten Arten
 				function löscheArtenVonProjekt(ProjektId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ArtId;
+							var i, ArtId;
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -351,6 +351,13 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
+					if (!$("#pName").val()) {
+						melde("Bitte Projektnamen eingeben");
+						setTimeout(function() { 
+							$('#pName').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return;
+					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(ProjektId, {
@@ -378,7 +385,8 @@
 
 				function speichereProjektfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var viewname;
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -402,7 +410,8 @@
 
 				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var viewname;
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -426,7 +435,8 @@
 
 				function speichereProjektfeldInOrten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var viewname;
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -450,7 +460,8 @@
 
 				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					var viewname;
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -473,7 +484,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenuProjektEdit(thiz){
+				function erstelleMenuProjektEdit(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -570,15 +581,11 @@
 				}
 
 				function nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges) {
-					var i;
-					var ProjIdAktuell;
-					var ProjIdNächstes;
-					var ProjIdVoriges;
-					var AnzProj;
+					var i, ProjIdAktuell, ProjIdNächstes, ProjIdVoriges, AnzProj;
 					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].value._id;
-						var AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ProjIdAktuell == IdAktuell) {
+						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (ProjIdAktuell === IdAktuell) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":
 								if (i < AnzProj) {

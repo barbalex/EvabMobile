@@ -68,7 +68,8 @@
 					});
 
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
-						var ProjektId = $(this).attr('ProjektId');
+						var ProjektId;
+						ProjektId = $(this).attr('ProjektId');
 						window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
 					});
 
@@ -81,10 +82,11 @@
 					});
 
 					$('#ProjektListePageFooter').on('click', '#ProjektListeMapOeffnen', function (event) {
+						var contentHeight;
 						event.preventDefault();
 						$.mobile.changePage("#ProjektListeMap");
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-						var contentHeight = $(window).height() - 43;
+						contentHeight = $(window).height() - 43;
 						$("#map_canvas").css("height", contentHeight + "px");
 					});
 
@@ -131,7 +133,7 @@
 						}
 
 						Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
-						if (anzProj === 1){
+						if (anzProj === 1) {
 							Titel2 = " Projekt";
 						}
 						$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
@@ -155,7 +157,7 @@
 					}
 
 					//Menü aufbauen
-					function erstelleMenuProjektliste(thiz){
+					function erstelleMenuProjektliste(thiz) {
 						if (typeof Username === "undefined" || !Username) {
 							pruefeAnmeldung();
 						}
@@ -224,20 +226,19 @@
 						//Zuerst Orte abfragen
 						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + Username + '"&include_docs=true', {
 							success: function (data) {
-								var i;
-								var anzOrt = 0;
-								var Ort;
+								var i, anzOrt, Ort;
+								anzOrt = 0;
 								var infowindow = new google.maps.InfoWindow();
+								//Orte zählen
 								for (i in data.rows) {
-									//Orte zählen
 									anzOrt += 1;
 								}
-								if (anzOrt == 0) {
-									//Keine Orte: Hinweis und zurück
+								//Keine Orte: Hinweis und zurück
+								if (anzOrt === 0) {
 									melde("Es gibt keine Orte mit Koordinaten");
 									history.back();
+								//Orte vorhanden: Karte aufbauen
 								} else {
-									//Orte vorhanden: Karte aufbauen
 									var lat = 47.383333;
 									var lng = 8.533333;
 									var latlng = new google.maps.LatLng(lat, lng);
@@ -264,7 +265,7 @@
 										var lng2 = Ort.oLongitudeDecDeg;
 										var externalPage = "hOrtEdit.html?OrtId=" + hOrtId + "&RaumId=" + hRaumId + "&ProjektId=" + hProjektId;
 										var latlng2 = new google.maps.LatLng(lat2, lng2);
-										if (anzOrt == 1) {
+										if (anzOrt === 1) {
 											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 											latlng = latlng2;
 										} else {
@@ -295,7 +296,7 @@
 									}
 									var mcOptions = {maxZoom: 17};
 									var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-									if (anzOrt == 1) {
+									if (anzOrt === 1) {
 										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 										map.setCenter(latlng);
 										map.setZoom(18);

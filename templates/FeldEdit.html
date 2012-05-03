@@ -306,7 +306,9 @@
 									if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 										//ja > dieser Name ist nicht zulässig
 										$("#FeldName").val(FeldNameAlt);
-										$("#FeldName").focus();
+										setTimeout(function () { 
+											$('#FeldName').focus(); 
+										}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 										melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
 									} else {
 										//Feldname ist bei diesem User neu, somit zulässig > speichern
@@ -339,7 +341,9 @@
 								Feld.SichtbarImModusHierarchisch.push(Username);
 							} else {
 								idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
-								if(idx !== -1) Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+								if (idx !== -1) {
+									Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+								}
 							}
 							$db.saveDoc(Feld, {
 								error: function () {
@@ -367,7 +371,9 @@
 								Feld.SichtbarImModusEinfach.push(Username);
 							} else {
 								idx = Feld.SichtbarImModusEinfach.indexOf(Username);
-								if(idx !== -1) Feld.SichtbarImModusEinfach.splice(idx, 1);
+								if (idx !== -1) {
+									Feld.SichtbarImModusEinfach.splice(idx, 1);
+								}
 							}
 							$db.saveDoc(Feld, {
 								error: function () {
@@ -397,7 +403,7 @@
 								listItem += ArtGruppe;
 								listItem += "' value='";
 								listItem += ArtGruppe;
-								if(ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
+								if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
 									listItem += "' checked='checked";
 								}
 								listItem += "'/>\n<label for='";
@@ -784,7 +790,7 @@
 				$("input[name='InputTyp']").checkboxradio();
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
-				function setzeSichtbarInModiUndArtgruppeUndStandardwert(){
+				function setzeSichtbarInModiUndArtgruppeUndStandardwert() {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}

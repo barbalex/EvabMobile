@@ -64,8 +64,7 @@
 				speichereLetzteUrl();
 
 				//Link zum Projekt in Navbar und Titelleiste setzen
-				var url = "hProjektEdit.html?id=" + ProjektId;
-				$("[name='hProjektLink']").attr('href', url);
+				$("[name='hProjektLink']").attr('href', "hProjektEdit.html?id=" + ProjektId);
 
 				//neuen Raum erstellen
 				$("body").on("click", "[name='hRaumNeuLink']", function (event) {
@@ -78,13 +77,15 @@
 
 				//Menu aufbauen
 				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
+					var zurueck;
 					event.preventDefault();
-					var zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
+					zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
 					erstelleMenuRaumListe(zurueck, this);
 				});
 
 				$("#Räume").on("swipeleft", ".Raum", function () {
-					var RaumId = $(this).attr('RaumId');
+					var RaumId;
+					RaumId = $(this).attr('RaumId');
 					window.open("hOrtListe.html?RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				});
 
@@ -97,10 +98,11 @@
 				});
 
 				$("#hRaumListePageFooter").on("click", "#RaumListeMapÖffnen", function (event) {
+					var contentHeight;
 					event.preventDefault();
 					$.mobile.changePage("#RaumListeMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
+					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
@@ -115,7 +117,7 @@
 				});
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenuRaumListe(zurueck, thiz){
+				function erstelleMenuRaumListe(zurueck, thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -201,21 +203,18 @@
 				}
 
 				function erstelleRaumListe_2() {
-					var i;
-					var anzRaum = 0;
-					var Raum;
-					var externalPage;
-					var listItem;
-					var ListItemContainer = "";
+					var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
+					anzRaum = 0;
+					ListItemContainer = "";
 					for (i in RaumListe.rows) {                    //Räume zählen
 						anzRaum += 1;
 					}
-					var Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
-					if (anzRaum == 1) {
+					Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
+					if (anzRaum === 1) {
 						Titel2 = " Raum";
 					}
 					$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
-					if (anzRaum == 0) {
+					if (anzRaum === 0) {
 						ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 					} else {
 						for (i in RaumListe.rows) {                //Liste aufbauen

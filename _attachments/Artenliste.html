@@ -95,7 +95,7 @@
 					$db = $.couch.db("evab");
 					$db.openDoc(UserId, {
 						success: function (doc) {
-							if (ButtonText.slice(0, 3) == "Deu") {
+							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
 								sessionStorage.setItem("ArtenSprache", "Deutsch");
 							} else {
@@ -208,7 +208,7 @@
 								ListItemContainer += "<a href=\"#\"><h3>";
 								ListItemContainer += ArtBezeichnung;
 								ListItemContainer += "<\/h3>";
-								if(Art.HinweisVerwandschaft){
+								if (Art.HinweisVerwandschaft) {
 									ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
 								}
 								ListItemContainer += "<\/a><\/li>";
@@ -247,7 +247,7 @@
 								ListItemContainer += "<a href=\"#\"><h3>";
 								ListItemContainer += ArtBezeichnung;
 								ListItemContainer += "<\/h3>";
-								if(Art.HinweisVerwandschaft){
+								if (Art.HinweisVerwandschaft) {
 									ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
 								}
 								ListItemContainer += "<\/a><\/li>";

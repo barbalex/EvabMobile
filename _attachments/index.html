@@ -55,14 +55,14 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		/*if (!("autofocus" in document.createElement("input"))) {                   hat null Wirkung!
-	      document.getElementById("UserName").focus();
-	    }*/
+		if (!("autofocus" in document.createElement("input"))) {
+	      $("#UserName").focus();
+	    }
 
 	    //Wenn möglich alten cookie für die Anmeldung verwenden
 	    //ausser User hat via Menü bewusst neu anmelden wollen
-
-	    var Status = get_url_param("Status");
+	    var Status;
+	    Status = get_url_param("Status");
 	    if (Status !== "neu") {
 	    	pruefeAnmeldung_index();
 	    }
@@ -89,10 +89,14 @@
 		UserName = $('input[name=UserName]').val();
 		Passwort = $('input[name=Passwort]').val();
 		if (!UserName) {
-			$("#UserName").focus();
+			setTimeout(function () { 
+				$('#UserName').focus(); 
+			}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 			melde("Bitte Benutzernamen eingeben");
-		} else if (!Passwort){
-			$("#Passwort").focus();
+		} else if (!Passwort) {
+			setTimeout(function () { 
+				$('#Passwort').focus(); 
+			}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 			melde("Bitte Passwort eingeben");
 		} else {
 			$.couch.login({
@@ -136,7 +140,7 @@
 		    success: function (session) {
 		    	Username = session.userCtx.name;
 		    	sessionStorage.setItem("Username", Username);
-		    	if(session.userCtx.name) {
+		    	if (session.userCtx.name) {
 		        	oeffneZuletztBenutzteSeite(Username);
 		       	} else {
 		       		$("#UserName").focus();
@@ -154,7 +158,9 @@
 				doc = data.rows[0].value;
 				LetzteUrl = doc.LetzteUrl || "BeobListe.html";
 				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
-				if (LetzteUrl === "/evab/_design/evab/index.html") {LetzteUrl = "BeobListe.html"}
+				if (LetzteUrl === "/evab/_design/evab/index.html") {
+					LetzteUrl = "BeobListe.html";
+				}
 				window.open(LetzteUrl, target = "_self");
 			}
 		});

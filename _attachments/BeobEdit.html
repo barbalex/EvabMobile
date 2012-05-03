@@ -172,7 +172,7 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#BeobEditForm").on('click', '#aArtName', function (event){
+				$("#BeobEditForm").on('click', '#aArtName', function (event) {
 					var viewname;
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -333,14 +333,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#BeobEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächsteVorigeBeob(BeobId, 'vorige');
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsteVorigeBeob(BeobId, 'nächste');
 							e.preventDefault();
 						}
@@ -466,7 +466,7 @@
 					var zDatum = $("#zDatum").val();
 					var zUhrzeit = $("#zUhrzeit").val();
 					var image = "Artgruppenbilder/" + aArtGruppe + ".png";
-					if (verorted === true){
+					if (verorted === true) {
 						var marker = new google.maps.Marker({
 							position: latlng, 
 						    map: map, 

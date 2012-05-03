@@ -96,10 +96,11 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function () {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
@@ -107,17 +108,19 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hRaumEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname = this.name;
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
 					//nötig, damit Arrays richtig kommen
-					var Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					var Feldwert = Feldjson[Feldname];
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					speichern(Feldname, Feldwert);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
-					var _attachments = $("#_attachments").val();
-					if (_attachments && _attachments.length != 0) {
+					var _attachments;
+					_attachments = $("#_attachments").val();
+					if (_attachments && _attachments.length > 0) {
 						speichereAnhänge(RaumId);
 					}
 				});
@@ -173,7 +176,7 @@
 				}
 
 				//sichtbare Felder wählen
-				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event){
+				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hRaum.html");
 				});
@@ -201,14 +204,14 @@
 				//Pagination Pfeiltasten initialisieren
 				$(document).on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if( !$( e.target ).is( "input, textarea, select, button" ) && $('#RaumEditPage').is(':visible') ){
+					if (!$(e.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
 						// Left arrow
-						if( e.keyCode === $.mobile.keyCode.LEFT ){
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
 							nächsterVorigerRaum(RaumId, "voriger");
 							e.preventDefault();
 						}
 						// Right arrow
-						else if( e.keyCode === $.mobile.keyCode.RIGHT ){
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsterVorigerRaum(RaumId, "nächster");
 							e.preventDefault();
 						}
@@ -216,10 +219,11 @@
 				});
 
 				$("#hRaumEditFooter").on("click", "#RaumEditMapÖffnen", function (event) {
+					var contentHeight;
 					event.preventDefault();
 					$.mobile.changePage("#RaumEditMap");
 					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					var contentHeight = $(window).height() - 43;
+					contentHeight = $(window).height() - 43;
 					$("#map_canvas").css("height", contentHeight + "px");
 				});
 
@@ -234,8 +238,9 @@
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+					var Dateiname;
 					event.preventDefault();
-					var Dateiname = this.id;
+					Dateiname = this.id;
 					$db = $.couch.db("evab");
 					$db.openDoc(RaumId, {
 						success: function (Raum) {
@@ -250,28 +255,27 @@
 				});
 			  
 				function löscheRaum() {
-					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht;
-					var Rückmeldung;
+					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, Rückmeldung;
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof RaumListe !== "undefined") {
 						RaumListe = undefined;
 					}
 					sessionStorage.removeItem("RaumListe");
 					ArtenGelöscht = löscheArtenVonRaum(RaumId);
-					if (ArtenGelöscht == false) {
+					if (ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
 						Rückmeldung = "zugehörige Arten gelöscht";
 						ZeitenGelöscht = löscheZeitenVonRaum(RaumId);
-						if (ZeitenGelöscht == false) {
+						if (ZeitenGelöscht === false) {
 							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
 							return false;
 						} else {
 							Rückmeldung += "\rzugehörige Zeiten gelöscht";
 							OrteGelöscht = löscheOrteVonRaum(RaumId);
-							if (OrteGelöscht == false) {
+							if (OrteGelöscht === false) {
 								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
 								melde(Rückmeldung);
 								return false;
@@ -309,17 +313,16 @@
 
 				//lösche alle einem Raum zugeordnete Orte
 				function löscheOrteVonRaum(RaumId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var OrtId;
+							var i, OrtId;
 							for (i in data.rows) {
 								OrtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(OrtId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -333,17 +336,16 @@
 
 				//lösche alle einem Raum zugeordnete Zeiten
 				function löscheZeitenVonRaum(RaumId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ZeitId;
+							var i, ZeitId;
 							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -357,17 +359,16 @@
 
 				//lösche alle einem Raum zugeordnete Arten
 				function löscheArtenVonRaum(RaumId) { 
-					var DokumentGelöscht;
-					var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var DokumentGelöscht, viewname;
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
-							var i;
-							var ArtId;
+							var i, ArtId;
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
 								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht == false) {
+								if (DokumentGelöscht === false) {
 									return false;
 								}
 							}
@@ -380,9 +381,11 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
-					if ($("input#rName").val() == "") {
+					if (!$("input#rName").val()) {
 						melde("Bitte Raumnamen eingeben");
-						document.getElementById("rName").focus();
+						setTimeout(function() { 
+							$('#rName').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
 					}
 					$db = $.couch.db("evab");
@@ -411,7 +414,8 @@
 
 				function speichereRaumfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var viewname;
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -435,7 +439,8 @@
 
 				function speichereRaumfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var viewname;
+					viewname = 'evab/hZeitIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -459,7 +464,8 @@
 
 				function speichereRaumfeldInOrten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
-					var viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
+					var viewname;
+					viewname = 'evab/hOrtIdVonRaum?startkey=["' + RaumId + '"]&endkey=["' + RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -482,7 +488,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu(thiz){
+				function erstelleMenu(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -579,15 +585,11 @@
 				}
 
 				function nächsterVorigerRaum_2(IdAktuell, NächsterOderVoriger) {
-					var i;
-					var RaumIdAktuell;
-					var RaumIdNächster;
-					var RaumIdVoriger;
-					var AnzRaum;
+					var i, RaumIdAktuell, RaumIdNächster, RaumIdVoriger, AnzRaum;
 					for (i in RaumListe.rows) {
 						RaumIdAktuell = RaumListe.rows[i].value._id;
-						var AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (RaumIdAktuell == IdAktuell) {
+						AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						if (RaumIdAktuell === IdAktuell) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (i < AnzRaum) {

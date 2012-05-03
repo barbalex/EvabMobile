@@ -123,7 +123,7 @@
 				});
 
 				//Menü aufbauen
-				function erstelleMenu_hal(thiz){
+				function erstelleMenu_hal(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -215,7 +215,7 @@
 					}
 
 					Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
-					if (anzArt === 1){
+					if (anzArt === 1) {
 						Titel2 = " Art";
 					}
 					$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);

@@ -136,7 +136,7 @@
 						//Nur eigene und offizielle Felder berücksichtigen
 						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
-							if (Feld.Hierarchiestufe == "Zeit" && Feld.FeldName != "zDatum" && Feld.FeldName != "zUhrzeit") {
+							if (Feld.Hierarchiestufe === "Zeit" && Feld.FeldName !== "zDatum" && Feld.FeldName !== "zUhrzeit") {
 								anzFelder += 1;
 								FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
 								ListItem = "\n\t\t\<label for='";
@@ -152,8 +152,8 @@
 								ListItem += "' value='";
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
-								if(Feld.SichtbarImModusHierarchisch) {
-									if(Feld.SichtbarImModusHierarchisch.indexOf(Username) != -1){
+								if (Feld.SichtbarImModusHierarchisch) {
+									if (Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}

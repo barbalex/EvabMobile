@@ -75,8 +75,7 @@
 				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Link zum Ort in Navbar und Titelleiste setzen
-				var url = "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
-				$("[name='hOrtLink']").attr('href', url);
+				$("[name='hOrtLink']").attr('href', "hOrtEdit.html?id=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId);
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
@@ -85,7 +84,8 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".Zeit", function () {
-					var ZeitId = $(this).attr('ZeitId');
+					var ZeitId;
+					ZeitId = $(this).attr('ZeitId');
 					window.open("hArtListe.html?id=" + ZeitId + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId, target = "_self");
 				});
 
@@ -107,12 +107,13 @@
 				});
 
 				//Menü aufbauen
-				function erstelleMenu(thiz){
+				function erstelleMenu(thiz) {
+					var zurueck;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
-					var zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
+					zurueck = "hZeitListe.html?OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
@@ -177,29 +178,26 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
 						success: function (data) {
-							var i;
-							var anzZeit = 0;
-							var Zeit;
-							var externalPage;
-							var listItem;
-							var ListItemContainer = "";
+							var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
+							anzZeit = 0;
+							ListItemContainer = "";
 							for (i in data.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
 								anzZeit += 1;
 							}
 
-							var Titel2 = " Zeiten";                  //Im Titel der Seite die Anzahl Zeiten anzeigen
-							if (anzZeit == 1){
+							Titel2 = " Zeiten";                  //Im Titel der Seite die Anzahl Zeiten anzeigen
+							if (anzZeit === 1) {
 								Titel2 = " Zeit";
 							}
 							$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
-							if (anzZeit == 0) {
+							if (anzZeit === 0) {
 								ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
 							} else {
 								for (i in data.rows) {
 									Zeit = data.rows[i].value;
 									key = data.rows[i].key;
-									var zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
+									zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 									externalPage = "hZeitEdit.html?id=" + Zeit._id + "&OrtId=" + OrtId + "&RaumId=" + RaumId + "&ProjektId=" + ProjektId;
 									listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
 									ListItemContainer += listItem;
@@ -213,6 +211,5 @@
 			});	
 		</script>
 	</div>
-
   </body>
 </html>
