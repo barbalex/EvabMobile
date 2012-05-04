@@ -62,32 +62,23 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim allerersten Aufruf muss die ZeitId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
 				//ZeitId ist dann undefined und sessionStorage.ZeitId ist null
-				if (typeof ZeitId === "undefined") {
-					if (typeof sessionStorage.ZeitId === "undefined" || !sessionStorage.ZeitId) {
-						ZeitId = get_url_param("id");
-						erstinitiierehBeobListe(ZeitId);
-					} else {
-						ZeitId = sessionStorage.ZeitId;
-					}
+				if (typeof sessionStorage.ZeitId === "undefined" || !sessionStorage.ZeitId) {
+					holeSessionStorageAusDb("hBeobListe");
+				} else {
+					initiierehBeobListe();
 				}
-				OrtId = sessionStorage.OrtId;
-				RaumId = sessionStorage.RaumId;
-				ProjektId = sessionStorage.ProjektId;
-				
-				erstelleArtliste();
-
-				speichereLetzteUrl();
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + sessionStorage.OrtId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
 				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + sessionStorage.ZeitId);
@@ -112,11 +103,11 @@
 				});
 
 				function öffneArtgruppenliste_hal() {
-					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hArtListe !== "undefined") {
-						hArtListe = undefined;
+					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof hBeobListe !== "undefined") {
+						hBeobListe = undefined;
 					}
-					sessionStorage.removeItem("hArtListe");
+					sessionStorage.removeItem("hBeobListe");
 					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe", target = "_self");
 				}
 
@@ -190,64 +181,6 @@
 				            }
 				    	}
 				  	})
-				}
-				
-			  	function erstelleArtliste() {
-			  		$("#Arten").empty();
-			  		//hat hArtEdit.html eine hArtListe übergeben?
-					if (typeof sessionStorage.hArtListe !== "undefined" && sessionStorage.hArtListe) {
-						//Objekte werden als Strings übergeben, müssen geparst werden
-						hArtListe = JSON.parse(sessionStorage.hArtListe);
-						erstelleArtliste_2();
-					} else {
-				  		if (typeof Username === "undefined" || !Username) {
-							pruefeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
-							success: function (data) {
-								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-								hArtListe = data;
-								sessionStorage.hArtListe = JSON.stringify(hArtListe);
-								erstelleArtliste_2();
-							}
-						});
-					}
-				}
-
-				function erstelleArtliste_2() {
-					var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
-					anzArt = 0;
-					ListItemContainer = "";
-					for (i in hArtListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
-						anzArt += 1;
-					}
-
-					Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
-					if (anzArt === 1) {
-						Titel2 = " Art";
-					}
-					$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
-
-					if (anzArt === 0) {
-						ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
-					} else {
-						for (i in hArtListe.rows) {                //Liste aufbauen
-							hBeob = hArtListe.rows[i].value;
-							key = hArtListe.rows[i].key;
-							aArtGruppe = hBeob.aArtGruppe;
-							ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
-							bArtName = key[2];
-							listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
-								"<a href=\"#\">" +
-								"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-								"<h3>" + bArtName + "<\/h3>" +
-								"<\/a> <\/li>";
-							ListItemContainer += listItem;
-						}
-					}
-					$("#Arten").html(ListItemContainer);
-					$("#Arten").listview("refresh");
 				}
 			});
 		</script>

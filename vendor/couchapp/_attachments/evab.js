@@ -313,11 +313,11 @@ function speichereNeueBeob_03(doc) {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
 						sessionStorage.hBeobId = hBeobId;
-						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof hArtListe !== "undefined") {
-							hArtListe = undefined;
+						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof hBeobListe !== "undefined") {
+							hBeobListe = undefined;
 						}
-						sessionStorage.removeItem("hArtListe");
+						sessionStorage.removeItem("hBeobListe");
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#hArtEditPage").length > 0) {
 							$.mobile.changePage($("#hArtEditPage"));
@@ -402,11 +402,11 @@ $db.openDoc(BeobId, {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
 						sessionStorage.hBeobId = hBeobId;
-						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof hArtListe !== "undefined") {
-							hArtListe = undefined;
+						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof hBeobListe !== "undefined") {
+							hBeobListe = undefined;
 						}
-						sessionStorage.removeItem("hArtListe");
+						sessionStorage.removeItem("hBeobListe");
 						if ($('#hArtEditPage').length > 0) {
 							$.mobile.changePage($('#hArtEditPage'));
 							initiierehBeobEdit(BeobId);
@@ -1262,13 +1262,13 @@ function initiiereZeitEdit_2(Zeit) {
 	speichereLetzteUrl();
 }
 
-function initiiereZeitListe(OrtId) {
-	erstelleZeitListe(OrtId);
+function initiiereZeitListe() {
+	erstelleZeitListe();
 	speichereLetzteUrl();
 }
 
 //erstellt die Liste der Zeiten in Formular hZeitListe.html
-function erstelleZeitListe(OrtId) {
+function erstelleZeitListe() {
 		//hat hZeitEdit.html eine ZeitListe übergeben?
 	if (typeof sessionStorage.ZeitListe !== "undefined" && sessionStorage.ZeitListe) {
 		//Objekte werden als Strings übergeben, müssen geparst werden
@@ -1280,7 +1280,7 @@ function erstelleZeitListe(OrtId) {
 		}
 		$("#Zeiten").empty();
 		$db = $.couch.db("evab");
-		$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
+		$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				ZeitListe = data;
@@ -1365,33 +1365,6 @@ function erstinitiierehBeobListe(ZeitId) {
 			sessionStorage.OrtId = OrtId;
 			ZeitId = Zeit._id;
 			sessionStorage.ZeitId = ZeitId;
-		}
-	});
-}
-
-function erstinitiierehBeobEdit(BeobId) {
-	//hier werden Variablen gesetzt,
-	$db = $.couch.db("evab");
-	$db.openDoc(BeobId, {
-		success: function (Beob) {
-			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
-			//Variabeln bereitstellen
-			ProjektId = Beob.hProjektId;
-			sessionStorage.ProjektId = ProjektId;
-			RaumId = Beob.hRaumId;
-			sessionStorage.RaumId = RaumId;
-			OrtId = Beob.hOrtId;
-			sessionStorage.OrtId = OrtId;
-			ZeitId = Beob.hZeitId;
-			sessionStorage.ZeitId = ZeitId;
-			hBeobId = Beob._id;
-			sessionStorage.hBeobId = hBeobId;
-			aArtGruppe = Beob.aArtGruppe;
-			sessionStorage.aArtGruppe = aArtGruppe;
-			aArtName = Beob.aArtName;
-			sessionStorage.aArtName = aArtName;
-			aArtId = Beob.aArtId;
-			sessionStorage.aArtId = aArtId;
 		}
 	});
 }
@@ -1526,6 +1499,70 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	}
 	return HtmlContainer;
 }
+
+function initiierehBeobListe() {
+	erstellehBeobListe();
+	speichereLetzteUrl();
+}
+
+function erstellehBeobListe() {
+	$("#Arten").empty();
+	//hat hArtEdit.html eine hBeobListe übergeben?
+	if (typeof sessionStorage.hBeobListe !== "undefined" && sessionStorage.hBeobListe) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		hBeobListe = JSON.parse(sessionStorage.hBeobListe);
+		erstellehBeobListe_2();
+	} else {
+  		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$db = $.couch.db("evab");
+		$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
+			success: function (data) {
+				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+				hBeobListe = data;
+				sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
+				erstellehBeobListe_2();
+			}
+		});
+	}
+}
+
+function erstellehBeobListe_2() {
+	var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
+	anzArt = 0;
+	ListItemContainer = "";
+	for (i in hBeobListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
+		anzArt += 1;
+	}
+
+	Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
+	if (anzArt === 1) {
+		Titel2 = " Art";
+	}
+	$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
+
+	if (anzArt === 0) {
+		ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
+	} else {
+		for (i in hBeobListe.rows) {                //Liste aufbauen
+			hBeob = hBeobListe.rows[i].value;
+			key = hBeobListe.rows[i].key;
+			aArtGruppe = hBeob.aArtGruppe;
+			ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+			bArtName = key[2];
+			listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+				"<a href=\"#\">" +
+				"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+				"<h3>" + bArtName + "<\/h3>" +
+				"<\/a> <\/li>";
+			ListItemContainer += listItem;
+		}
+	}
+	$("#Arten").html(ListItemContainer);
+	$("#Arten").listview("refresh");
+}
+
 
 //generiert das Html für ein Formularelement
 //erwartet diverse Übergabewerte
@@ -2009,13 +2046,16 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 			}
 			switch(AufrufendeSeite) {
 				case "hBeobEdit":
-
+					initiierehBeobEdit(sessionStorage.hBeobId);
+				break;
+				case "hBeobListe":
+					initiierehBeobListe();
 				break;
 				case "hZeitEdit":
 					initiiereZeitEdit(sessionStorage.ZeitId);
 				break;
 				case "hZeitListe":
-					initiiereZeitListe(sessionStorage.OrtId);
+					initiiereZeitListe();
 				break;
 				case "hOrtEdit":
 

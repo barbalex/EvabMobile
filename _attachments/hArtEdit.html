@@ -92,35 +92,21 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
-
-				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
-				//hBeobId ist dann undefined und sessionStorage.hBeobId ist null
-				if (typeof hBeobId === "undefined") {
-					if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
-						hBeobId = get_url_param("id");
-						erstinitiierehBeobEdit(hBeobId);
-					} else {
-						hBeobId = sessionStorage.hBeobId;
-					}
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.hBeobId existiert und ungleich null ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (typeof sessionStorage.hBeobId !== "undefined" && sessionStorage.hBeobId) {
+					initiierehBeobEdit(sessionStorage.hBeobId);
 				}
-				initiierehBeobEdit(hBeobId);
 			});
 
 			$("#hArtEditPage").on("pageinit", function () {
-				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
 				//hBeobId ist dann undefined und sessionStorage.hBeobId ist null
-				if (typeof hBeobId === "undefined") {
-					if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
-						hBeobId = get_url_param("id");
-						erstinitiierehBeobEdit(hBeobId);
-					} else {
-						hBeobId = sessionStorage.hBeobId;
-					}
+				if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
+					holeSessionStorageAusDb("hBeobEdit");
 				}
-				ZeitId = sessionStorage.ZeitId;
-				OrtId = sessionStorage.OrtId;
-				RaumId = sessionStorage.RaumId;
-				ProjektId = sessionStorage.ProjektId;
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
@@ -263,12 +249,12 @@
 				});
 
 				function zuArtgruppenliste(Status) {
-					//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					var link;
-					if (typeof hArtListe !== "undefined") {
-						hArtListe = undefined;
+					if (typeof hBeobListe !== "undefined") {
+						hBeobListe = undefined;
 					}
-					sessionStorage.removeItem("hArtListe");
+					sessionStorage.removeItem("hBeobListe");
 					link = "Von=hArtEdit";
 					if (Status === 'neu') {
 						link += "&Status=neu";
@@ -412,11 +398,11 @@
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									if (typeof hArtListe !== "undefined") {
-										hArtListe = undefined;
+									//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+									if (typeof hBeobListe !== "undefined") {
+										hBeobListe = undefined;
 									}
-									sessionStorage.removeItem("hArtListe");
+									sessionStorage.removeItem("hBeobListe");
 									sessionStorage.removeItem("hBeobId");
 									//melde("Art gelöscht");
 									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
@@ -462,15 +448,15 @@
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
-					//prüfen, ob hArtListe schon existiert
+					//prüfen, ob hBeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof hArtListe !== "undefined") {
-						//hArtListe liegt als Variable vor
+					if (typeof hBeobListe !== "undefined") {
+						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 					} else {
 						//hat hArtListe.html eine ArtListe übergeben?
-						if (typeof sessionStorage.hArtListe !== "undefined" && sessionStorage.hArtListe) {
-							hArtListe = JSON.parse(sessionStorage.hArtListe);
+						if (typeof sessionStorage.hBeobListe !== "undefined" && sessionStorage.hBeobListe) {
+							hBeobListe = JSON.parse(sessionStorage.hBeobListe);
 							nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 						} else {
 							//keine Ortliste vorhanden
@@ -482,8 +468,8 @@
 							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
 								success: function (data) {
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-									hArtListe = data;
-									sessionStorage.hArtListe = JSON.stringify(hArtListe);
+									hBeobListe = data;
+									sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
 									nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 								}
 							});
@@ -493,14 +479,14 @@
 
 				function nächsteVorigeArt_2(IdAktuell, NächsteOderVorige) {
 					var i, ArtIdAktuell, ArtIdNächste, ArtIdVorige, AnzArt;
-					for (i in hArtListe.rows) {
-						ArtIdAktuell = hArtListe.rows[i].value._id;
-						AnzArt = hArtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					for (i in hBeobListe.rows) {
+						ArtIdAktuell = hBeobListe.rows[i].value._id;
+						AnzArt = hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ArtIdAktuell === IdAktuell) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzArt) {
-									hBeobId = hArtListe.rows[parseInt(i)+1].value._id;
+									hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
 									melde("Das ist die letzte Art");
@@ -508,7 +494,7 @@
 								break;
 							case "vorige":
 								if (i > 0) {
-									hBeobId = hArtListe.rows[i-1].value._id;
+									hBeobId = hBeobListe.rows[i-1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
 									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
