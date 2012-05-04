@@ -54,8 +54,11 @@
 				$(":jqmData(role='page')").on("pageinit", function () {
 					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 					//wo sie von speichereLetzteUrl gespeichert wurde
-					//ProjektId ist dann undefined und sessionStorage.ProjektId ist null
-					if (typeof sessionStorage.Projektliste === "undefined" || !sessionStorage.Projektliste) {
+					//sessionStorage.Projektliste ist dann null und sessionStorage.length 1
+					//sessionStorage.Projektliste ist auch null, wenn die Projektliste gelöscht wurde
+					//holeSessionStorageAusDb stellt die alte sessionStorage.Projektliste wieder her
+					//darum hier die sessionStorage.length prüfen
+					if (sessionStorage.length === 1) {
 						holeSessionStorageAusDb("hProjektListe");
 					} else {
 						initiiereProjektliste();
@@ -77,7 +80,7 @@
 						var ProjektId;
 						ProjektId = $(this).attr('ProjektId');
 						sessionStorage.ProjektId = ProjektId;
-						window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
+						window.open("hRaumListe.html", target = "_self");
 					});
 
 					$("#Projekte").on("click", ".Projekt", function (event) {
@@ -85,7 +88,7 @@
 						event.preventDefault();
 						ProjektId = $(this).attr('ProjektId');
 						sessionStorage.ProjektId = ProjektId;
-						window.open("hProjektEdit.html?id=" + ProjektId, target = "_self");
+						window.open("hProjektEdit.html", target = "_self");
 					});
 
 					$("#Projekte").on("swipeleft", ".erste", function () {
@@ -223,6 +226,7 @@
 										var lat2 = Ort.oLatitudeDecDeg;
 										var lng2 = Ort.oLongitudeDecDeg;
 										var externalPage = "hOrtEdit.html?OrtId=" + hOrtId;
+										//var externalPage = "hOrtEdit.html";
 										var latlng2 = new google.maps.LatLng(lat2, lng2);
 										if (anzOrt === 1) {
 											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern

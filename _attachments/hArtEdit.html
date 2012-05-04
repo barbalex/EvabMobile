@@ -135,7 +135,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(hBeobId);
+						speichereAnhänge(sessionStorage.hBeobId);
 					}
 				});
 
@@ -154,7 +154,7 @@
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#hArtEditForm").on("click", "#aArtName", function (event) {
 					event.preventDefault();
-					zuArtliste(aArtGruppe);
+					zuArtliste(sessionStorage.aArtGruppe);
 				});
 
 				//sichtbare Felder wählen
@@ -191,27 +191,27 @@
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#MenuhBeobEdit", function (event) {
 					event.preventDefault();
-					erstelleMenu_hae(this, aArtGruppe);
+					erstelleMenu_hae(this, sessionStorage.aArtGruppe);
 				});
 
 				$(document).on("swipeleft", function () {
-					nächsteVorigeArt(hBeobId, "nächste");
+					nächsteVorigeArt("nächste");
 				});
 
 				$(document).on("swiperight", function () {
-					nächsteVorigeArt(hBeobId, "vorige");
+					nächsteVorigeArt("vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#hArtEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsteVorigeArt(hBeobId, "vorige");
+					nächsteVorigeArt("vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#hArtEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsteVorigeArt(hBeobId, "nächste");
+					nächsteVorigeArt("nächste");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -220,12 +220,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsteVorigeArt(hBeobId, "vorige");
+							nächsteVorigeArt("vorige");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsteVorigeArt(hBeobId, "nächste");
+							nächsteVorigeArt("nächste");
 							e.preventDefault();
 						}
 					}
@@ -335,11 +335,11 @@
 						        	if ($('#ArtEditPage').length > 0) {
 						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html?id=" + aArtId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", "ArtEdit.html?id=" + sessionStorage.aArtId); //funktioniert in IE erst ab 10!
 						        	} else {
 						        		$.mobile.changePage("ArtEdit.html", {
 						        			type: "get",
-						        			data: "id=" + aArtId
+						        			data: "id=" + sessionStorage.aArtId
 						        		});
 						        	}
 				        		},
@@ -355,7 +355,7 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + sessionStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -431,9 +431,9 @@
 							} else if (hArt[Feldname]) {
 								delete hArt[Feldname];
 							}
-							hArt.aArtId = aArtId;
-							hArt.aArtName = aArtName;
-							hArt.aArtGruppe = aArtGruppe;
+							hArt.aArtId = sessionStorage.aArtId;
+							hArt.aArtName = sessionStorage.aArtName;
+							hArt.aArtGruppe = sessionStorage.aArtGruppe;
 							$db.saveDoc(hArt, {
 								error: function () {
 									melde("Fehler: Art nicht gespeichert");
@@ -447,17 +447,17 @@
 				//vorige der ersten => ArtListe
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-				function nächsteVorigeArt(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeArt(NächsteOderVorige) {
 					//prüfen, ob hBeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof hBeobListe !== "undefined") {
 						//hBeobListe liegt als Variable vor
-						nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
 						//hat hArtListe.html eine ArtListe übergeben?
 						if (typeof sessionStorage.hBeobListe !== "undefined" && sessionStorage.hBeobListe) {
 							hBeobListe = JSON.parse(sessionStorage.hBeobListe);
-							nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+							nächsteVorigeArt_2(NächsteOderVorige);
 						} else {
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
@@ -470,19 +470,19 @@
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 									hBeobListe = data;
 									sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
-									nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
+									nächsteVorigeArt_2(NächsteOderVorige);
 								}
 							});
 						}
 					}
 				}
 
-				function nächsteVorigeArt_2(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeArt_2(NächsteOderVorige) {
 					var i, ArtIdAktuell, ArtIdNächste, ArtIdVorige, AnzArt;
 					for (i in hBeobListe.rows) {
 						ArtIdAktuell = hBeobListe.rows[i].value._id;
 						AnzArt = hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ArtIdAktuell === IdAktuell) {
+						if (ArtIdAktuell === sessionStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzArt) {

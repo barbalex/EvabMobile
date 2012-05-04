@@ -169,7 +169,7 @@
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function (event) {
 					event.preventDefault();
-					erstelleNeuenOrt(sessionStorage.ProjektId, sessionStorage.RaumId);
+					erstelleNeuenOrt();
 				});
 
 				//sichtbare Felder wählen
@@ -349,23 +349,23 @@
 				}
 
 				$(document).on("swipeleft", "#OrtEditPage", function () {
-					nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
+					nächsterVorigerOrt("nächster");
 				});
 
 				$(document).on("swiperight", "#OrtEditPage", function () {
-					nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
+					nächsterVorigerOrt("voriger");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#OrtEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
+					nächsterVorigerOrt("voriger");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#OrtEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
+					nächsterVorigerOrt("nächster");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -374,12 +374,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
+							nächsterVorigerOrt("voriger");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
+							nächsterVorigerOrt("nächster");
 							e.preventDefault();
 						}
 					}
@@ -427,7 +427,7 @@
 							}
 							// First open doc based on ID in order to get full document
 							$db = $.couch.db("evab");
-							return $db.openDoc(OrtId, {
+							return $db.openDoc(sessionStorage.OrtId, {
 								success: function (document) {
 									// lösche Ort
 									return $db.removeDoc(document, {
@@ -542,7 +542,7 @@
 					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(OrtId, {
+					$db.openDoc(sessionStorage.OrtId, {
 						success: function (hOrt) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
@@ -705,17 +705,17 @@
 				//voriger des ersten => OrtListe
 				//nächster des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-				function nächsterVorigerOrt(IdAktuell, NächsterOderVoriger) {
+				function nächsterVorigerOrt(NächsterOderVoriger) {
 					//prüfen, ob OrtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof OrtListe !== "undefined") {
 						//Ortliste liegt als Variable vor
-						nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
 						//hat hOrtListe.html eine OrtListe übergeben?
 						if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
 							OrtListe = JSON.parse(sessionStorage.OrtListe);
-							nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+							nächsterVorigerOrt_2(NächsterOderVoriger);
 						} else {
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
@@ -729,19 +729,19 @@
 									OrtListe = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 									sessionStorage.OrtListe = JSON.stringify(OrtListe);
-									nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
+									nächsterVorigerOrt_2(NächsterOderVoriger);
 								}
 							});
 						}
 					}
 				}
 
-				function nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger) {
-					var i, OrtIdAktuell, OrtIdNächster, OrtIdVoriger, AnzOrt;
+				function nächsterVorigerOrt_2(NächsterOderVoriger) {
+					var i, OrtIdAktuell, OrtIdNächster, OrtIdVoriger, AnzOrt, OrtId;
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
 						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (OrtIdAktuell === IdAktuell) {
+						if (OrtIdAktuell === sessionStorage.OrtId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (i < AnzOrt) {

@@ -78,7 +78,7 @@
 				//neuen Ort erstellen
 				$("body").on("click", ".hol_NeuLink", function (event) {
 					event.preventDefault();
-					erstelleNeuenOrt(sessionStorage.ProjektId, sessionStorage.RaumId);
+					erstelleNeuenOrt();
 				});
 
 				//Menu aufbauen
@@ -103,7 +103,7 @@
 				});
 
 				$("#Orte").on("swipeleft", ".erste", function () {
-					erstelleNeuenOrt(sessionStorage.ProjektId, sessionStorage.RaumId);
+					erstelleNeuenOrt();
 				});
 
 				$(document).on("swiperight", "#hOrtListePage", function () {

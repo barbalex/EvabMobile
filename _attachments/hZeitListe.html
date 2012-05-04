@@ -77,7 +77,7 @@
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
 					event.preventDefault();
-					erstelleNeueZeit(sessionStorage.ProjektId, sessionStorage.RaumId, sessionStorage.OrtId); 
+					erstelleNeueZeit(); 
 				});
 
 				$("#Zeiten").on("swipeleft", ".Zeit", function () {
@@ -96,7 +96,7 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function () {
-					erstelleNeueZeit(sessionStorage.ProjektId, sessionStorage.RaumId, sessionStorage.OrtId);
+					erstelleNeueZeit();
 				});
 
 				$(document).on("swiperight", function () {

@@ -449,7 +449,7 @@ function erstelleMenuFürFelder(thiz, Pfad) {
   	})
 }
 
-function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
+function erstelleNeueZeit() {
 //Neue Zeiten werden erstellt
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
@@ -460,9 +460,9 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 	doc = {};
 	doc.Typ = "hZeit";
 	doc.User = Username;
-	doc.hProjektId = hProjektId;
-	doc.hRaumId = hRaumId;
-	doc.hOrtId = hOrtId;
+	doc.hProjektId = sessionStorage.ProjektId;
+	doc.hRaumId = sessionStorage.RaumId;
+	doc.hOrtId = sessionStorage.OrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	//Daten aus höheren Hierarchiestufen ergänzen
@@ -519,7 +519,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 //erstellt einen neuen Ort
 //wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 //erwartet Username, hProjektId, hRaumId
-function erstelleNeuenOrt(hProjektId, hRaumId) {
+function erstelleNeuenOrt() {
 	var doc;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
@@ -527,8 +527,8 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 	doc = {};
 	doc.Typ = "hOrt";
 	doc.User = Username;
-	doc.hProjektId = hProjektId;
-	doc.hRaumId = hRaumId;
+	doc.hProjektId = sessionStorage.ProjektId;
+	doc.hRaumId = sessionStorage.RaumId;
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
 	$db.openDoc(doc.hRaumId, {
@@ -570,7 +570,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 	});
 }
 
-function erstelleNeuenRaum(hProjektId) {
+function erstelleNeuenRaum() {
 	var doc;
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
@@ -578,10 +578,10 @@ function erstelleNeuenRaum(hProjektId) {
 	doc = {};
 	doc.Typ = "hRaum";
 	doc.User = Username;
-	doc.hProjektId = hProjektId;
+	doc.hProjektId = sessionStorage.ProjektId;
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
-	$db.openDoc(hProjektId, {
+	$db.openDoc(sessionStorage.ProjektId, {
 		success: function (Projekt) {
 			for (i in Projekt) {
 				//ein paar Felder wollen wir nicht
@@ -628,7 +628,7 @@ function erstelleNeuesProjekt() {
 			if (typeof Projektliste !== "undefined") {
 				Projektliste = undefined;
 			}
-			sessionStorage.removeItem("Projektliste");
+			delete sessionStorage.Projektliste;
 			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 		},
 		error: function () {
@@ -1008,11 +1008,7 @@ function initiiereProjektliste() {
 function erstelleProjektliste() {
 	$("#Projekte").empty();
 	//hat ProjektEdit.html eine Projektliste übergeben?
-	if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
-		Projektliste = JSON.parse(sessionStorage.Projektliste);
-		erstelleProjektliste_2();
-	} else {
+	if (!sessionStorage.Projektliste) {
 		if (typeof Username === "undefined" || !Username) {
 			pruefeAnmeldung();
 		}
@@ -1026,6 +1022,10 @@ function erstelleProjektliste() {
 				erstelleProjektliste_2();
 			}
 		});
+	} else {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		Projektliste = JSON.parse(sessionStorage.Projektliste);
+		erstelleProjektliste_2();
 	}
 }
 

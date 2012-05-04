@@ -154,7 +154,7 @@
 					if (typeof ZeitListe !== "undefined") {
 						ZeitListe = undefined;
 					}
-					erstelleNeueZeit(sessionStorage.ProjektId, sessionStorage.RaumId, sessionStorage.OrtId); 
+					erstelleNeueZeit(); 
 				});
 
 				//sichtbare Felder wählen
@@ -202,23 +202,23 @@
 				});
 
 				$(document).on("swipeleft", '#ZeitEditPage', function () {
-					nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
+					nächsteVorigeZeit("nächste");
 				});
 
 				$(document).on("swiperight", '#ZeitEditPage', function () {
-					nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
+					nächsteVorigeZeit("vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#ZeitEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
+					nächsteVorigeZeit("vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#ZeitEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
+					nächsteVorigeZeit("nächste");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -227,12 +227,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
+							nächsteVorigeZeit("vorige");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
+							nächsteVorigeZeit("nächste");
 							e.preventDefault();
 						}
 					}
@@ -471,7 +471,7 @@
 				//vorige der ersten => ZeitListe
 				//nächste der letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeZeit(NächsteOderVorige) {
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof sessionStorage.ZeitListe === "undefined" || !sessionStorage.ZeitListe) {
@@ -483,21 +483,21 @@
 							success: function (data) {
 								ZeitListe = data;
 								sessionStorage.ZeitListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
+								nächsteVorigeZeit_2(NächsteOderVorige);
 							}
 						});
 					} else {
 						ZeitListe = JSON.parse(sessionStorage.ZeitListe);
-						nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
+						nächsteVorigeZeit_2(NächsteOderVorige);
 					}
 				}
 
-				function nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeZeit_2(NächsteOderVorige) {
 					var i, ZeitIdAktuell, ZeitIdNächste, ZeitIdVorige, AnzZeit, ZeitId;
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
 						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ZeitIdAktuell === IdAktuell) {
+						if (ZeitIdAktuell === sessionStorage.ZeitId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzZeit) {

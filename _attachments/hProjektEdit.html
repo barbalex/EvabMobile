@@ -278,7 +278,7 @@
 								} else {
 									Rückmeldung += "\rzugehörige Räume gelöscht";
 									$db = $.couch.db("evab");
-									return $db.openDoc(ProjektId, {
+									return $db.openDoc(sessionStorage.ProjektId, {
 										success: function (document) {
 											// lösche Projekt
 											return $db.removeDoc(document, {
@@ -287,8 +287,8 @@
 													if (typeof Projektliste !== "undefined") {
 														Projektliste = undefined;
 													}
-													sessionStorage.removeItem("Projektliste");
-													sessionStorage.removeItem("ProjektId");
+													delete sessionStorage.Projektliste;
+													delete sessionStorage.ProjektId;
 													//Rückmeldung += "\rProjekt gelöscht";
 													//melde(Rückmeldung);
 													window.open('hProjektListe.html', target = '_self');
@@ -417,7 +417,7 @@
 					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(ProjektId, {
+					$db.openDoc(sessionStorage.ProjektId, {
 						success: function (hProjekt) {
 							if (Feldwert) {
 								hProjekt[Feldname] = Feldwert;
