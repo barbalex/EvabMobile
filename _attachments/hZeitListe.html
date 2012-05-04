@@ -62,7 +62,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//ZeitId ist dann undefined und sessionStorage.getItem("ZeitId") ist null
+				//ZeitId ist dann undefined und sessionStorage.ZeitId ist null
 				if (typeof sessionStorage.OrtId === "undefined" || !sessionStorage.OrtId) {
 					holeSessionStorageAusDb("hZeitListe");
 				} else {

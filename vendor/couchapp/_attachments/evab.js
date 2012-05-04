@@ -312,7 +312,7 @@ function speichereNeueBeob_03(doc) {
 					if (doc.Typ === 'hArt') {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
-						sessionStorage.setItem("hBeobId", hBeobId);
+						sessionStorage.hBeobId = hBeobId;
 						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof hArtListe !== "undefined") {
 							hArtListe = undefined;
@@ -335,7 +335,7 @@ function speichereNeueBeob_03(doc) {
 					} else {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
-						sessionStorage.setItem("BeobId", BeobId);
+						sessionStorage.BeobId = BeobId;
 						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof BeobListe !== "undefined") {
 							BeobListe = undefined;
@@ -383,7 +383,7 @@ $db.openDoc(BeobId, {
 					if (Von === "BeobListe" || Von === "BeobEdit") {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
-						sessionStorage.setItem("BeobId", BeobId);
+						sessionStorage.BeobId = BeobId;
 						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof BeobListe !== "undefined") {
 							BeobListe = undefined;
@@ -401,7 +401,7 @@ $db.openDoc(BeobId, {
 					} else {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
-						sessionStorage.setItem("hBeobId", hBeobId);
+						sessionStorage.hBeobId = hBeobId;
 						//Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof hArtListe !== "undefined") {
 							hArtListe = undefined;
@@ -496,7 +496,7 @@ function erstelleNeueZeit(hProjektId, hRaumId, hOrtId) {
 								success: function (Zeit) {
 									//Variabeln verfügbar machen
 									ZeitId = Zeit.id;
-									sessionStorage.setItem("ZeitId", ZeitId);
+									sessionStorage.ZeitId = ZeitId;
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 									if (typeof ZeitListe !== "undefined") {
 										ZeitListe = undefined;
@@ -552,7 +552,7 @@ function erstelleNeuenOrt(hProjektId, hRaumId) {
 						success: function (data) {
 							//Variabeln verfügbar machen
 							OrtId = data.id;
-							sessionStorage.setItem("OrtId", OrtId);
+							sessionStorage.OrtId = OrtId;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							if (typeof OrtListe !== "undefined") {
 								OrtListe = undefined;
@@ -594,7 +594,7 @@ function erstelleNeuenRaum(hProjektId) {
 				success: function (data) {
 					//Variabeln verfügbar machen
 					RaumId = data.id;
-					sessionStorage.setItem("RaumId", RaumId);
+					sessionStorage.RaumId = RaumId;
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof RaumListe !== "undefined") {
 						RaumListe = undefined;
@@ -623,7 +623,7 @@ function erstelleNeuesProjekt() {
 		success: function (data) {
 			//Variabeln verfügbar machen
 			ProjektId = data.id;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			if (typeof Projektliste !== "undefined") {
 				Projektliste = undefined;
@@ -641,20 +641,20 @@ function öffneMeineEinstellungen(Pfad) {
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
-	if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
+	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + Username + '"', {
 			success: function (data) {
 				var User;
 				User = data.rows[0].value;
 				UserId = data.rows[0].value._id;
-				sessionStorage.setItem("UserId", UserId);
-				sessionStorage.setItem("Autor", User.Autor);
+				sessionStorage.UserId = UserId;
+				sessionStorage.Autor = User.Autor;
 				window.open(Pfad + "_show/UserEdit/" + UserId, target = "_self");
 			}
 		});
 	} else {
-		window.open(Pfad + "_show/UserEdit/" + sessionStorage.getItem("UserId"), target = "_self");
+		window.open(Pfad + "_show/UserEdit/" + sessionStorage.UserId, target = "_self");
 	}
 }
 
@@ -786,13 +786,13 @@ function initiiereBeobEdit_2(id, Feldliste) {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			BeobId = Beob._id;
-			sessionStorage.setItem("BeobId", BeobId);
+			sessionStorage.BeobId = BeobId;
 			aArtGruppe = Beob.aArtGruppe;
-			sessionStorage.setItem("aArtGruppe", aArtGruppe);
+			sessionStorage.aArtGruppe = aArtGruppe;
 			aArtName = Beob.aArtName;
-			sessionStorage.setItem("aArtName", aArtName);
+			sessionStorage.aArtName = aArtName;
 			aArtId = Beob.aArtId;
-			sessionStorage.setItem("aArtId", aArtId);
+			sessionStorage.aArtId = aArtId;
 			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 			setzeFixeFelderInBeobEdit(Beob);
@@ -911,7 +911,7 @@ function initiiereProjektEdit(ProjektId) {
 			$("#pName").val(Projekt.pName);
 			//Variabeln bereitstellen
 			ProjektId = Projekt._id;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteProjektEdit !== "undefined") {
@@ -1007,9 +1007,9 @@ function initiiereRaumEdit(RaumId) {
 			$("#rName").val(Raum.rName);
 			//Variabeln bereitstellen
 			ProjektId = Raum.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Raum._id;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteRaumEdit !== "undefined") {
@@ -1107,11 +1107,11 @@ function initiiereOrtEdit(OrtId) {
 			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
 			//Variabeln bereitstellen
 			ProjektId = Ort.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Ort.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			OrtId = Ort._id;
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 			oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
@@ -1219,13 +1219,13 @@ function initiiereZeitEdit(ZeitId) {
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
 			//Variabeln bereitstellen
 			ProjektId = Zeit.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Zeit.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			OrtId = Zeit.hOrtId;
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			ZeitId = Zeit._id;
-			sessionStorage.setItem("ZeitId", ZeitId);
+			sessionStorage.ZeitId = ZeitId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteZeitEdit !== "undefined") {
@@ -1272,7 +1272,7 @@ function erstelleZeitListe(OrtId) {
 		//hat hZeitEdit.html eine ZeitListe übergeben?
 	if (typeof sessionStorage.ZeitListe !== "undefined" && sessionStorage.ZeitListe) {
 		//Objekte werden als Strings übergeben, müssen geparst werden
-		ZeitListe = JSON.parse(sessionStorage.getItem("ZeitListe"));
+		ZeitListe = JSON.parse(sessionStorage.ZeitListe);
 		erstelleZeitListe_2();
 	} else {
   		if (typeof Username === "undefined" || !Username) {
@@ -1284,7 +1284,7 @@ function erstelleZeitListe(OrtId) {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				ZeitListe = data;
-				sessionStorage.setItem("ZeitListe", JSON.stringify(data));  //Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				sessionStorage.ZeitListe = JSON.stringify(data);  //Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				erstelleZeitListe_2();
 			}
 		});
@@ -1358,13 +1358,13 @@ function erstinitiierehBeobListe(ZeitId) {
 		success: function (Zeit) {
 			//Variabeln bereitstellen
 			ProjektId = Zeit.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Zeit.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			OrtId = Zeit.hOrtId;
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			ZeitId = Zeit._id;
-			sessionStorage.setItem("ZeitId", ZeitId);
+			sessionStorage.ZeitId = ZeitId;
 		}
 	});
 }
@@ -1377,21 +1377,21 @@ function erstinitiierehBeobEdit(BeobId) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			//Variabeln bereitstellen
 			ProjektId = Beob.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Beob.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			OrtId = Beob.hOrtId;
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			ZeitId = Beob.hZeitId;
-			sessionStorage.setItem("ZeitId", ZeitId);
+			sessionStorage.ZeitId = ZeitId;
 			hBeobId = Beob._id;
-			sessionStorage.setItem("hBeobId", hBeobId);
+			sessionStorage.hBeobId = hBeobId;
 			aArtGruppe = Beob.aArtGruppe;
-			sessionStorage.setItem("aArtGruppe", aArtGruppe);
+			sessionStorage.aArtGruppe = aArtGruppe;
 			aArtName = Beob.aArtName;
-			sessionStorage.setItem("aArtName", aArtName);
+			sessionStorage.aArtName = aArtName;
 			aArtId = Beob.aArtId;
-			sessionStorage.setItem("aArtId", aArtId);
+			sessionStorage.aArtId = aArtId;
 		}
 	});
 }
@@ -1410,21 +1410,21 @@ function initiierehBeobEdit(BeobId) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			//Variabeln bereitstellen
 			ProjektId = Beob.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
+			sessionStorage.ProjektId = ProjektId;
 			RaumId = Beob.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
+			sessionStorage.RaumId = RaumId;
 			OrtId = Beob.hOrtId;
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			ZeitId = Beob.hZeitId;
-			sessionStorage.setItem("ZeitId", ZeitId);
+			sessionStorage.ZeitId = ZeitId;
 			hBeobId = Beob._id;
-			sessionStorage.setItem("hBeobId", hBeobId);
+			sessionStorage.hBeobId = hBeobId;
 			aArtGruppe = Beob.aArtGruppe;
-			sessionStorage.setItem("aArtGruppe", aArtGruppe);
+			sessionStorage.aArtGruppe = aArtGruppe;
 			aArtName = Beob.aArtName;
-			sessionStorage.setItem("aArtName", aArtName);
+			sessionStorage.aArtName = aArtName;
 			aArtId = Beob.aArtId;
-			sessionStorage.setItem("aArtId", aArtId);
+			sessionStorage.aArtId = aArtId;
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
 			$("#aArtGruppe").val(aArtGruppe);
@@ -1930,7 +1930,7 @@ function speichereLetzteUrl() {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	if (typeof sessionStorage.getItem("Username") === ("undefined" || null)) {
+	if (typeof sessionStorage.Username === ("undefined" || null)) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
@@ -1938,7 +1938,7 @@ function speichereLetzteUrl() {
 		    success: function (session) {
 		    	if (session.userCtx.name !== (undefined || null)) {
 		        	Username = session.userCtx.name;
-		        	sessionStorage.setItem("Username", Username);
+		        	sessionStorage.Username = Username;
 		        	speichereLetzteUrl_2();
 		        } else {
 					window.open("index.html?Status=neu", target = "_self");
@@ -1957,21 +1957,21 @@ function speichereLetzteUrl_2() {
 	//nur speichern, wann anders als zuletzt
 	if (typeof LetzteUrl === "undefined" || LetzteUrl !== url) {
 		//UserId nur abfragen, wenn nicht schon erfolgt
-		if (typeof sessionStorage.getItem("UserId") === "undefined" || !sessionStorage.getItem("UserId")) {
-			$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
+		if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
+			$db.view('evab/User?key="' + sessionStorage.Username + '"', {
 				success: function (data) {
 					User = data.rows[0].value;
 					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
 					UserId = User._id;
-					sessionStorage.setItem("UserId", UserId);
+					sessionStorage.UserId = UserId;
 					//weitere anderswo benutzte Variabeln verfügbar machen
-					sessionStorage.setItem("ArtenSprache", User.ArtenSprache);
-					sessionStorage.setItem("Autor", User.Autor);
+					sessionStorage.ArtenSprache = User.ArtenSprache;
+					sessionStorage.Autor = User.Autor;
 					speichereLetzteUrl_3(url);
 				}
 			});
 		} else {
-			UserId = sessionStorage.getItem("UserId");
+			UserId = sessionStorage.UserId;
 			speichereLetzteUrl_3(url, User);
 		}
 	}
@@ -1999,7 +1999,7 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
+	$db.view('evab/User?key="' + sessionStorage.Username + '"', {
 		success: function (data) {
 			var SessionStorageObjekt = {};
 			User = data.rows[0].value;
@@ -2323,7 +2323,7 @@ function pruefeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	if (typeof sessionStorage.getItem("Username") === "undefined" || !sessionStorage.getItem("Username")) {
+	if (typeof sessionStorage.Username === "undefined" || !sessionStorage.Username) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
@@ -2331,14 +2331,14 @@ function pruefeAnmeldung() {
 		    success: function (session) {
 		    	if (session.userCtx.name !== (undefined || null)) {
 		        	Username = session.userCtx.name;
-		        	sessionStorage.setItem("Username", Username);
+		        	sessionStorage.Username = Username;
 		        } else {
 					window.open("index.html?Status=neu", target = "_self");
 				}
 		    }
 		});
 	} else {
-		Username = sessionStorage.getItem("Username");
+		Username = sessionStorage.Username;
 	}
 }
 
