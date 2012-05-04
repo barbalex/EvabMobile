@@ -96,6 +96,7 @@
 							//Globale Variable für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							if (typeof FeldlisteZeitEdit !== "undefined") {
 								FeldlisteZeitEdit = undefined;
+								delete sessionStorage.FeldlisteZeitEdit;
 							}
 						},
 						error: function () {
@@ -111,12 +112,16 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteZeitEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
+					} else if (typeof sessionStorage.FeldlisteZeitEdit !== "undefined" && sessionStorage.FeldlisteZeitEdit) {
+						FeldlisteZeitEdit = JSON.parse(sessionStorage.FeldlisteZeitEdit);
+						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeZeit', {
 							success: function (data) {
 								FeldlisteZeitEdit = data;
+								sessionStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
 								erstelleSichtbareFelder_2();
 							}
 						});

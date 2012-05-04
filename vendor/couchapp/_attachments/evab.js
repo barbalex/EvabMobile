@@ -768,6 +768,9 @@ function initiiereBeobEdit(id) {
 	//wenn ja: deren globale Variable verwenden
 	if (typeof FeldlisteBeobEdit !== "undefined") {
 		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
+	} else if (typeof sessionStorage.FeldlisteBeobEdit !== "undefined" && sessionStorage.FeldlisteBeobEdit) {
+		FeldlisteBeobEdit = JSON.parse(sessionStorage.FeldlisteBeobEdit);
+		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
 	} else {
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
@@ -775,6 +778,7 @@ function initiiereBeobEdit(id) {
 			success: function (Feldliste) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				FeldlisteBeobEdit = Feldliste;
+				sessionStorage.FeldlisteBeobEdit = JSON.stringify(FeldlisteBeobEdit);
 				initiiereBeobEdit_2(id, FeldlisteBeobEdit);
 			}
 		});
@@ -782,6 +786,7 @@ function initiiereBeobEdit(id) {
 }
 
 function initiiereBeobEdit_2(id, Feldliste) {
+	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
@@ -914,14 +919,18 @@ function initiiereProjektEdit(ProjektId) {
 			sessionStorage.ProjektId = ProjektId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteProjektEdit !== "undefined") {
+			if (typeof FeldlisteProjekt !== "undefined") {
+				initiiereProjektEdit_2(Projekt);
+			} else if (typeof sessionStorage.FeldlisteProjekt !== "undefined" && sessionStorage.FeldlisteProjekt) {
+				FeldlisteProjekt = JSON.parse(sessionStorage.FeldlisteProjekt);
 				initiiereProjektEdit_2(Projekt);
 			} else {
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeProjekt', {
 					success: function (Feldliste) {
-						FeldlisteProjektEdit = Feldliste;
+						FeldlisteProjekt = Feldliste;
+						sessionStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
 						initiiereProjektEdit_2(Projekt);
 					}
 				});
@@ -971,8 +980,8 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 	ListItem = "";
 	HtmlContainer = "";
 	Status = get_url_param("Status");
-	for (i in FeldlisteProjektEdit.rows) {
-		Feld = FeldlisteProjektEdit.rows[i].value;
+	for (i in FeldlisteProjekt.rows) {
+		Feld = FeldlisteProjekt.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1 && FeldName !== "pName") {
@@ -989,6 +998,66 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 		}
 	}
 	return HtmlContainer;
+}
+
+function initiiereProjektliste() {
+	erstelleProjektliste();
+	speichereLetzteUrl();
+}
+
+function erstelleProjektliste() {
+	$("#Projekte").empty();
+	//hat ProjektEdit.html eine Projektliste übergeben?
+	if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		Projektliste = JSON.parse(sessionStorage.Projektliste);
+		erstelleProjektliste_2();
+	} else {
+		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$db = $.couch.db("evab");
+		$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
+			success: function (data) {
+				//Projektliste für ProjektEdit bereitstellen
+				Projektliste = data;
+				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				sessionStorage.Projektliste = JSON.stringify(Projektliste);
+				erstelleProjektliste_2();
+			}
+		});
+	}
+}
+
+function erstelleProjektliste_2() {
+	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
+	anzProj = 0;
+	ListItemContainer = "";
+	for (i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
+		anzProj += 1;
+	}
+
+	Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
+	if (anzProj === 1) {
+		Titel2 = " Projekt";
+	}
+	$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
+
+	if (anzProj === 0) {
+		ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
+	} else {
+		for (i in Projektliste.rows) {			//Liste aufbauen
+			Proj = Projektliste.rows[i].value;
+			key = Projektliste.rows[i].key;
+			pName = key[1];
+			listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
+			listItem += "<a href=\"#\">";
+			listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
+			ListItemContainer += listItem;
+		}
+	}
+	$("#Projekte").html(ListItemContainer);
+	$("#Projekte").listview("refresh");
 }
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1014,12 +1083,16 @@ function initiiereRaumEdit(RaumId) {
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteRaumEdit !== "undefined") {
 				initiiereRaumEdit_2(Raum);
+			} else if (typeof sessionStorage.FeldlisteRaumEdit !== "undefined" && sessionStorage.FeldlisteRaumEdit) {
+				FeldlisteRaumEdit = JSON.parse(sessionStorage.FeldlisteRaumEdit);
+				initiiereRaumEdit_2(Raum);
 			} else {
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeRaum', {
 					success: function (Feldliste) {
 						FeldlisteRaumEdit = Feldliste;
+						sessionStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
 						initiiereRaumEdit_2(Raum);
 					}
 				});
@@ -1177,6 +1250,9 @@ function initiiereOrtEdit(OrtId) {
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteOrtEdit !== "undefined") {
 				initiiereOrtEdit_2(Ort);
+			} else if (typeof sessionStorage.FeldlisteOrtEdit !== "undefined" && sessionStorage.FeldlisteOrtEdit) {
+				FeldlisteOrtEdit = JSON.parse(sessionStorage.FeldlisteOrtEdit);
+				initiiereOrtEdit_2(Ort);
 			} else {
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
@@ -1184,6 +1260,7 @@ function initiiereOrtEdit(OrtId) {
 					success: function (Feldliste) {
 						//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 						FeldlisteOrtEdit = Feldliste;
+						sessionStorage.FeldlisteOrtEdit = JSON.stringify(FeldlisteOrtEdit);
 						initiiereOrtEdit_2(Ort);
 					}
 				});
@@ -1343,12 +1420,16 @@ function initiiereZeitEdit(ZeitId) {
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlisteZeitEdit !== "undefined") {
 				initiiereZeitEdit_2(Zeit);
+			} else if (typeof sessionStorage.FeldlisteZeitEdit !== "undefined" && sessionStorage.FeldlisteZeitEdit) {
+				FeldlisteZeitEdit = JSON.parse(sessionStorage.FeldlisteZeitEdit);
+				initiiereZeitEdit_2(Zeit);
 			} else {
 				$db = $.couch.db("evab");
 				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeZeit', {
 					success: function (Feldliste) {
 						FeldlisteZeitEdit = Feldliste;
+						sessionStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
 						initiiereZeitEdit_2(Zeit);
 					}
 				});
@@ -1462,26 +1543,6 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	return HtmlContainer;
 }
 
-//Wenn die hBeobListe.html direkt als erste Seite aufgerufen wird, 
-//wird die ZeitId aus der url gelesen und initiierehBeobListe() übergeben
-//hier werden die Variabeln bereitgestellt
-function erstinitiierehBeobListe(ZeitId) {
-	$db = $.couch.db("evab");
-	$db.openDoc(ZeitId, {
-		success: function (Zeit) {
-			//Variabeln bereitstellen
-			ProjektId = Zeit.hProjektId;
-			sessionStorage.ProjektId = ProjektId;
-			RaumId = Zeit.hRaumId;
-			sessionStorage.RaumId = RaumId;
-			OrtId = Zeit.hOrtId;
-			sessionStorage.OrtId = OrtId;
-			ZeitId = Zeit._id;
-			sessionStorage.ZeitId = ZeitId;
-		}
-	});
-}
-
 //managt den Aufbau aller Daten und Felder für hBeobEdit.html
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html und Felder_Beob.html
@@ -1530,14 +1591,17 @@ function initiierehBeobEdit(BeobId) {
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlistehBeobEdit !== "undefined") {
 				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
+			} else if (typeof sessionStorage.FeldlistehBeobEdit !== "undefined" && sessionStorage.FeldlistehBeobEdit) {
+				FeldlistehBeobEdit = JSON.parse(sessionStorage.FeldlistehBeobEdit);
+				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
 			} else {
 				//Feldliste aus der DB holen
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeArt', {
 					success: function (data) {
 						FeldlistehBeobEdit = data;
+						sessionStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
 						erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
-						
 					}
 				});
 			}
@@ -2183,10 +2247,10 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 					initiiereRaumListe();
 				break;
 				case "hProjektEdit":
-
+					initiiereProjektEdit(sessionStorage.ProjektId);
 				break;
 				case "hProjektListe":
-
+					initiiereProjektliste();
 				break;
 				case "BeobEdit":
 
@@ -2203,13 +2267,13 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 //erstellt die Google-Map Karte für die Orte eines Raums
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
-function erstelleKarteFürRaum(RaumId) {
+function erstelleKarteFürRaum() {
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true', {
 		success: function (data) {
 			var i, anzOrt, Ort;
 			anzOrt = 0;
@@ -2303,13 +2367,13 @@ function erstelleKarteFürRaum(RaumId) {
 //Erstellt die Google-Map Karte für Orte eines Projekts
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
 //erwartet Username und ProjektId
-function erstelleKarteFürProjekt(ProjektId) {
+function erstelleKarteFürProjekt() {
 	if (typeof Username === "undefined" || !Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true', {
 		success: function (data) {
 			var i, anzOrt, Ort;
 			anzOrt = 0;

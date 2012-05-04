@@ -59,12 +59,16 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteRaumEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
+					} else if (typeof sessionStorage.FeldlisteRaumEdit !== "undefined" && sessionStorage.FeldlisteRaumEdit) {
+						FeldlisteRaumEdit = JSON.parse(sessionStorage.FeldlisteRaumEdit);
+						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeRaum', {
 							success: function (data) {
 								FeldlisteRaumEdit = data;
+								sessionStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -162,6 +166,7 @@
 							//Globale Variable für FeldlisteRaumEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							if (typeof FeldlisteRaumEdit !== "undefined") {
 								FeldlisteRaumEdit = undefined;
+								delete sessionStorage.FeldlisteRaumEdit;
 							}
 						},
 						error: function () {

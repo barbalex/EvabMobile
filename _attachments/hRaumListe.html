@@ -120,7 +120,7 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt(sessionStorage.ProjektId);
+					erstelleKarteFürProjekt();
 				});
 
 				$(document).on('pagehide', '#RaumListeMap', function () {

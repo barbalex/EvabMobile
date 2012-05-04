@@ -52,8 +52,14 @@
 			</div>
 			<script type="text/javascript" charset="utf-8">
 				$(":jqmData(role='page')").on("pageinit", function () {
-					erstelleProjektliste();
-					speichereLetzteUrl();
+					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+					//wo sie von speichereLetzteUrl gespeichert wurde
+					//ProjektId ist dann undefined und sessionStorage.ProjektId ist null
+					if (typeof sessionStorage.Projektliste === "undefined" || !sessionStorage.Projektliste) {
+						holeSessionStorageAusDb("hProjektListe");
+					} else {
+						initiiereProjektliste();
+					}
 
 					//Menu aufbauen
 					$(document).on('click', '[name="MenuProjektListe"]', function (event) {
@@ -109,61 +115,6 @@
 						$("#map_canvas").html("");
 					});
 
-					function erstelleProjektliste() {
-						$("#Projekte").empty();
-						//hat ProjektEdit.html eine Projektliste übergeben?
-						if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
-							//Objekte werden als Strings übergeben, müssen geparst werden
-							Projektliste = JSON.parse(sessionStorage.Projektliste);
-							erstelleProjektliste_2();
-						} else {
-							if (typeof Username === "undefined" || !Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
-								success: function (data) {
-									//Projektliste für ProjektEdit bereitstellen
-									Projektliste = data;
-									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-									sessionStorage.Projektliste = JSON.stringify(Projektliste);
-									erstelleProjektliste_2();
-								}
-							});
-						}
-					}
-
-					function erstelleProjektliste_2() {
-						var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
-						anzProj = 0;
-						ListItemContainer = "";
-						for (i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-							anzProj += 1;
-						}
-
-						Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
-						if (anzProj === 1) {
-							Titel2 = " Projekt";
-						}
-						$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
-
-						if (anzProj === 0) {
-							ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
-						} else {
-							for (i in Projektliste.rows) {			//Liste aufbauen
-								Proj = Projektliste.rows[i].value;
-								key = Projektliste.rows[i].key;
-								pName = key[1];
-								listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-								listItem += "<a href=\"#\">";
-								listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-								ListItemContainer += listItem;
-							}
-						}
-						$("#Projekte").html(ListItemContainer);
-						$("#Projekte").listview("refresh");
-					}
-
 					//Menü aufbauen
 					function erstelleMenuProjektliste(thiz) {
 						if (typeof Username === "undefined" || !Username) {
@@ -191,7 +142,7 @@
 								},
 								'Projekte exportieren': {
 									click: function () {
-										window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+										window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 									},
 									theme: "a",
 									icon: "arrow-r"
@@ -232,7 +183,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Zuerst Orte abfragen
-						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + Username + '"&include_docs=true', {
+						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + sessionStorage.Username + '"&include_docs=true', {
 							success: function (data) {
 								var i, anzOrt, Ort;
 								anzOrt = 0;

@@ -54,14 +54,18 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteProjektEdit !== "undefined") {
+					if (typeof FeldlisteProjekt !== "undefined") {
+						erstelleSichtbareFelder_2();
+					} else if (typeof sessionStorage.FeldlisteProjekt !== "undefined" && sessionStorage.FeldlisteProjekt) {
+						FeldlisteProjekt = JSON.parse(sessionStorage.FeldlisteProjekt);
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeProjekt', {
 							success: function (data) {
-								FeldlisteProjektEdit = data;
+								FeldlisteProjekt = data;
+								sessionStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -75,8 +79,8 @@
 					}
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					anzFelder = 0;
-					for (i in FeldlisteProjektEdit.rows) {
-						Feld = FeldlisteProjektEdit.rows[i].value;
+					for (i in FeldlisteProjekt.rows) {
+						Feld = FeldlisteProjekt.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
 						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
@@ -154,9 +158,10 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
-							//Globale Variable für FeldlisteProjektEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteProjektEdit !== "undefined") {
-								FeldlisteProjektEdit = undefined;
+							//Globale Variable für FeldlisteProjekt zurücksetzen, damit die Liste neu aufgebaut wird
+							if (typeof FeldlisteProjekt !== "undefined") {
+								FeldlisteProjekt = undefined;
+								delete sessionStorage.FeldlisteProjekt;
 							}
 						},
 						error: function () {

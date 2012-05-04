@@ -121,7 +121,7 @@
 
 				$(document).on("pageshow", '#hOrtListeMapPage', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürRaum(sessionStorage.RaumId);
+					erstelleKarteFürRaum();
 				});
 
 				$(document).on("pagehide", '#hOrtListeMapPage', function () {

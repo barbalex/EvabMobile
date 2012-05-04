@@ -34,14 +34,70 @@
   </head>
   <body>
 	<div data-role="page" id="ProjektEditPage">
+		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
+			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
+			<h1>Projekt</h1>
+			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<div data-role="navbar">
+				<ul>
+					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
+					<li><a href="#" rel="external" id="hRaumListeLink">Räume</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div>
+		<div data-role="content" id="hProjektEditContent">
+			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
+				<div data-role="fieldcontain">
+					<label for="pName">Name:</label>
+					<input id="pName" class="speichern" name="pName" type="text" placeholder="(Eingabe erforderlich)" required/>
+				</div>
+				<div id="hProjektEditFormHtml">
+					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
+				</div>
+			</form>
+			<form id="FormAnhänge" action="" method="post" >
+				<hr />
+				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Projektberichte)</div>
+				<div id="Anhänge"></div>			
+				<div data-role="fieldcontain">
+				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
+				    <input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+				    <p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
+				</div>
+				<input type="hidden" id="_rev" name="_rev">
+			</form>
+			<ul data-role="pagination">
+				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+			</ul>
+		</div>
+		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
+					<li><a href="#" id="LöschenDialogLinkProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
-				ProjektId = sessionStorage.ProjektId;
-				initiiereProjektEdit(ProjektId);
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.ProjektId existiert und ungleich null ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (typeof sessionStorage.ProjektId !== "undefined" && sessionStorage.ProjektId) {
+					initiiereProjektEdit(sessionStorage.ProjektId);
+				}
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = sessionStorage.ProjektId;
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				//ProjektId ist dann undefined und sessionStorage.ProjektId ist null
+				if (typeof sessionStorage.ProjektId === "undefined" || !sessionStorage.ProjektId) {
+					holeSessionStorageAusDb("hProjektEdit");
+				}
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
@@ -70,7 +126,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(ProjektId);
+						speichereAnhänge(sessionStorage.ProjektId);
 					}
 				});
 
@@ -120,23 +176,23 @@
 				});
 
 				$(document).on("swipeleft", "#hProjektEditContent", function () {
-					nächstesVorigesProjekt(ProjektId, "nächstes");
+					nächstesVorigesProjekt("nächstes");
 				});
 
 				$(document).on("swiperight", "#hProjektEditContent", function () {
-					nächstesVorigesProjekt(ProjektId, "voriges");
+					nächstesVorigesProjekt("voriges");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#ProjektEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächstesVorigesProjekt(ProjektId, "voriges");
+					nächstesVorigesProjekt("voriges");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#ProjektEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächstesVorigesProjekt(ProjektId, "nächstes");
+					nächstesVorigesProjekt("nächstes");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -145,12 +201,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächstesVorigesProjekt(ProjektId, "voriges");
+							nächstesVorigesProjekt("voriges");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächstesVorigesProjekt(ProjektId, "nächstes");
+							nächstesVorigesProjekt("nächstes");
 							e.preventDefault();
 						}
 					}
@@ -167,7 +223,7 @@
 
 				$(document).on("pageshow", '#ProjektEditMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt(ProjektId);
+					erstelleKarteFürProjekt();
 				});
 
 				$(document).on("pagehide", '#ProjektEditMap', function () {
@@ -194,27 +250,27 @@
 
 				function löscheProjekt() {
 					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht, Rückmeldung;
-					ArtenGelöscht = löscheArtenVonProjekt(ProjektId);
+					ArtenGelöscht = löscheArtenVonProjekt();
 					if (ArtenGelöscht === false) {
 						melde("Fehler: Zugehörige Arten nicht gelöscht");
 						return false;
 					} else {
 						Rückmeldung = "zugehörige Arten gelöscht";
-						ZeitenGelöscht = löscheZeitenVonProjekt(ProjektId);
+						ZeitenGelöscht = löscheZeitenVonProjekt();
 						if (ZeitenGelöscht === false) {
 							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
 							melde(Rückmeldung);
 							return false;
 						} else {
 							Rückmeldung += "\rzugehörige Zeiten gelöscht";
-							OrteGelöscht = löscheOrteVonProjekt(ProjektId);
+							OrteGelöscht = löscheOrteVonProjekt();
 							if (OrteGelöscht === false) {
 								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
 								melde(Rückmeldung);
 								return false;
 							} else {
 								Rückmeldung += "\rzugehörige Orte gelöscht";
-								RäumeGelöscht = löscheRäumeVonProjekt(ProjektId);
+								RäumeGelöscht = löscheRäumeVonProjekt();
 								if (RäumeGelöscht === false) {
 									Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
 									melde(Rückmeldung);
@@ -260,9 +316,9 @@
 				}
 
 				//lösche alle einem Projekt zugeordneten Räume
-				function löscheRäumeVonProjekt(ProjektId) { 
+				function löscheRäumeVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -283,9 +339,9 @@
 				}
 
 				//lösche alle einem Projekt zugeordneten Orte
-				function löscheOrteVonProjekt(ProjektId) { 
+				function löscheOrteVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -306,9 +362,9 @@
 				}	
 
 				//lösche alle einem Projekt zugeordneten Zeiten
-				function löscheZeitenVonProjekt(ProjektId) { 
+				function löscheZeitenVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -329,9 +385,9 @@
 				}
 
 				//lösche alle einem Projekt zugeordneten Arten
-				function löscheArtenVonProjekt(ProjektId) { 
+				function löscheArtenVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -387,7 +443,7 @@
 				function speichereProjektfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -412,7 +468,7 @@
 				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -437,7 +493,7 @@
 				function speichereProjektfeldInOrten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -462,7 +518,7 @@
 				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + ProjektId + '"]&endkey=["' + ProjektId + '",{}]';
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -503,14 +559,14 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + sessionStorage.ProjektId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Projekte exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -549,18 +605,18 @@
 				//voriges des ersten => ProjektListe.html
 				//nächstes des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-				function nächstesVorigesProjekt(IdAktuell, NächstesOderVoriges) {
+				function nächstesVorigesProjekt(NächstesOderVoriges) {
 					//prüfen, ob Projektliste schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof Projektliste !== "undefined") {
 						//globale Variable Projektliste existiert noch
-						nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
 						//hat hProjektListe.html eine Projektliste übergeben?
 						if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
 							Projektliste = JSON.parse(sessionStorage.Projektliste);
-							nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+							nächstesVorigesProjekt_2(NächstesOderVoriges);
 						} else {
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
@@ -568,25 +624,25 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
+							$db.view('evab/hProjListe?startkey=["' + sessionStorage.Username + '"]&endkey=["' + sessionStorage.Username + '",{}]', {
 								success: function (data) {
 									//Projektliste bereitstellen
 									Projektliste = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 									sessionStorage.Projektliste = JSON.stringify(Projektliste);
-									nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
+									nächstesVorigesProjekt_2(NächstesOderVoriges);
 								}
 							});
 						}
 					}
 				}
 
-				function nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges) {
-					var i, ProjIdAktuell, ProjIdNächstes, ProjIdVoriges, AnzProj;
+				function nächstesVorigesProjekt_2(NächstesOderVoriges) {
+					var i, ProjIdAktuell, ProjIdNächstes, ProjIdVoriges, AnzProj, ProjektId;
 					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].value._id;
 						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ProjIdAktuell === IdAktuell) {
+						if (ProjIdAktuell === sessionStorage.ProjektId) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":
 								if (i < AnzProj) {
@@ -615,57 +671,10 @@
 
 				function aktualisiereLinksMitProjId() {
 					//Link zur Raumliste in Navbar setzen
-					$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + ProjektId);
+					$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
 				}
 			});
 		</script>
-		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
-			<h1>Projekt</h1>
-			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  			<div data-role="navbar">
-				<ul>
-					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
-					<li><a href="#" rel="external" id="hRaumListeLink">Räume</a></li>
-				</ul>
-			</div><!-- /navbar -->
-		</div>
-		<div data-role="content" id="hProjektEditContent">
-			<form id="hProjektEditForm" action="#" method="get" autocomplete="off" onsubmit="return false;">
-				<div data-role="fieldcontain">
-					<label for="pName">Name:</label>
-					<input id="pName" class="speichern" name="pName" type="text" placeholder="(Eingabe erforderlich)" required/>
-				</div>
-				<div id="hProjektEditFormHtml">
-					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
-				</div>
-			</form>
-			<form id="FormAnhänge" action="" method="post" >
-				<hr />
-				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Projektberichte)</div>
-				<div id="Anhänge"></div>			
-				<div data-role="fieldcontain">
-				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
-				    <input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
-				    <p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
-				</div>
-				<input type="hidden" id="_rev" name="_rev">
-			</form>
-			<ul data-role="pagination">
-				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
-				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
-			</ul>
-		</div>
-		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLinkProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
-					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
-				</ul>
-			</div><!-- /navbar -->
-		</div><!-- /footer -->
 	</div>
 
 	<div data-role="page" id="ProjektEditMap" style="width:100%; height:100%;">

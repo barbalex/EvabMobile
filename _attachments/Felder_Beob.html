@@ -56,12 +56,16 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteBeobEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
+					} else if (typeof sessionStorage.FeldlisteBeobEdit !== "undefined" && sessionStorage.FeldlisteBeobEdit) {
+						FeldlisteBeobEdit = JSON.parse(sessionStorage.FeldlisteBeobEdit);
+						erstelleSichtbareFelder_2();
 					} else {
 						$db = $.couch.db("evab");
 						//holt die Feldliste aus der DB
 						$db.view('evab/FeldListeBeob', {
 							success: function (data) {
 								FeldlisteBeobEdit = data;
+								sessionStorage.FeldlisteBeobEdit = JSON.stringify(FeldlisteBeobEdit);
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -147,6 +151,7 @@
 							//Globale Variable für FeldlisteBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							if (typeof FeldlisteBeobEdit !== "undefined") {
 								FeldlisteBeobEdit = undefined;
+								delete sessionStorage.FeldlisteBeobEdit;
 							}
 						},
 						error: function () {
