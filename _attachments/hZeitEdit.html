@@ -89,26 +89,19 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#ZeitEditPage").on("pageshow", function () {
-				ZeitId = sessionStorage.getItem("ZeitId");
-				initiiereZeitEdit(ZeitId);
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.ZeitId existiert und ungleich null ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (typeof sessionStorage.getItem("ZeitId") !== "undefined" && sessionStorage.ZeitId) {
+					initiiereZeitEdit(sessionStorage.ZeitId);
+				}
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim allerersten Aufruf muss die ZeitId aus der Url gelesen und die übrigen ID's bereitgestellt werden
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
 				//ZeitId ist dann undefined und sessionStorage.getItem("ZeitId") ist null
-				if (typeof ZeitId === "undefined") {
-					if (typeof sessionStorage.getItem("ZeitId") === "undefined" || !sessionStorage.getItem("ZeitId")) {
-						ZeitId = get_url_param("id");
-						erstinitiiereZeitEdit(ZeitId);
-					} else {
-						ZeitId = sessionStorage.getItem("ZeitId");
-						OrtId = sessionStorage.getItem("OrtId");
-						RaumId = sessionStorage.getItem("RaumId");
-						ProjektId = sessionStorage.getItem("ProjektId");
-					}
-				} else {
-					OrtId = sessionStorage.getItem("OrtId");
-					RaumId = sessionStorage.getItem("RaumId");
-					ProjektId = sessionStorage.getItem("ProjektId");
+				if (typeof sessionStorage.getItem("ZeitId") === "undefined" || !sessionStorage.getItem("ZeitId")) {
+					holeSessionStorageAusDb("hZeitEdit");
 				}
 
 				//Slider-Felder erst bei mouseup speichern
@@ -138,21 +131,21 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(ZeitId);
+						speichereAnhänge(sessionStorage.ZeitId);
 					}
 				});
 
 				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
+				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
 
 				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
 
 				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
+				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + sessionStorage.OrtId);
 
 				//Link zur ZeitListe in Navbar setzen
-				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + OrtId);
+				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
 
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
@@ -161,7 +154,7 @@
 					if (typeof ZeitListe !== "undefined") {
 						ZeitListe = undefined;
 					}
-					erstelleNeueZeit(ProjektId, RaumId, OrtId); 
+					erstelleNeueZeit(sessionStorage.ProjektId, sessionStorage.RaumId, sessionStorage.OrtId); 
 				});
 
 				//sichtbare Felder wählen
@@ -174,7 +167,7 @@
 
 				function aktualisiereLinksMitZeitId() {
 					//Link zur Art in Navbar setzen
-					$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId);
+					$("#hArtListeLink").attr("href", "hArtListe.html?id=" + sessionStorage.ZeitId);
 				}
 
 				//Code für den Zeit-Löschen-Dialog
@@ -209,23 +202,23 @@
 				});
 
 				$(document).on("swipeleft", '#ZeitEditPage', function () {
-					nächsteVorigeZeit(ZeitId, "nächste");
+					nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
 				});
 
 				$(document).on("swiperight", '#ZeitEditPage', function () {
-					nächsteVorigeZeit(ZeitId, "vorige");
+					nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#ZeitEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsteVorigeZeit(ZeitId, "vorige");
+					nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#ZeitEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsteVorigeZeit(ZeitId, "nächste");
+					nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -234,12 +227,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsteVorigeZeit(ZeitId, "vorige");
+							nächsteVorigeZeit(sessionStorage.ZeitId, "vorige");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsteVorigeZeit(ZeitId, "nächste");
+							nächsteVorigeZeit(sessionStorage.ZeitId, "nächste");
 							e.preventDefault();
 						}
 					}
@@ -250,7 +243,7 @@
 					event.preventDefault();
 					Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc(ZeitId, {
+					$db.openDoc(sessionStorage.ZeitId, {
 						success: function (Zeit) {
 							delete Zeit._attachments[Dateiname];
 							$db.saveDoc(Zeit, {
@@ -279,7 +272,7 @@
 						Rückmeldung = "zugehörige Arten gelöscht";
 						// First open doc based on ID in order to get full document
 						$db = $.couch.db("evab");
-						$db.openDoc(ZeitId, {
+						$db.openDoc(sessionStorage.ZeitId, {
 							success: function (document) {
 								// Zeit löschen
 								$db.removeDoc(document, {
@@ -292,7 +285,7 @@
 										sessionStorage.removeItem("ZeitId");
 										//Rückmeldung += "<br>Zeit gelöscht";
 										//melde(Rückmeldung);
-										setTimeout("window.open('hZeitListe.html?OrtId=" + OrtId + "', target='_self')", 2800);
+										setTimeout("window.open('hZeitListe.html?OrtId=" + sessionStorage.OrtId + "', target='_self')", 2800);
 										return true;
 									},
 									error: function () {
@@ -314,7 +307,7 @@
 				//lösche alle einer Zeit zugeordnete Arten
 				function löscheArtenVonZeit() {
 					var viewname;
-					viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
+					viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -348,7 +341,7 @@
 					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(ZeitId, {
+					$db.openDoc(sessionStorage.ZeitId, {
 						success: function (hZeit) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
@@ -361,7 +354,7 @@
 								success: function () {
 									//geändertes Zeit-Feld in hArt anpassen
 									var viewname;
-									viewname = 'evab/hArtIdVonZeit?startkey=["' + ZeitId + '"]&endkey=["' + ZeitId + '",{}]';
+									viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
 									$db.view(viewname, {
 										success: function (data) {
 											var hArtId;
@@ -394,7 +387,7 @@
 				//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
 				function speichereAlles() {
 					$db = $.couch.db("evab");
-					$db.openDoc(ZeitId, {
+					$db.openDoc(sessionStorage.ZeitId, {
 						success: function (hZeit) {
 							var Formularwerte;
 							Formularwerte = {};
@@ -432,7 +425,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + ZeitId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + sessionStorage.ZeitId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -481,24 +474,26 @@
 				function nächsteVorigeZeit(IdAktuell, NächsteOderVorige) {
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof ZeitListe === "undefined") {
+					if (typeof sessionStorage.ZeitListe === "undefined" || !sessionStorage.ZeitListe) {
 						if (typeof Username === "undefined" || !Username) {
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 							success: function (data) {
 								ZeitListe = data;
+								sessionStorage.ZeitListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 								nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
 							}
 						});
 					} else {
+						ZeitListe = JSON.parse(sessionStorage.ZeitListe);
 						nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige);
 					}
 				}
 
 				function nächsteVorigeZeit_2(IdAktuell, NächsteOderVorige) {
-					var i, ZeitIdAktuell, ZeitIdNächste, ZeitIdVorige, AnzZeit;
+					var i, ZeitIdAktuell, ZeitIdNächste, ZeitIdVorige, AnzZeit, ZeitId;
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
 						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!

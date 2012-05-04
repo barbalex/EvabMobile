@@ -67,7 +67,7 @@
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					ArtId = $(this).attr("artid");
 					if (Status === "neu") {
-						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, ZeitId);
+						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, sessionStorage.ZeitId);
 					} else if (Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						if ($('#ArtEditPage').length > 0) {

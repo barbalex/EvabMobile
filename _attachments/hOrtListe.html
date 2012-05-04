@@ -227,8 +227,7 @@
 				success: function (data) {
 					//OrtListe für hOrtEdit bereitstellen
 					OrtListe = data;
-					//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-					sessionStorage.setItem("OrtListe", JSON.stringify(data));
+					sessionStorage.setItem("OrtListe", JSON.stringify(data));	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 					erstelleOrtListe_2();
 				}
 			});

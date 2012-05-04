@@ -418,7 +418,7 @@
 									sessionStorage.removeItem("hArtListe");
 									sessionStorage.removeItem("hBeobId");
 									//melde("Art gelöscht");
-									window.open("hArtListe.html?id=" + ZeitId, target = "_self");
+									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
 								},
 								error: function () {
 									melde("Fehler: Art nicht gelöscht");
@@ -478,7 +478,7 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
+							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
 								success: function (data) {
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 									hArtListe = data;
@@ -510,7 +510,7 @@
 									hBeobId = hArtListe.rows[i-1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
-									window.open("hArtListe.html?id=" + ZeitId, target = "_self");
+									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
 								}
 								break;
 							}

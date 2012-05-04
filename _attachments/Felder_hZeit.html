@@ -56,14 +56,14 @@
 					} else {
 						$.mobile.changePage("ZeitEdit.html", {
 							type: "get",
-							data: "id=" + ZeitId
+							data: "id=" + sessionStorage.ZeitId
 						});
 					}
 				});
 
 				//Felder in hOrtEdit.html neu aufbauen
 				$(document).on("pagehide", '#Felder_hZeitPage', function () {
-					initiiereZeitEdit(ZeitId);
+					initiiereZeitEdit(sessionStorage.ZeitId);
 				});
 
 				//Felder speichern (checkbox)

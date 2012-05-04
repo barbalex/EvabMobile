@@ -90,10 +90,10 @@
 				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
 
 				//Link zur Zeit in Navbar und Titelleiste setzen
-				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + ZeitId);
+				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + sessionStorage.ZeitId);
 
 				//Link zur ArtListe in Navbar setzen
-				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + ZeitId);
+				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + sessionStorage.ZeitId);
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
@@ -150,7 +150,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + ZeitId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -204,7 +204,7 @@
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hArtListe?startkey=["' + Username + '", "' + ZeitId + '"]&endkey=["' + Username + '", "' + ZeitId + '" ,{}]', {
+						$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
 							success: function (data) {
 								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 								hArtListe = data;

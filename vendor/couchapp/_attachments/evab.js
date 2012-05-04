@@ -1203,23 +1203,6 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	return HtmlContainer;
 }
 
-function erstinitiiereZeitEdit(ZeitId) {	
-	$db = $.couch.db("evab");
-	$db.openDoc(ZeitId, {
-		success: function (Zeit) {
-			//Variabeln bereitstellen
-			ProjektId = Zeit.hProjektId;
-			sessionStorage.setItem("ProjektId", ProjektId);
-			RaumId = Zeit.hRaumId;
-			sessionStorage.setItem("RaumId", RaumId);
-			OrtId = Zeit.hOrtId;
-			sessionStorage.setItem("OrtId", OrtId);
-			ZeitId = Zeit._id;
-			sessionStorage.setItem("ZeitId", ZeitId);
-		}
-	});
-}
-
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit
 function initiiereZeitEdit(ZeitId) {
@@ -1277,6 +1260,64 @@ function initiiereZeitEdit_2(Zeit) {
 	$('#FormAnhänge').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
+}
+
+function initiiereZeitListe(OrtId) {
+	erstelleZeitListe(OrtId);
+	speichereLetzteUrl();
+}
+
+//erstellt die Liste der Zeiten in Formular hZeitListe.html
+function erstelleZeitListe(OrtId) {
+		//hat hZeitEdit.html eine ZeitListe übergeben?
+	if (typeof sessionStorage.ZeitListe !== "undefined" && sessionStorage.ZeitListe) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		ZeitListe = JSON.parse(sessionStorage.getItem("ZeitListe"));
+		erstelleZeitListe_2();
+	} else {
+  		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$("#Zeiten").empty();
+		$db = $.couch.db("evab");
+		$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + OrtId + '"]&endkey=["' + Username + '", "' + OrtId + '" ,{}]', {
+			success: function (data) {
+				//ZeitListe für hZeitEdit bereitstellen
+				ZeitListe = data;
+				sessionStorage.setItem("ZeitListe", JSON.stringify(data));  //Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				erstelleZeitListe_2();
+			}
+		});
+	}
+}
+
+function erstelleZeitListe_2() {
+	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
+	anzZeit = 0;
+	ListItemContainer = "";
+	for (i in ZeitListe.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
+		anzZeit += 1;
+	}
+
+	Titel2 = " Zeiten";                  //Im Titel der Seite die Anzahl Zeiten anzeigen
+	if (anzZeit === 1) {
+		Titel2 = " Zeit";
+	}
+	$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
+
+	if (anzZeit === 0) {
+		ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
+	} else {
+		for (i in ZeitListe.rows) {
+			Zeit = ZeitListe.rows[i].value;
+			key = ZeitListe.rows[i].key;
+			zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
+			listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+			ListItemContainer += listItem;
+		}
+	}
+	$("#Zeiten").html(ListItemContainer);
+	$("#Zeiten").listview("refresh");
 }
 
 //generiert das Html für das Formular in hZeitEdit.html
@@ -1940,6 +1981,7 @@ function speichereLetzteUrl_3(url, User) {
 	$db.openDoc(UserId, {
 		success: function (User) {
 			User.LetzteUrl = url;
+			User.SessionStorageObjekt = sessionStorage;
 			$db.saveDoc(User);
 			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespart werden kann
 			LetzteUrl = url;
@@ -1947,6 +1989,50 @@ function speichereLetzteUrl_3(url, User) {
 	});
 }
 
+//Wenn Seiten direkt geöffnet werden, muss die sessionStorage wieder hergestellt werden
+//Dieser Vorgang ist langsam. Bis er beendet ist, hätte die aufrufende Seite bereits mit dem Initiieren der Felder begonnen
+//und dabei wegen mangelndem sesstionStorage Fehler produziert
+//daher wird die aufrufende Seite übergeben und nach getaner Arbeit deren Felder initiiert
+//Wenn sessionStorage null ist, verzichtet die aufrufende Seite auf das Initiieren
+function holeSessionStorageAusDb(AufrufendeSeite) {
+	if (typeof Username === "undefined" || !Username) {
+		pruefeAnmeldung();
+	}
+	$db = $.couch.db("evab");
+	$db.view('evab/User?key="' + sessionStorage.getItem("Username") + '"', {
+		success: function (data) {
+			var SessionStorageObjekt = {};
+			User = data.rows[0].value;
+			SessionStorageObjekt = User.SessionStorageObjekt;
+			for (i in SessionStorageObjekt) {
+				sessionStorage[i] = SessionStorageObjekt[i];
+			}
+			switch(AufrufendeSeite) {
+				case "hBeobEdit":
+
+				break;
+				case "hZeitEdit":
+					initiiereZeitEdit(sessionStorage.ZeitId);
+				break;
+				case "hZeitListe":
+					initiiereZeitListe(sessionStorage.OrtId);
+				break;
+				case "hOrtEdit":
+
+				break;
+				case "hRaumEdit":
+
+				break;
+				case "hProjektEdit":
+
+				break;
+				case "BeobEdit":
+
+				break;
+			}
+		}
+	});
+}
 
 
 //erstellt die Google-Map Karte für die Orte eines Raums
