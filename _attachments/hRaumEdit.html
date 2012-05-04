@@ -289,7 +289,7 @@
 												sessionStorage.removeItem("RaumId");
 												//Rückmeldung += "\rRaum gelöscht";
 												//melde(Rückmeldung);
-												setTimeout("window.open('hRaumListe.html?ProjektId=' + ProjektId, target='_self')", 1400);
+												window.open('hRaumListe.html?ProjektId=' + ProjektId, target = '_self');
 												return true;
 											},
 											error: function () {

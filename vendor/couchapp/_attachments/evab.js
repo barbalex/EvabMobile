@@ -1203,6 +1203,61 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	return HtmlContainer;
 }
 
+function initiiereOrtListe() {
+	erstelleOrtListe();
+	speichereLetzteUrl();
+}
+
+function erstelleOrtListe() {
+	$("#Orte").empty();
+	//hat hOrtEdit.html eine OrtListe übergeben?
+	if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		OrtListe = JSON.parse(sessionStorage.OrtListe);
+		erstelleOrtListe_2();
+	} else {
+		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$db = $.couch.db("evab");
+		$db.view('evab/hOrtListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+			success: function (data) {
+				//OrtListe für hOrtEdit bereitstellen
+				OrtListe = data;
+				sessionStorage.OrtListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				erstelleOrtListe_2();
+			}
+		});
+	}
+}
+
+function erstelleOrtListe_2() {
+	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
+	anzOrt = 0;
+	ListItemContainer = "";
+	for (i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
+		anzOrt += 1;
+	}
+	Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
+	if (anzOrt === 1) {
+		Titel2 = " Ort";
+	}
+	$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
+
+	if (anzOrt === 0) {
+		ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
+	} else {
+		for (i in OrtListe.rows) {                //Liste aufbauen
+			Ort = OrtListe.rows[i].value;
+			key = OrtListe.rows[i].key;
+			listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+			ListItemContainer += listItem;
+		}
+	}
+	$("#Orte").html(ListItemContainer);
+	$("#Orte").listview("refresh");
+}
+
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit
 function initiiereZeitEdit(ZeitId) {
@@ -2058,15 +2113,27 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 					initiiereZeitListe();
 				break;
 				case "hOrtEdit":
-
+					initiiereOrtEdit(sessionStorage.OrtId);
+				break;
+				case "hOrtListe":
+					initiiereOrtListe();
 				break;
 				case "hRaumEdit":
+
+				break;
+				case "hRaumListe":
 
 				break;
 				case "hProjektEdit":
 
 				break;
+				case "hProjektListe":
+
+				break;
 				case "BeobEdit":
+
+				break;
+				case "BeobListe":
 
 				break;
 			}
@@ -2387,7 +2454,7 @@ function pruefeAnmeldung() {
 //wird aufgerufen von: hOrtEdit.html, evab.js
 function aktualisiereLinksMitOrtId_hoe() {
 	//Link zur Zeit in Navbar setzen
-	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + OrtId);
+	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
 }
 
 

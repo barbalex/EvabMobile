@@ -99,16 +99,31 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function () {
-				initiiereOrtEdit(OrtId);
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.OrtId existiert und ungleich null ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (typeof sessionStorage.OrtId !== "undefined" && sessionStorage.OrtId) {
+					initiiereOrtEdit(sessionStorage.OrtId);
+				}
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (typeof OrtId === "undefined") {
-					OrtId = sessionStorage.OrtId;
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				//OrtId ist dann undefined und sessionStorage.OrtId ist null
+				if (typeof sessionStorage.OrtId === "undefined" || !sessionStorage.OrtId) {
+					holeSessionStorageAusDb("hOrtEdit");
 				}
-				RaumId = sessionStorage.RaumId;
-				ProjektId = sessionStorage.ProjektId;
+
+				//Links in Navbar setzen
+				$("#hoe_hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
+				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
+				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + sessionStorage.RaumId);
+
+				//OrtId-abhängige Links aufbauen
+				//ist in eigener Funktion in evab.js ausgelagert, weil auch nötig, ohne pageshow-event (Datensatzwechsel)
+				//und dann von evab.js aufgerufen
+				aktualisiereLinksMitOrtId_hoe();
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
@@ -147,23 +162,14 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(OrtId);
+						speichereAnhänge(sessionStorage.OrtId);
 					}
 				});
-
-				//Link zum Projekt in Navbar setzen
-				$("#hoe_hProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
-
-				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
-
-				//Link zur OrtListe in Navbar setzen
-				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + RaumId);
 
 				//neuen Ort erstellen
 				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function (event) {
 					event.preventDefault();
-					erstelleNeuenOrt(ProjektId, RaumId);
+					erstelleNeuenOrt(sessionStorage.ProjektId, sessionStorage.RaumId);
 				});
 
 				//sichtbare Felder wählen
@@ -171,11 +177,6 @@
 					event.preventDefault();
 					$.mobile.changePage("Felder_hOrt.html");
 				});
-
-				//ObjektId-abhängige Links aufbauen
-				//ist in eigener Funktion in evab.js ausgelagert, weil auch nötig, ohne pageshow-event (Datensatzwechsel)
-				//und dann von evab.js aufgerufen
-				aktualisiereLinksMitOrtId_hoe();
 
 				//Code für den Ort-Löschen-Dialog
 				$('#hOrtEditFooter').on('click', '#LöschenDialogLinkOrtEdit', function (event) {
@@ -348,23 +349,23 @@
 				}
 
 				$(document).on("swipeleft", "#OrtEditPage", function () {
-					nächsterVorigerOrt(OrtId, "nächster");
+					nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
 				});
 
 				$(document).on("swiperight", "#OrtEditPage", function () {
-					nächsterVorigerOrt(OrtId, "voriger");
+					nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#OrtEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsterVorigerOrt(OrtId, "voriger");
+					nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#OrtEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsterVorigerOrt(OrtId, "nächster");
+					nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -373,12 +374,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsterVorigerOrt(OrtId, "voriger");
+							nächsterVorigerOrt(sessionStorage.OrtId, "voriger");
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsterVorigerOrt(OrtId, "nächster");
+							nächsterVorigerOrt(sessionStorage.OrtId, "nächster");
 							e.preventDefault();
 						}
 					}
@@ -439,7 +440,7 @@
 											sessionStorage.removeItem("OrtId");
 											//Rückmeldung += "\rOrt gelöscht";
 											//melde(Rückmeldung);
-											setTimeout("window.open('hOrtListe.html?RaumId=" + RaumId + "', target='_self')", 1400);
+											window.open('hOrtListe.html?RaumId=' + sessionStorage.RaumId, target='_self');
 											return true;
 										},
 										error: function () {
@@ -463,7 +464,7 @@
 				function löscheArtenVonOrt() {
 					var AnzArtenGelöscht, viewname;
 					AnzArtenGelöscht = 0;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -488,7 +489,7 @@
 				function löscheZeitenVonOrt() {
 					var AnzZeitenGelöscht, viewname;
 					AnzZeitenGelöscht = 0;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -513,7 +514,7 @@
 				//und gib diesen Wert zurück
 				function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
 					var viewname, AnzahlZeiten;
-					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + OrtId + '"';
+					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + sessionStorage.OrtId + '"';
 					AnzahlZeiten = 0;
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
@@ -566,7 +567,7 @@
 				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hZeit anpassen
 					var viewname;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -591,7 +592,7 @@
 				function speichereOrtfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + OrtId + '"]&endkey=["' + OrtId + '",{}]';
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -616,7 +617,7 @@
 				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(OrtId, {
+					$db.openDoc(sessionStorage.OrtId, {
 						success: function (hOrt) {
 							//Längen- und Breitengrad sind in keinem Feld dargestellt
 							//sie müssen aus ihren Variabeln gespeichert werden
@@ -658,14 +659,14 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + OrtId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + sessionStorage.OrtId, target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
 				      		},
 				      		'Orte exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + sessionStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -722,7 +723,7 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hOrtListe?startkey=["' + Username + '", "' + RaumId + '"]&endkey=["' + Username + '", "' + RaumId + '" ,{}]', {
+							$db.view('evab/hOrtListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
 								success: function (data) {
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;
@@ -755,7 +756,7 @@
 									OrtId = OrtListe.rows[i-1].value._id;
 									initiiereOrtEdit(OrtId);
 								} else {
-									window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
+									window.open("hOrtListe.html?RaumId=" + sessionStorage.RaumId, target = "_self");
 								}
 								break;
 							}
@@ -776,6 +777,5 @@
 			<div id="map_canvas" style="width:100%; height:100%;"></div>
 		</div>
 	</div>
- 
   </body>
 </html>

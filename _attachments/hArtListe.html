@@ -71,19 +71,11 @@
 					initiierehBeobListe();
 				}
 
-				//Link zum Projekt in Navbar setzen
+				//Links in Navbar setzen
 				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-
-				//Link zum Raum in Navbar setzen
 				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
-
-				//Link zum Ort in Navbar setzen
 				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + sessionStorage.OrtId);
-
-				//Link zur Zeit in Navbar und Titelleiste setzen
-				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + sessionStorage.ZeitId);
-
-				//Link zur ArtListe in Navbar setzen
+				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + sessionStorage.ZeitId);	//in Navbar und Titelleiste
 				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + sessionStorage.ZeitId);
 
 				//Menu aufbauen

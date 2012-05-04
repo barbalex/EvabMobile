@@ -285,7 +285,7 @@
 										sessionStorage.removeItem("ZeitId");
 										//Rückmeldung += "<br>Zeit gelöscht";
 										//melde(Rückmeldung);
-										setTimeout("window.open('hZeitListe.html?OrtId=" + sessionStorage.OrtId + "', target='_self')", 2800);
+										window.open('hZeitListe.html?OrtId=' + sessionStorage.OrtId , target = '_self');
 										return true;
 									},
 									error: function () {
