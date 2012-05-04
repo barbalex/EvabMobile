@@ -59,27 +59,30 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = sessionStorage.ProjektId;
-				erstelleRaumListe();
-				speichereLetzteUrl();
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				//ProjektId ist dann undefined und sessionStorage.ProjektId ist null
+				if (typeof sessionStorage.ProjektId === "undefined" || !sessionStorage.ProjektId) {
+					holeSessionStorageAusDb("hRaumListe");
+				} else {
+					initiiereRaumListe();
+				}
 
-				//Link zum Projekt in Navbar und Titelleiste setzen
-				$("[name='hProjektLink']").attr('href', "hProjektEdit.html?id=" + ProjektId);
+				//Links in Navbar setzen
+				$("[name='hProjektLink']").attr('href', "hProjektEdit.html?id=" + sessionStorage.ProjektId);	//in Navbar und Titelleiste
+				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
 
 				//neuen Raum erstellen
 				$("body").on("click", "[name='hRaumNeuLink']", function (event) {
 					event.preventDefault();
-					erstelleNeuenRaum(ProjektId);
+					erstelleNeuenRaum(sessionStorage.ProjektId);
 				});
-
-				//Link zur RaumListe in Navbar setzen
-				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + ProjektId);
 
 				//Menu aufbauen
 				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
 					var zurueck;
 					event.preventDefault();
-					zurueck = "hRaumListe.html?ProjektId=" + ProjektId;
+					zurueck = "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId;
 					erstelleMenuRaumListe(zurueck, this);
 				});
 
@@ -99,7 +102,7 @@
 				});
 
 				$("#Räume").on("swipeleft", ".erste", function () {
-					erstelleNeuenRaum(ProjektId);
+					erstelleNeuenRaum(sessionStorage.ProjektId);
 				});
 
 				$(document).on("swiperight", '#RaumListePage', function () {
@@ -117,7 +120,7 @@
 
 				$(document).on('pageshow', '#RaumListeMap', function () {
 					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt(ProjektId);
+					erstelleKarteFürProjekt(sessionStorage.ProjektId);
 				});
 
 				$(document).on('pagehide', '#RaumListeMap', function () {
@@ -152,7 +155,7 @@
 				      		},
 				      		'Räume exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -185,59 +188,6 @@
 				            }
 				    	}
 				  	})
-				}
-
-			  	function erstelleRaumListe() {
-					$("#Räume").empty();
-					//hat hRaumEdit.html eine RaumListe übergeben?
-					if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
-						//Objekte werden als Strings übergeben, müssen geparst werden
-						RaumListe = JSON.parse(sessionStorage.RaumListe);
-						erstelleRaumListe_2();
-					} else {
-						if (typeof Username === "undefined" || !Username) {
-							pruefeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/hRaumListe?startkey=["' + Username + '", "' + ProjektId + '"]&endkey=["' + Username + '", "' + ProjektId + '" ,{}]', {
-							success: function (data) {
-								RaumListe = data;
-								//RaumListe für haumEdit bereitstellen
-								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								sessionStorage.RaumListe = JSON.stringify(RaumListe);
-								erstelleRaumListe_2();
-							}
-						});
-					}
-				}
-
-				function erstelleRaumListe_2() {
-					var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
-					anzRaum = 0;
-					ListItemContainer = "";
-					for (i in RaumListe.rows) {                    //Räume zählen
-						anzRaum += 1;
-					}
-					Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
-					if (anzRaum === 1) {
-						Titel2 = " Raum";
-					}
-					$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
-					if (anzRaum === 0) {
-						ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
-					} else {
-						for (i in RaumListe.rows) {                //Liste aufbauen
-							Raum = RaumListe.rows[i].value;
-							key = RaumListe.rows[i].key;
-							rName = Raum.rName;
-							//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-							//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-							listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-							ListItemContainer += listItem;
-						}
-					}
-					$("#Räume").html(ListItemContainer);
-					$("#Räume").listview("refresh");
 				}
 			});
 		</script>

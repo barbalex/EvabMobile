@@ -1089,6 +1089,64 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	return HtmlContainer;
 }
 
+function initiiereRaumListe() {
+	erstelleRaumListe();
+	speichereLetzteUrl();
+}
+
+function erstelleRaumListe() {
+	$("#Räume").empty();
+	//hat hRaumEdit.html eine RaumListe übergeben?
+	if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		RaumListe = JSON.parse(sessionStorage.RaumListe);
+		erstelleRaumListe_2();
+	} else {
+		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$db = $.couch.db("evab");
+		$db.view('evab/hRaumListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+			success: function (data) {
+				RaumListe = data;
+				//RaumListe für haumEdit bereitstellen
+				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				sessionStorage.RaumListe = JSON.stringify(RaumListe);
+				erstelleRaumListe_2();
+			}
+		});
+	}
+}
+
+function erstelleRaumListe_2() {
+	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
+	anzRaum = 0;
+	ListItemContainer = "";
+	for (i in RaumListe.rows) {                    //Räume zählen
+		anzRaum += 1;
+	}
+	Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
+	if (anzRaum === 1) {
+		Titel2 = " Raum";
+	}
+	$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
+	if (anzRaum === 0) {
+		ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
+	} else {
+		for (i in RaumListe.rows) {                //Liste aufbauen
+			Raum = RaumListe.rows[i].value;
+			key = RaumListe.rows[i].key;
+			rName = Raum.rName;
+			//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
+			//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+			listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+			ListItemContainer += listItem;
+		}
+	}
+	$("#Räume").html(ListItemContainer);
+	$("#Räume").listview("refresh");
+}
+
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts
 function initiiereOrtEdit(OrtId) {
@@ -2119,10 +2177,10 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 					initiiereOrtListe();
 				break;
 				case "hRaumEdit":
-
+					initiiereRaumEdit(sessionStorage.RaumId);
 				break;
 				case "hRaumListe":
-
+					initiiereRaumListe();
 				break;
 				case "hProjektEdit":
 
