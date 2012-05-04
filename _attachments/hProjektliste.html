@@ -70,7 +70,7 @@
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
 						var ProjektId;
 						ProjektId = $(this).attr('ProjektId');
-						sessionStorage.setItem("ProjektId", ProjektId);
+						sessionStorage.ProjektId = ProjektId;
 						window.open("hRaumListe.html?ProjektId=" + ProjektId, target = "_self");
 					});
 
@@ -78,7 +78,7 @@
 						var ProjektId;
 						event.preventDefault();
 						ProjektId = $(this).attr('ProjektId');
-						sessionStorage.setItem("ProjektId", ProjektId);
+						sessionStorage.ProjektId = ProjektId;
 						window.open("hProjektEdit.html?id=" + ProjektId, target = "_self");
 					});
 
@@ -112,9 +112,9 @@
 					function erstelleProjektliste() {
 						$("#Projekte").empty();
 						//hat ProjektEdit.html eine Projektliste übergeben?
-						if (typeof sessionStorage.getItem("Projektliste") !== "undefined" && sessionStorage.getItem("Projektliste")) {
+						if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
-							Projektliste = JSON.parse(sessionStorage.getItem("Projektliste"));
+							Projektliste = JSON.parse(sessionStorage.Projektliste);
 							erstelleProjektliste_2();
 						} else {
 							if (typeof Username === "undefined" || !Username) {
@@ -126,7 +126,7 @@
 									//Projektliste für ProjektEdit bereitstellen
 									Projektliste = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-									sessionStorage.setItem("Projektliste", JSON.stringify(Projektliste));
+									sessionStorage.Projektliste = JSON.stringify(Projektliste);
 									erstelleProjektliste_2();
 								}
 							});

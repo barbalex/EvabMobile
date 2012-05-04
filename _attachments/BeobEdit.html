@@ -377,8 +377,8 @@
 						nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
 					} else {
 						//hat BeobListe.html eine BeobListe übergeben?
-						if (typeof sessionStorage.getItem("BeobListe") !== "undefined" && sessionStorage.getItem("BeobListe")) {
-							BeobListe = JSON.parse(sessionStorage.getItem("BeobListe"));
+						if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
+							BeobListe = JSON.parse(sessionStorage.BeobListe);
 							nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
 						} else {
 							//keine Projektliste übergeben
@@ -392,7 +392,7 @@
 									//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 									BeobListe = data;
-									sessionStorage.setItem("BeobListe", JSON.stringify(BeobListe));
+									sessionStorage.BeobListe = JSON.stringify(BeobListe);
 									nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
 								}
 							});

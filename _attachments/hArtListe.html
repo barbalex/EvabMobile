@@ -63,18 +63,18 @@
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim allerersten Aufruf muss die ZeitId aus der Url gelesen und die übrigen ID's bereitgestellt werden
-				//ZeitId ist dann undefined und sessionStorage.getItem("ZeitId") ist null
+				//ZeitId ist dann undefined und sessionStorage.ZeitId ist null
 				if (typeof ZeitId === "undefined") {
-					if (typeof sessionStorage.getItem("ZeitId") === "undefined" || !sessionStorage.getItem("ZeitId")) {
+					if (typeof sessionStorage.ZeitId === "undefined" || !sessionStorage.ZeitId) {
 						ZeitId = get_url_param("id");
 						erstinitiierehBeobListe(ZeitId);
 					} else {
-						ZeitId = sessionStorage.getItem("ZeitId");
+						ZeitId = sessionStorage.ZeitId;
 					}
 				}
-				OrtId = sessionStorage.getItem("OrtId");
-				RaumId = sessionStorage.getItem("RaumId");
-				ProjektId = sessionStorage.getItem("ProjektId");
+				OrtId = sessionStorage.OrtId;
+				RaumId = sessionStorage.RaumId;
+				ProjektId = sessionStorage.ProjektId;
 				
 				erstelleArtliste();
 
@@ -123,7 +123,7 @@
 				$("#Arten").on("swipeleft click", ".beob", function () {
 					var hBeobId;
 					hBeobId = $(this).attr('hBeobId');
-					sessionStorage.setItem("hBeobId", hBeobId);
+					sessionStorage.hBeobId = hBeobId;
 					window.open("hArtEdit.html?id=" + hBeobId, target = "_self");
 				});
 
@@ -195,9 +195,9 @@
 			  	function erstelleArtliste() {
 			  		$("#Arten").empty();
 			  		//hat hArtEdit.html eine hArtListe übergeben?
-					if (typeof sessionStorage.getItem("hArtListe") !== "undefined" && sessionStorage.getItem("hArtListe")) {
+					if (typeof sessionStorage.hArtListe !== "undefined" && sessionStorage.hArtListe) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
-						hArtListe = JSON.parse(sessionStorage.getItem("hArtListe"));
+						hArtListe = JSON.parse(sessionStorage.hArtListe);
 						erstelleArtliste_2();
 					} else {
 				  		if (typeof Username === "undefined" || !Username) {
@@ -208,7 +208,7 @@
 							success: function (data) {
 								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 								hArtListe = data;
-								sessionStorage.setItem("hArtListe", JSON.stringify(hArtListe));
+								sessionStorage.hArtListe = JSON.stringify(hArtListe);
 								erstelleArtliste_2();
 							}
 						});

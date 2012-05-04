@@ -53,11 +53,11 @@
 				ArtGruppe = get_url_param("aArtGruppe");
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
-				BeobId = sessionStorage.getItem("BeobId") || "";
-				ProjektId = sessionStorage.getItem("ProjektId") || "";
-				RaumId = sessionStorage.getItem("RaumId") || "";
-				OrtId = sessionStorage.getItem("OrtId") || "";
-				ZeitId = sessionStorage.getItem("ZeitId") || "";
+				BeobId = sessionStorage.BeobId || "";
+				ProjektId = sessionStorage.ProjektId || "";
+				RaumId = sessionStorage.RaumId || "";
+				OrtId = sessionStorage.OrtId || "";
+				ZeitId = sessionStorage.ZeitId || "";
 
 				erstelleArtenliste();
 
@@ -97,10 +97,10 @@
 						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
-								sessionStorage.setItem("ArtenSprache", "Deutsch");
+								sessionStorage.ArtenSprache = "Deutsch";
 							} else {
 								doc.ArtenSprache = "Lateinisch";
-								sessionStorage.setItem("ArtenSprache", "Lateinisch");
+								sessionStorage.ArtenSprache = "Lateinisch";
 							}
 							$db.saveDoc(doc, {
 								success: function () {
@@ -153,22 +153,22 @@
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
-					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
+					if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
 					  	viewname = 'evab/User?key="' + Username + '"';
 					  	$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
 								User = data.rows[0].value;
 								ArtenSprache = User.ArtenSprache;
-								sessionStorage.setItem("ArtenSprache", ArtenSprache);
+								sessionStorage.ArtenSprache = ArtenSprache;
 								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
 								UserId = User._id;
-								sessionStorage.setItem("UserId", UserId);
-								sessionStorage.setItem("Autor", User.Autor);
+								sessionStorage.UserId = UserId;
+								sessionStorage.Autor = User.Autor;
 							}
 						});
 					}
-					ArtenSprache = sessionStorage.getItem("ArtenSprache");
+					ArtenSprache = sessionStorage.ArtenSprache;
 					switch(ArtenSprache) {
 					case "Lateinisch":
 						$("#al_ButtonSprache .ui-btn-text").text("Deutsch");

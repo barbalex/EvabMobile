@@ -99,18 +99,16 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function () {
-				//RaumId = sessionStorage.getItem("RaumId");
-				//ProjektId = get_url_param("ProjektId");
 				initiiereOrtEdit(OrtId);
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//nach dem Erstaufruf muss die OrtId geholt werden. Beim ersten Aufruf die id aus der Url
 				if (typeof OrtId === "undefined") {
-					OrtId = sessionStorage.getItem("OrtId");
+					OrtId = sessionStorage.OrtId;
 				}
-				RaumId = sessionStorage.getItem("RaumId");
-				ProjektId = sessionStorage.getItem("ProjektId");
+				RaumId = sessionStorage.RaumId;
+				ProjektId = sessionStorage.ProjektId;
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
@@ -714,8 +712,8 @@
 						nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 					} else {
 						//hat hOrtListe.html eine OrtListe übergeben?
-						if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
-							OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
+						if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
+							OrtListe = JSON.parse(sessionStorage.OrtListe);
 							nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 						} else {
 							//keine Ortliste vorhanden
@@ -729,7 +727,7 @@
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-									sessionStorage.setItem("OrtListe", JSON.stringify(OrtListe));
+									sessionStorage.OrtListe = JSON.stringify(OrtListe);
 									nächsterVorigerOrt_2(IdAktuell, NächsterOderVoriger);
 								}
 							});

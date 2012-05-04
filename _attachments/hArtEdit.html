@@ -92,14 +92,15 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
+
 				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
-				//hBeobId ist dann undefined und sessionStorage.getItem("hBeobId") ist null
+				//hBeobId ist dann undefined und sessionStorage.hBeobId ist null
 				if (typeof hBeobId === "undefined") {
-					if (typeof sessionStorage.getItem("hBeobId") === "undefined" || !sessionStorage.getItem("hBeobId")) {
+					if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
 						hBeobId = get_url_param("id");
 						erstinitiierehBeobEdit(hBeobId);
 					} else {
-						hBeobId = sessionStorage.getItem("hBeobId");
+						hBeobId = sessionStorage.hBeobId;
 					}
 				}
 				initiierehBeobEdit(hBeobId);
@@ -107,19 +108,19 @@
 
 			$("#hArtEditPage").on("pageinit", function () {
 				//Beim allerersten Aufruf muss die hBeobId aus der Url gelesen und die übrigen ID's bereitgestellt werden
-				//hBeobId ist dann undefined und sessionStorage.getItem("hBeobId") ist null
+				//hBeobId ist dann undefined und sessionStorage.hBeobId ist null
 				if (typeof hBeobId === "undefined") {
-					if (typeof sessionStorage.getItem("hBeobId") === "undefined" || !sessionStorage.getItem("hBeobId")) {
+					if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
 						hBeobId = get_url_param("id");
 						erstinitiierehBeobEdit(hBeobId);
 					} else {
-						hBeobId = sessionStorage.getItem("hBeobId");
+						hBeobId = sessionStorage.hBeobId;
 					}
 				}
-				ZeitId = sessionStorage.getItem("ZeitId");
-				OrtId = sessionStorage.getItem("OrtId");
-				RaumId = sessionStorage.getItem("RaumId");
-				ProjektId = sessionStorage.getItem("ProjektId");
+				ZeitId = sessionStorage.ZeitId;
+				OrtId = sessionStorage.OrtId;
+				RaumId = sessionStorage.RaumId;
+				ProjektId = sessionStorage.ProjektId;
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
@@ -468,8 +469,8 @@
 						nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 					} else {
 						//hat hArtListe.html eine ArtListe übergeben?
-						if (typeof sessionStorage.getItem("hArtListe") !== "undefined" && sessionStorage.getItem("hArtListe")) {
-							hArtListe = JSON.parse(sessionStorage.getItem("hArtListe"));
+						if (typeof sessionStorage.hArtListe !== "undefined" && sessionStorage.hArtListe) {
+							hArtListe = JSON.parse(sessionStorage.hArtListe);
 							nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 						} else {
 							//keine Ortliste vorhanden
@@ -482,7 +483,7 @@
 								success: function (data) {
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 									hArtListe = data;
-									sessionStorage.setItem("hArtListe", JSON.stringify(hArtListe));
+									sessionStorage.hArtListe = JSON.stringify(hArtListe);
 									nächsteVorigeArt_2(IdAktuell, NächsteOderVorige);
 								}
 							});

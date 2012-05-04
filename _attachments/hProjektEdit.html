@@ -36,12 +36,12 @@
 	<div data-role="page" id="ProjektEditPage">
 		<script type="text/javascript" charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
-				ProjektId = sessionStorage.getItem("ProjektId");
+				ProjektId = sessionStorage.ProjektId;
 				initiiereProjektEdit(ProjektId);
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = sessionStorage.getItem("ProjektId");
+				ProjektId = sessionStorage.ProjektId;
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
@@ -557,9 +557,9 @@
 						nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
 					} else {
 						//hat hProjektListe.html eine Projektliste übergeben?
-						if (typeof sessionStorage.getItem("Projektliste") !== "undefined" && sessionStorage.getItem("Projektliste")) {
+						if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
-							Projektliste = JSON.parse(sessionStorage.getItem("Projektliste"));
+							Projektliste = JSON.parse(sessionStorage.Projektliste);
 							nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
 						} else {
 							//keine Projektliste übergeben
@@ -573,7 +573,7 @@
 									//Projektliste bereitstellen
 									Projektliste = data;
 									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-									sessionStorage.setItem("Projektliste", JSON.stringify(Projektliste));
+									sessionStorage.Projektliste = JSON.stringify(Projektliste);
 									nächstesVorigesProjekt_2(IdAktuell, NächstesOderVoriges);
 								}
 							});

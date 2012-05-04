@@ -76,8 +76,8 @@
 
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		RaumId = sessionStorage.getItem("RaumId");
-		ProjektId = sessionStorage.getItem("ProjektId");
+		RaumId = sessionStorage.RaumId;
+		ProjektId = sessionStorage.ProjektId;
 		
 		erstelleOrtListe();
 
@@ -107,7 +107,7 @@
 		$("#Orte").on("swipeleft", ".Ort", function () {
 			var OrtId;
 			OrtId = $(this).attr('OrtId');
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
 		});
 
@@ -115,7 +115,7 @@
 			var OrtId;
 			event.preventDefault();
 			OrtId = $(this).attr('OrtId');
-			sessionStorage.setItem("OrtId", OrtId);
+			sessionStorage.OrtId = OrtId;
 			window.open("hOrtEdit.html?id=" + OrtId, target = "_self");
 		});
 
@@ -214,9 +214,9 @@
   	function erstelleOrtListe() {
 		$("#Orte").empty();
 		//hat hOrtEdit.html eine OrtListe übergeben?
-		if (typeof sessionStorage.getItem("OrtListe") !== "undefined" && sessionStorage.getItem("OrtListe")) {
+		if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
 			//Objekte werden als Strings übergeben, müssen geparst werden
-			OrtListe = JSON.parse(sessionStorage.getItem("OrtListe"));
+			OrtListe = JSON.parse(sessionStorage.OrtListe);
 			erstelleOrtListe_2();
 		} else {
 			if (typeof Username === "undefined" || !Username) {
@@ -227,7 +227,7 @@
 				success: function (data) {
 					//OrtListe für hOrtEdit bereitstellen
 					OrtListe = data;
-					sessionStorage.setItem("OrtListe", JSON.stringify(data));	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+					sessionStorage.OrtListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 					erstelleOrtListe_2();
 				}
 			});

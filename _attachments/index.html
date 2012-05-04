@@ -118,7 +118,7 @@
 				var userCtx;
 				userCtx = r.userCtx;
 				Username = userCtx.name;
-				sessionStorage.setItem("Username", Username);
+				sessionStorage.Username = Username;
 				if (userCtx.name) {
 					oeffneZuletztBenutzteSeite(Username);
 				} else if (userCtx.roles.indexOf("_admin") !== -1) {
@@ -139,7 +139,7 @@
 		    async: false,
 		    success: function (session) {
 		    	Username = session.userCtx.name;
-		    	sessionStorage.setItem("Username", Username);
+		    	sessionStorage.Username = Username;
 		    	if (session.userCtx.name) {
 		        	oeffneZuletztBenutzteSeite(Username);
 		       	} else {

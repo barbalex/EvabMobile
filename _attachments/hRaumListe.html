@@ -59,7 +59,7 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
-				ProjektId = sessionStorage.getItem("ProjektId");
+				ProjektId = sessionStorage.ProjektId;
 				erstelleRaumListe();
 				speichereLetzteUrl();
 
@@ -86,7 +86,7 @@
 				$("#Räume").on("swipeleft", ".Raum", function () {
 					var RaumId;
 					RaumId = $(this).attr('RaumId');
-					sessionStorage.setItem("RaumId", RaumId);
+					sessionStorage.RaumId = RaumId;
 					window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
 				});
 
@@ -94,7 +94,7 @@
 					var RaumId;
 					event.preventDefault();
 					RaumId = $(this).attr('RaumId');
-					sessionStorage.setItem("RaumId", RaumId);
+					sessionStorage.RaumId = RaumId;
 					window.open("hRaumEdit.html?id=" + RaumId, target = "_self");
 				});
 
@@ -190,9 +190,9 @@
 			  	function erstelleRaumListe() {
 					$("#Räume").empty();
 					//hat hRaumEdit.html eine RaumListe übergeben?
-					if (typeof sessionStorage.getItem("RaumListe") !== "undefined" && sessionStorage.getItem("RaumListe")) {
+					if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
-						RaumListe = JSON.parse(sessionStorage.getItem("RaumListe"));
+						RaumListe = JSON.parse(sessionStorage.RaumListe);
 						erstelleRaumListe_2();
 					} else {
 						if (typeof Username === "undefined" || !Username) {
@@ -204,7 +204,7 @@
 								RaumListe = data;
 								//RaumListe für haumEdit bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								sessionStorage.setItem("RaumListe", JSON.stringify(RaumListe));
+								sessionStorage.RaumListe = JSON.stringify(RaumListe);
 								erstelleRaumListe_2();
 							}
 						});

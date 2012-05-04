@@ -51,11 +51,11 @@
 				}
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
-				BeobId = sessionStorage.getItem("BeobId") || "";
-				ProjektId = sessionStorage.getItem("ProjektId") || "";
-				RaumId = sessionStorage.getItem("RaumId") || "";
-				OrtId = sessionStorage.getItem("OrtId") || "";
-				ZeitId = sessionStorage.getItem("ZeitId") || "";
+				BeobId = sessionStorage.BeobId || "";
+				ProjektId = sessionStorage.ProjektId || "";
+				RaumId = sessionStorage.RaumId || "";
+				OrtId = sessionStorage.OrtId || "";
+				ZeitId = sessionStorage.ZeitId || "";
 
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
@@ -100,11 +100,11 @@
 
 				Status = get_url_param("Status") || "edit";
 				Von = get_url_param("Von");
-				BeobId = sessionStorage.getItem("BeobId") || "";
-				ProjektId = sessionStorage.getItem("ProjektId") || "";
-				RaumId = sessionStorage.getItem("RaumId") || "";
-				OrtId = sessionStorage.getItem("OrtId") || "";
-				ZeitId = sessionStorage.getItem("ZeitId") || "";
+				BeobId = sessionStorage.BeobId || "";
+				ProjektId = sessionStorage.ProjektId || "";
+				RaumId = sessionStorage.RaumId || "";
+				OrtId = sessionStorage.OrtId || "";
+				ZeitId = sessionStorage.ZeitId || "";
 
 				erstelleArtgruppenListe();
 
@@ -118,23 +118,23 @@
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
-					if (typeof sessionStorage.getItem("ArtenSprache") === "undefined" || !sessionStorage.getItem("ArtenSprache")) {
+					if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
 						viewname = 'evab/User?key="' + Username + '"';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {
 								User = data.rows[0].value;
 								ArtenSprache = User.ArtenSprache;
-								sessionStorage.setItem("ArtenSprache", ArtenSprache);
+								sessionStorage.ArtenSprache = ArtenSprache;
 								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
 								UserId = User._id;
-								sessionStorage.setItem("UserId", UserId);
-								sessionStorage.setItem("Autor", User.Autor);
+								sessionStorage.UserId = UserId;
+								sessionStorage.Autor = User.Autor;
 								erstelleArtgruppenListe_2();
 							}
 						});
 					} else {
-						ArtenSprache = sessionStorage.getItem("ArtenSprache");
+						ArtenSprache = sessionStorage.ArtenSprache;
 						erstelleArtgruppenListe_2();
 					}
 				}
@@ -229,7 +229,7 @@
 				function erstelleArgruppenListeLat() {
 					//Artgruppenliste verfügbar machen
 					var viewname;
-					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
+					if (typeof sessionStorage.Artgruppenliste === "undefined" || !sessionStorage.Artgruppenliste) {
 						viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
@@ -237,12 +237,12 @@
 								Artgruppenliste = data;
 								//Artgruppenliste bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								sessionStorage.setItem("Artgruppenliste", JSON.stringify(Artgruppenliste));
+								sessionStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
 								erstelleArgruppenListeLat_2();
 							}
 						});
 					} else {
-						Artgruppenliste = JSON.parse(sessionStorage.getItem("Artgruppenliste"));
+						Artgruppenliste = JSON.parse(sessionStorage.Artgruppenliste);
 						erstelleArgruppenListeLat_2();
 					}
 				}
@@ -278,7 +278,7 @@
 				function erstelleArgruppenListeDeutsch() {
 					//Artgruppenliste verfügbar machen
 					var viewname;
-					if (typeof sessionStorage.getItem("Artgruppenliste") === "undefined" || !sessionStorage.getItem("Artgruppenliste")) {
+					if (typeof sessionStorage.Artgruppenliste === "undefined" || !sessionStorage.Artgruppenliste) {
 						viewname = 'evab/Artgruppen';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
@@ -286,12 +286,12 @@
 								Artgruppenliste = data;
 								//Artgruppenliste bereitstellen
 								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								sessionStorage.setItem("Artgruppenliste", JSON.stringify(Artgruppenliste));
+								sessionStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
 								erstelleArgruppenListeDeutsch_2();
 							}
 						});
 					} else {
-						Artgruppenliste = JSON.parse(sessionStorage.getItem("Artgruppenliste"));
+						Artgruppenliste = JSON.parse(sessionStorage.Artgruppenliste);
 						erstelleArgruppenListeDeutsch_2();
 					}
 				}
@@ -333,10 +333,10 @@
 						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
-								sessionStorage.setItem("ArtenSprache", "Deutsch");
+								sessionStorage.ArtenSprache = "Deutsch";
 							} else {
 								doc.ArtenSprache = "Lateinisch";
-								sessionStorage.setItem("ArtenSprache", "Lateinisch");
+								sessionStorage.ArtenSprache = "Lateinisch";
 							}
 							$db.saveDoc(doc, {
 								success: function () {
