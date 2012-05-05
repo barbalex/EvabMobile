@@ -36,16 +36,16 @@
   <body>
   	<div data-role="page" id="hArtListePage">
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitLink" name="hZeitLink">zum Zeitpunkt</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hZeitLink">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
   			<a href='#' id='MenuhBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
-					<li><a href="#" rel="external" id="hZeitLink" name="hZeitLink">Zeit</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink">Arten</a></li>
+					<li><a href="#" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" id="hRaumLink">Raum</a></li>
+					<li><a href="#" id="hOrtLink">Ort</a></li>
+					<li><a href="#" name="hZeitLink">Zeit</a></li>
+					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -71,12 +71,30 @@
 					initiierehBeobListe();
 				}
 
-				//Links in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + sessionStorage.OrtId);
-				$("[name='hZeitLink']").attr('href', "hZeitEdit.html?id=" + sessionStorage.ZeitId);	//in Navbar und Titelleiste
-				$("#hArtListeLink").attr("href", "hArtListe.html?id=" + sessionStorage.ZeitId);
+				//Link zu Raum in Navbar und Titelleiste
+				$("body").on("click", "[name='hZeitLink']", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					window.open("hZeitEdit.html", target = "_self");
+				});
+
+				$("#hArtListePageHeader").on("click", "#hOrtLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					window.open("hOrtEdit.html", target = "_self");
+				});
+
+				$("#hArtListePageHeader").on("click", "#hRaumLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					window.open("hRaumEdit.html", target = "_self");
+				});
+
+				$("#hArtListePageHeader").on("click", "#hProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					window.open("hProjektEdit.html", target = "_self");
+				});
 
 				//Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
@@ -99,7 +117,7 @@
 					if (typeof hBeobListe !== "undefined") {
 						hBeobListe = undefined;
 					}
-					sessionStorage.removeItem("hBeobListe");
+					delete sessionStorage.hBeobListe;
 					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe", target = "_self");
 				}
 

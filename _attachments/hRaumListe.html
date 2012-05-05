@@ -35,12 +35,12 @@
   <body>
   	<div data-role="page" id="RaumListePage">
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hProjektLink" name="hProjektLink">zum Projekt</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" name="hProjektLink">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
   			<a href='#' name='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink" name="hProjektLink">Projekt</a></li>
+					<li><a href="#" rel="external" name="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" class="ui-btn-active" id="hRaumListeLink">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -68,8 +68,14 @@
 					initiiereRaumListe();
 				}
 
+				//Link zu Projekt in Navbar und Titelleiste
+				$("body").on("click", "[name='hProjektLink']", function (event) {
+					event.preventDefault();
+					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
+					window.open("hProjektEdit.html", target = "_self");
+				});
+
 				//Links in Navbar setzen
-				$("[name='hProjektLink']").attr('href', "hProjektEdit.html?id=" + sessionStorage.ProjektId);	//in Navbar und Titelleiste
 				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
 
 				//neuen Raum erstellen

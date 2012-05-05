@@ -35,15 +35,15 @@
   <body>
   	<div data-role="page" id="hZeitListePage">
   		<div data-role="header" id="hZeitListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hOrtLink" name="hOrtLink">zum Ort</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hOrtLink">zum Ort</a>
   			<h2 class="hZeitListePageTitel">Zeit</h2>
   			<a href='#' id='MenuZeitListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hRaumLink" name="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hOrtLink" name="hOrtLink">Ort</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink">Zeiten</a></li>
+					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
+					<li><a href="#" name="hOrtLink">Ort</a></li>
+					<li><a href="hZeitListe.html" rel="external" class="ui-btn-active">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -69,10 +69,24 @@
 					initiiereZeitListe();
 				}
 
-				//Links in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
-				$("[name='hOrtLink']").attr('href', "hOrtEdit.html?id=" + sessionStorage.OrtId);	//in Navbar und Titelleiste
+				//Link zu Raum in Navbar und Titelleiste
+				$("body").on("click", "[name='hOrtLink']", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					window.open("hOrtEdit.html", target = "_self");
+				});
+
+				$("#hZeitListePageHeader").on("click", "#hRaumLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					window.open("hRaumEdit.html", target = "_self");
+				});
+
+				$("#hZeitListePageHeader").on("click", "#hProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					window.open("hProjektEdit.html", target = "_self");
+				});
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
@@ -102,9 +116,6 @@
 				$(document).on("swiperight", function () {
 					window.open("hOrtListe.html?RaumId=" + sessionStorage.RaumId, target = "_self");
 				});
-
-				//Link zur OrtListe in Navbar setzen
-				$("#hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
 
 				//Menu aufbauen
 				$("#hZeitListePageHeader").on('click', '#MenuZeitListe', function (event) {

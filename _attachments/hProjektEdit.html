@@ -41,7 +41,7 @@
   			<div data-role="navbar">
 				<ul>
 					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
-					<li><a href="#" rel="external" id="hRaumListeLink">Räume</a></li>
+					<li><a href="hRaumListe.html" rel="external" id="hRaumListeLink">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -129,8 +129,6 @@
 						speichereAnhänge(sessionStorage.ProjektId);
 					}
 				});
-
-				aktualisiereLinksMitProjId();
 				
 				//Code für den Projekt-Löschen-Dialog
 				$('#hProjektEditFooter').on('click', '#LöschenDialogLinkProjektEdit', function (event) {
@@ -559,7 +557,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hProjektEdit.html?id=" + sessionStorage.ProjektId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hProjektEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -648,8 +646,7 @@
 								if (i < AnzProj) {
 									ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									initiiereProjektEdit(ProjektId);
-									window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitProjId();
+									window.history.pushState("", "", 'hProjektEdit.html'); //funktioniert in IE erst ab 10!
 								} else {
 									melde("Das ist das letzte Projekt");
 								}
@@ -658,8 +655,7 @@
 								if (i > 0) {
 									ProjektId = Projektliste.rows[i-1].value._id;
 									initiiereProjektEdit(ProjektId);
-									window.history.pushState("", "", 'hProjektEdit.html?id=' + ProjektId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitProjId();
+									window.history.pushState("", "", 'hProjektEdit.html'); //funktioniert in IE erst ab 10!
 								} else {
 									window.open("hProjektListe.html", target = "_self");
 								}
@@ -667,11 +663,6 @@
 							}
 						}
 					}
-				}
-
-				function aktualisiereLinksMitProjId() {
-					//Link zur Raumliste in Navbar setzen
-					$("#hRaumListeLink").attr("href" ,"hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
 				}
 			});
 		</script>

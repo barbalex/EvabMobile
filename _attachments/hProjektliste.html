@@ -225,7 +225,6 @@
 										var oYKoord = Ort.oYKoord;
 										var lat2 = Ort.oLatitudeDecDeg;
 										var lng2 = Ort.oLongitudeDecDeg;
-										var externalPage = "hOrtEdit.html?OrtId=" + hOrtId;
 										//var externalPage = "hOrtEdit.html";
 										var latlng2 = new google.maps.LatLng(lat2, lng2);
 										if (anzOrt === 1) {
@@ -252,7 +251,7 @@
 											'<div id="bodyContent" class="GmInfowindow">'+
 											'<p>X-Koordinate: ' + oXKoord + '</p>'+
 											'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-											"<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+											"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
 											'</div>'+
 											'</div>';
 										makeListener(map, marker, contentString);
@@ -268,6 +267,7 @@
 										map.fitBounds(bounds);
 									}
 								}
+								
 								function makeListener(map, marker, contentString) {
 									google.maps.event.addListener(marker, 'click', function () {
 										infowindow.setContent(contentString);

@@ -326,7 +326,8 @@ function speichereNeueBeob_03(doc) {
 							//$("#al_Page").removeClass('ui-page-active');
 							//$("#hArtEditPage").addClass('ui-page-active');
 						} else {
-							window.open("hArtEdit.html?id=" + data.id, target = "_self");
+							sessionStorage.hBeobId = data.id;
+							window.open("hArtEdit.html", target = "_self");
 							/*$.mobile.changePage("hArtEdit.html", {
 								type: "get",
 								data: "id=" + data.id
@@ -502,7 +503,7 @@ function erstelleNeueZeit() {
 										ZeitListe = undefined;
 									}
 									sessionStorage.removeItem("ZeitListe");
-									window.open("hZeitEdit.html?id=" + Zeit.id, target = "_self");
+									window.open("hZeitEdit.html", target = "_self");
 								},
 								error: function () {
 									melde("Fehler: neue Zeit nicht erstellt");
@@ -558,7 +559,7 @@ function erstelleNeuenOrt() {
 								OrtListe = undefined;
 							}
 							sessionStorage.removeItem("OrtListe");
-							window.open("hOrtEdit.html?id=" + data.id + "&Status=neu", target = "_self");
+							window.open("hOrtEdit.html?Status=neu", target = "_self");
 						},
 						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -600,7 +601,7 @@ function erstelleNeuenRaum() {
 						RaumListe = undefined;
 					}
 					sessionStorage.removeItem("RaumListe");
-					window.open("hRaumEdit.html?id=" + data.id + "&Status=neu", target = "_self");
+					window.open("hRaumEdit.html?Status=neu", target = "_self");
 				},
 				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
@@ -629,7 +630,7 @@ function erstelleNeuesProjekt() {
 				Projektliste = undefined;
 			}
 			delete sessionStorage.Projektliste;
-			window.open("hProjektEdit.html?id=" + data.id + "&Status=neu", target = "_self");
+			window.open("hProjektEdit.html?Status=neu", target = "_self");
 		},
 		error: function () {
 			melde("Fehler: neues Projekt nicht erstellt");
@@ -1302,7 +1303,7 @@ function initiiereOrtEdit_2(Ort) {
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-	window.history.pushState("", "", "hOrtEdit.html?id=" + Ort._id); //funktioniert in IE erst ab 10!
+	window.history.pushState("", "", "hOrtEdit.html"); //funktioniert in IE erst ab 10!
 	aktualisiereLinksMitOrtId_hoe();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
@@ -2312,7 +2313,6 @@ function erstelleKarteFürRaum() {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?id=" + hOrtId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -2338,7 +2338,7 @@ function erstelleKarteFürRaum() {
 					    '<div id="bodyContent" class="GmInfowindow">'+
 					    '<p>X-Koordinate: ' + oXKoord + '</p>'+
 					    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-					    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+					    "<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
 					    '</div>'+
 					    '</div>';
 					makeListener(map, marker, contentString);
@@ -2412,7 +2412,6 @@ function erstelleKarteFürProjekt() {
 					var oYKoord = Ort.oYKoord;
 					var lat2 = Ort.oLatitudeDecDeg;
 					var lng2 = Ort.oLongitudeDecDeg;
-					var externalPage = "hOrtEdit.html?id=" + hOrtId;
 					var latlng2 = new google.maps.LatLng(lat2, lng2);
 					if (anzOrt === 1) {
 						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -2438,7 +2437,7 @@ function erstelleKarteFürProjekt() {
 					    '<div id="bodyContent" class="GmInfowindow">'+
 					    '<p>X-Koordinate: ' + oXKoord + '</p>'+
 					    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-					    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+					    "<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
 					    '</div>'+
 					    '</div>';
 					makeListener(map, marker, contentString);
@@ -2577,6 +2576,14 @@ function pruefeAnmeldung() {
 function aktualisiereLinksMitOrtId_hoe() {
 	//Link zur Zeit in Navbar setzen
 	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
+}
+
+//setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet
+//und ruft dann hOrtEdit.html auf
+//wird von den Links in der Karte benutzt
+function oeffneOrt(OrtId) {
+	sessionStorage.OrtId = OrtId;
+	window.open("hOrtEdit.html", target = "_self");
 }
 
 
