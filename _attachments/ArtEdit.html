@@ -79,7 +79,7 @@
 						window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
 					} else if (zurueck === "hArtEdit.html") {
 						$.mobile.changePage($('#hArtEditPage'));
-						window.history.pushState("", "", "hArtEdit.html?id=" + hBeobId); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "hArtEdit.html"); //funktioniert in IE erst ab 10!
 					} else {
 						$.mobile.changePage("BeobListe.html");
 					}

@@ -443,7 +443,7 @@
 											sessionStorage.removeItem("OrtId");
 											//Rückmeldung += "\rOrt gelöscht";
 											//melde(Rückmeldung);
-											window.open('hOrtListe.html?RaumId=' + sessionStorage.RaumId, target='_self');
+											window.open('hOrtListe.html', target='_self');
 											return true;
 										},
 										error: function () {
@@ -662,7 +662,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hOrtEdit.html?id=" + sessionStorage.OrtId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hOrtEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -759,7 +759,7 @@
 									OrtId = OrtListe.rows[i-1].value._id;
 									initiiereOrtEdit(OrtId);
 								} else {
-									window.open("hOrtListe.html?RaumId=" + sessionStorage.RaumId, target = "_self");
+									window.open("hOrtListe.html", target = "_self");
 								}
 								break;
 							}

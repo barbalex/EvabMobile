@@ -41,7 +41,7 @@
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" rel="external" name="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hRaumListeLink">Räume</a></li>
+					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -75,9 +75,6 @@
 					window.open("hProjektEdit.html", target = "_self");
 				});
 
-				//Links in Navbar setzen
-				$("#hRaumListeLink").attr("href", "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
-
 				//neuen Raum erstellen
 				$("body").on("click", "[name='hRaumNeuLink']", function (event) {
 					event.preventDefault();
@@ -88,7 +85,7 @@
 				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
 					var zurueck;
 					event.preventDefault();
-					zurueck = "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId;
+					zurueck = "hRaumListe.html";
 					erstelleMenuRaumListe(zurueck, this);
 				});
 
@@ -96,7 +93,7 @@
 					var RaumId;
 					RaumId = $(this).attr('RaumId');
 					sessionStorage.RaumId = RaumId;
-					window.open("hOrtListe.html?RaumId=" + RaumId, target = "_self");
+					window.open("hOrtListe.html", target = "_self");
 				});
 
 				$("#Räume").on("click", ".Raum", function (event) {
@@ -104,7 +101,7 @@
 					event.preventDefault();
 					RaumId = $(this).attr('RaumId');
 					sessionStorage.RaumId = RaumId;
-					window.open("hRaumEdit.html?id=" + RaumId, target = "_self");
+					window.open("hRaumEdit.html", target = "_self");
 				});
 
 				$("#Räume").on("swipeleft", ".erste", function () {

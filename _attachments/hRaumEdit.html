@@ -291,7 +291,7 @@
 												sessionStorage.removeItem("RaumId");
 												//Rückmeldung += "\rRaum gelöscht";
 												//melde(Rückmeldung);
-												window.open('hRaumListe.html?ProjektId=' + sessionStorage.ProjektId, target = '_self');
+												window.open('hRaumListe.html', target = '_self');
 												return true;
 											},
 											error: function () {
@@ -508,7 +508,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hRaumEdit.html?id=" + sessionStorage.RaumId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hRaumEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -597,7 +597,7 @@
 								if (i < AnzRaum) {
 									RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", 'hRaumEdit.html'); //funktioniert in IE erst ab 10!
 								} else {
 									melde("Das ist der letzte Raum");
 								}
@@ -606,9 +606,9 @@
 								if (i > 0) {
 									RaumId = RaumListe.rows[i-1].value._id;
 									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", 'hRaumEdit.html'); //funktioniert in IE erst ab 10!
 								} else {
-									window.open("hRaumListe.html?ProjektId=" + sessionStorage.ProjektId, target = "_self");
+									window.open("hRaumListe.html", target = "_self");
 								}
 								break;
 							}

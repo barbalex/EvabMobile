@@ -131,11 +131,11 @@
 					var hBeobId;
 					hBeobId = $(this).attr('hBeobId');
 					sessionStorage.hBeobId = hBeobId;
-					window.open("hArtEdit.html?id=" + hBeobId, target = "_self");
+					window.open("hArtEdit.html", target = "_self");
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
+					window.open("hZeitListe.html", target = "_self");
 				});
 
 				//Menü aufbauen
@@ -157,7 +157,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hArtListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

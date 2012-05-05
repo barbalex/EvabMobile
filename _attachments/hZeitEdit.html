@@ -287,7 +287,7 @@
 										sessionStorage.removeItem("ZeitId");
 										//Rückmeldung += "<br>Zeit gelöscht";
 										//melde(Rückmeldung);
-										window.open('hZeitListe.html?OrtId=' + sessionStorage.OrtId , target = '_self');
+										window.open('hZeitListe.html' , target = '_self');
 										return true;
 									},
 									error: function () {
@@ -427,7 +427,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hZeitEdit.html?id=" + sessionStorage.ZeitId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hZeitEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -505,7 +505,7 @@
 								if (i < AnzZeit) {
 									ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
 									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "hZeitEdit.html"); //funktioniert in IE erst ab 10!
 								} else {
 									melde("Das ist die letzte Zeit");
 								}
@@ -514,9 +514,9 @@
 								if (i > 0) {
 									ZeitId = ZeitListe.rows[i-1].value._id;
 									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "hZeitEdit.html"); //funktioniert in IE erst ab 10!
 								} else {
-									window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
+									window.open("hZeitListe.html", target = "_self");
 								}
 								break;
 							}

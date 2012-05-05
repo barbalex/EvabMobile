@@ -100,7 +100,7 @@
 					var OrtId;
 					OrtId = $(this).attr('OrtId');
 					sessionStorage.OrtId = OrtId;
-					window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
+					window.open("hZeitListe.html", target = "_self");
 				});
 
 				$("#Orte").on("click", ".Ort", function (event) {
@@ -108,7 +108,7 @@
 					event.preventDefault();
 					OrtId = $(this).attr('OrtId');
 					sessionStorage.OrtId = OrtId;
-					window.open("hOrtEdit.html?id=" + OrtId, target = "_self");
+					window.open("hOrtEdit.html", target = "_self");
 				});
 
 				$("#Orte").on("swipeleft", ".erste", function () {
@@ -116,7 +116,7 @@
 				});
 
 				$(document).on("swiperight", "#hOrtListePage", function () {
-					window.open("hRaumListe.html?ProjektId=" + sessionStorage.ProjektId, target = "_self");
+					window.open("hRaumListe.html", target = "_self");
 				});
 
 				$("#hOrtListePageFooter").on('click', '#GeButton', function (event) {
@@ -157,7 +157,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hOrtListe.html?RaumId=" + sessionStorage.RaumId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=hOrtListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

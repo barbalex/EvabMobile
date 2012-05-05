@@ -435,7 +435,7 @@
 									sessionStorage.removeItem("hBeobListe");
 									sessionStorage.removeItem("hBeobId");
 									//melde("Art gelöscht");
-									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
+									window.open("hArtListe.html", target = "_self");
 								},
 								error: function () {
 									melde("Fehler: Art nicht gelöscht");
@@ -527,7 +527,7 @@
 									hBeobId = hBeobListe.rows[i-1].value._id;
 									initiierehBeobEdit(hBeobId);
 								} else {
-									window.open("hArtListe.html?id=" + sessionStorage.ZeitId, target = "_self");
+									window.open("hArtListe.html", target = "_self");
 								}
 								break;
 							}

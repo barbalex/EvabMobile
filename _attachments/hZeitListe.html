@@ -101,7 +101,7 @@
 					var ZeitId;
 					ZeitId = $(this).attr('ZeitId');
 					sessionStorage.ZeitId = ZeitId;
-					window.open("hArtListe.html?id=" + ZeitId, target = "_self");
+					window.open("hArtListe.html", target = "_self");
 				});
 
 				$("#Zeiten").on("click", ".Zeit", function (event) {
@@ -109,7 +109,7 @@
 					event.preventDefault();
 					ZeitId = $(this).attr('ZeitId');
 					sessionStorage.ZeitId = ZeitId;
-					window.open("hZeitEdit.html?id=" + ZeitId, target = "_self");
+					window.open("hZeitEdit.html", target = "_self");
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function () {
@@ -117,7 +117,7 @@
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hOrtListe.html?RaumId=" + sessionStorage.RaumId, target = "_self");
+					window.open("hOrtListe.html", target = "_self");
 				});
 
 				//Menu aufbauen
@@ -133,7 +133,7 @@
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
-					zurueck = "hZeitListe.html?OrtId=" + sessionStorage.OrtId;
+					zurueck = "hZeitListe.html";
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
