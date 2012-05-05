@@ -124,11 +124,12 @@
 						hBeobListe = undefined;
 					}
 					delete sessionStorage.hBeobListe;
-					window.open("Artgruppenliste.html?Status=neu&Von=hArtListe", target = "_self");
+					sessionStorage.Status = "neu";
+					sessionStorage.Von = "hArtListe";
+					window.open("Artgruppenliste.html", target = "_self");
 				}
 
 				$("#Arten").on("swipeleft click", ".beob", function () {
-					var hBeobId;
 					hBeobId = $(this).attr('hBeobId');
 					sessionStorage.hBeobId = hBeobId;
 					window.open("hArtEdit.html", target = "_self");

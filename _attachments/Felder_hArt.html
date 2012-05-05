@@ -56,10 +56,7 @@
 					if ($('#hArtEditPage').length > 0) {
 						$.mobile.changePage($('#hArtEditPage'));
 					} else {
-						$.mobile.changePage("hArtEdit.html", {
-							type: "get",
-							datA: "id=" + sessionStorage.hBeobId
-						});
+						$.mobile.changePage("hArtEdit.html");
 					}
 				});
 

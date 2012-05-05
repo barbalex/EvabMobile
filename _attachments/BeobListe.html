@@ -52,14 +52,21 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageinit", function () {
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				//sessionStorage.BeobListe ist dann null und sessionStorage.length 1
+				//sessionStorage.BeobListe ist auch null, wenn die Beobliste gelöscht wurde
+				//holeSessionStorageAusDb stellt die alte sessionStorage.BeobListe wieder her
+				//darum hier die sessionStorage.length prüfen
+				if (sessionStorage.length === 1) {
+					holeSessionStorageAusDb("BeobListe");
+				} else {
+					initiiereBeobliste();
+				}
 
-				erstelleBeobListe();
-				speichereLetzteUrl();
-
-				$("#beobachtungen").on("swipeleft", ".beob", function () {
-					var BeobId;
-					BeobId = $(this).attr('id');
-					window.open("BeobEdit.html?id=" + BeobId, target = "_self");
+				$("#beobachtungen").on("swipeleft click", ".beob", function () {
+					sessionStorage.BeobId = $(this).attr('id');
+					window.open("BeobEdit.html", target = "_self");
 				});
 
 				$("#BeobListePageFooter").on('click', '#bl_KarteÖffnen', function (event) {
@@ -116,7 +123,6 @@
 									var Autor = beob.aAutor;
 									var lat2 = beob.oLatitudeDecDeg;
 									var lng2 = beob.oLongitudeDecDeg;
-									var externalPage = "BeobEdit.html?id=" + BeobId;
 									var latlng2 = new google.maps.LatLng(lat2, lng2);
 									if (anzBeob === 1) {
 										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -145,7 +151,7 @@
 									    '<p>Autor: ' + Autor + '</p>'+
 									    '<p>Datum: ' + Datum + '</p>'+
 									    '<p>Zeit: ' + Zeit + '</p>'+
-									    "<p><a href=\"" + externalPage + "\" rel=\"external\">bearbeiten<\/a></p>"+
+									    "<p><a <a href=\"#\" onclick=\"oeffneBeob('" + BeobId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
 									    '</div>'+
 									    '</div>';
 									makeListener(map, marker, contentString);
@@ -200,14 +206,13 @@
 						BeobListe = undefined;
 					}
 					sessionStorage.removeItem("BeobListe");
+					sessionStorage.Status = "neu";
+					sessionStorage.Von = "BeobListe";
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobListe"); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html", {
-							type: "get",
-							data: "Status=neu&Von=BeobListe"
-						});
+						$.mobile.changePage("Artgruppenliste.html");
 					}
 				}
 
@@ -268,77 +273,6 @@
 				            }
 				    	}
 				  	})
-				}
-
-				//BeobListe in BeobList.html vollständig neu aufbauen
-				function erstelleBeobListe() {
-					$("#beobachtungen").empty();
-					//hat BeobEdit.html eine BeobListe übergeben?
-					if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
-						//Objekte werden als Strings übergeben, müssen geparst werden
-						BeobListe = JSON.parse(sessionStorage.BeobListe);
-						erstelleBeobListe_2()
-					} else {
-						if (typeof Username === "undefined" || !Username) {
-							pruefeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
-							success: function (data) {
-								//BeobListe für BeobEdit bereitstellen
-								BeobListe = data;
-								//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-								sessionStorage.BeobListe = JSON.stringify(BeobListe);
-								erstelleBeobListe_2()
-							}
-						});
-					}
-				}
-
-				function erstelleBeobListe_2() {
-					var i, anzBeob, beob, ListItemContainer, Titel2, Datum, Zeit, ArtGruppe, ImageLink, ArtName, externalPage;
-					anzBeob = 0;
-					ListItemContainer = "";
-					
-					for (i in BeobListe.rows) {                    //Beobachtungen zählen
-						anzBeob += 1;
-					}
-
-					Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
-					if (anzBeob === 1) {
-						Titel2 = " Beobachtung";
-					}
-					$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
-
-					if (anzBeob === 0) {
-						ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
-					} else {
-						for (i in BeobListe.rows) {                //Liste aufbauen
-							beob = BeobListe.rows[i].value;
-							key = BeobListe.rows[i].key;
-							Datum = beob.zDatum;
-							Zeit = beob.zUhrzeit;
-							ArtGruppe = beob.aArtGruppe;
-							ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-							ArtName = beob.aArtName;
-							externalPage = "BeobEdit.html?id=" + beob._id;
-							ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-							ListItemContainer += beob._id;
-							ListItemContainer += "\"><a href=\"",
-							ListItemContainer += externalPage;
-							ListItemContainer += "\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
-							ListItemContainer += ImageLink;
-							ListItemContainer += "\" /><h3 class=\"aArtName\">";
-							ListItemContainer += ArtName;
-							ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-							ListItemContainer += Datum;
-							ListItemContainer += "&nbsp; &nbsp;";
-							ListItemContainer += Zeit;
-							ListItemContainer += "<\/p><\/a> <\/li>";
-						}
-					}
-					$("#beobachtungen").html(ListItemContainer);
-					$("#beobachtungen").listview("refresh");
 				}
 			});
 		</script>

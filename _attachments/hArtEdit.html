@@ -172,19 +172,20 @@
 				//Neue Beobachtung managen
 				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function (event) {
 					event.preventDefault();
-					zuArtgruppenliste('neu');
+					sessionStorage.Status = "neu";
+					zuArtgruppenliste();
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#hArtEditForm").on("click", "#aArtGruppe", function (event) {
 					event.preventDefault();
-					zuArtgruppenliste('edit');
+					zuArtgruppenliste();
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#hArtEditForm").on("click", "#aArtName", function (event) {
 					event.preventDefault();
-					zuArtliste(sessionStorage.aArtGruppe);
+					zuArtliste();
 				});
 
 				//sichtbare Felder wählen
@@ -221,7 +222,7 @@
 			  	//Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#MenuhBeobEdit", function (event) {
 					event.preventDefault();
-					erstelleMenu_hae(this, sessionStorage.aArtGruppe);
+					erstelleMenu_hae(this);
 				});
 
 				$(document).on("swipeleft", function () {
@@ -278,61 +279,49 @@
 					});
 				});
 
-				function zuArtgruppenliste(Status) {
+				function zuArtgruppenliste() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					var link;
 					if (typeof hBeobListe !== "undefined") {
 						hBeobListe = undefined;
 					}
-					sessionStorage.removeItem("hBeobListe");
-					link = "Von=hArtEdit";
-					if (Status === 'neu') {
-						link += "&Status=neu";
-					}
+					delete sessionStorage.hBeobListe;
+					sessionStorage.Von = "hArtEdit";
 					if ($('#agl_Page').length > 0) {
 						//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", "Artgruppenliste.html?" + link); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html", {
-							type: "get",
-							data: link
-						});
+						$.mobile.changePage("Artgruppenliste.html");
 					}
 				}
 
-				function zuArtliste(aArtGruppe) {
+				function zuArtliste() {
 					var viewname;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							sessionStorage.Von = hArtEdit;
 							if (ArtGruppen_2_L) {
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artgruppenliste.html", {
-										type: "get",
-										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"
-									});
+									$.mobile.changePage("Artgruppenliste.html");
 								}
 							} else {
 								if ($('al_Page').length > 0) {
 									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('al_Page'));
-									window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artenliste.html", {
-										type: "get",
-										data: "aArtGruppe=" + aArtGruppe + "&Von=hArtEdit"
-									});
+									$.mobile.changePage("Artenliste.html");
 								}
 							}
 						}
@@ -340,7 +329,7 @@
 				}
 
 				//Menü aufbauen
-				function erstelleMenu_hae(thiz, ArtGruppe) {
+				function erstelleMenu_hae(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}

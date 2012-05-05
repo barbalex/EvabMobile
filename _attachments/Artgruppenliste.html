@@ -46,65 +46,22 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pagecreate", function () {
-				if (typeof Username === "undefined" || !Username) {
-					pruefeAnmeldung();
-				}
-				Status = get_url_param("Status") || "edit";
-				Von = get_url_param("Von");
-				BeobId = sessionStorage.BeobId || "";
-				ProjektId = sessionStorage.ProjektId || "";
-				RaumId = sessionStorage.RaumId || "";
-				OrtId = sessionStorage.OrtId || "";
-				ZeitId = sessionStorage.ZeitId || "";
-
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
 					event.preventDefault();
-					aArtGruppe = $(this).attr("ArtGruppe");
-					L = $(this).attr("L") || "";
-					switch (Von) {
-						case "BeobEdit":
-							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
-							break;
-						case "BeobListe":
-							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
-							break;
-						case "hArtListe":
-							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
-							break;
-						case "hArtEdit":
-							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von + "&Status=" + Status;
-							break;
-						case "ArtEdit":
-							link = "aArtGruppe=" + aArtGruppe + "&L=" + L + "&Von=" + Von;
-							break;
-					}
-					if (BeobId) {
-						link += "&BeobId=" + BeobId;
-					}
+					sessionStorage.aArtGruppe = $(this).attr("ArtGruppe");
+					sessionStorage.L = $(this).attr("L") || "";
 					if ($('al_Page').length > 0) {
 						//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 						$.mobile.changePage($('al_Page'));
-						window.history.pushState("", "", "Artenliste.html?" + link); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artenliste.html", {
-							type: "get",
-							data: link
-						});
+						$.mobile.changePage("Artenliste.html");
 					}
 				});
 			});
 
 			$(":jqmData(role='page')").on("pageshow", function () {
-				UserId = "";
-
-				Status = get_url_param("Status") || "edit";
-				Von = get_url_param("Von");
-				BeobId = sessionStorage.BeobId || "";
-				ProjektId = sessionStorage.ProjektId || "";
-				RaumId = sessionStorage.RaumId || "";
-				OrtId = sessionStorage.OrtId || "";
-				ZeitId = sessionStorage.ZeitId || "";
 
 				erstelleArtgruppenListe();
 
@@ -127,8 +84,7 @@
 								ArtenSprache = User.ArtenSprache;
 								sessionStorage.ArtenSprache = ArtenSprache;
 								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
-								UserId = User._id;
-								sessionStorage.UserId = UserId;
+								sessionStorage.UserId = User._id;
 								sessionStorage.Autor = User.Autor;
 								erstelleArtgruppenListe_2();
 							}
@@ -329,7 +285,7 @@
 					event.preventDefault();
 					ButtonText = this.text;
 					$db = $.couch.db("evab");
-					$db.openDoc(UserId, {
+					$db.openDoc(sessionStorage.UserId, {
 						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";

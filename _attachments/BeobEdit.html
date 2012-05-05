@@ -113,17 +113,21 @@
 		
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function () {
-				//nach dem Erstaufruf muss die BeobId geholt werden. Beim ersten Aufruf die id aus der Url
-				if (!BeobId) {
-					BeobId = get_url_param("id");
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.BeobId existiert und ungleich null ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (typeof sessionStorage.BeobId !== "undefined" && sessionStorage.BeobId) {
+					initiiereBeobEdit(sessionStorage.BeobId);
 				}
-				//Felder aufbauen und letzte url merken
-				initiiereBeobEdit(BeobId);
 			});
 
 			$(":jqmData(role='page')").on("pagecreate", function () {
-				//leerwert zuweisen, sonst kommt später Fehlermeldung is undefined
-				BeobId = "";
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				//BeobId ist dann undefined und sessionStorage.BeobId ist null
+				if (typeof sessionStorage.BeobId === "undefined" || !sessionStorage.BeobId) {
+					holeSessionStorageAusDb("BeobEdit");
+				}
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function (event) {
@@ -133,16 +137,15 @@
 						BeobListe = undefined;
 					}
 					sessionStorage.removeItem("BeobListe");
+					sessionStorage.Status = "neu";
+					sessionStorage.Von = "BeobEdit";
 					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html?Status=neu&Von=BeobEdit", reloadPage: true});
+						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html", reloadPage: true});
 						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
 						//$("#BeobEditPage").removeClass('ui-page-active');
 						//$("#agl_Page").addClass('ui-page-active');
 					} else {
-						$.mobile.changePage("Artgruppenliste.html", {
-				            type: "get",
-				            data: "Status=neu&Von=BeobEdit"
-				        });
+						$.mobile.changePage("Artgruppenliste.html");
 					}
 				});
 
@@ -153,15 +156,13 @@
 					if (typeof BeobListe !== "undefined") {
 						BeobListe = undefined;
 					}
-					sessionStorage.removeItem("BeobListe");
+					delete sessionStorage.BeobListe;
+					sessionStorage.Von = "BeobEdit";
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html?Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html", {
-							type: "get",
-							data: "Status=edit&Von=BeobEdit&BeobId=" + BeobId
-						});
+						$.mobile.changePage("Artgruppenliste.html");
 					}
 				});
 
@@ -183,18 +184,20 @@
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					viewname = 'evab/Artgruppen?key="' + aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							sessionStorage.Von = "BeobEdit";
+							delete sessionStorage.Status;	//ja kein Status = neu
 							if (ArtGruppen_2_L) {
 								$.mobile.changePage($("#agl_Page"));
-								window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 							} else {
 								$.mobile.changePage($("#al_Page"));
-								window.history.pushState("", "", "Artenliste.html?aArtGruppe=" + aArtGruppe + "&Status=edit&Von=BeobEdit&BeobId=" + BeobId); //funktioniert in IE erst ab 10!
+								window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
 							}
 						}
 					});	
@@ -238,7 +241,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(BeobId);
+						speichereAnhänge(sessionStorage.BeobId);
 					}
 				});
 				
@@ -276,7 +279,7 @@
 				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function (event) {
 					event.preventDefault();
 					$.mobile.changePage($('#BeobEditPage'));
-					window.history.pushState("", "", "hArtEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
+					window.history.pushState("", "", "hArtEdit.html"); //funktioniert in IE erst ab 10!
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
@@ -311,23 +314,23 @@
 				});
 
 				$(document).on("swipeleft", "#BeobEditContent", function () {
-					nächsteVorigeBeob(BeobId, "nächste");
+					nächsteVorigeBeob("nächste");
 				});
 
 				$(document).on("swiperight", "#BeobEditContent", function () {
-					nächsteVorigeBeob(BeobId, "vorige");
+					nächsteVorigeBeob("vorige");
 				});
 
 				//Pagination Pfeil voriger initialisieren
 				$("#BeobEditPage").on("vclick", "#PaginationPrev", function (event) {
 					event.preventDefault();
-					nächsteVorigeBeob(BeobId, 'vorige');
+					nächsteVorigeBeob('vorige');
 				});
 
 				//Pagination Pfeil nächster initialisieren
 				$("#BeobEditPage").on("vclick", "#PaginationNext", function (event) {
 					event.preventDefault();
-					nächsteVorigeBeob(BeobId, 'nächste');
+					nächsteVorigeBeob('nächste');
 				});
 
 				//Pagination Pfeiltasten initialisieren
@@ -336,12 +339,12 @@
 					if (!$(e.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
-							nächsteVorigeBeob(BeobId, 'vorige');
+							nächsteVorigeBeob('vorige');
 							e.preventDefault();
 						}
 						// Right arrow
 						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
-							nächsteVorigeBeob(BeobId, 'nächste');
+							nächsteVorigeBeob('nächste');
 							e.preventDefault();
 						}
 					}
@@ -352,7 +355,7 @@
 					event.preventDefault();
 					Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc(BeobId, {
+					$db.openDoc(sessionStorage.BeobId, {
 						success: function (Beob) {
 							delete Beob._attachments[Dateiname];
 							$db.saveDoc(Beob, {
@@ -369,17 +372,17 @@
 				//vorige der ersten => BeobListe
 				//nächste der letzten => melden
 				//erwartet ob nächster oder voriger gesucht wird
-				function nächsteVorigeBeob(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeBeob(NächsteOderVorige) {
 					//prüfen, ob BeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof BeobListe !== "undefined") {
 						//globale Variable BeobListe existiert noch
-						nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
 						//hat BeobListe.html eine BeobListe übergeben?
 						if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
 							BeobListe = JSON.parse(sessionStorage.BeobListe);
-							nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+							nächsteVorigeBeob_2(NächsteOderVorige);
 						} else {
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
@@ -393,19 +396,19 @@
 									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 									BeobListe = data;
 									sessionStorage.BeobListe = JSON.stringify(BeobListe);
-									nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige);
+									nächsteVorigeBeob_2(NächsteOderVorige);
 								}
 							});
 						}
 					}
 				}
 
-				function nächsteVorigeBeob_2(IdAktuell, NächsteOderVorige) {
+				function nächsteVorigeBeob_2(NächsteOderVorige) {
 					var i, BeobIdAktuell, BeobIdNächste, BeobIdVorige, AnzBeob;
 					for (i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
 						AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (BeobIdAktuell === IdAktuell) {
+						if (BeobIdAktuell === sessionStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzBeob) {
@@ -460,26 +463,24 @@
 					var mapcanvas = $('#map_canvas');
 					var map = new google.maps.Map(mapcanvas[0],options);
 					//google.maps.event.trigger(map,'resize');
-					var aArtGruppe = $("#aArtGruppe").val();
-					var aArtName = $("#aArtName").val();
 					var aAutor = $("#aAutor").val();
 					var zDatum = $("#zDatum").val();
 					var zUhrzeit = $("#zUhrzeit").val();
-					var image = "Artgruppenbilder/" + aArtGruppe + ".png";
+					var image = "Artgruppenbilder/" + sessionStorage.aArtGruppe + ".png";
 					if (verorted === true) {
 						var marker = new google.maps.Marker({
 							position: latlng, 
 						    map: map, 
-						    title: aArtName,
+						    title: sessionStorage.aArtName,
 						    icon: image,
 							draggable: true
 						});
 						//Marker in Array speichern, damit er gelöscht werden kann
 						markersArray.push(marker); 
 						var contentString = '<div id="content">'+
-						    '<h4 id="firstHeading" class="GmInfowindow">' + aArtName + '</h4>'+
+						    '<h4 id="firstHeading" class="GmInfowindow">' + sessionStorage.aArtName + '</h4>'+
 						    '<div id="bodyContent" class="GmInfowindow">'+
-						    '<p>Art-Gruppe: ' + aArtGruppe + '</p>'+
+						    '<p>Art-Gruppe: ' + sessionStorage.aArtGruppe + '</p>'+
 						    '<p>Autor: ' + aAutor + '</p>'+
 						    '<p>Datum: ' + zDatum + '</p>'+
 						    '<p>Zeit: ' + zUhrzeit + '</p>'+
@@ -497,17 +498,17 @@
 						});
 					}
 					google.maps.event.addListener(map, 'click', function (event) {
-						placeMarker(event.latLng, map, marker, image, aArtName);
+						placeMarker(event.latLng, map, marker, image);
 					});
 				}
 
-				function placeMarker(location, map, marker, image, aArtName) {
+				function placeMarker(location, map, marker, image) {
 					//zuerst bisherigen Marker löschen
 					clearMarkers();
 					var marker = new google.maps.Marker({
 				    	position: location, 
 				    	map: map,
-				    	title: aArtName,
+				    	title: sessionStorage.aArtName,
 				    	icon: image,
 						draggable: true
 					});
@@ -598,11 +599,11 @@
 						        	if ($('#ArtEditPage').length > 0) {
 						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html?id=" + aArtId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", "ArtEdit.html?id=" + sessionStorage.aArtId); //funktioniert in IE erst ab 10!
 						        	} else {
 						        		$.mobile.changePage("ArtEdit.html", {
 						        			type: "get",
-						        			data: "id=" + aArtId
+						        			data: "id=" + sessionStorage.aArtId
 						        		});
 						        	}
 				        		},
@@ -611,7 +612,7 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=BeobEdit.html?id=" + BeobId, target = "_self");
+						        	window.open("FeldListe.html?zurueck=BeobEdit.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
@@ -660,7 +661,7 @@
 					}
 					sessionStorage.removeItem("BeobListe");
 					$db = $.couch.db("evab");
-					$db.openDoc(BeobId, {
+					$db.openDoc(sessionStorage.BeobId, {
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
@@ -681,7 +682,7 @@
 				function speichern(Feldname, Feldwert) {
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(BeobId, {
+					$db.openDoc(sessionStorage.BeobId, {
 						success: function (Beob) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
@@ -689,9 +690,9 @@
 							} else if (Beob[Feldname]) {
 								delete Beob[Feldname]
 							}
-							Beob.aArtGruppe = aArtGruppe;
-							Beob.aArtName = aArtName;
-							Beob.aArtId = aArtId;
+							Beob.aArtGruppe = sessionStorage.aArtGruppe;
+							Beob.aArtName = sessionStorage.aArtName;
+							Beob.aArtId = sessionStorage.aArtId;
 							//alles speichern
 							$db.saveDoc(Beob, {
 								error: function () {
@@ -705,7 +706,7 @@
 				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(BeobId, {
+					$db.openDoc(sessionStorage.BeobId, {
 						success: function (Beob) {
 							//Längen- und Breitengrad sind in keinem Feld dargestellt
 							//sie müssen aus ihren Variabeln gespeichert werden

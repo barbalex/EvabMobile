@@ -47,17 +47,6 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$(":jqmData(role='page')").on("pageshow", function () {
-				var Artgruppe, Status, Von, BeobId, ProjektId, RaumId, OrtId, ZeitId;
-				UserId = "";
-				
-				ArtGruppe = get_url_param("aArtGruppe");
-				Status = get_url_param("Status") || "edit";
-				Von = get_url_param("Von");
-				BeobId = sessionStorage.BeobId || "";
-				ProjektId = sessionStorage.ProjektId || "";
-				RaumId = sessionStorage.RaumId || "";
-				OrtId = sessionStorage.OrtId || "";
-				ZeitId = sessionStorage.ZeitId || "";
 
 				erstelleArtenliste();
 
@@ -66,9 +55,9 @@
 					event.preventDefault();
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					ArtId = $(this).attr("artid");
-					if (Status === "neu") {
-						speichereNeueBeob(ArtGruppe, ArtBezeichnung, ArtId, Von, ProjektId, RaumId, OrtId, sessionStorage.ZeitId);
-					} else if (Von === "ArtEdit") {
+					if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
+						speichereNeueBeob(ArtBezeichnung, ArtId);
+					} else if (sessionStorage.Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						if ($('#ArtEditPage').length > 0) {
 							//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
@@ -81,7 +70,7 @@
 							});
 						}
 					} else {
-						speichereBeobNeueArtgruppeArt(BeobId, ArtGruppe, ArtBezeichnung, ArtId, Von);
+						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);
 					}
 				});
 
@@ -93,7 +82,7 @@
 					}
 					ButtonText = this.text;
 					$db = $.couch.db("evab");
-					$db.openDoc(UserId, {
+					$db.openDoc(sessionStorage.UserId, {
 						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
@@ -108,7 +97,7 @@
 								//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 								//wenn nein: direkt die Artenliste aktualisieren
 									var viewname;
-									viewname = 'evab/Artgruppen?key="' + ArtGruppe + '"'; 
+									viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"'; 
 									$db.view(viewname, {
 										success: function (data) {
 										//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
@@ -122,12 +111,9 @@
 												if ($('#agl_Page').length > 0) {
 													//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 													$.mobile.changePage($('#agl_Page'));
-													window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von); //funktioniert in IE erst ab 10!
+													window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 												} else {
-													$.mobile.changePage("Artgruppenliste.html", {
-														type: "get",
-														data: "aArtGruppe=" + ArtGruppe + "&Status=" + Status + "&Von=" + Von
-													});
+													$.mobile.changePage("Artgruppenliste.html");
 												}
 											} else {
 												erstelleArtenliste();
@@ -159,17 +145,14 @@
 						$db.view(viewname, {
 							success: function (data) {
 								User = data.rows[0].value;
-								ArtenSprache = User.ArtenSprache;
-								sessionStorage.ArtenSprache = ArtenSprache;
+								sessionStorage.ArtenSprache = User.ArtenSprache;
 								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
-								UserId = User._id;
-								sessionStorage.UserId = UserId;
+								sessionStorage.UserId = User._id;
 								sessionStorage.Autor = User.Autor;
 							}
 						});
 					}
-					ArtenSprache = sessionStorage.ArtenSprache;
-					switch(ArtenSprache) {
+					switch(sessionStorage.ArtenSprache) {
 					case "Lateinisch":
 						$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
 						erstelleArtenlisteLateinisch();
@@ -182,14 +165,11 @@
 				}
 
 				function erstelleArtenlisteLateinisch() {
-					var ArtGruppe, L;
-					ArtGruppe = get_url_param("aArtGruppe");
-					L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (!L) {
-						viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
+					if (typeof sessionStorage.L === "undefined" || !sessionStorage.L) {
+						viewname = 'evab/Artliste?startkey=["' + sessionStorage.aArtGruppe + '"]&endkey=["' + sessionStorage.aArtGruppe + '",{},{}]';
 					} else {
-						viewname = 'evab/Artliste?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
+						viewname = 'evab/Artliste?startkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '"]&endkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '",{}]';
 					}
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
@@ -221,14 +201,11 @@
 				}
 
 				function erstelleArtenlisteDeutsch() {
-					var ArtGruppe, L;
-					ArtGruppe = get_url_param("aArtGruppe");
-					L = get_url_param("L");
 					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (!L) {
-						viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '"]&endkey=["' + ArtGruppe + '",{},{}]';
+					if (typeof sessionStorage.L === "undefined" || !sessionStorage.L) {
+						viewname = 'evab/ArtlisteDeutsch?startkey=["' + sessionStorage.aArtGruppe + '"]&endkey=["' + sessionStorage.aArtGruppe + '",{},{}]';
 					} else {
-						viewname = 'evab/ArtlisteDeutsch?startkey=["' + ArtGruppe + '","' + L + '"]&endkey=["' + ArtGruppe + '","' + L + '",{}]';
+						viewname = 'evab/ArtlisteDeutsch?startkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '"]&endkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '",{}]';
 					}
 					$db = $.couch.db("evab");
 					$db.view(viewname, {

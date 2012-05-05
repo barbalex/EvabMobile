@@ -215,7 +215,7 @@ function melde(Meldung) {
 		});
 }
 
-function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, hRaumId, hOrtId, hZeitId) {
+function speichereNeueBeob(aArtBezeichnung, ArtId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //aufgerufen bloss von Artenliste.html
@@ -226,21 +226,22 @@ function speichereNeueBeob(aArtGruppe, aArtBezeichnung, ArtId, Von, hProjektId, 
 	}
 	doc = {};
 	doc.User = Username;
-	doc.aArtGruppe = aArtGruppe;
+	doc.aArtGruppe = sessionStorage.aArtGruppe;
+	delete sessionStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = ArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	if (Von === "hArtListe" || Von === "hArtEdit") {
+	if (sessionStorage.Von === "hArtListe" || sessionStorage.Von === "hArtEdit") {
 		doc.Typ = "hArt";
-		doc.hProjektId = hProjektId;
-		doc.hRaumId = hRaumId;
-		doc.hOrtId = hOrtId;
-		doc.hZeitId = hZeitId;
+		doc.hProjektId = sessionStorage.ProjektId;
+		doc.hRaumId = sessionStorage.RaumId;
+		doc.hOrtId = sessionStorage.OrtId;
+		doc.hZeitId = sessionStorage.ZeitId;
 		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
 		speichereNeueBeob_02(doc);
 	} else {
-		//Von == "BeobListe" || Von == "BeobEdit"
+		//sessionStorage.Von == "BeobListe" || sessionStorage.Von == "BeobEdit"
 		doc.Typ = "Beobachtung";
 		speichereNeueBeob_03(doc);
 	}
@@ -328,10 +329,7 @@ function speichereNeueBeob_03(doc) {
 						} else {
 							sessionStorage.hBeobId = data.id;
 							window.open("hArtEdit.html", target = "_self");
-							/*$.mobile.changePage("hArtEdit.html", {
-								type: "get",
-								data: "id=" + data.id
-							});*/
+							//$.mobile.changePage("hArtEdit.html");
 						}
 					} else {
 						//Variabeln verfügbar machen
@@ -357,7 +355,6 @@ function speichereNeueBeob_03(doc) {
 						}
 						//window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target = "_self");
 						//$.mobile.changePage("BeobEdit.html?id=" + data.id, {reloadPage:"true", allowSamePageTransition:"true"});
-						GetGeolocation();
 					}
 				},
 				error: function () {
@@ -369,19 +366,20 @@ function speichereNeueBeob_03(doc) {
 }
 
 //Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
-//erwartet Von = von welchem Formular aufgerufen wurde
-function speichereBeobNeueArtgruppeArt(BeobId, aArtGruppe, aArtName, ArtId, Von) {
+//erwartet sessionStorage.Von = von welchem Formular aufgerufen wurde
+function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 $db = $.couch.db("evab");
-$db.openDoc(BeobId, {
+$db.openDoc(sessionStorage.BeobId, {
 		success: function (Beob) {
-			if (aArtGruppe) {
-				Beob.aArtGruppe = aArtGruppe;
+			if (typeof sessionStorage.aArtGruppe !== "undefined" && sessionStorage.aArtGruppe) {
+				Beob.aArtGruppe = sessionStorage.aArtGruppe;
+				delete sessionStorage.aArtGruppe;
 			}
 			Beob.aArtName = aArtName;
 			Beob.aArtId = ArtId;
 			$db.saveDoc(Beob, {
 				success: function (data) {
-					if (Von === "BeobListe" || Von === "BeobEdit") {
+					if (sessionStorage.Von === "BeobListe" || sessionStorage.Von === "BeobEdit") {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
@@ -392,13 +390,11 @@ $db.openDoc(BeobId, {
 						sessionStorage.removeItem("BeobListe");
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
-							//alert("BeobId = " + BeobId);
 							initiiereBeobEdit(BeobId);
 						} else {
 							window.open("BeobEdit.html?id=" + BeobId, target = "_self");
 							//$.mobile.changePage("BeobEdit.html?id=" + BeobId);
 						}
-						GetGeolocation();
 					} else {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
@@ -559,6 +555,7 @@ function erstelleNeuenOrt() {
 								OrtListe = undefined;
 							}
 							sessionStorage.removeItem("OrtListe");
+							sessionStorage.Status = "neu";	//das löst bei pageshow die Verortung aus
 							window.open("hOrtEdit.html?Status=neu", target = "_self");
 						},
 						error: function () {
@@ -804,7 +801,7 @@ function initiiereBeobEdit_2(id, Feldliste) {
 			setzeFixeFelderInBeobEdit(Beob);
 			erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Beob.User);
 			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-			window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
+			window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
 			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 			speichereLetzteUrl();
 		}
@@ -831,7 +828,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 	//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	$("#BeobEditPage").trigger("create").trigger("refresh");
-	if (get_url_param("Status") === "neu") {
+	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#BeobEditForm").serializeObject();
@@ -844,6 +841,9 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
 			}
 		}
 		$db.saveDoc(Beob);
+		//verorten
+		GetGeolocation();
+		delete sessionStorage.Status;	//jetzt ist der Datensatz nicht mehr neu
 	}
 	erstelleAttachments(Beob);
 	//Anhänge wieder einblenden
@@ -873,11 +873,11 @@ function setzeFixeFelderInBeobEdit(Beob) {
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe;
+	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe, Status;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	Status = get_url_param("Status");
+	Status = sessionStorage.Status;
 	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {              
 		Feld = Feldliste.rows[i].value;
@@ -900,6 +900,79 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 		}
 	}
 	return HtmlContainer;
+}
+
+function initiiereBeobliste() {
+	erstelleBeobListe();
+	speichereLetzteUrl();
+}
+
+//BeobListe in BeobList.html vollständig neu aufbauen
+function erstelleBeobListe() {
+	$("#beobachtungen").empty();
+	//hat BeobEdit.html eine BeobListe übergeben?
+	if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
+		//Objekte werden als Strings übergeben, müssen geparst werden
+		BeobListe = JSON.parse(sessionStorage.BeobListe);
+		erstelleBeobListe_2()
+	} else {
+		if (typeof Username === "undefined" || !Username) {
+			pruefeAnmeldung();
+		}
+		$db = $.couch.db("evab");
+		$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
+			success: function (data) {
+				//BeobListe für BeobEdit bereitstellen
+				BeobListe = data;
+				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				sessionStorage.BeobListe = JSON.stringify(BeobListe);
+				erstelleBeobListe_2()
+			}
+		});
+	}
+}
+
+function erstelleBeobListe_2() {
+	var i, anzBeob, beob, ListItemContainer, Titel2, Datum, Zeit, ArtGruppe, ImageLink, ArtName, externalPage;
+	anzBeob = 0;
+	ListItemContainer = "";
+	
+	for (i in BeobListe.rows) {                    //Beobachtungen zählen
+		anzBeob += 1;
+	}
+
+	Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	if (anzBeob === 1) {
+		Titel2 = " Beobachtung";
+	}
+	$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
+
+	if (anzBeob === 0) {
+		ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
+	} else {
+		for (i in BeobListe.rows) {                //Liste aufbauen
+			beob = BeobListe.rows[i].value;
+			key = BeobListe.rows[i].key;
+			Datum = beob.zDatum;
+			Zeit = beob.zUhrzeit;
+			ArtGruppe = beob.aArtGruppe;
+			ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
+			ArtName = beob.aArtName;
+			ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+			ListItemContainer += beob._id;
+			ListItemContainer += "\"><a href=\"BeobEdit.html\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+			ListItemContainer += ImageLink;
+			ListItemContainer += "\" /><h3 class=\"aArtName\">";
+			ListItemContainer += ArtName;
+			ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+			ListItemContainer += Datum;
+			ListItemContainer += "&nbsp; &nbsp;";
+			ListItemContainer += Zeit;
+			ListItemContainer += "<\/p><\/a> <\/li>";
+		}
+	}
+	$("#beobachtungen").html(ListItemContainer);
+	$("#beobachtungen").listview("refresh");
 }
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1292,12 +1365,10 @@ function initiiereOrtEdit_2(Ort) {
 		$db.saveDoc(Ort);
 	}
 	erstelleAttachments(Ort);
-	if (get_url_param("Status") === "neu") {
-		//in neuen Datensätzen verorten
-		//aber nur, wenn noch keine Koordinaten drin sind
-		if (!$("#oXKoord").val()) {
-			GetGeolocation();
-		}
+	//in neuen Datensätzen verorten
+	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
+		GetGeolocation();
+		delete sessionStorage.Status;	//Status zurücksetzen - es soll nur ein mal verortet werden
 	}
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
@@ -1617,13 +1688,13 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") === "neu") {
+	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hArtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+			if (Formularwerte[i]) {
 				Beob[i] = Formularwerte[i];
 			} else if (Beob[i]) {
 				delete Beob[i]
@@ -2158,40 +2229,40 @@ function speichereLetzteUrl() {
 }
 
 function speichereLetzteUrl_2() {
-	var url, User;
+	var url, User, UserId;
 	url = window.location.pathname + window.location.search;
-	$db = $.couch.db("evab");
-	//nur speichern, wann anders als zuletzt
-	if (typeof LetzteUrl === "undefined" || LetzteUrl !== url) {
-		//UserId nur abfragen, wenn nicht schon erfolgt
-		if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
-			$db.view('evab/User?key="' + sessionStorage.Username + '"', {
-				success: function (data) {
-					User = data.rows[0].value;
-					//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
-					UserId = User._id;
-					sessionStorage.UserId = UserId;
-					//weitere anderswo benutzte Variabeln verfügbar machen
-					sessionStorage.ArtenSprache = User.ArtenSprache;
-					sessionStorage.Autor = User.Autor;
-					speichereLetzteUrl_3(url);
-				}
-			});
-		} else {
-			UserId = sessionStorage.UserId;
-			speichereLetzteUrl_3(url, User);
-		}
+	//UserId nur abfragen, wenn nicht schon erfolgt
+	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
+		$db = $.couch.db("evab");
+		$db.view('evab/User?key="' + sessionStorage.Username + '"', {
+			success: function (data) {
+				User = data.rows[0].value;
+				//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
+				sessionStorage.UserId = User._id;
+				//weitere anderswo benutzte Variabeln verfügbar machen
+				sessionStorage.ArtenSprache = User.ArtenSprache;
+				sessionStorage.Autor = User.Autor;
+				speichereLetzteUrl_3(url, User._id);
+			}
+		});
+	} else {
+		UserId = sessionStorage.UserId;
+		speichereLetzteUrl_3(url, UserId);
 	}
 }
 
-function speichereLetzteUrl_3(url, User) {
+function speichereLetzteUrl_3(url, UserId) {
+	$db = $.couch.db("evab");
 	$db.openDoc(UserId, {
 		success: function (User) {
-			User.LetzteUrl = url;
-			User.SessionStorageObjekt = sessionStorage;
-			$db.saveDoc(User);
-			//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespart werden kann
-			LetzteUrl = url;
+			//nur speichern, wann anders als zuletzt
+			if (typeof sessionStorage.LetzteUrl === "undefined" || sessionStorage.LetzteUrl !== url || (User.SessionStorageObjekt !== sessionStorage)) {
+				User.LetzteUrl = url;
+				User.SessionStorageObjekt = sessionStorage;
+				$db.saveDoc(User);
+				//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespart werden kann
+				sessionStorage.LetzteUrl = url;
+			}
 		}
 	});
 }
@@ -2246,10 +2317,10 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 					initiiereProjektliste();
 				break;
 				case "BeobEdit":
-
+					initiiereBeobEdit(sessionStorage.BeobId);
 				break;
 				case "BeobListe":
-
+					initiiereBeobliste();
 				break;
 			}
 		}
@@ -2568,6 +2639,14 @@ function pruefeAnmeldung() {
 function oeffneOrt(OrtId) {
 	sessionStorage.OrtId = OrtId;
 	window.open("hOrtEdit.html", target = "_self");
+}
+
+//setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
+//und ruft dann BeobEdit.html auf
+//wird von den Links in der Karte auf BeobListe.html benutzt
+function oeffneBeob(BeobId) {
+	sessionStorage.BeobId = BeobId;
+	window.open("BeobEdit.html", target = "_self");
 }
 
 
