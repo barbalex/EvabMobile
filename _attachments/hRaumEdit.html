@@ -34,15 +34,15 @@
   </head>
   <body>
 	<div data-role="page" id="RaumEditPage">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hRaumListeLink" name="hRaumListeLink">zur Raum-Liste</a>
+		<div data-role="header" id="RaumEditHeader" data-position="fixed" data-tap-toggle="false">
+			<a href="hRaumListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Raum-Liste</a>
 			<h2>Raum</h2>
 			<a href='#' name='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" name="hRaumListeLink" id="hRaumListeLink">Räume</a></li>
-					<li><a href="#" rel="external" id="hOrtListeLink">Orte</a></li>
+					<li><a href="#" id="hProjektLink">Projekt</a></li>
+					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active">Räume</a></li>
+					<li><a href="hOrtListe.html" rel="external">Orte</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -163,14 +163,12 @@
 					erstelleMenu(this);
 				});
 
-				//Links in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-				$("[name='hRaumListeLink']").attr('href', "hRaumListe.html?ProjektId=" + sessionStorage.ProjektId);
-				aktualisiereLinksMitRaumId();
-
-				function aktualisiereLinksMitRaumId() {
-					$("#hOrtListeLink").attr("href", "hOrtListe.html?RaumId=" + sessionStorage.RaumId);
-				}
+				//Link zu Projekt in Navbar und Titelleiste
+				$("#RaumEditHeader").on("click", "#hProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
+					window.open("hProjektEdit.html", target = "_self");
+				});
 
 				//neuen Raum erstellen
 				$("#hRaumEditFooter").on("click", "#hRaumNeuLink", function (event) {
@@ -600,7 +598,6 @@
 									RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit(RaumId);
 									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitRaumId();
 								} else {
 									melde("Das ist der letzte Raum");
 								}
@@ -610,7 +607,6 @@
 									RaumId = RaumListe.rows[i-1].value._id;
 									initiiereRaumEdit(RaumId);
 									window.history.pushState("", "", 'hRaumEdit.html?id=' + RaumId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitRaumId();
 								} else {
 									window.open("hRaumListe.html?ProjektId=" + sessionStorage.ProjektId, target = "_self");
 								}

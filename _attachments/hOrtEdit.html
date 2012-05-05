@@ -35,16 +35,16 @@
   </head>
   <body>
 	<div data-role="page" id="OrtEditPage">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hoe_hOrtListeLink">zur Ort-Liste</a>
+		<div data-role="header" id="OrtEditHeader" data-position="fixed" data-tap-toggle="false">
+			<a href="hOrtListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Ort-Liste</a>
 			<h1>Ort</h1>
 			<a href='#' name='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hoe_hProjektLink" rel="external">Projekt</a></li>
 					<li><a href="#" id="hRaumLink" rel="external">Raum</a></li>
-					<li><a href="#" class="ui-btn-active" name="hoe_hOrtListeLink" rel="external">Orte</a></li>
-					<li><a href="#" id="hoe_hZeitListeLink" rel="external">Zeiten</a></li>
+					<li><a href="hOrtListe.html" class="ui-btn-active" rel="external">Orte</a></li>
+					<li><a href="hZeitListe.html" rel="external">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -115,15 +115,18 @@
 					holeSessionStorageAusDb("hOrtEdit");
 				}
 
-				//Links in Navbar setzen
-				$("#hoe_hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
-				$("[name='hoe_hOrtListeLink']").attr('href', "hOrtListe.html?RaumId=" + sessionStorage.RaumId);
+				$("#OrtEditHeader").on("click", "#hRaumLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					window.open("hRaumEdit.html", target = "_self");
+				});
 
-				//OrtId-abhängige Links aufbauen
-				//ist in eigener Funktion in evab.js ausgelagert, weil auch nötig, ohne pageshow-event (Datensatzwechsel)
-				//und dann von evab.js aufgerufen
-				aktualisiereLinksMitOrtId_hoe();
+				$("#OrtEditHeader").on("click", "#hoe_hProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					delete sessionStorage.RaumListe;
+					window.open("hProjektEdit.html", target = "_self");
+				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {

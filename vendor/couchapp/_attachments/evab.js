@@ -1171,9 +1171,8 @@ function initiiereRaumListe() {
 function erstelleRaumListe() {
 	$("#Räume").empty();
 	//hat hRaumEdit.html eine RaumListe übergeben?
-	if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
-		RaumListe = JSON.parse(sessionStorage.RaumListe);
+	if (sessionStorage.RaumListe) {
+		RaumListe = JSON.parse(sessionStorage.RaumListe);	//Objekte werden als Strings übergeben, müssen geparst werden
 		erstelleRaumListe_2();
 	} else {
 		if (typeof Username === "undefined" || !Username) {
@@ -1304,7 +1303,6 @@ function initiiereOrtEdit_2(Ort) {
 	$('#FormAnhänge').show();
 	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
 	window.history.pushState("", "", "hOrtEdit.html"); //funktioniert in IE erst ab 10!
-	aktualisiereLinksMitOrtId_hoe();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 
@@ -1582,12 +1580,6 @@ function initiierehBeobEdit(BeobId) {
 			$("#aArtName").val(aArtName);
 			$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
 			$("#aArtName").selectmenu("refresh");
-			//Links in der Navbar setzen
-			$("#hae_ProjektLink").attr("href", "hProjektEdit.html?id=" + ProjektId);
-			$("#hae_RaumLink").attr("href", "hRaumEdit.html?id=" + RaumId);
-			$("#hae_OrtLink").attr("href", "hOrtEdit.html?id=" + OrtId);
-			$("#hae_ZeitLink").attr("href", "hZeitEdit.html?id=" + ZeitId);
-			$("[name='hArtListeLink']").attr('href', "hArtListe.html?id=" + ZeitId);
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (typeof FeldlistehBeobEdit !== "undefined") {
@@ -2568,14 +2560,6 @@ function pruefeAnmeldung() {
 	} else {
 		Username = sessionStorage.Username;
 	}
-}
-
-//aktualisiert OrtId-abhängige Links
-//ist eigene Funktion, weil auch ohne pageshow nötig (beim Datensatzwechsel)
-//wird aufgerufen von: hOrtEdit.html, evab.js
-function aktualisiereLinksMitOrtId_hoe() {
-	//Link zur Zeit in Navbar setzen
-	$("#hoe_hZeitListeLink").attr("href", "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
 }
 
 //setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet

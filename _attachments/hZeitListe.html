@@ -79,12 +79,15 @@
 				$("#hZeitListePageHeader").on("click", "#hRaumLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					delete sessionStorage.OrtListe;
 					window.open("hRaumEdit.html", target = "_self");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					delete sessionStorage.OrtListe;
+					delete sessionStorage.RaumListe;
 					window.open("hProjektEdit.html", target = "_self");
 				});
 

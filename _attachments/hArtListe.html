@@ -81,18 +81,24 @@
 				$("#hArtListePageHeader").on("click", "#hOrtLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
 					window.open("hOrtEdit.html", target = "_self");
 				});
 
 				$("#hArtListePageHeader").on("click", "#hRaumLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
+					delete sessionStorage.OrtListe;
 					window.open("hRaumEdit.html", target = "_self");
 				});
 
 				$("#hArtListePageHeader").on("click", "#hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
+					delete sessionStorage.OrtListe;
+					delete sessionStorage.RaumListe;
 					window.open("hProjektEdit.html", target = "_self");
 				});
 

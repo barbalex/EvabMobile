@@ -80,6 +80,7 @@
 				$("#hOrtListePageHeader").on("click", "#hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					delete sessionStorage.RaumListe;
 					window.open("hProjektEdit.html", target = "_self");
 				});
 

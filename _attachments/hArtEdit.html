@@ -36,7 +36,7 @@
   <body>
 	<div data-role="page" id="hArtEditPage">
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hArtListeLink" name="hArtListeLink">zur Art-Liste</a>
+			<a href="hArtListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Art-Liste</a>
 			<h1>Art</h1>
 			<a href='#' id='MenuhBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
@@ -45,7 +45,7 @@
 					<li><a href="#" rel="external" id="hae_RaumLink">Raum</a></li>
 					<li><a href="#" rel="external" id="hae_OrtLink">Ort</a></li>
 					<li><a href="#" rel="external" id="hae_ZeitLink">Zeit</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hArtListeLink" name="hArtListeLink">Arten</a></li>
+					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -107,6 +107,36 @@
 				if (typeof sessionStorage.hBeobId === "undefined" || !sessionStorage.hBeobId) {
 					holeSessionStorageAusDb("hBeobEdit");
 				}
+
+				$("#hArtEditPageHeader").on("click", "#hae_ZeitLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					window.open("hZeitEdit.html", target = "_self");
+				});
+
+				$("#hArtEditPageHeader").on("click", "#hae_OrtLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
+					window.open("hOrtEdit.html", target = "_self");
+				});
+
+				$("#hArtEditPageHeader").on("click", "#hae_RaumLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
+					delete sessionStorage.OrtListe;
+					window.open("hRaumEdit.html", target = "_self");
+				});
+
+				$("#hArtEditPageHeader").on("click", "#hae_ProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
+					delete sessionStorage.ZeitListe;
+					delete sessionStorage.OrtListe;
+					delete sessionStorage.RaumListe;
+					window.open("hProjektEdit.html", target = "_self");
+				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {

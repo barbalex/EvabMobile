@@ -35,7 +35,7 @@
   <body>
 	<div data-role="page" id="ZeitEditPage">
 		<div data-role="header" id="ZeitEditPageHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" id="hZeitListeLink" name="hZeitListeLink">zur Zeit-Liste</a>
+			<a href="hZeitListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Zeit-Liste</a>
 			<h1>Zeit</h1>
 			<a href='#' id='MenuZeitEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
@@ -43,8 +43,8 @@
 					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
 					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
-					<li><a href="#" rel="external" class="ui-btn-active" id="hZeitListeLink" name="hZeitListeLink">Zeiten</a></li>
-					<li><a href="#" rel="external" id="hArtListeLink">Arten</a></li>
+					<li><a href="hZeitListe.html" rel="external" class="ui-btn-active">Zeiten</a></li>
+					<li><a href="hArtListe.html" rel="external">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -104,6 +104,27 @@
 					holeSessionStorageAusDb("hZeitEdit");
 				}
 
+				$("#ZeitEditPageHeader").on("click", "#hOrtLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					window.open("hOrtEdit.html", target = "_self");
+				});
+
+				$("#ZeitEditPageHeader").on("click", "#hRaumLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					delete sessionStorage.OrtListe;
+					window.open("hRaumEdit.html", target = "_self");
+				});
+
+				$("#ZeitEditPageHeader").on("click", "#hProjektLink", function (event) {
+					event.preventDefault();
+					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					delete sessionStorage.OrtListe;
+					delete sessionStorage.RaumListe;
+					window.open("hProjektEdit.html", target = "_self");
+				});
+
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
@@ -135,18 +156,6 @@
 					}
 				});
 
-				//Link zum Projekt in Navbar setzen
-				$("#hProjektLink").attr("href", "hProjektEdit.html?id=" + sessionStorage.ProjektId);
-
-				//Link zum Raum in Navbar setzen
-				$("#hRaumLink").attr("href", "hRaumEdit.html?id=" + sessionStorage.RaumId);
-
-				//Link zum Ort in Navbar setzen
-				$("#hOrtLink").attr("href", "hOrtEdit.html?id=" + sessionStorage.OrtId);
-
-				//Link zur ZeitListe in Navbar setzen
-				$("[name='hZeitListeLink']").attr('href', "hZeitListe.html?OrtId=" + sessionStorage.OrtId);
-
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
 					event.preventDefault();
@@ -162,13 +171,6 @@
 					event.preventDefault();
 					$.mobile.changePage("Felder_hZeit.html");
 				});
-
-				aktualisiereLinksMitZeitId();
-
-				function aktualisiereLinksMitZeitId() {
-					//Link zur Art in Navbar setzen
-					$("#hArtListeLink").attr("href", "hArtListe.html?id=" + sessionStorage.ZeitId);
-				}
 
 				//Code für den Zeit-Löschen-Dialog
 				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLinkZeitEdit', function (event) {
@@ -504,7 +506,6 @@
 									ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
 									initiiereZeitEdit(ZeitId);
 									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitZeitId();
 								} else {
 									melde("Das ist die letzte Zeit");
 								}
@@ -514,7 +515,6 @@
 									ZeitId = ZeitListe.rows[i-1].value._id;
 									initiiereZeitEdit(ZeitId);
 									window.history.pushState("", "", "hZeitEdit.html?id=" + ZeitId); //funktioniert in IE erst ab 10!
-									aktualisiereLinksMitZeitId();
 								} else {
 									window.open("hZeitListe.html?OrtId=" + OrtId, target = "_self");
 								}
