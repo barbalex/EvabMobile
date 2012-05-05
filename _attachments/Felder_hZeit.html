@@ -69,7 +69,7 @@
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $(this).prop("id");
@@ -80,9 +80,9 @@
 							var SichtbarImModusHierarchisch, idx;
 							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
 							if ($("#" + FeldName).prop("checked") === true) {
-								SichtbarImModusHierarchisch.push(Username);
+								SichtbarImModusHierarchisch.push(localStorage.Username);
 							} else {
-								idx = SichtbarImModusHierarchisch.indexOf(Username);
+								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
 								if (idx !== -1) {
 									SichtbarImModusHierarchisch.splice(idx, 1);
 								}
@@ -130,7 +130,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
@@ -139,7 +139,7 @@
 						Feld = FeldlisteZeitEdit.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+						if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
 							if (Feld.Hierarchiestufe === "Zeit" && Feld.FeldName !== "zDatum" && Feld.FeldName !== "zUhrzeit") {
 								anzFelder += 1;
@@ -158,7 +158,7 @@
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
 								if (Feld.SichtbarImModusHierarchisch) {
-									if (Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
+									if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}

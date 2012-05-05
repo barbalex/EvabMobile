@@ -330,7 +330,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu_hae(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -375,7 +375,7 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + sessionStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -396,7 +396,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
@@ -481,11 +482,11 @@
 						} else {
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
-							if (typeof Username === "undefined" || !Username) {
+							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
+							$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
 								success: function (data) {
 									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 									hBeobListe = data;

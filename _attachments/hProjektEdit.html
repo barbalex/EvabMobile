@@ -540,7 +540,7 @@
 
 				//Menü aufbauen
 				function erstelleMenuProjektEdit(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -565,7 +565,7 @@
 				      		},
 				      		'Projekte exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -586,7 +586,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
@@ -619,11 +620,11 @@
 						} else {
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
-							if (typeof Username === "undefined" || !Username) {
+							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hProjListe?startkey=["' + sessionStorage.Username + '"]&endkey=["' + sessionStorage.Username + '",{}]', {
+							$db.view('evab/hProjListe?startkey=["' + localStorage.localStorage.Username + '"]&endkey=["' + localStorage.localStorage.Username + '",{}]', {
 								success: function (data) {
 									//Projektliste bereitstellen
 									Projektliste = data;

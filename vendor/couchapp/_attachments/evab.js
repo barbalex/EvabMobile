@@ -221,11 +221,11 @@ function speichereNeueBeob(aArtBezeichnung, ArtId) {
 //aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	var doc;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
-	doc.User = Username;
+	doc.User = localStorage.Username;
 	doc.aArtGruppe = sessionStorage.aArtGruppe;
 	delete sessionStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
@@ -451,12 +451,12 @@ function erstelleNeueZeit() {
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
 	var doc;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
 	doc.Typ = "hZeit";
-	doc.User = Username;
+	doc.User = localStorage.Username;
 	doc.hProjektId = sessionStorage.ProjektId;
 	doc.hRaumId = sessionStorage.RaumId;
 	doc.hOrtId = sessionStorage.OrtId;
@@ -518,12 +518,12 @@ function erstelleNeueZeit() {
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt() {
 	var doc;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
 	doc.Typ = "hOrt";
-	doc.User = Username;
+	doc.User = localStorage.Username;
 	doc.hProjektId = sessionStorage.ProjektId;
 	doc.hRaumId = sessionStorage.RaumId;
 	//Daten aus höheren Hierarchiestufen ergänzen
@@ -570,12 +570,12 @@ function erstelleNeuenOrt() {
 
 function erstelleNeuenRaum() {
 	var doc;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
 	doc.Typ = "hRaum";
-	doc.User = Username;
+	doc.User = localStorage.Username;
 	doc.hProjektId = sessionStorage.ProjektId;
 	//Daten aus höheren Hierarchiestufen ergänzen
 	$db = $.couch.db("evab");
@@ -611,11 +611,11 @@ function erstelleNeuenRaum() {
 function erstelleNeuesProjekt() {
 	var hProjekt;
 	hProjekt = {};
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	hProjekt.Typ = "hProjekt";
-	hProjekt.User = Username;
+	hProjekt.User = localStorage.Username;
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function (data) {
@@ -636,12 +636,12 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen(Pfad) {
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
 		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + Username + '"', {
+		$db.view('evab/User?key="' + localStorage.Username + '"', {
 			success: function (data) {
 				var User;
 				User = data.rows[0].value;
@@ -799,7 +799,7 @@ function initiiereBeobEdit_2(id, Feldliste) {
 			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 			setzeFixeFelderInBeobEdit(Beob);
-			erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Beob.User);
+			erstelleDynamischeFelderBeobEdit(Feldliste, Beob);
 			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
 			window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
 			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
@@ -811,14 +811,14 @@ function initiiereBeobEdit_2(id, Feldliste) {
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, Username
-function erstelleDynamischeFelderBeobEdit(Feldliste, Beob, Username) {
+function erstelleDynamischeFelderBeobEdit(Feldliste, Beob) {
 	var HtmlContainer, Formularwerte;
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-	HtmlContainer = generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob);
+	HtmlContainer = generiereHtmlFuerBeobEditForm (Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -872,7 +872,7 @@ function setzeFixeFelderInBeobEdit(Beob) {
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
+function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe, Status;
 	Feld = {};
 	ListItem = "";
@@ -883,12 +883,12 @@ function generiereHtmlFuerBeobEditForm (Username, Feldliste, Beob) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
 				if (Status === "neu" && Feld.Standardwert) {
 					//FeldWert = eval("Feld.Standardwert." + Username) || "";
-					FeldWert = Feld.Standardwert[Username] || "";
+					FeldWert = Feld.Standardwert[localStorage.Username] || "";
 				} else {
 					//FeldWert = (eval("Beob." + FeldName) || "");
 					FeldWert = Beob[FeldName] || "";
@@ -916,11 +916,11 @@ function erstelleBeobListe() {
 		BeobListe = JSON.parse(sessionStorage.BeobListe);
 		erstelleBeobListe_2()
 	} else {
-		if (typeof Username === "undefined" || !Username) {
+		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
+		$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
 			success: function (data) {
 				//BeobListe für BeobEdit bereitstellen
 				BeobListe = data;
@@ -1047,7 +1047,7 @@ function initiiereProjektEdit_2(Projekt) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Projekt) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
@@ -1058,10 +1058,10 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 		Feld = FeldlisteProjekt.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1 && FeldName !== "pName") {
+		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
 			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Username) || "";
-				FeldWert = Feld.Standardwert[Username] || "";
+				FeldWert = Feld.Standardwert[localStorage.Username] || "";
 			} else {
 				//FeldWert = (eval("Projekt." + FeldName) || "");
 				FeldWert = Projekt[FeldName] || "";
@@ -1083,11 +1083,11 @@ function erstelleProjektliste() {
 	$("#Projekte").empty();
 	//hat ProjektEdit.html eine Projektliste übergeben?
 	if (!sessionStorage.Projektliste) {
-		if (typeof Username === "undefined" || !Username) {
+		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
-		$db.view('evab/hProjListe?startkey=["' + Username + '"]&endkey=["' + Username + '",{}]', {
+		$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
 			success: function (data) {
 				//Projektliste für ProjektEdit bereitstellen
 				Projektliste = data;
@@ -1209,7 +1209,7 @@ function initiiereRaumEdit_2(Raum) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
@@ -1220,10 +1220,10 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Username) !== -1 && FeldName !== "rName") {
+		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
 			if (Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Username) || "";
-				FeldWert = Feld.Standardwert[Username] || "";
+				FeldWert = Feld.Standardwert[localStorage.Username] || "";
 			} else {
 				//FeldWert = (eval("Raum." + FeldName) || "");
 				FeldWert = Raum[FeldName] || "";
@@ -1248,11 +1248,11 @@ function erstelleRaumListe() {
 		RaumListe = JSON.parse(sessionStorage.RaumListe);	//Objekte werden als Strings übergeben, müssen geparst werden
 		erstelleRaumListe_2();
 	} else {
-		if (typeof Username === "undefined" || !Username) {
+		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
-		$db.view('evab/hRaumListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+		$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
 			success: function (data) {
 				RaumListe = data;
 				//RaumListe für haumEdit bereitstellen
@@ -1420,11 +1420,11 @@ function erstelleOrtListe() {
 		OrtListe = JSON.parse(sessionStorage.OrtListe);
 		erstelleOrtListe_2();
 	} else {
-		if (typeof Username === "undefined" || !Username) {
+		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
-		$db.view('evab/hOrtListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+		$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
 			success: function (data) {
 				//OrtListe für hOrtEdit bereitstellen
 				OrtListe = data;
@@ -1538,12 +1538,12 @@ function erstelleZeitListe() {
 		ZeitListe = JSON.parse(sessionStorage.ZeitListe);
 		erstelleZeitListe_2();
 	} else {
-  		if (typeof Username === "undefined" || !Username) {
+  		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$("#Zeiten").empty();
 		$db = $.couch.db("evab");
-		$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
+		$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				ZeitListe = data;
@@ -1753,11 +1753,11 @@ function erstellehBeobListe() {
 		hBeobListe = JSON.parse(sessionStorage.hBeobListe);
 		erstellehBeobListe_2();
 	} else {
-  		if (typeof Username === "undefined" || !Username) {
+  		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
-		$db.view('evab/hArtListe?startkey=["' + Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
+		$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
 			success: function (data) {
 				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				hBeobListe = data;
@@ -2207,7 +2207,7 @@ function speichereLetzteUrl() {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	if (typeof sessionStorage.Username === ("undefined" || null)) {
+	if (typeof localStorage.Username === ("undefined" || null)) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
@@ -2215,10 +2215,11 @@ function speichereLetzteUrl() {
 		    success: function (session) {
 		    	if (session.userCtx.name !== (undefined || null)) {
 		        	Username = session.userCtx.name;
-		        	sessionStorage.Username = Username;
+		        	localStorage.Username = Username;
 		        	speichereLetzteUrl_2();
 		        } else {
-					window.open("index.html?Status=neu", target = "_self");
+		        	sessionStorage.UserStatus = "neu";
+					window.open("index.html", target = "_self");
 				}
 		    }
 		});
@@ -2233,7 +2234,7 @@ function speichereLetzteUrl_2() {
 	//UserId nur abfragen, wenn nicht schon erfolgt
 	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
 		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + sessionStorage.Username + '"', {
+		$db.view('evab/User?key="' + localStorage.Username + '"', {
 			success: function (data) {
 				User = data.rows[0].value;
 				//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
@@ -2272,11 +2273,11 @@ function speichereLetzteUrl_3(url, UserId) {
 //daher wird die aufrufende Seite übergeben und nach getaner Arbeit deren Felder initiiert
 //Wenn sessionStorage null ist, verzichtet die aufrufende Seite auf das Initiieren
 function holeSessionStorageAusDb(AufrufendeSeite) {
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + sessionStorage.Username + '"', {
+	$db.view('evab/User?key="' + localStorage.Username + '"', {
 		success: function (data) {
 			var SessionStorageObjekt = {};
 			User = data.rows[0].value;
@@ -2331,12 +2332,12 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
 function erstelleKarteFürRaum() {
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true', {
 		success: function (data) {
 			var i, anzOrt, Ort;
 			anzOrt = 0;
@@ -2430,12 +2431,12 @@ function erstelleKarteFürRaum() {
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
 //erwartet Username und ProjektId
 function erstelleKarteFürProjekt() {
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
 	//Zuerst Orte abfragen
-	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true', {
+	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true', {
 		success: function (data) {
 			var i, anzOrt, Ort;
 			anzOrt = 0;
@@ -2587,17 +2588,17 @@ function erstelleAttachments(doc) {
 //erwartet den Teil des Pfads, der links von FeldEdit ist
 function neuesFeld(Pfad) {
 	var Feld;
-	if (typeof Username === "undefined" || !Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
 	Feld.Typ = "Feld";
-	Feld.User = Username;
+	Feld.User = localStorage.Username;
 	Feld.SichtbarImModusEinfach = [];
 	Feld.SichtbarImModusHierarchisch = [];
 	//gleich sichtbar stellen
-	Feld.SichtbarImModusEinfach.push(Username);
-	Feld.SichtbarImModusHierarchisch.push(Username);
+	Feld.SichtbarImModusEinfach.push(localStorage.Username);
+	Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
 	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function (data) {
@@ -2613,23 +2614,20 @@ function pruefeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	if (typeof sessionStorage.Username === "undefined" || !sessionStorage.Username) {
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function (session) {
 		    	if (session.userCtx.name !== (undefined || null)) {
-		        	Username = session.userCtx.name;
-		        	sessionStorage.Username = Username;
+		        	localStorage.Username = session.userCtx.name;
 		        } else {
 		        	sessionStorage.UserStatus = "neu";
 					window.open("index.html", target = "_self");
 				}
 		    }
 		});
-	} else {
-		Username = sessionStorage.Username;
 	}
 }
 

@@ -74,7 +74,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
@@ -83,7 +83,7 @@
 						Feld = FeldlisteBeobEdit.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
-						if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+						if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 							//im Formular fix integrierte Felder nicht aufbauen
 							if (['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 								anzFelder += 1;
@@ -102,7 +102,7 @@
 								ListItem += FeldName;
 								ListItem += "' class='custom'";
 								if (Feld.SichtbarImModusEinfach) {
-									if (Feld.SichtbarImModusEinfach.indexOf(Username) !== -1) {
+									if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
 										//wenn sichtbar, anzeigen
 										ListItem += " checked='checked'";
 									}
@@ -124,7 +124,7 @@
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $(this).prop("id");
@@ -135,9 +135,9 @@
 							var SichtbarImModusEinfach, idx;
 							SichtbarImModusEinfach = Feld.SichtbarImModusEinfach || [];
 							if ($("#" + FeldName).prop("checked") === true) {
-								SichtbarImModusEinfach.push(Username);
+								SichtbarImModusEinfach.push(localStorage.Username);
 							} else {
-								idx = SichtbarImModusEinfach.indexOf(Username);
+								idx = SichtbarImModusEinfach.indexOf(localStorage.Username);
 								if (idx !== -1) {
 									SichtbarImModusEinfach.splice(idx, 1);
 								}

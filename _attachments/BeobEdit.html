@@ -386,11 +386,11 @@
 						} else {
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
-							if (typeof Username === "undefined" || !Username) {
+							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/BeobListe?startkey=["' + Username + '",{}]&endkey=["' + Username + '"]&descending=true', {
+							$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
 								success: function (data) {
 									//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
@@ -576,7 +576,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -620,7 +620,7 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -641,7 +641,8 @@
 				      		},
 						 	'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"

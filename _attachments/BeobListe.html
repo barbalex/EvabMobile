@@ -78,12 +78,12 @@
 				});
 
 				$(document).on("pageshow", '#bl_Karte', function () {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen
 					$db = $.couch.db("evab");
-					$db.view('evab/BeobListeLatLng?key="' + Username + '"&include_docs=true', {
+					$db.view('evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true', {
 						success: function (data) {
 							var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, options, map, bounds, marker, markers;
 							anzBeob = 0;
@@ -241,7 +241,7 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -262,7 +262,8 @@
 				      		},
 						 	'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"

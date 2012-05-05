@@ -128,7 +128,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -154,7 +154,7 @@
 				      		},
 				      		'Zeiten exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -175,7 +175,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"

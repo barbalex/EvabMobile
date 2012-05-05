@@ -68,7 +68,7 @@
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
 			success: function (data) {
-				if (typeof Username === "undefined" || !Username) {
+				if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 					pruefeAnmeldung();
 				}
 				var i, Feld, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
@@ -79,7 +79,7 @@
 					Feld = data.rows[i].value;
 					//Liste aufbauen
 					//Nur eigene Felder und offizielle
-					if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+					if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 						Hierarchiestufe = Feld.Hierarchiestufe;
 						FeldBeschriftung = Feld.FeldBeschriftung;
 						FeldBeschreibung = "";

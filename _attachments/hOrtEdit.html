@@ -644,7 +644,7 @@
 
 				//Menü aufbauen
 				function erstelleMenuOrtEdit(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -670,7 +670,7 @@
 				      		},
 				      		'Orte exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + sessionStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -691,7 +691,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
@@ -723,11 +724,11 @@
 						} else {
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
-							if (typeof Username === "undefined" || !Username) {
+							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hOrtListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+							$db.view('evab/hOrtListe?startkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
 								success: function (data) {
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;

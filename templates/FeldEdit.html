@@ -43,7 +43,7 @@
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditForm").on("change", ".Feldeigenschaften", function () {
 					var FeldWert, FeldName, AlterFeldWert;
-					if (typeof Username === "undefined" && !Username) {
+					if (typeof localStorage.Username === "undefined" && !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldWert = this.value;
@@ -60,7 +60,7 @@
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
-							$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
+							$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
 								success: function (data) {
 									var i, anzVorkommen, Datensatz, Feld, ds;
 									anzVorkommen = 0;
@@ -75,7 +75,7 @@
 										//prüfen, ob der Feldname schon existiert
 										//wenn ja: melden, zurückstellen
 										//wenn nein: In SichtbareFelder nachführen und speichern
-										prüfeFeldNamen(Username);
+										prüfeFeldNamen();
 									} else {
 										ds = "Datensätzen";
 										if (anzVorkommen === 1) {
@@ -91,7 +91,7 @@
 							//prüfen, ob der Feldname schon existiert
 							//wenn ja: melden, zurückstellen
 							//wenn nein: In SichtbareFelder nachführen und speichern
-							prüfeFeldNamen(Username);
+							prüfeFeldNamen();
 						}
 					} else if (FeldName === "Hierarchiestufe" && FeldWert === "Art") {
 						speichereFeldeigenschaften();
@@ -121,7 +121,7 @@
 
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
 					var Optionen, Feldwert;
-					if (typeof Username === "undefined" && !Username) {
+					if (typeof localStorage.Username === "undefined" && !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					Optionen = $("#Optionen").val();
@@ -132,8 +132,8 @@
 							success: function (doc) {
 								var LetzterFeldwert, Formularelement;
 								if (doc.Standardwert) {
-									if (doc.Standardwert[Username]) {
-										LetzterFeldwert = doc.Standardwert[Username];
+									if (doc.Standardwert[localStorage.Username]) {
+										LetzterFeldwert = doc.Standardwert[localStorage.Username];
 									} else {
 										LetzterFeldwert = "";
 									}
@@ -155,7 +155,7 @@
 										}
 									}
 									//alle Werte sind Optionen
-									speichereStandardwert(Username);
+									speichereStandardwert();
 								} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Formularelement) > -1) {
 									//Array darf nur ein Element enthalten
 									if (StandardwertOptionen.length > 1) {
@@ -173,17 +173,17 @@
 											}
 										}
 										//alle Werte sind Optionen
-										speichereStandardwert(Username);
+										speichereStandardwert();
 									}
 								} else {
 									//Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
-									speichereStandardwert(Username);
+									speichereStandardwert();
 								}
 							}
 						});
 					} else {
 						//Feld Optionen ist leer. Alle Werte akzeptieren
-						speichereStandardwert(Username);
+						speichereStandardwert();
 					}
 				});
 
@@ -200,7 +200,7 @@
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function (event) {
 					event.preventDefault();
-					if (typeof Username === "undefined" && !Username) {
+					if (typeof localStorage.Username === "undefined" && !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					if ("{{User}}" === "ZentrenBdKt") {
@@ -220,7 +220,7 @@
 							        	} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
-											$db.view('evab/FeldSuche?key="' + Username + '"&include_docs=true', {
+											$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
 												success: function (data) {
 													var i, anzVorkommen, Datensatz, Feld, ds;
 													anzVorkommen = 0;
@@ -286,9 +286,9 @@
 					geheZumVorigenFeld("{{id}}");
 				});*/
 
-				function prüfeFeldNamen(Username) {
+				function prüfeFeldNamen() {
 					var FeldNameAlt, FeldNameNeu, viewname;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldNameAlt = "{{FeldName}}" || "";
@@ -303,7 +303,7 @@
 								if (data.rows[i].value) {
 									Feld = data.rows[i].value;
 									//ist es ein eigenes oder ein offizielles?
-									if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+									if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 										//ja > dieser Name ist nicht zulässig
 										$("#FeldName").val(FeldNameAlt);
 										setTimeout(function () { 
@@ -329,7 +329,7 @@
 
 				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
 					var FeldName;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $("#FeldName").val();
@@ -338,9 +338,9 @@
 						success: function (Feld) {
 							var idx;
 							if (SichtbarImModusHierarchisch === "ja") {
-								Feld.SichtbarImModusHierarchisch.push(Username);
+								Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
 							} else {
-								idx = Feld.SichtbarImModusHierarchisch.indexOf(Username);
+								idx = Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
 								if (idx !== -1) {
 									Feld.SichtbarImModusHierarchisch.splice(idx, 1);
 								}
@@ -359,7 +359,7 @@
 
 				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
 					var FeldName;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $("#FeldName").val();
@@ -368,9 +368,9 @@
 						success: function (Feld) {
 							var idx;
 							if (SichtbarImModusEinfach === "ja") {
-								Feld.SichtbarImModusEinfach.push(Username);
+								Feld.SichtbarImModusEinfach.push(localStorage.Username);
 							} else {
-								idx = Feld.SichtbarImModusEinfach.indexOf(Username);
+								idx = Feld.SichtbarImModusEinfach.indexOf(localStorage.Username);
 								if (idx !== -1) {
 									Feld.SichtbarImModusEinfach.splice(idx, 1);
 								}
@@ -446,7 +446,7 @@
 				//nächstes des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes
 				function geheZumNächstenFeld(IdAktuell) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -458,7 +458,7 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+								if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
 									if (FeldIdAktuell === IdAktuell) {
@@ -470,7 +470,7 @@
 												//alle verbleibenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+												if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächste eigene Feld > öffnen
 													FeldIdNächstes = data.rows[parseInt(i)+1].value._id;
 													window.open(FeldIdNächstes, target = "_self");
@@ -497,7 +497,7 @@
 				//voriges des ersten => FeldListe
 				//erwartet die ID des aktuellen Datensatzes
 				function geheZumVorigenFeld(IdAktuell) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -509,7 +509,7 @@
 								//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 								Feld = data.rows[i].value;
 								//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-								if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+								if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 									//Nur eigene und offizielle Felder berücksichtigen
 									FeldIdAktuell = data.rows[i].value._id;
 									if (FeldIdAktuell === IdAktuell) {
@@ -521,7 +521,7 @@
 												//alle vorhergehenden Felder durchlaufen, eigenes suchen
 												Feld = data.rows[y].value;
 												//Nur eigene Felder und offizielle berücksichtigen
-												if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+												if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 													//das ist das nächstvorherige eigene Feld > öffnen
 													FeldIdVoriges = data.rows[parseInt(i)-1].value._id;
 													window.open(FeldIdVoriges, target = "_self");
@@ -568,7 +568,7 @@
 					//generiert den html-Inhalt für Selectmenus
 					//wird von erstelle_hArtEdit aufgerufen
 					//Nur bei eigenen Feldern anzeigen
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					if ("{{User}}" !== "ZentrenBdKt") {
@@ -582,7 +582,7 @@
 									Feld = data.rows[i].value;
 									//Liste aufbauen
 									//Nur eigene Felder und offizielle
-									if (Feld.User === Username || Feld.User === "ZentrenBdKt") {
+									if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
 										Optionen.push(Feld.FeldName);
 									}
 								}
@@ -603,8 +603,8 @@
 					}
 				}
 
-				function speichereStandardwert(Username) {
-					if (typeof Username === "undefined" || !Username) {
+				function speichereStandardwert() {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");
@@ -618,12 +618,12 @@
 							if (Feld.Standardwert) {
 								if (StandardwertUserImFormular) {
 									//neuen Standardwert setzen
-									Feld.Standardwert[Username] = StandardwertUserImFormular;
+									Feld.Standardwert[localStorage.Username] = StandardwertUserImFormular;
 								} else {
 									//Standardwert ist leer
-									if (Feld.Standardwert[Username]) {
+									if (Feld.Standardwert[localStorage.Username]) {
 										//bisherigen Standardwert löschen
-										delete Feld.Standardwert[Username];
+										delete Feld.Standardwert[localStorage.Username];
 									}
 								}
 							} else {
@@ -631,7 +631,7 @@
 								if (StandardwertUserImFormular) {
 									//Objekt für Standardwert schaffen und neuen Wert setzen
 									Feld.Standardwert = {};
-									Feld.Standardwert[Username] = StandardwertUserImFormular;
+									Feld.Standardwert[localStorage.Username] = StandardwertUserImFormular;
 								}
 							}
 							$db.saveDoc(Feld, {
@@ -789,7 +789,7 @@
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 				function setzeSichtbarInModiUndArtgruppeUndStandardwert() {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
@@ -803,7 +803,7 @@
 							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch;
 							SichtbarImModusEinfach = Feld.SichtbarImModusEinfach;
 							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusHierarchisch noch nicht
-							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(Username) !== -1) {
+							if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
 								$("select#SichtbarImModusHierarchisch").val("ja");
 							} else {
 								$("select#SichtbarImModusHierarchisch").val("nein");
@@ -811,7 +811,7 @@
 							$("select#SichtbarImModusHierarchisch").slider();
 							$("select#SichtbarImModusHierarchisch").slider("refresh");
 							//Vorsicht: Bei neuen Feldern gibt es Feld.SichtbarImModusEinfach noch nicht
-							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(Username) !== -1) {
+							if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
 								$("select#SichtbarImModusEinfach").val("ja");
 							} else {
 								$("select#SichtbarImModusEinfach").val("nein");
@@ -828,7 +828,7 @@
 							//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
 							//darum hier auslesen und setzen
 							if (Feld.Standardwert) {
-								Standardwert = Feld.Standardwert[Username];
+								Standardwert = Feld.Standardwert[localStorage.Username];
 								if (Standardwert) {
 									$("#Standardwert").val(Standardwert);
 								}

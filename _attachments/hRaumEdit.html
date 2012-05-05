@@ -491,7 +491,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -516,7 +516,7 @@
 				      		},
 				      		'Räume exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + sessionStorage.Username + '",{},{},{},{},{}]&endkey=["' + sessionStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -537,7 +537,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
@@ -570,11 +571,11 @@
 						} else {
 							//keine Raumliste übergeben
 							//neu aus DB erstellen
-							if (typeof Username === "undefined" || !Username) {
+							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hRaumListe?startkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+							$db.view('evab/hRaumListe?startkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
 								success: function (data) {
 									RaumListe = data;
 									//RaumListe bereitstellen

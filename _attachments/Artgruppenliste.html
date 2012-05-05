@@ -70,13 +70,13 @@
 				//Listen aufbauen lassen
 				//und button für Sprache richtig beschriften
 					var viewname;
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 					//sonst aus der sessionStorage
 					if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
-						viewname = 'evab/User?key="' + Username + '"';
+						viewname = 'evab/User?key="' + localStorage.Username + '"';
 						$db = $.couch.db("evab");
 						$db.view(viewname, {
 							success: function (data) {

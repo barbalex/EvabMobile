@@ -152,6 +152,7 @@
 			success : function (r) {
 				userCtx = r.userCtx;
 				if (userCtx.name) {
+					localStorage.Username = userCtx.name;
 					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
 					setTimeout("window.open('BeobListe.html', target='_self')", 2800);
 				} else if (userCtx.roles.indexOf("_admin") !== -1) {

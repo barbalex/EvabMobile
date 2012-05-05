@@ -409,7 +409,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenuZeitEdit(thiz) {
-					if (typeof Username === "undefined" || !Username) {
+					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -435,7 +435,7 @@
 				      		},
 				      		'Zeiten exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + Username + '",{},{},{},{},{}]&endkey=["' + Username + '"]&descending=true');
+						        	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -456,7 +456,8 @@
 				      		},
 				      		'neu anmelden': {
 						      	click: function () {
-						        	window.open("index.html?Status=neu", target = "_self");
+						      		sessionStorage.UserStatus = "neu";
+						        	window.open("index.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "person"
@@ -478,11 +479,11 @@
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof sessionStorage.ZeitListe === "undefined" || !sessionStorage.ZeitListe) {
-						if (typeof Username === "undefined" || !Username) {
+						if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 							success: function (data) {
 								ZeitListe = data;
 								sessionStorage.ZeitListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden

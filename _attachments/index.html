@@ -61,9 +61,11 @@
 
 	    //Wenn möglich alten cookie für die Anmeldung verwenden
 	    //ausser User hat via Menü bewusst neu anmelden wollen
-	    if (typeof sessionStorage.UserStatus === "undefined" || sessionStorage.UserStatus !== "neu") {
+	    //sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+	    if (typeof sessionStorage.UserStatus !== "undefined" && sessionStorage.UserStatus !== "neu") {
 	    	pruefeAnmeldung_index();
-	    	delete sessionStorage.UserStatus;
+	    } else if (typeof sessionStorage.UserStatus !== "undefined" && sessionStorage.UserStatus === "neu") {
+	    	sessionStorage.clear();
 	    }
 
 		$("#SubmitButton").tap(function (event) {
@@ -102,6 +104,7 @@
 				name : UserName,
 				password : Passwort,
 				success : function (r) {
+					delete sessionStorage.UserStatus;
 					authentifiziereUser();
 				},
 				error: function () {
@@ -116,10 +119,9 @@
 			success : function (r) {
 				var userCtx;
 				userCtx = r.userCtx;
-				Username = userCtx.name;
-				sessionStorage.Username = Username;
 				if (userCtx.name) {
-					oeffneZuletztBenutzteSeite(Username);
+					localStorage.Username = userCtx.name;
+					oeffneZuletztBenutzteSeite();
 				} else if (userCtx.roles.indexOf("_admin") !== -1) {
 					melde("Oops, die Datenbank hat keine Benutzer!");
 				} else {
@@ -132,26 +134,29 @@
 	function pruefeAnmeldung_index() {		
 		//User Anmeldung überprüfen
 		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
-		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function (session) {
-		    	Username = session.userCtx.name;
-		    	sessionStorage.Username = Username;
-		    	if (session.userCtx.name) {
-		        	oeffneZuletztBenutzteSeite(Username);
-		       	} else {
-		       		$("#UserName").focus();
-		       	}
-		    }
-		});
+		//zuerst localStorage prüfen, dann cookie
+		if (typeof localStorage.Username !== "undefined" && localStorage.Username) {
+			oeffneZuletztBenutzteSeite();
+		} else {
+			$.ajax({
+			    url: '/_session',
+			    dataType: 'json',
+			    async: false,
+			    success: function (session) {
+			    	if (session.userCtx.name) {
+			    		localStorage.Username = session.userCtx.name;
+			        	oeffneZuletztBenutzteSeite();
+			       	} else {
+			       		$("#UserName").focus();
+			       	}
+			    }
+			});
+		}
 	}
 
-	function oeffneZuletztBenutzteSeite(Username) {
-		//_replicate(name, pass);
+	function oeffneZuletztBenutzteSeite() {
 		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + Username + '"', {
+		$db.view('evab/User?key="' + localStorage.Username + '"', {
 			success: function (data) {
 				var doc, LetzteUrl;
 				doc = data.rows[0].value;
