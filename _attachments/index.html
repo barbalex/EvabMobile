@@ -61,10 +61,9 @@
 
 	    //Wenn möglich alten cookie für die Anmeldung verwenden
 	    //ausser User hat via Menü bewusst neu anmelden wollen
-	    var Status;
-	    Status = get_url_param("Status");
-	    if (Status !== "neu") {
+	    if (typeof sessionStorage.UserStatus === "undefined" || sessionStorage.UserStatus !== "neu") {
 	    	pruefeAnmeldung_index();
+	    	delete sessionStorage.UserStatus;
 	    }
 
 		$("#SubmitButton").tap(function (event) {

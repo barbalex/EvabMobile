@@ -157,7 +157,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hOrtListe.html", target = "_self");
+						      		sessionStorage.zurueck = "hOrtListe.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

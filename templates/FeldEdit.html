@@ -427,7 +427,7 @@
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									window.open("../../FeldListe.html?zurueck=" + get_url_param("zurueck"), target = '_self');
+									window.open("../../FeldListe.html"), target = '_self');
 								},
 								error: function () {
 									melde("Fehler: nicht gelöscht");
@@ -594,14 +594,12 @@
 				}
 
 				function geheZurück() {
-					var zurueck;
-					zurueck = get_url_param("zurueck");
-					if (zurueck.slice(0, 6) === "Felder") {
+					if (sessionStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
-						window.open("../../" + zurueck, target = "_self");
+						window.open("../../" + sessionStorage.zurueck, target = "_self");
 						
 					} else {
-						window.open("../../FeldListe.html?zurueck=" + zurueck, target = "_self");
+						window.open("../../FeldListe.html", target = "_self");
 					}
 				}
 

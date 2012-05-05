@@ -55,11 +55,12 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		var zurueck;
 		
 		userCtx = null;
 		//sicherstellen, dass zurueck nie leer ist
-		zurueck = get_url_param('zurueck') || "BeobListe.html";
+		if (typeof sessionStorage.zurueck === "undefined" || sessionStorage.zurueck) {
+			sessionStorage.zurueck = "BeobListe.html";
+		}
 
 		speichereLetzteUrl();
 		
@@ -86,8 +87,7 @@
 							FeldBeschreibung = Feld.FeldBeschreibung;
 						}
 						ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-						zurueck = get_url_param('zurueck') || "BeobListe.html";
-						externalPage = "_show/FeldEdit/" + Feld._id + "?zurueck=" + zurueck;
+						externalPage = "_show/FeldEdit/" + Feld._id;
 						ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
 							"<a href='" + externalPage + "' rel='external'>" +
 							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
@@ -114,8 +114,7 @@
 		//BackButton steuern
 		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (event) {
 			event.preventDefault();
-			zurueck = get_url_param('zurueck') || "BeobListe.html";
-			window.open(zurueck, target = "_self");
+			window.open(sessionStorage.zurueck, target = "_self");
 		});
 	}
 	

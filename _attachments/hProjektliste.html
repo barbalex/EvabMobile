@@ -138,7 +138,8 @@
 								},
 								'Felder verwalten': {
 									click: function () {
-										window.open("FeldListe.html?zurueck=hProjektListe.html", target = "_self");
+										sessionStorage.zurueck = "hProjektListe.html";
+										window.open("FeldListe.html", target = "_self");
 									},
 									theme: "a",
 									icon: "edit"

@@ -557,7 +557,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hProjektEdit.html", target = "_self");
+						      		sessionStorage.zurueck = "hProjektEdit.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

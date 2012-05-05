@@ -128,12 +128,10 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					var zurueck;
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
-					zurueck = "hZeitListe.html";
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
@@ -148,7 +146,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=" + zurueck, target = "_self");
+						      		sessionStorage.zurueck = "hZeitListe.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

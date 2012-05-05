@@ -158,7 +158,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtListe.html", target = "_self");
+						      		sessionStorage.zurueck = "hArtListe.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

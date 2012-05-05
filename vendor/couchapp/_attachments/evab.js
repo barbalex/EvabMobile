@@ -1350,8 +1350,8 @@ function initiiereOrtEdit_2(Ort) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (get_url_param("Status") === "neu") {
-		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+	//in neuen Datensätzen dynamisch erstellte Standardwerte speichern und verorten
+	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
 		Formularwerte = {};
 		Formularwerte = $("#hOrtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
@@ -1363,13 +1363,13 @@ function initiiereOrtEdit_2(Ort) {
 			}
 		}
 		$db.saveDoc(Ort);
+		//verorten
+		GetGeolocation();
+		//Status zurücksetzen - es soll nur ein mal verortet werden
+		//Spät löschen, weil auch generiereHtmlFuerOrtEditForm damit arbeitet
+		setTimeout("delete sessionStorage.Status", 1000);
 	}
 	erstelleAttachments(Ort);
-	//in neuen Datensätzen verorten
-	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
-		GetGeolocation();
-		delete sessionStorage.Status;	//Status zurücksetzen - es soll nur ein mal verortet werden
-	}
 	//Anhänge wieder einblenden
 	$('#FormAnhänge').show();
 	//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
@@ -1383,17 +1383,16 @@ function initiiereOrtEdit_2(Ort) {
 //erwartet Feldliste als Objekt (aus der globalen Variable); Ort als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerOrtEditForm (Ort) {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, Status;
+	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	Status = get_url_param("Status");
 	for (i in FeldlisteOrtEdit.rows) {              
 		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === Ort.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-			if (Status === "neu" && Feld.Standardwert) {
+			if (sessionStorage.Status === "neu" && Feld.Standardwert) {
 				//FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
 				FeldWert = Feld.Standardwert[Ort.User] || "";
 			} else {
@@ -2624,7 +2623,8 @@ function pruefeAnmeldung() {
 		        	Username = session.userCtx.name;
 		        	sessionStorage.Username = Username;
 		        } else {
-					window.open("index.html?Status=neu", target = "_self");
+		        	sessionStorage.UserStatus = "neu";
+					window.open("index.html", target = "_self");
 				}
 		    }
 		});

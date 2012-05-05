@@ -367,7 +367,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=hArtEdit.html", target = "_self");
+						      		sessionStorage.zurueck = "hArtEdit.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"

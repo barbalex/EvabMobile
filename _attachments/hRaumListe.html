@@ -83,10 +83,8 @@
 
 				//Menu aufbauen
 				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
-					var zurueck;
 					event.preventDefault();
-					zurueck = "hRaumListe.html";
-					erstelleMenuRaumListe(zurueck, this);
+					erstelleMenuRaumListe(this);
 				});
 
 				$("#Räume").on("swipeleft", ".Raum", function () {
@@ -132,7 +130,7 @@
 				});
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenuRaumListe(zurueck, thiz) {
+				function erstelleMenuRaumListe(thiz) {
 					if (typeof Username === "undefined" || !Username) {
 						pruefeAnmeldung();
 					}
@@ -151,7 +149,8 @@
 				      		},
 				      		'Felder verwalten': {
 						      	click: function () {
-						        	window.open("FeldListe.html?zurueck=" + zurueck, target = "_self");
+						      		sessionStorage.zurueck = "hRaumListe.html";
+						        	window.open("FeldListe.html", target = "_self");
 				        		},
 				        		theme: "a",
 				        		icon: "edit"
