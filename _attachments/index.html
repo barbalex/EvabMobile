@@ -160,8 +160,8 @@
 			success: function (data) {
 				var doc, LetzteUrl;
 				doc = data.rows[0].value;
-				if (typeof doc.SessionStorageObjekt !== "undefined" && doc.SessionStorageObjekt.LetzteUrl) {
-					LetzteUrl = doc.SessionStorageObjekt.LetzteUrl;
+				if (typeof doc.sessionStorage !== "undefined" && doc.sessionStorage.LetzteUrl) {
+					LetzteUrl = doc.sessionStorage.LetzteUrl;
 				} else {
 					LetzteUrl = "BeobListe.html";
 				}

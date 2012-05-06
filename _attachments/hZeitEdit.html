@@ -384,29 +384,6 @@
 					});
 				}
 
-				//Speichert alle Daten
-				//wird aufgerufen von evab.js, function initiiereZeitEdit
-				//und stellt sicher, dass die dynamisch erstellten Standardwerte gespeichert werden
-				function speichereAlles() {
-					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.ZeitId, {
-						success: function (hZeit) {
-							var Formularwerte;
-							Formularwerte = {};
-							Formularwerte = $("#hZeitEditForm").serializeObject();
-							//Werte aus dem Formular aktualisieren
-							for (i in Formularwerte) {
-								if (Formularwerte[i]) {
-									hZeit[i] = Formularwerte[i];
-								} else if (hZeit[i]) {
-									delete hZeit[i]
-								}
-							}
-							$db.saveDoc(hZeit);
-						}
-					});
-				}
-
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenuZeitEdit(thiz) {
 					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {

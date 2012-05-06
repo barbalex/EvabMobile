@@ -624,7 +624,7 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hProjListe?startkey=["' + localStorage.localStorage.Username + '"]&endkey=["' + localStorage.localStorage.Username + '",{}]', {
+							$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
 								success: function (data) {
 									//Projektliste bereitstellen
 									Projektliste = data;

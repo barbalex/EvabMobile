@@ -55,6 +55,7 @@
 					event.preventDefault();
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					ArtId = $(this).attr("artid");
+					sessionStorage.aArtId = ArtId;
 					if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
 						speichereNeueBeob(ArtBezeichnung, ArtId);
 					} else if (sessionStorage.Von === "ArtEdit") {
@@ -62,12 +63,9 @@
 						if ($('#ArtEditPage').length > 0) {
 							//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 							$.mobile.changePage($('#ArtEditPage'));
-							window.history.pushState("", "", "ArtEdit.html?id=" + ArtId); //funktioniert in IE erst ab 10!
+							window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
 						} else {
-							$.mobile.changePage("ArtEdit.html", {
-								type: "get",
-								data: "id=" + ArtId
-							});
+							$.mobile.changePage("ArtEdit.html");
 						}
 					} else {
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);

@@ -139,6 +139,7 @@
 					sessionStorage.removeItem("BeobListe");
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobEdit";
+					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html", reloadPage: true});
 						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
@@ -273,7 +274,7 @@
 
 				$("#BeobEditPageFooterNavbar").on('click', "#be_verorten", function (event) {
 					event.preventDefault();
-					GetGeolocation();
+					GetGeolocation(sessionStorage.BeobId, "BeobEditForm");
 				});
 
 				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function (event) {
@@ -594,17 +595,14 @@
 				      		'Arteigenschaften': {
 						      	click: function () {
 						      		//Variabeln übergeben
-						        	zurueck_global = "BeobEdit.html";
+						      		sessionStorage.zurueck = "BeobEdit.html"
 						        	//Seite wechseln
 						        	if ($('#ArtEditPage').length > 0) {
 						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html?id=" + sessionStorage.aArtId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
 						        	} else {
-						        		$.mobile.changePage("ArtEdit.html", {
-						        			type: "get",
-						        			data: "id=" + sessionStorage.aArtId
-						        		});
+						        		$.mobile.changePage("ArtEdit.html");
 						        	}
 				        		},
 				        		theme: "a",
@@ -728,7 +726,7 @@
 							});
 						}
 					});
-				}	
+				}
 			});
 		</script>
 	</div>

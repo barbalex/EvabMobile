@@ -75,7 +75,7 @@
 		<div data-role="footer" id="hRaumEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
+					<li><a href="#" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLinkRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="RaumEditMapÖffnen" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
@@ -516,7 +516,7 @@
 				      		},
 				      		'Räume exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -575,7 +575,7 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hRaumListe?startkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+							$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
 								success: function (data) {
 									RaumListe = data;
 									//RaumListe bereitstellen

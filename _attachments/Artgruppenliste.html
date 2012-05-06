@@ -98,7 +98,7 @@
 				function erstelleArtgruppenListe_2() {
 					//je nach Sprache Artgruppenliste aufbauen
 					var aArtGruppeÜbergeben;
-					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					aArtGruppeÜbergeben = sessionStorage.aArtGruppe;
 					switch(ArtenSprache) {
 					case "Lateinisch":
 						$("#agl_ButtonSprache .ui-btn-text").text("Deutsch");
@@ -125,7 +125,7 @@
 				function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_L, ArtGruppen, AnzArten, aArtGruppeÜbergeben, viewname;
 					ListItemContainer = "";
-					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					aArtGruppeÜbergeben = sessionStorage.aArtGruppe;
 					viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
@@ -155,7 +155,7 @@
 				function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 					var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_D, ArtGruppen, AnzArten, aArtGruppeÜbergeben, viewname;
 					ListItemContainer = "";
-					aArtGruppeÜbergeben = get_url_param("aArtGruppe");
+					aArtGruppeÜbergeben = sessionStorage.aArtGruppe;
 					viewname = 'evab/Artgruppen?key="' + aArtGruppeÜbergeben + '"'; 
 					$db = $.couch.db("evab");
 					$db.view(viewname, {

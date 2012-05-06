@@ -126,6 +126,7 @@
 					delete sessionStorage.hBeobListe;
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "hArtListe";
+					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					window.open("Artgruppenliste.html", target = "_self");
 				}
 

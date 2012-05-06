@@ -139,8 +139,9 @@
 				authentifiziereUser();
 			},
 			error: function () {
+				sessionStorage.UserStatus = "neu";
 				melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
-				setTimeout('window.open("index.html?Status=neu", target = "_self")', 2800);
+				setTimeout('window.open("index.html", target = "_self")', 2800);
 			}
 		});      
 	}

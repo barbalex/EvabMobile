@@ -173,6 +173,7 @@
 				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function (event) {
 					event.preventDefault();
 					sessionStorage.Status = "neu";
+					delete sessionStorage.aArtGruppe;
 					zuArtgruppenliste();
 				});
 
@@ -282,7 +283,7 @@
 				function zuArtgruppenliste() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					if (typeof hBeobListe !== "undefined") {
-						hBeobListe = undefined;
+						delete window.hBeobListe;
 					}
 					delete sessionStorage.hBeobListe;
 					sessionStorage.Von = "hArtEdit";
@@ -306,7 +307,7 @@
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
-							sessionStorage.Von = hArtEdit;
+							sessionStorage.Von = "hArtEdit";
 							if (ArtGruppen_2_L) {
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
@@ -349,17 +350,14 @@
 						      	click: function () {
 						        	//Variabeln übergeben
 						        	//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
-						        	zurueck_global = "hArtEdit.html";
+						        	sessionStorage.zurueck = "hArtEdit.html";
 						        	//Seite wechseln
 						        	if ($('#ArtEditPage').length > 0) {
 						        		//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
 										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html?id=" + sessionStorage.aArtId); //funktioniert in IE erst ab 10!
+										window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
 						        	} else {
-						        		$.mobile.changePage("ArtEdit.html", {
-						        			type: "get",
-						        			data: "id=" + sessionStorage.aArtId
-						        		});
+						        		$.mobile.changePage("ArtEdit.html");
 						        	}
 				        		},
 				        		theme: "a",
@@ -375,7 +373,7 @@
 				      		},
 				      		'Beobachtungen<br>exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"

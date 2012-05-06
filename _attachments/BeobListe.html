@@ -208,6 +208,7 @@
 					sessionStorage.removeItem("BeobListe");
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobListe";
+					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"));
 						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!

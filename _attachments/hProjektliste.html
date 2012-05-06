@@ -146,7 +146,7 @@
 								},
 								'Projekte exportieren': {
 									click: function () {
-										window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
+										window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 									},
 									theme: "a",
 									icon: "arrow-r"
@@ -188,7 +188,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Zuerst Orte abfragen
-						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + localStorage.localStorage.Username + '"&include_docs=true', {
+						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true', {
 							success: function (data) {
 								var i, anzOrt, Ort;
 								anzOrt = 0;

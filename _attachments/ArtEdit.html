@@ -59,9 +59,7 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#ArtEditPage").on("pageshow", function () {
-
-				ArtId = sessionStorage.aArtId;
-				erstelleArtEdit(ArtId);
+				erstelleArtEdit(sessionStorage.aArtId);
 			});
 
 			$("#ArtEditPage").on("pageinit", function () {
@@ -70,19 +68,19 @@
 					var zurueck;
 					event.preventDefault();
 					zurueck = "";
-					if (typeof zurueck_global !== "undefined") {
-						zurueck = zurueck_global;
+					if (typeof sessionStorage.zurueck !== "undefined") {
+						zurueck = sessionStorage.zurueck;
 					}
-					//alert("zurueck = " + zurueck);
 					if (zurueck === "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
-						window.history.pushState("", "", "BeobEdit.html?id=" + BeobId); //funktioniert in IE erst ab 10!
+						window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
 					} else if (zurueck === "hArtEdit.html") {
 						$.mobile.changePage($('#hArtEditPage'));
 						window.history.pushState("", "", "hArtEdit.html"); //funktioniert in IE erst ab 10!
 					} else {
 						$.mobile.changePage("BeobListe.html");
 					}
+					delete sessionStorage.zurueck;
 				});
 
 				//Artwechsl managen, ausgehend von Artgruppe
@@ -98,6 +96,7 @@
 				});
 
 				function zuArtgruppenliste() {
+					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					if ($('#agl_Page').length > 0) {
 						$.mobile.changePage($('#agl_Page'));
 						window.history.pushState("", "", "Von=ArtEdit"); //funktioniert in IE erst ab 10!
@@ -114,26 +113,21 @@
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
 					var viewname, ArtGruppen_2_L;
-					viewname = 'evab/Artgruppen?key="' + ArtEdit_aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							sessionStorage.Von = "ArtEdit";
 							if (ArtGruppen_2_L) {
 								if ($('#agl_Page').length > 0) {
 									$.mobile.changePage($('#agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html?aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"); //funktioniert in IE erst ab 10!
+									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
 								} else {
-									$.mobile.changePage("Artgruppenliste.html", {
-										type: "get",
-										data: "aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
-									});
+									$.mobile.changePage("Artgruppenliste.html");
 								}
 							} else {
-								$.mobile.changePage("Artenliste.html", {
-									type: "get",
-									data: "aArtGruppe=" + ArtEdit_aArtGruppe + "&Von=ArtEdit"
-								});
+								$.mobile.changePage("Artenliste.html");
 							}
 						}
 					});

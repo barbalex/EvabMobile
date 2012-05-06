@@ -234,7 +234,7 @@
 
 				$('#hOrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
 					event.preventDefault();
-					GetGeolocation();
+					GetGeolocation(sessionStorage.OrtId, "hOrtEditForm");
 				});
 
 				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
@@ -670,7 +670,7 @@
 				      		},
 				      		'Orte exportieren': {
 						      	click: function () {
-						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.localStorage.Username + '"]&descending=true');
+						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
 				        		},
 				        		theme: "a",
 				        		icon: "arrow-r"
@@ -728,7 +728,7 @@
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
-							$db.view('evab/hOrtListe?startkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+							$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
 								success: function (data) {
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;
