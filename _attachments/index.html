@@ -160,7 +160,11 @@
 			success: function (data) {
 				var doc, LetzteUrl;
 				doc = data.rows[0].value;
-				LetzteUrl = doc.LetzteUrl || "BeobListe.html";
+				if (typeof doc.SessionStorageObjekt !== "undefined" && doc.SessionStorageObjekt.LetzteUrl) {
+					LetzteUrl = doc.SessionStorageObjekt.LetzteUrl;
+				} else {
+					LetzteUrl = "BeobListe.html";
+				}
 				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 				if (LetzteUrl === "/evab/_design/evab/index.html") {
 					LetzteUrl = "BeobListe.html";

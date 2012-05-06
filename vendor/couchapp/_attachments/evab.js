@@ -1075,17 +1075,13 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 }
 
 function initiiereProjektliste() {
-	erstelleProjektliste();
-	speichereLetzteUrl();
-}
-
-function erstelleProjektliste() {
 	$("#Projekte").empty();
 	//hat ProjektEdit.html eine Projektliste übergeben?
 	if (!sessionStorage.Projektliste) {
 		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
+		//Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
 			success: function (data) {
@@ -1093,17 +1089,17 @@ function erstelleProjektliste() {
 				Projektliste = data;
 				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.Projektliste = JSON.stringify(Projektliste);
-				erstelleProjektliste_2();
+				initiiereProjektliste_2();
 			}
 		});
 	} else {
-		//Objekte werden als Strings übergeben, müssen geparst werden
-		Projektliste = JSON.parse(sessionStorage.Projektliste);
-		erstelleProjektliste_2();
+		//Daten für die Projektliste aus sessionStorage holen
+		Projektliste = JSON.parse(sessionStorage.Projektliste);	//Objekte werden als Strings übergeben, müssen geparst werden
+		initiiereProjektliste_2();
 	}
 }
 
-function erstelleProjektliste_2() {
+function initiiereProjektliste_2() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
 	anzProj = 0;
 	ListItemContainer = "";
@@ -1132,6 +1128,7 @@ function erstelleProjektliste_2() {
 	}
 	$("#Projekte").html(ListItemContainer);
 	$("#Projekte").listview("refresh");
+	speichereLetzteUrl();
 }
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -2202,11 +2199,11 @@ function stopGeolocation() {
 }
 
 function speichereLetzteUrl() {
-//empfängt Username
-//speichert diese im Userdokument
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
+	//damit - zusammen mit der letzen URL - die letzte Seite bekannt ist
+	//sessionStorage.LetzteId = id; idee um nicht von gesammter sessionStorage abhängig zu sein?
 	if (typeof localStorage.Username === ("undefined" || null)) {
 		$.ajax({
 		    url: '/_session',
@@ -2229,8 +2226,8 @@ function speichereLetzteUrl() {
 }
 
 function speichereLetzteUrl_2() {
-	var url, User, UserId;
-	url = window.location.pathname + window.location.search;
+	var User, UserId;
+	sessionStorage.LetzteUrl = window.location.pathname + window.location.search;
 	//UserId nur abfragen, wenn nicht schon erfolgt
 	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
 		$db = $.couch.db("evab");
@@ -2242,26 +2239,26 @@ function speichereLetzteUrl_2() {
 				//weitere anderswo benutzte Variabeln verfügbar machen
 				sessionStorage.ArtenSprache = User.ArtenSprache;
 				sessionStorage.Autor = User.Autor;
-				speichereLetzteUrl_3(url, User._id);
+				speichereLetzteUrl_3(User._id);
 			}
 		});
 	} else {
 		UserId = sessionStorage.UserId;
-		speichereLetzteUrl_3(url, UserId);
+		speichereLetzteUrl_3(UserId);
 	}
 }
 
-function speichereLetzteUrl_3(url, UserId) {
+function speichereLetzteUrl_3(UserId) {
 	$db = $.couch.db("evab");
 	$db.openDoc(UserId, {
 		success: function (User) {
 			//nur speichern, wann anders als zuletzt
-			if (typeof sessionStorage.LetzteUrl === "undefined" || sessionStorage.LetzteUrl !== url || (User.SessionStorageObjekt !== sessionStorage)) {
-				User.LetzteUrl = url;
+			//leider registriert das auch Änderungen der Feldliste etc.
+			//um das zu beheben, müsste immer eine Änderung der passenden id verfolgt werden
+			//damit könnte auch das parsen gespaart werden
+			if (typeof sessionStorage === "undefined" || JSON.stringify(User.SessionStorageObjekt) !== JSON.stringify(sessionStorage)) {
 				User.SessionStorageObjekt = sessionStorage;
 				$db.saveDoc(User);
-				//LetzteUrl als globale Variable speichern, damit das nächste mal ev. die Abfrage gespart werden kann
-				sessionStorage.LetzteUrl = url;
 			}
 		}
 	});
