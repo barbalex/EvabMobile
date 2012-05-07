@@ -364,26 +364,32 @@ function speichereNeueBeob_03(doc) {
 //Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
 //erwartet sessionStorage.Von = von welchem Formular aufgerufen wurde
 function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
-$db = $.couch.db("evab");
-$db.openDoc(sessionStorage.BeobId, {
-		success: function (Beob) {
+	var docId;
+	if (sessionStorage.Von === ("BeobListe" || "BeobEdit")) {
+		docId = sessionStorage.BeobId;
+	} else {
+		docId = sessionStorage.hBeobId;
+	}
+	$db = $.couch.db("evab");
+	$db.openDoc(docId, {
+		success: function (doc) {
 			if (typeof sessionStorage.aArtGruppe !== "undefined" && sessionStorage.aArtGruppe) {
-				Beob.aArtGruppe = sessionStorage.aArtGruppe;
+				doc.aArtGruppe = sessionStorage.aArtGruppe;
 				delete sessionStorage.aArtGruppe;
 			}
-			Beob.aArtName = aArtName;
-			Beob.aArtId = ArtId;
-			$db.saveDoc(Beob, {
+			doc.aArtName = aArtName;
+			doc.aArtId = ArtId;
+			$db.saveDoc(doc, {
 				success: function (data) {
-					if (sessionStorage.Von === "BeobListe" || sessionStorage.Von === "BeobEdit") {
+					if (sessionStorage.Von === ("BeobListe" || "BeobEdit")) {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
 						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof BeobListe !== "undefined") {
-							BeobListe = undefined;
+							delete window.BeobListe;
 						}
-						sessionStorage.removeItem("BeobListe");
+						delete sessionStorage.BeobListe;
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
 							initiiereBeobEdit(BeobId);
@@ -397,17 +403,15 @@ $db.openDoc(sessionStorage.BeobId, {
 						sessionStorage.hBeobId = hBeobId;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						if (typeof hBeobListe !== "undefined") {
-							hBeobListe = undefined;
+							delete window.hBeobListe;
 						}
-						sessionStorage.removeItem("hBeobListe");
+						delete sessionStorage.hBeobListe;
 						if ($('#hArtEditPage').length > 0) {
 							$.mobile.changePage($('#hArtEditPage'));
 							initiierehBeobEdit(hBeobId);
 						} else {
 							window.open("BeobEdit.html", target = "_self");
-							//$.mobile.changePage("hArtEdit.html?id=" + BeobId);
 						}
-						//window.open("hArtEdit.html?hBeobId=" + Beob._id, target = "_self");
 					}
 				},
 				error: function () {

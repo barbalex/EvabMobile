@@ -56,7 +56,7 @@
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					ArtId = $(this).attr("artid");
 					sessionStorage.aArtId = ArtId;
-					if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
+					if (sessionStorage.Status === "neu") {
 						speichereNeueBeob(ArtBezeichnung, ArtId);
 					} else if (sessionStorage.Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
