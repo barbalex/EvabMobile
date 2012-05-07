@@ -46,9 +46,12 @@
 			<p id="al_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
-			$(":jqmData(role='page')").on("pageshow", function () {
 
+			$("#al_Page").on("pageshow", function () {
 				erstelleArtenliste();
+			});
+
+			$(":jqmData(role='page')").on("pageinit", function () {
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
 					var ArtBezeichnung, ArtId;
@@ -70,6 +73,7 @@
 					} else {
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);
 					}
+					delete sessionStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
 				});
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {
@@ -126,110 +130,6 @@
 						}
 					});
 				});
-
-				function erstelleArtenliste() {
-					var viewname;
-			  		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
-						pruefeAnmeldung();
-					}
-					//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
-					//sonst aus der sessionStorage
-					if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
-					  	viewname = 'evab/User?key="' + localStorage.Username + '"';
-					  	$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								User = data.rows[0].value;
-								sessionStorage.ArtenSprache = User.ArtenSprache;
-								//Wenn der User schon bekannt ist, UserId und Autor bereit stellen
-								sessionStorage.UserId = User._id;
-								sessionStorage.Autor = User.Autor;
-							}
-						});
-					}
-					switch(sessionStorage.ArtenSprache) {
-					case "Lateinisch":
-						$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
-						erstelleArtenlisteLateinisch();
-						break;
-					case "Deutsch":
-						$("#al_ButtonSprache .ui-btn-text").text("Lateinisch");
-						erstelleArtenlisteDeutsch();
-						break;
-					}
-				}
-
-				function erstelleArtenlisteLateinisch() {
-					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (typeof sessionStorage.L === "undefined" || !sessionStorage.L) {
-						viewname = 'evab/Artliste?startkey=["' + sessionStorage.aArtGruppe + '"]&endkey=["' + sessionStorage.aArtGruppe + '",{},{}]';
-					} else {
-						viewname = 'evab/Artliste?startkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '"]&endkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '",{}]';
-					}
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
-							ListItemContainer = "";
-							for (i in data.rows) {
-								ArtBezeichnung = data.rows[i].key[2];
-								Art = data.rows[i].value;
-								ArtId = Art._id;
-								ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-								ListItemContainer += ArtBezeichnung;
-								ListItemContainer += "\" ArtId=\"";
-								ListItemContainer += ArtId;
-								ListItemContainer += "\">";
-								ListItemContainer += "<a href=\"#\"><h3>";
-								ListItemContainer += ArtBezeichnung;
-								ListItemContainer += "<\/h3>";
-								if (Art.HinweisVerwandschaft) {
-									ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-								}
-								ListItemContainer += "<\/a><\/li>";
-							}
-							$("#al_ArtenListe").html(ListItemContainer);
-							$("#al_ArtenListe").listview("refresh");
-							$("#al_Hinweistext").empty().remove();
-						}
-					});
-				}
-
-				function erstelleArtenlisteDeutsch() {
-					//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-					if (typeof sessionStorage.L === "undefined" || !sessionStorage.L) {
-						viewname = 'evab/ArtlisteDeutsch?startkey=["' + sessionStorage.aArtGruppe + '"]&endkey=["' + sessionStorage.aArtGruppe + '",{},{}]';
-					} else {
-						viewname = 'evab/ArtlisteDeutsch?startkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '"]&endkey=["' + sessionStorage.aArtGruppe + '","' + sessionStorage.L + '",{}]';
-					}
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
-							ListItemContainer = "";
-							for (i in data.rows) {
-								ArtBezeichnung = data.rows[i].key[2];
-								Art = data.rows[i].value;
-								ArtId = Art._id;
-								ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-								ListItemContainer += ArtBezeichnung;
-								ListItemContainer += "\" ArtId=\"";
-								ListItemContainer += ArtId;
-								ListItemContainer += "\">";
-								ListItemContainer += "<a href=\"#\"><h3>";
-								ListItemContainer += ArtBezeichnung;
-								ListItemContainer += "<\/h3>";
-								if (Art.HinweisVerwandschaft) {
-									ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-								}
-								ListItemContainer += "<\/a><\/li>";
-							}
-							$("#al_ArtenListe").html(ListItemContainer);
-							$("#al_ArtenListe").listview("refresh");
-							$("#al_Hinweistext").empty().remove();
-						}
-					});
-				}
 			});
 		</script>
 	</div>

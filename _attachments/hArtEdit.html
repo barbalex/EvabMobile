@@ -173,7 +173,6 @@
 				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function (event) {
 					event.preventDefault();
 					sessionStorage.Status = "neu";
-					delete sessionStorage.aArtGruppe;
 					zuArtgruppenliste();
 				});
 
@@ -311,6 +310,7 @@
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							sessionStorage.Von = "hArtEdit";
 							if (ArtGruppen_2_L) {
+								sessionStorage.NestedList = true;
 								if ($('agl_Page').length > 0) {
 									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('agl_Page'));
@@ -319,6 +319,7 @@
 									$.mobile.changePage("Artgruppenliste.html");
 								}
 							} else {
+								delete sessionStorage.NestedList;
 								if ($('al_Page').length > 0) {
 									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
 									$.mobile.changePage($('al_Page'));

@@ -137,7 +137,6 @@
 					delete sessionStorage.BeobListe;
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobEdit";
-					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html", reloadPage: true});
 						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
@@ -188,6 +187,7 @@
 							sessionStorage.Von = "BeobEdit";
 							delete sessionStorage.Status;	//ja kein Status = neu
 							if (ArtGruppen_2_L) {
+								sessionStorage.NestedList = true;
 								if ($("#agl_Page").length > 0) {
 									$.mobile.changePage($("#agl_Page"));
 									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
@@ -195,6 +195,7 @@
 									$.mobile.changePage("Artengruppenliste.html");
 								}
 							} else {
+								delete sessionStorage.NestedList;
 								if ($("#al_Page").length > 0) {
 									$.mobile.changePage($("#al_Page"));
 									window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
