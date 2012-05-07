@@ -159,10 +159,8 @@
 								}
 							});
 							//Globale Variable für FeldlisteProjekt zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteProjekt !== "undefined") {
-								FeldlisteProjekt = undefined;
-								delete sessionStorage.FeldlisteProjekt;
-							}
+							delete window.FeldlisteProjekt;
+							delete sessionStorage.FeldlisteProjekt;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

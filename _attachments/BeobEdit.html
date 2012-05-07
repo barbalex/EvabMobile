@@ -133,10 +133,8 @@
 				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function (event) {
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof BeobListe !== "undefined") {
-						BeobListe = undefined;
-					}
-					sessionStorage.removeItem("BeobListe");
+					delete window.BeobListe;
+					delete sessionStorage.BeobListe;
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobEdit";
 					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
@@ -153,10 +151,8 @@
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function (event) {
 					event.preventDefault();
-					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof BeobListe !== "undefined") {
-						delete window.BeobListe;
-					}
+					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					delete window.BeobListe;
 					delete sessionStorage.BeobListe;
 					sessionStorage.Von = "BeobEdit";
 					if ($("#agl_Page").length > 0) {
@@ -223,9 +219,9 @@
 						//zuerst Längen- und Breitengrade berechnen
 						oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
 						oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
-						$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
-						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
-						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val());
+						/*$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
+						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);*/
+						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val(), "");
 					} else {
 						speichern(Feldname, Feldwert);
 					}
@@ -535,11 +531,11 @@
 					oLongitudeDecDeg = lng;
 					x = DdInChX(lat, lng);
 					y = DdInChY(lat, lng);
-					$("input#oXKoord").val(x);
+					/*$("input#oXKoord").val(x);
 					$("input#oYKoord").val(y);
 					$("input#oLatitudeDecDeg").val(lat);
 					$("input#oLongitudeDecDeg").val(lng);
-					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
+					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");*/
 					clearInfoWindows();
 					contentString = '<div id="content"><div id="bodyContent">'+
 									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
@@ -551,7 +547,7 @@
 					google.maps.event.addListener(marker, 'click', function () {
 					  infowindow.open(map,marker);
 					});
-					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y);
+					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
 				}
 
 				//GoogleMap: alle Marker löschen
@@ -662,10 +658,8 @@
 				
 				function löscheBeobachtung() {
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof BeobListe !== "undefined") {
-						BeobListe = undefined;
-					}
-					sessionStorage.removeItem("BeobListe");
+					delete window.BeobListe;
+					delete sessionStorage.BeobListe;
 					$db = $.couch.db("evab");
 					$db.openDoc(sessionStorage.BeobId, {
 						success: function (document) {
@@ -709,7 +703,7 @@
 					});
 				}
 
-				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord) {
+				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(sessionStorage.BeobId, {
@@ -724,7 +718,12 @@
 							//alles speichern
 							$db.saveDoc(Beob, {
 								success: function () {
-									melde("Koordinaten gespeichert");
+									//Werte in Feldern anzeigen
+									$("#oXKoord").val(oXKoord);
+									$("#oYKoord").val(oYKoord);
+									$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
+									$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
+									$("#oLagegenauigkeit").val(oLagegenauigkeit);
 								},
 								error: function () {
 									melde("Fehler: Koordinaten nicht gespeichert");

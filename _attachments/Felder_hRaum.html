@@ -161,10 +161,8 @@
 								}
 							});
 							//Globale Variable für FeldlisteRaumEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteRaumEdit !== "undefined") {
-								FeldlisteRaumEdit = undefined;
-								delete sessionStorage.FeldlisteRaumEdit;
-							}
+							delete window.FeldlisteRaumEdit;
+							delete sessionStorage.FeldlisteRaumEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

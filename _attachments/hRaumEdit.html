@@ -284,11 +284,9 @@
 										return $db.removeDoc(document, {
 											success: function () {
 												//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-												if (typeof RaumListe !== "undefined") {
-													RaumListe = undefined;
-												}
-												sessionStorage.removeItem("RaumListe");
-												sessionStorage.removeItem("RaumId");
+												delete window.RaumListe;
+												delete sessionStorage.RaumListe;
+												delete sessionStorage.RaumId;
 												//Rückmeldung += "\rRaum gelöscht";
 												//melde(Rückmeldung);
 												window.open('hRaumListe.html', target = '_self');

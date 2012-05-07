@@ -159,10 +159,9 @@
 				//Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
 					event.preventDefault();
-					//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof ZeitListe !== "undefined") {
-						ZeitListe = undefined;
-					}
+					//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+					delete window.ZeitListe;
+					delete sessionStorage.ZeitListe;
 					erstelleNeueZeit(); 
 				});
 
@@ -279,12 +278,10 @@
 								// Zeit löschen
 								$db.removeDoc(document, {
 									success: function () {
-										//Globale Variable für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-										if (typeof ZeitListe !== "undefined") {
-											ZeitListe = undefined;
-										}
-										sessionStorage.removeItem("ZeitListe");
-										sessionStorage.removeItem("ZeitId");
+										//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+										delete window.ZeitListe;
+										delete sessionStorage.ZeitListe;
+										delete sessionStorage.ZeitId;
 										//Rückmeldung += "<br>Zeit gelöscht";
 										//melde(Rückmeldung);
 										window.open('hZeitListe.html' , target = '_self');

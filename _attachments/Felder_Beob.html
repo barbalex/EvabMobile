@@ -148,11 +148,9 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
-							//Globale Variable für FeldlisteBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteBeobEdit !== "undefined") {
-								FeldlisteBeobEdit = undefined;
-								delete sessionStorage.FeldlisteBeobEdit;
-							}
+							//Globale Variablen für FeldlisteBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							delete window.FeldlisteBeobEdit;
+							delete sessionStorage.FeldlisteBeobEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

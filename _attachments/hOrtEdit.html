@@ -140,8 +140,8 @@
 						//zuerst Längen- und Breitengrade berechnen
 						oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
 						oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
-						$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
-						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
+						/*$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
+						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);*/
 						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val(), "");
 					} else {
 						speichern(Feldname, Feldwert);
@@ -327,11 +327,11 @@
 					oLongitudeDecDeg = lng;		//globale Variable, wird beim Speichern verwendet
 					x = DdInChX(lat, lng);
 					y = DdInChY(lat, lng);
-					$("input#oXKoord").val(x);
+					/*$("input#oXKoord").val(x);
 					$("input#oYKoord").val(y);
 					$("input#oLatitudeDecDeg").val(lat);
 					$("input#oLongitudeDecDeg").val(lng);
-					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");
+					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");*/
 					//alle InfoWindows löschen
 					if (InfoWindowArray) {
 						for (i in InfoWindowArray) {
@@ -436,11 +436,9 @@
 									return $db.removeDoc(document, {
 										success: function () {
 											//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-											if (typeof OrtListe !== "undefined") {
-												OrtListe = undefined;
-											}
-											sessionStorage.removeItem("OrtListe");
-											sessionStorage.removeItem("OrtId");
+											delete window.OrtListe;
+											delete sessionStorage.OrtListe;
+											delete sessionStorage.OrtId;
 											//Rückmeldung += "\rOrt gelöscht";
 											//melde(Rückmeldung);
 											window.open('hOrtListe.html', target='_self');
@@ -626,18 +624,23 @@
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(sessionStorage.OrtId, {
-						success: function (hOrt) {
+						success: function (Ort) {
 							//Längen- und Breitengrad sind in keinem Feld dargestellt
 							//sie müssen aus ihren Variabeln gespeichert werden
-							hOrt.oLongitudeDecDeg = oLongitudeDecDeg;
-							hOrt.oLatitudeDecDeg = oLatitudeDecDeg;
-							hOrt.oXKoord = oXKoord;
-							hOrt.oYKoord = oYKoord;
-							hOrt.oLagegenauigkeit = oLagegenauigkeit;
+							Ort.oLongitudeDecDeg = oLongitudeDecDeg;
+							Ort.oLatitudeDecDeg = oLatitudeDecDeg;
+							Ort.oXKoord = oXKoord;
+							Ort.oYKoord = oYKoord;
+							Ort.oLagegenauigkeit = oLagegenauigkeit;
 							//alles speichern
-							$db.saveDoc(hOrt, {
+							$db.saveDoc(Ort, {
 								success: function () {
-									melde("Koordinaten gespeichert");
+									//melde("Koordinaten gespeichert");
+									$("input#oXKoord").val(oXKoord);
+									$("input#oYKoord").val(oYKoord);
+									$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
+									$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
+									$("input#oLagegenauigkeit").val(oLagegenauigkeit);
 								},
 								error: function () {
 									melde("Fehler: Koordinaten nicht gespeichert");

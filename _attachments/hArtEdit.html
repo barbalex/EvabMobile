@@ -282,9 +282,7 @@
 
 				function zuArtgruppenliste() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hBeobListe !== "undefined") {
-						delete window.hBeobListe;
-					}
+					delete window.hBeobListe;
 					delete sessionStorage.hBeobListe;
 					sessionStorage.Von = "hArtEdit";
 					if ($('#agl_Page').length > 0) {
@@ -299,10 +297,9 @@
 				function zuArtliste() {
 					var viewname;
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hBeobListe !== "undefined") {
-						delete window.hBeobListe;
-					}
+					delete window.hBeobListe;
 					delete sessionStorage.hBeobListe;
+					sessionStorage.Von = "hArtEdit";
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
@@ -423,11 +420,9 @@
 							$db.removeDoc(document, {
 								success: function () {
 									//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									if (typeof hBeobListe !== "undefined") {
-										hBeobListe = undefined;
-									}
-									sessionStorage.removeItem("hBeobListe");
-									sessionStorage.removeItem("hBeobId");
+									delete window.hBeobListe;
+									delete sessionStorage.hBeobListe;
+									delete sessionStorage.hBeobId;
 									//melde("Art gelöscht");
 									window.open("hArtListe.html", target = "_self");
 								},

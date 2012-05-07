@@ -120,9 +120,7 @@
 
 				function öffneArtgruppenliste_hal() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof hBeobListe !== "undefined") {
-						hBeobListe = undefined;
-					}
+					delete window.hBeobListe;
 					delete sessionStorage.hBeobListe;
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "hArtListe";

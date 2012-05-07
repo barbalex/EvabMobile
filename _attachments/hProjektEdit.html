@@ -282,9 +282,7 @@
 											return $db.removeDoc(document, {
 												success: function () {
 													//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-													if (typeof Projektliste !== "undefined") {
-														Projektliste = undefined;
-													}
+													delete window.Projektliste;
 													delete sessionStorage.Projektliste;
 													delete sessionStorage.ProjektId;
 													//Rückmeldung += "\rProjekt gelöscht";
@@ -415,9 +413,7 @@
 					}
 					if (Feldname === "pName") {
 						//Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof Projektliste !== "undefined") {
-							delete window.Projektliste;
-						}
+						delete window.Projektliste;
 						delete sessionStorage.Projektliste;
 					}
 					$db = $.couch.db("evab");

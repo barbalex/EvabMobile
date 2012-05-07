@@ -201,11 +201,9 @@
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof BeobListe !== "undefined") {
-						BeobListe = undefined;
-					}
-					sessionStorage.removeItem("BeobListe");
+					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					delete window.BeobListe;
+					delete sessionStorage.BeobListe;
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobListe";
 					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird

@@ -161,10 +161,8 @@
 								}
 							});
 							//Globale Variable für FeldlisteOrtEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteOrtEdit !== "undefined") {
-								FeldlisteOrtEdit = undefined;
-								delete sessionStorage.FeldlisteOrtEdit;
-							}
+							delete window.FeldlisteOrtEdit;
+							delete sessionStorage.FeldlisteOrtEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

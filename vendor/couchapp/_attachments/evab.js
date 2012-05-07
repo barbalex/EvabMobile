@@ -315,10 +315,8 @@ function speichereNeueBeob_03(doc) {
 						hBeobId = data.id;
 						sessionStorage.hBeobId = hBeobId;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof hBeobListe !== "undefined") {
-							hBeobListe = undefined;
-						}
-						sessionStorage.removeItem("hBeobListe");
+						delete window.hBeobListe;
+						delete sessionStorage.hBeobListe;
 						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#hArtEditPage").length > 0) {
 							$.mobile.changePage($("#hArtEditPage"));
@@ -334,11 +332,9 @@ function speichereNeueBeob_03(doc) {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
-						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof BeobListe !== "undefined") {
-							BeobListe = undefined;
-						}
-						sessionStorage.removeItem("BeobListe");
+						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						delete window.BeobListe;
+						delete sessionStorage.BeobListe;
 						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
 						if ($("#BeobEditPage").length > 0) {
 							$.mobile.changePage($("#BeobEditPage"));
@@ -491,9 +487,7 @@ function erstelleNeueZeit() {
 									sessionStorage.ZeitId = Zeit.id;
 									sessionStorage.Status = "neu";
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									if (typeof ZeitListe !== "undefined") {
-										delete window.ZeitListe;
-									}
+									delete window.ZeitListe;
 									delete sessionStorage.ZeitListe;
 									window.open("hZeitEdit.html", target = "_self");
 								},
@@ -547,10 +541,8 @@ function erstelleNeuenOrt() {
 							OrtId = data.id;
 							sessionStorage.OrtId = OrtId;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							if (typeof OrtListe !== "undefined") {
-								OrtListe = undefined;
-							}
-							sessionStorage.removeItem("OrtListe");
+							delete window.OrtListe;
+							delete sessionStorage.OrtListe;
 							sessionStorage.Status = "neu";	//das löst bei pageshow die Verortung aus
 							window.open("hOrtEdit.html", target = "_self");
 						},
@@ -591,10 +583,8 @@ function erstelleNeuenRaum() {
 					sessionStorage.RaumId = RaumId;
 					sessionStorage.Status = "neu";
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					if (typeof RaumListe !== "undefined") {
-						RaumListe = undefined;
-					}
-					sessionStorage.removeItem("RaumListe");
+					delete window.RaumListe;
+					delete sessionStorage.RaumListe;
 					window.open("hRaumEdit.html", target = "_self");
 				},
 				error: function () {
@@ -621,9 +611,7 @@ function erstelleNeuesProjekt() {
 			sessionStorage.ProjektId = ProjektId;
 			sessionStorage.Status = "neu";
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			if (typeof Projektliste !== "undefined") {
-				Projektliste = undefined;
-			}
+			delete window.Projektliste;
 			delete sessionStorage.Projektliste;
 			window.open("hProjektEdit.html", target = "_self");
 		},
@@ -898,19 +886,14 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 	return HtmlContainer;
 }
 
-function initiiereBeobliste() {
-	erstelleBeobListe();
-	speichereLetzteUrl();
-}
-
 //BeobListe in BeobList.html vollständig neu aufbauen
-function erstelleBeobListe() {
+function initiiereBeobliste() {
 	$("#beobachtungen").empty();
 	//hat BeobEdit.html eine BeobListe übergeben?
 	if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
 		//Objekte werden als Strings übergeben, müssen geparst werden
 		BeobListe = JSON.parse(sessionStorage.BeobListe);
-		erstelleBeobListe_2()
+		initiiereBeobliste_2()
 	} else {
 		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
@@ -922,13 +905,13 @@ function erstelleBeobListe() {
 				BeobListe = data;
 				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.BeobListe = JSON.stringify(BeobListe);
-				erstelleBeobListe_2()
+				initiiereBeobliste_2()
 			}
 		});
 	}
 }
 
-function erstelleBeobListe_2() {
+function initiiereBeobliste_2() {
 	var i, anzBeob, beob, ListItemContainer, Titel2, Datum, Zeit, ArtGruppe, ImageLink, ArtName, externalPage;
 	anzBeob = 0;
 	ListItemContainer = "";
@@ -969,6 +952,7 @@ function erstelleBeobListe_2() {
 	}
 	$("#beobachtungen").html(ListItemContainer);
 	$("#beobachtungen").listview("refresh");
+	speichereLetzteUrl();
 }
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -2245,7 +2229,7 @@ function speichereLetzteUrl() {
 		    async: false,
 		    success: function (session) {
 		    	//if (session.userCtx.name !== (undefined || null)) {
-		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null)) {
+		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
 		        	Username = session.userCtx.name;
 		        	localStorage.Username = Username;
 		        	speichereLetzteUrl_2();

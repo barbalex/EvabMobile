@@ -93,11 +93,9 @@
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 								}
 							});
-							//Globale Variable für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							if (typeof FeldlisteZeitEdit !== "undefined") {
-								FeldlisteZeitEdit = undefined;
-								delete sessionStorage.FeldlisteZeitEdit;
-							}
+							//Globale Variablen für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							delete window.FeldlisteZeitEdit;
+							delete sessionStorage.FeldlisteZeitEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
