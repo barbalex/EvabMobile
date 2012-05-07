@@ -365,7 +365,7 @@ function speichereNeueBeob_03(doc) {
 //erwartet sessionStorage.Von = von welchem Formular aufgerufen wurde
 function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 	var docId;
-	if (sessionStorage.Von === ("BeobListe" || "BeobEdit")) {
+	if (sessionStorage.Von === "BeobListe" || sessionStorage.Von === "BeobEdit") {
 		docId = sessionStorage.BeobId;
 	} else {
 		docId = sessionStorage.hBeobId;
@@ -381,36 +381,31 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 			doc.aArtId = ArtId;
 			$db.saveDoc(doc, {
 				success: function (data) {
-					if (sessionStorage.Von === ("BeobListe" || "BeobEdit")) {
+					if (sessionStorage.Von === "BeobListe" || sessionStorage.Von === "BeobEdit") {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
-						//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof BeobListe !== "undefined") {
-							delete window.BeobListe;
-						}
+						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						delete window.BeobListe;
 						delete sessionStorage.BeobListe;
 						if ($('#BeobEditPage').length > 0) {
 							$.mobile.changePage($('#BeobEditPage'));
 							initiiereBeobEdit(BeobId);
 						} else {
 							window.open("BeobEdit.html", target = "_self");
-							//$.mobile.changePage("BeobEdit.html?id=" + BeobId);
 						}
 					} else {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
 						sessionStorage.hBeobId = hBeobId;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						if (typeof hBeobListe !== "undefined") {
-							delete window.hBeobListe;
-						}
+						delete window.hBeobListe;
 						delete sessionStorage.hBeobListe;
 						if ($('#hArtEditPage').length > 0) {
 							$.mobile.changePage($('#hArtEditPage'));
 							initiierehBeobEdit(hBeobId);
 						} else {
-							window.open("BeobEdit.html", target = "_self");
+							window.open("hArtEdit.html", target = "_self");
 						}
 					}
 				},
@@ -890,10 +885,8 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
 				if (Status === "neu" && Feld.Standardwert) {
-					//FeldWert = eval("Feld.Standardwert." + Username) || "";
 					FeldWert = Feld.Standardwert[localStorage.Username] || "";
 				} else {
-					//FeldWert = (eval("Beob." + FeldName) || "");
 					FeldWert = Beob[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1063,10 +1056,8 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
 			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				//FeldWert = eval("Feld.Standardwert." + Username) || "";
 				FeldWert = Feld.Standardwert[localStorage.Username] || "";
 			} else {
-				//FeldWert = (eval("Projekt." + FeldName) || "");
 				FeldWert = Projekt[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1222,10 +1213,8 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
 			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				//FeldWert = eval("Feld.Standardwert." + Username) || "";
 				FeldWert = Feld.Standardwert[localStorage.Username] || "";
 			} else {
-				//FeldWert = (eval("Raum." + FeldName) || "");
 				FeldWert = Raum[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1393,10 +1382,8 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === Ort.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
 			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				//FeldWert = eval("Feld.Standardwert." + Ort.User) || "";
 				FeldWert = Feld.Standardwert[Ort.User] || "";
 			} else {
-				//FeldWert = (eval("Ort." + FeldName) || "");
 				FeldWert = Ort[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1608,10 +1595,8 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
 			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				//FeldWert = eval("Feld.Standardwert." + Zeit.User) || "";
 				FeldWert = Feld.Standardwert[Zeit.User] || "";
 			} else {
-				//FeldWert = (eval("Zeit." + FeldName) || "");
 				FeldWert = Zeit[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1737,10 +1722,8 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				//FeldWert = eval("Feld.Standardwert." + Beob.User) || "";
 				FeldWert = Feld.Standardwert[Beob.User] || "";
 			} else {
-				//FeldWert = (eval("Beob." + FeldName) || "");
 				FeldWert = Beob[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -2254,13 +2237,15 @@ function speichereLetzteUrl() {
 //UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
 	//damit - zusammen mit der letzen URL - die letzte Seite bekannt ist
 	//sessionStorage.LetzteId = id; idee um nicht von gesammter sessionStorage abhängig zu sein?
-	if (typeof localStorage.Username === ("undefined" || null)) {
+	//if (typeof localStorage.Username === ("undefined" || null)) {
+	if (typeof localStorage.Username === "undefined" || localStorage.Username === null) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
 		    async: false,
 		    success: function (session) {
-		    	if (session.userCtx.name !== (undefined || null)) {
+		    	//if (session.userCtx.name !== (undefined || null)) {
+		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null)) {
 		        	Username = session.userCtx.name;
 		        	localStorage.Username = Username;
 		        	speichereLetzteUrl_2();
@@ -2667,7 +2652,8 @@ function pruefeAnmeldung() {
 		    dataType: 'json',
 		    async: false,
 		    success: function (session) {
-		    	if (session.userCtx.name !== (undefined || null)) {
+		    	//if (session.userCtx.name !== (undefined || null)) {
+		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
 		        	localStorage.Username = session.userCtx.name;
 		        } else {
 		        	sessionStorage.UserStatus = "neu";

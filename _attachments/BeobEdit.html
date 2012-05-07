@@ -177,10 +177,8 @@
 				$("#BeobEditForm").on('click', '#aArtName', function (event) {
 					var viewname;
 					event.preventDefault();
-					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					if (typeof BeobListe !== "undefined") {
-						delete window.BeobListe;
-					}
+					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					delete window.BeobListe;
 					delete sessionStorage.BeobListe;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
@@ -194,11 +192,19 @@
 							sessionStorage.Von = "BeobEdit";
 							delete sessionStorage.Status;	//ja kein Status = neu
 							if (ArtGruppen_2_L) {
-								$.mobile.changePage($("#agl_Page"));
-								window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
+								if ($("#agl_Page").length > 0) {
+									$.mobile.changePage($("#agl_Page"));
+									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
+								} else {
+									$.mobile.changePage("Artengruppenliste.html");
+								}
 							} else {
-								$.mobile.changePage($("#al_Page"));
-								window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
+								if ($("#al_Page").length > 0) {
+									$.mobile.changePage($("#al_Page"));
+									window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
+								} else {
+									$.mobile.changePage("Artenliste.html");
+								}
 							}
 						}
 					});	
