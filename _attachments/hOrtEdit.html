@@ -543,6 +543,13 @@
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
 					}
+					if (Feldname === "oName") {
+						//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof OrtListe !== "undefined") {
+							delete window.OrtListe;
+						}
+						delete sessionStorage.OrtListe;
+					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(sessionStorage.OrtId, {

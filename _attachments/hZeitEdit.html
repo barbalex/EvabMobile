@@ -327,19 +327,26 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
-					if (!$("input#zDatum").val()) {
+					if (!$("#zDatum").val()) {
 						melde("Bitte Datum erfassen");
 						setTimeout(function() { 
 							$('#zDatum').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
 					}
-					if (!$("input#zUhrzeit").val()) {
+					if (!$("#zUhrzeit").val()) {
 						melde("Bitte Zeit erfassen");
 						setTimeout(function() { 
 							$('#zUhrzeit').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
+					}
+					if (Feldname === ("zDatum" || "zUhrzeit") {
+						//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof ZeitListe !== "undefined") {
+							delete window.ZeitListe;
+						}
+						delete sessionStorage.ZeitListe;
 					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen

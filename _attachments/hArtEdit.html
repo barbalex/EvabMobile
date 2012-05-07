@@ -298,6 +298,11 @@
 
 				function zuArtliste() {
 					var viewname;
+					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					if (typeof hBeobListe !== "undefined") {
+						delete window.hBeobListe;
+					}
+					delete sessionStorage.hBeobListe;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen

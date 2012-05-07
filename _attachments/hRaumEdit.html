@@ -383,12 +383,19 @@
 				}
 
 				function speichern(Feldname, Feldwert) {
-					if (!$("input#rName").val()) {
+					if (!$("#rName").val()) {
 						melde("Bitte Raumnamen eingeben");
 						setTimeout(function() { 
 							$('#rName').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return;
+					}
+					if (Feldname === "rName") {
+						//Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						if (typeof RaumListe !== "undefined") {
+							delete window.RaumListe;
+						}
+						delete sessionStorage.RaumListe;
 					}
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen

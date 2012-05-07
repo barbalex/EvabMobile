@@ -155,7 +155,7 @@
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
-						BeobListe = undefined;
+						delete window.BeobListe;
 					}
 					delete sessionStorage.BeobListe;
 					sessionStorage.Von = "BeobEdit";
@@ -179,9 +179,9 @@
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					if (typeof BeobListe !== "undefined") {
-						BeobListe = undefined;
+						delete window.BeobListe;
 					}
-					sessionStorage.removeItem("BeobListe");
+					delete sessionStorage.BeobListe;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
