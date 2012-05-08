@@ -71,10 +71,17 @@
 				sessionStorage.zurueck = "BeobListe.html";
 			}
 
+			//Feld öffnen
+			$("#FeldListe").on('click', '.Feld', function (event) {
+				event.preventDefault();
+				sessionStorage.FeldId = $(this).attr('FeldId');
+				window.open("FeldEdit.html", target = "_self");
+			});
+
 			//Menu aufbauen
 			$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
 				event.preventDefault();
-				erstelleMenuFürFelder(this, "");
+				erstelleMenuFürFelder(this);
 			});
 
 			//BackButton steuern

@@ -412,7 +412,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 }
 
 //Menü aufbauen. Wird aufgerufen von Feldliste.html und FeldEdit.html
-function erstelleMenuFürFelder(thiz, Pfad) {
+function erstelleMenuFürFelder(thiz) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog({
 		'mode' : 'bool',
@@ -421,7 +421,7 @@ function erstelleMenuFürFelder(thiz, Pfad) {
     	'buttons' : {
       		'Datenfelder<br>exportieren': {
 		      	click: function () {
-		        	window.open(Pfad + "_list/FeldExport/FeldListe");
+		        	window.open("_list/FeldExport/FeldListe");
         		},
         		theme: "a",
         		icon: "arrow-r"
@@ -1054,9 +1054,183 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 	return HtmlContainer;
 }
 
+//initiiert FeldEdit.html
+function initiiereFeldEdit() {
+	$db = $.couch.db("evab");
+	$db.openDoc(sessionStorage.FeldId, {
+		success: function (doc) {
+			var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
+			//Feld bereitstellen
+			Feld = doc;
+			sessionStorage.Feld = JSON.stringify(doc);
+
+			if (!localStorage.Username) {
+				pruefeAnmeldung();
+			}
+			//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
+			SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
+			SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
+			//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusHierarchisch noch nicht
+			if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
+				$("select#SichtbarImModusHierarchisch").val("ja");
+			} else {
+				$("select#SichtbarImModusHierarchisch").val("nein");
+			}
+			$("select#SichtbarImModusHierarchisch").slider();
+			$("select#SichtbarImModusHierarchisch").slider("refresh");
+			//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusEinfach noch nicht
+			if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
+				$("select#SichtbarImModusEinfach").val("ja");
+			} else {
+				$("select#SichtbarImModusEinfach").val("nein");
+			}
+			$("select#SichtbarImModusEinfach").slider();
+			$("select#SichtbarImModusEinfach").slider("refresh");
+			//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+			if (Feld.Hierarchiestufe === "Art") {
+				ArtGruppeAufbauenFeldEdit(doc.ArtGruppe);
+			}
+
+			//allfälligen Standardwert anzeigen
+			//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+			//darum hier auslesen und setzen
+			if (doc.Standardwert) {
+				Standardwert = doc.Standardwert[localStorage.Username];
+				if (Standardwert) {
+					$("#Standardwert").val(Standardwert);
+				}
+			}
+
+			if (doc.FeldName) {
+				//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+				if (["aArtGruppe", "aArtName"].indexOf(doc.FeldName) > -1) {
+					$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
+					$("#Standardwert").attr("disabled", true);
+				} else if (doc.FeldName === "aAutor") {
+					$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+					$("#Standardwert").attr("disabled", true);
+				} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(doc.FeldName) > -1) {
+					$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
+					$("#Standardwert").attr("disabled", true);
+				} else if (["zDatum", "zUhrzeit"].indexOf(doc.FeldName) > -1) {
+					$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
+					$("#Standardwert").attr("disabled", true);
+				}
+			}
+			$(".FeldEditHeaderTitel").text(doc.Hierarchiestufe + ": " + doc.FeldBeschriftung);
+			
+			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
+			$("input[name='Hierarchiestufe']").checkboxradio();
+			$("#" + doc.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
+			$("input[name='Formularelement']").checkboxradio();
+			$("#" + doc.Formularelement).prop("checked",true).checkboxradio("refresh");
+			$("input[name='InputTyp']").checkboxradio();
+			$("#" + doc.InputTyp).prop("checked",true).checkboxradio("refresh");
+
+			//Werte in übrige Felder einfügen
+			$("#FeldName").val(doc.FeldName);
+			$("#FeldBeschriftung").val(doc.FeldBeschriftung);
+			$("#FeldBeschreibung").val(doc.FeldBeschreibung);	//Textarea - anders refreshen?
+			$("#Reihenfolge").val(doc.Reihenfolge);
+			$("#FeldNameEvab").val(doc.FeldNameEvab);
+			$("#FeldNameZdsf").val(doc.FeldNameZdsf);
+			$("#FeldNameCscf").val(doc.FeldNameCscf);
+			$("#FeldNameNism").val(doc.FeldNameNism);
+			$("#FeldNameWslFlechten").val(doc.FeldNameWslFlechten);
+			$("#FeldNameWslPilze").val(doc.FeldNameWslPilze);
+			$("#Optionen").val(doc.Optionen);	//Textarea - anders refreshen?
+			$("#SliderMinimum").val(doc.SliderMinimum);
+			$("#SliderMaximum").val(doc.SliderMaximum);
+
+			erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
+			speichereLetzteUrl();
+		}
+	});
+}
+
+//wird von FeldEdit.html aufgerufen
+//erstellt das Selectmenu, um die Reihenfolge-Position des Felds zu bestimmen
+function erstelleSelectFeldFolgtNach() {
+	//Nur bei eigenen Feldern anzeigen
+	if (Feld.User !== "ZentrenBdKt") {
+		if (window.Feldliste) {
+			//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
+			erstelleSelectFeldFolgtNach_2();
+		} else if (sessionStorage.Feldliste) {
+			//sessionStorage verwenden
+			Feldliste = JSON.parse(sessionStorage.Feldliste);
+			erstelleSelectFeldFolgtNach_2();
+		} else {
+			$db = $.couch.db("evab");
+			$db.view("evab/FeldListe", {
+				success: function (data) {
+					Feldliste = data;
+					sessionStorage.Feldliste = JSON.stringify(data);
+					erstelleSelectFeldFolgtNach_2();
+				}
+			});
+		}
+	}
+}
+
+function erstelleSelectFeldFolgtNach_2() {
+	var i, Feld, Optionen;
+	Optionen = [];
+	Optionen.push("");
+	if (!localStorage.Username) {
+		pruefeAnmeldung();
+	}
+	for (i in Feldliste.rows) {                 
+		Feld = Feldliste.rows[i].value;
+		//Liste aufbauen
+		//Nur eigene Felder und offizielle
+		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
+			Optionen.push(Feld.FeldName);
+		}
+	}
+	HtmlContainer = generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
+	$("#FeldFolgtNachDiv").html(HtmlContainer).trigger("create").trigger("refresh");
+}
+
+//wird benutzt in FeldEdit.html
+//von je einer Funktion in FeldEdit.html und evab.js
+function ArtGruppeAufbauenFeldEdit(ArtGruppenArrayIn) {
+	var viewname;
+	$db = $.couch.db("evab");
+	$("select#ArtGruppe").empty();
+	viewname = "evab/Artgruppen";
+	$db.view(viewname, {
+		success: function (data) {
+			var i, ArtGruppe, ListItemContainer, listItem, ArtGruppenArray;
+			ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
+			ArtGruppenArray = ArtGruppenArrayIn || [];
+			for (i in data.rows) {
+				ArtGruppe = data.rows[i].key;
+				listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
+				listItem += ArtGruppe;
+				listItem += "' value='";
+				listItem += ArtGruppe;
+				if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
+					listItem += "' checked='checked";
+				}
+				listItem += "'/>\n<label for='";
+				listItem += ArtGruppe;
+				listItem += "'>";
+				listItem += ArtGruppe;
+				listItem += "</label>";
+				ListItemContainer += listItem;
+			}
+			ListItemContainer += "\n</fieldset>"
+			$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+		}
+	});
+}
+
+//initiiert FeldListe.html
 function initiiereFeldliste() {
 	//hat FeldEdit.html eine Feldliste übergeben?
 	if (window.Feldliste) {
+		alert("Feldliste = " + window.Feldliste);
 		//Feldliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereFeldliste_2();
 	} else if (sessionStorage.Feldliste) {
@@ -1096,13 +1270,16 @@ function initiiereFeldliste_2() {
 				FeldBeschreibung = Feld.FeldBeschreibung;
 			}
 			ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-			externalPage = "_show/FeldEdit/" + Feld._id;
-			ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
-				"<a href='" + externalPage + "' rel='external'>" +
-				"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-				"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
-				"<p>" + FeldBeschreibung + "</p>"
-				"<\/a><\/li>";
+			ListItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
+			ListItemContainer += Feld._id;
+			ListItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
+			ListItemContainer += ImageLink + "\" /><h2>";
+			ListItemContainer += Hierarchiestufe;
+			ListItemContainer += ': ';
+			ListItemContainer += FeldBeschriftung;
+			ListItemContainer += "<\/h2><p>";
+			ListItemContainer += FeldBeschreibung;
+			ListItemContainer += "</p><\/a><\/li>";
 			//Felder zählen
 			anzFelder += 1;
 		}
@@ -2401,6 +2578,9 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 				break;
 				case "BeobListe":
 					initiiereBeobliste();
+				break;
+				case "FeldEdit":
+					initiiereFeldEdit();
 				break;
 				case "Feldliste":
 					initiiereFeldliste();
