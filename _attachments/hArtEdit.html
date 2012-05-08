@@ -333,7 +333,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu_hae(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({
@@ -480,7 +480,7 @@
 						} else {
 							//keine Ortliste vorhanden
 							//neu aus DB erstellen
-							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+							if (!localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");

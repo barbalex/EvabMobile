@@ -387,7 +387,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenuZeitEdit(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen
@@ -457,7 +457,7 @@
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
 					if (typeof sessionStorage.ZeitListe === "undefined" || !sessionStorage.ZeitListe) {
-						if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+						if (!localStorage.Username) {
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");

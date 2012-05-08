@@ -139,7 +139,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenuOrtListe(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({

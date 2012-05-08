@@ -130,7 +130,7 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenuRaumListe(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen

@@ -63,7 +63,7 @@
 				//Felder speichern (checkbox)
 				$("#Feldliste").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $(this).prop("id");
@@ -121,7 +121,7 @@
 
 				function erstelleSichtbareFelder_2() {
 					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";

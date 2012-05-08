@@ -139,7 +139,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu_hal(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({

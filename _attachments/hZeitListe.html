@@ -127,7 +127,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Code um Menü aufzubauen

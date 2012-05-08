@@ -120,7 +120,7 @@
 
 					//Menü aufbauen
 					function erstelleMenuProjektliste(thiz) {
-						if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+						if (!localStorage.Username) {
 							pruefeAnmeldung();
 						}
 						//Code um Menü aufzubauen
@@ -183,7 +183,7 @@
 					}
 
 					function erstelleKarteFuerProjektliste() {
-						if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+						if (!localStorage.Username) {
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");

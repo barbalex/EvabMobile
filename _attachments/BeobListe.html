@@ -78,7 +78,7 @@
 				});
 
 				$(document).on("pageshow", '#bl_Karte', function () {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//Karte aufbauen. Zuerst Beobachtungen abfragen

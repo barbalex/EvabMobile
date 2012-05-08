@@ -223,7 +223,7 @@
 				$("#{{InputTyp}}").prop("checked",true).checkboxradio("refresh");
 
 				function setzeSichtbarInModiUndArtgruppeUndStandardwert() {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					//wenn mit den von Mustache übergebenen Arrays vernünftig gearbeitet werden könnte,
@@ -531,7 +531,7 @@
 
 				function prüfeFeldNamen() {
 					var FeldNameAlt, FeldNameNeu, viewname;
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldNameAlt = "{{FeldName}}" || "";
@@ -573,7 +573,7 @@
 
 				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
 					var FeldName;
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $("#FeldName").val();
@@ -603,7 +603,7 @@
 
 				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
 					var FeldName;
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					FeldName = $("#FeldName").val();
@@ -895,7 +895,7 @@
 				}
 
 				function speichereStandardwert() {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$db = $.couch.db("evab");

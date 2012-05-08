@@ -389,7 +389,7 @@
 						} else {
 							//keine Projektliste übergeben
 							//neu aus DB erstellen
-							if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+							if (!localStorage.Username) {
 								pruefeAnmeldung();
 							}
 							$db = $.couch.db("evab");
@@ -579,7 +579,7 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
 					$(thiz).simpledialog({

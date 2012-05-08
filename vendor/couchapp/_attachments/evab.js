@@ -221,7 +221,7 @@ function speichereNeueBeob(aArtBezeichnung, ArtId) {
 //aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	var doc;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
@@ -440,7 +440,7 @@ function erstelleNeueZeit() {
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
 	var doc;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
@@ -506,7 +506,7 @@ function erstelleNeueZeit() {
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt() {
 	var doc;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
@@ -556,7 +556,7 @@ function erstelleNeuenOrt() {
 
 function erstelleNeuenRaum() {
 	var doc;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	doc = {};
@@ -596,7 +596,7 @@ function erstelleNeuenRaum() {
 function erstelleNeuesProjekt() {
 	var hProjekt;
 	hProjekt = {};
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	hProjekt.Typ = "hProjekt";
@@ -620,7 +620,7 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen(Pfad) {
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
@@ -1030,7 +1030,7 @@ function initiiereProjektEdit_2(Projekt) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Projekt) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
@@ -1123,7 +1123,7 @@ function initiiereProjektliste() {
 		Projektliste = JSON.parse(sessionStorage.Projektliste);
 		initiiereProjektliste_2();
 	} else {
-		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		//Daten für die Projektliste aus DB holen
@@ -1249,7 +1249,7 @@ function initiiereRaumEdit_2(Raum) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
@@ -1284,7 +1284,7 @@ function initiiereRaumListe() {
 		initiiereRaumListe_2();
 	} else {
 		//Raumliste aud DB holen
-		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
@@ -1455,7 +1455,7 @@ function initiiereOrtListe() {
 		initiiereOrtListe_2();
 	} else {
 		//Ortliste aus DB holen
-		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
@@ -1584,7 +1584,7 @@ function initiiereZeitListe() {
 		initiiereZeitListe_2();
 	} else {
 		//Zeitliste aus DB holen
-  		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+  		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
@@ -2353,7 +2353,7 @@ function speichereLetzteUrl_3(UserId) {
 //daher wird die aufrufende Seite übergeben und nach getaner Arbeit deren Felder initiiert
 //Wenn sessionStorage null ist, verzichtet die aufrufende Seite auf das Initiieren
 function holeSessionStorageAusDb(AufrufendeSeite) {
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -2415,7 +2415,7 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 //wird aufgerufen von RaumEdit.html und OrtListe.html
 //erwartet den user und die RaumId
 function erstelleKarteFürRaum() {
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -2514,7 +2514,7 @@ function erstelleKarteFürRaum() {
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
 //erwartet Username und ProjektId
 function erstelleKarteFürProjekt() {
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	$db = $.couch.db("evab");
@@ -2671,7 +2671,7 @@ function erstelleAttachments(doc) {
 //erwartet den Teil des Pfads, der links von FeldEdit ist
 function neuesFeld(Pfad) {
 	var Feld;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	Feld = {};
@@ -2700,7 +2700,7 @@ function pruefeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		$.ajax({
 		    url: '/_session',
 		    dataType: 'json',
@@ -2738,7 +2738,7 @@ function oeffneBeob(BeobId) {
 //wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
 function erstelleArtenliste() {
 	var viewname;
-		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
@@ -2851,7 +2851,7 @@ function erstelleArtgruppenListe() {
 //Listen aufbauen lassen
 //und button für Sprache richtig beschriften
 	var viewname;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
