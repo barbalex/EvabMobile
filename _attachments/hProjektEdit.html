@@ -610,12 +610,12 @@
 				function nächstesVorigesProjekt(NächstesOderVoriges) {
 					//prüfen, ob Projektliste schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof Projektliste !== "undefined") {
+					if (window.Projektliste) {
 						//globale Variable Projektliste existiert noch
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
 						//hat hProjektListe.html eine Projektliste übergeben?
-						if (typeof sessionStorage.Projektliste !== "undefined" && sessionStorage.Projektliste) {
+						if (sessionStorage.Projektliste) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
 							Projektliste = JSON.parse(sessionStorage.Projektliste);
 							nächstesVorigesProjekt_2(NächstesOderVoriges);

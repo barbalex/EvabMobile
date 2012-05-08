@@ -52,41 +52,38 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 	</div>
-  </body>
-  <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady() {
-		//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-		//wo sie von speichereLetzteUrl gespeichert wurde
-		//sessionStorage.Feldliste ist dann null und sessionStorage.length 0
-		//sessionStorage.Feldliste ist auch null, wenn die Projektliste gelöscht wurde
-		//holeSessionStorageAusDb stellt die alte sessionStorage.Feldliste wieder her
-		//darum hier die sessionStorage.length prüfen
-		if (sessionStorage.length === 0) {
-			holeSessionStorageAusDb("Feldliste");
-		} else {
-			initiiereFeldliste();
-		}
+	<script type="text/javascript" charset="utf-8">
+		$(":jqmData(role='page')").on("pageinit", function () {
+			//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+			//wo sie von speichereLetzteUrl gespeichert wurde
+			//sessionStorage.Feldliste ist dann null und sessionStorage.length 0
+			//sessionStorage.Feldliste ist auch null, wenn die Projektliste gelöscht wurde
+			//holeSessionStorageAusDb stellt die alte sessionStorage.Feldliste wieder her
+			//darum hier die sessionStorage.length prüfen
+			if (sessionStorage.length === 0) {
+				holeSessionStorageAusDb("Feldliste");
+			} else {
+				initiiereFeldliste();
+			}
 
-		//sicherstellen, dass zurueck nie leer ist
-		if (!sessionStorage.zurueck) {
-			sessionStorage.zurueck = "BeobListe.html";
-		}
+			//sicherstellen, dass zurueck nie leer ist
+			if (!sessionStorage.zurueck) {
+				sessionStorage.zurueck = "BeobListe.html";
+			}
 
-		//Menu aufbauen
-		$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
-			event.preventDefault();
-			erstelleMenuFürFelder(this, "");
+			//Menu aufbauen
+			$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
+				event.preventDefault();
+				erstelleMenuFürFelder(this, "");
+			});
+
+			//BackButton steuern
+			$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
+				event.preventDefault();
+				window.open(sessionStorage.zurueck, target = "_self");
+				delete sessionStorage.zurueck;	//wird nicht mehr benötigt
+			});
 		});
-
-		//BackButton steuern
-		$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
-			event.preventDefault();
-			window.open(sessionStorage.zurueck, target = "_self");
-			delete sessionStorage.zurueck;	//wird nicht mehr benötigt
-		});
-	}
-	
-	$(document).ready(handleDocumentReady);
-
   </script>
+  </body>
 </html>

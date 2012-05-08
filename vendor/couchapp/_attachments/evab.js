@@ -2685,6 +2685,9 @@ function neuesFeld(Pfad) {
 	$db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function (data) {
+			//Feldliste soll neu aufgebaut werden
+			delete window.Feldliste;
+			delete sessionStorage.Feldliste;
 			window.open(Pfad + "FeldEdit/" + data.id, target = "_self");
 		},
 		error: function () {
