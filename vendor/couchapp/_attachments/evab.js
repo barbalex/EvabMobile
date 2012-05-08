@@ -886,14 +886,17 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 
 //BeobListe in BeobList.html vollständig neu aufbauen
 function initiiereBeobliste() {
-	$("#beobachtungen").empty();
 	//hat BeobEdit.html eine BeobListe übergeben?
-	if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
+	if (window.BeobListe) {
+		//Beobliste aus globaler Variable holen - muss nicht geparst werden
+		initiiereBeobliste_2()
+	} else if (sessionStorage.BeobListe) {
+		//Beobliste aus sessionStorage holen
 		BeobListe = JSON.parse(sessionStorage.BeobListe);
 		initiiereBeobliste_2()
 	} else {
-		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		//Beobliste aus DB holen
+		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
@@ -1054,9 +1057,10 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 function initiiereFeldliste() {
 	//hat FeldEdit.html eine Feldliste übergeben?
 	if (window.Feldliste) {
+		//Feldliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereFeldliste_2();
 	} else if (sessionStorage.Feldliste) {
-		//Daten für die Feldliste aus sessionStorage holen
+		//Feldliste aus sessionStorage holen
 		Feldliste = JSON.parse(sessionStorage.Feldliste);
 		initiiereFeldliste_2();
 	} else {
@@ -1064,7 +1068,6 @@ function initiiereFeldliste() {
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
 			success: function (Feldliste) {
-				//Projektliste für ProjektEdit bereitstellen
 				Feldliste = data;
 				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.Feldliste = JSON.stringify(Feldliste);
@@ -1078,7 +1081,7 @@ function initiiereFeldliste_2() {
 	var i, Feld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
 	ListItemContainer = "";
 	anzFelder = 0;
-	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}          
 	for (i in Feldliste.rows) {                 
@@ -1778,20 +1781,19 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	return HtmlContainer;
 }
 
+//initiiert BeobListe.html
 function initiierehBeobListe() {
-	erstellehBeobListe();
-	speichereLetzteUrl();
-}
-
-function erstellehBeobListe() {
-	$("#Arten").empty();
 	//hat hArtEdit.html eine hBeobListe übergeben?
-	if (typeof sessionStorage.hBeobListe !== "undefined" && sessionStorage.hBeobListe) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
+	if (window.hBeobListe) {
+		//Beobliste aus globaler Variable holen - muss nicht geparst werden
+		initiierehBeobListe_2();
+	} else if (sessionStorage.hBeobListe) {
+		//Beobliste aus sessionStorage holen
 		hBeobListe = JSON.parse(sessionStorage.hBeobListe);
-		erstellehBeobListe_2();
+		initiierehBeobListe_2();
 	} else {
-  		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		//Beobliste aus DB holen
+  		if (!localStorage.Username) {
 			pruefeAnmeldung();
 		}
 		$db = $.couch.db("evab");
@@ -1800,13 +1802,13 @@ function erstellehBeobListe() {
 				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				hBeobListe = data;
 				sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
-				erstellehBeobListe_2();
+				initiierehBeobListe_2();
 			}
 		});
 	}
 }
 
-function erstellehBeobListe_2() {
+function initiierehBeobListe_2() {
 	var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
 	anzArt = 0;
 	ListItemContainer = "";
@@ -1839,6 +1841,7 @@ function erstellehBeobListe_2() {
 	}
 	$("#Arten").html(ListItemContainer);
 	$("#Arten").listview("refresh");
+	speichereLetzteUrl();
 }
 
 
