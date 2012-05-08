@@ -55,55 +55,22 @@
   </body>
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
-		
-		userCtx = null;
-		//sicherstellen, dass zurueck nie leer ist
-		if (typeof sessionStorage.zurueck === "undefined" || !sessionStorage.zurueck) {
-			sessionStorage.zurueck = "BeobListe.html";
+		//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+		//wo sie von speichereLetzteUrl gespeichert wurde
+		//sessionStorage.Feldliste ist dann null und sessionStorage.length 0
+		//sessionStorage.Feldliste ist auch null, wenn die Projektliste gelöscht wurde
+		//holeSessionStorageAusDb stellt die alte sessionStorage.Feldliste wieder her
+		//darum hier die sessionStorage.length prüfen
+		if (sessionStorage.length === 0) {
+			holeSessionStorageAusDb("Feldliste");
+		} else {
+			initiiereFeldliste();
 		}
 
-		speichereLetzteUrl();
-		
-		//FeldListe aufbauen
-		$db = $.couch.db("evab");
-		$db.view("evab/FeldListe", {
-			success: function (data) {
-				if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
-					pruefeAnmeldung();
-				}
-				var i, Feld, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
-				ListItemContainer = "";
-
-				var anzFelder = 0;            
-				for (i in data.rows) {                 
-					Feld = data.rows[i].value;
-					//Liste aufbauen
-					//Nur eigene Felder und offizielle
-					if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
-						Hierarchiestufe = Feld.Hierarchiestufe;
-						FeldBeschriftung = Feld.FeldBeschriftung;
-						FeldBeschreibung = "";
-						if (Feld.FeldBeschreibung) {
-							FeldBeschreibung = Feld.FeldBeschreibung;
-						}
-						ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-						externalPage = "_show/FeldEdit/" + Feld._id;
-						ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
-							"<a href='" + externalPage + "' rel='external'>" +
-							"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-							"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
-							"<p>" + FeldBeschreibung + "</p>"
-							"<\/a><\/li>";
-						//Felder zählen
-						anzFelder += 1;
-					}
-				}
-				//Im Titel der Seite die Anzahl Beobachtungen anzeigen
-				$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
-				$("#FeldListe").html(ListItemContainer);
-				$("#FeldListe").listview("refresh");
-			}
-		});
+		//sicherstellen, dass zurueck nie leer ist
+		if (!sessionStorage.zurueck) {
+			sessionStorage.zurueck = "BeobListe.html";
+		}
 
 		//Menu aufbauen
 		$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {

@@ -63,8 +63,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//RaumId ist dann undefined und sessionStorage.RaumId ist null
-				if (typeof sessionStorage.RaumId === "undefined" || !sessionStorage.RaumId) {
+				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hOrtListe");
 				} else {
 					initiiereOrtListe();

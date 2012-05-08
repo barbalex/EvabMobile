@@ -92,15 +92,14 @@
 				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
 				//darum prüfen, ob sessionStorage.ZeitId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (typeof sessionStorage.ZeitId !== "undefined" && sessionStorage.ZeitId) {
+				if (sessionStorage.ZeitId) {
 					initiiereZeitEdit(sessionStorage.ZeitId);
 				}
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//ZeitId ist dann undefined und sessionStorage.ZeitId ist null
-				if (typeof sessionStorage.ZeitId === "undefined" || !sessionStorage.ZeitId) {
+				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hZeitEdit");
 				}
 

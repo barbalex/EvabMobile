@@ -116,16 +116,15 @@
 				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
 				//darum prüfen, ob sessionStorage.BeobId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (typeof sessionStorage.BeobId !== "undefined" && sessionStorage.BeobId) {
+				if (sessionStorage.BeobId) {
 					initiiereBeobEdit(sessionStorage.BeobId);
 				}
 			});
 
-			$(":jqmData(role='page')").on("pagecreate", function () {
+			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//BeobId ist dann undefined und sessionStorage.BeobId ist null
-				if (typeof sessionStorage.BeobId === "undefined" || !sessionStorage.BeobId) {
+				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("BeobEdit");
 				}
 

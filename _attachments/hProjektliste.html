@@ -58,7 +58,7 @@
 					//sessionStorage.Projektliste ist auch null, wenn die Projektliste gelöscht wurde
 					//holeSessionStorageAusDb stellt die alte sessionStorage.Projektliste wieder her
 					//darum hier die sessionStorage.length prüfen
-					if (sessionStorage.length === 1) {
+					if (sessionStorage.length === 0) {
 						holeSessionStorageAusDb("hProjektListe");
 					} else {
 						initiiereProjektliste();

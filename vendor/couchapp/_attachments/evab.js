@@ -1067,7 +1067,7 @@ function initiiereFeldliste() {
 		//FeldListe aus DB holen
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
-			success: function (Feldliste) {
+			success: function (data) {
 				Feldliste = data;
 				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.Feldliste = JSON.stringify(Feldliste);
@@ -1111,6 +1111,7 @@ function initiiereFeldliste_2() {
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 	$("#FeldListe").html(ListItemContainer);
 	$("#FeldListe").listview("refresh");
+	speichereLetzteUrl();
 }
 
 function initiiereProjektliste() {
@@ -2400,6 +2401,9 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 				break;
 				case "BeobListe":
 					initiiereBeobliste();
+				break;
+				case "Feldliste":
+					initiiereFeldliste();
 				break;
 			}
 		}

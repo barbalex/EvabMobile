@@ -102,7 +102,7 @@
 				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
 				//darum prüfen, ob sessionStorage.OrtId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (typeof sessionStorage.OrtId !== "undefined" && sessionStorage.OrtId) {
+				if (sessionStorage.OrtId) {
 					initiiereOrtEdit(sessionStorage.OrtId);
 				}
 			});
@@ -110,8 +110,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//OrtId ist dann undefined und sessionStorage.OrtId ist null
-				if (typeof sessionStorage.OrtId === "undefined" || !sessionStorage.OrtId) {
+				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hOrtEdit");
 				}
 
