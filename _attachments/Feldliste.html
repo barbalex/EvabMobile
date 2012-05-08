@@ -35,16 +35,16 @@
   </head>
   <body>
   	<div data-role="page" id="FeldListePage">
-  		<div id="FeldListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
+  		<div id="FeldListeHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="FeldListeBackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
-  			<h2 class="FeldListePageTitel">Felder</h2>
+  			<h2 class="FeldListeTitel">Felder</h2>
   			<a href='#' id='MenuFeldListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
-		<div data-role="content">
+		<div data-role="content" id="FeldListeContent">
 			<ul id="FeldListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="FeldListeFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" onClick="Javascript:neuesFeld('_show/');" data-icon="plus" class="ui-btn-active">neu</a></li>			
@@ -99,20 +99,20 @@
 					}
 				}
 				//Im Titel der Seite die Anzahl Beobachtungen anzeigen
-				$("#FeldListePageHeader .FeldListePageTitel").text(anzFelder + " Felder");
+				$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 				$("#FeldListe").html(ListItemContainer);
 				$("#FeldListe").listview("refresh");
 			}
 		});
 
 		//Menu aufbauen
-		$("#FeldListePageHeader").on('click', '#MenuFeldListe', function (event) {
+		$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
 			event.preventDefault();
 			erstelleMenuFürFelder(this, "");
 		});
 
 		//BackButton steuern
-		$("#FeldListePageHeader").on('click', '#FeldListeBackButton', function (event) {
+		$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
 			event.preventDefault();
 			window.open(sessionStorage.zurueck, target = "_self");
 			delete sessionStorage.zurueck;	//wird nicht mehr benötigt

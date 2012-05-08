@@ -1000,6 +1000,7 @@ function initiiereProjektEdit_2(Projekt) {
 	}
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (sessionStorage.Status === "neu") {
+		$("#pName").focus();
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hProjektEditForm").serializeObject();
@@ -1050,10 +1051,74 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 	return HtmlContainer;
 }
 
+function initiiereFeldliste() {
+	//hat FeldEdit.html eine Feldliste übergeben?
+	if (window.Feldliste) {
+		initiiereFeldliste_2();
+	} else if (sessionStorage.Feldliste) {
+		//Daten für die Feldliste aus sessionStorage holen
+		Feldliste = JSON.parse(sessionStorage.Feldliste);
+		initiiereFeldliste_2();
+	} else {
+		//FeldListe aus DB holen
+		$db = $.couch.db("evab");
+		$db.view("evab/FeldListe", {
+			success: function (Feldliste) {
+				//Projektliste für ProjektEdit bereitstellen
+				Feldliste = data;
+				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				sessionStorage.Feldliste = JSON.stringify(Feldliste);
+				initiiereFeldliste_2();
+			}
+		});
+	}
+}
+
+function initiiereFeldliste_2() {
+	var i, Feld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
+	ListItemContainer = "";
+	anzFelder = 0;
+	if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
+		pruefeAnmeldung();
+	}          
+	for (i in Feldliste.rows) {                 
+		Feld = Feldliste.rows[i].value;
+		//Liste aufbauen
+		//Nur eigene Felder und offizielle
+		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
+			Hierarchiestufe = Feld.Hierarchiestufe;
+			FeldBeschriftung = Feld.FeldBeschriftung;
+			FeldBeschreibung = "";
+			if (Feld.FeldBeschreibung) {
+				FeldBeschreibung = Feld.FeldBeschreibung;
+			}
+			ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
+			externalPage = "_show/FeldEdit/" + Feld._id;
+			ListItemContainer += "<li class=\"Feld ui-li-has-thumb\">" +
+				"<a href='" + externalPage + "' rel='external'>" +
+				"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+				"<h2>" + Hierarchiestufe + ': ' + FeldBeschriftung + "<\/h2>" +
+				"<p>" + FeldBeschreibung + "</p>"
+				"<\/a><\/li>";
+			//Felder zählen
+			anzFelder += 1;
+		}
+	}
+	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
+	$("#FeldListe").html(ListItemContainer);
+	$("#FeldListe").listview("refresh");
+}
+
 function initiiereProjektliste() {
-	$("#Projekte").empty();
 	//hat ProjektEdit.html eine Projektliste übergeben?
-	if (!sessionStorage.Projektliste) {
+	if (window.Projektliste) {
+		initiiereProjektliste_2();
+	} else if (sessionStorage.Projektliste) {
+		//Daten für die Projektliste aus sessionStorage holen
+		Projektliste = JSON.parse(sessionStorage.Projektliste);
+		initiiereProjektliste_2();
+	} else {
 		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
@@ -1068,10 +1133,6 @@ function initiiereProjektliste() {
 				initiiereProjektliste_2();
 			}
 		});
-	} else {
-		//Daten für die Projektliste aus sessionStorage holen
-		Projektliste = JSON.parse(sessionStorage.Projektliste);	//Objekte werden als Strings übergeben, müssen geparst werden
-		initiiereProjektliste_2();
 	}
 }
 
@@ -1157,6 +1218,7 @@ function initiiereRaumEdit_2(Raum) {
 	}
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	if (sessionStorage.Status === "neu") {
+		$("#rName").focus();
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hRaumEditForm").serializeObject();
@@ -1208,17 +1270,16 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 }
 
 function initiiereRaumListe() {
-	erstelleRaumListe();
-	speichereLetzteUrl();
-}
-
-function erstelleRaumListe() {
-	$("#Räume").empty();
 	//hat hRaumEdit.html eine RaumListe übergeben?
-	if (sessionStorage.RaumListe) {
-		RaumListe = JSON.parse(sessionStorage.RaumListe);	//Objekte werden als Strings übergeben, müssen geparst werden
-		erstelleRaumListe_2();
+	if (window.RaumListe) {
+		//Raumliste aus globaler Variable holen - muss nicht geparst werden
+		initiiereRaumListe_2();
+	} else	if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
+		//Raumliste aus sessionStorage holen
+		RaumListe = JSON.parse(sessionStorage.RaumListe);
+		initiiereRaumListe_2();
 	} else {
+		//Raumliste aud DB holen
 		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
@@ -1229,13 +1290,13 @@ function erstelleRaumListe() {
 				//RaumListe für haumEdit bereitstellen
 				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.RaumListe = JSON.stringify(RaumListe);
-				erstelleRaumListe_2();
+				initiiereRaumListe_2();
 			}
 		});
 	}
 }
 
-function erstelleRaumListe_2() {
+function initiiereRaumListe_2() {
 	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
 	anzRaum = 0;
 	ListItemContainer = "";
@@ -1262,6 +1323,7 @@ function erstelleRaumListe_2() {
 	}
 	$("#Räume").html(ListItemContainer);
 	$("#Räume").listview("refresh");
+	speichereLetzteUrl();
 }
 
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1322,7 +1384,8 @@ function initiiereOrtEdit_2(Ort) {
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	//in neuen Datensätzen dynamisch erstellte Standardwerte speichern und verorten
-	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
+	if (sessionStorage.Status === "neu") {
+		$("#oName").focus();
 		Formularwerte = {};
 		Formularwerte = $("#hOrtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
@@ -1376,19 +1439,18 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	return HtmlContainer;
 }
 
+//erstellt die Ortliste in hOrtListe.html
 function initiiereOrtListe() {
-	erstelleOrtListe();
-	speichereLetzteUrl();
-}
-
-function erstelleOrtListe() {
-	$("#Orte").empty();
 	//hat hOrtEdit.html eine OrtListe übergeben?
-	if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
+	if (window.OrtListe) {
+		//Ortliste aus globaler Variable holen - muss nicht geparst werden
+		initiiereOrtListe_2();
+	} else if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
+		//Ortliste aus sessionStorage holen
 		OrtListe = JSON.parse(sessionStorage.OrtListe);
-		erstelleOrtListe_2();
+		initiiereOrtListe_2();
 	} else {
+		//Ortliste aus DB holen
 		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
@@ -1398,13 +1460,13 @@ function erstelleOrtListe() {
 				//OrtListe für hOrtEdit bereitstellen
 				OrtListe = data;
 				sessionStorage.OrtListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-				erstelleOrtListe_2();
+				initiiereOrtListe_2();
 			}
 		});
 	}
 }
 
-function erstelleOrtListe_2() {
+function initiiereOrtListe_2() {
 	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
 	anzOrt = 0;
 	ListItemContainer = "";
@@ -1429,6 +1491,7 @@ function erstelleOrtListe_2() {
 	}
 	$("#Orte").html(ListItemContainer);
 	$("#Orte").listview("refresh");
+	speichereLetzteUrl();
 }
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1505,36 +1568,34 @@ function initiiereZeitEdit_2(Zeit) {
 	speichereLetzteUrl();
 }
 
-function initiiereZeitListe() {
-	erstelleZeitListe();
-	speichereLetzteUrl();
-}
-
 //erstellt die Liste der Zeiten in Formular hZeitListe.html
-function erstelleZeitListe() {
-		//hat hZeitEdit.html eine ZeitListe übergeben?
-	if (typeof sessionStorage.ZeitListe !== "undefined" && sessionStorage.ZeitListe) {
-		//Objekte werden als Strings übergeben, müssen geparst werden
+function initiiereZeitListe() {
+	//hat hZeitEdit.html eine ZeitListe übergeben?
+	if (window.ZeitListe) {
+		//Zeitliste aus globaler Variable holen - muss nicht geparst werden
+		initiiereZeitListe_2();
+	} else if (typeof sessionStorage.ZeitListe !== "undefined" && sessionStorage.ZeitListe) {
+		//Zeitliste aus sessionStorage holen
 		ZeitListe = JSON.parse(sessionStorage.ZeitListe);
-		erstelleZeitListe_2();
+		initiiereZeitListe_2();
 	} else {
+		//Zeitliste aus DB holen
   		if (typeof localStorage.Username === "undefined" || !localStorage.Username) {
 			pruefeAnmeldung();
 		}
-		$("#Zeiten").empty();
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				ZeitListe = data;
-				sessionStorage.ZeitListe = JSON.stringify(data);  //Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-				erstelleZeitListe_2();
+				sessionStorage.ZeitListe = JSON.stringify(data);
+				initiiereZeitListe_2();
 			}
 		});
 	}
 }
 
-function erstelleZeitListe_2() {
+function initiiereZeitListe_2() {
 	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
 	anzZeit = 0;
 	ListItemContainer = "";
@@ -1561,6 +1622,7 @@ function erstelleZeitListe_2() {
 	}
 	$("#Zeiten").html(ListItemContainer);
 	$("#Zeiten").listview("refresh");
+	speichereLetzteUrl();
 }
 
 //generiert das Html für das Formular in hZeitEdit.html

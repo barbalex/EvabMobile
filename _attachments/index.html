@@ -62,9 +62,9 @@
 	    //Wenn möglich alten cookie für die Anmeldung verwenden
 	    //ausser User hat via Menü bewusst neu anmelden wollen
 	    //sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-	    if (typeof sessionStorage.UserStatus !== "undefined" && sessionStorage.UserStatus !== "neu") {
+	    if (!sessionStorage.UserStatus) {
 	    	pruefeAnmeldung_index();
-	    } else if (typeof sessionStorage.UserStatus !== "undefined" && sessionStorage.UserStatus === "neu") {
+	    } else if (sessionStorage.UserStatus === "neu") {
 	    	sessionStorage.clear();
 	    }
 
