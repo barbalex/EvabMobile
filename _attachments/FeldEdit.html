@@ -704,6 +704,7 @@
 								success: function (data) {
 									Feld = data;
 									sessionStorage.Feld = JSON.stringify(data);
+									sessionStorage.FeldId = Feld._id;
 								},
 								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
@@ -804,6 +805,7 @@
 								success: function (data) {
 									Feld = data;
 									sessionStorage.Feld = JSON.stringify(data);
+									sessionStorage.FeldId = Feld._id;
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (sessionStorage.FeldName === "FeldName" || sessionStorage.FeldName === "FeldBeschreibung" || sessionStorage.FeldName === "Reihenfolge") {
 										delete window.Feldliste;

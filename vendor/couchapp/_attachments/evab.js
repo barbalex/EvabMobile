@@ -1056,6 +1056,7 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 
 //initiiert FeldEdit.html
 function initiiereFeldEdit() {
+	alert("FeldId = " + sessionStorage.FeldId);
 	$db = $.couch.db("evab");
 	$db.openDoc(sessionStorage.FeldId, {
 		success: function (doc) {
@@ -1063,6 +1064,7 @@ function initiiereFeldEdit() {
 			//Feld bereitstellen
 			Feld = doc;
 			sessionStorage.Feld = JSON.stringify(doc);
+			sessionStorage.FeldId = Feld._id;
 
 			if (!localStorage.Username) {
 				pruefeAnmeldung();
@@ -1247,7 +1249,6 @@ function ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn) {
 function initiiereFeldliste() {
 	//hat FeldEdit.html eine Feldliste übergeben?
 	if (window.Feldliste) {
-		alert("Feldliste = " + window.Feldliste);
 		//Feldliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereFeldliste_2();
 	} else if (sessionStorage.Feldliste) {
@@ -2506,7 +2507,7 @@ function speichereLetzteUrl_2() {
 	var User, UserId;
 	sessionStorage.LetzteUrl = window.location.pathname + window.location.search;
 	//UserId nur abfragen, wenn nicht schon erfolgt
-	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
+	if (!sessionStorage.UserId) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + localStorage.Username + '"', {
 			success: function (data) {
@@ -2883,6 +2884,8 @@ function neuesFeld() {
 	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
 			sessionStorage.FeldId = data.id;
+			Feld = data;
+			sessionStorage.Feld = JSON.parse(data);
 			//Feldliste soll neu aufgebaut werden
 			delete window.Feldliste;
 			delete sessionStorage.Feldliste;
