@@ -75,9 +75,9 @@
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Skizzen, Bilder)</div>
 				<div id="Anhänge"></div>			
 				<div data-role="fieldcontain">
-				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
-				    <input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
-				    <p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
+					<label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
+					<input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+					<p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
@@ -185,24 +185,24 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Ort sammt Zeiten und Arten löschen?',
-				    	'forceInput': 'false',
-				    	'buttons' : {
-						 	'ja': {
-						      	click: function () {
-						        	$('#dialogoutput').text('ja');
-						        	löscheOrt();
-				        		},
-				        		icon: "delete",
-				        		theme: "c"
-				      		},
-				      		'nein': {
-				        		click: function () {
-				          			$('#dialogoutput').text('nein');
-				        		}
-				      		}
-				    	}
-				  	})
+						'prompt' : 'Ort sammt Zeiten und Arten löschen?',
+						'forceInput': 'false',
+						'buttons' : {
+							'ja': {
+								click: function () {
+									$('#dialogoutput').text('ja');
+									löscheOrt();
+								},
+								icon: "delete",
+								theme: "c"
+							},
+							'nein': {
+								click: function () {
+									$('#dialogoutput').text('nein');
+								}
+							}
+						}
+					})
 				});
 
 				//Menu aufbauen
@@ -260,10 +260,10 @@
 					}
 					var latlng = new google.maps.LatLng(lat, lng);
 					var options = {
-					    zoom: ZoomLevel,
-					    center: latlng,
-					    streetViewControl: false,
-					    mapTypeId: google.maps.MapTypeId.HYBRID
+						zoom: ZoomLevel,
+						center: latlng,
+						streetViewControl: false,
+						mapTypeId: google.maps.MapTypeId.HYBRID
 					};
 					var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 					google.maps.event.trigger(map,'resize');
@@ -271,8 +271,8 @@
 					if (verorted === true) {
 						var marker = new google.maps.Marker({
 							position: latlng, 
-						    map: map, 
-						    title: oName,
+							map: map, 
+							title: oName,
 							draggable: true
 						});
 						//Marker in Array speichern, damit er gelöscht werden kann
@@ -281,11 +281,11 @@
 										'<p>' + oName + '</p>' +
 										'</div></div>';;
 						var infowindow = new google.maps.InfoWindow({
-						    content: contentString
+							content: contentString
 						});
 						InfoWindowArray.push(infowindow);
 						google.maps.event.addListener(marker, 'click', function () {
-						  infowindow.open(map,marker);
+						infowindow.open(map,marker);
 						});
 						google.maps.event.addListener(marker, "dragend", function (event) {
 							SetLocation(event.latLng, map, marker);
@@ -301,13 +301,13 @@
 					//zuerst bisherige Marker löschen
 					if (markersArray) {
 						for (i in markersArray) {
-					    	markersArray[i].setMap(null);
-					    }
+							markersArray[i].setMap(null);
+						}
 					}
 					marker = new google.maps.Marker({
-				    	position: location, 
-				    	map: map,
-				    	title: oName,
+						position: location, 
+						map: map,
+						title: oName,
 						draggable: true
 					});
 					//Marker in Array speichern, damit er gelöscht werden kann
@@ -334,18 +334,18 @@
 					//alle InfoWindows löschen
 					if (InfoWindowArray) {
 						for (i in InfoWindowArray) {
-					    	InfoWindowArray[i].setMap(null);
-					    }
+							InfoWindowArray[i].setMap(null);
+						}
 					}
 					contentString = '<div id="content"><div id="bodyContent">'+
 									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
 									'</div></div>';
 					infowindow = new google.maps.InfoWindow({
-					    content: contentString
+						content: contentString
 					});
 					InfoWindowArray.push(infowindow);
 					google.maps.event.addListener(marker, 'click', function () {
-					  infowindow.open(map,marker);
+					infowindow.open(map,marker);
 					});
 					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
 				}
@@ -477,7 +477,7 @@
 								}
 								AnzArtenGelöscht += 1;
 							}
-							return AnzArtenGelöscht;          //WIESO KLAPPT DAS NICHT?
+							return AnzArtenGelöscht;  //WIESO KLAPPT DAS NICHT?
 						},
 						error: function () {
 							return false;
@@ -502,7 +502,7 @@
 								}
 								AnzZeitenGelöscht += 1;
 							}
-							return AnzZeitenGelöscht;            //WIESE KLAPPT DAS NICHT?
+							return AnzZeitenGelöscht;	//WIESE KLAPPT DAS NICHT?
 						},
 						error: function () {
 							return false;
@@ -512,7 +512,7 @@
 
 				//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
 				//und gib diesen Wert zurück
-				function AnzZeitenVonOrt() {                             //momentan nicht im Gebrauch, da callbacks nicht im Griff
+				function AnzZeitenVonOrt() {	//momentan nicht im Gebrauch, da callbacks nicht im Griff
 					var viewname, AnzahlZeiten;
 					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + sessionStorage.OrtId + '"';
 					AnzahlZeiten = 0;
@@ -659,58 +659,58 @@
 						'mode' : 'bool',
 						'prompt' : 'Menü',
 						'fullHTML': 'true',
-				    	'buttons' : {
-						 	'einfacher Modus': {
-						      	click: function () {
-						        	window.open("BeobListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "check"
-				      		},
-				      		'Felder verwalten': {
-						      	click: function () {
-						      		sessionStorage.zurueck = "hOrtEdit.html";
-						        	window.open("FeldListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "edit"
-				      		},
-				      		'Orte exportieren': {
-						      	click: function () {
-						        	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
-				        		},
-				        		theme: "a",
-				        		icon: "arrow-r"
-				      		},
-				      		'Einstellungen': {
-						      	click: function () {
-						        	öffneMeineEinstellungen("");
-				        		},
-				        		theme: "a",
-				        		icon: "wrench"
-				      		},
-				      		'lokal installieren': {
-						      	click: function () {
-						        	window.open("Installieren.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "lightning"
-				      		},
-				      		'neu anmelden': {
-						      	click: function () {
-						      		sessionStorage.UserStatus = "neu";
-						        	window.open("index.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "person"
-				      		},
-				      		'schliessen': {
-				                click: function () { return true; },
-				                icon: "back",
-				                theme: "c"
-				            }
-				    	}
-				  	})
+						'buttons' : {
+							'einfacher Modus': {
+								click: function () {
+									window.open("BeobListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "check"
+							},
+							'Felder verwalten': {
+								click: function () {
+									sessionStorage.zurueck = "hOrtEdit.html";
+									window.open("FeldListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "edit"
+							},
+							'Orte exportieren': {
+								click: function () {
+									window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
+								},
+								theme: "a",
+								icon: "arrow-r"
+							},
+							'Einstellungen': {
+								click: function () {
+									öffneMeineEinstellungen("");
+								},
+								theme: "a",
+								icon: "wrench"
+							},
+							'lokal installieren': {
+								click: function () {
+									window.open("Installieren.html", target = "_self");
+								},
+								theme: "a",
+								icon: "lightning"
+							},
+							'neu anmelden': {
+								click: function () {
+									sessionStorage.UserStatus = "neu";
+									window.open("index.html", target = "_self");
+								},
+								theme: "a",
+								icon: "person"
+							},
+							'schliessen': {
+								click: function () { return true; },
+								icon: "back",
+								theme: "c"
+							}
+						}
+					})
 				}
 
 				//Öffnet den vorigen oder nächsten Ort

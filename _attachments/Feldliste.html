@@ -19,7 +19,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
@@ -47,7 +47,7 @@
 		<div data-role="footer" id="FeldListeFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" id="NeuesFeldFeldListe" data-icon="plus" class="ui-btn-active">neu</a></li>			
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -76,6 +76,11 @@
 				event.preventDefault();
 				sessionStorage.FeldId = $(this).attr('FeldId');
 				window.open("FeldEdit.html", target = "_self");
+			});
+
+			$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function (event) {
+				event.preventDefault();
+				neuesFeld();
 			});
 
 			//Menu aufbauen

@@ -18,7 +18,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
@@ -102,10 +102,10 @@
 								lng = 8.533333;
 								latlng = new google.maps.LatLng(lat, lng);
 								options = {
-								    zoom: 15,
-								    center: latlng,
-								    streetViewControl: false,
-								    mapTypeId: google.maps.MapTypeId.HYBRID
+									zoom: 15,
+									center: latlng,
+									streetViewControl: false,
+									mapTypeId: google.maps.MapTypeId.HYBRID
 								};
 								map = new google.maps.Map(document.getElementById("map_canvas"),options);
 								google.maps.event.trigger(map,'resize');
@@ -134,26 +134,26 @@
 									marker = new MarkerWithLabel({ 
 										map: map,
 										position: latlng2,  
-									    title: ArtName,
-									    icon: image,
-									    labelContent: ArtName,
-									    labelAnchor: new google.maps.Point(22, 0),
-									    labelClass: "MapLabel", // the CSS class for the label
+										title: ArtName,
+										icon: image,
+										labelContent: ArtName,
+										labelAnchor: new google.maps.Point(22, 0),
+										labelClass: "MapLabel", // the CSS class for the label
 										labelStyle: {opacity: 0.75}
 									});
 									markers.push(marker);
 									var contentString = '<div id="content">'+
-									    '<div id="siteNotice">'+
-									    '</div>'+
-									    '<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
-									    '<div id="bodyContent" class="GmInfowindow">'+
-									    '<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-									    '<p>Autor: ' + Autor + '</p>'+
-									    '<p>Datum: ' + Datum + '</p>'+
-									    '<p>Zeit: ' + Zeit + '</p>'+
-									    "<p><a <a href=\"#\" onclick=\"oeffneBeob('" + BeobId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-									    '</div>'+
-									    '</div>';
+										'<div id="siteNotice">'+
+										'</div>'+
+										'<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
+										'<div id="bodyContent" class="GmInfowindow">'+
+										'<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
+										'<p>Autor: ' + Autor + '</p>'+
+										'<p>Datum: ' + Datum + '</p>'+
+										'<p>Zeit: ' + Zeit + '</p>'+
+										"<p><a <a href=\"#\" onclick=\"oeffneBeob('" + BeobId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+										'</div>'+
+										'</div>';
 									makeListener(map, marker, contentString);
 								}
 								var mcOptions = {maxZoom: 17};
@@ -222,58 +222,58 @@
 						'mode' : 'bool',
 						'prompt' : 'Menü',
 						'fullHTML': 'true',
-				    	'buttons' : {
-						 	'hierarchischer Modus': {
-						      	click: function () {
-						        	window.open("hProjektListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "check"
-				      		},
-				      		'Felder verwalten': {
-						      	click: function () {
-						      		sessionStorage.zurueck = "BeobListe.html";
-						        	window.open("FeldListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "edit"
-				      		},
-				      		'Beobachtungen<br>exportieren': {
-						      	click: function () {
-						        	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
-				        		},
-				        		theme: "a",
-				        		icon: "arrow-r"
-				      		},
-				      		'Einstellungen': {
-						      	click: function () {
-						        	öffneMeineEinstellungen("");
-				        		},
-				        		theme: "a",
-				        		icon: "wrench"
-				      		},
-				      		'lokal installieren': {
-						      	click: function () {
-						        	window.open("Installieren.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "lightning"
-				      		},
-						 	'neu anmelden': {
-						      	click: function () {
-						      		sessionStorage.UserStatus = "neu";
-						        	window.open("index.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "person"
-				      		},
-				      		'schliessen': {
-				                click: function () { return true; },
-				                icon: "back",
-				                theme: "c"
-				            }
-				    	}
-				  	})
+						'buttons' : {
+							'hierarchischer Modus': {
+								click: function () {
+									window.open("hProjektListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "check"
+							},
+							'Felder verwalten': {
+								click: function () {
+									sessionStorage.zurueck = "BeobListe.html";
+									window.open("FeldListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "edit"
+							},
+							'Beobachtungen<br>exportieren': {
+								click: function () {
+									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
+								},
+								theme: "a",
+								icon: "arrow-r"
+							},
+							'Einstellungen': {
+								click: function () {
+									öffneMeineEinstellungen("");
+								},
+								theme: "a",
+								icon: "wrench"
+							},
+							'lokal installieren': {
+								click: function () {
+									window.open("Installieren.html", target = "_self");
+								},
+								theme: "a",
+								icon: "lightning"
+							},
+							'neu anmelden': {
+								click: function () {
+									sessionStorage.UserStatus = "neu";
+									window.open("index.html", target = "_self");
+								},
+								theme: "a",
+								icon: "person"
+							},
+							'schliessen': {
+								click: function () { return true; },
+								icon: "back",
+								theme: "c"
+							}
+						}
+					})
 				}
 			});
 		</script>

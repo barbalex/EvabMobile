@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
-  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
-  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-  	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-  	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+<head>
+	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>EvAB</title>
+	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
+	<script type="text/javascript">
 		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
@@ -19,7 +19,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>	
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
@@ -30,35 +30,35 @@
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
-  </head>
-  <body>
-  	<div data-role="page" id="FeldEditPage">
-  		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
-  			<a href="#" id="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
-  			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
-  			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  		</div>
+	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+</head>
+<body>
+	<div data-role="page" id="FeldEditPage">
+		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
+			<a href="#" id="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
+			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
+			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select class="Feldeigenschaften" name="SichtbarImModusEinfach" id="SichtbarImModusEinfach" data-role="slider">
+					<select class="Feldeigenschaften" id="SichtbarImModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="Feldeigenschaften" name="SichtbarImModusHierarchisch" id="SichtbarImModusHierarchisch" data-role="slider">
+					<select class="Feldeigenschaften" id="SichtbarImModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input id="Standardwert" name="Standardwert" type="text"  placeholder="dieser Wert wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
+					<input id="Standardwert" name="Standardwert" type="text" placeholder="dieser Wert wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
 				</div>
 			</form>
 				<hr>
@@ -68,119 +68,119 @@
 					<fieldset data-role="controlgroup">
 						<legend>Hierarchiestufe (erforderlich):</legend>
 							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
-	         				<label for="Projekt">Projekt</label>
-	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum"/>
-	         				<label for="Raum">Raum</label>
-	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Ort" value="Ort"/>
-	         				<label for="Ort">Ort</label>
-	         				<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
-	         				<label for="Zeit">Zeit</label>
+							<label for="Projekt">Projekt</label>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum"/>
+							<label for="Raum">Raum</label>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Ort" value="Ort"/>
+							<label for="Ort">Ort</label>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
+							<label for="Zeit">Zeit</label>
 							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Art" value="Art"/>
-	         				<label for="Art">Art</label>
-	         		</fieldset>
+							<label for="Art">Art</label>
+					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
-					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldName" type="text" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldBeschriftung" type="text" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung"></textarea>
+					<textarea class="Feldeigenschaften" id="FeldBeschreibung"></textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="Reihenfolge" type="number" placeholder="erforderlich"/>
 				</div>
 				<div id="FeldFolgtNachDiv"></div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
-					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameEvab" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Name beim ZDSF:</label>
-					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameZdsf" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Name beim CSCF:</label>
-					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameCscf" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameNism">Name beim NISM:</label>
-					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameNism" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslFlechten" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslPilze" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Feldtyp:</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput"/>
-	         				<label for="textinput">einfaches Feld (textinput)</label>
-	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
-	         				<label for="textarea">einfaches Feld, wächst mit Inhalt (textarea)</label>
-	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch"/>
-	         				<label for="toggleswitch">ja/nein (toggleswitch)</label>
-	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider"/>
-	         				<label for="slider">Schieber: Zahlen von min. Wert bis max. Wert (slider)</label>
+							<label for="textinput">einfaches Feld (textinput)</label>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
+							<label for="textarea">einfaches Feld, wächst mit Inhalt (textarea)</label>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch"/>
+							<label for="toggleswitch">ja/nein (toggleswitch)</label>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider"/>
+							<label for="slider">Schieber: Zahlen von min. Wert bis max. Wert (slider)</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu"/>
-	         				<label for="selectmenu">Auswahlliste geschlossen, ein Wert möglich (selectmenu)</label>
-	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="multipleselect" value="multipleselect"/>
-	         				<label for="multipleselect">Auswahlliste geschlossen, mehrere Werte möglich (multipleselect)</label>
-	         				<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio"/>
-	         				<label for="radio">Auswahlliste offen, ein Wert möglich (radio)</label>
+							<label for="selectmenu">Auswahlliste geschlossen, ein Wert möglich (selectmenu)</label>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="multipleselect" value="multipleselect"/>
+							<label for="multipleselect">Auswahlliste geschlossen, mehrere Werte möglich (multipleselect)</label>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio"/>
+							<label for="radio">Auswahlliste offen, ein Wert möglich (radio)</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="checkbox" value="checkbox"/>
-	         				<label for="checkbox">Auswahlliste offen, mehrere Werte möglich (checkbox)</label>
-	         		</fieldset>
+							<label for="checkbox">Auswahlliste offen, mehrere Werte möglich (checkbox)</label>
+					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Datentyp eines einfachen Feldes:</legend>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text"/>
-	         				<label for="text">Text</label>
-	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number"/>
-	         				<label for="number">Zahl</label>
-	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="date" value="date"/>
-	         				<label for="date">Datum</label>
+							<label for="text">Text</label>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number"/>
+							<label for="number">Zahl</label>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="date" value="date"/>
+							<label for="date">Datum</label>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="time" value="time"/>
-	         				<label for="time">Zeit</label>
-	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="datetime" value="datetime"/>
-	         				<label for="datetime">Datum und Zeit</label>
-	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="email" value="email"/>
-	         				<label for="email">email</label>
-	         				<input type="radio" name="InputTyp" class="Feldeigenschaften" id="url" value="url"/>
-	         				<label for="url">url</label>
-	         		</fieldset>
+							<label for="time">Zeit</label>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="datetime" value="datetime"/>
+							<label for="datetime">Datum und Zeit</label>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="email" value="email"/>
+							<label for="email">email</label>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="url" value="url"/>
+							<label for="url">url</label>
+					</fieldset>
 				</div>
 				<div data-role="fieldcontain" id="Artgruppenliste">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
-					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
+					<textarea class="Feldeigenschaften" id="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text"/>
+					<input class="Feldeigenschaften" id="SliderMinimum" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" />
+					<input class="Feldeigenschaften" id="SliderMaximum" type="text" />
 				</div>
 			</form>
 		</div>
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="FeldEditFooter">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
-					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="NeuesFeldFeldEdit" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" data-role="button" id="LoeschenLinkFeldEdit" data-icon="minus" forceinput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -212,16 +212,23 @@
 					FeldWert = this.value;
 					FeldName = this.name;
 					sessionStorage.FeldName = FeldName;
-					AlterFeldWert = this.defaultValue;
+					//AlterFeldWert = this.defaultValue;
+					AlterFeldWert = Feld[this.name];
+					//alert(FeldName + " vorher: " + AlterFeldWert + ", neu: " + FeldWert);
+					//Felder der Datenzentren dürfen nicht verändert werden
+					//ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 					if (Feld.User === "ZentrenBdKt") {
-						//Felder der Datenzentren dürfen nicht verändert werden
-						//ausser Standardwert, dessen Änderung wird aber spezifisch abgehört
-						$("#" + FeldName).val(AlterFeldWert);
+						//Feldwert zurücksetzen	
+						if (AlterFeldWert) {
+							$("#" + FeldName).val(AlterFeldWert);
+						} else {
+							$("#" + FeldName).val("");
+						}
 						delete sessionStorage.FeldName;
 						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
 					} else if (FeldName === "FeldName") {
 						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
-						if (Feld.FeldName) {
+						if (AlterFeldWert) {
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
@@ -239,8 +246,8 @@
 									if (anzVorkommen === 0) {
 										//prüfen, ob der Feldname schon existiert
 										//wenn ja: melden, zurückstellen
-										//wenn nein: In SichtbareFelder nachführen und speichern
-										prüfeFeldNamen();
+										//wenn nein: speichern
+										pruefeFeldNamen(AlterFeldWert);
 									} else {
 										ds = "Datensätzen";
 										if (anzVorkommen === 1) {
@@ -248,16 +255,16 @@
 										}
 										$("#FeldName").val(Feld.FeldName);
 										delete sessionStorage.FeldName;
-										melde("Ändern abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+										melde("Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet.<br>Es kann deshalb nicht verändert werden.<br>Bereinigen Sie zuerst die Daten.");
 									}
 								}
 							});
 						} else {
-							//Wenn dies ein neues Feld ist
+							//Vorher gab es keinen Feldnamen
 							//prüfen, ob der Feldname schon existiert
 							//wenn ja: melden, zurückstellen
-							//wenn nein: In SichtbareFelder nachführen und speichern
-							prüfeFeldNamen();
+							//wenn nein: speichern
+							pruefeFeldNamen(AlterFeldWert);
 						}
 					} else if (FeldName === "Hierarchiestufe" && FeldWert === "Art") {
 						speichereFeldeigenschaften();
@@ -282,82 +289,83 @@
 				});
 
 				$("#FeldEditForm").on("change", "#FeldFolgtNach", function () {
-					setzeReihenfolgeMitVorgänger(this.value);
+					setzeReihenfolgeMitVorgaenger(this.value);
 					//Feldliste soll neu aufgebaut werden
 					delete window.Feldliste;
 					delete sessionStorage.Feldliste;
 				});
 
+				$("#FeldEditFooter").on("click", "#NeuesFeldFeldEdit", function (event) {
+					event.preventDefault();
+					neuesFeld();
+				});
+
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
-					var Optionen, Feldwert;
+					var Optionen, Feldwert, LetzterFeldwert, Formularelement, StandardwertOptionen;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
-					Optionen = $("#Optionen").val();
-					Feldwert = this.value;
+					Optionen = $("#Optionen").val() || [];	//undefined verhindern
+					Feldwert = this.value || [];	//undefined verhindern
 					if (Optionen) {
-						var LetzterFeldwert, Formularelement;
+						//es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
+						LetzterFeldwert = [];
 						if (Feld.Standardwert) {
 							if (Feld.Standardwert[localStorage.Username]) {
 								LetzterFeldwert = Feld.Standardwert[localStorage.Username];
-							} else {
-								LetzterFeldwert = "";
 							}
-						} else {
-							LetzterFeldwert = "";
 						}
-						Formularelement = Feld.Formularelement;
 						//Standardwert in Array verwandeln
-						//dabe Fehler abfangen, wenn Feldwert undefined ist
+						StandardwertOptionen = [];
 						if (Feldwert) {
+							//Fehler verhindern, falls Feldwert undefined ist
 							StandardwertOptionen = Feldwert.split(",");
-						} else {
-							StandardwertOptionen = "";
 						}
-						//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
-						if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
-							//alle Werte des Arrays müssen Optionen sein
+						if (["multipleselect", "checkbox"].indexOf(Feld.Formularelement) > -1) {
+							//alle StandardwertOptionen müssen Optionen sein
 							for (i in StandardwertOptionen) {
 								if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
 									//ein Wert ist keine Option, abbrechen
 									$("#Standardwert").val(LetzterFeldwert);
-									melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
+									melde("Bitte wählen Sie eine oder mehrere der Optionen");
 									return;
 								}
 							}
 							//alle Werte sind Optionen
 							speichereStandardwert();
-						} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Formularelement) > -1) {
+							return;
+						} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Feld.Formularelement) > -1) {
 							//Array darf nur ein Element enthalten
 							if (StandardwertOptionen.length > 1) {
 								//Array enthält mehrere Optionen, nicht zulässig
 								$("#Standardwert").val(LetzterFeldwert);
-								melde("Ändern abgebrochen:<br>Wählen Sie eine einzige der Optionen");
+								melde("Bitte wählen Sie nur EINE der Optionen");
 							} else {
 								//Array enthält eine einzige Option
 								for (i in StandardwertOptionen) {
 									if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
 										//der Wert ist keine Option, abbrechen
 										$("#Standardwert").val(LetzterFeldwert);
-										melde("Ändern abgebrochen:<br>Wählen Sie eine oder mehrere der Optionen");
+										melde("Bitte wählen Sie eine der Optionen");
 										return;
 									}
 								}
 								//alle Werte sind Optionen
 								speichereStandardwert();
+								return;
 							}
 						} else {
 							//Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
 							speichereStandardwert();
 						}
 					} else {
-						//Feld Optionen ist leer. Alle Werte akzeptieren
+						//Es gibt keine Optionen. Alle Standardwerte akzeptieren
 						speichereStandardwert();
 					}
 				});
 
 				//Code für den Feld-Löschen-Dialog
-				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function (event) {
+				$('#FeldEditFooter').on('click', '#LoeschenLinkFeldEdit', function (event) {
 					event.preventDefault();
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
@@ -367,16 +375,16 @@
 					} else {
 						$(this).simpledialog({
 							'mode' : 'bool',
-					    	'prompt' : 'Dieses Feld löschen?',
-					    	'forceInput': 'false',
-					    	'buttons' : {
-							 	'ja': {
-							      	click: function () {
-							        	$('#dialogoutput').text('ja');
-							        	if (!Feld.FeldName) {
-							        		//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-							        		löscheFeld();
-							        	} else {
+							'prompt' : 'Dieses Feld löschen?',
+							'forceInput': 'false',
+							'buttons' : {
+								'ja': {
+									click: function () {
+										$('#dialogoutput').text('ja');
+										if (!Feld.FeldName) {
+											//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
+											löscheFeld();
+										} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
 											$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
@@ -402,17 +410,17 @@
 												}
 											});
 										}
-					        		},
-					        		icon: "delete",
-					        		theme: "c"
-					      		},
-					      		'nein': {
-					        		click: function () {
-					          			$('#dialogoutput').text('nein');
-					        		}
-					      		}
-					    	}
-					  	})
+									},
+									icon: "delete",
+									theme: "c"
+								},
+								'nein': {
+									click: function () {
+										$('#dialogoutput').text('nein');
+									}
+								}
+							}
+						})
 					}
 				});
 
@@ -437,12 +445,13 @@
 					geheZumVorigenFeld(Feld._id);
 				});
 
-				function prüfeFeldNamen() {
-					var FeldNameAlt, FeldNameNeu, viewname;
+				//prüft neue oder umbenannte Feldnamen
+				//bekommt den alten Feldwert (sofern einer existiert)
+				function pruefeFeldNamen(FeldNameAlt) {
+					var FeldNameNeu, viewname;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
-					FeldNameAlt = Feld.FeldName || "";
 					FeldNameNeu = $("#FeldName").val();
 					viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
 					$db = $.couch.db("evab");
@@ -467,12 +476,16 @@
 							if (AnzEigeneOderOffizielleFelderMitSelbemNamen === 0) {
 								//Feldname ist neu, somit zulässig > speichern
 								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-								$("#SichtbarImModusHierarchisch").val("ja");	//MUSS DER JETZT NOCH REFRESHT WERDEN?
+								$("#SichtbarImModusHierarchisch").val("ja");
 								$("select#SichtbarImModusHierarchisch").slider("refresh");
 								speichereFeldeigenschaften();
 							} else {
 								//Feldname kommt bei diesem User schon vor
-								$("#FeldName").val(FeldNameAlt);
+								if (FeldnameAlt) {
+									$("#FeldName").val(FeldNameAlt);
+								} else {
+									$("#FeldName").val("");
+								}
 								delete sessionStorage.FeldName;
 								setTimeout(function () { 
 									$('#FeldName').focus(); 
@@ -491,6 +504,8 @@
 								success: function () {
 									delete window.Feldliste;
 									delete sessionStorage.Feldliste;
+									delete sessionStorage.FeldId;
+									delete sessionStorage.Feld;
 									window.open("FeldListe.html", target = '_self');
 								},
 								error: function () {
@@ -534,7 +549,7 @@
 
 				function geheZumNächstenFeld_2(IdAktuell) {
 					var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
-					AnzFelder = Feldliste.rows.length -1;  
+					AnzFelder = Feldliste.rows.length -1;
 					for (i in Feldliste.rows) {
 						//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 						AktFeld_i = Feldliste.rows[i].value;
@@ -634,7 +649,7 @@
 								} else {
 									//das aktuelle Feld ist das erste
 									//wir gehen zur Feldliste
-									geheZurück();	
+									geheZurück();
 								}
 							}
 						}
@@ -645,7 +660,7 @@
 				//ermittelt dessen Reihenfolge
 				//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 				//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
-				function setzeReihenfolgeMitVorgänger(FeldNameVorgaenger) {
+				function setzeReihenfolgeMitVorgaenger(FeldNameVorgaenger) {
 					var viewname;
 					$db = $.couch.db("evab");
 					viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
@@ -660,6 +675,8 @@
 				}
 
 				function geheZurück() {
+					delete sessionStorage.FeldId;
+					delete sessionStorage.Feld;
 					if (sessionStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
 						window.open(sessionStorage.zurueck, target = "_self");
@@ -679,12 +696,11 @@
 							//Standardwert managen
 							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 							//darum manuell für diesen User updaten
-							var StandardwertUserImFormular;
-							StandardwertUserImFormular = $("#Standardwert").val();
 							if (doc.Standardwert) {
-								if (StandardwertUserImFormular) {
+								//Standardwert existierte
+								if ($("#Standardwert").val()) {
 									//neuen Standardwert setzen
-									doc.Standardwert[localStorage.Username] = StandardwertUserImFormular;
+									doc.Standardwert[localStorage.Username] = $("#Standardwert").val();
 								} else {
 									//Standardwert ist leer
 									if (doc.Standardwert[localStorage.Username]) {
@@ -694,10 +710,10 @@
 								}
 							} else {
 								//Bisher gab es noch keinen Standardwert
-								if (StandardwertUserImFormular) {
+								if ($("#Standardwert").val()) {
 									//Objekt für Standardwert schaffen und neuen Wert setzen
 									doc.Standardwert = {};
-									doc.Standardwert[localStorage.Username] = StandardwertUserImFormular;
+									doc.Standardwert[localStorage.Username] = $("#Standardwert").val();
 								}
 							}
 							$db.saveDoc(doc, {
@@ -805,7 +821,7 @@
 								success: function (data) {
 									Feld = data;
 									sessionStorage.Feld = JSON.stringify(data);
-									sessionStorage.FeldId = Feld._id;
+									sessionStorage.FeldId = data._id;
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (sessionStorage.FeldName === "FeldName" || sessionStorage.FeldName === "FeldBeschreibung" || sessionStorage.FeldName === "Reihenfolge") {
 										delete window.Feldliste;

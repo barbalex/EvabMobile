@@ -12,7 +12,7 @@
 		$(document).on("mobileinit", function () {
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
@@ -56,17 +56,17 @@
   <script type="text/javascript" charset="utf-8">
 	function handleDocumentReady() {
 		if (!("autofocus" in document.createElement("input"))) {
-	      $("#UserName").focus();
-	    }
+		$("#UserName").focus();
+		}
 
-	    //Wenn möglich alten cookie für die Anmeldung verwenden
-	    //ausser User hat via Menü bewusst neu anmelden wollen
-	    //sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-	    if (!sessionStorage.UserStatus) {
-	    	pruefeAnmeldung_index();
-	    } else if (sessionStorage.UserStatus === "neu") {
-	    	sessionStorage.clear();
-	    }
+		//Wenn möglich alten cookie für die Anmeldung verwenden
+		//ausser User hat via Menü bewusst neu anmelden wollen
+		//sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+		if (!sessionStorage.UserStatus) {
+			pruefeAnmeldung_index();
+		} else if (sessionStorage.UserStatus === "neu") {
+			sessionStorage.clear();
+		}
 
 		$("#SubmitButton").tap(function (event) {
 			event.preventDefault();
@@ -76,9 +76,9 @@
 		//Reaktion auf Enter-Taste
 		$("#LoginForm").on("keydown", "#Passwort", function (e) {
 			if (e.keyCode === 13) {
-		    	meldeUserAn();
-		    	e.preventDefault();
-		  	}
+				meldeUserAn();
+				e.preventDefault();
+			}
 		});
 	}
 	
@@ -139,17 +139,17 @@
 			oeffneZuletztBenutzteSeite();
 		} else {
 			$.ajax({
-			    url: '/_session',
-			    dataType: 'json',
-			    async: false,
-			    success: function (session) {
-			    	if (session.userCtx.name) {
-			    		localStorage.Username = session.userCtx.name;
-			        	oeffneZuletztBenutzteSeite();
-			       	} else {
-			       		$("#UserName").focus();
-			       	}
-			    }
+				url: '/_session',
+				dataType: 'json',
+				async: false,
+				success: function (session) {
+					if (session.userCtx.name) {
+						localStorage.Username = session.userCtx.name;
+						oeffneZuletztBenutzteSeite();
+					} else {
+						$("#UserName").focus();
+					}
+				}
 			});
 		}
 	}

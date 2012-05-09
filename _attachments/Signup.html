@@ -12,7 +12,7 @@
 		$(document).on("mobileinit", function () {
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>	
+	</script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
@@ -55,15 +55,15 @@
 					<input id="Email" name="Email" type="email" placeholder="(fakultativ)"/>
 					<hr />
 				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
-				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-				         	<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber" checked="checked"/>
-				         	<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
-				         	<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
-				         	<label for="Ja">ja, ohne Einschränkung</label>
-				         	<input type="radio" name="Datenverwendung" id="Nein" value="Nein"/>
-				         	<label for="Nein">nein</label>
-				    </fieldset>
+					<fieldset data-role="controlgroup">
+						<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
+							<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber" checked="checked"/>
+							<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
+							<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
+							<label for="Ja">ja, ohne Einschränkung</label>
+							<input type="radio" name="Datenverwendung" id="Nein" value="Nein"/>
+							<label for="Nein">nein</label>
+					</fieldset>
 				</div>
 				<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
 				</div>
@@ -116,18 +116,18 @@
 	function erstelleKonto(UserName, Passwort, Autor) {
 		//User in _user eintragen
 		var email;
-		email = $("input#Email").val();                                      
+		email = $("input#Email").val();
 		$.couch.signup({
 				name: UserName, Autor: Autor, email: email
-		  	}, Passwort, {
-		  	success : function () {
-		  		speichereUserInEvab(UserName);
-		  		erstelleSichtbareFelder(UserName);
-		  		meldeUserAn(UserName, Passwort);
-		  	},
-		  	error : function () {
-		  		melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
-		  	}
+			}, Passwort, {
+			success : function () {
+				speichereUserInEvab(UserName);
+				erstelleSichtbareFelder(UserName);
+				meldeUserAn(UserName, Passwort);
+			},
+			error : function () {
+				melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
+			}
 		});
 	}
 	
@@ -143,7 +143,7 @@
 				melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
 				setTimeout('window.open("index.html", target = "_self")', 2800);
 			}
-		});      
+		});  
 	}
 	
 	//Für authentifizierte Benutzer wird ein cookie erstellt und die Startseite geöffnet

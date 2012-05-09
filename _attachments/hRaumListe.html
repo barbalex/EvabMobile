@@ -18,7 +18,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
@@ -138,58 +138,58 @@
 						'mode' : 'bool',
 						'prompt' : 'Menü',
 						'fullHTML': 'true',
-				    	'buttons' : {
-						 	'einfacher Modus': {
-						      	click: function () {
-						        	window.open("BeobListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "check"
-				      		},
-				      		'Felder verwalten': {
-						      	click: function () {
-						      		sessionStorage.zurueck = "hRaumListe.html";
-						        	window.open("FeldListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "edit"
-				      		},
-				      		'Räume exportieren': {
-						      	click: function () {
-						        	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
-				        		},
-				        		theme: "a",
-				        		icon: "arrow-r"
-				      		},
-				      		'Einstellungen': {
-						      	click: function () {
-						        	öffneMeineEinstellungen("");
-				        		},
-				        		theme: "a",
-				        		icon: "wrench"
-				      		},
-				      		'lokal installieren': {
-						      	click: function () {
-						        	window.open("Installieren.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "lightning"
-				      		},
-				      		'neu anmelden': {
-						      	click: function () {
-						      		sessionStorage.UserStatus = "neu";
-						        	window.open("index.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "person"
-				      		},
-				      		'schliessen': {
-				                click: function () { return true; },
-				                icon: "back",
-				                theme: "c"
-				            }
-				    	}
-				  	})
+						'buttons' : {
+							'einfacher Modus': {
+								click: function () {
+									window.open("BeobListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "check"
+							},
+							'Felder verwalten': {
+								click: function () {
+									sessionStorage.zurueck = "hRaumListe.html";
+									window.open("FeldListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "edit"
+							},
+							'Räume exportieren': {
+								click: function () {
+									window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
+								},
+								theme: "a",
+								icon: "arrow-r"
+							},
+							'Einstellungen': {
+								click: function () {
+									öffneMeineEinstellungen("");
+								},
+								theme: "a",
+								icon: "wrench"
+							},
+							'lokal installieren': {
+								click: function () {
+									window.open("Installieren.html", target = "_self");
+								},
+								theme: "a",
+								icon: "lightning"
+							},
+							'neu anmelden': {
+								click: function () {
+									sessionStorage.UserStatus = "neu";
+									window.open("index.html", target = "_self");
+								},
+								theme: "a",
+								icon: "person"
+							},
+							'schliessen': {
+								click: function () { return true; },
+								icon: "back",
+								theme: "c"
+							}
+						}
+					})
 				}
 			});
 		</script>

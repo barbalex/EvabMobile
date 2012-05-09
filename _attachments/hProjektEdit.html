@@ -18,7 +18,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>
+	</script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
@@ -60,9 +60,9 @@
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Projektberichte)</div>
 				<div id="Anhänge"></div>			
 				<div data-role="fieldcontain">
-				    <label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
-				    <input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
-				    <p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
+					<label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
+					<input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+					<p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
 			</form>
@@ -134,24 +134,24 @@
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
-				    	'prompt' : 'Projekt sammt Räumen, Orten, Zeiten und Arten löschen?',
-				    	'forceInput': 'false',
-				    	'buttons' : {
-						 	'ja': {
-						      	click: function () {
-						        	$('#dialogoutput').text('ja');
-						        	löscheProjekt();
-				        		},
-				        		icon: "delete",
-				        		theme: "c"
-				      		},
-				      		'nein': {
-				        		click: function () {
-				          			$('#dialogoutput').text('nein');
-				        		}
-				      		}
-				    	}
-				  	})
+						'prompt' : 'Projekt sammt Räumen, Orten, Zeiten und Arten löschen?',
+						'forceInput': 'false',
+						'buttons' : {
+							'ja': {
+								click: function () {
+									$('#dialogoutput').text('ja');
+									löscheProjekt();
+								},
+								icon: "delete",
+								theme: "c"
+							},
+							'nein': {
+								click: function () {
+									$('#dialogoutput').text('nein');
+								}
+							}
+						}
+					})
 				});
 
 				//Menu aufbauen
@@ -549,58 +549,58 @@
 						'mode' : 'bool',
 						'prompt' : 'Menü',
 						'fullHTML': 'true',
-				    	'buttons' : {
-						 	'einfacher Modus': {
-						      	click: function () {
-						        	window.open("BeobListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "check"
-				      		},
-				      		'Felder verwalten': {
-						      	click: function () {
-						      		sessionStorage.zurueck = "hProjektEdit.html";
-						        	window.open("FeldListe.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "edit"
-				      		},
-				      		'Projekte exportieren': {
-						      	click: function () {
-						        	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
-				        		},
-				        		theme: "a",
-				        		icon: "arrow-r"
-				      		},
-				      		'Einstellungen': {
-						      	click: function () {
-						      		öffneMeineEinstellungen("");
-				        		},
-				        		theme: "a",
-				        		icon: "wrench"
-				      		},
-				      		'lokal installieren': {
-						      	click: function () {
-						        	window.open("Installieren.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "lightning"
-				      		},
-				      		'neu anmelden': {
-						      	click: function () {
-						      		sessionStorage.UserStatus = "neu";
-						        	window.open("index.html", target = "_self");
-				        		},
-				        		theme: "a",
-				        		icon: "person"
-				      		},
-				      		'schliessen': {
-				                click: function () { return true; },
-				                icon: "back",
-				                theme: "c"
-				            }
-				    	}
-				  	})
+						'buttons' : {
+							'einfacher Modus': {
+								click: function () {
+									window.open("BeobListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "check"
+							},
+							'Felder verwalten': {
+								click: function () {
+									sessionStorage.zurueck = "hProjektEdit.html";
+									window.open("FeldListe.html", target = "_self");
+								},
+								theme: "a",
+								icon: "edit"
+							},
+							'Projekte exportieren': {
+								click: function () {
+									window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true');
+								},
+								theme: "a",
+								icon: "arrow-r"
+							},
+							'Einstellungen': {
+								click: function () {
+									öffneMeineEinstellungen("");
+								},
+								theme: "a",
+								icon: "wrench"
+							},
+							'lokal installieren': {
+								click: function () {
+									window.open("Installieren.html", target = "_self");
+								},
+								theme: "a",
+								icon: "lightning"
+							},
+							'neu anmelden': {
+								click: function () {
+									sessionStorage.UserStatus = "neu";
+									window.open("index.html", target = "_self");
+								},
+								theme: "a",
+								icon: "person"
+							},
+							'schliessen': {
+								click: function () { return true; },
+								icon: "back",
+								theme: "c"
+							}
+						}
+					})
 				}
 
 				//Öffnet das vorige oder nächste Projekt

@@ -56,43 +56,43 @@ function get_url_param(name) {
 function DdInWgs84BreiteGrad(Breite) {
 	var BreiteGrad;
  	BreiteGrad = Math.floor(Breite);
-    return BreiteGrad;
+	return BreiteGrad;
 }
 
 function DdInWgs84BreiteMin(Breite) {
 	var BreiteGrad, BreiteMin;
  	BreiteGrad = Math.floor(Breite);
-    BreiteMin = Math.floor((Breite-BreiteGrad)*60);
-    return BreiteMin;
+	BreiteMin = Math.floor((Breite-BreiteGrad)*60);
+	return BreiteMin;
 }
 
 function DdInWgs84BreiteSec(Breite) {
 	var BreiteGrad, BreiteMin, BreiteSec;
  	BreiteGrad = Math.floor(Breite);
-    BreiteMin = Math.floor((Breite-BreiteGrad)*60);
-    BreiteSec =  (Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100);
-    return BreiteSec;
+	BreiteMin = Math.floor((Breite-BreiteGrad)*60);
+	BreiteSec =  (Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100);
+	return BreiteSec;
 }
 
 function DdInWgs84LaengeGrad(Laenge) {
 	var LaengeGrad;
-    LaengeGrad = Math.floor(Laenge);
-    return LaengeGrad;
+	LaengeGrad = Math.floor(Laenge);
+	return LaengeGrad;
 }
 
 function DdInWgs84LaengeMin(Laenge) {
 	var LaengeGrad, LaengeMin;
-    LaengeGrad = Math.floor(Laenge);
-    LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
-    return LaengeMin;
+	LaengeGrad = Math.floor(Laenge);
+	LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
+	return LaengeMin;
 }
 
 function DdInWgs84LaengeSec(Laenge) {
 	var LaengeGrad, LaengeMin, LaengeSec;
-    LaengeGrad = Math.floor(Laenge);
-    LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
-    LaengeSec = (Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100);
-    return LaengeSec;
+	LaengeGrad = Math.floor(Laenge);
+	LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
+	LaengeSec = (Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100);
+	return LaengeSec;
 }
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
@@ -112,7 +112,7 @@ function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 	  +     76.63 * Math.pow(lat_aux,2)
 	  -    194.56 * Math.pow(lng_aux,2) * lat_aux
 	  +    119.79 * Math.pow(lat_aux,3);
-	     
+ 
 	return x;
 }
 
@@ -130,10 +130,10 @@ function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 	// Process Y
 	y = 600072.37 
 	   + 211455.93 * lng_aux 
-	     -  10938.51 * lng_aux * lat_aux
+	   -  10938.51 * lng_aux * lat_aux
 	   -      0.36 * lng_aux * Math.pow(lat_aux,2)
 	   -     44.54 * Math.pow(lng_aux,3);
-	   
+	
 	return y;
 }
 
@@ -179,7 +179,7 @@ function CHtoWGSlat(y, x) {
 	     -  0.002528 * Math.pow(x_aux,2)
 	     -  0.0447   * Math.pow(y_aux,2) * x_aux
 	     -  0.0140   * Math.pow(x_aux,3);
-	  
+	
 	// Unit 10000" to 1 " and converts seconds to degrees (dec)
 	lat = lat * 100/36;
 	return lat;
@@ -199,7 +199,7 @@ function CHtoWGSlng(y, x) {
 	    + 0.791484 * y_aux * x_aux
 	    + 0.1306   * y_aux * Math.pow(x_aux,2)
 	    - 0.0436   * Math.pow(y_aux,3);
-	 
+	
 	// Unit 10000" to 1 " and converts seconds to degrees (dec)
 	lng = lng * 100/36;
 	return lng;
@@ -207,11 +207,11 @@ function CHtoWGSlng(y, x) {
 
 function melde(Meldung) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>&nbsp;" + Meldung +"&nbsp;</h4></div>")
-	    .css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
-	    .appendTo($.mobile.pageContainer)
-	    .delay(2500)
-	    .fadeOut(700, function () {
-	    	$(this).remove();
+		.css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
+		.appendTo($.mobile.pageContainer)
+		.delay(2500)
+		.fadeOut(700, function () {
+			$(this).remove();
 		});
 }
 
@@ -405,7 +405,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 				},
 				error: function () {
 					melde("Fehler: Beobachtung nicht gespeichert");
-				 }
+				}
 			});
 		}
 	});
@@ -418,20 +418,20 @@ function erstelleMenuFürFelder(thiz) {
 		'mode' : 'bool',
 		'prompt' : 'Menü',
 		'fullHTML': 'true',
-    	'buttons' : {
-      		'Datenfelder<br>exportieren': {
-		      	click: function () {
-		        	window.open("_list/FeldExport/FeldListe");
-        		},
-        		theme: "a",
-        		icon: "arrow-r"
-      		},
-      		'schliessen': {
-                click: function () { return true; },
-                icon: "back",
-                theme: "c"
-            }
-    	}
+		'buttons' : {
+			'Datenfelder<br>exportieren': {
+				click: function () {
+					window.open("_list/FeldExport/FeldListe");
+				},
+				theme: "a",
+				icon: "arrow-r"
+			},
+			'schliessen': {
+				click: function () { return true; },
+				icon: "back",
+				theme: "c"
+			}
+		}
   	})
 }
 
@@ -546,7 +546,7 @@ function erstelleNeuenOrt() {
 						},
 						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
-						 }
+						}
 					});
 				}
 			});
@@ -587,7 +587,7 @@ function erstelleNeuenRaum() {
 				},
 				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
-				 }
+				}
 			});
 		}
 	});
@@ -615,7 +615,7 @@ function erstelleNeuesProjekt() {
 		},
 		error: function () {
 			melde("Fehler: neues Projekt nicht erstellt");
-		 }
+		}
 	});
 }
 
@@ -698,7 +698,7 @@ function erstelleArtEdit(ArtId) {
 function generiereHtmlFuerArtEditForm(Art) {
 	var HtmlContainer, Titel, Feldname, Feldwert, Datensammlung;
 	HtmlContainer = '';
-	for (i in Art) {              
+	for (i in Art) {  
 		if (i.slice(0, 13) === "Datensammlung") {
 			if (Art[i]) {
 				Titel = Art[i].Datensammlung;
@@ -863,7 +863,7 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 	HtmlContainer = "";
 	Status = sessionStorage.Status;
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in Feldliste.rows) {              
+	for (i in Feldliste.rows) {  
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -917,11 +917,11 @@ function initiiereBeobliste_2() {
 	anzBeob = 0;
 	ListItemContainer = "";
 	
-	for (i in BeobListe.rows) {                    //Beobachtungen zählen
+	for (i in BeobListe.rows) {   //Beobachtungen zählen
 		anzBeob += 1;
 	}
 
-	Titel2 = " Beobachtungen";           //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	Titel2 = " Beobachtungen";   //Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	if (anzBeob === 1) {
 		Titel2 = " Beobachtung";
 	}
@@ -930,7 +930,7 @@ function initiiereBeobliste_2() {
 	if (anzBeob === 0) {
 		ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
 	} else {
-		for (i in BeobListe.rows) {                //Liste aufbauen
+		for (i in BeobListe.rows) {	//Liste aufbauen
 			beob = BeobListe.rows[i].value;
 			key = BeobListe.rows[i].key;
 			Datum = beob.zDatum;
@@ -991,7 +991,7 @@ function initiiereProjektEdit(ProjektId) {
 				});
 			}
 		}
-	});	
+	});
 }
 
 function initiiereProjektEdit_2(Projekt) {
@@ -1056,7 +1056,6 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 
 //initiiert FeldEdit.html
 function initiiereFeldEdit() {
-	alert("FeldId = " + sessionStorage.FeldId);
 	$db = $.couch.db("evab");
 	$db.openDoc(sessionStorage.FeldId, {
 		success: function (doc) {
@@ -1182,7 +1181,7 @@ function erstelleSelectFeldFolgtNach_2() {
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
-	for (i in Feldliste.rows) {                 
+	for (i in Feldliste.rows) { 
 		TempFeld = Feldliste.rows[i].value;
 		//Liste aufbauen
 		//Nur eigene Felder und offizielle
@@ -1275,8 +1274,8 @@ function initiiereFeldliste_2() {
 	anzFelder = 0;
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
-	}          
-	for (i in Feldliste.rows) {                 
+	}  
+	for (i in Feldliste.rows) {
 		Feld = Feldliste.rows[i].value;
 		//Liste aufbauen
 		//Nur eigene Felder und offizielle
@@ -1499,10 +1498,10 @@ function initiiereRaumListe_2() {
 	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
 	anzRaum = 0;
 	ListItemContainer = "";
-	for (i in RaumListe.rows) {                    //Räume zählen
+	for (i in RaumListe.rows) {	//Räume zählen
 		anzRaum += 1;
 	}
-	Titel2 = " Räume";                   //Im Titel der Seite die Anzahl Räume anzeigen
+	Titel2 = " Räume";   //Im Titel der Seite die Anzahl Räume anzeigen
 	if (anzRaum === 1) {
 		Titel2 = " Raum";
 	}
@@ -1510,7 +1509,7 @@ function initiiereRaumListe_2() {
 	if (anzRaum === 0) {
 		ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
-		for (i in RaumListe.rows) {                //Liste aufbauen
+		for (i in RaumListe.rows) {	//Liste aufbauen
 			Raum = RaumListe.rows[i].value;
 			key = RaumListe.rows[i].key;
 			rName = Raum.rName;
@@ -1571,7 +1570,7 @@ function initiiereOrtEdit(OrtId) {
 				});
 			}
 		}
-	});			
+	});		
 }
 
 function initiiereOrtEdit_2(Ort) {
@@ -1620,7 +1619,7 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteOrtEdit.rows) {              
+	for (i in FeldlisteOrtEdit.rows) {  
 		Feld = FeldlisteOrtEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1669,10 +1668,10 @@ function initiiereOrtListe_2() {
 	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
 	anzOrt = 0;
 	ListItemContainer = "";
-	for (i in OrtListe.rows) {                //Orte zählen. Wenn noch keine: darauf hinweisen
+	for (i in OrtListe.rows) {	//Orte zählen. Wenn noch keine: darauf hinweisen
 		anzOrt += 1;
 	}
-	Titel2 = " Orte";                    //Im Titel der Seite die Anzahl Orte anzeigen
+	Titel2 = " Orte";	//Im Titel der Seite die Anzahl Orte anzeigen
 	if (anzOrt === 1) {
 		Titel2 = " Ort";
 	}
@@ -1681,7 +1680,7 @@ function initiiereOrtListe_2() {
 	if (anzOrt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
 	} else {
-		for (i in OrtListe.rows) {                //Liste aufbauen
+		for (i in OrtListe.rows) {	//Liste aufbauen
 			Ort = OrtListe.rows[i].value;
 			key = OrtListe.rows[i].key;
 			listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
@@ -1798,11 +1797,11 @@ function initiiereZeitListe_2() {
 	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
 	anzZeit = 0;
 	ListItemContainer = "";
-	for (i in ZeitListe.rows) {                    //Zeiten zählen. Wenn noch keine: darauf hinweisen
+	for (i in ZeitListe.rows) {	//Zeiten zählen. Wenn noch keine: darauf hinweisen
 		anzZeit += 1;
 	}
 
-	Titel2 = " Zeiten";                  //Im Titel der Seite die Anzahl Zeiten anzeigen
+	Titel2 = " Zeiten";  //Im Titel der Seite die Anzahl Zeiten anzeigen
 	if (anzZeit === 1) {
 		Titel2 = " Zeit";
 	}
@@ -1832,7 +1831,7 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteZeitEdit.rows) {              
+	for (i in FeldlisteZeitEdit.rows) {  
 		Feld = FeldlisteZeitEdit.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -1959,7 +1958,7 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	ListItem = "";
 	HtmlContainer = "";
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in Feldliste.rows) {              
+	for (i in Feldliste.rows) {  
 		Feld = Feldliste.rows[i].value;
 		FeldName = Feld.FeldName;
 		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -2008,11 +2007,11 @@ function initiierehBeobListe_2() {
 	var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
 	anzArt = 0;
 	ListItemContainer = "";
-	for (i in hBeobListe.rows) {               //Arten zählen. Wenn noch keine: darauf hinweisen
+	for (i in hBeobListe.rows) {   //Arten zählen. Wenn noch keine: darauf hinweisen
 		anzArt += 1;
 	}
 
-	Titel2 = " Arten";                   //Im Titel der Seite die Anzahl Arten anzeigen
+	Titel2 = " Arten";   //Im Titel der Seite die Anzahl Arten anzeigen
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
@@ -2021,7 +2020,7 @@ function initiierehBeobListe_2() {
 	if (anzArt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
 	} else {
-		for (i in hBeobListe.rows) {                //Liste aufbauen
+		for (i in hBeobListe.rows) {	//Liste aufbauen
 			hBeob = hBeobListe.rows[i].value;
 			key = hBeobListe.rows[i].key;
 			aArtGruppe = hBeob.aArtGruppe;
@@ -2100,7 +2099,7 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '" class="speichern"/>\n</div>';
-	return HtmlContainer;		
+	return HtmlContainer;	
 }
 
 //generiert den html-Inhalt für Slider
@@ -2122,7 +2121,7 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 	HtmlContainer += '" max="';
 	HtmlContainer += SliderMaximum;
 	HtmlContainer += '"/>\n</div>';
-	return HtmlContainer;	
+	return HtmlContainer;
 }
 
 //generiert den html-Inhalt für Textarea
@@ -2140,7 +2139,7 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += '" class="speichern">';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '</textarea>\n</div>';
-	return HtmlContainer;		
+	return HtmlContainer;	
 }
 
 //generiert den html-Inhalt für Toggleswitch
@@ -2263,7 +2262,7 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 		HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
 	}
 	HtmlContainer += "\n\t</select>\n</div>";
-	return HtmlContainer;	
+	return HtmlContainer;
 }
 
 //generiert den html-Inhalt für Optionen von Selectmenu
@@ -2310,58 +2309,58 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 }
 
 (function ($) {
-    // friendly helper http://tinyurl.com/6aow6yn
-    //Läuft durch alle Felder im Formular
-    //Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
-    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-    $.fn.serializeObject = function () {
-    	var o, a;
-        o = {};
-        a = this.serializeArray();
-        $.each(a, function () {
-        	if (this.value !== "") {
-	            if (o[this.name]) {
-	                if (!o[this.name].push) {
-	                    o[this.name] = [o[this.name]];
-	                }
-	                o[this.name].push(this.value);
-	            } else {
-	            	if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
-	            		o[this.name] = parseInt(this.value);
-	            	} else {
-	                	o[this.name] = this.value;
-	                }
-	            }
-	   		}
-        });
-        return o;
-    };
-    //friendly helper http://tinyurl.com/6aow6yn
-    //Läuft durch alle Felder im Formular
-    //Feldname und Wert aller Felder werden ins Objekt geschrieben
-    //so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
-    //siehe Beispiel in FeldEdit.html
-    //nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-    $.fn.serializeObjectNull = function () {
-    	var o, a;
-        o = {};
-        a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value);
-            } else {
-            	if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
-            		o[this.name] = parseInt(this.value);
-            	} else {
-                	o[this.name] = this.value;
-                }
-            }
-        });
-        return o;
-    };
+	// friendly helper http://tinyurl.com/6aow6yn
+	//Läuft durch alle Felder im Formular
+	//Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
+	//nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+	$.fn.serializeObject = function () {
+		var o, a;
+		o = {};
+		a = this.serializeArray();
+		$.each(a, function () {
+			if (this.value !== "") {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [o[this.name]];
+					}
+					o[this.name].push(this.value);
+				} else {
+					if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
+						o[this.name] = parseInt(this.value);
+					} else {
+						o[this.name] = this.value;
+					}
+				}
+			}
+		});
+		return o;
+	};
+	//friendly helper http://tinyurl.com/6aow6yn
+	//Läuft durch alle Felder im Formular
+	//Feldname und Wert aller Felder werden ins Objekt geschrieben
+	//so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
+	//siehe Beispiel in FeldEdit.html
+	//nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+	$.fn.serializeObjectNull = function () {
+		var o, a;
+		o = {};
+		a = this.serializeArray();
+		$.each(a, function () {
+			if (o[this.name]) {
+				if (!o[this.name].push) {
+					o[this.name] = [o[this.name]];
+				}
+				o[this.name].push(this.value);
+			} else {
+				if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
+					o[this.name] = parseInt(this.value);
+				} else {
+					o[this.name] = this.value;
+				}
+			}
+		});
+		return o;
+	};
 })(jQuery);
 
 //Codeausführung für Anzahl Millisekunden unterbrechen
@@ -2434,20 +2433,20 @@ function onGeolocationError(error) {
 
 //Beendet Ermittlung der Position
 function stopGeolocation() {
-    if (watchID !== null) {
-        navigator.geolocation.clearWatch(watchID);
-        watchID = null;
-        //Mitteilungen löschen
-        if ($("input#oXKoord").val() === "Position ermitteln...") {
-        	$("input#oXKoord").val("");
+	if (watchID !== null) {
+		navigator.geolocation.clearWatch(watchID);
+		watchID = null;
+		//Mitteilungen löschen
+		if ($("input#oXKoord").val() === "Position ermitteln...") {
+			$("input#oXKoord").val("");
 			$("input#oYKoord").val("");
-        	$("input#oLagegenauigkeit").val("");
-        	melde("Keine genaue Position erhalten");
-        }
-        speichereAlles(sessionStorage.docId, sessionStorage.FormName);
-        delete sessionStorage.docId;
-        delete sessionStorage.FormName;
-    }
+			$("input#oLagegenauigkeit").val("");
+			melde("Keine genaue Position erhalten");
+		}
+		speichereAlles(sessionStorage.docId, sessionStorage.FormName);
+		delete sessionStorage.docId;
+		delete sessionStorage.FormName;
+	}
 }
 
 //Speichert alle Daten eines Formulars
@@ -2483,20 +2482,20 @@ function speichereLetzteUrl() {
 	//if (typeof localStorage.Username === ("undefined" || null)) {
 	if (typeof localStorage.Username === "undefined" || localStorage.Username === null) {
 		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function (session) {
-		    	//if (session.userCtx.name !== (undefined || null)) {
-		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
-		        	Username = session.userCtx.name;
-		        	localStorage.Username = Username;
-		        	speichereLetzteUrl_2();
-		        } else {
-		        	sessionStorage.UserStatus = "neu";
+			url: '/_session',
+			dataType: 'json',
+			async: false,
+			success: function (session) {
+				//if (session.userCtx.name !== (undefined || null)) {
+				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
+					Username = session.userCtx.name;
+					localStorage.Username = Username;
+					speichereLetzteUrl_2();
+				} else {
+					sessionStorage.UserStatus = "neu";
 					window.open("index.html", target = "_self");
 				}
-		    }
+			}
 		});
 	} else {
 		speichereLetzteUrl_2();
@@ -2637,10 +2636,10 @@ function erstelleKarteFürRaum() {
 				var lng = 8.533333;
 				var latlng = new google.maps.LatLng(lat, lng);
 				var options = {
-				    zoom: 15,
-				    center: latlng,
-				    streetViewControl: false,
-				    mapTypeId: google.maps.MapTypeId.HYBRID
+					zoom: 15,
+					center: latlng,
+					streetViewControl: false,
+					mapTypeId: google.maps.MapTypeId.HYBRID
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 				//google.maps.event.trigger(map,'resize');
@@ -2668,23 +2667,23 @@ function erstelleKarteFürRaum() {
 					var marker = new MarkerWithLabel({ 
 						map: map,
 						position: latlng2,  
-					    title: oName.toString(),
-					    labelContent: oName,
-					    labelAnchor: new google.maps.Point(22, 0),
-					    labelClass: "MapLabel", // the CSS class for the label
+						title: oName.toString(),
+						labelContent: oName,
+						labelAnchor: new google.maps.Point(22, 0),
+						labelClass: "MapLabel", // the CSS class for the label
 						labelStyle: {opacity: 0.75}
 					});
 					markers.push(marker);
 					var contentString = '<div id="content">'+
-					    '<div id="siteNotice">'+
-					    '</div>'+
-					    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-					    '<div id="bodyContent" class="GmInfowindow">'+
-					    '<p>X-Koordinate: ' + oXKoord + '</p>'+
-					    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-					    "<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-					    '</div>'+
-					    '</div>';
+						'<div id="siteNotice">'+
+						'</div>'+
+						'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+						'<div id="bodyContent" class="GmInfowindow">'+
+						'<p>X-Koordinate: ' + oXKoord + '</p>'+
+						'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+						"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+						'</div>'+
+						'</div>';
 					makeListener(map, marker, contentString);
 				}
 				var mcOptions = {maxZoom: 17};
@@ -2736,10 +2735,10 @@ function erstelleKarteFürProjekt() {
 				var lng = 8.533333;
 				var latlng = new google.maps.LatLng(lat, lng);
 				var options = {
-				    zoom: 15,
-				    center: latlng,
-				    streetViewControl: false,
-				    mapTypeId: google.maps.MapTypeId.HYBRID
+					zoom: 15,
+					center: latlng,
+					streetViewControl: false,
+					mapTypeId: google.maps.MapTypeId.HYBRID
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 				google.maps.event.trigger(map,'resize');
@@ -2767,23 +2766,23 @@ function erstelleKarteFürProjekt() {
 					var marker = new MarkerWithLabel({ 
 						map: map,
 						position: latlng2,  
-					    title: oName.toString(),
-					    labelContent: oName,
-					    labelAnchor: new google.maps.Point(22, 0),
-					    labelClass: "MapLabel", // the CSS class for the label
+						title: oName.toString(),
+						labelContent: oName,
+						labelAnchor: new google.maps.Point(22, 0),
+						labelClass: "MapLabel", // the CSS class for the label
 						labelStyle: {opacity: 0.75}
 					});
 					markers.push(marker);
 					var contentString = '<div id="content">'+
-					    '<div id="siteNotice">'+
-					    '</div>'+
-					    '<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-					    '<div id="bodyContent" class="GmInfowindow">'+
-					    '<p>X-Koordinate: ' + oXKoord + '</p>'+
-					    '<p>Y-Koordinate: ' + oYKoord + '</p>'+
-					    "<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-					    '</div>'+
-					    '</div>';
+						'<div id="siteNotice">'+
+						'</div>'+
+						'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+						'<div id="bodyContent" class="GmInfowindow">'+
+						'<p>X-Koordinate: ' + oXKoord + '</p>'+
+						'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+						"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+						'</div>'+
+						'</div>';
 					makeListener(map, marker, contentString);
 				}
 				var mcOptions = {maxZoom: 17};
@@ -2816,25 +2815,25 @@ function speichereAnhänge(id) {
 		success: function (data) {
 			$("#_rev").val(data._rev);
 			$("#FormAnhänge").ajaxSubmit({
-			    url: "/evab/" + id,
-			    success: function () {
-			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
-			    	$db.openDoc(id, {
+				url: "/evab/" + id,
+				success: function () {
+					//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+					$db.openDoc(id, {
 						success: function (data2) {
-					    	//show attachments in form
-					    	erstelleAttachments(data2);
-					    }
+							//show attachments in form
+							erstelleAttachments(data2);
+						}
 					});
-			    },
-			    error: function () {
-			    	//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
-			    	$db.openDoc(id, {
+				},
+				error: function () {
+					//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+					$db.openDoc(id, {
 						success: function (data3) {
-					    	//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
-					    	erstelleAttachments(data3);
-					    }
+							//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
+							erstelleAttachments(data3);
+						}
 					});
-			    }
+				}
 			});
 		}
 	});
@@ -2851,7 +2850,7 @@ function erstelleAttachments(doc) {
 	if (attachments) {
 		$.each(attachments, function (Dateiname, val) {
 			url = "/evab/" + doc.id + "/" + Dateiname;
-			url_zumLöschen = url + "?" + rev;    //theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+			url_zumLöschen = url + "?" + rev;	//theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<a href='";
 			HtmlContainer += url;
 			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
@@ -2885,7 +2884,7 @@ function neuesFeld() {
 		success: function (data) {
 			sessionStorage.FeldId = data.id;
 			Feld = data;
-			sessionStorage.Feld = JSON.parse(data);
+			sessionStorage.Feld = JSON.stringify(data);
 			//Feldliste soll neu aufgebaut werden
 			delete window.Feldliste;
 			delete sessionStorage.Feldliste;
@@ -2903,18 +2902,18 @@ function pruefeAnmeldung() {
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
 	if (!localStorage.Username) {
 		$.ajax({
-		    url: '/_session',
-		    dataType: 'json',
-		    async: false,
-		    success: function (session) {
-		    	//if (session.userCtx.name !== (undefined || null)) {
-		    	if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
-		        	localStorage.Username = session.userCtx.name;
-		        } else {
-		        	sessionStorage.UserStatus = "neu";
+			url: '/_session',
+			dataType: 'json',
+			async: false,
+			success: function (session) {
+				//if (session.userCtx.name !== (undefined || null)) {
+				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
+					localStorage.Username = session.userCtx.name;
+				} else {
+					sessionStorage.UserStatus = "neu";
 					window.open("index.html", target = "_self");
 				}
-		    }
+			}
 		});
 	}
 }
@@ -2945,8 +2944,8 @@ function erstelleArtenliste() {
 	//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 	//sonst aus der sessionStorage
 	if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
-	  	viewname = 'evab/User?key="' + localStorage.Username + '"';
-	  	$db = $.couch.db("evab");
+		viewname = 'evab/User?key="' + localStorage.Username + '"';
+		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function (data) {
 				User = data.rows[0].value;

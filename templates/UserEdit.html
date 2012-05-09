@@ -19,7 +19,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-    </script>	
+	</script>	
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="../../vendor/couchapp/jquery.form.js"></script>
@@ -59,26 +59,26 @@
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
-				    	<legend>Sprache für Artnamen:</legend>
-				         	<input type="radio" name="ArtenSprache" class="Feld" id="Lateinisch" value="Lateinisch"  />
-				         	<label for="Lateinisch">Lateinisch (Standard)</label>
-				         	<input type="radio" name="ArtenSprache" class="Feld" id="Deutsch" value="Deutsch"  />
-				         	<label for="Deutsch">Deutsch</label>
-				    </fieldset>
-				    <p>Wenn Sie Deutsch wählen, können Sie nur Beobachtungen von Arten erfassen, die einen Deutschen Namen haben. Das ist - je nach Artengruppe - nur ein kleiner Teil der Arten!</p>
+					<fieldset data-role="controlgroup">
+						<legend>Sprache für Artnamen:</legend>
+							<input type="radio" name="ArtenSprache" class="Feld" id="Lateinisch" value="Lateinisch"  />
+							<label for="Lateinisch">Lateinisch (Standard)</label>
+							<input type="radio" name="ArtenSprache" class="Feld" id="Deutsch" value="Deutsch"  />
+							<label for="Deutsch">Deutsch</label>
+					</fieldset>
+					<p>Wenn Sie Deutsch wählen, können Sie nur Beobachtungen von Arten erfassen, die einen Deutschen Namen haben. Das ist - je nach Artengruppe - nur ein kleiner Teil der Arten!</p>
 				</div>
 				<hr />
 				<div data-role="fieldcontain">
-				    <fieldset data-role="controlgroup">
-				    	<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-				         	<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber"  />
-				         	<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
-				         	<input type="radio" name="Datenverwendung" class="Feld" id="Ja" value="Ja"  />
-				         	<label for="Ja">ja, ohne Einschränkung</label>
-				         	<input type="radio" name="Datenverwendung" class="Feld" id="Nein" value="Nein" />
-				         	<label for="Nein">nein</label>
-				    </fieldset>
+					<fieldset data-role="controlgroup">
+						<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
+							<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber"  />
+							<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
+							<input type="radio" name="Datenverwendung" class="Feld" id="Ja" value="Ja"  />
+							<label for="Ja">ja, ohne Einschränkung</label>
+							<input type="radio" name="Datenverwendung" class="Feld" id="Nein" value="Nein" />
+							<label for="Nein">nein</label>
+					</fieldset>
 				</div>
 				<p>* Bei dieser Option werden die <a href="http://www.natportal.ch/data/deontologie_d.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br /><br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Beobachtungen von nicht besonders empfindlichen Arten können in grober räumlicher Auflösung publiziert werden (5*5km).<br /><br />Die Daten werden in die Datenbank der <a href="http://www.naturschutz.zh.ch" target="_blank">Fachstelle Naturschutz des Kantons Zürich</a> synchronisiert und von dort an die zuständigen Nationalen Artdatenzentren weitergeleitet: <a href="http://www.crsf.ch/" target="_blank">info Flora</a>, <a href="http://www.cscf.ch/" target="_blank">CSCF (Fauna)</a>, <a href="http://www.nism.uzh.ch" target="_blank">NISM (Moose)</a>, <a href="www.swissfungi.ch" target="_blank">Swissfungi (Pilze)</a>.</p>
 			</form>
@@ -86,7 +86,7 @@
 	</div>
 
   </body>
-    <script type="text/javascript">
+	<script type="text/javascript">
 		$(document).ready(function () {
 			
 			//Feld Benutzername deaktivieren
@@ -136,7 +136,7 @@
 					$db.saveDoc(User, {
 						error: function () {
 							melde("Fehler: User nicht gespeichert");
-						 }
+						}
 					});
 				}
 			});
