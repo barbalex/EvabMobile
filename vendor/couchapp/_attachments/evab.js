@@ -1072,9 +1072,9 @@ function initiiereFeldEdit() {
 			SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
 			//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusHierarchisch noch nicht
 			if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
-				$("select#SichtbarImModusHierarchisch").val("ja");
+				$("#SichtbarImModusHierarchisch").val("ja");
 			} else {
-				$("select#SichtbarImModusHierarchisch").val("nein");
+				$("#SichtbarImModusHierarchisch").val("nein");
 			}
 			$("select#SichtbarImModusHierarchisch").slider();
 			$("select#SichtbarImModusHierarchisch").slider("refresh");
@@ -1174,18 +1174,18 @@ function erstelleSelectFeldFolgtNach() {
 }
 
 function erstelleSelectFeldFolgtNach_2() {
-	var i, Feld, Optionen;
+	var i, TempFeld, Optionen;
 	Optionen = [];
 	Optionen.push("");
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
 	for (i in Feldliste.rows) {                 
-		Feld = Feldliste.rows[i].value;
+		TempFeld = Feldliste.rows[i].value;
 		//Liste aufbauen
 		//Nur eigene Felder und offizielle
-		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
-			Optionen.push(Feld.FeldName);
+		if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+			Optionen.push(TempFeld.FeldName);
 		}
 	}
 	HtmlContainer = generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
@@ -1194,36 +1194,53 @@ function erstelleSelectFeldFolgtNach_2() {
 
 //wird benutzt in FeldEdit.html
 //von je einer Funktion in FeldEdit.html und evab.js
+//Funktion ist zweigeteilt, um wenn möglich Datenbankabfragen zu sparen
 function ArtGruppeAufbauenFeldEdit(ArtGruppenArrayIn) {
 	var viewname;
-	$db = $.couch.db("evab");
-	$("select#ArtGruppe").empty();
-	viewname = "evab/Artgruppen";
-	$db.view(viewname, {
-		success: function (data) {
-			var i, ArtGruppe, ListItemContainer, listItem, ArtGruppenArray;
-			ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
-			ArtGruppenArray = ArtGruppenArrayIn || [];
-			for (i in data.rows) {
-				ArtGruppe = data.rows[i].key;
-				listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
-				listItem += ArtGruppe;
-				listItem += "' value='";
-				listItem += ArtGruppe;
-				if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
-					listItem += "' checked='checked";
-				}
-				listItem += "'/>\n<label for='";
-				listItem += ArtGruppe;
-				listItem += "'>";
-				listItem += ArtGruppe;
-				listItem += "</label>";
-				ListItemContainer += listItem;
+	if (window.Artgruppen) {
+		//Artgruppen von globaler Variable holen
+		ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
+	} else if (sessionStorage.Artgruppen) {
+		//Artgruppen aus sessionStorage holen und parsen
+		window.Artgruppen = JSON.parse(sessionStorage.Artgruppen);
+		ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
+	} else {
+		//Artgruppen aus DB holen
+		$db = $.couch.db("evab");
+		$("select#ArtGruppe").empty();
+		viewname = "evab/Artgruppen";
+		$db.view(viewname, {
+			success: function (data) {
+				window.Artgruppen = data;
+				sessionStorage.Artgruppen = JSON.stringify(data);
+				ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
 			}
-			ListItemContainer += "\n</fieldset>"
-			$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+		});
+	}
+}
+
+function ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn) {
+	var i, ArtGruppe, ListItemContainer, listItem, ArtGruppenArray;
+	ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
+	ArtGruppenArray = ArtGruppenArrayIn || [];
+	for (i in Artgruppen.rows) {
+		ArtGruppe = Artgruppen.rows[i].key;
+		listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
+		listItem += ArtGruppe;
+		listItem += "' value='";
+		listItem += ArtGruppe;
+		if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
+			listItem += "' checked='checked";
 		}
-	});
+		listItem += "'/>\n<label for='";
+		listItem += ArtGruppe;
+		listItem += "'>";
+		listItem += ArtGruppe;
+		listItem += "</label>";
+		ListItemContainer += listItem;
+	}
+	ListItemContainer += "\n</fieldset>"
+	$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 }
 
 //initiiert FeldListe.html
@@ -2848,27 +2865,28 @@ function erstelleAttachments(doc) {
 }
 
 //kreiert ein neues Feld
-//erwartet den Teil des Pfads, der links von FeldEdit ist
-function neuesFeld(Pfad) {
-	var Feld;
+//wird benutzt von FeldListe.html und FeldEdit.html
+function neuesFeld() {
+	var NeuesFeld;
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
-	Feld = {};
-	Feld.Typ = "Feld";
-	Feld.User = localStorage.Username;
-	Feld.SichtbarImModusEinfach = [];
-	Feld.SichtbarImModusHierarchisch = [];
+	NeuesFeld = {};
+	NeuesFeld.Typ = "Feld";
+	NeuesFeld.User = localStorage.Username;
+	NeuesFeld.SichtbarImModusEinfach = [];
+	NeuesFeld.SichtbarImModusHierarchisch = [];
 	//gleich sichtbar stellen
-	Feld.SichtbarImModusEinfach.push(localStorage.Username);
-	Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
+	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Username);
+	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Username);
 	$db = $.couch.db("evab");
-	$db.saveDoc(Feld, {
+	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
+			sessionStorage.FeldId = data.id;
 			//Feldliste soll neu aufgebaut werden
 			delete window.Feldliste;
 			delete sessionStorage.Feldliste;
-			window.open(Pfad + "FeldEdit/" + data.id, target = "_self");
+			window.open("FeldEdit.html", target = "_self");
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");

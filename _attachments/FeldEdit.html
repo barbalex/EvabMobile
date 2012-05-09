@@ -44,14 +44,14 @@
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select name="SichtbarImModusEinfach" id="SichtbarImModusEinfach" data-role="slider">
+					<select class="Feldeigenschaften" name="SichtbarImModusEinfach" id="SichtbarImModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select name="SichtbarImModusHierarchisch" id="SichtbarImModusHierarchisch" data-role="slider">
+					<select class="Feldeigenschaften" name="SichtbarImModusHierarchisch" id="SichtbarImModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
@@ -179,7 +179,7 @@
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="FeldEditFooter">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" onClick="Javascript:neuesFeld('../');" data-icon="plus" class="ui-btn-active">neu</a></li>			
+					<li><a href="#" onClick="Javascript:neuesFeld();" data-icon="plus" class="ui-btn-active">neu</a></li>			
 					<li><a href="#" data-role="button" id="LöschenDialogLink" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -204,7 +204,7 @@
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
-				$("#FeldEditForm").on("change", ".Feldeigenschaften", function () {
+				$("#FeldContent").on("change", ".Feldeigenschaften", function () {
 					var FeldWert, FeldName, AlterFeldWert;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
@@ -227,12 +227,12 @@
 							$db = $.couch.db("evab");
 							$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
 								success: function (data) {
-									var i, anzVorkommen, Datensatz, Feld, ds;
+									var i, anzVorkommen, Datensatz, TempFeld, ds;
 									anzVorkommen = 0;
 									for (i in data.rows) {
 										Datensatz = data.rows[i].doc; 
-										Feld = Datensatz[Feld.FeldName];
-										if (Feld) {
+										TempFeld = Datensatz[Feld.FeldName];
+										if (TempFeld) {
 											anzVorkommen += 1;
 										}
 									}
@@ -308,7 +308,12 @@
 						}
 						Formularelement = Feld.Formularelement;
 						//Standardwert in Array verwandeln
-						StandardwertOptionen = Feldwert.split(",");
+						//dabe Fehler abfangen, wenn Feldwert undefined ist
+						if (Feldwert) {
+							StandardwertOptionen = Feldwert.split(",");
+						} else {
+							StandardwertOptionen = "";
+						}
 						//Es sind Optionen erfasst. Standardwert muss eine oder mehrere dieser Optionen sein
 						if (["multipleselect", "checkbox"].indexOf(Formularelement) > -1) {
 							//alle Werte des Arrays müssen Optionen sein
@@ -351,16 +356,6 @@
 					}
 				});
 
-				//Sichtbarkeit Modus hierarchisch speichern
-				$("#SichtbarImModusHierarchisch").change(function () {
-					speichereSichtbarModusHierarchisch(this.value);
-				});
-
-				//Sichtbarkeit Modus einfach speichern
-				$("#SichtbarImModusEinfach").change(function () {
-					speichereSichtbarModusEinfach(this.value);
-				});
-
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LöschenDialogLink', function (event) {
 					event.preventDefault();
@@ -386,12 +381,12 @@
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
 											$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
 												success: function (data) {
-													var i, anzVorkommen, Datensatz, Feld, ds;
+													var i, anzVorkommen, Datensatz, TempFeld, ds;
 													anzVorkommen = 0;
 													for (i in data.rows) {
 														Datensatz = data.rows[i].doc;
-														Feld = Datensatz[Feld.FeldName];
-														if (Feld) {
+														TempFeld = Datensatz[Feld.FeldName];
+														if (TempFeld) {
 															anzVorkommen += 1;
 														}
 													}
@@ -453,101 +448,37 @@
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i, key, Feld;
-							for (i in data.rows) {
-								//kommt ein Feld mit diesem Namen schon vor?
-								if (data.rows[i].value) {
-									Feld = data.rows[i].value;
-									//ist es ein eigenes oder ein offizielles?
-									if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
-										//ja > dieser Name ist nicht zulässig
-										$("#FeldName").val(FeldNameAlt);
-										delete sessionStorage.FeldName;
-										setTimeout(function () { 
-											$('#FeldName').focus(); 
-										}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-										melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
-									} else {
-										//Feldname ist bei diesem User neu, somit zulässig > speichern
-										//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-										speichereSichtbarModusHierarchisch("ja"); 
-										speichereFeldeigenschaften();
+							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
+							AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
+							//durch alle Felder mit demselben Artnamen laufen
+							//prüfen, ob sie eigene oder offielle sind
+							if (data.rows) {
+								for (i in data.rows) {
+									if (data.rows[i].value) {
+										TempFeld = data.rows[i].value;
+										//ist es ein eigenes oder ein offizielles?
+										if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+											//ja > dieser Name ist nicht zulässig
+											AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
+										}
 									}
-								} else {
-									//Feldname ist neu, somit zulässig > speichern
-									//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-									speichereSichtbarModusHierarchisch("ja");
-									speichereFeldeigenschaften();
 								}
 							}
-						}
-					});
-				}
-
-				function speichereSichtbarModusHierarchisch(SichtbarImModusHierarchisch) {
-					var FeldName;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
-					FeldName = $("#FeldName").val();
-					$db = $.couch.db("evab");
-					$db.openDoc(Feld._id, {
-						success: function (doc) {
-							var idx;
-							if (SichtbarImModusHierarchisch === "ja") {
-								doc.SichtbarImModusHierarchisch.push(localStorage.Username);
+							if (AnzEigeneOderOffizielleFelderMitSelbemNamen === 0) {
+								//Feldname ist neu, somit zulässig > speichern
+								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
+								$("#SichtbarImModusHierarchisch").val("ja");	//MUSS DER JETZT NOCH REFRESHT WERDEN?
+								$("select#SichtbarImModusHierarchisch").slider("refresh");
+								speichereFeldeigenschaften();
 							} else {
-								idx = doc.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
-								if (idx !== -1) {
-									doc.SichtbarImModusHierarchisch.splice(idx, 1);
-								}
+								//Feldname kommt bei diesem User schon vor
+								$("#FeldName").val(FeldNameAlt);
+								delete sessionStorage.FeldName;
+								setTimeout(function () { 
+									$('#FeldName').focus(); 
+								}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+								melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
 							}
-							$db.saveDoc(doc, {
-								success: function (data) {
-									Feld = data;
-									sessionStorage.Feld = JSON.stringify(data);
-								},
-								error: function () {
-									melde("Fehler: nicht gespeichert");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: nicht gespeichert");
-						}
-					});
-				}
-
-				function speichereSichtbarModusEinfach(SichtbarImModusEinfach) {
-					var FeldName;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
-					FeldName = $("#FeldName").val();
-					$db = $.couch.db("evab");
-					$db.openDoc(Feld._id, {
-						success: function (doc) {
-							var idx;
-							if (SichtbarImModusEinfach === "ja") {
-								doc.SichtbarImModusEinfach.push(localStorage.Username);
-							} else {
-								idx = doc.SichtbarImModusEinfach.indexOf(localStorage.Username);
-								if (idx !== -1) {
-									doc.SichtbarImModusEinfach.splice(idx, 1);
-								}
-							}
-							$db.saveDoc(doc, {
-								success: function (data) {
-									Feld = data;
-									sessionStorage.Feld = JSON.stringify(data);
-								},
-								error: function () {
-									melde("Fehler: nicht gespeichert");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: nicht gespeichert");
 						}
 					});
 				}
@@ -785,11 +716,12 @@
 					});
 				}
 
+				//speichert
 				function speichereFeldeigenschaften() {
 					$db = $.couch.db("evab");
 					$db.openDoc(Feld._id, {
 						success: function (doc) {
-							var Formularfelder;
+							var Formularfelder, idx1, idx2;
 							Formularfelder = $("#FeldEditForm").serializeObjectNull();
 							//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 							if (Formularfelder.Optionen) {
@@ -825,6 +757,34 @@
 							//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
 							if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
 								Formularfelder.InputTyp = "text";
+							}
+							//Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
+							//Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
+							//Soll das Feld im Modus einfach sichtbar sein?
+							idx1 = doc.SichtbarImModusEinfach.indexOf(localStorage.Username);
+							if ($("#SichtbarImModusEinfach").val() === "ja") {
+								//User ergänzen, wenn noch nicht enthalten
+								if (idx1 === -1) {
+									doc.SichtbarImModusEinfach.push(localStorage.Username);
+								}
+							} else {
+								//User entfernen, wenn enthalten
+								if (idx1 !== -1) {
+									doc.SichtbarImModusEinfach.splice(idx1, 1);
+								}
+							}
+							//Soll das Feld im Modus hierarchisch sichtbar sein?
+							idx2 = doc.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+							if ($("#SichtbarImModusHierarchisch").val() === "ja") {
+								//User ergänzen, wenn noch nicht enthalten
+								if (idx2 === -1) {
+									doc.SichtbarImModusHierarchisch.push(localStorage.Username);
+								}
+							} else {
+								//User entfernen, wenn enthalten
+								if (idx2 !== -1) {
+									doc.SichtbarImModusHierarchisch.splice(idx2, 1);
+								}
 							}
 							//Formularfelder in Dokument schreiben
 							for (i in Formularfelder) {
