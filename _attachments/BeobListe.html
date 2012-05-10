@@ -22,7 +22,6 @@
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mustache.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
@@ -247,7 +246,8 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									öffneMeineEinstellungen("");
+									sessionStorage.zurueck = "BeobListe.html";
+									öffneMeineEinstellungen();
 								},
 								theme: "a",
 								icon: "wrench"

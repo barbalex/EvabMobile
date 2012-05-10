@@ -639,7 +639,7 @@ function erstelleNeuesProjekt() {
 	});
 }
 
-function öffneMeineEinstellungen(Pfad) {
+function öffneMeineEinstellungen() {
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
@@ -649,14 +649,14 @@ function öffneMeineEinstellungen(Pfad) {
 			success: function (data) {
 				var User;
 				User = data.rows[0].value;
-				UserId = data.rows[0].value._id;
+				//UserId = data.rows[0].value._id;
 				sessionStorage.UserId = UserId;
 				sessionStorage.Autor = User.Autor;
-				window.open(Pfad + "_show/UserEdit/" + UserId, target = "_self");
+				window.open("UserEdit.html", target = "_self");
 			}
 		});
 	} else {
-		window.open(Pfad + "_show/UserEdit/" + sessionStorage.UserId, target = "_self");
+		window.open("UserEdit.html", target = "_self");
 	}
 }
 
@@ -890,7 +890,8 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 	Status = sessionStorage.Status;
 	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {
-		if (typeof i !== "function") {
+		//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+		if (typeof i !== "function" && typeof Feld.ArtGruppe !== "undefined") {
 			Feld = Feldliste.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -985,6 +986,25 @@ function initiiereBeobliste_2() {
 	$("#beobachtungen").html(ListItemContainer);
 	$("#beobachtungen").listview("refresh");
 	speichereLetzteUrl();
+}
+
+//initiiert UserEdit.html
+//Mitgeben: sessionStorage.UserId
+function initiiereUserEdit() {
+	$db = $.couch.db("evab");
+	$db.openDoc(sessionStorage.UserId, {
+		success: function (User) {
+			//fixe Felder aktualisieren
+			$("#UserName").val(User.UserName);
+			$("#Autor").val(User.Autor);
+			$("#Email").val(User.Email);
+			$("input[name='ArtenSprache']").checkboxradio();
+			$("#" + User.ArtenSprache).prop("checked",true).checkboxradio("refresh");
+			$("input[name='Datenverwendung']").checkboxradio();
+			$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
+			speichereLetzteUrl();
+		}
+	});
 }
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -2030,7 +2050,8 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	HtmlContainer = "";
 	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {
-		if (typeof i !== "function") {
+		//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+		if (typeof i !== "function" && typeof Feld.ArtGruppe !== "undefined") {
 			Feld = Feldliste.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
@@ -2690,6 +2711,9 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 				break;
 				case "Feldliste":
 					initiiereFeldliste();
+				break;
+				case "UserEdit":
+					initiiereUserEdit();
 				break;
 			}
 		}

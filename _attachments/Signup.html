@@ -15,6 +15,7 @@
 	</script>	
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
@@ -52,7 +53,7 @@
 				<hr />
 				<div data-role="fieldcontain">
 					<label for="Email">email-Adresse:</label>
-					<input id="Email" name="Email" type="email" placeholder="(fakultativ)"/>
+					<input id="Email" name="Email" type="email" placeholder="(erforderlich)" required/>
 					<hr />
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
@@ -179,6 +180,7 @@
 		$db = $.couch.db("evab");
 		$db.saveDoc(doc, {
 			success: function (data) {
+				sessionStorage.UserId = data._id;
 				//melde("Yuhui, Ihr User wurde erstellt");
 			},
 			error: function () {
