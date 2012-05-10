@@ -256,34 +256,42 @@ function speichereNeueBeob_02(doc) {
 	$db.openDoc(doc.hZeitId, {
 		success: function (Zeit) {
 			for (i in Zeit) {
-				//FeldName = i, Feldwert = Zeit[i]
-				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-					doc[i] = Zeit[i];
+				if (typeof i !== "function") {
+					//FeldName = i, Feldwert = Zeit[i]
+					//ein paar Felder wollen wir nicht
+					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+						doc[i] = Zeit[i];
+					}
 				}
 			}
 			$db.openDoc(doc.hOrtId, {
 				success: function (Ort) {
 					for (i in Ort) {
-						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-							doc[i] = Ort[i];
+						if (typeof i !== "function") {
+							//ein paar Felder wollen wir nicht
+							if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+								doc[i] = Ort[i];
+							}
 						}
 					}
 					$db.openDoc(doc.hRaumId, {
 						success: function (Raum) {
 							for (i in Raum) {
-								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-									doc[i] = Raum[i];
+								if (typeof i !== "function") {
+									//ein paar Felder wollen wir nicht
+									if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+										doc[i] = Raum[i];
+									}
 								}
 							}
 							$db.openDoc(doc.hProjektId, {
 								success: function (Projekt) {
 									for (i in Projekt) {
-										//ein paar Felder wollen wir nicht
-										if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-											doc[i] = Projekt[i];
+										if (typeof i !== "function") {
+											//ein paar Felder wollen wir nicht
+											if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
+												doc[i] = Projekt[i];
+											}
 										}
 									}
 									speichereNeueBeob_03(doc);
@@ -456,25 +464,31 @@ function erstelleNeueZeit() {
 	$db.openDoc(doc.hOrtId, {
 		success: function (Ort) {
 			for (i in Ort) {
-				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-					doc[i] = Ort[i];
+				if (typeof i !== "function") {
+					//ein paar Felder wollen wir nicht
+					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+						doc[i] = Ort[i];
+					}
 				}
 			}
 			$db.openDoc(doc.hRaumId, {
 				success: function (Raum) {
 					for (i in Raum) {
-						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-							doc[i] = Raum[i];
+						if (typeof i !== "function") {
+							//ein paar Felder wollen wir nicht
+							if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+								doc[i] = Raum[i];
+							}
 						}
 					}
 					$db.openDoc(doc.hProjektId, {
 						success: function (Projekt) {
 							for (i in Projekt) {
-								//ein paar Felder wollen wir nicht
-								if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-									doc[i] = Projekt[i];
+								if (typeof i !== "function") {
+									//ein paar Felder wollen wir nicht
+									if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
+										doc[i] = Projekt[i];
+									}
 								}
 							}
 							//speichern
@@ -519,17 +533,21 @@ function erstelleNeuenOrt() {
 	$db.openDoc(doc.hRaumId, {
 		success: function (Raum) {
 			for (i in Raum) {
-				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-					doc[i] = Raum[i];
+				if (typeof i !== "function") {
+					//ein paar Felder wollen wir nicht
+					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
+						doc[i] = Raum[i];
+					}
 				}
 			}
 			$db.openDoc(doc.hProjektId, {
 				success: function (Projekt) {
 					for (i in Projekt) {
-						//ein paar Felder wollen wir nicht
-						if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-							doc[i] = Projekt[i];
+						if (typeof i !== "function") {
+							//ein paar Felder wollen wir nicht
+							if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
+								doc[i] = Projekt[i];
+							}
 						}
 					}
 					//speichern
@@ -568,9 +586,11 @@ function erstelleNeuenRaum() {
 	$db.openDoc(sessionStorage.ProjektId, {
 		success: function (Projekt) {
 			for (i in Projekt) {
-				//ein paar Felder wollen wir nicht
-				if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-					doc[i] = Projekt[i];
+				if (typeof i !== "function") {
+					//ein paar Felder wollen wir nicht
+					if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
+						doc[i] = Projekt[i];
+					}
 				}
 			}
 			//speichern
@@ -698,28 +718,32 @@ function erstelleArtEdit(ArtId) {
 function generiereHtmlFuerArtEditForm(Art) {
 	var HtmlContainer, Titel, Feldname, Feldwert, Datensammlung;
 	HtmlContainer = '';
-	for (i in Art) {  
-		if (i.slice(0, 13) === "Datensammlung") {
-			if (Art[i]) {
-				Titel = Art[i].Datensammlung;
-				//collapsible und Liste beginnen
-				if (Titel === "Index") {
-					//der Index soll aufgeklappt sein
-					HtmlContainer += '<div data-role="collapsible" data-collapsed="false"><h3>';
-				} else {
-					HtmlContainer += '<div data-role="collapsible"><h3>';
-				}
-				HtmlContainer += Titel;
-				HtmlContainer += '</h3><ul data-role="listview">';
-				for (y in Art[i]) {
-					if (y !== "Datensammlung") {
-						Feldname = y;
-						Feldwert = Art[i][y];
-						HtmlContainer += generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert);
+	for (i in Art) {
+		if (typeof i !== "function") { 
+			if (i.slice(0, 13) === "Datensammlung") {
+				if (Art[i]) {
+					Titel = Art[i].Datensammlung;
+					//collapsible und Liste beginnen
+					if (Titel === "Index") {
+						//der Index soll aufgeklappt sein
+						HtmlContainer += '<div data-role="collapsible" data-collapsed="false"><h3>';
+					} else {
+						HtmlContainer += '<div data-role="collapsible"><h3>';
 					}
+					HtmlContainer += Titel;
+					HtmlContainer += '</h3><ul data-role="listview">';
+					for (y in Art[i]) {
+						if (typeof y !== "function") {
+							if (y !== "Datensammlung") {
+								Feldname = y;
+								Feldwert = Art[i][y];
+								HtmlContainer += generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert);
+							}
+						}
+					}
+					//Liste und collapsible beenden
+					HtmlContainer += '</ul></div>';
 				}
-				//Liste und collapsible beenden
-				HtmlContainer += '</ul></div>';
 			}
 		}
 	}
@@ -818,10 +842,12 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob) {
 		Formularwerte = $("#BeobEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
-				Beob[i] = Formularwerte[i];
-			} else if (Beob[i]) {
-				delete Beob[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i] && Formularwerte[i] !== "Position ermitteln...") {
+					Beob[i] = Formularwerte[i];
+				} else if (Beob[i]) {
+					delete Beob[i]
+				}
 			}
 		}
 		$db.saveDoc(Beob);
@@ -863,23 +889,24 @@ function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
 	HtmlContainer = "";
 	Status = sessionStorage.Status;
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in Feldliste.rows) {  
-		Feld = Feldliste.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
-			//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-			if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
-				if (Status === "neu" && Feld.Standardwert) {
-					FeldWert = Feld.Standardwert[localStorage.Username] || "";
-				} else {
-					FeldWert = Beob[FeldName] || "";
+	for (i in Feldliste.rows) {
+		if (typeof i !== "function") {
+			Feld = Feldliste.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+				if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
+					if (Status === "neu" && Feld.Standardwert) {
+						FeldWert = Feld.Standardwert[localStorage.Username] || "";
+					} else {
+						FeldWert = Beob[FeldName] || "";
+					}
+					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+					HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
-			}
-		}
+			}}
 	}
 	return HtmlContainer;
 }
@@ -918,7 +945,9 @@ function initiiereBeobliste_2() {
 	ListItemContainer = "";
 	
 	for (i in BeobListe.rows) {   //Beobachtungen zählen
-		anzBeob += 1;
+		if (typeof i !== "function") {
+			anzBeob += 1;
+		}
 	}
 
 	Titel2 = " Beobachtungen";   //Im Titel der Seite die Anzahl Beobachtungen anzeigen
@@ -931,24 +960,26 @@ function initiiereBeobliste_2() {
 		ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
 	} else {
 		for (i in BeobListe.rows) {	//Liste aufbauen
-			beob = BeobListe.rows[i].value;
-			key = BeobListe.rows[i].key;
-			Datum = beob.zDatum;
-			Zeit = beob.zUhrzeit;
-			ArtGruppe = beob.aArtGruppe;
-			ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-			ArtName = beob.aArtName;
-			ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-			ListItemContainer += beob._id;
-			ListItemContainer += "\"><a href=\"BeobEdit.html\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
-			ListItemContainer += ImageLink;
-			ListItemContainer += "\" /><h3 class=\"aArtName\">";
-			ListItemContainer += ArtName;
-			ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-			ListItemContainer += Datum;
-			ListItemContainer += "&nbsp; &nbsp;";
-			ListItemContainer += Zeit;
-			ListItemContainer += "<\/p><\/a> <\/li>";
+			if (typeof i !== "function") {
+				beob = BeobListe.rows[i].value;
+				key = BeobListe.rows[i].key;
+				Datum = beob.zDatum;
+				Zeit = beob.zUhrzeit;
+				ArtGruppe = beob.aArtGruppe;
+				ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
+				ArtName = beob.aArtName;
+				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+				ListItemContainer += beob._id;
+				ListItemContainer += "\"><a href=\"BeobEdit.html\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+				ListItemContainer += ImageLink;
+				ListItemContainer += "\" /><h3 class=\"aArtName\">";
+				ListItemContainer += ArtName;
+				ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+				ListItemContainer += Datum;
+				ListItemContainer += "&nbsp; &nbsp;";
+				ListItemContainer += Zeit;
+				ListItemContainer += "<\/p><\/a> <\/li>";
+			}
 		}
 	}
 	$("#beobachtungen").html(ListItemContainer);
@@ -1009,10 +1040,12 @@ function initiiereProjektEdit_2(Projekt) {
 		Formularwerte = $("#hProjektEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i]) {
-				Projekt[i] = Formularwerte[i];
-			} else if (Projekt[i]) {
-				delete Projekt[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i]) {
+					Projekt[i] = Formularwerte[i];
+				} else if (Projekt[i]) {
+					delete Projekt[i]
+				}
 			}
 		}
 		$db.saveDoc(Projekt);
@@ -1037,18 +1070,20 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 	ListItem = "";
 	HtmlContainer = "";
 	for (i in FeldlisteProjekt.rows) {
-		Feld = FeldlisteProjekt.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
-			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				FeldWert = Feld.Standardwert[localStorage.Username] || "";
-			} else {
-				FeldWert = Projekt[FeldName] || "";
+		if (typeof i !== "function") {
+			Feld = FeldlisteProjekt.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
+				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+					FeldWert = Feld.Standardwert[localStorage.Username] || "";
+				} else {
+					FeldWert = Projekt[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -1181,12 +1216,14 @@ function erstelleSelectFeldFolgtNach_2() {
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
-	for (i in Feldliste.rows) { 
-		TempFeld = Feldliste.rows[i].value;
-		//Liste aufbauen
-		//Nur eigene Felder und offizielle
-		if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
-			Optionen.push(TempFeld.FeldName);
+	for (i in Feldliste.rows) {
+		if (typeof i !== "function") {
+			TempFeld = Feldliste.rows[i].value;
+			//Liste aufbauen
+			//Nur eigene Felder und offizielle
+			if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+				Optionen.push(TempFeld.FeldName);
+			}
 		}
 	}
 	HtmlContainer = generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
@@ -1225,20 +1262,22 @@ function ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn) {
 	ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
 	ArtGruppenArray = ArtGruppenArrayIn || [];
 	for (i in Artgruppen.rows) {
-		ArtGruppe = Artgruppen.rows[i].key;
-		listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
-		listItem += ArtGruppe;
-		listItem += "' value='";
-		listItem += ArtGruppe;
-		if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
-			listItem += "' checked='checked";
+		if (typeof i !== "function") {
+			ArtGruppe = Artgruppen.rows[i].key;
+			listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
+			listItem += ArtGruppe;
+			listItem += "' value='";
+			listItem += ArtGruppe;
+			if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
+				listItem += "' checked='checked";
+			}
+			listItem += "'/>\n<label for='";
+			listItem += ArtGruppe;
+			listItem += "'>";
+			listItem += ArtGruppe;
+			listItem += "</label>";
+			ListItemContainer += listItem;
 		}
-		listItem += "'/>\n<label for='";
-		listItem += ArtGruppe;
-		listItem += "'>";
-		listItem += ArtGruppe;
-		listItem += "</label>";
-		ListItemContainer += listItem;
 	}
 	ListItemContainer += "\n</fieldset>"
 	$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
@@ -1276,29 +1315,31 @@ function initiiereFeldliste_2() {
 		pruefeAnmeldung();
 	}  
 	for (i in Feldliste.rows) {
-		Feld = Feldliste.rows[i].value;
-		//Liste aufbauen
-		//Nur eigene Felder und offizielle
-		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
-			Hierarchiestufe = Feld.Hierarchiestufe;
-			FeldBeschriftung = Feld.FeldBeschriftung;
-			FeldBeschreibung = "";
-			if (Feld.FeldBeschreibung) {
-				FeldBeschreibung = Feld.FeldBeschreibung;
+		if (typeof i !== "function") {
+			Feld = Feldliste.rows[i].value;
+			//Liste aufbauen
+			//Nur eigene Felder und offizielle
+			if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
+				Hierarchiestufe = Feld.Hierarchiestufe;
+				FeldBeschriftung = Feld.FeldBeschriftung;
+				FeldBeschreibung = "";
+				if (Feld.FeldBeschreibung) {
+					FeldBeschreibung = Feld.FeldBeschreibung;
+				}
+				ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
+				ListItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
+				ListItemContainer += Feld._id;
+				ListItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
+				ListItemContainer += ImageLink + "\" /><h2>";
+				ListItemContainer += Hierarchiestufe;
+				ListItemContainer += ': ';
+				ListItemContainer += FeldBeschriftung;
+				ListItemContainer += "<\/h2><p>";
+				ListItemContainer += FeldBeschreibung;
+				ListItemContainer += "</p><\/a><\/li>";
+				//Felder zählen
+				anzFelder += 1;
 			}
-			ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-			ListItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
-			ListItemContainer += Feld._id;
-			ListItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
-			ListItemContainer += ImageLink + "\" /><h2>";
-			ListItemContainer += Hierarchiestufe;
-			ListItemContainer += ': ';
-			ListItemContainer += FeldBeschriftung;
-			ListItemContainer += "<\/h2><p>";
-			ListItemContainer += FeldBeschreibung;
-			ListItemContainer += "</p><\/a><\/li>";
-			//Felder zählen
-			anzFelder += 1;
 		}
 	}
 	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
@@ -1339,7 +1380,9 @@ function initiiereProjektliste_2() {
 	anzProj = 0;
 	ListItemContainer = "";
 	for (i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-		anzProj += 1;
+		if (typeof i !== "function") {
+			anzProj += 1;
+		}
 	}
 
 	Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
@@ -1352,13 +1395,15 @@ function initiiereProjektliste_2() {
 		ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
 	} else {
 		for (i in Projektliste.rows) {			//Liste aufbauen
-			Proj = Projektliste.rows[i].value;
-			key = Projektliste.rows[i].key;
-			pName = key[1];
-			listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-			listItem += "<a href=\"#\">";
-			listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-			ListItemContainer += listItem;
+			if (typeof i !== "function") {
+				Proj = Projektliste.rows[i].value;
+				key = Projektliste.rows[i].key;
+				pName = key[1];
+				listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
+				listItem += "<a href=\"#\">";
+				listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
 		}
 	}
 	$("#Projekte").html(ListItemContainer);
@@ -1422,10 +1467,12 @@ function initiiereRaumEdit_2(Raum) {
 		Formularwerte = $("#hRaumEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i]) {
-				Raum[i] = Formularwerte[i];
-			} else if (Raum[i]) {
-				delete Raum[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i]) {
+					Raum[i] = Formularwerte[i];
+				} else if (Raum[i]) {
+					delete Raum[i]
+				}
 			}
 		}
 		$db.saveDoc(Raum);
@@ -1450,18 +1497,20 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	ListItem = "";
 	HtmlContainer = "";
 	for (i in Feldliste.rows) {
-		Feld = Feldliste.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
-			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				FeldWert = Feld.Standardwert[localStorage.Username] || "";
-			} else {
-				FeldWert = Raum[FeldName] || "";
+		if (typeof i !== "function") {
+			Feld = Feldliste.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
+				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+					FeldWert = Feld.Standardwert[localStorage.Username] || "";
+				} else {
+					FeldWert = Raum[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -1499,7 +1548,9 @@ function initiiereRaumListe_2() {
 	anzRaum = 0;
 	ListItemContainer = "";
 	for (i in RaumListe.rows) {	//Räume zählen
-		anzRaum += 1;
+		if (typeof i !== "function") {
+			anzRaum += 1;
+		}
 	}
 	Titel2 = " Räume";   //Im Titel der Seite die Anzahl Räume anzeigen
 	if (anzRaum === 1) {
@@ -1510,13 +1561,15 @@ function initiiereRaumListe_2() {
 		ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
 		for (i in RaumListe.rows) {	//Liste aufbauen
-			Raum = RaumListe.rows[i].value;
-			key = RaumListe.rows[i].key;
-			rName = Raum.rName;
-			//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-			//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-			listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-			ListItemContainer += listItem;
+			if (typeof i !== "function") {
+				Raum = RaumListe.rows[i].value;
+				key = RaumListe.rows[i].key;
+				rName = Raum.rName;
+				//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
+				//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
 		}
 	}
 	$("#Räume").html(ListItemContainer);
@@ -1588,10 +1641,12 @@ function initiiereOrtEdit_2(Ort) {
 		Formularwerte = $("#hOrtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i]) {
-				Ort[i] = Formularwerte[i];
-			} else if (Ort[i]) {
-				delete Ort[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i]) {
+					Ort[i] = Formularwerte[i];
+				} else if (Ort[i]) {
+					delete Ort[i]
+				}
 			}
 		}
 		$db.saveDoc(Ort);
@@ -1619,19 +1674,21 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteOrtEdit.rows) {  
-		Feld = FeldlisteOrtEdit.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Ort.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				FeldWert = Feld.Standardwert[Ort.User] || "";
-			} else {
-				FeldWert = Ort[FeldName] || "";
+	for (i in FeldlisteOrtEdit.rows) {
+		if (typeof i !== "function") {
+			Feld = FeldlisteOrtEdit.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === Ort.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+					FeldWert = Feld.Standardwert[Ort.User] || "";
+				} else {
+					FeldWert = Ort[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -1669,7 +1726,9 @@ function initiiereOrtListe_2() {
 	anzOrt = 0;
 	ListItemContainer = "";
 	for (i in OrtListe.rows) {	//Orte zählen. Wenn noch keine: darauf hinweisen
-		anzOrt += 1;
+		if (typeof i !== "function") {
+			anzOrt += 1;
+		}
 	}
 	Titel2 = " Orte";	//Im Titel der Seite die Anzahl Orte anzeigen
 	if (anzOrt === 1) {
@@ -1681,10 +1740,12 @@ function initiiereOrtListe_2() {
 		ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
 	} else {
 		for (i in OrtListe.rows) {	//Liste aufbauen
-			Ort = OrtListe.rows[i].value;
-			key = OrtListe.rows[i].key;
-			listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
-			ListItemContainer += listItem;
+			if (typeof i !== "function") {
+				Ort = OrtListe.rows[i].value;
+				key = OrtListe.rows[i].key;
+				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
 		}
 	}
 	$("#Orte").html(ListItemContainer);
@@ -1750,10 +1811,12 @@ function initiiereZeitEdit_2(Zeit) {
 		Formularwerte = $("#hZeitEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i]) {
-				Zeit[i] = Formularwerte[i];
-			} else if (Zeit[i]) {
-				delete Zeit[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i]) {
+					Zeit[i] = Formularwerte[i];
+				} else if (Zeit[i]) {
+					delete Zeit[i]
+				}
 			}
 		}
 		$db.saveDoc(Zeit);
@@ -1798,7 +1861,9 @@ function initiiereZeitListe_2() {
 	anzZeit = 0;
 	ListItemContainer = "";
 	for (i in ZeitListe.rows) {	//Zeiten zählen. Wenn noch keine: darauf hinweisen
-		anzZeit += 1;
+		if (typeof i !== "function") {
+			anzZeit += 1;
+		}
 	}
 
 	Titel2 = " Zeiten";  //Im Titel der Seite die Anzahl Zeiten anzeigen
@@ -1811,11 +1876,13 @@ function initiiereZeitListe_2() {
 		ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
 	} else {
 		for (i in ZeitListe.rows) {
-			Zeit = ZeitListe.rows[i].value;
-			key = ZeitListe.rows[i].key;
-			zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-			listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
-			ListItemContainer += listItem;
+			if (typeof i !== "function") {
+				Zeit = ZeitListe.rows[i].value;
+				key = ZeitListe.rows[i].key;
+				zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
+				listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
 		}
 	}
 	$("#Zeiten").html(ListItemContainer);
@@ -1831,21 +1898,23 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteZeitEdit.rows) {  
-		Feld = FeldlisteZeitEdit.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
-			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				FeldWert = Feld.Standardwert[Zeit.User] || "";
-			} else {
-				FeldWert = Zeit[FeldName] || "";
+	for (i in FeldlisteZeitEdit.rows) {
+		if (typeof i !== "function") { 
+			Feld = FeldlisteZeitEdit.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
+				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+					FeldWert = Feld.Standardwert[Zeit.User] || "";
+				} else {
+					FeldWert = Zeit[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+			//sessionStorage.Status wird schon im aufrufenden function gelöscht!
 		}
-		//sessionStorage.Status wird schon im aufrufenden function gelöscht!
 	}
 	return HtmlContainer;
 }
@@ -1931,10 +2000,12 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 		Formularwerte = $("#hArtEditForm").serializeObject();
 		//Werte aus dem Formular aktualisieren
 		for (i in Formularwerte) {
-			if (Formularwerte[i]) {
-				Beob[i] = Formularwerte[i];
-			} else if (Beob[i]) {
-				delete Beob[i]
+			if (typeof i !== "function") {
+				if (Formularwerte[i]) {
+					Beob[i] = Formularwerte[i];
+				} else if (Beob[i]) {
+					delete Beob[i]
+				}
 			}
 		}
 		$db.saveDoc(Beob);
@@ -1958,19 +2029,21 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	ListItem = "";
 	HtmlContainer = "";
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in Feldliste.rows) {  
-		Feld = Feldliste.rows[i].value;
-		FeldName = Feld.FeldName;
-		//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-		if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-			if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-				FeldWert = Feld.Standardwert[Beob.User] || "";
-			} else {
-				FeldWert = Beob[FeldName] || "";
+	for (i in Feldliste.rows) {
+		if (typeof i !== "function") {
+			Feld = Feldliste.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+					FeldWert = Feld.Standardwert[Beob.User] || "";
+				} else {
+					FeldWert = Beob[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 		}
 	}
 	return HtmlContainer;
@@ -2008,7 +2081,9 @@ function initiierehBeobListe_2() {
 	anzArt = 0;
 	ListItemContainer = "";
 	for (i in hBeobListe.rows) {   //Arten zählen. Wenn noch keine: darauf hinweisen
-		anzArt += 1;
+		if (typeof i !== "function") {
+			anzArt += 1;
+		}
 	}
 
 	Titel2 = " Arten";   //Im Titel der Seite die Anzahl Arten anzeigen
@@ -2021,17 +2096,19 @@ function initiierehBeobListe_2() {
 		ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
 	} else {
 		for (i in hBeobListe.rows) {	//Liste aufbauen
-			hBeob = hBeobListe.rows[i].value;
-			key = hBeobListe.rows[i].key;
-			aArtGruppe = hBeob.aArtGruppe;
-			ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
-			bArtName = key[2];
-			listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
-				"<a href=\"#\">" +
-				"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-				"<h3>" + bArtName + "<\/h3>" +
-				"<\/a> <\/li>";
-			ListItemContainer += listItem;
+			if (typeof i !== "function") {
+				hBeob = hBeobListe.rows[i].value;
+				key = hBeobListe.rows[i].key;
+				aArtGruppe = hBeob.aArtGruppe;
+				ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+				bArtName = key[2];
+				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+					"<a href=\"#\">" +
+					"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
+					"<h3>" + bArtName + "<\/h3>" +
+					"<\/a> <\/li>";
+				ListItemContainer += listItem;
+			}
 		}
 	}
 	$("#Arten").html(ListItemContainer);
@@ -2178,23 +2255,25 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
 	for (i in Optionen) {
-		Optionn = Optionen[i];
-		ListItem = "\n\t\t\t<label for='";
-		ListItem += Optionn;
-		ListItem += "'>";
-		ListItem += Optionn;
-		ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
-		ListItem += FeldName;
-		ListItem += "' id='";
-		ListItem += Optionn;
-		ListItem += "' value='";
-		ListItem += Optionn;
-		ListItem += "' class='custom speichern'";
-		if (FeldWert.indexOf(Optionn) >= 0) {
-			ListItem += " checked='checked'";
+		if (typeof i !== "function") {
+			Optionn = Optionen[i];
+			ListItem = "\n\t\t\t<label for='";
+			ListItem += Optionn;
+			ListItem += "'>";
+			ListItem += Optionn;
+			ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
+			ListItem += FeldName;
+			ListItem += "' id='";
+			ListItem += Optionn;
+			ListItem += "' value='";
+			ListItem += Optionn;
+			ListItem += "' class='custom speichern'";
+			if (FeldWert.indexOf(Optionn) >= 0) {
+				ListItem += " checked='checked'";
+			}
+			ListItem += "/>";
+			HtmlContainer += ListItem;
 		}
-		ListItem += "/>";
-		HtmlContainer += ListItem;
 	}
 	return HtmlContainer;
 }
@@ -2217,22 +2296,24 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
 	for (i in Optionen) {
-		Optionn = Optionen[i];
-		ListItem = "\n\t\t\t<label for='";
-		ListItem += Optionn;
-		ListItem += "'>";
-		ListItem += Optionn;
-		ListItem += "</label>\n\t\t\t<input class='speichern' type='radio' name='";
-		ListItem += FeldName;
-		ListItem += "' id='";
-		ListItem += Optionn;
-		ListItem += "' value='";
-		ListItem += Optionn;
-		if (FeldWert === Optionn) {
-			ListItem += "' checked='checked";
+		if (typeof i !== "function") {
+			Optionn = Optionen[i];
+			ListItem = "\n\t\t\t<label for='";
+			ListItem += Optionn;
+			ListItem += "'>";
+			ListItem += Optionn;
+			ListItem += "</label>\n\t\t\t<input class='speichern' type='radio' name='";
+			ListItem += FeldName;
+			ListItem += "' id='";
+			ListItem += Optionn;
+			ListItem += "' value='";
+			ListItem += Optionn;
+			if (FeldWert === Optionn) {
+				ListItem += "' checked='checked";
+			}
+			ListItem += "'/>";
+			HtmlContainer += ListItem;
 		}
-		ListItem += "'/>";
-		HtmlContainer += ListItem;
 	}
 	return HtmlContainer;
 }
@@ -2271,17 +2352,19 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
-		Optionn = Optionen[i];
-		ListItem = "\n\t\t<option value='";
-		ListItem += Optionn;
-		ListItem += "' class='speichern'";
-		if (FeldWert === Optionn) {
-			ListItem += " selected='selected'";
+		if (typeof i !== "function") {
+			Optionn = Optionen[i];
+			ListItem = "\n\t\t<option value='";
+			ListItem += Optionn;
+			ListItem += "' class='speichern'";
+			if (FeldWert === Optionn) {
+				ListItem += " selected='selected'";
+			}
+			ListItem += ">";
+			ListItem += Optionn;
+			ListItem += "</option>";
+			HtmlContainer += ListItem;
 		}
-		ListItem += ">";
-		ListItem += Optionn;
-		ListItem += "</option>";
-		HtmlContainer += ListItem;
 	}
 	return HtmlContainer;
 }
@@ -2293,17 +2376,19 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
-		Optionn = Optionen[i];
-		ListItem = "\n\t\t<option value='";
-		ListItem += Optionn;
-		ListItem += "' class='speichern'";
-		if (FeldWert.indexOf(Optionn) !== -1) {
-			ListItem += " selected='selected'";
+		if (typeof i !== "function") {
+			Optionn = Optionen[i];
+			ListItem = "\n\t\t<option value='";
+			ListItem += Optionn;
+			ListItem += "' class='speichern'";
+			if (FeldWert.indexOf(Optionn) !== -1) {
+				ListItem += " selected='selected'";
+			}
+			ListItem += ">";
+			ListItem += Optionn;
+			ListItem += "</option>";
+			HtmlContainer += ListItem;
 		}
-		ListItem += ">";
-		ListItem += Optionn;
-		ListItem += "</option>";
-		HtmlContainer += ListItem;
 	}
 	return HtmlContainer;
 }
@@ -2462,10 +2547,12 @@ function speichereAlles(docId, FormName) {
 			Formularwerte = $(Formularname).serializeObject();
 			//Werte aus dem Formular aktualisieren
 			for (i in Formularwerte) {
-				if (Formularwerte[i]) {
-					doc[i] = Formularwerte[i];
-				} else if (doc[i]) {
-					delete doc[i]
+				if (typeof i !== "function") {
+					if (Formularwerte[i]) {
+						doc[i] = Formularwerte[i];
+					} else if (doc[i]) {
+						delete doc[i]
+					}
 				}
 			}
 			$db.saveDoc(doc);
@@ -2557,7 +2644,9 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 			User = data.rows[0].value;
 			SessionStorageObjekt = User.sessionStorage;
 			for (i in SessionStorageObjekt) {
-				sessionStorage[i] = SessionStorageObjekt[i];
+				if (typeof i !== "function") {
+					sessionStorage[i] = SessionStorageObjekt[i];
+				}
 			}
 			switch(AufrufendeSeite) {
 				case "hBeobEdit":
@@ -2623,8 +2712,10 @@ function erstelleKarteFürRaum() {
 			anzOrt = 0;
 			var infowindow = new google.maps.InfoWindow();
 			for (i in data.rows) {
-				//Orte zählen
-				anzOrt += 1;
+				if (typeof i !== "function") {
+					//Orte zählen
+					anzOrt += 1;
+				}
 			}
 			if (anzOrt === 0) {
 				//Keine Orte: Hinweis und zurück
@@ -2647,44 +2738,46 @@ function erstelleKarteFürRaum() {
 				//für alle Orte Marker erstellen
 				var markers = [];
 				for (i in data.rows) {
-					Ort = data.rows[i].doc;
-					var hOrtId = Ort._id;
-					var hRaumId = Ort.hRaumId;
-					var hProjektId = Ort.hProjektId;
-					var oName = Ort.oName;
-					var oXKoord = Ort.oXKoord;
-					var oYKoord = Ort.oYKoord;
-					var lat2 = Ort.oLatitudeDecDeg;
-					var lng2 = Ort.oLongitudeDecDeg;
-					var latlng2 = new google.maps.LatLng(lat2, lng2);
-					if (anzOrt === 1) {
-						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-						latlng = latlng2;
-					} else {
-						//Kartenausschnitt um diese Koordinate erweitern
-						bounds.extend(latlng2);
+					if (typeof i !== "function") {
+						Ort = data.rows[i].doc;
+						var hOrtId = Ort._id;
+						var hRaumId = Ort.hRaumId;
+						var hProjektId = Ort.hProjektId;
+						var oName = Ort.oName;
+						var oXKoord = Ort.oXKoord;
+						var oYKoord = Ort.oYKoord;
+						var lat2 = Ort.oLatitudeDecDeg;
+						var lng2 = Ort.oLongitudeDecDeg;
+						var latlng2 = new google.maps.LatLng(lat2, lng2);
+						if (anzOrt === 1) {
+							//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+							latlng = latlng2;
+						} else {
+							//Kartenausschnitt um diese Koordinate erweitern
+							bounds.extend(latlng2);
+						}
+						var marker = new MarkerWithLabel({ 
+							map: map,
+							position: latlng2,  
+							title: oName.toString(),
+							labelContent: oName,
+							labelAnchor: new google.maps.Point(22, 0),
+							labelClass: "MapLabel", // the CSS class for the label
+							labelStyle: {opacity: 0.75}
+						});
+						markers.push(marker);
+						var contentString = '<div id="content">'+
+							'<div id="siteNotice">'+
+							'</div>'+
+							'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+							'<div id="bodyContent" class="GmInfowindow">'+
+							'<p>X-Koordinate: ' + oXKoord + '</p>'+
+							'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+							"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+							'</div>'+
+							'</div>';
+						makeListener(map, marker, contentString);
 					}
-					var marker = new MarkerWithLabel({ 
-						map: map,
-						position: latlng2,  
-						title: oName.toString(),
-						labelContent: oName,
-						labelAnchor: new google.maps.Point(22, 0),
-						labelClass: "MapLabel", // the CSS class for the label
-						labelStyle: {opacity: 0.75}
-					});
-					markers.push(marker);
-					var contentString = '<div id="content">'+
-						'<div id="siteNotice">'+
-						'</div>'+
-						'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-						'<div id="bodyContent" class="GmInfowindow">'+
-						'<p>X-Koordinate: ' + oXKoord + '</p>'+
-						'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-						"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-						'</div>'+
-						'</div>';
-					makeListener(map, marker, contentString);
 				}
 				var mcOptions = {maxZoom: 17};
 				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
@@ -2722,8 +2815,10 @@ function erstelleKarteFürProjekt() {
 			anzOrt = 0;
 			var infowindow = new google.maps.InfoWindow();
 			for (i in data.rows) {
-				//Orte zählen
-				anzOrt += 1;
+				if (typeof i !== "function") {
+					//Orte zählen
+					anzOrt += 1;
+				}
 			}
 			if (anzOrt === 0) {
 				//Keine Orte: Hinweis und zurück
@@ -2746,44 +2841,46 @@ function erstelleKarteFürProjekt() {
 				//für alle Orte Marker erstellen
 				var markers = [];
 				for (i in data.rows) {
-					Ort = data.rows[i].doc;
-					var hOrtId = Ort._id;
-					var hRaumId = Ort.hRaumId;
-					var hProjektId = Ort.hProjektId;
-					var oName = Ort.oName;
-					var oXKoord = Ort.oXKoord;
-					var oYKoord = Ort.oYKoord;
-					var lat2 = Ort.oLatitudeDecDeg;
-					var lng2 = Ort.oLongitudeDecDeg;
-					var latlng2 = new google.maps.LatLng(lat2, lng2);
-					if (anzOrt === 1) {
-						//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-						latlng = latlng2;
-					} else {
-						//Kartenausschnitt um diese Koordinate erweitern
-						bounds.extend(latlng2);
+					if (typeof i !== "function") {
+						Ort = data.rows[i].doc;
+						var hOrtId = Ort._id;
+						var hRaumId = Ort.hRaumId;
+						var hProjektId = Ort.hProjektId;
+						var oName = Ort.oName;
+						var oXKoord = Ort.oXKoord;
+						var oYKoord = Ort.oYKoord;
+						var lat2 = Ort.oLatitudeDecDeg;
+						var lng2 = Ort.oLongitudeDecDeg;
+						var latlng2 = new google.maps.LatLng(lat2, lng2);
+						if (anzOrt === 1) {
+							//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+							latlng = latlng2;
+						} else {
+							//Kartenausschnitt um diese Koordinate erweitern
+							bounds.extend(latlng2);
+						}
+						var marker = new MarkerWithLabel({ 
+							map: map,
+							position: latlng2,  
+							title: oName.toString(),
+							labelContent: oName,
+							labelAnchor: new google.maps.Point(22, 0),
+							labelClass: "MapLabel", // the CSS class for the label
+							labelStyle: {opacity: 0.75}
+						});
+						markers.push(marker);
+						var contentString = '<div id="content">'+
+							'<div id="siteNotice">'+
+							'</div>'+
+							'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+							'<div id="bodyContent" class="GmInfowindow">'+
+							'<p>X-Koordinate: ' + oXKoord + '</p>'+
+							'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+							"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+							'</div>'+
+							'</div>';
+						makeListener(map, marker, contentString);
 					}
-					var marker = new MarkerWithLabel({ 
-						map: map,
-						position: latlng2,  
-						title: oName.toString(),
-						labelContent: oName,
-						labelAnchor: new google.maps.Point(22, 0),
-						labelClass: "MapLabel", // the CSS class for the label
-						labelStyle: {opacity: 0.75}
-					});
-					markers.push(marker);
-					var contentString = '<div id="content">'+
-						'<div id="siteNotice">'+
-						'</div>'+
-						'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-						'<div id="bodyContent" class="GmInfowindow">'+
-						'<p>X-Koordinate: ' + oXKoord + '</p>'+
-						'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-						"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-						'</div>'+
-						'</div>';
-					makeListener(map, marker, contentString);
 				}
 				var mcOptions = {maxZoom: 17};
 				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
@@ -2983,21 +3080,23 @@ function erstelleArtenlisteLateinisch() {
 			var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
 			ListItemContainer = "";
 			for (i in data.rows) {
-				ArtBezeichnung = data.rows[i].key[2];
-				Art = data.rows[i].value;
-				ArtId = Art._id;
-				ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-				ListItemContainer += ArtBezeichnung;
-				ListItemContainer += "\" ArtId=\"";
-				ListItemContainer += ArtId;
-				ListItemContainer += "\">";
-				ListItemContainer += "<a href=\"#\"><h3>";
-				ListItemContainer += ArtBezeichnung;
-				ListItemContainer += "<\/h3>";
-				if (Art.HinweisVerwandschaft) {
-					ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+				if (typeof i !== "function") {
+					ArtBezeichnung = data.rows[i].key[2];
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "\" ArtId=\"";
+					ListItemContainer += ArtId;
+					ListItemContainer += "\">";
+					ListItemContainer += "<a href=\"#\"><h3>";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "<\/h3>";
+					if (Art.HinweisVerwandschaft) {
+						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+					}
+					ListItemContainer += "<\/a><\/li>";
 				}
-				ListItemContainer += "<\/a><\/li>";
 			}
 			$("#al_ArtenListe").html(ListItemContainer);
 			$("#al_ArtenListe").listview("refresh");
@@ -3021,21 +3120,23 @@ function erstelleArtenlisteDeutsch() {
 			var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
 			ListItemContainer = "";
 			for (i in data.rows) {
-				ArtBezeichnung = data.rows[i].key[2];
-				Art = data.rows[i].value;
-				ArtId = Art._id;
-				ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-				ListItemContainer += ArtBezeichnung;
-				ListItemContainer += "\" ArtId=\"";
-				ListItemContainer += ArtId;
-				ListItemContainer += "\">";
-				ListItemContainer += "<a href=\"#\"><h3>";
-				ListItemContainer += ArtBezeichnung;
-				ListItemContainer += "<\/h3>";
-				if (Art.HinweisVerwandschaft) {
-					ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+				if (typeof i !== "function") {
+					ArtBezeichnung = data.rows[i].key[2];
+					Art = data.rows[i].value;
+					ArtId = Art._id;
+					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "\" ArtId=\"";
+					ListItemContainer += ArtId;
+					ListItemContainer += "\">";
+					ListItemContainer += "<a href=\"#\"><h3>";
+					ListItemContainer += ArtBezeichnung;
+					ListItemContainer += "<\/h3>";
+					if (Art.HinweisVerwandschaft) {
+						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+					}
+					ListItemContainer += "<\/a><\/li>";
 				}
-				ListItemContainer += "<\/a><\/li>";
 			}
 			$("#al_ArtenListe").html(ListItemContainer);
 			$("#al_ArtenListe").listview("refresh");
@@ -3116,17 +3217,21 @@ function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 		success: function (data) {
 			ArtGruppen = data;
 			for (i in data.rows) {
-				ArtGruppe = ArtGruppen.rows[i].key;
-				row = ArtGruppen.rows[i].value;
-				AnzArten = row.AnzArten;
-				ArtGruppen_2_L = row.ArtGruppen_2_L;
-				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-				ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-				for (y in ArtGruppen_2_L) {
-					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
+				if (typeof i !== "function") {
+					ArtGruppe = ArtGruppen.rows[i].key;
+					row = ArtGruppen.rows[i].value;
+					AnzArten = row.AnzArten;
+					ArtGruppen_2_L = row.ArtGruppen_2_L;
+					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+					ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+					for (y in ArtGruppen_2_L) {
+						if (typeof y !== "function") {
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
+						}
+					}
+					ListItemContainer += "<\/li>";
 				}
-				ListItemContainer += "<\/li>";
 			}
 			$("#agl_ArtgruppenListe").html(ListItemContainer);
 			$(".ui-title").text(ArtGruppe);
@@ -3147,17 +3252,21 @@ function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 		success: function (data) {
 			ArtGruppen = data;
 			for (i in data.rows) {
-				ArtGruppe = ArtGruppen.rows[i].key;
-				row = ArtGruppen.rows[i].value;
-				AnzArten = row.AnzArtenDeutsch;
-				ArtGruppen_2_D = row.ArtGruppen_2_D;
-				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-				ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-				for (y in ArtGruppen_2_D) {
-					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
-					ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
+				if (typeof i !== "function") {
+					ArtGruppe = ArtGruppen.rows[i].key;
+					row = ArtGruppen.rows[i].value;
+					AnzArten = row.AnzArtenDeutsch;
+					ArtGruppen_2_D = row.ArtGruppen_2_D;
+					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+					ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+					for (y in ArtGruppen_2_D) {
+						if (typeof y !== "function") {
+							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
+							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
+						}
+					}
+					ListItemContainer += "<\/li>";
 				}
-				ListItemContainer += "<\/li>";
 			}
 			$("#agl_ArtgruppenListe").html(ListItemContainer);
 			$(".ui-title").text(ArtGruppe);
@@ -3198,23 +3307,27 @@ function erstelleArgruppenListeLat_2() {
 	var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_L, AnzArten;
 	ListItemContainer = "";
 	for (i in ArtgruppenlisteLateinisch.rows) {
-		ArtGruppe = ArtgruppenlisteLateinisch.rows[i].key;
-		row = ArtgruppenlisteLateinisch.rows[i].value;
-		AnzArten = row.AnzArten;
-		ArtGruppen_2_L = row.ArtGruppen_2_L;
-		if (ArtGruppen_2_L) {
-			ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
-			ListItemContainer += "<ul>";
-			ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-			ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-			for (y in ArtGruppen_2_L) {
-				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
-				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
+		if (typeof i !== "function") {
+			ArtGruppe = ArtgruppenlisteLateinisch.rows[i].key;
+			row = ArtgruppenlisteLateinisch.rows[i].value;
+			AnzArten = row.AnzArten;
+			ArtGruppen_2_L = row.ArtGruppen_2_L;
+			if (ArtGruppen_2_L) {
+				ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
+				ListItemContainer += "<ul>";
+				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+				ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+				for (y in ArtGruppen_2_L) {
+					if (typeof y !== "function") {
+						ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
+					}
+				}
+				ListItemContainer += "</ul><\/li>";
+			} else {
+				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 			}
-			ListItemContainer += "</ul><\/li>";
-		} else {
-			ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-			ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 		}
 	}
 	$("#agl_ArtgruppenListe").html(ListItemContainer);
@@ -3253,23 +3366,27 @@ function erstelleArgruppenListeDeutsch_2() {
 	var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_D, AnzArten;
 	ListItemContainer = "";
 	for (i in ArtgruppenlisteDeutsch.rows) {
-		ArtGruppe = ArtgruppenlisteDeutsch.rows[i].key;
-		row = ArtgruppenlisteDeutsch.rows[i].value;
-		AnzArten = row.AnzArtenDeutsch;
-		ArtGruppen_2_D = row.ArtGruppen_2_D;
-		if (ArtGruppen_2_D) {
-			ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
-			ListItemContainer += "<ul>";
-			ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-			ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-			for (y in ArtGruppen_2_D) {
-				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
-				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
+		if (typeof i !== "function") {
+			ArtGruppe = ArtgruppenlisteDeutsch.rows[i].key;
+			row = ArtgruppenlisteDeutsch.rows[i].value;
+			AnzArten = row.AnzArtenDeutsch;
+			ArtGruppen_2_D = row.ArtGruppen_2_D;
+			if (ArtGruppen_2_D) {
+				ListItemContainer += "<li><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span>";
+				ListItemContainer += "<ul>";
+				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+				ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+				for (y in ArtGruppen_2_D) {
+					if (typeof y !== "function") {
+						ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
+						ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
+					}
+				}
+				ListItemContainer += "</ul><\/li>";
+			} else {
+				ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+				ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 			}
-			ListItemContainer += "</ul><\/li>";
-		} else {
-			ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-			ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 		}
 	}
 	$("#agl_ArtgruppenListe").html(ListItemContainer);

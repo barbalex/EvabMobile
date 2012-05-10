@@ -237,10 +237,12 @@
 									var i, anzVorkommen, Datensatz, TempFeld, ds;
 									anzVorkommen = 0;
 									for (i in data.rows) {
-										Datensatz = data.rows[i].doc; 
-										TempFeld = Datensatz[Feld.FeldName];
-										if (TempFeld) {
-											anzVorkommen += 1;
+										if (typeof i !== "function") {
+											Datensatz = data.rows[i].doc; 
+											TempFeld = Datensatz[Feld.FeldName];
+											if (TempFeld) {
+												anzVorkommen += 1;
+											}
 										}
 									}
 									if (anzVorkommen === 0) {
@@ -324,16 +326,17 @@
 						if (["multipleselect", "checkbox"].indexOf(Feld.Formularelement) > -1) {
 							//alle StandardwertOptionen müssen Optionen sein
 							for (i in StandardwertOptionen) {
-								if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
-									//ein Wert ist keine Option, abbrechen
-									$("#Standardwert").val(LetzterFeldwert);
-									melde("Bitte wählen Sie eine oder mehrere der Optionen");
-									return;
+								if (typeof i !== "function") {
+									if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
+										//ein Wert ist keine Option, abbrechen
+										$("#Standardwert").val(LetzterFeldwert);
+										melde("Bitte wählen Sie eine oder mehrere der Optionen");
+										return;
+									}
 								}
 							}
 							//alle Werte sind Optionen
 							speichereStandardwert();
-							return;
 						} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Feld.Formularelement) > -1) {
 							//Array darf nur ein Element enthalten
 							if (StandardwertOptionen.length > 1) {
@@ -343,11 +346,13 @@
 							} else {
 								//Array enthält eine einzige Option
 								for (i in StandardwertOptionen) {
-									if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
-										//der Wert ist keine Option, abbrechen
-										$("#Standardwert").val(LetzterFeldwert);
-										melde("Bitte wählen Sie eine der Optionen");
-										return;
+									if (typeof i !== "function") {
+										if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
+											//der Wert ist keine Option, abbrechen
+											$("#Standardwert").val(LetzterFeldwert);
+											melde("Bitte wählen Sie eine der Optionen");
+											return;
+										}
 									}
 								}
 								//alle Werte sind Optionen
@@ -383,7 +388,7 @@
 										$('#dialogoutput').text('ja');
 										if (!Feld.FeldName) {
 											//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-											löscheFeld();
+											loescheFeld();
 										} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
@@ -392,14 +397,16 @@
 													var i, anzVorkommen, Datensatz, TempFeld, ds;
 													anzVorkommen = 0;
 													for (i in data.rows) {
-														Datensatz = data.rows[i].doc;
-														TempFeld = Datensatz[Feld.FeldName];
-														if (TempFeld) {
-															anzVorkommen += 1;
+														if (typeof i !== "function") {
+															Datensatz = data.rows[i].doc;
+															TempFeld = Datensatz[Feld.FeldName];
+															if (TempFeld) {
+																anzVorkommen += 1;
+															}
 														}
 													}
 													if (anzVorkommen === 0) {
-														löscheFeld();
+														loescheFeld();
 													} else {
 														ds = "Datensätzen";
 														if (anzVorkommen === 1) {
@@ -463,12 +470,14 @@
 							//prüfen, ob sie eigene oder offielle sind
 							if (data.rows) {
 								for (i in data.rows) {
-									if (data.rows[i].value) {
-										TempFeld = data.rows[i].value;
-										//ist es ein eigenes oder ein offizielles?
-										if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
-											//ja > dieser Name ist nicht zulässig
-											AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
+									if (typeof i !== "function") {
+										if (data.rows[i].value) {
+											TempFeld = data.rows[i].value;
+											//ist es ein eigenes oder ein offizielles?
+											if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+												//ja > dieser Name ist nicht zulässig
+												AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
+											}
 										}
 									}
 								}
@@ -496,7 +505,7 @@
 					});
 				}
 
-				function löscheFeld() {
+				function loescheFeld() {
 					$db = $.couch.db("evab");
 					$db.openDoc(Feld._id, {
 						success: function (document) {
@@ -551,36 +560,38 @@
 					var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
 					AnzFelder = Feldliste.rows.length -1;
 					for (i in Feldliste.rows) {
-						//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-						AktFeld_i = Feldliste.rows[i].value;
-						//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
-							//Nur eigene und offizielle Felder berücksichtigen
-							FeldIdAktuell = Feldliste.rows[i].value._id;
-							if (FeldIdAktuell === IdAktuell) {
-								//das ist das aktuelle Feld
-								//von hier aus vorwärts das nächste eigene oder offizielle suchen
-								if (i < AnzFelder) {
-									//das aktuelle Feld ist nicht das letzte
-									for (y = parseInt(i)+1; y <= AnzFelder; y++) {
-										//alle verbleibenden Felder durchlaufen, eigenes suchen
-										AktFeld_y = Feldliste.rows[y].value;
-										//Nur eigene Felder und offizielle berücksichtigen
-										if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
-											//das ist das nächste eigene Feld > öffnen
-											sessionStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
-											alert("zu nächstem");
-											initiiereFeldEdit();
-										} else {
-											if (y === AnzFelder) {
-												//am letzten Feld angelangt und es ist kein eigenes
-												melde("Das ist das letzte Feld");
+						if (typeof i !== "function") {
+							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+							AktFeld_i = Feldliste.rows[i].value;
+							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
+								//Nur eigene und offizielle Felder berücksichtigen
+								FeldIdAktuell = Feldliste.rows[i].value._id;
+								if (FeldIdAktuell === IdAktuell) {
+									//das ist das aktuelle Feld
+									//von hier aus vorwärts das nächste eigene oder offizielle suchen
+									if (i < AnzFelder) {
+										//das aktuelle Feld ist nicht das letzte
+										for (y = parseInt(i)+1; y <= AnzFelder; y++) {
+											//alle verbleibenden Felder durchlaufen, eigenes suchen
+											AktFeld_y = Feldliste.rows[y].value;
+											//Nur eigene Felder und offizielle berücksichtigen
+											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
+												//das ist das nächste eigene Feld > öffnen
+												sessionStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
+												alert("zu nächstem");
+												initiiereFeldEdit();
+											} else {
+												if (y === AnzFelder) {
+													//am letzten Feld angelangt und es ist kein eigenes
+													melde("Das ist das letzte Feld");
+												}
 											}
 										}
+									} else {
+										//das aktuelle Feld ist das letzte
+										melde("Das ist das letzte Feld");
 									}
-								} else {
-									//das aktuelle Feld ist das letzte
-									melde("Das ist das letzte Feld");
 								}
 							}
 						}
@@ -617,39 +628,41 @@
 					var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder, AktFeld_i, AktFeld_y;
 					AnzFelder = Feldliste.rows.length -1;
 					for (i in Feldliste.rows) {
-						//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-						AktFeld_i = Feldliste.rows[i].value;
-						//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
-							//Nur eigene und offizielle Felder berücksichtigen
-							FeldIdAktuell = Feldliste.rows[i].value._id;
-							if (FeldIdAktuell === IdAktuell) {
-								//das ist das aktuelle Feld
-								//von hier aus rückwärts das nächste eigene oder offizielle suchen
-								if (i > 0) {
-									//das aktuelle Feld ist nicht das erste 
-									for (y = parseInt(i)-1; y >= 0; y--) {
-										//alle vorhergehenden Felder durchlaufen, eigenes suchen
-										AktFeld_y = Feldliste.rows[y].value;
-										//Nur eigene Felder und offizielle berücksichtigen
-										if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
-											//das ist das nächstvorherige eigene Feld > öffnen
-											FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
-											sessionStorage.FeldId = FeldIdVoriges;
-											alert("zu vorigem");
-											initiiereFeldEdit();
-										} else {
-											if (y === 1) {
-												//am ersten Feld angelangt und es ist kein eigenes
-												//wir gehen zur Feldliste
-												geheZurück();
+						if (typeof i !== "function") {
+							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+							AktFeld_i = Feldliste.rows[i].value;
+							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
+								//Nur eigene und offizielle Felder berücksichtigen
+								FeldIdAktuell = Feldliste.rows[i].value._id;
+								if (FeldIdAktuell === IdAktuell) {
+									//das ist das aktuelle Feld
+									//von hier aus rückwärts das nächste eigene oder offizielle suchen
+									if (i > 0) {
+										//das aktuelle Feld ist nicht das erste 
+										for (y = parseInt(i)-1; y >= 0; y--) {
+											//alle vorhergehenden Felder durchlaufen, eigenes suchen
+											AktFeld_y = Feldliste.rows[y].value;
+											//Nur eigene Felder und offizielle berücksichtigen
+											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
+												//das ist das nächstvorherige eigene Feld > öffnen
+												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
+												sessionStorage.FeldId = FeldIdVoriges;
+												alert("zu vorigem");
+												initiiereFeldEdit();
+											} else {
+												if (y === 1) {
+													//am ersten Feld angelangt und es ist kein eigenes
+													//wir gehen zur Feldliste
+													geheZurück();
+												}
 											}
 										}
+									} else {
+										//das aktuelle Feld ist das erste
+										//wir gehen zur Feldliste
+										geheZurück();
 									}
-								} else {
-									//das aktuelle Feld ist das erste
-									//wir gehen zur Feldliste
-									geheZurück();
 								}
 							}
 						}
@@ -805,16 +818,18 @@
 							}
 							//Formularfelder in Dokument schreiben
 							for (i in Formularfelder) {
-								if (Formularfelder[i]) {
-									if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
-										//Zahl wird sonst in Text verwandelt und falsch sortiert
-										doc[i] = parseInt(Formularfelder[i]);
+								if (typeof i !== "function") {
+									if (Formularfelder[i]) {
+										if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
+											//Zahl wird sonst in Text verwandelt und falsch sortiert
+											doc[i] = parseInt(Formularfelder[i]);
+										} else {
+											doc[i] = Formularfelder[i];
+										}
 									} else {
-										doc[i] = Formularfelder[i];
+										//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
+										delete doc[i];
 									}
-								} else {
-									//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
-									delete doc[i];
 								}
 							}
 							$db.saveDoc(doc, {

@@ -198,15 +198,17 @@
 			success: function (data) {
 				var i, Feld;
 				for (i in data.rows) {
-					Feld = data.rows[i].value;
-					//Nur offizielle Felder berücksichtigen
-					if (Feld.User === "ZentrenBdKt") {
-						$db.openDoc(Feld._id, {
-							success: function (Feld) {
-								Feld.SichtbarImModusHierarchisch.push(Username);
-								$db.saveDoc(Feld);
-							}
-						});
+					if (typeof i !== "function") {
+						Feld = data.rows[i].value;
+						//Nur offizielle Felder berücksichtigen
+						if (Feld.User === "ZentrenBdKt") {
+							$db.openDoc(Feld._id, {
+								success: function (Feld) {
+									Feld.SichtbarImModusHierarchisch.push(Username);
+									$db.saveDoc(Feld);
+								}
+							});
+						}
 					}
 				}
 			}
