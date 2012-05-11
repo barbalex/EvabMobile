@@ -1257,7 +1257,6 @@ function erstelleSelectFeldFolgtNach_2() {
 //von je einer Funktion in FeldEdit.html und evab.js
 //Funktion ist zweigeteilt, um wenn möglich Datenbankabfragen zu sparen
 function ArtGruppeAufbauenFeldEdit(ArtGruppenArrayIn) {
-	var viewname;
 	if (window.Artgruppen) {
 		//Artgruppen von globaler Variable holen
 		ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
@@ -1269,8 +1268,7 @@ function ArtGruppeAufbauenFeldEdit(ArtGruppenArrayIn) {
 		//Artgruppen aus DB holen
 		$db = $.couch.db("evab");
 		$("select#ArtGruppe").empty();
-		viewname = "evab/Artgruppen";
-		$db.view(viewname, {
+		$db.view("evab/Artgruppen", {
 			success: function (data) {
 				window.Artgruppen = data;
 				sessionStorage.Artgruppen = JSON.stringify(data);
