@@ -95,7 +95,7 @@
 								//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 								//wenn nein: direkt die Artenliste aktualisieren
 									var viewname;
-									viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"'; 
+									viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
 									$db.view(viewname, {
 										success: function (data) {
 										//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert

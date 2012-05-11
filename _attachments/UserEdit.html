@@ -156,7 +156,7 @@
 									delete doc[Feldname]
 								}
 								if (Feldname === "ArtenSprache") {
-									sessionStorage.ArtenSprache = this.value;
+									sessionStorage.ArtenSprache = Feldwert;
 								}
 							$db.saveDoc(doc, {
 								error: function () {
