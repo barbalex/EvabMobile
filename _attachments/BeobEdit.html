@@ -116,7 +116,7 @@
 				//darum prüfen, ob sessionStorage.BeobId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.BeobId) {
-					initiiereBeobEdit(sessionStorage.BeobId);
+					initiiereBeobEdit();
 				}
 			});
 
@@ -377,12 +377,12 @@
 				function nächsteVorigeBeob(NächsteOderVorige) {
 					//prüfen, ob BeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof BeobListe !== "undefined") {
+					if (window.BeobListe) {
 						//globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
 						//hat BeobListe.html eine BeobListe übergeben?
-						if (typeof sessionStorage.BeobListe !== "undefined" && sessionStorage.BeobListe) {
+						if (sessionStorage.BeobListe) {
 							BeobListe = JSON.parse(sessionStorage.BeobListe);
 							nächsteVorigeBeob_2(NächsteOderVorige);
 						} else {
@@ -406,7 +406,7 @@
 				}
 
 				function nächsteVorigeBeob_2(NächsteOderVorige) {
-					var i, BeobIdAktuell, BeobIdNächste, BeobIdVorige, AnzBeob;
+					var i, BeobIdAktuell, AnzBeob;
 					for (i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
 						AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -414,18 +414,22 @@
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzBeob) {
-									BeobId = BeobListe.rows[parseInt(i)+1].value._id;
-									initiiereBeobEdit(BeobId);
+									sessionStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
+									initiiereBeobEdit();
+									return;
 								} else {
 									melde("Das ist die letzte Beobachtung");
+									return;
 								}
 								break;
 							case "vorige":
 								if (i > 0) {
-									BeobId = BeobListe.rows[i-1].value._id;
-									initiiereBeobEdit(BeobId);
+									sessionStorage.BeobId = BeobListe.rows[i-1].value._id;
+									initiiereBeobEdit();
+									return;
 								} else {
 									window.open("BeobListe.html", target = "_self");
+									return;
 								}
 								break;
 							}

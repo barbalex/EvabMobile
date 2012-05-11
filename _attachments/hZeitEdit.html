@@ -92,7 +92,7 @@
 				//darum prüfen, ob sessionStorage.ZeitId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.ZeitId) {
-					initiiereZeitEdit(sessionStorage.ZeitId);
+					initiiereZeitEdit();
 				}
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -456,7 +456,12 @@
 				function nächsteVorigeZeit(NächsteOderVorige) {
 					//prüfen, ob ZeitListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof sessionStorage.ZeitListe === "undefined" || !sessionStorage.ZeitListe) {
+					if (window.ZeitListe) {
+						nächsteVorigeZeit_2(NächsteOderVorige);
+					} else if (sessionStorage.ZeitListe) {
+						ZeitListe = JSON.parse(sessionStorage.ZeitListe);
+						nächsteVorigeZeit_2(NächsteOderVorige);
+					} else {
 						if (!localStorage.Username) {
 							pruefeAnmeldung();
 						}
@@ -464,18 +469,15 @@
 						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
 							success: function (data) {
 								ZeitListe = data;
-								sessionStorage.ZeitListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+								sessionStorage.ZeitListe = JSON.stringify(data);
 								nächsteVorigeZeit_2(NächsteOderVorige);
 							}
 						});
-					} else {
-						ZeitListe = JSON.parse(sessionStorage.ZeitListe);
-						nächsteVorigeZeit_2(NächsteOderVorige);
 					}
 				}
 
 				function nächsteVorigeZeit_2(NächsteOderVorige) {
-					var i, ZeitIdAktuell, ZeitIdNächste, ZeitIdVorige, AnzZeit, ZeitId;
+					var i, ZeitIdAktuell, AnzZeit;
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
 						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -483,20 +485,22 @@
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzZeit) {
-									ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
-									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html"); //funktioniert in IE erst ab 10!
+									sessionStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
+									initiiereZeitEdit();
+									return;
 								} else {
 									melde("Das ist die letzte Zeit");
+									return;
 								}
 								break;
 							case "vorige":
 								if (i > 0) {
-									ZeitId = ZeitListe.rows[i-1].value._id;
-									initiiereZeitEdit(ZeitId);
-									window.history.pushState("", "", "hZeitEdit.html"); //funktioniert in IE erst ab 10!
+									sessionStorage.ZeitId = ZeitListe.rows[i-1].value._id;
+									initiiereZeitEdit();
+									return;
 								} else {
 									window.open("hZeitListe.html", target = "_self");
+									return;
 								}
 								break;
 							}

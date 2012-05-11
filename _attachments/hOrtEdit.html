@@ -102,7 +102,7 @@
 				//darum prüfen, ob sessionStorage.OrtId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.OrtId) {
-					initiiereOrtEdit(sessionStorage.OrtId);
+					initiiereOrtEdit();
 				}
 			});
 
@@ -720,12 +720,12 @@
 				function nächsterVorigerOrt(NächsterOderVoriger) {
 					//prüfen, ob OrtListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof OrtListe !== "undefined") {
+					if (window.OrtListe) {
 						//Ortliste liegt als Variable vor
 						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
 						//hat hOrtListe.html eine OrtListe übergeben?
-						if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
+						if (sessionStorage.OrtListe) {
 							OrtListe = JSON.parse(sessionStorage.OrtListe);
 							nächsterVorigerOrt_2(NächsterOderVoriger);
 						} else {
@@ -739,7 +739,6 @@
 								success: function (data) {
 									//OrtListe für hOrtListe.html bereitstellen
 									OrtListe = data;
-									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 									sessionStorage.OrtListe = JSON.stringify(OrtListe);
 									nächsterVorigerOrt_2(NächsterOderVoriger);
 								}
@@ -749,7 +748,7 @@
 				}
 
 				function nächsterVorigerOrt_2(NächsterOderVoriger) {
-					var i, OrtIdAktuell, OrtIdNächster, OrtIdVoriger, AnzOrt, OrtId;
+					var i, OrtIdAktuell, AnzOrt;
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
 						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -757,18 +756,22 @@
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (i < AnzOrt) {
-									OrtId = OrtListe.rows[parseInt(i)+1].value._id;
-									initiiereOrtEdit(OrtId);
+									sessionStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
+									initiiereOrtEdit();
+									return;
 								} else {
 									melde("Das ist der letzte Ort");
+									return;
 								}
 								break;
 							case "voriger":
 								if (i > 0) {
-									OrtId = OrtListe.rows[i-1].value._id;
-									initiiereOrtEdit(OrtId);
+									sessionStorage.OrtId = OrtListe.rows[i-1].value._id;
+									initiiereOrtEdit();
+									return;
 								} else {
 									window.open("hOrtListe.html", target = "_self");
+									return;
 								}
 								break;
 							}

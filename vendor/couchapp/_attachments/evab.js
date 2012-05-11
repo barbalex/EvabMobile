@@ -769,14 +769,14 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 
 //initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
 //wird aufgerufen von BeobEdit.html und Felder_Beob.html
-function initiiereBeobEdit(id) {
+function initiiereBeobEdit() {
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
-	if (typeof FeldlisteBeobEdit !== "undefined") {
-		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
-	} else if (typeof sessionStorage.FeldlisteBeobEdit !== "undefined" && sessionStorage.FeldlisteBeobEdit) {
+	if (window.FeldlisteBeobEdit) {
+		initiiereBeobEdit_2();
+	} else if (sessionStorage.FeldlisteBeobEdit) {
 		FeldlisteBeobEdit = JSON.parse(sessionStorage.FeldlisteBeobEdit);
-		initiiereBeobEdit_2(id, FeldlisteBeobEdit);
+		initiiereBeobEdit_2();
 	} else {
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
@@ -785,15 +785,15 @@ function initiiereBeobEdit(id) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				FeldlisteBeobEdit = Feldliste;
 				sessionStorage.FeldlisteBeobEdit = JSON.stringify(FeldlisteBeobEdit);
-				initiiereBeobEdit_2(id, FeldlisteBeobEdit);
+				initiiereBeobEdit_2();
 			}
 		});
 	}
 }
 
-function initiiereBeobEdit_2(id, Feldliste) {
+function initiiereBeobEdit_2() {
 	$db = $.couch.db("evab");
-	$db.openDoc(id, {
+	$db.openDoc(sessionStorage.BeobId, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			BeobId = Beob._id;
@@ -807,7 +807,7 @@ function initiiereBeobEdit_2(id, Feldliste) {
 			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 			setzeFixeFelderInBeobEdit(Beob);
-			erstelleDynamischeFelderBeobEdit(Feldliste, Beob);
+			erstelleDynamischeFelderBeobEdit(Beob);
 			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
 			window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
 			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
@@ -819,14 +819,14 @@ function initiiereBeobEdit_2(id, Feldliste) {
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, Username
-function erstelleDynamischeFelderBeobEdit(Feldliste, Beob) {
+function erstelleDynamischeFelderBeobEdit(Beob) {
 	var HtmlContainer, Formularwerte;
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-	HtmlContainer = generiereHtmlFuerBeobEditForm (Feldliste, Beob);
+	HtmlContainer = generiereHtmlFuerBeobEditForm (Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -836,7 +836,7 @@ function erstelleDynamischeFelderBeobEdit(Feldliste, Beob) {
 	//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	$("#BeobEditPage").trigger("create").trigger("refresh");
-	if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu") {
+	if (sessionStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#BeobEditForm").serializeObject();
@@ -882,32 +882,35 @@ function setzeFixeFelderInBeobEdit(Beob) {
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (Feldliste, Beob) {
+function generiereHtmlFuerBeobEditForm (Beob) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe, Status;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
 	Status = sessionStorage.Status;
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in Feldliste.rows) {
-		//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-		if (typeof i !== "function" && typeof Feld.ArtGruppe !== "undefined") {
-			Feld = Feldliste.rows[i].value;
-			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
-				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-				if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
-					if (Status === "neu" && Feld.Standardwert) {
-						FeldWert = Feld.Standardwert[localStorage.Username] || "";
-					} else {
-						FeldWert = Beob[FeldName] || "";
+	for (i in FeldlisteBeobEdit.rows) {
+		if (typeof i !== "function") {
+			Feld = FeldlisteBeobEdit.rows[i].value;
+			//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+			if (typeof Feld.ArtGruppe !== "undefined") {
+				FeldName = Feld.FeldName;
+				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+				if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+					//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+					if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
+						if (Status === "neu" && Feld.Standardwert) {
+							FeldWert = Feld.Standardwert[localStorage.Username] || "";
+						} else {
+							FeldWert = Beob[FeldName] || "";
+						}
+						FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+						Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+						HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 					}
-					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-					HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 				}
-			}}
+			}
+		}
 	}
 	return HtmlContainer;
 }
@@ -1009,14 +1012,14 @@ function initiiereUserEdit() {
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, Username
-function initiiereProjektEdit(ProjektId) {
+function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	$db.openDoc(ProjektId, {
+	$db.openDoc(sessionStorage.ProjektId, {
 		success: function (Projekt) {
 			//fixe Felder aktualisieren
 			$("#pName").val(Projekt.pName);
@@ -1025,9 +1028,9 @@ function initiiereProjektEdit(ProjektId) {
 			sessionStorage.ProjektId = ProjektId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteProjekt !== "undefined") {
+			if (window.FeldlisteProjekt) {
 				initiiereProjektEdit_2(Projekt);
-			} else if (typeof sessionStorage.FeldlisteProjekt !== "undefined" && sessionStorage.FeldlisteProjekt) {
+			} else if (sessionStorage.FeldlisteProjekt) {
 				FeldlisteProjekt = JSON.parse(sessionStorage.FeldlisteProjekt);
 				initiiereProjektEdit_2(Projekt);
 			} else {
@@ -1433,7 +1436,7 @@ function initiiereProjektliste_2() {
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, Username
-function initiiereRaumEdit(RaumId) {
+function initiiereRaumEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
@@ -1441,7 +1444,7 @@ function initiiereRaumEdit(RaumId) {
 	$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
 	//Holt den Raum mit der id "RaumId" aus der DB
-	$db.openDoc(RaumId, {
+	$db.openDoc(sessionStorage.RaumId, {
 		success: function (Raum) {
 			//fixes Feld setzen
 			$("#rName").val(Raum.rName);
@@ -1452,9 +1455,9 @@ function initiiereRaumEdit(RaumId) {
 			sessionStorage.RaumId = RaumId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteRaumEdit !== "undefined") {
+			if (window.FeldlisteRaumEdit) {
 				initiiereRaumEdit_2(Raum);
-			} else if (typeof sessionStorage.FeldlisteRaumEdit !== "undefined" && sessionStorage.FeldlisteRaumEdit) {
+			} else if (sessionStorage.FeldlisteRaumEdit) {
 				FeldlisteRaumEdit = JSON.parse(sessionStorage.FeldlisteRaumEdit);
 				initiiereRaumEdit_2(Raum);
 			} else {
@@ -1462,6 +1465,7 @@ function initiiereRaumEdit(RaumId) {
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeRaum', {
 					success: function (Feldliste) {
+						//Variabeln bereitstellen
 						FeldlisteRaumEdit = Feldliste;
 						sessionStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
 						initiiereRaumEdit_2(Raum);
@@ -1599,14 +1603,14 @@ function initiiereRaumListe_2() {
 
 //generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Orts
-function initiiereOrtEdit(OrtId) {
+function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	$db.openDoc(OrtId, {
+	$db.openDoc(sessionStorage.OrtId, {
 		success: function (Ort) {
 			//fixe Felder aktualisieren
 			$("#oName").val(Ort.oName);
@@ -1625,9 +1629,9 @@ function initiiereOrtEdit(OrtId) {
 			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteOrtEdit !== "undefined") {
+			if (window.FeldlisteOrtEdit) {
 				initiiereOrtEdit_2(Ort);
-			} else if (typeof sessionStorage.FeldlisteOrtEdit !== "undefined" && sessionStorage.FeldlisteOrtEdit) {
+			} else if (sessionStorage.FeldlisteOrtEdit) {
 				FeldlisteOrtEdit = JSON.parse(sessionStorage.FeldlisteOrtEdit);
 				initiiereOrtEdit_2(Ort);
 			} else {
@@ -1775,14 +1779,14 @@ function initiiereOrtListe_2() {
 
 //generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id der Zeit
-function initiiereZeitEdit(ZeitId) {
+function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	$('#FormAnhänge').hide();
 	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	$('#Anhänge').empty();
 	$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	$db = $.couch.db("evab");
-	$db.openDoc(ZeitId, {
+	$db.openDoc(sessionStorage.ZeitId, {
 		success: function (Zeit) {
 			//fixe Felder aktualisieren
 			$("#zDatum").val(Zeit.zDatum);
@@ -1798,9 +1802,9 @@ function initiiereZeitEdit(ZeitId) {
 			sessionStorage.ZeitId = ZeitId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlisteZeitEdit !== "undefined") {
+			if (window.FeldlisteZeitEdit) {
 				initiiereZeitEdit_2(Zeit);
-			} else if (typeof sessionStorage.FeldlisteZeitEdit !== "undefined" && sessionStorage.FeldlisteZeitEdit) {
+			} else if (sessionStorage.FeldlisteZeitEdit) {
 				FeldlisteZeitEdit = JSON.parse(sessionStorage.FeldlisteZeitEdit);
 				initiiereZeitEdit_2(Zeit);
 			} else {
@@ -1942,13 +1946,13 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 //managt den Aufbau aller Daten und Felder für hBeobEdit.html
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html und Felder_Beob.html
-function initiierehBeobEdit(BeobId) {
+function initiierehBeobEdit() {
 	//hier werden Variablen gesetzt,
 	//in die fixen Felder Werte eingesetzt,
 	//die dynamischen Felder aufgebaut
 	//und die Nav-Links gesetzt
 	$db = $.couch.db("evab");
-	$db.openDoc(BeobId, {
+	$db.openDoc(sessionStorage.hBeobId, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			//Variabeln bereitstellen
@@ -1979,9 +1983,9 @@ function initiierehBeobEdit(BeobId) {
 			$("#aArtName").selectmenu("refresh");
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
-			if (typeof FeldlistehBeobEdit !== "undefined") {
+			if (window.FeldlistehBeobEdit) {
 				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
-			} else if (typeof sessionStorage.FeldlistehBeobEdit !== "undefined" && sessionStorage.FeldlistehBeobEdit) {
+			} else if (sessionStorage.FeldlistehBeobEdit) {
 				FeldlistehBeobEdit = JSON.parse(sessionStorage.FeldlistehBeobEdit);
 				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
 			} else {
@@ -2050,20 +2054,22 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 	HtmlContainer = "";
 	ArtGruppe = Beob.aArtGruppe;
 	for (i in Feldliste.rows) {
-		//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-		if (typeof i !== "function" && typeof Feld.ArtGruppe !== "undefined") {
+		if (typeof i !== "function") {
 			Feld = Feldliste.rows[i].value;
-			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-				if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
-					FeldWert = Feld.Standardwert[Beob.User] || "";
-				} else {
-					FeldWert = Beob[FeldName] || "";
+			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+			if (typeof Feld.ArtGruppe !== "undefined") {
+				FeldName = Feld.FeldName;
+				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+				if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+					if (typeof sessionStorage.Status !== "undefined" && sessionStorage.Status === "neu" && Feld.Standardwert) {
+						FeldWert = Feld.Standardwert[Beob.User] || "";
+					} else {
+						FeldWert = Beob[FeldName] || "";
+					}
+					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+					HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
 		}
 	}
@@ -2671,37 +2677,37 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 			}
 			switch(AufrufendeSeite) {
 				case "hBeobEdit":
-					initiierehBeobEdit(sessionStorage.hBeobId);
+					initiierehBeobEdit();
 				break;
 				case "hBeobListe":
 					initiierehBeobListe();
 				break;
 				case "hZeitEdit":
-					initiiereZeitEdit(sessionStorage.ZeitId);
+					initiiereZeitEdit();
 				break;
 				case "hZeitListe":
 					initiiereZeitListe();
 				break;
 				case "hOrtEdit":
-					initiiereOrtEdit(sessionStorage.OrtId);
+					initiiereOrtEdit();
 				break;
 				case "hOrtListe":
 					initiiereOrtListe();
 				break;
 				case "hRaumEdit":
-					initiiereRaumEdit(sessionStorage.RaumId);
+					initiiereRaumEdit();
 				break;
 				case "hRaumListe":
 					initiiereRaumListe();
 				break;
 				case "hProjektEdit":
-					initiiereProjektEdit(sessionStorage.ProjektId);
+					initiiereProjektEdit();
 				break;
 				case "hProjektListe":
 					initiiereProjektliste();
 				break;
 				case "BeobEdit":
-					initiiereBeobEdit(sessionStorage.BeobId);
+					initiiereBeobEdit();
 				break;
 				case "BeobListe":
 					initiiereBeobliste();
@@ -3181,7 +3187,7 @@ function erstelleArtgruppenListe() {
 	}
 	//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 	//sonst aus der sessionStorage
-	if (typeof sessionStorage.ArtenSprache === "undefined" || !sessionStorage.ArtenSprache) {
+	if (!sessionStorage.ArtenSprache) {
 		viewname = 'evab/User?key="' + localStorage.Username + '"';
 		$db = $.couch.db("evab");
 		$db.view(viewname, {
@@ -3304,20 +3310,17 @@ function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 //aufgerufen von erstelleArtgruppenListe
 function erstelleArgruppenListeLat() {
 	//Artgruppenliste verfügbar machen
-	var viewname;
-	if (typeof ArtgruppenlisteLateinisch !== "undefined" && ArtgruppenlisteLateinisch) {
+	if (window.ArtgruppenlisteLateinisch) {
 		erstelleArgruppenListeLat_2();
-	} else if (typeof sessionStorage.ArtgruppenlisteLateinisch !== "undefined" && sessionStorage.ArtgruppenlisteLateinisch) {
+	} else if (sessionStorage.ArtgruppenlisteLateinisch) {
 		ArtgruppenlisteLateinisch = JSON.parse(sessionStorage.ArtgruppenlisteLateinisch);
 		erstelleArgruppenListeLat_2();
 	} else {
-		viewname = 'evab/Artgruppen';
 		$db = $.couch.db("evab");
-		$db.view(viewname, {
+		$db.view('evab/Artgruppen', {
 			success: function (data) {
-				ArtgruppenlisteLateinisch = data;
 				//Artgruppenliste bereitstellen
-				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				ArtgruppenlisteLateinisch = data;
 				sessionStorage.ArtgruppenlisteLateinisch = JSON.stringify(ArtgruppenlisteLateinisch);
 				erstelleArgruppenListeLat_2();
 			}

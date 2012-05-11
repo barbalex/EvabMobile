@@ -88,7 +88,7 @@
 				//darum prüfen, ob sessionStorage.RaumId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.RaumId) {
-					initiiereRaumEdit(sessionStorage.RaumId);
+					initiiereRaumEdit();
 				}
 			});
 
@@ -561,12 +561,12 @@
 				function nächsterVorigerRaum(NächsterOderVoriger) {
 					//prüfen, ob RaumListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof RaumListe !== "undefined") {
+					if (window.RaumListe) {
 						//globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
 						//hat hRaumListe.html eine RaumListe übergeben?
-						if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
+						if (sessionStorage.RaumListe) {
 							//Objekte werden als Strings übergeben, müssen geparst werden
 							RaumListe = JSON.parse(sessionStorage.RaumListe);
 							nächsterVorigerRaum_2(NächsterOderVoriger);
@@ -579,9 +579,8 @@
 							$db = $.couch.db("evab");
 							$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
 								success: function (data) {
-									RaumListe = data;
 									//RaumListe bereitstellen
-									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+									RaumListe = data;
 									sessionStorage.RaumListe = JSON.stringify(RaumListe);
 									nächsterVorigerRaum_2(NächsterOderVoriger);
 								}
@@ -591,7 +590,7 @@
 				}
 
 				function nächsterVorigerRaum_2(NächsterOderVoriger) {
-					var i, RaumIdAktuell, RaumIdNächster, RaumIdVoriger, AnzRaum, RaumId;
+					var i, RaumIdAktuell, AnzRaum;
 					for (i in RaumListe.rows) {
 						RaumIdAktuell = RaumListe.rows[i].value._id;
 						AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -599,20 +598,22 @@
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (i < AnzRaum) {
-									RaumId = RaumListe.rows[parseInt(i)+1].value._id;
-									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html'); //funktioniert in IE erst ab 10!
+									sessionStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
+									initiiereRaumEdit();
+									return;
 								} else {
 									melde("Das ist der letzte Raum");
+									return;
 								}
 								break;
 							case "voriger":
 								if (i > 0) {
-									RaumId = RaumListe.rows[i-1].value._id;
-									initiiereRaumEdit(RaumId);
-									window.history.pushState("", "", 'hRaumEdit.html'); //funktioniert in IE erst ab 10!
+									sessionStorage.RaumId = RaumListe.rows[i-1].value._id;
+									initiiereRaumEdit();
+									return;
 								} else {
 									window.open("hRaumListe.html", target = "_self");
+									return;
 								}
 								break;
 							}

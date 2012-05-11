@@ -86,7 +86,7 @@
 				//darum prüfen, ob sessionStorage.ProjektId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.ProjektId) {
-					initiiereProjektEdit(sessionStorage.ProjektId);
+					initiiereProjektEdit();
 				}
 			});
 
@@ -630,7 +630,6 @@
 								success: function (data) {
 									//Projektliste bereitstellen
 									Projektliste = data;
-									//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 									sessionStorage.Projektliste = JSON.stringify(Projektliste);
 									nächstesVorigesProjekt_2(NächstesOderVoriges);
 								}
@@ -640,7 +639,7 @@
 				}
 
 				function nächstesVorigesProjekt_2(NächstesOderVoriges) {
-					var i, ProjIdAktuell, ProjIdNächstes, ProjIdVoriges, AnzProj, ProjektId;
+					var i, ProjIdAktuell, AnzProj;
 					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].value._id;
 						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -648,20 +647,22 @@
 							switch (NächstesOderVoriges) {
 							case "nächstes":
 								if (i < AnzProj) {
-									ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
-									initiiereProjektEdit(ProjektId);
-									window.history.pushState("", "", 'hProjektEdit.html'); //funktioniert in IE erst ab 10!
+									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
+									initiiereProjektEdit();
+									return;
 								} else {
 									melde("Das ist das letzte Projekt");
+									return;
 								}
 								break;
 							case "voriges":
 								if (i > 0) {
-									ProjektId = Projektliste.rows[i-1].value._id;
-									initiiereProjektEdit(ProjektId);
-									window.history.pushState("", "", 'hProjektEdit.html'); //funktioniert in IE erst ab 10!
+									sessionStorage.ProjektId = Projektliste.rows[i-1].value._id;
+									initiiereProjektEdit();
+									return;
 								} else {
 									window.open("hProjektListe.html", target = "_self");
+									return;
 								}
 								break;
 							}

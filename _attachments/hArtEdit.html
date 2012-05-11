@@ -95,7 +95,7 @@
 				//darum prüfen, ob sessionStorage.hBeobId existiert und ungleich null ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
 				if (sessionStorage.hBeobId) {
-					initiierehBeobEdit(sessionStorage.hBeobId);
+					initiierehBeobEdit();
 				}
 			});
 
@@ -469,12 +469,12 @@
 				function nächsteVorigeArt(NächsteOderVorige) {
 					//prüfen, ob hBeobListe schon existiert
 					//nur abfragen, wenn sie noch nicht existiert
-					if (typeof hBeobListe !== "undefined") {
+					if (window.hBeobListe) {
 						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
 						//hat hArtListe.html eine ArtListe übergeben?
-						if (typeof sessionStorage.hBeobListe !== "undefined" && sessionStorage.hBeobListe) {
+						if (sessionStorage.hBeobListe) {
 							hBeobListe = JSON.parse(sessionStorage.hBeobListe);
 							nächsteVorigeArt_2(NächsteOderVorige);
 						} else {
@@ -497,7 +497,7 @@
 				}
 
 				function nächsteVorigeArt_2(NächsteOderVorige) {
-					var i, ArtIdAktuell, ArtIdNächste, ArtIdVorige, AnzArt;
+					var i, ArtIdAktuell, AnzArt;
 					for (i in hBeobListe.rows) {
 						ArtIdAktuell = hBeobListe.rows[i].value._id;
 						AnzArt = hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -505,18 +505,22 @@
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (i < AnzArt) {
-									hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
-									initiierehBeobEdit(hBeobId);
+									sessionStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
+									initiierehBeobEdit();
+									return;
 								} else {
 									melde("Das ist die letzte Art");
+									return;
 								}
 								break;
 							case "vorige":
 								if (i > 0) {
-									hBeobId = hBeobListe.rows[i-1].value._id;
-									initiierehBeobEdit(hBeobId);
+									sessionStorage.hBeobId = hBeobListe.rows[i-1].value._id;
+									initiierehBeobEdit();
+									return;
 								} else {
 									window.open("hArtListe.html", target = "_self");
+									return;
 								}
 								break;
 							}
