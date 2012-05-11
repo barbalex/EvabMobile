@@ -25,9 +25,9 @@
 	<script type="text/javascript" src="vendor/couchapp/takeout.js"></script>
   </head>
   <body>
-  	<div data-role="page">
+  	<div data-role="page" id="InstallierenPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-  			<a href="BeobListe.html" data-rel="back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Beobachtungs-Liste</a>
+  			<a href="#" id="zurückInstallieren" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>lokal installieren</h2>
   		</div>
 		<div id="UserEditContent" data-role="content" style="padding:0em;">
@@ -55,5 +55,37 @@
 			<hr />
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("#InstallierenPage").on("pageshow", function () {
+			//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+			//darum prüfen, ob sessionStorage.InstallierenWirdInitiiert existiert und nicht true ist
+			//sonst übernimmt holeSessionStorageAusDb das initiieren
+			if (!sessionStorage.InstallierenWirdInitiiert) {
+				initiiereUserEdit();
+			}
+			delete sessionStorage.InstallierenWirdInitiiert;
+		});
+		$(":jqmData(role='page')").on("pageinit", function () {
+			//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+			//wo sie von speichereLetzteUrl gespeichert wurde
+			if (sessionStorage.length === 0) {
+				holeSessionStorageAusDb("Installieren");
+				sessionStorage.InstallierenWirdInitiiert = true;
+			}
+
+			//zurück-Button steuern
+			$("#InstallierenPage").on('click', '#zurückInstallieren', function (event) {
+				var zurueck;
+				event.preventDefault();
+				if (sessionStorage.zurueck) {
+					zurueck = sessionStorage.zurueck;
+				} else {
+					zurueck = "BeobListe.html";
+				}
+				window.open(zurueck, target = "_self")
+				delete sessionStorage.zurueck;
+			});
+		});
+	</script>
   </body>
 </html>

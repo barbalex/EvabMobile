@@ -1010,6 +1010,12 @@ function initiiereUserEdit() {
 	});
 }
 
+//initiiert Installieren.html
+//kurz, da keine Daten benötigt werden
+function initiiereInstallieren() {
+	speichereLetzteUrl();
+}
+
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, Username
 function initiiereProjektEdit() {
@@ -2718,6 +2724,9 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 				break;
 				case "UserEdit":
 					initiiereUserEdit();
+				break;
+				case "Installieren":
+					initiiereInstallieren();
 				break;
 			}
 		}
