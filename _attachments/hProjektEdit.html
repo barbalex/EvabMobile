@@ -401,42 +401,51 @@
 					});
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function validierehProjektEdit() {
 					if (!$("#pName").val()) {
 						melde("Bitte Projektnamen eingeben");
 						setTimeout(function() { 
 							$('#pName').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return;
+						return false;
 					}
-					if (Feldname === "pName") {
-						//Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.Projektliste;
-						delete sessionStorage.Projektliste;
-					}
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.ProjektId, {
-						success: function (hProjekt) {
-							if (Feldwert) {
-								hProjekt[Feldname] = Feldwert;
-							} else if (hProjekt[Feldname]) {
-								delete hProjekt[Feldname]
-							}
-							//alles speichern
-							$db.saveDoc(hProjekt, {
-								success: function () {
-									speichereProjektfeldInArten(Feldname, Feldwert);
-									speichereProjektfeldInZeiten(Feldname, Feldwert);
-									speichereProjektfeldInOrten(Feldname, Feldwert);
-									speichereProjektfeldInRäumen(Feldname, Feldwert);
-								},
-								error: function () {
-									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-								}
-							});
+					return true;
+				}
+
+				function speichern(Feldname, Feldwert) {
+					if (validierehProjektEdit()) {
+						if (Feldname === "pName") {
+							//Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							delete window.Projektliste;
+							delete sessionStorage.Projektliste;
 						}
-					});
+						$db = $.couch.db("evab");
+						//Bestehendes Dokument öffnen
+						$db.openDoc(sessionStorage.ProjektId, {
+							success: function (hProjekt) {
+								if (Feldwert) {
+									hProjekt[Feldname] = Feldwert;
+								} else if (hProjekt[Feldname]) {
+									delete hProjekt[Feldname]
+								}
+								//alles speichern
+								$db.saveDoc(hProjekt, {
+									success: function () {
+										speichereProjektfeldInArten(Feldname, Feldwert);
+										speichereProjektfeldInZeiten(Feldname, Feldwert);
+										speichereProjektfeldInOrten(Feldname, Feldwert);
+										speichereProjektfeldInRäumen(Feldname, Feldwert);
+									},
+									error: function () {
+										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+									}
+								});
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
 				}
 
 				function speichereProjektfeldInArten(Feldname, Feldwert) {

@@ -844,12 +844,12 @@
 									delete sessionStorage.FeldName;
 								},
 								error: function () {
-									melde("Fehler: Feld nicht gespeichert");
+									melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
 								}
 							});
 						},
 						error: function () {
-							melde("Fehler: Feld nicht gespeichert");
+							melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
 						}
 					});
 				}

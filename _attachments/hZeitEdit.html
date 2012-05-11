@@ -321,67 +321,79 @@
 					});
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function validierehZeitEdit() {
 					if (!$("#zDatum").val()) {
 						melde("Bitte Datum erfassen");
 						setTimeout(function() { 
 							$('#zDatum').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return;
+						return false;
 					}
 					if (!$("#zUhrzeit").val()) {
 						melde("Bitte Zeit erfassen");
 						setTimeout(function() { 
 							$('#zUhrzeit').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return;
+						return false;
 					}
-					if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
-						//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.ZeitListe;
-						delete sessionStorage.ZeitListe;
-					}
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.ZeitId, {
-						success: function (hZeit) {
-							//Werte aus dem Formular aktualisieren
-							if (Feldwert) {
-								hZeit[Feldname] = Feldwert;
-							} else if (hZeit[Feldname]) {
-								delete hZeit[Feldname]
-							}
-							//alles speichern
-							$db.saveDoc(hZeit, {
-								success: function () {
-									//geändertes Zeit-Feld in hArt anpassen
-									var viewname;
-									viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
-									$db.view(viewname, {
-										success: function (data) {
-											var hArtId;
-											for (i in data.rows) {
-												hArtId = data.rows[i].key[1];
-												$db.openDoc(hArtId, {
-													success: function (hArt) {
-														if (Feldwert) {
-															hArt[Feldname] = Feldwert;
-														} else if (hArt[Feldname]) {
-															delete hArt[Feldname];
-														}
-														$db.saveDoc(hArt);
-													}
-												});
-											}
-										}
-									});
-								},
-								error: function () {
-									melde("Fehler: Zeit nicht gespeichert");
-								}
-							});
+					return true;
+				}
+
+				function speichern(Feldname, Feldwert) {
+					if (validierehZeitEdit()) {
+						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
+							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							delete window.ZeitListe;
+							delete sessionStorage.ZeitListe;
 						}
-					});
+						$db = $.couch.db("evab");
+						//Bestehendes Dokument öffnen
+						$db.openDoc(sessionStorage.ZeitId, {
+							success: function (hZeit) {
+								//Werte aus dem Formular aktualisieren
+								if (Feldwert) {
+									hZeit[Feldname] = Feldwert;
+								} else if (hZeit[Feldname]) {
+									delete hZeit[Feldname]
+								}
+								//alles speichern
+								$db.saveDoc(hZeit, {
+									success: function () {
+										//geändertes Zeit-Feld in hArt anpassen
+										var viewname;
+										viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
+										$db.view(viewname, {
+											success: function (data) {
+												var hArtId;
+												for (i in data.rows) {
+													hArtId = data.rows[i].key[1];
+													$db.openDoc(hArtId, {
+														success: function (hArt) {
+															if (Feldwert) {
+																hArt[Feldname] = Feldwert;
+															} else if (hArt[Feldname]) {
+																delete hArt[Feldname];
+															}
+															$db.saveDoc(hArt);
+														}
+													});
+												}
+											},
+											error: function () {
+												melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+											}
+										});
+									},
+									error: function () {
+										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+									}
+								});
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates

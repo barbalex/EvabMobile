@@ -531,41 +531,50 @@
 					return AnzahlZeiten;
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function validatehOrtEdit() {
 					if (!$("#oName").val()) {
 						melde("Bitte Ortnamen eingeben");
 						setTimeout(function() { 
 							$('#oName').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return;
+						return false;
 					}
-					if (Feldname === "oName") {
-						//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.OrtListe;
-						delete sessionStorage.OrtListe;
-					}
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.OrtId, {
-						success: function (hOrt) {
-							//Werte aus dem Formular aktualisieren
-							if (Feldwert) {
-								hOrt[Feldname] = Feldwert;
-							} else if (hOrt[Feldname]) {
-								delete hOrt[Feldname]
-							}
-							//alles speichern
-							$db.saveDoc(hOrt, {
-								success: function () {
-									speichereOrtfeldInArten(Feldname, Feldwert);
-									speichereOrtfeldInZeiten(Feldname, Feldwert);
-								},
-								error: function () {
-									melde("Fehler: Ort nicht gespeichert");
-								}
-							});
+					return true;
+				}
+
+				function speichern(Feldname, Feldwert) {
+					if (validatehOrtEdit()) {
+						if (Feldname === "oName") {
+							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							delete window.OrtListe;
+							delete sessionStorage.OrtListe;
 						}
-					});
+						$db = $.couch.db("evab");
+						//Bestehendes Dokument öffnen
+						$db.openDoc(sessionStorage.OrtId, {
+							success: function (hOrt) {
+								//Werte aus dem Formular aktualisieren
+								if (Feldwert) {
+									hOrt[Feldname] = Feldwert;
+								} else if (hOrt[Feldname]) {
+									delete hOrt[Feldname]
+								}
+								//alles speichern
+								$db.saveDoc(hOrt, {
+									success: function () {
+										speichereOrtfeldInArten(Feldname, Feldwert);
+										speichereOrtfeldInZeiten(Feldname, Feldwert);
+									},
+									error: function () {
+										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+									}
+								});
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
 				}
 
 				function speichereOrtfeldInZeiten(Feldname, Feldwert) {

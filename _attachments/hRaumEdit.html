@@ -378,41 +378,50 @@
 					});
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function validierehRaumEdit() {
 					if (!$("#rName").val()) {
 						melde("Bitte Raumnamen eingeben");
 						setTimeout(function() { 
 							$('#rName').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return;
+						return false;
 					}
-					if (Feldname === "rName") {
-						//Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.RaumListe;
-						delete sessionStorage.RaumListe;
-					}
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.RaumId, {
-						success: function (hRaum) {
-							if (Feldwert) {
-								hRaum[Feldname] = Feldwert;
-							} else if (hRaum[Feldname]) {
-								delete hRaum[Feldname]
-							}
-							//alles speichern
-							$db.saveDoc(hRaum, {
-								success: function () {
-									speichereRaumfeldInArten(Feldname, Feldwert);
-									speichereRaumfeldInZeiten(Feldname, Feldwert);
-									speichereRaumfeldInOrten(Feldname, Feldwert);
-								},
-								error: function () {
-									melde("Fehler: Raum nicht gespeichert");
-								}
-							});
+					return true;
+				}
+
+				function speichern(Feldname, Feldwert) {
+					if (validierehRaumEdit()) {
+						if (Feldname === "rName") {
+							//Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							delete window.RaumListe;
+							delete sessionStorage.RaumListe;
 						}
-					});
+						$db = $.couch.db("evab");
+						//Bestehendes Dokument öffnen
+						$db.openDoc(sessionStorage.RaumId, {
+							success: function (hRaum) {
+								if (Feldwert) {
+									hRaum[Feldname] = Feldwert;
+								} else if (hRaum[Feldname]) {
+									delete hRaum[Feldname]
+								}
+								//alles speichern
+								$db.saveDoc(hRaum, {
+									success: function () {
+										speichereRaumfeldInArten(Feldname, Feldwert);
+										speichereRaumfeldInZeiten(Feldname, Feldwert);
+										speichereRaumfeldInOrten(Feldname, Feldwert);
+									},
+									error: function () {
+										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+									}
+								});
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
 				}
 
 				function speichereRaumfeldInArten(Feldname, Feldwert) {

@@ -700,9 +700,12 @@
 							//alles speichern
 							$db.saveDoc(Beob, {
 								error: function () {
-									melde("Fehler: Beobachtung nicht gespeichert");
+									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 								}
 							});
+						},
+						error: function () {
+							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 						}
 					});
 				}

@@ -455,9 +455,12 @@
 							hArt.aArtGruppe = sessionStorage.aArtGruppe;
 							$db.saveDoc(hArt, {
 								error: function () {
-									melde("Fehler: Art nicht gespeichert");
+									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 								}
 							});
+						},
+						error: function () {
+							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 						}
 					});
 				}
