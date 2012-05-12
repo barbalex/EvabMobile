@@ -81,13 +81,12 @@
 
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
 						sessionStorage.ProjektId = $(this).attr('ProjektId');
-						window.open("hRaumListe.html", target = "_self");
+						$.mobile.changePage("hRaumListe.html");
 					});
 
 					$("#Projekte").on("click", ".Projekt", function (event) {
 						event.preventDefault();
 						sessionStorage.ProjektId = $(this).attr('ProjektId');
-						//window.open("hProjektEdit.html", target = "_self");
 						$.mobile.changePage("hProjektEdit.html");
 					});
 

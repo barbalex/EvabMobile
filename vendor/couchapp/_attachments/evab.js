@@ -603,7 +603,7 @@ function erstelleNeuenRaum() {
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					delete window.RaumListe;
 					delete sessionStorage.RaumListe;
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				},
 				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
@@ -631,7 +631,7 @@ function erstelleNeuesProjekt() {
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			delete window.Projektliste;
 			delete sessionStorage.Projektliste;
-			window.open("hProjektEdit.html", target = "_self");
+			$.mobile.changePage("hProjektEdit.html");
 		},
 		error: function () {
 			melde("Fehler: neues Projekt nicht erstellt");
@@ -2770,109 +2770,6 @@ function erstelleKarteFürRaum() {
 				};
 				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
 				//google.maps.event.trigger(map,'resize');
-				var bounds = new google.maps.LatLngBounds();
-				//für alle Orte Marker erstellen
-				var markers = [];
-				for (i in data.rows) {
-					if (typeof i !== "function") {
-						Ort = data.rows[i].doc;
-						var hOrtId = Ort._id;
-						var hRaumId = Ort.hRaumId;
-						var hProjektId = Ort.hProjektId;
-						var oName = Ort.oName;
-						var oXKoord = Ort.oXKoord;
-						var oYKoord = Ort.oYKoord;
-						var lat2 = Ort.oLatitudeDecDeg;
-						var lng2 = Ort.oLongitudeDecDeg;
-						var latlng2 = new google.maps.LatLng(lat2, lng2);
-						if (anzOrt === 1) {
-							//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-							latlng = latlng2;
-						} else {
-							//Kartenausschnitt um diese Koordinate erweitern
-							bounds.extend(latlng2);
-						}
-						var marker = new MarkerWithLabel({ 
-							map: map,
-							position: latlng2,  
-							title: oName.toString(),
-							labelContent: oName,
-							labelAnchor: new google.maps.Point(22, 0),
-							labelClass: "MapLabel", // the CSS class for the label
-							labelStyle: {opacity: 0.75}
-						});
-						markers.push(marker);
-						var contentString = '<div id="content">'+
-							'<div id="siteNotice">'+
-							'</div>'+
-							'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-							'<div id="bodyContent" class="GmInfowindow">'+
-							'<p>X-Koordinate: ' + oXKoord + '</p>'+
-							'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-							"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-							'</div>'+
-							'</div>';
-						makeListener(map, marker, contentString);
-					}
-				}
-				var mcOptions = {maxZoom: 17};
-				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-				if (anzOrt === 1) {
-					//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-					map.setCenter(latlng);
-					map.setZoom(18);
-				} else {
-					//Karte auf Ausschnitt anpassen
-					map.fitBounds(bounds);
-				}
-			}
-			function makeListener(map, marker, contentString) {
-				google.maps.event.addListener(marker, 'click', function () {
-					infowindow.setContent(contentString);
-					infowindow.open(map,marker);
-				});
-			}
-		}
-	});
-}
-
-//Erstellt die Google-Map Karte für Orte eines Projekts
-//wird aufgerufen von ProjektEdit.html und RaumListe.html
-//erwartet die ID des Canvas-Divs, in dem die Karte erstellt werden soll
-function erstelleKarteFürProjekt(CanvasId) {
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
-	$db = $.couch.db("evab");
-	//Zuerst Orte abfragen
-	$db.view('evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true', {
-		success: function (data) {
-			var i, anzOrt, Ort;
-			anzOrt = 0;
-			var infowindow = new google.maps.InfoWindow();
-			for (i in data.rows) {
-				if (typeof i !== "function") {
-					//Orte zählen
-					anzOrt += 1;
-				}
-			}
-			if (anzOrt === 0) {
-				//Keine Orte: Hinweis und zurück
-				melde("Dieses Projekt enthält keine Orte mit Koordinaten");
-				history.back();
-			} else {
-				//Orte vorhanden: Karte aufbauen
-				var lat = 47.383333;
-				var lng = 8.533333;
-				var latlng = new google.maps.LatLng(lat, lng);
-				var options = {
-					zoom: 15,
-					center: latlng,
-					streetViewControl: false,
-					mapTypeId: google.maps.MapTypeId.HYBRID
-				};
-				var map = new google.maps.Map(document.getElementById(CanvasId),options);
-				google.maps.event.trigger(map,'resize');
 				var bounds = new google.maps.LatLngBounds();
 				//für alle Orte Marker erstellen
 				var markers = [];

@@ -34,13 +34,13 @@
   <body>
   	<div data-role="page" id="RaumListePage">
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext" name="hProjektLink">zum Projekt</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hProjektLink">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
-  			<a href='#' name='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
+  			<a href='#' id='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" name="hProjektLink">Projekt</a></li>
-					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active">Räume</a></li>
+					<li><a href="#" name="hProjektLink">Projekt</a></li>
+					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -70,7 +70,7 @@
 				$("body").on("click", "[name='hProjektLink']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Raum erstellen
@@ -80,24 +80,20 @@
 				});
 
 				//Menu aufbauen
-				$('#hRaumListePageHeader').on('click','[name="MenuRaumListe"]', function (event) {
+				$('#hRaumListePageHeader').on('click','#MenuRaumListe', function (event) {
 					event.preventDefault();
 					erstelleMenuRaumListe(this);
 				});
 
 				$("#Räume").on("swipeleft", ".Raum", function () {
-					var RaumId;
-					RaumId = $(this).attr('RaumId');
-					sessionStorage.RaumId = RaumId;
+					sessionStorage.RaumId = $(this).attr('RaumId');
 					window.open("hOrtListe.html", target = "_self");
 				});
 
 				$("#Räume").on("click", ".Raum", function (event) {
-					var RaumId;
 					event.preventDefault();
-					RaumId = $(this).attr('RaumId');
-					sessionStorage.RaumId = RaumId;
-					window.open("hRaumEdit.html", target = "_self");
+					sessionStorage.RaumId = $(this).attr('RaumId');
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#Räume").on("swipeleft", ".erste", function () {
@@ -105,26 +101,15 @@
 				});
 
 				$(document).on("swiperight", '#RaumListePage', function () {
-					window.open("hProjektListe.html", target = "_self");
+					delete sessionStorage.RaumListe;
+					$.mobile.changePage("hProjektListe.html");
 				});
 
 				$("#hRaumListePageFooter").on("click", "#RaumListeMapÖffnen", function (event) {
 					var contentHeight;
 					event.preventDefault();
-					$.mobile.changePage("#RaumListeMap");
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					$("#MapCanvasRaumListe").css("height", contentHeight + "px");
-				});
-
-				$(document).on('pageshow', '#RaumListeMap', function () {
-					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt("MapCanvasRaumListe");
-				});
-
-				$(document).on('pagehide', '#RaumListeMap', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#MapCanvasRaumListe").html("");
+					sessionStorage.zurueck = "hRaumListe";
+					$.mobile.changePage("Karte.html");
 				});
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
@@ -195,17 +180,5 @@
 			});
 		</script>
 	</div>
-
-	<div data-role="page" id="RaumListeMap" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#RaumListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuRaumListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-			<div id="MapCanvasRaumListe" style="width:100%; height:100%;"></div>
-		</div>
-	</div>
-
   </body>
 </html>

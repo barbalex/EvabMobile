@@ -34,13 +34,13 @@
   <body>
 	<div data-role="page" id="RaumEditPage">
 		<div data-role="header" id="RaumEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hRaumListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Raum-Liste</a>
+			<a href="hRaumListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Raum-Liste</a>
 			<h2>Raum</h2>
-			<a href='#' name='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
+			<a href='#' id='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hProjektLink">Projekt</a></li>
-					<li><a href="hRaumListe.html" rel="external" class="ui-btn-active">Räume</a></li>
+					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
 					<li><a href="hOrtListe.html" rel="external">Orte</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -156,7 +156,7 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='MenuRaumEdit']", function (event) {
+				$(document).on('click', "#MenuRaumEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu(this);
 				});
@@ -165,7 +165,7 @@
 				$("#RaumEditHeader").on("click", "#hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Raum erstellen
@@ -220,20 +220,8 @@
 				$("#hRaumEditFooter").on("click", "#RaumEditMapÖffnen", function (event) {
 					var contentHeight;
 					event.preventDefault();
-					$.mobile.changePage("#RaumEditMap");
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					$("#map_canvas").css("height", contentHeight + "px");
-				});
-
-				$(document).on("pageshow", '#RaumEditMap', function () {
-					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürRaum();
-				});
-
-				$(document).on("pagehide", '#RaumEditMap', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#map_canvas").html("");
+					sessionStorage.zurueck = "hRaumEdit";
+					$.mobile.changePage("Karte.html");
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
@@ -287,7 +275,7 @@
 												delete sessionStorage.RaumId;
 												//Rückmeldung += "\rRaum gelöscht";
 												//melde(Rückmeldung);
-												window.open('hRaumListe.html', target = '_self');
+												$.mobile.changePage('hRaumListe.html');
 												return true;
 											},
 											error: function () {
@@ -622,7 +610,7 @@
 									initiiereRaumEdit();
 									return;
 								} else {
-									window.open("hRaumListe.html", target = "_self");
+									$.mobile.changePage("hRaumListe.html");
 									return;
 								}
 								break;
@@ -630,22 +618,8 @@
 						}
 					}
 				}
-
 			});
 		</script>
 	</div>
-
-	<div data-role="page" id="RaumEditMap" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#RaumEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuRaumEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-			<div id="map_canvas" style="width:100%; height:100%;"></div>
-		</div>
-	</div>
- 
   </body>
-  
 </html>

@@ -34,13 +34,13 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
+			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
 			<a href='#' id='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
-					<li><a href="hRaumListe.html" rel="external" id="hRaumListeLink">Räume</a></li>
+					<li><a href="hProjektListe.html" class="ui-btn-active">Projekte</a></li>
+					<li><a href="hRaumListe.html">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -273,7 +273,6 @@
 													delete sessionStorage.ProjektId;
 													//Rückmeldung += "\rProjekt gelöscht";
 													//melde(Rückmeldung);
-													//window.open('hProjektListe.html', target = '_self');
 													$.mobile.changePage('hProjektListe.html');
 													return true;
 												},
@@ -660,7 +659,6 @@
 									initiiereProjektEdit();
 									return;
 								} else {
-									//window.open("hProjektListe.html", target = "_self");
 									$.mobile.changePage("hProjektListe.html");
 									return;
 								}
