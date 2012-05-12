@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+		<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>EvAB</title>
+		<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+		<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+		<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+		<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+		<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+		<script type="text/javascript">
+			$(document).on("mobileinit", function () {
+				$.mobile.page.prototype.options.degradeInputs.date = 'text';
+				$.mobile.page.prototype.options.degradeInputs.time = 'text';
+				$.mobile.selectmenu.prototype.options.nativeMenu = false;
+				$.event.special.swipe.horizontalDistanceThreshold = 250;
+				$.mobile.buttonMarkup.hoverDelay = 0;
+			});
+		</script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+	</head>
+	<body>
+		<div data-role="page" id="Karte" style="width:100%; height:100%;">
+			<div data-role="header" id="KarteHeader" data-position="fixed" data-tap-toggle="false">
+				<a href="#" id="ZurueckKarte" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+				<h1>Karte</h1>
+			</div>
+			<div data-role="content" style="width:100%; height:100%; padding:0;"> 
+				<div id="MapCanvas" style="width:100%; height:100%;"></div>
+			</div>
+			<script type="text/javascript" charset="utf-8">
+				
+				$("#Karte").on("pageshow", function () {
+					var viewname, KeinOrtMeldung;
+					//sicherstellen, dass sessionStorage.zurueck existiert (gibt sonst später Fehler)
+					if (!sessionStorage.zurueck) {
+						window.open("BeobListe.html", target = "_self")
+					}
+
+					switch(sessionStorage.zurueck) {
+						case "hProjektListe":
+							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+							break;
+						case "hProjektEdit":
+							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+							break;
+						case "hRaumListe":
+							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+							break;
+						case "hRaumEdit":
+							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+							break;
+						case "hOrtListe":
+							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+							break;
+						case "hOrtEdit":
+
+							break;
+						case "BeobListe":
+							viewname = 'evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true';
+							KeinOrtMeldung = "Es gibt keine Beobachtungen mit Koordinaten";
+							break;
+						case "BeobEdit":
+
+							break;
+					}
+
+					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheint
+					erstelleKarte();
+
+					function erstelleKarte() {
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
+						}
+						$db = $.couch.db("evab");
+						//Zuerst Orte abfragen
+						$db.view(viewname, {
+							success: function (data) {
+								var i, anzOrt, Ort;
+								anzOrt = 0;
+								var infowindow = new google.maps.InfoWindow();
+								//Orte zählen
+								for (i in data.rows) {
+									anzOrt += 1;
+								}
+								//Keine Orte: Hinweis und zurück
+								if (anzOrt === 0) {
+									melde(KeinOrtMeldung);
+									history.back();
+								//Orte vorhanden: Karte aufbauen
+								} else {
+									var lat = 47.383333;
+									var lng = 8.533333;
+									var latlng = new google.maps.LatLng(lat, lng);
+									var options = {
+										zoom: 15,
+										center: latlng,
+										streetViewControl: false,
+										mapTypeId: google.maps.MapTypeId.HYBRID
+									};
+									var map = new google.maps.Map(document.getElementById("MapCanvas"),options);
+									google.maps.event.trigger(map,'resize');
+									var bounds = new google.maps.LatLngBounds();
+									//für alle Orte Marker erstellen
+									var markers = [];
+									for (i in data.rows) {
+										Ort = data.rows[i].doc;
+										var hOrtId = Ort._id;
+										var oName = Ort.oName;
+										var oXKoord = Ort.oXKoord;
+										var oYKoord = Ort.oYKoord;
+										var lat2 = Ort.oLatitudeDecDeg;
+										var lng2 = Ort.oLongitudeDecDeg;
+										var latlng2 = new google.maps.LatLng(lat2, lng2);
+										if (anzOrt === 1) {
+											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+											latlng = latlng2;
+										} else {
+											//Kartenausschnitt um diese Koordinate erweitern
+											bounds.extend(latlng2);
+										}
+										var marker = new MarkerWithLabel({ 
+											map: map,
+											position: latlng2,
+											title: oName.toString(),
+											labelContent: oName,
+											labelAnchor: new google.maps.Point(22, 0),
+											labelClass: "MapLabel", // the CSS class for the label
+											labelStyle: {opacity: 0.75}
+										});
+										markers.push(marker);
+										//TODO: OEFFNEORT VERALLGEMEINERN
+										var contentString = '<div id="content">'+
+											'<div id="siteNotice">'+
+											'</div>'+
+											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+											'<div id="bodyContent" class="GmInfowindow">'+
+											'<p>X-Koordinate: ' + oXKoord + '</p>'+
+											'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+											"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
+											'</div>'+
+											'</div>';
+										makeListener(map, marker, contentString);
+									}
+									var mcOptions = {maxZoom: 17};
+									var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+									if (anzOrt === 1) {
+										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+										map.setCenter(latlng);
+										map.setZoom(18);
+									} else {
+										//Karte auf Ausschnitt anpassen
+										map.fitBounds(bounds);
+									}
+								}
+								function makeListener(map, marker, contentString) {
+									google.maps.event.addListener(marker, 'click', function () {
+										infowindow.setContent(contentString);
+										infowindow.open(map,marker);
+									});
+								}
+							}
+						});
+					}
+
+					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+					var contentHeight = $(window).height() - 43;
+					$("#MapCanvas").css("height", contentHeight + "px");
+					
+				});
+
+				$("#Karte").on("pageinit", function () {
+					//zurück-Button steuern
+					$("#KarteHeader").on('click', '#ZurueckKarte', function (event) {
+						var zurueck;
+						event.preventDefault();
+						if (sessionStorage.zurueck) {
+							zurueck = sessionStorage.zurueck + ".html";
+						} else {
+							zurueck = "BeobListe.html";
+						}
+						$.mobile.changePage(zurueck);
+						delete sessionStorage.zurueck;
+					});
+				});
+
+				$("#Karte").on("pagehide", function () {
+					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+					$("#MapCanvas").html("");
+				});
+			</script>
+		</div>
+	</body>
+</html>
