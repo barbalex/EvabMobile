@@ -38,19 +38,19 @@
 			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
 			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
-		<div id="FeldContent" data-role="content" style="padding:0em;">
+		<div id="FeldEditContent" data-role="content" style="padding:0em;">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select class="Feldeigenschaften" id="SichtbarImModusEinfach" data-role="slider">
+					<select class="Feldeigenschaften" id="SichtbarImModusEinfach" name="SichtbarImModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="Feldeigenschaften" id="SichtbarImModusHierarchisch" data-role="slider">
+					<select class="Feldeigenschaften" id="SichtbarImModusHierarchisch" name="SichtbarImModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
@@ -80,44 +80,44 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
-					<input class="Feldeigenschaften required" id="FeldName" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften required" id="FeldBeschriftung" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="erforderlich"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea class="Feldeigenschaften" id="FeldBeschreibung"></textarea>
+					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung"></textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften required" id="Reihenfolge" type="number" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="erforderlich"/>
 				</div>
 				<div id="FeldFolgtNachDiv"></div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
-					<input class="Feldeigenschaften" id="FeldNameEvab" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Name beim ZDSF:</label>
-					<input class="Feldeigenschaften" id="FeldNameZdsf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Name beim CSCF:</label>
-					<input class="Feldeigenschaften" id="FeldNameCscf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameNism">Name beim NISM:</label>
-					<input class="Feldeigenschaften" id="FeldNameNism" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslFlechten" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslPilze" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
@@ -163,17 +163,21 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
-					<textarea class="Feldeigenschaften" id="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
+					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMinimum" type="text"/>
+					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text"/>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMaximum" type="text" />
+					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" />
 				</div>
 			</form>
+			<ul data-role="pagination">
+				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="FeldEditFooter">
 			<div data-role="navbar">
@@ -203,31 +207,37 @@
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
-				$("#FeldContent").on("change", ".Feldeigenschaften", function () {
-					var FeldWert, FeldName, AlterFeldWert;
+				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
+					var AlterFeldWert;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
-					FeldWert = this.value;
-					FeldName = this.name;
-					sessionStorage.FeldName = FeldName;
-					//AlterFeldWert = this.defaultValue;
-					AlterFeldWert = Feld[this.name];
-					//alert(FeldName + " vorher: " + AlterFeldWert + ", neu: " + FeldWert);
+					sessionStorage.FeldWert = this.value;
+					if (this.name) {
+						sessionStorage.FeldName = this.name;
+						sessionStorage.AlterFeldWert = Feld[this.name];
+					} else {
+						sessionStorage.FeldName = this.id;
+						sessionStorage.AlterFeldWert = Feld[this.id];
+					}
 					//Felder der Datenzentren dürfen nicht verändert werden
 					//ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 					if (Feld.User === "ZentrenBdKt") {
 						//Feldwert zurücksetzen	
-						if (AlterFeldWert) {
-							$("#" + FeldName).val(AlterFeldWert);
+						if (sessionStorage.AlterFeldWert) {
+							$("#" + sessionStorage.FeldName).val(sessionStorage.AlterFeldWert);
 						} else {
-							$("#" + FeldName).val("");
+							$("#" + sessionStorage.FeldName).val("");
 						}
 						delete sessionStorage.FeldName;
+						delete sessionStorage.FeldWert;
+						delete sessionStorage.AlterFeldWert;
 						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
-					} else if (FeldName === "FeldName") {
+					} else if (sessionStorage.FeldName === "FeldName") {
 						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
-						if (AlterFeldWert) {
+						//ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
+						//undefined als o.k.!!!!
+						if (sessionStorage.AlterFeldWert !== "undefined" && sessionStorage.AlterFeldWert) {
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
@@ -235,43 +245,48 @@
 								success: function (data) {
 									var i, anzVorkommen, Datensatz, TempFeld, ds;
 									anzVorkommen = 0;
+									//zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
 									for (i in data.rows) {
 										if (typeof i !== "function") {
 											Datensatz = data.rows[i].doc; 
-											TempFeld = Datensatz[Feld.FeldName];
+											TempFeld = Datensatz[sessionStorage.AlterFeldWert];
 											if (TempFeld) {
 												anzVorkommen += 1;
 											}
 										}
 									}
 									if (anzVorkommen === 0) {
-										//prüfen, ob der Feldname schon existiert
+										//alter Feldname wurde noch in keinem Datensatz verwendet
+										//prüfen, ob der neue Feldname schon existiert
 										//wenn ja: melden, zurückstellen
 										//wenn nein: speichern
-										pruefeFeldNamen(AlterFeldWert);
+										pruefeFeldNamen();
 									} else {
+										//Feldname wird schon verwendet > melden, zurückstellen
 										ds = "Datensätzen";
 										if (anzVorkommen === 1) {
 											ds = "Datensatz";
 										}
-										$("#FeldName").val(Feld.FeldName);
+										$("#FeldName").val(sessionStorage.AlterFeldWert);
 										delete sessionStorage.FeldName;
+										delete sessionStorage.FeldWert;
+										delete sessionStorage.AlterFeldWert;
 										melde("Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet.<br>Es kann deshalb nicht verändert werden.<br>Bereinigen Sie zuerst die Daten.");
 									}
 								}
 							});
 						} else {
 							//Vorher gab es keinen Feldnamen
-							//prüfen, ob der Feldname schon existiert
+							//prüfen, ob der neue Feldname schon existiert
 							//wenn ja: melden, zurückstellen
 							//wenn nein: speichern
-							pruefeFeldNamen(AlterFeldWert);
+							pruefeFeldNamen();
 						}
-					} else if (FeldName === "Hierarchiestufe" && FeldWert === "Art") {
+					} else if (sessionStorage.FeldName === "Hierarchiestufe" && sessionStorage.FeldWert === "Art") {
 						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauenFeldEdit();
-					} else if (FeldName === "Hierarchiestufe" && FeldWert !== "Art") {
+					} else if (sessionStorage.FeldName === "Hierarchiestufe" && sessionStorage.FeldWert !== "Art") {
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc(Feld._id, {
@@ -443,27 +458,55 @@
 				});
 
 				//swipen steuern
-				$("body").on("swipeleft", function () {
-					geheZumNächstenFeld(Feld._id);
+				$("#FeldEditPage").on("swipeleft", "#FeldEditContent", function () {
+					geheZumNächstenFeld();
 				});
 
-				$("body").on("swiperight", function () {
-					geheZumVorigenFeld(Feld._id);
+				$("#FeldEditPage").on("swiperight", "#FeldEditContent", function () {
+					geheZumVorigenFeld();
+				});
+
+				//Pagination Pfeil voriger initialisieren
+				$("#FeldEditPage").on("vclick", "#PaginationPrev", function (event) {
+					event.preventDefault();
+					geheZumVorigenFeld();
+				});
+
+				//Pagination Pfeil nächster initialisieren
+				$("#FeldEditPage").on("vclick", "#PaginationNext", function (event) {
+					event.preventDefault();
+					geheZumNächstenFeld();
+				});
+
+				//Pagination Pfeiltasten initialisieren
+				$(document).on("keyup", function (e) {
+					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					if (!$(e.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
+						// Left arrow
+						if (e.keyCode === $.mobile.keyCode.LEFT) {
+							geheZumVorigenFeld();
+							e.preventDefault();
+						}
+						// Right arrow
+						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
+							geheZumNächstenFeld();
+							e.preventDefault();
+						}
+					}
 				});
 
 				//prüft neue oder umbenannte Feldnamen
-				//bekommt den alten Feldwert (sofern einer existiert)
-				function pruefeFeldNamen(FeldNameAlt) {
-					var FeldNameNeu, viewname;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
-					FeldNameNeu = $("#FeldName").val();
-					viewname = 'evab/FeldNamen?key="' + FeldNameNeu + '"';
+				//prüft, ob der neue Feldname schon existiert
+				//wenn ja: melden, zurückstellen
+				//wenn nein: speichern
+				function pruefeFeldNamen() {
 					$db = $.couch.db("evab");
-					$db.view(viewname, {
+					$db.view('evab/FeldNamen?key="' + sessionStorage.FeldWert + '"', {
 						success: function (data) {
 							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
+							if (!localStorage.Username) {
+								pruefeAnmeldung();
+							}
 							AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 							//durch alle Felder mit demselben Artnamen laufen
 							//prüfen, ob sie eigene oder offielle sind
@@ -489,17 +532,32 @@
 								speichereFeldeigenschaften();
 							} else {
 								//Feldname kommt bei diesem User schon vor
-								if (FeldnameAlt) {
-									$("#FeldName").val(FeldNameAlt);
+								//Wert im Feld zurücksetzen
+								if (sessionStorage.AlterFeldWert) {
+									$("#FeldName").val(sessionStorage.AlterFeldWert);
 								} else {
 									$("#FeldName").val("");
 								}
-								delete sessionStorage.FeldName;
 								setTimeout(function () { 
 									$('#FeldName').focus(); 
 								}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-								melde("Dieser Feldname existiert schon<br>Wählen Sie einen anderen");
+								melde("Feldname " + sessionStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
+								delete sessionStorage.FeldName;
+								delete sessionStorage.FeldWert;
+								delete sessionStorage.AlterFeldWert;
 							}
+						},
+						error: function () {
+							//Wert im Feld zurücksetzen
+							if (sessionStorage.AlterFeldWert) {
+								$("#FeldName").val(sessionStorage.AlterFeldWert);
+							} else {
+								$("#FeldName").val("");
+							}
+							melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
+							delete sessionStorage.FeldName;
+							delete sessionStorage.FeldWert;
+							delete sessionStorage.AlterFeldWert;
 						}
 					});
 				}
@@ -532,14 +590,14 @@
 				//Öffnet das nächste Feld
 				//nächstes des letzten => melden
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumNächstenFeld(IdAktuell) {
+				function geheZumNächstenFeld() {
 					if (window.Feldliste) {
 						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
-						geheZumNächstenFeld_2(IdAktuell);
+						geheZumNächstenFeld_2();
 					} else if (sessionStorage.Feldliste) {
 						//sessionStorage verwenden
 						Feldliste = JSON.parse(sessionStorage.Feldliste);
-						geheZumNächstenFeld_2(IdAktuell);
+						geheZumNächstenFeld_2();
 					} else {
 						if (!localStorage.Username) {
 							pruefeAnmeldung();
@@ -549,13 +607,13 @@
 							success: function (data) {
 								Feldliste = data;
 								sessionStorage.Feldliste = JSON.stringify(data);
-								geheZumNächstenFeld_2(IdAktuell);
+								geheZumNächstenFeld_2();
 							}
 						});
 					}
 				}
 
-				function geheZumNächstenFeld_2(IdAktuell) {
+				function geheZumNächstenFeld_2() {
 					var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
 					AnzFelder = Feldliste.rows.length -1;
 					for (i in Feldliste.rows) {
@@ -566,7 +624,7 @@
 							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
-								if (FeldIdAktuell === IdAktuell) {
+								if (FeldIdAktuell === sessionStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus vorwärts das nächste eigene oder offizielle suchen
 									if (i < AnzFelder) {
@@ -578,18 +636,20 @@
 											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
 												sessionStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
-												alert("zu nächstem");
 												initiiereFeldEdit();
+												return;
 											} else {
 												if (y === AnzFelder) {
 													//am letzten Feld angelangt und es ist kein eigenes
 													melde("Das ist das letzte Feld");
+													return;
 												}
 											}
 										}
 									} else {
 										//das aktuelle Feld ist das letzte
 										melde("Das ist das letzte Feld");
+										return;
 									}
 								}
 							}
@@ -600,14 +660,14 @@
 				//Öffnet das vorige Feld
 				//voriges des ersten => FeldListe
 				//erwartet die ID des aktuellen Datensatzes
-				function geheZumVorigenFeld(IdAktuell) {
+				function geheZumVorigenFeld() {
 					if (window.Feldliste) {
 						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
-						geheZumVorigenFeld_2(IdAktuell);
+						geheZumVorigenFeld_2();
 					} else if (sessionStorage.Feldliste) {
 						//sessionStorage verwenden
 						Feldliste = JSON.parse(sessionStorage.Feldliste);
-						geheZumVorigenFeld_2(IdAktuell);
+						geheZumVorigenFeld_2();
 					} else {
 						if (!localStorage.Username) {
 							pruefeAnmeldung();
@@ -617,13 +677,13 @@
 							success: function (data) {
 								Feldliste = data;
 								sessionStorage.Feldliste = JSON.stringify(data);
-								geheZumVorigenFeld_2(IdAktuell);
+								geheZumVorigenFeld_2();
 							}
 						});
 					}
 				}
 
-				function geheZumVorigenFeld_2(IdAktuell) {
+				function geheZumVorigenFeld_2() {
 					var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder, AktFeld_i, AktFeld_y;
 					AnzFelder = Feldliste.rows.length -1;
 					for (i in Feldliste.rows) {
@@ -634,7 +694,7 @@
 							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
-								if (FeldIdAktuell === IdAktuell) {
+								if (FeldIdAktuell === sessionStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus rückwärts das nächste eigene oder offizielle suchen
 									if (i > 0) {
@@ -647,13 +707,14 @@
 												//das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
 												sessionStorage.FeldId = FeldIdVoriges;
-												alert("zu vorigem");
 												initiiereFeldEdit();
+												return;
 											} else {
 												if (y === 1) {
 													//am ersten Feld angelangt und es ist kein eigenes
 													//wir gehen zur Feldliste
 													geheZurück();
+													return;
 												}
 											}
 										}
@@ -661,6 +722,7 @@
 										//das aktuelle Feld ist das erste
 										//wir gehen zur Feldliste
 										geheZurück();
+										return;
 									}
 								}
 							}
@@ -816,6 +878,7 @@
 								}
 							}
 							//Formularfelder in Dokument schreiben
+							//setzt Vorhandensein von Feldnamen voraus!
 							for (i in Formularfelder) {
 								if (typeof i !== "function") {
 									if (Formularfelder[i]) {
@@ -835,13 +898,11 @@
 								success: function (data) {
 									Feld = data;
 									sessionStorage.Feld = JSON.stringify(data);
-									sessionStorage.FeldId = data._id;
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (sessionStorage.FeldName === "FeldName" || sessionStorage.FeldName === "FeldBeschreibung" || sessionStorage.FeldName === "Reihenfolge") {
 										delete window.Feldliste;
 										delete sessionStorage.Feldliste;
 									}
-									delete sessionStorage.FeldName;
 								},
 								error: function () {
 									melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
@@ -852,6 +913,9 @@
 							melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
 						}
 					});
+					delete sessionStorage.FeldName;
+					delete sessionStorage.FeldWert;
+					delete sessionStorage.AlterFeldWert;
 				}
 			});
 		</script>
