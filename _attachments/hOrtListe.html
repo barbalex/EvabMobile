@@ -37,7 +37,7 @@
   		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hRaumLink">zum Raum</a>
   			<h2 class="hOrtListePageTitel">Orte</h2>
-  			<a href='#' name='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hProjektLink">Projekt</a></li>
@@ -89,7 +89,7 @@
 				});
 
 				//Menu aufbauen
-				$("#hOrtListePageHeader").on('click', "[name='MenuOrtListe']", function (event) {
+				$("#hOrtListePageHeader").on('click', "#MenuOrtListe", function (event) {
 					event.preventDefault();
 					erstelleMenuOrtListe(this);
 				});
@@ -120,20 +120,8 @@
 				$("#hOrtListePageFooter").on('click', '#GeButton', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					$.mobile.changePage("#hOrtListeMapPage");
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					$("#map_canvas").css("height", contentHeight + "px");
-				});
-
-				$(document).on("pageshow", '#hOrtListeMapPage', function () {
-					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürRaum();
-				});
-
-				$(document).on("pagehide", '#hOrtListeMapPage', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#map_canvas").html("");
+					sessionStorage.zurueck = "hOrtListe";
+					$.mobile.changePage("Karte.html");
 				});
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
@@ -202,17 +190,6 @@
 				}
 			});
 		</script>
-	</div>
-
-	<div data-role="page" id="hOrtListeMapPage" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#hOrtListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">zurück zur Ortliste</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-			<div id="map_canvas" style="width:100%; height:100%;"></div>
-		</div>
 	</div>
   </body>
 </html>
