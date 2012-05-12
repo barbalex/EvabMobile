@@ -1394,7 +1394,6 @@ function initiiereProjektliste() {
 			success: function (data) {
 				//Projektliste für ProjektEdit bereitstellen
 				Projektliste = data;
-				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
 				sessionStorage.Projektliste = JSON.stringify(Projektliste);
 				initiiereProjektliste_2();
 			}
@@ -2839,8 +2838,8 @@ function erstelleKarteFürRaum() {
 
 //Erstellt die Google-Map Karte für Orte eines Projekts
 //wird aufgerufen von ProjektEdit.html und RaumListe.html
-//erwartet Username und ProjektId
-function erstelleKarteFürProjekt() {
+//erwartet die ID des Canvas-Divs, in dem die Karte erstellt werden soll
+function erstelleKarteFürProjekt(CanvasId) {
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
@@ -2872,7 +2871,7 @@ function erstelleKarteFürProjekt() {
 					streetViewControl: false,
 					mapTypeId: google.maps.MapTypeId.HYBRID
 				};
-				var map = new google.maps.Map(document.getElementById("map_canvas"),options);
+				var map = new google.maps.Map(document.getElementById(CanvasId),options);
 				google.maps.event.trigger(map,'resize');
 				var bounds = new google.maps.LatLngBounds();
 				//für alle Orte Marker erstellen

@@ -96,14 +96,11 @@
 				});
 
 				function zuArtgruppenliste() {
+					sessionStorage.Von = "ArtEdit";
 					if ($('#agl_Page').length > 0) {
 						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", "Von=ArtEdit"); //funktioniert in IE erst ab 10!
 					} else {
-						$.mobile.changePage("Artgruppenliste.html", {
-							type: "get",
-							data: "Von=ArtEdit"
-						});
+						$.mobile.changePage("Artgruppenliste.html");
 					}
 				}
 

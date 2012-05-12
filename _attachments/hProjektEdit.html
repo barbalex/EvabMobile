@@ -36,7 +36,7 @@
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
-			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="hProjektListe.html" class="ui-btn-active" rel="external">Projekte</a></li>
@@ -154,7 +154,7 @@
 				});
 
 				//Menu aufbauen
-				$('#hProjektEditHeader').on('click', '[name="MenuProjektEdit"]', function (event) {
+				$('#hProjektEditHeader').on('click', '#MenuProjektEdit', function (event) {
 					event.preventDefault();
 					erstelleMenuProjektEdit(this);
 				});
@@ -211,20 +211,8 @@
 				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					$.mobile.changePage("#ProjektEditMap");
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					$("#map_canvas").css("height", contentHeight + "px");
-				});
-
-				$(document).on("pageshow", '#ProjektEditMap', function () {
-					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarteFürProjekt();
-				});
-
-				$(document).on("pagehide", '#ProjektEditMap', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#map_canvas").html("");
+					sessionStorage.zurueck = "hProjektEdit";
+					$.mobile.changePage("Karte.html");
 				});
 
 				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
@@ -285,7 +273,8 @@
 													delete sessionStorage.ProjektId;
 													//Rückmeldung += "\rProjekt gelöscht";
 													//melde(Rückmeldung);
-													window.open('hProjektListe.html', target = '_self');
+													//window.open('hProjektListe.html', target = '_self');
+													$.mobile.changePage('hProjektListe.html');
 													return true;
 												},
 												error: function () {
@@ -671,7 +660,8 @@
 									initiiereProjektEdit();
 									return;
 								} else {
-									window.open("hProjektListe.html", target = "_self");
+									//window.open("hProjektListe.html", target = "_self");
+									$.mobile.changePage("hProjektListe.html");
 									return;
 								}
 								break;
@@ -682,17 +672,5 @@
 			});
 		</script>
 	</div>
-
-	<div data-role="page" id="ProjektEditMap" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#ProjektEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-			<div id="map_canvas" style="width:100%; height:100%;"></div>
-		</div>
-	</div>
- 
   </body>
 </html>

@@ -45,62 +45,9 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$(":jqmData(role='page')").on("pageinit", function () {
+
+			$("#Felder_hZeitPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
-
-				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function (event) {
-					event.preventDefault();
-					if ($('#ZeitEditPage').length > 0) {
-						$.mobile.changePage($('#ZeitEditPage'));
-					} else {
-						$.mobile.changePage("ZeitEdit.html", {
-							type: "get",
-							data: "id=" + sessionStorage.ZeitId
-						});
-					}
-				});
-
-				//Felder in hOrtEdit.html neu aufbauen
-				$(document).on("pagehide", '#Felder_hZeitPage', function () {
-					initiiereZeitEdit(sessionStorage.ZeitId);
-				});
-
-				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function () {
-					var FeldName, FeldId;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
-					FeldName = $(this).prop("id");
-					FeldId = $(this).attr("feldid");
-					$db = $.couch.db("evab");
-					$db.openDoc(FeldId, {
-						success: function (Feld) {
-							var SichtbarImModusHierarchisch, idx;
-							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
-							if ($("#" + FeldName).prop("checked") === true) {
-								SichtbarImModusHierarchisch.push(localStorage.Username);
-							} else {
-								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
-								if (idx !== -1) {
-									SichtbarImModusHierarchisch.splice(idx, 1);
-								}
-							}
-							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
-							$db.saveDoc(Feld, {
-								error: function () {
-									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-								}
-							});
-							//Globale Variablen für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							delete window.FeldlisteZeitEdit;
-							delete sessionStorage.FeldlisteZeitEdit;
-						},
-						error: function () {
-							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-						}
-					});
-				});
 
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
@@ -170,6 +117,60 @@
 					$("#Feldliste").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
+			});
+
+			$(":jqmData(role='page')").on("pageinit", function () {
+				
+				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function (event) {
+					event.preventDefault();
+					if ($('#ZeitEditPage').length > 0) {
+						$.mobile.changePage($('#ZeitEditPage'));
+					} else {
+						$.mobile.changePage("ZeitEdit.html");
+					}
+				});
+
+				//Felder in hOrtEdit.html neu aufbauen
+				$(document).on("pagehide", '#Felder_hZeitPage', function () {
+					initiiereZeitEdit(sessionStorage.ZeitId);
+				});
+
+				//Felder speichern (checkbox)
+				$("#Feldliste").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId;
+					if (!localStorage.Username) {
+						pruefeAnmeldung();
+					}
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
+					$db = $.couch.db("evab");
+					$db.openDoc(FeldId, {
+						success: function (Feld) {
+							var SichtbarImModusHierarchisch, idx;
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
+							if ($("#" + FeldName).prop("checked") === true) {
+								SichtbarImModusHierarchisch.push(localStorage.Username);
+							} else {
+								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+								if (idx !== -1) {
+									SichtbarImModusHierarchisch.splice(idx, 1);
+								}
+							}
+							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
+							$db.saveDoc(Feld, {
+								error: function () {
+									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+								}
+							});
+							//Globale Variablen für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							delete window.FeldlisteZeitEdit;
+							delete sessionStorage.FeldlisteZeitEdit;
+						},
+						error: function () {
+							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+						}
+					});
+				});
 			});
 		</script>
 	</div>

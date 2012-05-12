@@ -125,10 +125,7 @@
 					if ($('#ProjektEditPage').length > 0) {
 						$.mobile.changePage($('#ProjektEditPage'));
 					} else {
-						$.mobile.changePage("ProjektEdit.html", {
-							type: "get",
-							data: "id=" + sessionStorage.ProjektId
-						});
+						$.mobile.changePage("hProjektEdit.html");
 					}
 				});
 

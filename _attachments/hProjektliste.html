@@ -35,7 +35,7 @@
 		<div data-role="page" id="ProjektListePage">
 			<div id="hProjektListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
 				<h2 class="hProjektListePageTitel">Projekte</h2>
-				<a href='#' name='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+				<a href='#' id='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 			</div>
 			<div data-role="content">
 				<ul id="Projekte" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
@@ -50,21 +50,25 @@
 				</div>
 			</div>
 			<script type="text/javascript" charset="utf-8">
+				$("#ProjektListePage").on("pageshow", function () {
+					//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+					//darum prüfen, ob sessionStorage.hProjektListeWirdInitiiert nicht true ist
+					//sonst übernimmt holeSessionStorageAusDb das initiieren
+					if (!sessionStorage.hProjektListeWirdInitiiert) {
+						initiiereProjektliste();
+					}
+					delete sessionStorage.hProjektListeWirdInitiiert;
+				});
 				$(":jqmData(role='page')").on("pageinit", function () {
 					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 					//wo sie von speichereLetzteUrl gespeichert wurde
-					//sessionStorage.Projektliste ist dann null und sessionStorage.length 1
-					//sessionStorage.Projektliste ist auch null, wenn die Projektliste gelöscht wurde
-					//holeSessionStorageAusDb stellt die alte sessionStorage.Projektliste wieder her
-					//darum hier die sessionStorage.length prüfen
 					if (sessionStorage.length === 0) {
 						holeSessionStorageAusDb("hProjektListe");
-					} else {
-						initiiereProjektliste();
+						sessionStorage.hProjektListeWirdInitiiert = true;
 					}
 
 					//Menu aufbauen
-					$(document).on('click', '[name="MenuProjektListe"]', function (event) {
+					$(document).on('click', '#MenuProjektListe', function (event) {
 						event.preventDefault();
 						erstelleMenuProjektliste(this);
 					});
@@ -76,18 +80,15 @@
 					});
 
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
-						var ProjektId;
-						ProjektId = $(this).attr('ProjektId');
-						sessionStorage.ProjektId = ProjektId;
+						sessionStorage.ProjektId = $(this).attr('ProjektId');
 						window.open("hRaumListe.html", target = "_self");
 					});
 
 					$("#Projekte").on("click", ".Projekt", function (event) {
-						var ProjektId;
 						event.preventDefault();
-						ProjektId = $(this).attr('ProjektId');
-						sessionStorage.ProjektId = ProjektId;
-						window.open("hProjektEdit.html", target = "_self");
+						sessionStorage.ProjektId = $(this).attr('ProjektId');
+						//window.open("hProjektEdit.html", target = "_self");
+						$.mobile.changePage("hProjektEdit.html");
 					});
 
 					$("#Projekte").on("swipeleft", ".erste", function () {
@@ -99,22 +100,9 @@
 					});
 
 					$('#ProjektListePageFooter').on('click', '#ProjektListeMapOeffnen', function (event) {
-						var contentHeight;
 						event.preventDefault();
-						$.mobile.changePage("#ProjektListeMap");
-						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-						contentHeight = $(window).height() - 43;
-						$("#map_canvas").css("height", contentHeight + "px");
-					});
-
-					$(document).on("pageshow", '#ProjektListeMap', function () {
-						//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-						erstelleKarteFuerProjektliste();
-					});
-
-					$(document).on("pagehide", '#ProjektListeMap', function () {
-						//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-						$("#map_canvas").html("");
+						sessionStorage.zurueck = "hProjektListe";
+						$.mobile.changePage("Karte.html");
 					});
 
 					//Menü aufbauen
@@ -182,116 +170,8 @@
 							}
 						})
 					}
-
-					function erstelleKarteFuerProjektliste() {
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
-						$db = $.couch.db("evab");
-						//Zuerst Orte abfragen
-						$db.view('evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true', {
-							success: function (data) {
-								var i, anzOrt, Ort;
-								anzOrt = 0;
-								var infowindow = new google.maps.InfoWindow();
-								//Orte zählen
-								for (i in data.rows) {
-									anzOrt += 1;
-								}
-								//Keine Orte: Hinweis und zurück
-								if (anzOrt === 0) {
-									melde("Es gibt keine Orte mit Koordinaten");
-									history.back();
-								//Orte vorhanden: Karte aufbauen
-								} else {
-									var lat = 47.383333;
-									var lng = 8.533333;
-									var latlng = new google.maps.LatLng(lat, lng);
-									var options = {
-										zoom: 15,
-										center: latlng,
-										streetViewControl: false,
-										mapTypeId: google.maps.MapTypeId.HYBRID
-									};
-									var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-									google.maps.event.trigger(map,'resize');
-									var bounds = new google.maps.LatLngBounds();
-									//für alle Orte Marker erstellen
-									var markers = [];
-									for (i in data.rows) {
-										Ort = data.rows[i].doc;
-										var hOrtId = Ort._id;
-										var hRaumId = Ort.hRaumId;
-										var hProjektId = Ort.hProjektId;
-										var oName = Ort.oName;
-										var oXKoord = Ort.oXKoord;
-										var oYKoord = Ort.oYKoord;
-										var lat2 = Ort.oLatitudeDecDeg;
-										var lng2 = Ort.oLongitudeDecDeg;
-										//var externalPage = "hOrtEdit.html";
-										var latlng2 = new google.maps.LatLng(lat2, lng2);
-										if (anzOrt === 1) {
-											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-											latlng = latlng2;
-										} else {
-											//Kartenausschnitt um diese Koordinate erweitern
-											bounds.extend(latlng2);
-										}
-										var marker = new MarkerWithLabel({ 
-											map: map,
-											position: latlng2,
-											title: oName.toString(),
-											labelContent: oName,
-											labelAnchor: new google.maps.Point(22, 0),
-											labelClass: "MapLabel", // the CSS class for the label
-											labelStyle: {opacity: 0.75}
-										});
-										markers.push(marker);
-										var contentString = '<div id="content">'+
-											'<div id="siteNotice">'+
-											'</div>'+
-											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-											'<div id="bodyContent" class="GmInfowindow">'+
-											'<p>X-Koordinate: ' + oXKoord + '</p>'+
-											'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-											"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\" rel=\"external\">bearbeiten<\/a></p>"+
-											'</div>'+
-											'</div>';
-										makeListener(map, marker, contentString);
-									}
-									var mcOptions = {maxZoom: 17};
-									var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-									if (anzOrt === 1) {
-										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-										map.setCenter(latlng);
-										map.setZoom(18);
-									} else {
-										//Karte auf Ausschnitt anpassen
-										map.fitBounds(bounds);
-									}
-								}
-								
-								function makeListener(map, marker, contentString) {
-									google.maps.event.addListener(marker, 'click', function () {
-										infowindow.setContent(contentString);
-										infowindow.open(map,marker);
-									});
-								}
-							}
-						});
-					}
 				});
 			</script>
-		</div>
-		<div data-role="page" id="ProjektListeMap" style="width:100%; height:100%;">
-			<div data-role="header" data-position="fixed" data-tap-toggle="false">
-				<a href="#ProjektListePage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-				<h1>Karte</h1>
-				<a href='#' name='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-			</div>
-			<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-				<div id="map_canvas" style="width:100%; height:100%;"></div>
-			</div>
 		</div>
 	</body>
 </html>

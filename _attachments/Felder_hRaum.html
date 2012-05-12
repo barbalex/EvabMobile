@@ -125,10 +125,7 @@
 					if ($('#RaumEditPage').length > 0) {
 						$.mobile.changePage($('#RaumEditPage'));
 					} else {
-						$.mobile.changePage("RaumEdit.html", {
-							type: "get",
-							data: "id=" + sessionStorage.RaumId
-						});
+						$.mobile.changePage("RaumEdit.html");
 					}
 				});
 
