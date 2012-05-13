@@ -215,6 +215,38 @@ function melde(Meldung) {
 		});
 }
 
+//wird benutzt von hOrtEdit.html
+function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
+	$db = $.couch.db("evab");
+	//Bestehendes Dokument öffnen
+	$db.openDoc(sessionStorage.OrtId, {
+		success: function (Ort) {
+			//Längen- und Breitengrad sind in keinem Feld dargestellt
+			//sie müssen aus ihren Variabeln gespeichert werden
+			Ort.oLongitudeDecDeg = oLongitudeDecDeg;
+			Ort.oLatitudeDecDeg = oLatitudeDecDeg;
+			Ort.oXKoord = oXKoord;
+			Ort.oYKoord = oYKoord;
+			Ort.oLagegenauigkeit = oLagegenauigkeit;
+			//alles speichern
+			$db.saveDoc(Ort, {
+				success: function () {
+					//melde("Koordinaten gespeichert");
+					$("input#oXKoord").val(oXKoord);
+					$("input#oYKoord").val(oYKoord);
+					$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
+					$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
+					$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+				},
+				error: function () {
+					melde("Fehler: Koordinaten nicht gespeichert");
+				}
+			});
+		}
+	});
+}
+
+
 function speichereNeueBeob(aArtBezeichnung, ArtId) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html

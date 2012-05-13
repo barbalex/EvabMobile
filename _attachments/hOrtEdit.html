@@ -37,7 +37,7 @@
 		<div data-role="header" id="OrtEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="hOrtListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Ort-Liste</a>
 			<h1>Ort</h1>
-			<a href='#' name='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href='#' id='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="hoe_hProjektLink" rel="external">Projekt</a></li>
@@ -91,7 +91,7 @@
 					<li><a href="#" data-icon="plus" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
 					<li><a href="#" id="LöschenDialogLinkOrtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="VerortungOrtEdit" data-icon="evab-location">verorten</a></li>					
-					<li><a href="#" id="GeButton" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="KarteOeffnenOrtEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderOrtEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -205,145 +205,24 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='MenuOrtEdit']", function (event) {
+				$("#OrtEditHeader").on('click', "#MenuOrtEdit", function (event) {
 					event.preventDefault();
 					erstelleMenuOrtEdit(this);
 				});
 
 				//Karte managen
-				$('#hOrtEditFooter').on('click', '#GeButton', function (event) {
+				$('#hOrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					$.mobile.changePage("#OrtEditMap");
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					$("#map_canvas").css("height", contentHeight + "px");
-				});
-
-				$(document).on("pageshow", '#OrtEditMap', function () {
-					//dies hier im pageshow, weil die Karte sonst in Chrome nicht erscheit
-					erstelleKarte();
-				});
-
-				$(document).on("pagehide", '#OrtEditMap', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#map_canvas").html("");
+					sessionStorage.zurueck = "hOrtEdit";
+					$.mobile.changePage("Karte.html");
 				});
 
 				$('#hOrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
 					event.preventDefault();
 					GetGeolocation(sessionStorage.OrtId, "hOrtEditForm");
 				});
-
-				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
-				var markersArray = [];
-				var InfoWindowArray = [];
-
-				function erstelleKarte() {
-					var map;
-					var verorted;
-					if (oLatitudeDecDeg && oLongitudeDecDeg) {
-						var lat = oLatitudeDecDeg;
-						var lng = oLongitudeDecDeg;
-						verorted = true;
-					} else {
-						var lat = 47.360566;
-						var lng = 8.542829;
-						verorted = false;
-					}
-					var ZoomLevel;
-					if (verorted === true) {
-						ZoomLevel = 15;
-					} else {
-						ZoomLevel = 12;
-					}
-					var latlng = new google.maps.LatLng(lat, lng);
-					var options = {
-						zoom: ZoomLevel,
-						center: latlng,
-						streetViewControl: false,
-						mapTypeId: google.maps.MapTypeId.HYBRID
-					};
-					var map = new google.maps.Map(document.getElementById("map_canvas"),options);
-					google.maps.event.trigger(map,'resize');
-					var oName = $("input#oName").val();
-					if (verorted === true) {
-						var marker = new google.maps.Marker({
-							position: latlng, 
-							map: map, 
-							title: oName,
-							draggable: true
-						});
-						//Marker in Array speichern, damit er gelöscht werden kann
-						markersArray.push(marker);
-						var contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + oName + '</p>' +
-										'</div></div>';;
-						var infowindow = new google.maps.InfoWindow({
-							content: contentString
-						});
-						InfoWindowArray.push(infowindow);
-						google.maps.event.addListener(marker, 'click', function () {
-						infowindow.open(map,marker);
-						});
-						google.maps.event.addListener(marker, "dragend", function (event) {
-							SetLocation(event.latLng, map, marker);
-						});
-					}
-					google.maps.event.addListener(map, 'click', function (event) {
-						placeMarker(event.latLng, map, marker, oName);
-					});
-				}
-
-				function placeMarker(location, map, marker, oName) {
-					var marker;
-					//zuerst bisherige Marker löschen
-					if (markersArray) {
-						for (i in markersArray) {
-							markersArray[i].setMap(null);
-						}
-					}
-					marker = new google.maps.Marker({
-						position: location, 
-						map: map,
-						title: oName,
-						draggable: true
-					});
-					//Marker in Array speichern, damit er gelöscht werden kann
-					markersArray.push(marker);
-					google.maps.event.addListener(marker, "dragend", function (event) {
-						SetLocation(event.latLng, map, marker);
-					});
-					SetLocation(location, map, marker);
-				}
-
-				function SetLocation(LatLng, map, marker) {
-					var lat, lng, x, y, contentString, infowindow;
-					lat = LatLng.lat();
-					lng = LatLng.lng();
-					oLatitudeDecDeg = lat;		//globale Variable, wird beim Speichern verwendet
-					oLongitudeDecDeg = lng;		//globale Variable, wird beim Speichern verwendet
-					x = DdInChX(lat, lng);
-					y = DdInChY(lat, lng);
-					//alle InfoWindows löschen
-					if (InfoWindowArray) {
-						for (i in InfoWindowArray) {
-							InfoWindowArray[i].setMap(null);
-						}
-					}
-					contentString = '<div id="content"><div id="bodyContent">'+
-									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
-									'</div></div>';
-					infowindow = new google.maps.InfoWindow({
-						content: contentString
-					});
-					InfoWindowArray.push(infowindow);
-					google.maps.event.addListener(marker, 'click', function () {
-					infowindow.open(map,marker);
-					});
-					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
-				}
-
+				
 				$(document).on("swipeleft", "#OrtEditPage", function () {
 					nächsterVorigerOrt("nächster");
 				});
@@ -621,37 +500,7 @@
 						}
 					});
 				}
-
-				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.OrtId, {
-						success: function (Ort) {
-							//Längen- und Breitengrad sind in keinem Feld dargestellt
-							//sie müssen aus ihren Variabeln gespeichert werden
-							Ort.oLongitudeDecDeg = oLongitudeDecDeg;
-							Ort.oLatitudeDecDeg = oLatitudeDecDeg;
-							Ort.oXKoord = oXKoord;
-							Ort.oYKoord = oYKoord;
-							Ort.oLagegenauigkeit = oLagegenauigkeit;
-							//alles speichern
-							$db.saveDoc(Ort, {
-								success: function () {
-									//melde("Koordinaten gespeichert");
-									$("input#oXKoord").val(oXKoord);
-									$("input#oYKoord").val(oYKoord);
-									$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
-									$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-									$("input#oLagegenauigkeit").val(oLagegenauigkeit);
-								},
-								error: function () {
-									melde("Fehler: Koordinaten nicht gespeichert");
-								}
-							});
-						}
-					});
-				}
-
+				
 				//Menü aufbauen
 				function erstelleMenuOrtEdit(thiz) {
 					if (!localStorage.Username) {
@@ -785,17 +634,6 @@
 				}
 			});
 		</script>
-	</div>
-
-	<div data-role="page" id="OrtEditMap" style="width:100%; height:100%;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#OrtEditPage" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0;"> 
-			<div id="map_canvas" style="width:100%; height:100%;"></div>
-		</div>
 	</div>
   </body>
 </html>

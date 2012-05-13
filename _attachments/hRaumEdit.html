@@ -76,7 +76,7 @@
 				<ul>
 					<li><a href="#" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LöschenDialogLinkRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="RaumEditMapÖffnen" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="KarteOeffnenRaumEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -156,7 +156,7 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "#MenuRaumEdit", function (event) {
+				$("#RaumEditHeader").on('click', "#MenuRaumEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu(this);
 				});
@@ -217,7 +217,7 @@
 					}
 				});
 
-				$("#hRaumEditFooter").on("click", "#RaumEditMapÖffnen", function (event) {
+				$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function (event) {
 					var contentHeight;
 					event.preventDefault();
 					sessionStorage.zurueck = "hRaumEdit";
