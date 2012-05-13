@@ -42,7 +42,7 @@
 				<ul>
 					<li><a href="#" id="hoe_hProjektLink" rel="external">Projekt</a></li>
 					<li><a href="#" id="hRaumLink" rel="external">Raum</a></li>
-					<li><a href="hOrtListe.html" class="ui-btn-active" rel="external">Orte</a></li>
+					<li><a href="hOrtListe.html" class="ui-btn-active">Orte</a></li>
 					<li><a href="hZeitListe.html" rel="external">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -116,14 +116,14 @@
 				$("#OrtEditHeader").on("click", "#hRaumLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#hoe_hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Für jedes Feld bei Änderung speichern
@@ -313,7 +313,7 @@
 											delete sessionStorage.OrtId;
 											//Rückmeldung += "\rOrt gelöscht";
 											//melde(Rückmeldung);
-											window.open('hOrtListe.html', target='_self');
+											$.mobile.changePage('hOrtListe.html');
 											return true;
 										},
 										error: function () {
@@ -624,7 +624,7 @@
 									initiiereOrtEdit();
 									return;
 								} else {
-									window.open("hOrtListe.html", target = "_self");
+									$.mobile.changePage("hOrtListe.html");
 									return;
 								}
 								break;

@@ -42,7 +42,7 @@
 				<ul>
 					<li><a href="#" id="hProjektLink">Projekt</a></li>
 					<li><a href="#" name="hRaumLink">Raum</a></li>
-					<li><a href="hOrtListe.html" rel="external" class="ui-btn-active">Orte</a></li>
+					<li><a href="hOrtListe.html" class="ui-btn-active">Orte</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -59,27 +59,35 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
+			$("#hOrtListePage").on("pageshow", function () {
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.hOrtListeWirdInitiiert nicht true ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (!sessionStorage.hOrtListeWirdInitiiert) {
+					initiiereOrtListe();
+				}
+				delete sessionStorage.hOrtListeWirdInitiiert;
+			});
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hOrtListe");
-				} else {
-					initiiereOrtListe();
+					sessionStorage.hOrtListeWirdInitiiert = true;
 				}
 				
 				//Link zu Raum in Navbar und Titelleiste
 				$("body").on("click", "[name='hRaumLink']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hOrtListePageHeader").on("click", "#hProjektLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Ort erstellen
@@ -106,7 +114,7 @@
 					event.preventDefault();
 					OrtId = $(this).attr('OrtId');
 					sessionStorage.OrtId = OrtId;
-					window.open("hOrtEdit.html", target = "_self");
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#Orte").on("swipeleft", ".erste", function () {
@@ -114,7 +122,8 @@
 				});
 
 				$(document).on("swiperight", "#hOrtListePage", function () {
-					window.open("hRaumListe.html", target = "_self");
+					delete sessionStorage.OrtListe;
+					$.mobile.changePage("hRaumListe.html");
 				});
 
 				$("#hOrtListePageFooter").on('click', '#GeButton', function (event) {

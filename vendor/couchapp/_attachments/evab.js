@@ -592,14 +592,20 @@ function erstelleNeuenOrt() {
 							delete window.OrtListe;
 							delete sessionStorage.OrtListe;
 							sessionStorage.Status = "neu";	//das löst bei pageshow die Verortung aus
-							window.open("hOrtEdit.html", target = "_self");
+							$.mobile.changePage("hOrtEdit.html");
 						},
 						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
 						}
 					});
+				},
+				error: function () {
+					melde("Fehler: neuer Ort nicht erstellt");
 				}
 			});
+		},
+		error: function () {
+			melde("Fehler: neuer Ort nicht erstellt");
 		}
 	});
 }
@@ -641,6 +647,9 @@ function erstelleNeuenRaum() {
 					melde("Fehler: neuer Raum nicht erstellt");
 				}
 			});
+		},
+		error: function () {
+			melde("Fehler: neuer Raum nicht erstellt");
 		}
 	});
 }
