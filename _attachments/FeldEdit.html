@@ -34,7 +34,7 @@
 <body>
 	<div data-role="page" id="FeldEditPage">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
-			<a href="#" id="BackButton" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
+			<a href="#" id="zurueckFeldEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
 			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
 			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 		</div>
@@ -183,7 +183,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="NeuesFeldFeldEdit" data-icon="plus" class="ui-btn-active">neu</a></li>			
-					<li><a href="#" data-role="button" id="LoeschenLinkFeldEdit" data-icon="minus" forceinput="false">l&ouml;schen</a></li>
+					<li><a href="#" data-role="button" id="LoescheFeldFeldEdit" data-icon="minus" forceinput="false">l&ouml;schen</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
@@ -384,7 +384,7 @@
 				});
 
 				//Code für den Feld-Löschen-Dialog
-				$('#FeldEditFooter').on('click', '#LoeschenLinkFeldEdit', function (event) {
+				$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function (event) {
 					event.preventDefault();
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
@@ -452,7 +452,7 @@
 				});
 
 				//BackButton steuern
-				$("#FeldEditHeader").on('click', '#BackButton', function (event) {
+				$("#FeldEditHeader").on('click', '#zurueckFeldEdit', function (event) {
 					event.preventDefault();
 					geheZurück();
 				});

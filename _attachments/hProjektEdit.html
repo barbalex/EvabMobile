@@ -73,9 +73,9 @@
 		<div data-role="footer"id="hProjektEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" rel="external" id="hProjektNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLinkProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="ProjektEditMapÖffnen" data-icon="mappin">Karte</a></li>
+					<li><a href="#" data-icon="plus" id="NeuesProjektProjektEdit" class="ui-btn-active">neu</a></li>
+					<li><a href="#" id="LöscheProjektProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="KarteOeffnenProjektEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -129,7 +129,7 @@
 				});
 				
 				//Code für den Projekt-Löschen-Dialog
-				$('#hProjektEditFooter').on('click', '#LöschenDialogLinkProjektEdit', function (event) {
+				$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -160,7 +160,7 @@
 				});
 
 				//neues Projekt erstellen
-				$("#hProjektEditFooter").on("click", "#hProjektNeuLink", function (event) {
+				$("#hProjektEditFooter").on("click", "#NeuesProjektProjektEdit", function (event) {
 					event.preventDefault();
 					erstelleNeuesProjekt();
 				});
@@ -208,7 +208,7 @@
 					}
 				});
 
-				$('#hProjektEditFooter').on('click', '#ProjektEditMapÖffnen', function (event) {
+				$('#hProjektEditFooter').on('click', '#KarteOeffnenProjektEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
 					sessionStorage.zurueck = "hProjektEdit";

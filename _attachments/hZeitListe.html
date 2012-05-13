@@ -34,15 +34,15 @@
   <body>
   	<div data-role="page" id="hZeitListePage">
   		<div data-role="header" id="hZeitListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hOrtLink">zum Ort</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="OeffneOrtZeitListe">zum Ort</a>
   			<h2 class="hZeitListePageTitel">Zeit</h2>
   			<a href='#' id='MenuZeitListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
-					<li><a href="#" name="hOrtLink">Ort</a></li>
-					<li><a href="hZeitListe.html" rel="external" class="ui-btn-active">Zeiten</a></li>
+					<li><a href="#" id="OeffneProjektZeitListe">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumZeitListe">Raum</a></li>
+					<li><a href="#" name="OeffneOrtZeitListe">Ort</a></li>
+					<li><a href="hZeitListe.html" class="ui-btn-active">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -53,44 +53,52 @@
 		<div data-role="footer" id="hZeitListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" class="ui-btn-active hzl_NeuLink">neue Zeit</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active NeueZeitZeitListe">neue Zeit</a></li>
 				</ul>
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
+			$("#hZeitListePage").on("pageshow", function () {
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.hZeitListeWirdInitiiert nicht true ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (!sessionStorage.hZeitListeWirdInitiiert) {
+					initiiereZeitListe();
+				}
+				delete sessionStorage.hZeitListeWirdInitiiert;
+			});
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hZeitListe");
-				} else {
-					initiiereZeitListe();
+					sessionStorage.hZeitListeWirdInitiiert = true;
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
-				$("body").on("click", "[name='hOrtLink']", function (event) {
+				$("body").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
-					window.open("hOrtEdit.html", target = "_self");
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
-				$("#hZeitListePageHeader").on("click", "#hRaumLink", function (event) {
+				$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
 					delete sessionStorage.OrtListe;
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
-				$("#hZeitListePageHeader").on("click", "#hProjektLink", function (event) {
+				$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
 					delete sessionStorage.OrtListe;
 					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Neue Zeit erstellen, erste Zeit und fixer button
-				$("#hZeitListePage").on("click", ".hzl_NeuLink", function (event) {
+				$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function (event) {
 					event.preventDefault();
 					erstelleNeueZeit(); 
 				});

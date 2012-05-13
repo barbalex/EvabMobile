@@ -40,10 +40,10 @@
 			<a href='#' id='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="hoe_hProjektLink" rel="external">Projekt</a></li>
-					<li><a href="#" id="hRaumLink" rel="external">Raum</a></li>
+					<li><a href="#" id="OeffneProjektOrtEdit">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumOrtEdit">Raum</a></li>
 					<li><a href="hOrtListe.html" class="ui-btn-active">Orte</a></li>
-					<li><a href="hZeitListe.html" rel="external">Zeiten</a></li>
+					<li><a href="hZeitListe.html">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -88,8 +88,8 @@
 		<div data-role="footer" id="hOrtEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" id="hOrtNeuLink" class="ui-btn-active">neu</a></li>				
-					<li><a href="#" id="LöschenDialogLinkOrtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" data-icon="plus" id="NeuerOrtOrtEdit" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" id="LoescheOrtOrtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="VerortungOrtEdit" data-icon="evab-location">verorten</a></li>					
 					<li><a href="#" id="KarteOeffnenOrtEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderOrtEdit" data-icon="info">Felder</a></li>
@@ -113,13 +113,13 @@
 					holeSessionStorageAusDb("hOrtEdit");
 				}
 
-				$("#OrtEditHeader").on("click", "#hRaumLink", function (event) {
+				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
-				$("#OrtEditHeader").on("click", "#hoe_hProjektLink", function (event) {
+				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					delete sessionStorage.RaumListe;
@@ -168,7 +168,7 @@
 				});
 
 				//neuen Ort erstellen
-				$("#hOrtEditFooter").on('click', '#hOrtNeuLink', function (event) {
+				$("#hOrtEditFooter").on('click', '#NeuerOrtOrtEdit', function (event) {
 					event.preventDefault();
 					erstelleNeuenOrt();
 				});
@@ -180,7 +180,7 @@
 				});
 
 				//Code für den Ort-Löschen-Dialog
-				$('#hOrtEditFooter').on('click', '#LöschenDialogLinkOrtEdit', function (event) {
+				$('#hOrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',

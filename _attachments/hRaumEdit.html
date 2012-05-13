@@ -39,7 +39,7 @@
 			<a href='#' id='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="hProjektLink">Projekt</a></li>
+					<li><a href="#" id="ProjektOeffnenRaumEdit">Projekt</a></li>
 					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
 					<li><a href="hOrtListe.html">Orte</a></li>
 				</ul>
@@ -74,8 +74,8 @@
 		<div data-role="footer" id="hRaumEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" rel="external" id="hRaumNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLinkRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" data-icon="plus" rid="NeuerRaumRaumEdit" class="ui-btn-active">neu</a></li>
+					<li><a href="#" id="LoescheRaumRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="KarteOeffnenRaumEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
 				</ul>
@@ -131,7 +131,7 @@
 				});
 
 				//Code für den Raum-Löschen-Dialog
-				$('#hRaumEditFooter').on('click', '#LöschenDialogLinkRaumEdit', function (event) {
+				$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -162,14 +162,14 @@
 				});
 
 				//Link zu Projekt in Navbar und Titelleiste
-				$("#RaumEditHeader").on("click", "#hProjektLink", function (event) {
+				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Raum erstellen
-				$("#hRaumEditFooter").on("click", "#hRaumNeuLink", function (event) {
+				$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function (event) {
 					event.preventDefault();
 					erstelleNeuenRaum();
 				});

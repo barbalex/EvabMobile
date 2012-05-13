@@ -34,15 +34,15 @@
   <body>
 	<div data-role="page" id="ZeitEditPage">
 		<div data-role="header" id="ZeitEditPageHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hZeitListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Zeit-Liste</a>
+			<a href="hZeitListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Zeit-Liste</a>
 			<h1>Zeit</h1>
 			<a href='#' id='MenuZeitEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hRaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hOrtLink">Ort</a></li>
-					<li><a href="hZeitListe.html" rel="external" class="ui-btn-active">Zeiten</a></li>
+					<li><a href="#" id="OeffneProjektZeitEdit">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumZeitEdit">Raum</a></li>
+					<li><a href="#" id="hOrtLink">Ort</a></li>
+					<li><a href="hZeitListe.html" class="ui-btn-active">Zeiten</a></li>
 					<li><a href="hArtListe.html" rel="external">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -80,8 +80,8 @@
 		<div data-role="footer" id="ZeitEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-transition="slideup" data-icon="plus" rel="external" id="hZeitNeuLink" class="ui-btn-active">neu</a></li>
-					<li><a href="#" id="LöschenDialogLinkZeitEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" data-icon="plus" id="NeueZeitZeitEdit" class="ui-btn-active">neu</a></li>
+					<li><a href="#" id="LoescheZeitZeitEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="waehleFelderZeitEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -105,22 +105,22 @@
 				$("#ZeitEditPageHeader").on("click", "#hOrtLink", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
-					window.open("hOrtEdit.html", target = "_self");
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
-				$("#ZeitEditPageHeader").on("click", "#hRaumLink", function (event) {
+				$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
 					delete sessionStorage.OrtListe;
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
-				$("#ZeitEditPageHeader").on("click", "#hProjektLink", function (event) {
+				$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
 					delete sessionStorage.OrtListe;
 					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Slider-Felder erst bei mouseup speichern
@@ -155,7 +155,7 @@
 				});
 
 				//Neue Zeit erstellen
-				$('#ZeitEditPageFooter').on('click', '#hZeitNeuLink', function (event) {
+				$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
 					event.preventDefault();
 					//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					delete window.ZeitListe;
@@ -170,7 +170,7 @@
 				});
 
 				//Code für den Zeit-Löschen-Dialog
-				$('#ZeitEditPageFooter').on('click', '#LöschenDialogLinkZeitEdit', function (event) {
+				$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -282,7 +282,7 @@
 										delete sessionStorage.ZeitId;
 										//Rückmeldung += "<br>Zeit gelöscht";
 										//melde(Rückmeldung);
-										window.open('hZeitListe.html' , target = '_self');
+										$.mobile.changePage('hZeitListe.html');
 										return true;
 									},
 									error: function () {
@@ -512,7 +512,7 @@
 									initiiereZeitEdit();
 									return;
 								} else {
-									window.open("hZeitListe.html", target = "_self");
+									$.mobile.changePage("hZeitListe.html");
 									return;
 								}
 								break;

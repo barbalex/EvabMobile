@@ -35,7 +35,7 @@
   <body>
 	<div data-role="page" id="ArtEditPage">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#" id="ae_zurück" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+			<a href="#" id="zurueckArtEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
 			<h1>Arteigenschaften</h1>
 		</div>
 		<div data-role="content" id="ArtEditContent">
@@ -63,7 +63,7 @@
 
 			$("#ArtEditPage").on("pageinit", function () {
 				//zurück-Button steuern
-				$("#ArtEditPage").on('click', '#ae_zurück', function (event) {
+				$("#ArtEditPage").on('click', '#zurueckArtEdit', function (event) {
 					var zurueck;
 					event.preventDefault();
 					zurueck = "";

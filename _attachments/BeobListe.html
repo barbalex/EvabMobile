@@ -44,8 +44,8 @@
 		<div data-role="footer" id="BeobListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" class="ui-btn-active bl_NeuLink" >neue Beobachtung</a></li>
-					<li><a href="#" id="KarteOeffnenBeobListe" data-icon="mappin">Karte</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active NeueBeobBeobListe" >neue Beobachtung</a></li>
+					<li><a href="#" id="OeffneKarteBeobListe" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -68,7 +68,7 @@
 					window.open("BeobEdit.html", target = "_self");
 				});
 
-				$("#BeobListePageFooter").on('click', '#KarteOeffnenBeobListe', function (event) {
+				$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function (event) {
 					event.preventDefault();
 					sessionStorage.zurueck = "BeobListe";
 					$.mobile.changePage("Karte.html");
@@ -81,7 +81,7 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#BeobListePage").on("click", ".bl_NeuLink", function (event) {
+				$("#BeobListePage").on("click", ".NeueBeobBeobListe", function (event) {
 					event.preventDefault();
 					erstelleNeueBeob_1_Artgruppenliste();
 				});

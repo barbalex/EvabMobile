@@ -40,10 +40,10 @@
 			<a href='#' id='MenuhBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="hae_ProjektLink">Projekt</a></li>
-					<li><a href="#" rel="external" id="hae_RaumLink">Raum</a></li>
-					<li><a href="#" rel="external" id="hae_OrtLink">Ort</a></li>
-					<li><a href="#" rel="external" id="hae_ZeitLink">Zeit</a></li>
+					<li><a href="#" rel="external" id="OeffneProjekthArtEdit">Projekt</a></li>
+					<li><a href="#" rel="external" id="OeffneRaumhArtEdit">Raum</a></li>
+					<li><a href="#" rel="external" id="OeffneOrthArtEdit">Ort</a></li>
+					<li><a href="#" rel="external" id="OeffneZeithArtEdit">Zeit</a></li>
 					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -83,8 +83,8 @@
 		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="hArtNeuLink" data-icon="plus" class="ui-btn-active">neu</a></li>				
-					<li><a href="#" id="LöschenDialogLinkhBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="NeueBeobhArtEdit" data-icon="plus" class="ui-btn-active">neu</a></li>				
+					<li><a href="#" id="LoescheBeobhArtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="waehleFelderhBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -106,20 +106,20 @@
 					holeSessionStorageAusDb("hBeobEdit");
 				}
 
-				$("#hArtEditPageHeader").on("click", "#hae_ZeitLink", function (event) {
+				$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					window.open("hZeitEdit.html", target = "_self");
 				});
 
-				$("#hArtEditPageHeader").on("click", "#hae_OrtLink", function (event) {
+				$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
 					window.open("hOrtEdit.html", target = "_self");
 				});
 
-				$("#hArtEditPageHeader").on("click", "#hae_RaumLink", function (event) {
+				$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
@@ -127,7 +127,7 @@
 					window.open("hRaumEdit.html", target = "_self");
 				});
 
-				$("#hArtEditPageHeader").on("click", "#hae_ProjektLink", function (event) {
+				$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
@@ -168,7 +168,7 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#hArtEditPageFooter").on("click", "#hArtNeuLink", function (event) {
+				$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function (event) {
 					event.preventDefault();
 					sessionStorage.Status = "neu";
 					zuArtgruppenliste();
@@ -193,7 +193,7 @@
 				});
 
 				//Code für den Art-Löschen-Dialog
-				$("#hArtEditPageFooter").on('click', '#LöschenDialogLinkhBeobEdit', function (event) {
+				$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',

@@ -35,15 +35,15 @@
   <body>
   	<div data-role="page" id="hArtListePage">
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hZeitLink">zum Zeitpunkt</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="OeffneZeithArtListe">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
   			<a href='#' id='MenuhBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="hProjektLink">Projekt</a></li>
-					<li><a href="#" id="hRaumLink">Raum</a></li>
-					<li><a href="#" id="hOrtLink">Ort</a></li>
-					<li><a href="#" name="hZeitLink">Zeit</a></li>
+					<li><a href="#" id="OeffneProjekthArtListe">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumhArtListe">Raum</a></li>
+					<li><a href="#" id="OeffneOrthArtListe">Ort</a></li>
+					<li><a href="#" name="OeffneZeithArtListe">Zeit</a></li>
 					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -55,7 +55,7 @@
 		<div data-role="footer" id="hArtListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" class="ui-btn-active hal_NeuLink">neue Art</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active NeueBeobhArtListe">neue Art</a></li>
 				</ul>
 			</div>
 		</div>
@@ -70,20 +70,20 @@
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
-				$("body").on("click", "[name='hZeitLink']", function (event) {
+				$("body").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					window.open("hZeitEdit.html", target = "_self");
 				});
 
-				$("#hArtListePageHeader").on("click", "#hOrtLink", function (event) {
+				$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
 					window.open("hOrtEdit.html", target = "_self");
 				});
 
-				$("#hArtListePageHeader").on("click", "#hRaumLink", function (event) {
+				$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
@@ -91,7 +91,7 @@
 					window.open("hRaumEdit.html", target = "_self");
 				});
 
-				$("#hArtListePageHeader").on("click", "#hProjektLink", function (event) {
+				$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
@@ -107,7 +107,7 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#hArtListePage").on("click", ".hal_NeuLink", function (event) {
+				$("#hArtListePage").on("click", ".NeueBeobhArtListe", function (event) {
 					event.preventDefault();
 					öffneArtgruppenliste_hal();
 				});

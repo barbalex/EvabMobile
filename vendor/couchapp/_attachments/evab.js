@@ -533,14 +533,20 @@ function erstelleNeueZeit() {
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 									delete window.ZeitListe;
 									delete sessionStorage.ZeitListe;
-									window.open("hZeitEdit.html", target = "_self");
+									$.mobile.changePage("hZeitEdit.html");
 								},
 								error: function () {
 									melde("Fehler: neue Zeit nicht erstellt");
 								}
 							});
+						},
+						error: function () {
+							melde("Fehler: neue Zeit nicht erstellt");
 						}
 					});
+				},
+				error: function () {
+					melde("Fehler: neue Zeit nicht erstellt");
 				}
 			});
 		}

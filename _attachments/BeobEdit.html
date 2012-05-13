@@ -101,10 +101,10 @@
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" id="BeobEditPageFooterNavbar">
 				<ul>
-					<li><a href="#" id="be_neueBeob" data-icon="plus" class="ui-btn-active">neu</a></li>					
-					<li><a href="#" id="LöschenDialogLinkBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="be_verorten" data-icon="evab-location">verorten</a></li>						
-					<li><a href="#" id="KarteOeffnenBeobEdit" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="NeueBeobBeobEdit" data-icon="plus" class="ui-btn-active">neu</a></li>					
+					<li><a href="#" id="LoescheBeobBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="verorteBeobBeobEdit" data-icon="evab-location">verorten</a></li>						
+					<li><a href="#" id="OeffneKarteBeobEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -128,7 +128,7 @@
 				}
 
 				//Neue Beobachtung erfassen
-				$("#BeobEditPageFooterNavbar").on("click", "#be_neueBeob", function (event) {
+				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function (event) {
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					delete window.BeobListe;
@@ -247,7 +247,7 @@
 					}
 				});
 				
-				$("#BeobEditPageFooterNavbar").on('click', "#KarteOeffnenBeobEdit", function (event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function (event) {
 					var contentHeight;
 					event.preventDefault();
 					sessionStorage.zurueck = "BeobEdit";
@@ -263,7 +263,7 @@
 					$("#map_canvas").html("");
 				});
 
-				$("#BeobEditPageFooterNavbar").on('click', "#be_verorten", function (event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
 					event.preventDefault();
 					GetGeolocation(sessionStorage.BeobId, "BeobEditForm");
 				});
@@ -275,7 +275,7 @@
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
-				$('#BeobEditPageFooterNavbar').on('click', '#LöschenDialogLinkBeobEdit', function (event) {
+				$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',

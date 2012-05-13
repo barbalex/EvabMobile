@@ -54,9 +54,9 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteZeitEdit !== "undefined") {
+					if (window.FeldlisteZeitEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (typeof sessionStorage.FeldlisteZeitEdit !== "undefined" && sessionStorage.FeldlisteZeitEdit) {
+					} else if (sessionStorage.FeldlisteZeitEdit) {
 						FeldlisteZeitEdit = JSON.parse(sessionStorage.FeldlisteZeitEdit);
 						erstelleSichtbareFelder_2();
 					} else {
@@ -128,11 +128,6 @@
 					} else {
 						$.mobile.changePage("hZeitEdit.html");
 					}
-				});
-
-				//Felder in hOrtEdit.html neu aufbauen
-				$(document).on("pagehide", '#Felder_hZeitPage', function () {
-					initiiereZeitEdit(sessionStorage.ZeitId);
 				});
 
 				//Felder speichern (checkbox)

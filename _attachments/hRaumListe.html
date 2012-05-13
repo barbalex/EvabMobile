@@ -34,12 +34,12 @@
   <body>
   	<div data-role="page" id="RaumListePage">
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
-  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="hProjektLink">zum Projekt</a>
+  			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" name="ProjektEditOeffnenRaumListe">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
   			<a href='#' id='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" name="hProjektLink">Projekt</a></li>
+					<li><a href="#" name="ProjektEditOeffnenRaumListe">Projekt</a></li>
 					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -51,8 +51,8 @@
 		<div data-role="footer" id="hRaumListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" rel="external" class="ui-btn-active" name="hRaumNeuLink">neuer Raum</a></li>
-					<li><a href="#" id="RaumListeMapÖffnen" data-icon="mappin">Karte</a></li>
+					<li><a href="#" data-icon="plus" class="ui-btn-active" name="NeuerRaumRaumListe">neuer Raum</a></li>
+					<li><a href="#" id="KarteOeffnenRaumListe" data-icon="mappin">Karte</a></li>
 				</ul>
 			</div>
 		</div>
@@ -75,14 +75,14 @@
 				}
 
 				//Link zu Projekt in Navbar und Titelleiste
-				$("body").on("click", "[name='hProjektLink']", function (event) {
+				$("body").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Raum erstellen
-				$("body").on("click", "[name='hRaumNeuLink']", function (event) {
+				$("body").on("click", "[name='NeuerRaumRaumListe']", function (event) {
 					event.preventDefault();
 					erstelleNeuenRaum(sessionStorage.ProjektId);
 				});
@@ -113,7 +113,7 @@
 					$.mobile.changePage("hProjektListe.html");
 				});
 
-				$("#hRaumListePageFooter").on("click", "#RaumListeMapÖffnen", function (event) {
+				$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function (event) {
 					var contentHeight;
 					event.preventDefault();
 					sessionStorage.zurueck = "hRaumListe";
