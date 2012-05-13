@@ -46,13 +46,16 @@
 					//Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
 					var viewname, KeinOrtMeldung, contentHeight;
 					//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
-					//wird benutzt von: hOrtEdit.html
+					//wird benutzt von: hOrtEdit.html, BeobEdit.html
 					var markersArray = [];
 					var InfoWindowArray = [];
 
 					//sicherstellen, dass sessionStorage.zurueck existiert (gibt sonst später Fehler)
 					if (!sessionStorage.zurueck) {
 						window.open("BeobListe.html", target = "_self")
+					}
+					if (!localStorage.Username) {
+						pruefeAnmeldung();
 					}
 
 					switch(sessionStorage.zurueck) {
@@ -88,7 +91,7 @@
 							erstelleKarteBeobListe();
 							break;
 						case "BeobEdit":
-
+							erstelleKarteBeobEdit();
 							break;
 					}
 
@@ -97,9 +100,6 @@
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						//Zuerst Orte abfragen
 						$db.view(viewname, {
@@ -199,9 +199,9 @@
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						if (oLatitudeDecDeg && oLongitudeDecDeg) {
-							lat = oLatitudeDecDeg;
-							lng = oLongitudeDecDeg;
+						if (sessionStorage.oLatitudeDecDeg && sessionStorage.oLongitudeDecDeg) {
+							lat = sessionStorage.oLatitudeDecDeg;
+							lng = sessionStorage.oLongitudeDecDeg;
 							ZoomLevel = 15;
 							verorted = true;
 						} else {
@@ -228,16 +228,13 @@
 							});
 							//Marker in Array speichern, damit er gelöscht werden kann
 							markersArray.push(marker);
-							/*contentString = '<div id="content"><div id="bodyContent">'+
-											'<p>' + oName + '</p>' +
-											'</div></div>';*/
 							contentString = '<div id="content">'+
 											'<div id="siteNotice">'+
 											'</div>'+
 											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
 											'<div id="bodyContent" class="GmInfowindow">'+
-											'<p>X-Koordinate: ' + $("#oXKoord").val() + '</p>'+
-											'<p>Y-Koordinate: ' + $("#oYKoord").val() + '</p>'+
+											'<p>X-Koordinate: ' + sessionStorage.oXKoord + '</p>'+
+											'<p>Y-Koordinate: ' + sessionStorage.oYKoord + '</p>'+
 											'</div>'+
 											'</div>';
 							infowindow = new google.maps.InfoWindow({
@@ -248,11 +245,11 @@
 							infowindow.open(map,marker);
 							});
 							google.maps.event.addListener(marker, "dragend", function (event) {
-								SetLocation(event.latLng, map, marker);
+								SetLocationhOrtEdit(event.latLng, map, marker);
 							});
 						}
 						google.maps.event.addListener(map, 'click', function (event) {
-							placeMarker(event.latLng, map, marker, oName);
+							placeMarkerhOrtEdit(event.latLng, map, marker, oName);
 						});
 					}
 
@@ -362,15 +359,76 @@
 						});
 					}
 
+					function erstelleKarteBeobEdit() {
+						var map, verorted, lat, lng, ZoomLevel, latlng, options, mapcanvas, map, aAutor, zDatum, zUhrzeit, image, marker, contentString, infowindow;
+						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+						contentHeight = $(window).height() - 44;
+						$("#MapCanvas").css("height", contentHeight + "px");
+						if (sessionStorage.oLatitudeDecDeg && sessionStorage.oLongitudeDecDeg) {
+							lat = sessionStorage.oLatitudeDecDeg;
+							lng = sessionStorage.oLongitudeDecDeg;
+							ZoomLevel = 15;
+							verorted = true;
+						} else {
+							lat = 47.360566;
+							lng = 8.542829;
+							ZoomLevel = 12;
+							verorted = false;
+						}
+						latlng = new google.maps.LatLng(lat, lng);
+						options = {
+							zoom: ZoomLevel,
+							center: latlng,
+							streetViewControl: false,
+							mapTypeId: google.maps.MapTypeId.HYBRID
+						};
+						mapcanvas = $('#MapCanvas');
+						map = new google.maps.Map(mapcanvas[0],options);
+						//google.maps.event.trigger(map,'resize');
+						aAutor = $("#aAutor").val();
+						zDatum = $("#zDatum").val();
+						zUhrzeit = $("#zUhrzeit").val();
+						image = "Artgruppenbilder/" + sessionStorage.aArtGruppe + ".png";
+						if (verorted === true) {
+							marker = new google.maps.Marker({
+								position: latlng, 
+								map: map, 
+								title: sessionStorage.aArtName,
+								icon: image,
+								draggable: true
+							});
+							//Marker in Array speichern, damit er gelöscht werden kann
+							markersArray.push(marker); 
+							contentString = '<div id="content">'+
+								'<h4 id="firstHeading" class="GmInfowindow">' + sessionStorage.aArtName + '</h4>'+
+								'<div id="bodyContent" class="GmInfowindow">'+
+								'<p>Art-Gruppe: ' + sessionStorage.aArtGruppe + '</p>'+
+								'<p>Autor: ' + aAutor + '</p>'+
+								'<p>Datum: ' + zDatum + '</p>'+
+								'<p>Zeit: ' + zUhrzeit + '</p>'+
+								'</div>'+
+								'</div>';
+							infowindow = new google.maps.InfoWindow({
+								content: contentString
+							});
+							InfoWindowArray.push(infowindow);
+							google.maps.event.addListener(marker, 'click', function () {
+							infowindow.open(map,marker);
+							});
+							google.maps.event.addListener(marker, "dragend", function (event) {
+								SetLocationBeobEdit(event.latLng, map, marker);
+							});
+						}
+						google.maps.event.addListener(map, 'click', function (event) {
+							placeMarkerBeobEdit(event.latLng, map, marker, image);
+						});
+					}
+
 					//wird benutzt in hOrtEdit.html
-					function placeMarker(location, map, marker, oName) {
+					function placeMarkerhOrtEdit(location, map, marker, oName) {
 						var marker;
 						//zuerst bisherige Marker löschen
-						if (markersArray) {
-							for (i in markersArray) {
-								markersArray[i].setMap(null);
-							}
-						}
+						clearMarkers();
 						marker = new google.maps.Marker({
 							position: location, 
 							map: map,
@@ -380,28 +438,41 @@
 						//Marker in Array speichern, damit er gelöscht werden kann
 						markersArray.push(marker);
 						google.maps.event.addListener(marker, "dragend", function (event) {
-							SetLocation(event.latLng, map, marker);
+							SetLocationhOrtEdit(event.latLng, map, marker);
 						});
-						SetLocation(location, map, marker);
+						SetLocationhOrtEdit(location, map, marker);
+					}
+
+					function placeMarkerBeobEdit(location, map, marker, image) {
+						//zuerst bisherigen Marker löschen
+						clearMarkers();
+						var marker = new google.maps.Marker({
+							position: location, 
+							map: map,
+							title: sessionStorage.aArtName,
+							icon: image,
+							draggable: true
+						});
+						//Marker in Array speichern, damit er gelöscht werden kann
+						markersArray.push(marker);
+						google.maps.event.addListener(marker, "dragend", function (event) {
+							SetLocationBeobEdit(event.latLng, map, marker);
+						});
+						SetLocationBeobEdit(location, map, marker);
 					}
 
 					//wird benutzt in hOrtEdit.html
-					function SetLocation(LatLng, map, marker) {
-						var lat, lng, x, y, contentString, infowindow;
+					function SetLocationhOrtEdit(LatLng, map, marker) {
+						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
-						oLatitudeDecDeg = lat;		//globale Variable, wird beim Speichern verwendet
-						oLongitudeDecDeg = lng;		//globale Variable, wird beim Speichern verwendet
-						x = DdInChX(lat, lng);
-						y = DdInChY(lat, lng);
-						//alle InfoWindows löschen
-						if (InfoWindowArray) {
-							for (i in InfoWindowArray) {
-								InfoWindowArray[i].setMap(null);
-							}
-						}
+						sessionStorage.oLatitudeDecDeg = lat;
+						sessionStorage.oLongitudeDecDeg = lng;
+						sessionStorage.oXKoord = DdInChX(lat, lng);
+						sessionStorage.oYKoord = DdInChY(lat, lng);
+						clearInfoWindows();
 						contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
+										'<p>' + sessionStorage.oXKoord + "/" + sessionStorage.oYKoord + '</p>' +
 										'</div></div>';
 						infowindow = new google.maps.InfoWindow({
 							content: contentString
@@ -410,7 +481,50 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
+						speichereKoordinaten(sessionStorage.OrtId, "Auf Luftbild markiert");
+					}
+
+					//wird benutzt in BeobEdit.html
+					function SetLocationBeobEdit(LatLng, map, marker) {
+						var lat, lng, contentString, infowindow;
+						lat = LatLng.lat();
+						lng = LatLng.lng();
+						sessionStorage.oLatitudeDecDeg = lat;
+						sessionStorage.oLongitudeDecDeg = lng;
+						sessionStorage.oXKoord = DdInChX(lat, lng);
+						sessionStorage.oYKoord = DdInChY(lat, lng);
+						clearInfoWindows();
+						contentString = '<div id="content"><div id="bodyContent">'+
+										'<p>' + sessionStorage.oXKoord + "/" + sessionStorage.oYKoord + '</p>' +
+										'</div></div>';
+						infowindow = new google.maps.InfoWindow({
+							content: contentString
+						});
+						InfoWindowArray.push(infowindow);
+						google.maps.event.addListener(marker, 'click', function () {
+						infowindow.open(map,marker);
+						});
+						speichereKoordinaten(sessionStorage.BeobId, "Auf Luftbild markiert");
+					}
+
+					//GoogleMap: alle Marker löschen
+					//benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
+					function clearMarkers() {
+						if (markersArray) {
+							for (i in markersArray) {
+								markersArray[i].setMap(null);
+							}
+						}
+					}
+
+					//GoogleMap: alle InfoWindows löschen
+					//benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
+					function clearInfoWindows() {
+						if (InfoWindowArray) {
+							for (i in InfoWindowArray) {
+								InfoWindowArray[i].setMap(null);
+							}
+						}
 					}
 				});
 

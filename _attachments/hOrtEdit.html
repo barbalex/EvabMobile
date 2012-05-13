@@ -134,13 +134,13 @@
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
-						//Wenn Koordinaten und beide erfasst 
-						//zuerst Längen- und Breitengrade berechnen
-						oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
-						oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
-						/*$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
-						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);*/
-						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val(), "");
+						//Wenn Koordinaten und beide erfasst
+						sessionStorage.oXKoord = $("#oXKoord").val();
+						sessionStorage.oYKoord = $("#oYKoord").val();
+						//Längen- und Breitengrade berechnen
+						sessionStorage.oLongitudeDecDeg = CHtoWGSlng(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						sessionStorage.oLatitudeDecDeg = CHtoWGSlat(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						speichereKoordinaten(sessionStorage.OrtId, "");
 					} else {
 						speichern(Feldname, Feldwert);
 					}

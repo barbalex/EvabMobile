@@ -38,7 +38,7 @@
   		<div data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="BeobListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
-  			<a href='#' name='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href='#' id='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" autocomplete="off">
@@ -104,7 +104,7 @@
 					<li><a href="#" id="be_neueBeob" data-icon="plus" class="ui-btn-active">neu</a></li>					
 					<li><a href="#" id="LöschenDialogLinkBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="be_verorten" data-icon="evab-location">verorten</a></li>						
-					<li><a href="#" id="be_zeigeKarte" data-icon="mappin">Karte</a></li>
+					<li><a href="#" id="KarteOeffnenBeobEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -214,13 +214,13 @@
 					Feldwert = Feldjson[Feldname];
 					//speichern(Feldname, Feldwert);
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
-						//Wenn Koordinaten und beide erfasst 
-						//zuerst Längen- und Breitengrade berechnen
-						oLongitudeDecDeg = CHtoWGSlng($("#oYKoord").val(), $("#oXKoord").val());
-						oLatitudeDecDeg = CHtoWGSlat($("#oYKoord").val(), $("#oXKoord").val());
-						/*$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
-						$("#oLatitudeDecDeg").val(oLatitudeDecDeg);*/
-						speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, $("#oXKoord").val(), $("#oYKoord").val(), "");
+						//Wenn Koordinaten und beide erfasst
+						sessionStorage.oXKoord = $("#oXKoord").val();
+						sessionStorage.oYKoord = $("#oYKoord").val();
+						//Längen- und Breitengrade berechnen
+						sessionStorage.oLongitudeDecDeg = CHtoWGSlng(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						sessionStorage.oLatitudeDecDeg = CHtoWGSlat(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						speichereKoordinaten(sessionStorage.BeobId, "");
 					} else {
 						speichern(Feldname, Feldwert);
 					}
@@ -247,21 +247,11 @@
 					}
 				});
 				
-				$("#BeobEditPageFooterNavbar").on('click', "#be_zeigeKarte", function (event) {
+				$("#BeobEditPageFooterNavbar").on('click', "#KarteOeffnenBeobEdit", function (event) {
 					var contentHeight;
 					event.preventDefault();
-					//alert("be_zeigeKarte geklickt");
-					if ($("#BeobEditMapPage").length > 0) {
-						//alert("changePage zu id");
-						$.mobile.changePage($("#BeobEditMapPage"));
-					} else {
-						//alert("changePage zu url");
-						$.mobile.changePage("#BeobEditMapPage");
-					}
-					//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-					contentHeight = $(window).height() - 43;
-					//contentHeight = $(window).height();
-					$("#map_canvas").css("height", contentHeight + "px");
+					sessionStorage.zurueck = "BeobEdit";
+					$.mobile.changePage("Karte.html");
 				});
 
 				$(document).on("pageshow", '#BeobEditMapPage', function () {
@@ -310,7 +300,7 @@
 				});
 
 				//Menu aufbauen
-				$(document).on('click', "[name='MenuBeobEdit']", function (event) {
+				$(document).on('click', "#MenuBeobEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu(this);
 				});
@@ -433,142 +423,6 @@
 								}
 								break;
 							}
-						}
-					}
-				}
-
-				//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
-				var markersArray = [];
-				var InfoWindowArray = [];
-
-				function erstelleKarte() {
-					var map;
-					var verorted;
-					if (oLatitudeDecDeg && oLongitudeDecDeg) {
-						var lat = oLatitudeDecDeg;
-						var lng = oLongitudeDecDeg;
-						verorted = true;
-					} else {
-						var lat = 47.360566;
-						var lng = 8.542829;
-						verorted = false;
-					}
-					var ZoomLevel;
-					if (verorted === true) {
-						ZoomLevel = 15;
-					} else {
-						ZoomLevel = 12;
-					}
-					var latlng = new google.maps.LatLng(lat, lng);
-					var options = {
-						zoom: ZoomLevel,
-						center: latlng,
-						streetViewControl: false,
-						mapTypeId: google.maps.MapTypeId.HYBRID
-					};
-					var mapcanvas = $('#map_canvas');
-					var map = new google.maps.Map(mapcanvas[0],options);
-					//google.maps.event.trigger(map,'resize');
-					var aAutor = $("#aAutor").val();
-					var zDatum = $("#zDatum").val();
-					var zUhrzeit = $("#zUhrzeit").val();
-					var image = "Artgruppenbilder/" + sessionStorage.aArtGruppe + ".png";
-					if (verorted === true) {
-						var marker = new google.maps.Marker({
-							position: latlng, 
-							map: map, 
-							title: sessionStorage.aArtName,
-							icon: image,
-							draggable: true
-						});
-						//Marker in Array speichern, damit er gelöscht werden kann
-						markersArray.push(marker); 
-						var contentString = '<div id="content">'+
-							'<h4 id="firstHeading" class="GmInfowindow">' + sessionStorage.aArtName + '</h4>'+
-							'<div id="bodyContent" class="GmInfowindow">'+
-							'<p>Art-Gruppe: ' + sessionStorage.aArtGruppe + '</p>'+
-							'<p>Autor: ' + aAutor + '</p>'+
-							'<p>Datum: ' + zDatum + '</p>'+
-							'<p>Zeit: ' + zUhrzeit + '</p>'+
-							'</div>'+
-							'</div>';
-						var infowindow = new google.maps.InfoWindow({
-							content: contentString
-						});
-						InfoWindowArray.push(infowindow);
-						google.maps.event.addListener(marker, 'click', function () {
-						infowindow.open(map,marker);
-						});
-						google.maps.event.addListener(marker, "dragend", function (event) {
-							SetLocation(event.latLng, map, marker);
-						});
-					}
-					google.maps.event.addListener(map, 'click', function (event) {
-						placeMarker(event.latLng, map, marker, image);
-					});
-				}
-
-				function placeMarker(location, map, marker, image) {
-					//zuerst bisherigen Marker löschen
-					clearMarkers();
-					var marker = new google.maps.Marker({
-						position: location, 
-						map: map,
-						title: sessionStorage.aArtName,
-						icon: image,
-						draggable: true
-					});
-					//Marker in Array speichern, damit er gelöscht werden kann
-					markersArray.push(marker);
-					google.maps.event.addListener(marker, "dragend", function (event) {
-						SetLocation(event.latLng, map, marker);
-					});
-					SetLocation(location, map, marker);
-				}
-
-				function SetLocation(LatLng, map, marker) {
-					var lat, lng, x, y, contentString, infowindow;
-					lat = LatLng.lat();
-					lng = LatLng.lng();
-					oLatitudeDecDeg = lat;
-					oLongitudeDecDeg = lng;
-					x = DdInChX(lat, lng);
-					y = DdInChY(lat, lng);
-					/*$("input#oXKoord").val(x);
-					$("input#oYKoord").val(y);
-					$("input#oLatitudeDecDeg").val(lat);
-					$("input#oLongitudeDecDeg").val(lng);
-					$("input#oLagegenauigkeit").val("Auf Luftbild markiert");*/
-					clearInfoWindows();
-					contentString = '<div id="content"><div id="bodyContent">'+
-									'<p>' + $("input#oXKoord").val() + "/" + $("input#oYKoord").val() + '</p>' +
-									'</div></div>';
-					infowindow = new google.maps.InfoWindow({
-						content: contentString
-					});
-					InfoWindowArray.push(infowindow);
-					google.maps.event.addListener(marker, 'click', function () {
-					infowindow.open(map,marker);
-					});
-					speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, x, y, "Auf Luftbild markiert");
-				}
-
-				//GoogleMap: alle Marker löschen
-				//benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
-				function clearMarkers() {
-					if (markersArray) {
-						for (i in markersArray) {
-							markersArray[i].setMap(null);
-						}
-					}
-				}
-
-				//GoogleMap: alle InfoWindows löschen
-				//benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
-				function clearInfoWindows() {
-					if (InfoWindowArray) {
-						for (i in InfoWindowArray) {
-							InfoWindowArray[i].setMap(null);
 						}
 					}
 				}
@@ -710,50 +564,8 @@
 						}
 					});
 				}
-
-				function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(sessionStorage.BeobId, {
-						success: function (Beob) {
-							//Längen- und Breitengrad sind in keinem Feld dargestellt
-							//sie müssen aus ihren Variabeln gespeichert werden
-							Beob.oLongitudeDecDeg = oLongitudeDecDeg;
-							Beob.oLatitudeDecDeg = oLatitudeDecDeg;
-							Beob.oXKoord = oXKoord;
-							Beob.oYKoord = oYKoord;
-							Beob.oLagegenauigkeit = "Auf Luftbild markiert";
-							//alles speichern
-							$db.saveDoc(Beob, {
-								success: function () {
-									//Werte in Feldern anzeigen
-									$("#oXKoord").val(oXKoord);
-									$("#oYKoord").val(oYKoord);
-									$("#oLatitudeDecDeg").val(oLatitudeDecDeg);
-									$("#oLongitudeDecDeg").val(oLongitudeDecDeg);
-									$("#oLagegenauigkeit").val(oLagegenauigkeit);
-								},
-								error: function () {
-									melde("Fehler: Koordinaten nicht gespeichert");
-								}
-							});
-						}
-					});
-				}
 			});
 		</script>
 	</div>
-
-	<div data-role="page" id="BeobEditMapPage" style="width:100%; height:100% !important;">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a id="BeobEditMap_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse">abbrechen</a>
-			<h1>Karte</h1>
-			<a href='#' name='MenuBeobEdit' data-role='button' data-icon="gear" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-		</div>
-		<div data-role="content" style="width:100%; height:100%; padding:0"> 
-			<div id="map_canvas" style="width:100%; height:100%"></div>
-		</div>
-	</div>
-
   </body>
 </html>

@@ -215,28 +215,28 @@ function melde(Meldung) {
 		});
 }
 
-//wird benutzt von hOrtEdit.html
-function speichereKoordinaten(oLatitudeDecDeg, oLongitudeDecDeg, oXKoord, oYKoord, oLagegenauigkeit) {
+//wird benutzt von hOrtEdit.html und BeobEdit.html
+function speichereKoordinaten(id, Lagegenauigkeit) {
 	$db = $.couch.db("evab");
 	//Bestehendes Dokument öffnen
-	$db.openDoc(sessionStorage.OrtId, {
-		success: function (Ort) {
+	$db.openDoc(id, {
+		success: function (doc) {
 			//Längen- und Breitengrad sind in keinem Feld dargestellt
 			//sie müssen aus ihren Variabeln gespeichert werden
-			Ort.oLongitudeDecDeg = oLongitudeDecDeg;
-			Ort.oLatitudeDecDeg = oLatitudeDecDeg;
-			Ort.oXKoord = oXKoord;
-			Ort.oYKoord = oYKoord;
-			Ort.oLagegenauigkeit = oLagegenauigkeit;
+			doc.oLongitudeDecDeg = sessionStorage.oLongitudeDecDeg;
+			doc.oLatitudeDecDeg = sessionStorage.oLatitudeDecDeg;
+			doc.oXKoord = sessionStorage.oXKoord;
+			doc.oYKoord = sessionStorage.oYKoord;
+			doc.oLagegenauigkeit = Lagegenauigkeit;
 			//alles speichern
-			$db.saveDoc(Ort, {
+			$db.saveDoc(doc, {
 				success: function () {
 					//melde("Koordinaten gespeichert");
-					$("input#oXKoord").val(oXKoord);
-					$("input#oYKoord").val(oYKoord);
-					$("input#oLatitudeDecDeg").val(oLatitudeDecDeg);
-					$("input#oLongitudeDecDeg").val(oLongitudeDecDeg);
-					$("input#oLagegenauigkeit").val(oLagegenauigkeit);
+					$("#oXKoord").val(sessionStorage.oXKoord);
+					$("#oYKoord").val(sessionStorage.oYKoord);
+					$("#oLatitudeDecDeg").val(sessionStorage.oLatitudeDecDeg);
+					$("#oLongitudeDecDeg").val(sessionStorage.oLongitudeDecDeg);
+					$("#oLagegenauigkeit").val(Lagegenauigkeit);
 				},
 				error: function () {
 					melde("Fehler: Koordinaten nicht gespeichert");
@@ -836,12 +836,13 @@ function initiiereBeobEdit_2() {
 			sessionStorage.aArtName = aArtName;
 			aArtId = Beob.aArtId;
 			sessionStorage.aArtId = aArtId;
-			oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-			oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+			sessionStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+			sessionStorage.oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+			sessionStorage.oLagegenauigkeit = Beob.oLagegenauigkeit || "";
+			sessionStorage.oXKoord = Beob.oXKoord;
+			sessionStorage.oYKoord = Beob.oYKoord;
 			setzeFixeFelderInBeobEdit(Beob);
 			erstelleDynamischeFelderBeobEdit(Beob);
-			//url muss gepuscht werden, wenn mit changePage zwischen mehreren Formularen gewechselt wurde
-			window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
 			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 			speichereLetzteUrl();
 		}
@@ -1660,8 +1661,11 @@ function initiiereOrtEdit() {
 			OrtId = Ort._id;
 			sessionStorage.OrtId = OrtId;
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
-			oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
-			oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
+			sessionStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg || "";
+			sessionStorage.oLatitudeDecDeg = Ort.oLatitudeDecDeg || "";
+			sessionStorage.oLagegenauigkeit = Ort.oLagegenauigkeit || "";
+			sessionStorage.oXKoord = Ort.oXKoord;
+			sessionStorage.oYKoord = Ort.oYKoord;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlisteOrtEdit) {
@@ -2527,9 +2531,9 @@ function GetGeolocation(docId, FormName) {
 	//dem Benutzer mitteilen, dass die Position ermittelt wird
 	//Felder nur ändern, wenn zuvor kein Wert enthalten war
 	//if (!$("input#oXKoord").val()) {
-		$("input#oXKoord").val("Position ermitteln...");
-		$("input#oYKoord").val("Position ermitteln...");
-		$("input#oLagegenauigkeit").val("Position ermitteln...");
+		$("#oXKoord").val("Position ermitteln...");
+		$("#oYKoord").val("Position ermitteln...");
+		$("#oLagegenauigkeit").val("Position ermitteln...");
 	//}
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
 	//nach spätestens 20 Sekunden aufhören zu messen
@@ -2542,17 +2546,17 @@ function onGeolocationSuccess(position) {
 	var oLagegenauigkeit, Höhe, x, y;
 	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
 	//und eine ev. zuvor erhaltene Genauigkeit unterschritten wird
-	oLagegenauigkeit = position.coords.accuracy;
+	sessionStorage.oLagegenauigkeit = position.coords.accuracy;
 	//if (oLagegenauigkeit < 100 && oLagegenauigkeit < $("#oLagegenauigkeit").val()) {
-	if (oLagegenauigkeit < 100) {
-		oLongitudeDecDeg = position.coords.longitude;
-		oLatitudeDecDeg = position.coords.latitude;
+	if (sessionStorage.oLagegenauigkeit < 100) {
+		sessionStorage.oLongitudeDecDeg = position.coords.longitude;
+		sessionStorage.oLatitudeDecDeg = position.coords.latitude;
 		Höhe = position.coords.altitude;
-		$("#oLagegenauigkeit").val(oLagegenauigkeit);
-		x = DdInChX(oLatitudeDecDeg, oLongitudeDecDeg);
-		y = DdInChY(oLatitudeDecDeg, oLongitudeDecDeg);
-		$("#oXKoord").val(x);
-		$("#oYKoord").val(y);
+		$("#oLagegenauigkeit").val(sessionStorage.oLagegenauigkeit);
+		sessionStorage.oXKoord = DdInChX(sessionStorage.oLatitudeDecDeg, sessionStorage.oLongitudeDecDeg);
+		sessionStorage.oYKoord = DdInChY(sessionStorage.oLatitudeDecDeg, sessionStorage.oLongitudeDecDeg);
+		$("#oXKoord").val(sessionStorage.oXKoord);
+		$("#oYKoord").val(sessionStorage.oYKoord);
 		if (Höhe > 0) {
 			$("input#oObergrenzeHöhe").val(position.coords.altitude);
 		}
@@ -2584,10 +2588,13 @@ function stopGeolocation() {
 		navigator.geolocation.clearWatch(watchID);
 		watchID = null;
 		//Mitteilungen löschen
-		if ($("input#oXKoord").val() === "Position ermitteln...") {
-			$("input#oXKoord").val("");
-			$("input#oYKoord").val("");
-			$("input#oLagegenauigkeit").val("");
+		if ($("#oXKoord").val() === "Position ermitteln...") {
+			$("#oXKoord").val("");
+			$("#oYKoord").val("");
+			$("#oLagegenauigkeit").val("");
+			delete sessionStorage.oXKoord;
+			delete sessionStorage.oYKoord;
+			delete sessionStorage.oLagegenauigkeit;
 			melde("Keine genaue Position erhalten");
 		}
 		speichereAlles(sessionStorage.docId, sessionStorage.FormName);
