@@ -137,9 +137,6 @@
 					sessionStorage.Von = "BeobEdit";
 					if ($("#agl_Page").length > 0) {
 						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html", reloadPage: true});
-						//window.history.pushState("", "", "Artgruppenliste.html?Status=neu&Von=BeobEdit"); //funktioniert in IE erst ab 10!
-						//$("#BeobEditPage").removeClass('ui-page-active');
-						//$("#agl_Page").addClass('ui-page-active');
 					} else {
 						$.mobile.changePage("Artgruppenliste.html");
 					}

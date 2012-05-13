@@ -1009,7 +1009,7 @@ function initiiereBeobliste_2() {
 	$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 	if (anzBeob === 0) {
-		ListItemContainer = '<li><a href="#" class="bl_NeuLink">Erste Beobachtung erfassen</a></li>';
+		ListItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
 	} else {
 		for (i in BeobListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
@@ -1466,7 +1466,7 @@ function initiiereProjektliste_2() {
 	$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 	if (anzProj === 0) {
-		ListItemContainer = "<li><a href='#' class='erste hpl_NeuLink'>Erstes Projekt erfassen</a></li>";
+		ListItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
 		for (i in Projektliste.rows) {			//Liste aufbauen
 			if (typeof i !== "function") {
@@ -1633,7 +1633,7 @@ function initiiereRaumListe_2() {
 	}
 	$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 	if (anzRaum === 0) {
-		ListItemContainer = '<li><a href="#" data-transition="slideup" rel="external" name="hRaumNeuLink" class="erste">Ersten Raum erfassen</a></li>';
+		ListItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
 		for (i in RaumListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
@@ -1815,7 +1815,7 @@ function initiiereOrtListe_2() {
 	$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 	if (anzOrt === 0) {
-		ListItemContainer = '<li><a href="#" class="erste hol_NeuLink">Ersten Ort erfassen</a></li>';
+		ListItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
 	} else {
 		for (i in OrtListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
@@ -1951,7 +1951,7 @@ function initiiereZeitListe_2() {
 	$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
 	if (anzZeit === 0) {
-		ListItemContainer = '<li><a href="#" class="erste hzl_NeuLink">Erste Zeit erfassen</a></li>';
+		ListItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
 	} else {
 		for (i in ZeitListe.rows) {
 			if (typeof i !== "function") {
@@ -2174,7 +2174,7 @@ function initiierehBeobListe_2() {
 	$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
-		ListItemContainer = '<li><a href="#" class="erste hal_NeuLink">Erste Art erfassen</a></li>';
+		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
 		for (i in hBeobListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {

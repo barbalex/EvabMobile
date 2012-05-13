@@ -44,7 +44,7 @@
 					<li><a href="#" id="OeffneRaumhArtListe">Raum</a></li>
 					<li><a href="#" id="OeffneOrthArtListe">Ort</a></li>
 					<li><a href="#" name="OeffneZeithArtListe">Zeit</a></li>
-					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
+					<li><a href="hArtListe.html" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -60,27 +60,35 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
+			$("#hArtListePage").on("pageshow", function () {
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.hArtListeWirdInitiiert nicht true ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (!sessionStorage.hArtListeWirdInitiiert) {
+					initiierehBeobListe();
+				}
+				delete sessionStorage.hArtListeWirdInitiiert;
+			});
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hBeobListe");
-				} else {
-					initiierehBeobListe();
+					sessionStorage.hArtListeWirdInitiiert = true;
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
 				$("body").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
-					window.open("hZeitEdit.html", target = "_self");
+					$.mobile.changePage("hZeitEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", function (event) {
 					event.preventDefault();
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
-					window.open("hOrtEdit.html", target = "_self");
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", function (event) {
@@ -88,7 +96,7 @@
 					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
 					delete sessionStorage.ZeitListe;
 					delete sessionStorage.OrtListe;
-					window.open("hRaumEdit.html", target = "_self");
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", function (event) {
@@ -97,7 +105,7 @@
 					delete sessionStorage.ZeitListe;
 					delete sessionStorage.OrtListe;
 					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Menu aufbauen
@@ -127,13 +135,12 @@
 				}
 
 				$("#Arten").on("swipeleft click", ".beob", function () {
-					hBeobId = $(this).attr('hBeobId');
-					sessionStorage.hBeobId = hBeobId;
+					sessionStorage.hBeobId = $(this).attr('hBeobId');
 					window.open("hArtEdit.html", target = "_self");
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hZeitListe.html", target = "_self");
+					$.mobile.changePage("hZeitListe.html");
 				});
 
 				//Menü aufbauen

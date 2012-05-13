@@ -104,18 +104,14 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".Zeit", function () {
-					var ZeitId;
-					ZeitId = $(this).attr('ZeitId');
-					sessionStorage.ZeitId = ZeitId;
-					window.open("hArtListe.html", target = "_self");
+					sessionStorage.ZeitId = $(this).attr('ZeitId');
+					$.mobile.changePage("hArtListe.html");
 				});
 
 				$("#Zeiten").on("click", ".Zeit", function (event) {
-					var ZeitId;
 					event.preventDefault();
-					ZeitId = $(this).attr('ZeitId');
-					sessionStorage.ZeitId = ZeitId;
-					window.open("hZeitEdit.html", target = "_self");
+					sessionStorage.ZeitId = $(this).attr('ZeitId');
+					$.mobile.changePage("hZeitEdit.html");
 				});
 
 				$("#Zeiten").on("swipeleft", ".erste", function () {

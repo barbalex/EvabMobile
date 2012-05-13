@@ -100,9 +100,9 @@
 				function erstelleSichtbareFelder() {
 					$("#Feldliste").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlistehBeobEdit !== "undefined") {
+					if (window.FeldlistehBeobEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (typeof sessionStorage.FeldlistehBeobEdit !== "undefined" && sessionStorage.FeldlistehBeobEdit) {
+					} else if (sessionStorage.FeldlistehBeobEdit) {
 						FeldlistehBeobEdit = JSON.parse(sessionStorage.FeldlistehBeobEdit);
 						erstelleSichtbareFelder_2();
 					} else {

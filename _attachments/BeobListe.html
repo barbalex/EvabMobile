@@ -86,6 +86,11 @@
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
 
+				//Neue Beobachtung managen
+				$("#beobachtungen").on("swipeleft", ".erste", function () {
+					erstelleNeueBeob_1_Artgruppenliste();
+				});
+
 				$(document).on("swiperight", "#BeobListePage", function () {
 					window.open("hProjektListe.html", target = "_self");
 				});

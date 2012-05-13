@@ -103,17 +103,13 @@
 				});
 
 				$("#Orte").on("swipeleft", ".Ort", function () {
-					var OrtId;
-					OrtId = $(this).attr('OrtId');
-					sessionStorage.OrtId = OrtId;
-					window.open("hZeitListe.html", target = "_self");
+					sessionStorage.OrtId = $(this).attr('OrtId');
+					$.mobile.changePage("hZeitListe.html");
 				});
 
 				$("#Orte").on("click", ".Ort", function (event) {
-					var OrtId;
 					event.preventDefault();
-					OrtId = $(this).attr('OrtId');
-					sessionStorage.OrtId = OrtId;
+					sessionStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hOrtEdit.html");
 				});
 

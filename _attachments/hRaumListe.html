@@ -84,7 +84,7 @@
 				//neuen Raum erstellen
 				$("body").on("click", "[name='NeuerRaumRaumListe']", function (event) {
 					event.preventDefault();
-					erstelleNeuenRaum(sessionStorage.ProjektId);
+					erstelleNeuenRaum();
 				});
 
 				//Menu aufbauen
@@ -95,7 +95,7 @@
 
 				$("#Räume").on("swipeleft", ".Raum", function () {
 					sessionStorage.RaumId = $(this).attr('RaumId');
-					window.open("hOrtListe.html", target = "_self");
+					$.mobile.changePage("hOrtListe.html");
 				});
 
 				$("#Räume").on("click", ".Raum", function (event) {
