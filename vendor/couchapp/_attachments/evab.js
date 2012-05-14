@@ -661,7 +661,7 @@ function öffneMeineEinstellungen() {
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
 	}
-	if (typeof sessionStorage.UserId === "undefined" || !sessionStorage.UserId) {
+	if (!sessionStorage.UserId) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + localStorage.Username + '"', {
 			success: function (data) {
@@ -670,11 +670,11 @@ function öffneMeineEinstellungen() {
 				//UserId = data.rows[0].value._id;
 				sessionStorage.UserId = UserId;
 				sessionStorage.Autor = User.Autor;
-				window.open("UserEdit.html", target = "_self");
+				$.mobile.changePage("UserEdit.html");
 			}
 		});
 	} else {
-		window.open("UserEdit.html", target = "_self");
+		$.mobile.changePage("UserEdit.html");
 	}
 }
 
@@ -1020,9 +1020,9 @@ function initiiereUserEdit() {
 			$("#UserName").val(User.UserName);
 			$("#Autor").val(User.Autor);
 			$("#Email").val(User.Email);
-			$("input[name='ArtenSprache']").checkboxradio();
+			$("[name='ArtenSprache']").checkboxradio();
 			$("#" + User.ArtenSprache).prop("checked",true).checkboxradio("refresh");
-			$("input[name='Datenverwendung']").checkboxradio();
+			$("[name='Datenverwendung']").checkboxradio();
 			$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
 			speichereLetzteUrl();
 		}

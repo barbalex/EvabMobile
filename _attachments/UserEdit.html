@@ -6,10 +6,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>EvAB</title>
 		<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+		<link rel="stylesheet" href="style/evab.css" type="text/css"/>
 		<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
 		<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-		<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-		<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 		<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 		<script type="text/javascript">
 			$(document).on("mobileinit", function () {
@@ -25,8 +24,9 @@
 		<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
 		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
 		<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
 		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
 		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
@@ -82,91 +82,91 @@
 					<p>* Bei dieser Option werden die <a href="http://www.natportal.ch/data/deontologie_d.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br /><br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Beobachtungen von nicht besonders empfindlichen Arten können in grober räumlicher Auflösung publiziert werden (5*5km).<br /><br />Die Daten werden in die Datenbank der <a href="http://www.naturschutz.zh.ch" target="_blank">Fachstelle Naturschutz des Kantons Zürich</a> synchronisiert und von dort an die zuständigen Nationalen Artdatenzentren weitergeleitet: <a href="http://www.crsf.ch/" target="_blank">info Flora</a>, <a href="http://www.cscf.ch/" target="_blank">CSCF (Fauna)</a>, <a href="http://www.nism.uzh.ch" target="_blank">NISM (Moose)</a>, <a href="www.swissfungi.ch" target="_blank">Swissfungi (Pilze)</a>.</p>
 				</form>
 			</div>
-		</div>
-		<script type="text/javascript">
+			<script type="text/javascript">
 
-			$("#UserEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.UserId existiert und ungleich null ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.UserId) {
-					initiiereUserEdit();
-				}
-			});
-
-			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("UserEdit");
-				}
-
-				//zurück-Button steuern
-				$("#UserEditPage").on('click', '#zurückUserEdit', function (event) {
-					var zurueck;
-					event.preventDefault();
-					if (sessionStorage.zurueck) {
-						zurueck = sessionStorage.zurueck;
-					} else {
-						zurueck = "BeobListe.html";
+				$("#UserEditPage").on("pageshow", function () {
+					//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+					//darum prüfen, ob sessionStorage.UserEditWirdInitiiert nicht true ist
+					//sonst übernimmt holeSessionStorageAusDb das initiieren
+					if (!sessionStorage.UserEditWirdInitiiert) {
+						initiiereUserEdit();
 					}
-					window.open(zurueck, target = "_self")
-					delete sessionStorage.zurueck;
+					delete sessionStorage.UserEditWirdInitiiert;
 				});
 
-				//jedes Feld bei Änderung speichern
-				$("#UserEditForm").on("change", ".Feld", function () {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					if (validiereUserUserEdit()) {
-						speichern(Feldname, Feldwert);
+				$(":jqmData(role='page')").on("pageinit", function () {
+					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+					//wo sie von speichereLetzteUrl gespeichert wurde
+					if (sessionStorage.length === 0) {
+						holeSessionStorageAusDb("UserEdit");
+						sessionStorage.UserEditWirdInitiiert = true;
 					}
-				});
 
-				//kontrollierren, ob die erforderlichen Felder etwas enthalten
-				//wenn ja wird true retourniert, sonst false
-				function validiereUserUserEdit() {
-					if (!$("#Autor").val()) {
-						melde("Bitte Autor eingeben");
-						setTimeout(function() { 
-							$('#Autor').focus();
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return false;
-					}
-					if (!$("#Email").val()) {
-						melde("Bitte email-Adresse eingeben");
-						setTimeout(function() { 
-							$('#Email').focus();
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						return false;
-					}
-					return true;
-				}
+					//zurück-Button steuern
+					$("#UserEditPage").on('click', '#zurückUserEdit', function (event) {
+						event.preventDefault();
+						//sicherstellen, dass er immer ein zurück kennt
+						if (!sessionStorage.zurueck) {
+							sessionStorage.zurueck = "BeobListe.html";
+						}
+						$.mobile.changePage(sessionStorage.zurueck);
+						delete sessionStorage.zurueck;
+					});
 
-				function speichern(Feldname, Feldwert) {
-					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.UserId, {
-						success: function (doc) {
-								if (Feldwert) {
-									doc[Feldname] = Feldwert;
-								} else if (doc[Feldname]) {
-									delete doc[Feldname]
-								}
-								if (Feldname === "ArtenSprache") {
-									sessionStorage.ArtenSprache = Feldwert;
-								}
-							$db.saveDoc(doc, {
-								error: function () {
-									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-								}
-							});
+					//jedes Feld bei Änderung speichern
+					$("#UserEditForm").on("change", ".Feld", function () {
+						var Feldname, Feldjson, Feldwert;
+						Feldname = this.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+						if (validiereUserUserEdit()) {
+							speichern(Feldname, Feldwert);
 						}
 					});
-				}
-			});
-		</script>
+
+					//kontrollierren, ob die erforderlichen Felder etwas enthalten
+					//wenn ja wird true retourniert, sonst false
+					function validiereUserUserEdit() {
+						if (!$("#Autor").val()) {
+							melde("Bitte Autor eingeben");
+							setTimeout(function() { 
+								$('#Autor').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						}
+						if (!$("#Email").val()) {
+							melde("Bitte email-Adresse eingeben");
+							setTimeout(function() { 
+								$('#Email').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						}
+						return true;
+					}
+
+					function speichern(Feldname, Feldwert) {
+						$db = $.couch.db("evab");
+						$db.openDoc(sessionStorage.UserId, {
+							success: function (doc) {
+									if (Feldwert) {
+										doc[Feldname] = Feldwert;
+									} else if (doc[Feldname]) {
+										delete doc[Feldname]
+									}
+									if (Feldname === "ArtenSprache") {
+										sessionStorage.ArtenSprache = Feldwert;
+									}
+								$db.saveDoc(doc, {
+									error: function () {
+										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+									}
+								});
+							}
+						});
+					}
+				});
+			</script>
+		</div>
 	</body>
 </html>
