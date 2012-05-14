@@ -34,12 +34,12 @@
   <body>
 	<div data-role="page" id="ProjektEditPage">
 		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hProjektListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Projekt-Liste</a>
+			<a href="#" name="OeffneProjektListeProjektEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
 			<a href='#' id='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="hProjektListe.html" class="ui-btn-active">Projekte</a></li>
+					<li><a href="#" name="OeffneProjektListeProjektEdit" class="ui-btn-active">Projekte</a></li>
 					<li><a href="hRaumListe.html">Räume</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -96,6 +96,12 @@
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hProjektEdit");
 				}
+
+				$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function (event) {
+					event.preventDefault();
+					leereSessionStorageProjektEdit();
+					$.mobile.changePage("hProjektListe.html");
+				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
@@ -267,10 +273,9 @@
 											// lösche Projekt
 											return $db.removeDoc(document, {
 												success: function () {
-													//Globale Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-													delete window.Projektliste;
-													delete sessionStorage.Projektliste;
-													delete sessionStorage.ProjektId;
+													//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+													leereSessionStorageProjektEdit();
+													leereSessionStorageProjektListe();
 													//Rückmeldung += "\rProjekt gelöscht";
 													//melde(Rückmeldung);
 													$.mobile.changePage('hProjektListe.html');
@@ -403,9 +408,8 @@
 				function speichern(Feldname, Feldwert) {
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
-							//Variablen für Projektliste zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							delete window.Projektliste;
-							delete sessionStorage.Projektliste;
+							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							leereSessionStorageProjektListe();
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -548,10 +552,11 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStorageProjektEdit();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {
@@ -611,28 +616,25 @@
 					if (window.Projektliste) {
 						//globale Variable Projektliste existiert noch
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
+					} else if (sessionStorage.Projektliste) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						Projektliste = JSON.parse(sessionStorage.Projektliste);
+						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
-						//hat hProjektListe.html eine Projektliste übergeben?
-						if (sessionStorage.Projektliste) {
-							//Objekte werden als Strings übergeben, müssen geparst werden
-							Projektliste = JSON.parse(sessionStorage.Projektliste);
-							nächstesVorigesProjekt_2(NächstesOderVoriges);
-						} else {
-							//keine Projektliste übergeben
-							//neu aus DB erstellen
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
-								success: function (data) {
-									//Projektliste bereitstellen
-									Projektliste = data;
-									sessionStorage.Projektliste = JSON.stringify(Projektliste);
-									nächstesVorigesProjekt_2(NächstesOderVoriges);
-								}
-							});
+						//keine Projektliste übergeben
+						//neu aus DB erstellen
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
 						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
+							success: function (data) {
+								//Projektliste bereitstellen
+								Projektliste = data;
+								sessionStorage.Projektliste = JSON.stringify(Projektliste);
+								nächstesVorigesProjekt_2(NächstesOderVoriges);
+							}
+						});
 					}
 				}
 
@@ -646,7 +648,8 @@
 							case "nächstes":
 								if (i < AnzProj) {
 									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
-									initiiereProjektEdit();
+									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
+									//initiiereProjektEdit();
 									return;
 								} else {
 									melde("Das ist das letzte Projekt");
@@ -656,9 +659,11 @@
 							case "voriges":
 								if (i > 0) {
 									sessionStorage.ProjektId = Projektliste.rows[i-1].value._id;
-									initiiereProjektEdit();
+									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
+									//initiiereProjektEdit();
 									return;
 								} else {
+									leereSessionStorageProjektEdit();
 									$.mobile.changePage("hProjektListe.html");
 									return;
 								}

@@ -78,22 +78,25 @@
 				//Link zu Raum in Navbar und Titelleiste
 				$("body").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
-					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
+					leereSessionStorageZeitListe();
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
 					event.preventDefault();
-					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
-					delete sessionStorage.OrtListe;
+					leereSessionStorageZeitListe();
+					leereSessionStorageOrtEdit();
+					leereSessionStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
 					event.preventDefault();
-					delete sessionStorage.ZeitListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Ort man kommt!
-					delete sessionStorage.OrtListe;
-					delete sessionStorage.RaumListe;
+					leereSessionStorageZeitListe();
+					leereSessionStorageOrtEdit();
+					leereSessionStorageOrtListe();
+					leereSessionStorageRaumEdit();
+					leereSessionStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -119,7 +122,7 @@
 				});
 
 				$(document).on("swiperight", function () {
-					window.open("hOrtListe.html", target = "_self");
+					$.mobile.changePage("hOrtListe.html");
 				});
 
 				//Menu aufbauen
@@ -141,10 +144,17 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStorageZeitListe();
+									leereSessionStorageOrtEdit();
+									leereSessionStorageOrtListe();
+									leereSessionStorageRaumEdit();
+									leereSessionStorageRaumListe();
+									leereSessionStorageProjektEdit();
+									leereSessionStorageOrtListe();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {

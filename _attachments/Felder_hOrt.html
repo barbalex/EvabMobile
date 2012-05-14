@@ -122,11 +122,7 @@
 				
 				$("#Felder_hOrtPage").on("click", "#Felder_hOrtPage_back", function (event) {
 					event.preventDefault();
-					if ($('#OrtEditPage').length > 0) {
-						$.mobile.changePage($('#OrtEditPage'));
-					} else {
-						$.mobile.changePage("hOrtEdit.html");
-					}
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				//Felder speichern (checkbox)

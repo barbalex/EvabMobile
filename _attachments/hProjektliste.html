@@ -33,7 +33,8 @@
 	</head>
 	<body>
 		<div data-role="page" id="ProjektListePage">
-			<div id="hProjektListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
+			<div id="hProjektListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
+				<a href="#" id="OeffneBeobListeProjektListe" data-role="button" data-icon="arrow-l">einfach</a>
 				<h2 class="hProjektListePageTitel">Projekte</h2>
 				<a href='#' id='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 			</div>
@@ -45,7 +46,7 @@
 				<div data-role="navbar">
 					<ul>
 						<li><a href="#" data-icon="plus" class="ui-btn-active NeuesProjektProjektListe">neues Projekt</a></li>
-						<li><a href="#" id="KarteOeffnenProjektListe" data-icon="mappin">Karte</a></li>
+						<li><a href="#" id="OeffneKarteProjektListe" data-icon="mappin">Karte</a></li>
 					</ul>
 				</div>
 			</div>
@@ -94,11 +95,16 @@
 						erstelleNeuesProjekt();
 					});
 
+					$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
+						event.preventDefault();
+						window.open("BeobListe.html", target = "_self");
+					});
+
 					$("body").on("swiperight", function () {
 						window.open("BeobListe.html", target = "_self");
 					});
 
-					$('#ProjektListePageFooter').on('click', '#KarteOeffnenProjektListe', function (event) {
+					$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
 						event.preventDefault();
 						sessionStorage.zurueck = "hProjektListe";
 						$.mobile.changePage("Karte.html");
@@ -120,7 +126,7 @@
 										window.open("BeobListe.html", target = "_self");
 									},
 									theme: "a",
-									icon: "check"
+									icon: "arrow-l"
 								},
 								'Felder verwalten': {
 									click: function () {

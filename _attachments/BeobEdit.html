@@ -35,8 +35,8 @@
 
   <body>
   	<div data-role="page" id="BeobEditPage">
-  		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-  			<a href="BeobListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external">zur Beobachtungs-Liste</a>
+  		<div data-role="header" id="BeobEditHeader" data-position="fixed" data-tap-toggle="false">
+  			<a href="#" id="OeffneBeobListeBeobEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>Beobachtung</h2>
   			<a href='#' id='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
@@ -113,11 +113,12 @@
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function () {
 				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.BeobId existiert und ungleich null ist
+				//darum prüfen, ob sessionStorage.BeobEditWirdInitiiert nicht true ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.BeobId) {
+				if (!sessionStorage.BeobEditWirdInitiiert) {
 					initiiereBeobEdit();
 				}
+				delete sessionStorage.BeobEditWirdInitiiert;
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -125,36 +126,32 @@
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("BeobEdit");
+					sessionStorage.BeobEditWirdInitiiert = true;
 				}
+
+				$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", function() {
+					leereSessionStorageBeobEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
 
 				//Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function (event) {
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					delete window.BeobListe;
-					delete sessionStorage.BeobListe;
+					leereSessionStorageBeobListe();
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobEdit";
-					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"), {dataUrl: "Artgruppenliste.html", reloadPage: true});
-					} else {
-						$.mobile.changePage("Artgruppenliste.html");
-					}
+					$.mobile.changePage("Artgruppenliste.html");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "#aArtGruppe", function (event) {
 					event.preventDefault();
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					delete window.BeobListe;
-					delete sessionStorage.BeobListe;
+					leereSessionStorageBeobListe();
+					delete sessionStorage.Status;	//ja kein Status neu
 					sessionStorage.Von = "BeobEdit";
-					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-					} else {
-						$.mobile.changePage("Artgruppenliste.html");
-					}
+					$.mobile.changePage("Artgruppenliste.html");
 				});
 
 				//sichtbare Felder wählen
@@ -165,38 +162,25 @@
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '#aArtName', function (event) {
-					var viewname;
 					event.preventDefault();
-					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					delete window.BeobListe;
-					delete sessionStorage.BeobListe;
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
-					$db.view(viewname, {
+					$db.view('evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"', {
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
+							//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+							leereSessionStorageBeobListe();
 							sessionStorage.Von = "BeobEdit";
 							delete sessionStorage.Status;	//ja kein Status = neu
 							if (ArtGruppen_2_L) {
 								sessionStorage.NestedList = true;
-								if ($("#agl_Page").length > 0) {
-									$.mobile.changePage($("#agl_Page"));
-									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-								} else {
-									$.mobile.changePage("Artengruppenliste.html");
-								}
+								$.mobile.changePage("Artengruppenliste.html");
 							} else {
 								delete sessionStorage.NestedList;
-								if ($("#al_Page").length > 0) {
-									$.mobile.changePage($("#al_Page"));
-									window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
-								} else {
-									$.mobile.changePage("Artenliste.html");
-								}
+								$.mobile.changePage("Artenliste.html");
 							}
 						}
 					});
@@ -209,7 +193,6 @@
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
-					//speichern(Feldname, Feldwert);
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst
 						sessionStorage.oXKoord = $("#oXKoord").val();
@@ -217,6 +200,7 @@
 						//Längen- und Breitengrade berechnen
 						sessionStorage.oLongitudeDecDeg = CHtoWGSlng(sessionStorage.oYKoord, sessionStorage.oXKoord);
 						sessionStorage.oLatitudeDecDeg = CHtoWGSlat(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						//und Koordinaten speichern
 						speichereKoordinaten(sessionStorage.BeobId, "");
 					} else {
 						speichern(Feldname, Feldwert);
@@ -251,24 +235,9 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				$(document).on("pageshow", '#BeobEditMapPage', function () {
-					erstelleKarte();
-				});
-
-				$(document).on("pagehide", '#BeobEditMapPage', function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
-					$("#map_canvas").html("");
-				});
-
 				$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
 					event.preventDefault();
 					GetGeolocation(sessionStorage.BeobId, "BeobEditForm");
-				});
-
-				$('#BeobEditMapPage').on('click', '#BeobEditMap_back', function (event) {
-					event.preventDefault();
-					$.mobile.changePage($('#BeobEditPage'));
-					window.history.pushState("", "", "hArtEdit.html"); //funktioniert in IE erst ab 10!
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
@@ -367,28 +336,25 @@
 					if (window.BeobListe) {
 						//globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(NächsteOderVorige);
+					} else if (sessionStorage.BeobListe) {
+						BeobListe = JSON.parse(sessionStorage.BeobListe);
+						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
-						//hat BeobListe.html eine BeobListe übergeben?
-						if (sessionStorage.BeobListe) {
-							BeobListe = JSON.parse(sessionStorage.BeobListe);
-							nächsteVorigeBeob_2(NächsteOderVorige);
-						} else {
-							//keine Projektliste übergeben
-							//neu aus DB erstellen
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
-								success: function (data) {
-									//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
-									//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
-									BeobListe = data;
-									sessionStorage.BeobListe = JSON.stringify(BeobListe);
-									nächsteVorigeBeob_2(NächsteOderVorige);
-								}
-							});
+						//keine Projektliste übergeben
+						//neu aus DB erstellen
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
 						}
+						$db = $.couch.db("evab");
+						$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
+							success: function (data) {
+								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
+								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
+								BeobListe = data;
+								sessionStorage.BeobListe = JSON.stringify(BeobListe);
+								nächsteVorigeBeob_2(NächsteOderVorige);
+							}
+						});
 					}
 				}
 
@@ -415,7 +381,8 @@
 									initiiereBeobEdit();
 									return;
 								} else {
-									window.open("BeobListe.html", target = "_self");
+									leereSessionStorageBeobEdit();
+									$.mobile.changePage("BeobListe.html");
 									return;
 								}
 								break;
@@ -443,23 +410,17 @@
 						'buttons' : {
 							'hierarchischer Modus': {
 								click: function () {
+									leereSessionStorageBeobEdit();
 									window.open("hProjektListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Arteigenschaften': {
 								click: function () {
-									//Variabeln übergeben
+									//Variablen übergeben
 									sessionStorage.zurueck = "BeobEdit.html"
-									//Seite wechseln
-									if ($('#ArtEditPage').length > 0) {
-										//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
-										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
-									} else {
-										$.mobile.changePage("ArtEdit.html");
-									}
+									$.mobile.changePage("ArtEdit.html");
 								},
 								theme: "a",
 								icon: "question"
@@ -513,15 +474,14 @@
 				}
 				
 				function löscheBeobachtung() {
-					//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					delete window.BeobListe;
-					delete sessionStorage.BeobListe;
 					$db = $.couch.db("evab");
 					$db.openDoc(sessionStorage.BeobId, {
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									window.open("BeobListe.html", target = '_self');
+									//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+									leereSessionStorageBeobListe();
+									$.mobile.changePage("BeobListe.html");
 								},
 								error: function () {
 									melde("Fehler: Beobachtung nicht gelöscht");
@@ -537,7 +497,6 @@
 				//Speichert alle Daten
 				function speichern(Feldname, Feldwert) {
 					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
 					$db.openDoc(sessionStorage.BeobId, {
 						success: function (Beob) {
 							//Werte aus dem Formular aktualisieren

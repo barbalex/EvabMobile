@@ -35,16 +35,16 @@
   <body>
 	<div data-role="page" id="hArtEditPage">
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hArtListe.html" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">zur Art-Liste</a>
+			<a href="#" name="OeffneArtListehArtEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Art-Liste</a>
 			<h1>Art</h1>
 			<a href='#' id='MenuhBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" rel="external" id="OeffneProjekthArtEdit">Projekt</a></li>
-					<li><a href="#" rel="external" id="OeffneRaumhArtEdit">Raum</a></li>
-					<li><a href="#" rel="external" id="OeffneOrthArtEdit">Ort</a></li>
-					<li><a href="#" rel="external" id="OeffneZeithArtEdit">Zeit</a></li>
-					<li><a href="hArtListe.html" rel="external" class="ui-btn-active">Arten</a></li>
+					<li><a href="#" id="OeffneProjekthArtEdit">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumhArtEdit">Raum</a></li>
+					<li><a href="#" rid="OeffneOrthArtEdit">Ort</a></li>
+					<li><a href="#" id="OeffneZeithArtEdit">Zeit</a></li>
+					<li><a href="#" name="OeffneArtListehArtEdit" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -106,34 +106,51 @@
 					holeSessionStorageAusDb("hBeobEdit");
 				}
 
+				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function (event) {
+					event.preventDefault();
+					leereSessionStoragehBeobEdit();
+					$.mobile.changePage("hArtListe.html");
+				});
+
+
 				$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
-					window.open("hZeitEdit.html", target = "_self");
+					leereSessionStoragehBeobEdit();
+					leereSessionStoragehBeobListe();
+					$.mobile.changePage("hZeitEdit.html");
 				});
 
 				$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
-					delete sessionStorage.ZeitListe;
-					window.open("hOrtEdit.html", target = "_self");
+					leereSessionStoragehBeobEdit();
+					leereSessionStoragehBeobListe();
+					leereSessionStorageZeitEdit();
+					leereSessionStorageZeitListe();
+					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
-					delete sessionStorage.ZeitListe;
-					delete sessionStorage.OrtListe;
-					window.open("hRaumEdit.html", target = "_self");
+					leereSessionStoragehBeobEdit();
+					leereSessionStoragehBeobListe();
+					leereSessionStorageZeitEdit();
+					leereSessionStorageZeitListe();
+					leereSessionStorageOrtEdit();
+					leereSessionStorageOrtListe();
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.hBeobListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welcher Zeit man kommt!
-					delete sessionStorage.ZeitListe;
-					delete sessionStorage.OrtListe;
-					delete sessionStorage.RaumListe;
-					window.open("hProjektEdit.html", target = "_self");
+					leereSessionStoragehBeobEdit();
+					leereSessionStoragehBeobListe();
+					leereSessionStorageZeitEdit();
+					leereSessionStorageZeitListe();
+					leereSessionStorageOrtEdit();
+					leereSessionStorageOrtListe();
+					leereSessionStorageRaumEdit();
+					leereSessionStorageRaumListe();
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Für jedes Feld bei Änderung speichern
@@ -279,23 +296,15 @@
 
 				function zuArtgruppenliste() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					delete window.hBeobListe;
-					delete sessionStorage.hBeobListe;
+					leereSessionStoragehBeobListe();
 					sessionStorage.Von = "hArtEdit";
-					if ($('#agl_Page').length > 0) {
-						//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
-						$.mobile.changePage($('#agl_Page'));
-						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-					} else {
-						$.mobile.changePage("Artgruppenliste.html");
-					}
+					$.mobile.changePage("Artgruppenliste.html");
 				}
 
 				function zuArtliste() {
 					var viewname;
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					delete window.hBeobListe;
-					delete sessionStorage.hBeobListe;
+					leereSessionStoragehBeobListe();
 					sessionStorage.Von = "hArtEdit";
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
@@ -309,22 +318,10 @@
 							sessionStorage.Von = "hArtEdit";
 							if (ArtGruppen_2_L) {
 								sessionStorage.NestedList = true;
-								if ($('agl_Page').length > 0) {
-									//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
-									$.mobile.changePage($('agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-								} else {
-									$.mobile.changePage("Artgruppenliste.html");
-								}
+								$.mobile.changePage("Artgruppenliste.html");
 							} else {
 								delete sessionStorage.NestedList;
-								if ($('al_Page').length > 0) {
-									//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
-									$.mobile.changePage($('al_Page'));
-									window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
-								} else {
-									$.mobile.changePage("Artenliste.html");
-								}
+								$.mobile.changePage("Artenliste.html");
 							}
 						}
 					});
@@ -342,24 +339,25 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStoragehBeobEdit();
+									leereSessionStoragehBeobListe();
+									leereSessionStorageZeitEdit();
+									leereSessionStorageZeitListe();
+									leereSessionStorageOrtEdit();
+									leereSessionStorageOrtListe();
+									leereSessionStorageRaumEdit();
+									leereSessionStorageRaumListe();
+									leereSessionStorageProjektEdit();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Arteigenschaften': {
 								click: function () {
 									//Variabeln übergeben
-									//zurueck nicht über url, weil sonst zwei ? darin sind. Scheint Probleme zu geben
 									sessionStorage.zurueck = "hArtEdit.html";
-									//Seite wechseln
-									if ($('#ArtEditPage').length > 0) {
-										//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
-										$.mobile.changePage($('#ArtEditPage'));
-										window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
-									} else {
-										$.mobile.changePage("ArtEdit.html");
-									}
+									$.mobile.changePage("ArtEdit.html");
 								},
 								theme: "a",
 								icon: "question"
@@ -421,11 +419,9 @@
 							$db.removeDoc(document, {
 								success: function () {
 									//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									delete window.hBeobListe;
-									delete sessionStorage.hBeobListe;
-									delete sessionStorage.hBeobId;
-									//melde("Art gelöscht");
-									window.open("hArtListe.html", target = "_self");
+									leereSessionStoragehBeobListe();
+									leereSessionStoragehBeobEdit();
+									$.mobile.changePage("hArtListe.html");
 								},
 								error: function () {
 									melde("Fehler: Art nicht gelöscht");
@@ -476,27 +472,24 @@
 					if (window.hBeobListe) {
 						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
+					} else if (sessionStorage.hBeobListe) {
+						hBeobListe = JSON.parse(sessionStorage.hBeobListe);
+						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
-						//hat hArtListe.html eine ArtListe übergeben?
-						if (sessionStorage.hBeobListe) {
-							hBeobListe = JSON.parse(sessionStorage.hBeobListe);
-							nächsteVorigeArt_2(NächsteOderVorige);
-						} else {
-							//keine Ortliste vorhanden
-							//neu aus DB erstellen
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
-								success: function (data) {
-									//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-									hBeobListe = data;
-									sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
-									nächsteVorigeArt_2(NächsteOderVorige);
-								}
-							});
+						//keine Ortliste vorhanden
+						//neu aus DB erstellen
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
 						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
+							success: function (data) {
+								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+								hBeobListe = data;
+								sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
+								nächsteVorigeArt_2(NächsteOderVorige);
+							}
+						});
 					}
 				}
 
@@ -523,7 +516,8 @@
 									initiierehBeobEdit();
 									return;
 								} else {
-									window.open("hArtListe.html", target = "_self");
+									leereSessionStoragehBeobEdit();
+									$.mobile.changePage("hArtListe.html");
 									return;
 								}
 								break;

@@ -97,11 +97,7 @@
 
 				function zuArtgruppenliste() {
 					sessionStorage.Von = "ArtEdit";
-					if ($('#agl_Page').length > 0) {
-						$.mobile.changePage($('#agl_Page'));
-					} else {
-						$.mobile.changePage("Artgruppenliste.html");
-					}
+					$.mobile.changePage("Artgruppenliste.html");
 				}
 
 				function zuArtliste() {
@@ -117,12 +113,7 @@
 							sessionStorage.Von = "ArtEdit";
 							if (ArtGruppen_2_L) {
 								sessionStorage.NestedList = true;
-								if ($('#agl_Page').length > 0) {
-									$.mobile.changePage($('#agl_Page'));
-									window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-								} else {
-									$.mobile.changePage("Artgruppenliste.html");
-								}
+								$.mobile.changePage("Artgruppenliste.html");
 							} else {
 								delete sessionStorage.NestedList;
 								$.mobile.changePage("Artenliste.html");

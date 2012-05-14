@@ -58,13 +58,7 @@
 					if ($(this).attr("L")) {
 						sessionStorage.L = $(this).attr("L");
 					}
-					if ($('al_Page').length > 0) {
-						//Wenn al_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
-						$.mobile.changePage($('al_Page'));
-						window.history.pushState("", "", "Artenliste.html"); //funktioniert in IE erst ab 10!
-					} else {
-						$.mobile.changePage("Artenliste.html");
-					}
+					$.mobile.changePage("Artenliste.html");
 				});
 							
 

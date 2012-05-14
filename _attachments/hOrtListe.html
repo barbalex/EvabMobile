@@ -68,7 +68,7 @@
 				}
 				delete sessionStorage.hOrtListeWirdInitiiert;
 			});
-			$(":jqmData(role='page')").on("pageinit", function () {
+			$("#hOrtListePage").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
@@ -79,14 +79,15 @@
 				//Link zu Raum in Navbar und Titelleiste
 				$("body").on("click", "[name='OeffneRaumOrtListe']", function (event) {
 					event.preventDefault();
-					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					leereSessionStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", function (event) {
 					event.preventDefault();
-					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					delete sessionStorage.RaumListe;
+					leereSessionStorageOrtListe();
+					leereSessionStorageRaumEdit();
+					leereSessionStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -118,7 +119,8 @@
 				});
 
 				$(document).on("swiperight", "#hOrtListePage", function () {
-					delete sessionStorage.OrtListe;
+					leereSessionStorageOrtListe();
+					leereSessionStorageRaumEdit();
 					$.mobile.changePage("hRaumListe.html");
 				});
 
@@ -141,10 +143,15 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStorageOrtListe();
+									leereSessionStorageRaumEdit();
+									leereSessionStorageRaumListe();
+									leereSessionStorageRaumEdit();
+									leereSessionStorageProjektEdit();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {

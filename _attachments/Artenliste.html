@@ -62,13 +62,7 @@
 						speichereNeueBeob(ArtBezeichnung, ArtId);
 					} else if (sessionStorage.Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
-						if ($('#ArtEditPage').length > 0) {
-							//Wenn ArtEditPage schon im Dom ist, zur id wechseln. Sonst zur Url wechseln
-							$.mobile.changePage($('#ArtEditPage'));
-							window.history.pushState("", "", "ArtEdit.html"); //funktioniert in IE erst ab 10!
-						} else {
-							$.mobile.changePage("ArtEdit.html");
-						}
+						$.mobile.changePage("ArtEdit.html");
 					} else {
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);
 					}
@@ -106,13 +100,7 @@
 												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
 											}
 											if (ArtGruppen_2) {
-												if ($('#agl_Page').length > 0) {
-													//Wenn agl_Page schon im Dom ist, zur id wechseln und url updaten. Sonst zur Url wechseln
-													$.mobile.changePage($('#agl_Page'));
-													window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-												} else {
-													$.mobile.changePage("Artgruppenliste.html");
-												}
+												$.mobile.changePage("Artgruppenliste.html");
 											} else {
 												erstelleArtenliste();
 											}

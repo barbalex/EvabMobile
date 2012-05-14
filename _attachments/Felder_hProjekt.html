@@ -122,11 +122,7 @@
 				
 				$("#Felder_hProjektPage").on("click", "#Felder_hProjektPage_back", function (event) {
 					event.preventDefault();
-					if ($('#ProjektEditPage').length > 0) {
-						$.mobile.changePage($('#ProjektEditPage'));
-					} else {
-						$.mobile.changePage("hProjektEdit.html");
-					}
+					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Felder speichern (checkbox)

@@ -34,7 +34,7 @@
   <body>
   	<div data-role="page" id="Felder_hZeitPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hZeitPageHeader">
-  			<a id="Felder_hZeitPage_back" href="#" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
+  			<a id="Felder_hZeitPage_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hZeitPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" style="padding:0em;">
@@ -123,11 +123,7 @@
 				
 				$("#Felder_hZeitPage").on("click", "#Felder_hZeitPage_back", function (event) {
 					event.preventDefault();
-					if ($('#ZeitEditPage').length > 0) {
-						$.mobile.changePage($('#ZeitEditPage'));
-					} else {
-						$.mobile.changePage("hZeitEdit.html");
-					}
+					$.mobile.changePage("hZeitEdit.html");
 				});
 
 				//Felder speichern (checkbox)

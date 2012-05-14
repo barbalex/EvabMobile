@@ -35,14 +35,14 @@
   <body>
 	<div data-role="page" id="OrtEditPage">
 		<div data-role="header" id="OrtEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hOrtListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Ort-Liste</a>
+			<a href="#" name="OeffneOrtListeOrtEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Ort-Liste</a>
 			<h1>Ort</h1>
 			<a href='#' id='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjektOrtEdit">Projekt</a></li>
 					<li><a href="#" id="OeffneRaumOrtEdit">Raum</a></li>
-					<li><a href="hOrtListe.html" class="ui-btn-active">Orte</a></li>
+					<li><a href="#" name="OeffneOrtListeOrtEdit" class="ui-btn-active">Orte</a></li>
 					<li><a href="hZeitListe.html">Zeiten</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -112,6 +112,12 @@
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hOrtEdit");
 				}
+
+				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function (event) {
+					event.preventDefault();
+					leereSessionStorageOrtEdit();
+					$.mobile.changePage("hOrtListe.html");
+				});
 
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
@@ -307,12 +313,9 @@
 									// lösche Ort
 									return $db.removeDoc(document, {
 										success: function () {
-											//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-											delete window.OrtListe;
-											delete sessionStorage.OrtListe;
-											delete sessionStorage.OrtId;
-											//Rückmeldung += "\rOrt gelöscht";
-											//melde(Rückmeldung);
+											//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+											leereSessionStorageOrtListe()
+											leereSessionStorageOrtEdit();
 											$.mobile.changePage('hOrtListe.html');
 											return true;
 										},
@@ -420,8 +423,7 @@
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							delete window.OrtListe;
-							delete sessionStorage.OrtListe;
+							leereSessionStorageOrtListe();
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -514,10 +516,15 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStorageOrtEdit();
+									leereSessionStorageOrtListe();
+									leereSessionStorageRaumEdit();
+									leereSessionStorageRaumListe();
+									leereSessionStorageProjektEdit();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {
@@ -577,27 +584,24 @@
 					if (window.OrtListe) {
 						//Ortliste liegt als Variable vor
 						nächsterVorigerOrt_2(NächsterOderVoriger);
+					} else if (sessionStorage.OrtListe) {
+						OrtListe = JSON.parse(sessionStorage.OrtListe);
+						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
-						//hat hOrtListe.html eine OrtListe übergeben?
-						if (sessionStorage.OrtListe) {
-							OrtListe = JSON.parse(sessionStorage.OrtListe);
-							nächsterVorigerOrt_2(NächsterOderVoriger);
-						} else {
-							//keine Ortliste vorhanden
-							//neu aus DB erstellen
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
-								success: function (data) {
-									//OrtListe für hOrtListe.html bereitstellen
-									OrtListe = data;
-									sessionStorage.OrtListe = JSON.stringify(OrtListe);
-									nächsterVorigerOrt_2(NächsterOderVoriger);
-								}
-							});
+						//keine Ortliste vorhanden
+						//neu aus DB erstellen
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
 						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+							success: function (data) {
+								//OrtListe für hOrtListe.html bereitstellen
+								OrtListe = data;
+								sessionStorage.OrtListe = JSON.stringify(OrtListe);
+								nächsterVorigerOrt_2(NächsterOderVoriger);
+							}
+						});
 					}
 				}
 
@@ -624,6 +628,7 @@
 									initiiereOrtEdit();
 									return;
 								} else {
+									leereSessionStorageOrtEdit();
 									$.mobile.changePage("hOrtListe.html");
 									return;
 								}

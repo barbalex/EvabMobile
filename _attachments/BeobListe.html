@@ -33,7 +33,8 @@
   </head>
   <body>
   	<div data-role="page" id="BeobListePage">
-  		<div id="BeobListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
+  		<div id="BeobListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
+  			<a href="#" id="OeffneProjektListeBeobListe" data-role="button" data-icon="arrow-l">hierarchisch</a>
   			<h2 class="BeobListePageTitel">Beobachtungen</h2>
   			<a href='#' id='MenuBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
@@ -50,22 +51,27 @@
 			</div>
 		</div>
 		<script type="text/javascript" charset="utf-8">
+			$("#BeobListePage").on("pageshow", function () {
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.BeobListeWirdInitiiert nicht true ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (!sessionStorage.BeobListeWirdInitiiert) {
+					initiiereBeobliste();
+				}
+				delete sessionStorage.BeobListeWirdInitiiert;
+			});
+
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
-				//sessionStorage.BeobListe ist dann null und sessionStorage.length 1
-				//sessionStorage.BeobListe ist auch null, wenn die Beobliste gelöscht wurde
-				//holeSessionStorageAusDb stellt die alte sessionStorage.BeobListe wieder her
-				//darum hier die sessionStorage.length prüfen
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("BeobListe");
-				} else {
-					initiiereBeobliste();
+					sessionStorage.BeobListeWirdInitiiert = true;
 				}
 
 				$("#beobachtungen").on("swipeleft click", ".beob", function () {
 					sessionStorage.BeobId = $(this).attr('id');
-					window.open("BeobEdit.html", target = "_self");
+					$.mobile.changePage("BeobEdit.html");
 				});
 
 				$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function (event) {
@@ -78,6 +84,11 @@
 				$("#BeobListePageHeader").on('click', "#MenuBeobListe", function (event) {
 					event.preventDefault();
 					erstelleMenuBeobListe(this);
+				});
+
+				$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function (event) {
+					event.preventDefault();
+					window.open("hProjektListe.html", target = "_self");
 				});
 
 				//Neue Beobachtung managen
@@ -98,17 +109,11 @@
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-					delete window.BeobListe;
-					delete sessionStorage.BeobListe;
+					leereSessionStorageBeobListe();
 					sessionStorage.Status = "neu";
 					sessionStorage.Von = "BeobListe";
 					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
-					if ($("#agl_Page").length > 0) {
-						$.mobile.changePage($("#agl_Page"));
-						window.history.pushState("", "", "Artgruppenliste.html"); //funktioniert in IE erst ab 10!
-					} else {
-						$.mobile.changePage("Artgruppenliste.html");
-					}
+					$.mobile.changePage("Artgruppenliste.html");
 				}
 
 				//Menü aufbauen
@@ -124,7 +129,7 @@
 									window.open("hProjektListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {

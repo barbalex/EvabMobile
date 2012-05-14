@@ -34,13 +34,13 @@
   <body>
 	<div data-role="page" id="RaumEditPage">
 		<div data-role="header" id="RaumEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="hRaumListe.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Raum-Liste</a>
+			<a href="#" name="OeffneRaumListeRaumEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Raum-Liste</a>
 			<h2>Raum</h2>
 			<a href='#' id='MenuRaumEdit' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="ProjektOeffnenRaumEdit">Projekt</a></li>
-					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
+					<li><a href="#" name="OeffneRaumListeRaumEdit" class="ui-btn-active">Räume</a></li>
 					<li><a href="hOrtListe.html">Orte</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -92,12 +92,18 @@
 				}
 			});
 
-			$(":jqmData(role='page')").on("pageinit", function () {
+			$("#RaumEditPage").on("pageinit", function () {
 				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("hRaumEdit");
 				}
+
+				$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
+					event.preventDefault();
+					leereSessionStorageRaumEdit();
+					$.mobile.changePage("hRaumListe.html");
+				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function () {
@@ -269,12 +275,9 @@
 										// lösche Raum
 										return $db.removeDoc(document, {
 											success: function () {
-												//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-												delete window.RaumListe;
-												delete sessionStorage.RaumListe;
-												delete sessionStorage.RaumId;
-												//Rückmeldung += "\rRaum gelöscht";
-												//melde(Rückmeldung);
+												//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+												leereSessionStorageRaumEdit();
+												leereSessionStorageRaumListe()
 												$.mobile.changePage('hRaumListe.html');
 												return true;
 											},
@@ -380,9 +383,8 @@
 				function speichern(Feldname, Feldwert) {
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
-							//Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							delete window.RaumListe;
-							delete sessionStorage.RaumListe;
+							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							leereSessionStorageRaumListe();
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -499,10 +501,13 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
+									leereSessionStorageRaumEdit();
+									leereSessionStorageRaumListe();
+									leereSessionStorageProjektEdit();
 									window.open("BeobListe.html", target = "_self");
 								},
 								theme: "a",
-								icon: "check"
+								icon: "arrow-l"
 							},
 							'Felder verwalten': {
 								click: function () {
@@ -562,28 +567,25 @@
 					if (window.RaumListe) {
 						//globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
+					} else if (sessionStorage.RaumListe) {
+						//Objekte werden als Strings übergeben, müssen geparst werden
+						RaumListe = JSON.parse(sessionStorage.RaumListe);
+						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
-						//hat hRaumListe.html eine RaumListe übergeben?
-						if (sessionStorage.RaumListe) {
-							//Objekte werden als Strings übergeben, müssen geparst werden
-							RaumListe = JSON.parse(sessionStorage.RaumListe);
-							nächsterVorigerRaum_2(NächsterOderVoriger);
-						} else {
-							//keine Raumliste übergeben
-							//neu aus DB erstellen
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
-							$db = $.couch.db("evab");
-							$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
-								success: function (data) {
-									//RaumListe bereitstellen
-									RaumListe = data;
-									sessionStorage.RaumListe = JSON.stringify(RaumListe);
-									nächsterVorigerRaum_2(NächsterOderVoriger);
-								}
-							});
+						//keine Raumliste übergeben
+						//neu aus DB erstellen
+						if (!localStorage.Username) {
+							pruefeAnmeldung();
 						}
+						$db = $.couch.db("evab");
+						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+							success: function (data) {
+								//RaumListe bereitstellen
+								RaumListe = data;
+								sessionStorage.RaumListe = JSON.stringify(RaumListe);
+								nächsterVorigerRaum_2(NächsterOderVoriger);
+							}
+						});
 					}
 				}
 
@@ -610,6 +612,7 @@
 									initiiereRaumEdit();
 									return;
 								} else {
+									leereSessionStorageRaumEdit();
 									$.mobile.changePage("hRaumListe.html");
 									return;
 								}

@@ -159,11 +159,7 @@
 
 				$("#Felder_BeobPage").on("click", "#Felder_BeobPage_back", function (event) {
 					event.preventDefault();
-					if ($('#BeobEditPage').length > 0) {
-						$.mobile.changePage($('#BeobEditPage'));
-					} else {
-						$.mobile.changePage("BeobEdit.html");
-					}
+					$.mobile.changePage("BeobEdit.html");
 				});
 
 				$("#Feldliste").on("taphold", "input[name='Felder']", function (event) {

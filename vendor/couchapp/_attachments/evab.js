@@ -357,17 +357,7 @@ function speichereNeueBeob_03(doc) {
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.hBeobListe;
 						delete sessionStorage.hBeobListe;
-						//Wenn hArtEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
-						if ($("#hArtEditPage").length > 0) {
-							$.mobile.changePage($("#hArtEditPage"));
-							
-							//$("#al_Page").removeClass('ui-page-active');
-							//$("#hArtEditPage").addClass('ui-page-active');
-						} else {
-							sessionStorage.hBeobId = data.id;
-							window.open("hArtEdit.html", target = "_self");
-							//$.mobile.changePage("hArtEdit.html");
-						}
+						$.mobile.changePage("hArtEdit.html");
 					} else {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
@@ -375,18 +365,7 @@ function speichereNeueBeob_03(doc) {
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.BeobListe;
 						delete sessionStorage.BeobListe;
-						//Wenn BeobEditPage schon im Dom ist, mit changePage zur id wechseln, sonst zur Url
-						if ($("#BeobEditPage").length > 0) {
-							$.mobile.changePage($("#BeobEditPage"));
-							
-							//$("#al_Page").removeClass('ui-page-active');
-							//$("#BeobEditPage").addClass('ui-page-active');
-						} else {
-							window.open("BeobEdit.html", target = "_self");
-							//$.mobile.changePage("BeobEdit.html?id=" + data.id);
-						}
-						//window.open("BeobEdit.html?id=" + data.id + "&Status=neu", target = "_self");
-						//$.mobile.changePage("BeobEdit.html?id=" + data.id, {reloadPage:"true", allowSamePageTransition:"true"});
+						$.mobile.changePage("BeobEdit.html");
 					}
 				},
 				error: function () {
@@ -424,11 +403,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.BeobListe;
 						delete sessionStorage.BeobListe;
-						if ($('#BeobEditPage').length > 0) {
-							$.mobile.changePage($('#BeobEditPage'));
-						} else {
-							window.open("BeobEdit.html", target = "_self");
-						}
+						$.mobile.changePage("BeobEdit.html");
 					} else {
 						//Variabeln verfügbar machen
 						hBeobId = data.id;
@@ -436,11 +411,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.hBeobListe;
 						delete sessionStorage.hBeobListe;
-						if ($('#hArtEditPage').length > 0) {
-							$.mobile.changePage($('#hArtEditPage'));
-						} else {
-							window.open("hArtEdit.html", target = "_self");
-						}
+						$.mobile.changePage("hArtEdit.html");
 					}
 				},
 				error: function () {
@@ -828,10 +799,10 @@ function initiiereBeobEdit() {
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob', {
-			success: function (Feldliste) {
+			success: function (data) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
-				FeldlisteBeobEdit = Feldliste;
-				sessionStorage.FeldlisteBeobEdit = JSON.stringify(FeldlisteBeobEdit);
+				FeldlisteBeobEdit = data;
+				sessionStorage.FeldlisteBeobEdit = JSON.stringify(data);
 				initiiereBeobEdit_2();
 			}
 		});
@@ -1022,7 +993,7 @@ function initiiereBeobliste_2() {
 				ArtName = beob.aArtName;
 				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
 				ListItemContainer += beob._id;
-				ListItemContainer += "\"><a href=\"BeobEdit.html\" rel=\"external\"><img class=\"ui-li-thumb\" src=\"";
+				ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
 				ListItemContainer += ImageLink;
 				ListItemContainer += "\" /><h3 class=\"aArtName\">";
 				ListItemContainer += ArtName;
@@ -1079,7 +1050,6 @@ function initiiereProjektEdit() {
 			$("#pName").val(Projekt.pName);
 			//Variabeln bereitstellen
 			ProjektId = Projekt._id;
-			sessionStorage.ProjektId = ProjektId;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlisteProjekt) {
@@ -1088,8 +1058,8 @@ function initiiereProjektEdit() {
 				FeldlisteProjekt = JSON.parse(sessionStorage.FeldlisteProjekt);
 				initiiereProjektEdit_2(Projekt);
 			} else {
+				//Feldliste aus der DB holen
 				$db = $.couch.db("evab");
-				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeProjekt', {
 					success: function (Feldliste) {
 						FeldlisteProjekt = Feldliste;
@@ -1596,7 +1566,7 @@ function initiiereRaumListe() {
 	if (window.RaumListe) {
 		//Raumliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereRaumListe_2();
-	} else	if (typeof sessionStorage.RaumListe !== "undefined" && sessionStorage.RaumListe) {
+	} else	if (sessionStorage.RaumListe) {
 		//Raumliste aus sessionStorage holen
 		RaumListe = JSON.parse(sessionStorage.RaumListe);
 		initiiereRaumListe_2();
@@ -1640,8 +1610,6 @@ function initiiereRaumListe_2() {
 				Raum = RaumListe.rows[i].value;
 				key = RaumListe.rows[i].key;
 				rName = Raum.rName;
-				//externalPage = "hRaumEdit.html?id=" + Raum._id + "&ProjektId=" + ProjektId;
-				//listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"" + externalPage + "\" rel=\"external\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
@@ -1778,7 +1746,7 @@ function initiiereOrtListe() {
 	if (window.OrtListe) {
 		//Ortliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereOrtListe_2();
-	} else if (typeof sessionStorage.OrtListe !== "undefined" && sessionStorage.OrtListe) {
+	} else if (sessionStorage.OrtListe) {
 		//Ortliste aus sessionStorage holen
 		OrtListe = JSON.parse(sessionStorage.OrtListe);
 		initiiereOrtListe_2();
@@ -2585,6 +2553,18 @@ function onGeolocationSuccess(position) {
 	}
 	//Verortung abbrechen, wenn sehr genau
 	if (oLagegenauigkeit < 5) {
+		sessionStorage.oLagegenauigkeit = position.coords.accuracy;
+		sessionStorage.oLongitudeDecDeg = position.coords.longitude;
+		sessionStorage.oLatitudeDecDeg = position.coords.latitude;
+		Höhe = position.coords.altitude;
+		$("#oLagegenauigkeit").val(sessionStorage.oLagegenauigkeit);
+		sessionStorage.oXKoord = DdInChX(sessionStorage.oLatitudeDecDeg, sessionStorage.oLongitudeDecDeg);
+		sessionStorage.oYKoord = DdInChY(sessionStorage.oLatitudeDecDeg, sessionStorage.oLongitudeDecDeg);
+		$("#oXKoord").val(sessionStorage.oXKoord);
+		$("#oYKoord").val(sessionStorage.oYKoord);
+		if (Höhe > 0) {
+			$("input#oObergrenzeHöhe").val(position.coords.altitude);
+		}
 		stopGeolocation();
 		speichereAlles(sessionStorage.docId, sessionStorage.FormName);
 	}
@@ -2609,6 +2589,8 @@ function stopGeolocation() {
 			$("#oLagegenauigkeit").val("");
 			delete sessionStorage.oXKoord;
 			delete sessionStorage.oYKoord;
+			delete sessionStorage.oLatitudeDecDeg;
+			delete sessionStorage.oLongitudeDecDeg;
 			delete sessionStorage.oLagegenauigkeit;
 			melde("Keine genaue Position erhalten");
 		}
@@ -2903,7 +2885,7 @@ function pruefeAnmeldung() {
 //wird von den Links in der Karte benutzt
 function oeffneOrt(OrtId) {
 	sessionStorage.OrtId = OrtId;
-	window.open("hOrtEdit.html", target = "_self");
+	$.mobile.changePage("hOrtEdit.html");
 }
 
 //setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
@@ -2911,7 +2893,7 @@ function oeffneOrt(OrtId) {
 //wird von den Links in der Karte auf BeobListe.html benutzt
 function oeffneBeob(BeobId) {
 	sessionStorage.BeobId = BeobId;
-	window.open("BeobEdit.html", target = "_self");
+	$.mobile.changePage("BeobEdit.html");
 }
 
 //wird benutzt in Artenliste.html
@@ -3294,6 +3276,78 @@ function erstelleArgruppenListeDeutsch_2() {
 	$("#agl_Hinweistext").empty().remove();
 }
 
+//die nachfolgenden funktionen bereinigen die sessionStorage
+//sie entfernen die im jeweiligen Formular ergänzten sessionStorage-Einträge
+
+function leereSessionStorageProjektListe() {
+	delete sessionStorage.ProjektListe;
+	delete window.Projektliste;
+}
+
+function leereSessionStorageProjektEdit() {
+	delete sessionStorage.ProjektId;
+}
+
+function leereSessionStorageRaumListe() {
+	delete sessionStorage.RaumListe;
+	delete window.RaumListe;
+}
+
+function leereSessionStorageRaumEdit() {
+	delete sessionStorage.RaumId;
+}
+
+function leereSessionStorageOrtListe() {
+	delete sessionStorage.OrtListe;
+	delete window.OrtListe;
+}
+
+function leereSessionStorageOrtEdit() {
+	delete sessionStorage.OrtId;
+	delete sessionStorage.oXKoord;
+	delete sessionStorage.oYKoord;
+	delete sessionStorage.oLagegenauigkeit;
+	delete sessionStorage.oLatitudeDecDeg;
+	delete sessionStorage.oLongitudeDecDeg;
+	delete sessionStorage.aArtId;
+	delete sessionStorage.aArtName;
+	delete sessionStorage.aArtGruppe;
+}
+
+function leereSessionStorageZeitListe() {
+	delete sessionStorage.ZeitListe;
+	delete window.ZeitListe;
+}
+
+function leereSessionStorageZeitEdit() {
+	delete sessionStorage.ZeitId;
+}
+
+function leereSessionStoragehBeobListe() {
+	delete sessionStorage.hBeobListe;
+	delete window.hBeobListe;
+}
+
+function leereSessionStoragehBeobEdit() {
+	delete sessionStorage.hBeobId;
+}
+
+function leereSessionStorageBeobListe() {
+	delete sessionStorage.BeobListe;
+	delete window.BeobListe;
+}
+
+function leereSessionStorageBeobEdit() {
+	delete sessionStorage.BeobId;
+	delete sessionStorage.oXKoord;
+	delete sessionStorage.oYKoord;
+	delete sessionStorage.oLagegenauigkeit;
+	delete sessionStorage.oLatitudeDecDeg;
+	delete sessionStorage.oLongitudeDecDeg;
+	delete sessionStorage.aArtId;
+	delete sessionStorage.aArtName;
+	delete sessionStorage.aArtGruppe;
+}
 
 
 /*!

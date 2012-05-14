@@ -34,7 +34,7 @@
   <body>
   	<div data-role="page" id="Felder_hRaumPage">
   		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="Felder_hRaumPageHeader">
-  			<a href="#" id="Felder_hRaumPage_back" data-role="button" data-icon="arrow-l" rel="external" data-iconpos="notext">abbrechen</a>
+  			<a href="#" id="Felder_hRaumPage_back" data-role="button" data-icon="arrow-l" data-iconpos="notext">abbrechen</a>
   			<h2 class="Felder_hRaumPageTitel">sichtbare Felder</h2>
   		</div>
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
@@ -122,11 +122,7 @@
 
 				$("#Felder_hRaumPage").on("click", "#Felder_hRaumPage_back", function (event) {
 					event.preventDefault();
-					if ($('#RaumEditPage').length > 0) {
-						$.mobile.changePage($('#RaumEditPage'));
-					} else {
-						$.mobile.changePage("hRaumEdit.html");
-					}
+					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				//Felder speichern (checkbox)
