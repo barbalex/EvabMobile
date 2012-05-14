@@ -33,7 +33,7 @@
 		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
-	<div data-role="page">
+	<div data-role="page" id="indexPage">
 		<div data-role="header" data-backbtn="false" data-position="fixed" data-tap-toggle="false">
 			<h1>anmelden</h1>
 		</div>
@@ -54,7 +54,7 @@
 			<p style="text-align: center">Ich freue mich über <a href="mailto:alex.barbalex@gmail.com">Rückmeldungen</a></p>
 			<p style="text-align: center"><a href="https://github.com/barbalex/EvabMobile">mehr Infos hier</a></p>
 		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="indexFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="SubmitButton" data-icon="check" class="ui-btn-active">anmelden</a></li>
@@ -62,127 +62,84 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+		<script type="text/javascript" charset="utf-8">
+			$("#indexPage").on("pageshow", function () {
+				//Wenn möglich alten cookie für die Anmeldung verwenden
+				//ausser User hat via Menü bewusst neu anmelden wollen
+				//sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+				if (!sessionStorage.UserStatus) {
+					pruefeAnmeldung_index();
+				} else if (sessionStorage.UserStatus === "neu") {
+					sessionStorage.clear();
+				}
+
+				if (!("autofocus" in document.createElement("input"))) {
+					$("#UserName").focus();
+				}
+			});
+
+			$(":jqmData(role='page')").on("pageinit", function () {
+
+				$("#indexFooter").on("click", "#SubmitButton", function (event) {
+					event.preventDefault();
+					meldeUserAn();
+				});
+
+				//Reaktion auf Enter-Taste
+				$("#LoginForm").on("keydown", "#Passwort", function (e) {
+					if (e.keyCode === 13) {
+						meldeUserAn();
+						e.preventDefault();
+					}
+				});
+	
+				function meldeUserAn() {
+					var UserName, Passwort;
+					UserName = $('input[name=UserName]').val();
+					Passwort = $('input[name=Passwort]').val();
+					if (!UserName) {
+						setTimeout(function () { 
+							$('#UserName').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						melde("Bitte Benutzernamen eingeben");
+					} else if (!Passwort) {
+						setTimeout(function () { 
+							$('#Passwort').focus(); 
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						melde("Bitte Passwort eingeben");
+					} else {
+						$.couch.login({
+							name : UserName,
+							password : Passwort,
+							success : function (r) {
+								delete sessionStorage.UserStatus;
+								authentifiziereUser();
+							},
+							error: function () {
+								melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+							}
+						});
+					} 
+				}
+				
+				function authentifiziereUser() {
+					$.couch.session({
+						success : function (r) {
+							var userCtx;
+							userCtx = r.userCtx;
+							if (userCtx.name) {
+								localStorage.Username = userCtx.name;
+								oeffneZuletztBenutzteSeite();
+							} else if (userCtx.roles.indexOf("_admin") !== -1) {
+								melde("Oops, die Datenbank hat keine Benutzer!");
+							} else {
+								melde("Sie konnten nicht eingeloggt werden");
+							}
+						}
+					});
+				}
+			});
+	  </script>
 	</div>
   </body>
-  <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady() {
-		if (!("autofocus" in document.createElement("input"))) {
-		$("#UserName").focus();
-		}
-
-		//Wenn möglich alten cookie für die Anmeldung verwenden
-		//ausser User hat via Menü bewusst neu anmelden wollen
-		//sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-		if (!sessionStorage.UserStatus) {
-			pruefeAnmeldung_index();
-		} else if (sessionStorage.UserStatus === "neu") {
-			sessionStorage.clear();
-		}
-
-		$("#SubmitButton").tap(function (event) {
-			event.preventDefault();
-			meldeUserAn();
-		});
-
-		//Reaktion auf Enter-Taste
-		$("#LoginForm").on("keydown", "#Passwort", function (e) {
-			if (e.keyCode === 13) {
-				meldeUserAn();
-				e.preventDefault();
-			}
-		});
-	}
-	
-	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-	function meldeUserAn() {
-		var UserName, Passwort;
-		UserName = $('input[name=UserName]').val();
-		Passwort = $('input[name=Passwort]').val();
-		if (!UserName) {
-			setTimeout(function () { 
-				$('#UserName').focus(); 
-			}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-			melde("Bitte Benutzernamen eingeben");
-		} else if (!Passwort) {
-			setTimeout(function () { 
-				$('#Passwort').focus(); 
-			}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-			melde("Bitte Passwort eingeben");
-		} else {
-			$.couch.login({
-				name : UserName,
-				password : Passwort,
-				success : function (r) {
-					delete sessionStorage.UserStatus;
-					authentifiziereUser();
-				},
-				error: function () {
-					melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
-				}
-			});
-		} 
-	}
-	
-	function authentifiziereUser() {
-		$.couch.session({
-			success : function (r) {
-				var userCtx;
-				userCtx = r.userCtx;
-				if (userCtx.name) {
-					localStorage.Username = userCtx.name;
-					oeffneZuletztBenutzteSeite();
-				} else if (userCtx.roles.indexOf("_admin") !== -1) {
-					melde("Oops, die Datenbank hat keine Benutzer!");
-				} else {
-					melde("Sie konnten nicht eingeloggt werden");
-				}
-			}
-		});
-	}
-
-	function pruefeAnmeldung_index() {		
-		//User Anmeldung überprüfen
-		//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
-		//zuerst localStorage prüfen, dann cookie
-		if (typeof localStorage.Username !== "undefined" && localStorage.Username) {
-			oeffneZuletztBenutzteSeite();
-		} else {
-			$.ajax({
-				url: '/_session',
-				dataType: 'json',
-				async: false,
-				success: function (session) {
-					if (session.userCtx.name) {
-						localStorage.Username = session.userCtx.name;
-						oeffneZuletztBenutzteSeite();
-					} else {
-						$("#UserName").focus();
-					}
-				}
-			});
-		}
-	}
-
-	function oeffneZuletztBenutzteSeite() {
-		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + localStorage.Username + '"', {
-			success: function (data) {
-				var doc, LetzteUrl;
-				doc = data.rows[0].value;
-				if (typeof doc.sessionStorage !== "undefined" && doc.sessionStorage.LetzteUrl) {
-					LetzteUrl = doc.sessionStorage.LetzteUrl;
-				} else {
-					LetzteUrl = "BeobListe.html";
-				}
-				//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
-				if (LetzteUrl === "/evab/_design/evab/index.html") {
-					LetzteUrl = "BeobListe.html";
-				}
-				window.open(LetzteUrl, target = "_self");
-			}
-		});
-	}
-  </script>
 </html>

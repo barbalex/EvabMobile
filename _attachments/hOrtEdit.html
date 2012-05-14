@@ -560,7 +560,7 @@
 							'neu anmelden': {
 								click: function () {
 									sessionStorage.UserStatus = "neu";
-									window.open("index.html", target = "_self");
+									$.mobile.changePage("index.html");
 								},
 								theme: "a",
 								icon: "person"

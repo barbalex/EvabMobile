@@ -3275,6 +3275,51 @@ function erstelleArgruppenListeDeutsch_2() {
 	$("#agl_Hinweistext").empty().remove();
 }
 
+//wird benutzt von index.html
+function pruefeAnmeldung_index() {		
+	//User Anmeldung überprüfen
+	//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
+	//zuerst localStorage prüfen, dann cookie
+	if (typeof localStorage.Username !== "undefined" && localStorage.Username) {
+		oeffneZuletztBenutzteSeite();
+	} else {
+		$.ajax({
+			url: '/_session',
+			dataType: 'json',
+			async: false,
+			success: function (session) {
+				if (session.userCtx.name) {
+					localStorage.Username = session.userCtx.name;
+					oeffneZuletztBenutzteSeite();
+				} else {
+					$("#UserName").focus();
+				}
+			}
+		});
+	}
+}
+
+//wird benutzt von index.html
+function oeffneZuletztBenutzteSeite() {
+	$db = $.couch.db("evab");
+	$db.view('evab/User?key="' + localStorage.Username + '"', {
+		success: function (data) {
+			var doc, LetzteUrl;
+			doc = data.rows[0].value;
+			if (typeof doc.sessionStorage !== "undefined" && doc.sessionStorage.LetzteUrl) {
+				LetzteUrl = doc.sessionStorage.LetzteUrl;
+			} else {
+				LetzteUrl = "BeobListe.html";
+			}
+			//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
+			if (LetzteUrl === "/evab/_design/evab/index.html") {
+				LetzteUrl = "BeobListe.html";
+			}
+			$.mobile.changePage(LetzteUrl);
+		}
+	});
+}
+
 //die nachfolgenden funktionen bereinigen die sessionStorage
 //sie entfernen die im jeweiligen Formular ergänzten sessionStorage-Einträge
 
