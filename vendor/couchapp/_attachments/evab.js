@@ -2848,9 +2848,8 @@ function neuesFeld() {
 			Feld = data;
 			sessionStorage.Feld = JSON.stringify(data);
 			//Feldliste soll neu aufgebaut werden
-			delete window.Feldliste;
-			delete sessionStorage.Feldliste;
-			window.open("FeldEdit.html", target = "_self");
+			leereSessionStorageFeldListe();
+			$.mobile.changePage("FeldEdit.html");
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
@@ -3347,6 +3346,17 @@ function leereSessionStorageBeobEdit() {
 	delete sessionStorage.aArtId;
 	delete sessionStorage.aArtName;
 	delete sessionStorage.aArtGruppe;
+}
+
+function leereSessionStorageFeldListe() {
+	delete sessionStorage.Feldliste
+	delete window.Feldliste;
+}
+
+function leereSessionStorageFeldEdit() {
+	delete sessionStorage.Feld;
+	delete window.Feld;
+	delete sessionStorage.FeldId;
 }
 
 

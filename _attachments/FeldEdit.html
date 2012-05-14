@@ -191,11 +191,12 @@
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
 			$("#FeldEditPage").on("pageshow", function () {
 				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.FeldId ungleich null ist
+				//darum prüfen, ob sessionStorage.FeldEditWirdInitiiert nicht true ist
 				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.FeldId) {
+				if (!sessionStorage.FeldEditWirdInitiiert) {
 					initiiereFeldEdit();
 				}
+				delete sessionStorage.FeldEditWirdInitiiert;
 			});
 
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
@@ -204,6 +205,7 @@
 				//wo sie von speichereLetzteUrl gespeichert wurde
 				if (sessionStorage.length === 0) {
 					holeSessionStorageAusDb("FeldEdit");
+					sessionStorage.FeldEditWirdInitiiert = true;
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
@@ -568,11 +570,9 @@
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									delete window.Feldliste;
-									delete sessionStorage.Feldliste;
-									delete sessionStorage.FeldId;
-									delete sessionStorage.Feld;
-									window.open("FeldListe.html", target = '_self');
+									leereSessionStorageFeldEdit();
+									leereSessionStorageFeldListe();
+									$.mobile.changePage("FeldListe.html");
 								},
 								error: function () {
 									melde("Fehler: nicht gelöscht");
@@ -753,10 +753,14 @@
 					delete sessionStorage.Feld;
 					if (sessionStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
-						window.open(sessionStorage.zurueck, target = "_self");
+						leereSessionStorageFeldEdit();
+						leereSessionStorageFeldListe();
+						$.mobile.changePage(sessionStorage.zurueck);
+						delete sessionStorage.zurueck;
 						
 					} else {
-						window.open("FeldListe.html", target = "_self");
+						leereSessionStorageFeldEdit();
+						$.mobile.changePage("FeldListe.html");
 					}
 				}
 

@@ -50,51 +50,55 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+		<script type="text/javascript" charset="utf-8">
+			$("#FeldListePage").on("pageshow", function () {
+				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
+				//darum prüfen, ob sessionStorage.FeldListeWirdInitiiert nicht true ist
+				//sonst übernimmt holeSessionStorageAusDb das initiieren
+				if (!sessionStorage.FeldListeWirdInitiiert) {
+					initiiereFeldliste();
+				}
+				delete sessionStorage.FeldListeWirdInitiiert;
+			});
+			$(":jqmData(role='page')").on("pageinit", function () {
+				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
+				//wo sie von speichereLetzteUrl gespeichert wurde
+				if (sessionStorage.length === 0) {
+					holeSessionStorageAusDb("Feldliste");
+					sessionStorage.FeldListeWirdInitiiert = true;
+				}
+
+				//sicherstellen, dass zurueck nie leer ist
+				if (!sessionStorage.zurueck) {
+					sessionStorage.zurueck = "BeobListe.html";
+				}
+
+				//Feld öffnen
+				$("#FeldListe").on('click', '.Feld', function (event) {
+					event.preventDefault();
+					sessionStorage.FeldId = $(this).attr('FeldId');
+					$.mobile.changePage("FeldEdit.html");
+				});
+
+				$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function (event) {
+					event.preventDefault();
+					neuesFeld();
+				});
+
+				//Menu aufbauen
+				$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
+					event.preventDefault();
+					erstelleMenuFürFelder(this);
+				});
+
+				//BackButton steuern
+				$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
+					event.preventDefault();
+					$.mobile.changePage(sessionStorage.zurueck);
+					delete sessionStorage.zurueck;
+				});
+			});
+		</script>
 	</div>
-	<script type="text/javascript" charset="utf-8">
-		$(":jqmData(role='page')").on("pageinit", function () {
-			//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-			//wo sie von speichereLetzteUrl gespeichert wurde
-			//sessionStorage.Feldliste ist dann null und sessionStorage.length 0
-			//sessionStorage.Feldliste ist auch null, wenn die Projektliste gelöscht wurde
-			//holeSessionStorageAusDb stellt die alte sessionStorage.Feldliste wieder her
-			//darum hier die sessionStorage.length prüfen
-			if (sessionStorage.length === 0) {
-				holeSessionStorageAusDb("Feldliste");
-			} else {
-				initiiereFeldliste();
-			}
-
-			//sicherstellen, dass zurueck nie leer ist
-			if (!sessionStorage.zurueck) {
-				sessionStorage.zurueck = "BeobListe.html";
-			}
-
-			//Feld öffnen
-			$("#FeldListe").on('click', '.Feld', function (event) {
-				event.preventDefault();
-				sessionStorage.FeldId = $(this).attr('FeldId');
-				window.open("FeldEdit.html", target = "_self");
-			});
-
-			$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function (event) {
-				event.preventDefault();
-				neuesFeld();
-			});
-
-			//Menu aufbauen
-			$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
-				event.preventDefault();
-				erstelleMenuFürFelder(this);
-			});
-
-			//BackButton steuern
-			$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
-				event.preventDefault();
-				window.open(sessionStorage.zurueck, target = "_self");
-				delete sessionStorage.zurueck;	//wird nicht mehr benötigt
-			});
-		});
-  </script>
   </body>
 </html>
