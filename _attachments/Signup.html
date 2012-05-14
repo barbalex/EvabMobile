@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  		<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+	<head>
+		<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
 		<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>EvAB</title>
@@ -31,200 +31,232 @@
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
 		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
-  </head>
-  <body>
-  	<div data-role="page">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
-			<a href="#index.html" data-role="button" data-icon="arrow-l" data-iconpos="notext" rel="external" data-rel="back" >Back</a>
-			<h1>Konto erstellen</h1>
-		</div>
-		<div data-role="content">
-			<form id="Form" action="#" method="get" autocomplete="off">
-				<div data-role="fieldcontain">
-					<label for="UserName">Benutzername:</label>
-					<input id="UserName" name="UserName" type="text" placeholder="(erforderlich)" autofocus required/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="Passwort">Passwort:</label>
-					<input id="Passwort" name="Passwort" type="password" placeholder="(erforderlich)" required/>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="Passwort2">Passwort bestätigen:</label>
-					<input id="Passwort2" name="Passwort2" type="password" placeholder="(erforderlich)" required/>
-				</div>
-				<p>Vorsicht: Benutzername und Passwort können später nicht mehr geändert werden!</p>
-				<p>Es wird eine verschlüsselte Version des Passworts gespeichert. Das Original kennt ausser Ihnen niemand.</p>
-				<hr />
-				<div data-role="fieldcontain">
-					<label for="Autor">Autor:</label>
-					<input id="Autor" name="Autor" type="text" placeholder="(erforderlich)" required/>
-					<p>Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
-				</div>
-				<hr />
-				<div data-role="fieldcontain">
-					<label for="Email">email-Adresse:</label>
-					<input id="Email" name="Email" type="email" placeholder="(erforderlich)" required/>
+	</head>
+	<body>
+	  	<div data-role="page" id="SignupPage">
+			<div data-role="header" data-position="fixed" data-tap-toggle="false">
+				<a href="index.html" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+				<h1>Konto erstellen</h1>
+			</div>
+			<div data-role="content">
+				<form id="SubmitForm" action="#" method="get" autocomplete="off">
+					<div data-role="fieldcontain">
+						<label for="UserName">Benutzername:</label>
+						<input id="UserName" name="UserName" type="text" placeholder="(erforderlich)" autofocus required/>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="Passwort">Passwort:</label>
+						<input id="Passwort" name="Passwort" type="password" placeholder="(erforderlich)" required/>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="Passwort2">Passwort bestätigen:</label>
+						<input id="Passwort2" name="Passwort2" type="password" placeholder="(erforderlich)" required/>
+					</div>
+					<p>Vorsicht: Benutzername und Passwort können später nicht mehr geändert werden!</p>
+					<p>Es wird eine verschlüsselte Version des Passworts gespeichert. Das Original kennt ausser Ihnen niemand.</p>
 					<hr />
-				<div data-role="fieldcontain">
-					<fieldset data-role="controlgroup">
-						<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
-							<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber" checked="checked"/>
-							<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
-							<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
-							<label for="Ja">ja, ohne Einschränkung</label>
-							<input type="radio" name="Datenverwendung" id="Nein" value="Nein"/>
-							<label for="Nein">nein</label>
-					</fieldset>
-				</div>
-				<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
-				</div>
-			</form>
-		</div>
-		<div data-role="footer" data-position="fixed" data-tap-toggle="false">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check">Konto erstellen</a></li>
-					<li><a href="index.html" id="CancelButton" data-icon="delete">abbrechen</a></li>
-				</ul>
-			</div><!-- /navbar -->
-		</div><!-- /footer -->
-	</div>
-  </body>
-  <script type="text/javascript" charset="utf-8">
-	function handleDocumentReady() {
-		$("#SubmitButton").tap(function (event) {
-			var UserName, Passwort, Passwort2, Autor;
-			event.preventDefault();
-			UserName = $('input[name=UserName]').val();
-			Passwort = $('input[name=Passwort]').val();
-			Passwort2 = $('input[name=Passwort2]').val();
-			Autor = $("input#Autor").val();
-			if (!UserName) {
-				melde("Bitte Benutzernamen eingeben");
-			} else if (!Passwort) {
-				melde("Bitte Passwort eingeben");
-			} else if (!Passwort2) {
-				melde("Bitte Passwort bestätigen");
-			} else if (Passwort !== Passwort2) {
-				melde("Passwort ist falsch bestätigt");
-			} else if (!Autor) {
-				melde("Bitte Autor eingeben");
-			} else {
-				erstelleKonto(UserName, Passwort, Autor);
-			}
-		});
-
-		//Datenverwendung managen
-		Datenverwendung = "JaAber";
-		$("input[name='Datenverwendung']").change(function () {
-			Datenverwendung = $(this).attr("id");
-		});
-	}
-	
-	$(document).ready(handleDocumentReady);
-  </script>
-  <script type="text/javascript" charset="utf-8">	
-	function erstelleKonto(UserName, Passwort, Autor) {
-		//User in _user eintragen
-		var email;
-		email = $("input#Email").val();
-		$.couch.signup({
-				name: UserName, Autor: Autor, email: email
-			}, Passwort, {
-			success : function () {
-				speichereUserInEvab(UserName);
-				erstelleSichtbareFelder(UserName);
-				meldeUserAn(UserName, Passwort);
-			},
-			error : function () {
-				melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
-			}
-		});
-	}
-	
-  	function meldeUserAn(UserName, Passwort) {
-		$.couch.login({
-			name : UserName,
-			password : Passwort,
-			success : function (r) {
-				authentifiziereUser();
-			},
-			error: function () {
-				sessionStorage.UserStatus = "neu";
-				melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
-				setTimeout('window.open("index.html", target = "_self")', 2800);
-			}
-		});  
-	}
-	
-	//Für authentifizierte Benutzer wird ein cookie erstellt und die Startseite geöffnet
-	function authentifiziereUser() {
-		var userCtx;
-		$.couch.session({
-			success : function (r) {
-				userCtx = r.userCtx;
-				if (userCtx.name) {
-					localStorage.Username = userCtx.name;
-					melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
-					setTimeout("window.open('BeobListe.html', target='_self')", 2800);
-				} else if (userCtx.roles.indexOf("_admin") !== -1) {
-					melde("Fehler: Anmeldung gescheitert");
-				} else {
-					melde("Fehler: Anmeldung gescheitert");
-				}
-			}
-		});
-	}
-	
-	function speichereUserInEvab(UserName) {
-		var doc;
-		doc = {};
-		doc.Typ = "User";
-		doc.UserName = UserName;
-		doc.Autor = $("input#Autor").val();
-		doc.Datenverwendung = Datenverwendung;
-		doc.ArtenSprache = "Lateinisch";
-		if ($("input#Email").val()) {
-			doc.Email = $("input#Email").val();
-		}
-		$db = $.couch.db("evab");
-		$db.saveDoc(doc, {
-			success: function (data) {
-				sessionStorage.UserId = data._id;
-				//melde("Yuhui, Ihr User wurde erstellt");
-			},
-			error: function () {
-				melde("Oh je, Ihr User konnte nicht erstellt werden");
-			}
-		});
-	}
-
-	function erstelleSichtbareFelder(Username) {
-	//setzt alle Felder im Modus Hierarchisch sichtbar
-	//Erwartet den UserNamen
-	//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
-		var viewname;
-		$db = $.couch.db("evab");
-		viewname = 'evab/FeldListeFeldName';
-		$db.view(viewname, {
-			success: function (data) {
-				var i, Feld;
-				for (i in data.rows) {
-					if (typeof i !== "function") {
-						Feld = data.rows[i].value;
-						//Nur offizielle Felder berücksichtigen
-						if (Feld.User === "ZentrenBdKt") {
-							$db.openDoc(Feld._id, {
-								success: function (Feld) {
-									Feld.SichtbarImModusHierarchisch.push(Username);
-									$db.saveDoc(Feld);
-								}
-							});
+					<div data-role="fieldcontain">
+						<label for="Autor">Autor:</label>
+						<input id="Autor" name="Autor" type="text" placeholder="(erforderlich)" required/>
+						<p>Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
+					</div>
+					<hr />
+					<div data-role="fieldcontain">
+						<label for="Email">email-Adresse:</label>
+						<input id="Email" name="Email" type="email" placeholder="(erforderlich)" required/>
+						<hr />
+					<div data-role="fieldcontain">
+						<fieldset data-role="controlgroup">
+							<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
+								<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber" checked="checked"/>
+								<label for="JaAber">ja, nur für Naturschutzzwecke (Standard)*</label>
+								<input type="radio" name="Datenverwendung" id="Ja" value="Ja"  />
+								<label for="Ja">ja, ohne Einschränkung</label>
+								<input type="radio" name="Datenverwendung" id="Nein" value="Nein"/>
+								<label for="Nein">nein</label>
+						</fieldset>
+					</div>
+					<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br />Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
+					</div>
+				</form>
+			</div>
+			<div data-role="footer" id="SubmitFooter" data-position="fixed" data-tap-toggle="false">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check">Konto erstellen</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
+			<script type="text/javascript" charset="utf-8">
+				$("#SignupPage").on("pageshow", function () {
+					//Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
+					window.Datenverwendung = "JaAber";
+				});
+				$(":jqmData(role='page')").on("pageinit", function () {
+					$("#SubmitFooter").on("click", "#SubmitButton", function (event) {
+						event.preventDefault();
+						if (validiereUserSignup()) {
+							erstelleKonto();
 						}
+					});
+
+					//kontrollierren, ob die erforderlichen Felder etwas enthalten
+					//wenn ja wird true retourniert, sonst false
+					function validiereUserSignup() {
+						if (!$('#UserName').val()) {
+							melde("Bitte Benutzernamen eingeben");
+							setTimeout(function() {
+								$('#UserName').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						} else if (!$('#Passwort').val()) {
+							melde("Bitte Passwort eingeben");
+							setTimeout(function() {
+								$('#Passwort').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						} else if (!$('#Passwort2').val()) {
+							melde("Bitte Passwort bestätigen");
+							setTimeout(function() {
+								$('#Passwort2').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						} else if ($('#Passwort').val() !== $('#Passwort2').val()) {
+							melde("Passwort ist falsch bestätigt");
+							setTimeout(function() {
+								$('#Passwort2').focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						} else if (!$("#Autor").val()) {
+							melde("Bitte Autor eingeben");
+							setTimeout(function() {
+								$("#Autor").focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						} else if (!$("#Email").val()) {
+							melde("Bitte Email eingeben");
+							setTimeout(function() {
+								$("#Email").focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
+						}
+						return true;
 					}
-				}
-			}
-		});
-	}
-  </script>
+
+					$("#SubmitForm").on("change", "[name='Datenverwendung']", function () {
+						window.Datenverwendung = $(this).attr("id");
+					});
+
+					function erstelleKonto() {
+						//User in _user eintragen
+						$.couch.signup({
+								name: $('#UserName').val(), Autor: $("#Autor").val(), email: $("#Email").val()
+							}, $('#Passwort').val(), {
+							success : function () {
+								speichereUserInEvab();	//Informationen zum User in doc vom typ User eintragen
+								erstelleSichtbareFelder();
+								meldeUserAn();
+							},
+							error : function () {
+								melde("Das Konto konnte nicht gespeichert werden.<br>Versuchen Sie es mit einem anderen Benutzernamen.");
+							}
+						});
+					}
+
+					function meldeUserAn() {
+						$.couch.login({
+							name : $('#UserName').val(),
+							password : $('#Passwort').val(),
+							success : function (r) {
+								authentifiziereUser();
+							},
+							error: function () {
+								sessionStorage.UserStatus = "neu";
+								melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
+								setTimeout('$.mobile.changePage("index.html")', 2800);
+							}
+						});
+					}
+
+					//Für authentifizierte Benutzer wird ein cookie erstellt und die Startseite geöffnet
+					function authentifiziereUser() {
+						var userCtx;
+						$.couch.session({
+							success : function (r) {
+								userCtx = r.userCtx;
+								if (userCtx.name) {
+									localStorage.Username = userCtx.name;
+									melde("Willkommen " + userCtx.name + ".<br>Sie sind angemeldet.");
+									setTimeout("$.mobile.changePage('BeobListe.html')", 2800);
+								} else if (userCtx.roles.indexOf("_admin") !== -1) {
+									melde("Fehler: Anmeldung gescheitert");
+								} else {
+									melde("Fehler: Anmeldung gescheitert");
+								}
+							}
+						});
+					}
+
+					function speichereUserInEvab() {
+						alert("speichereUserInEvab: start");
+						var doc;
+						doc = {};
+						doc.Typ = "User";
+						doc.UserName = $('#UserName').val();
+						doc.Autor = $("#Autor").val();
+						doc.Datenverwendung = window.Datenverwendung;
+						doc.ArtenSprache = "Lateinisch";
+						doc.Email = $("#Email").val();
+						//sessionStorage gründen
+						doc.sessionStorage.UserId = data._id;
+						doc.sessionStorage.Autor = data.Autor;
+						doc.sessionStorage.ArtenSprache = data.ArtenSprache;
+						doc.sessionStorage.LetzteUrl = "/evab/_design/evab/BeobListe.html";
+						$db = $.couch.db("evab");
+						$db.saveDoc(doc, {
+							success: function (data) {
+								alert("speichereUserInEvab: success");
+								//sessionStorage gründen
+								sessionStorage.UserId = data._id;
+								sessionStorage.Autor = data.Autor;
+								sessionStorage.ArtenSprache = data.ArtenSprache;
+							},
+							error: function () {
+								melde("Oh je, Ihr User konnte nicht erstellt werden");
+							}
+						});
+					}
+
+					//setzt alle Felder im Modus Hierarchisch sichtbar
+					//Erwartet den UserNamen
+					//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
+					function erstelleSichtbareFelder() {
+						var viewname, Username;
+						Username = $('#UserName').val();
+						$db = $.couch.db("evab");
+						viewname = 'evab/FeldListeFeldName';
+						$db.view(viewname, {
+							success: function (data) {
+								var i, Feld;
+								for (i in data.rows) {
+									if (typeof i !== "function") {
+										Feld = data.rows[i].value;
+										//Nur offizielle Felder berücksichtigen
+										if (Feld.User === "ZentrenBdKt") {
+											$db.openDoc(Feld._id, {
+												success: function (Feld) {
+													Feld.SichtbarImModusHierarchisch.push(Username);
+													$db.saveDoc(Feld);
+												}
+											});
+										}
+									}
+								}
+							}
+						});
+					}
+				});
+			</script>
+		</div>
+	</body>
 </html>
