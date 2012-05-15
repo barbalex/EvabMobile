@@ -314,8 +314,8 @@
 									return $db.removeDoc(document, {
 										success: function () {
 											//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-											leereSessionStorageOrtListe()
-											leereSessionStorageOrtEdit();
+											leereSessionStorageOrtListe("mitLatLngListe")
+											leereSessionStorageOrtEdit("mitLatLngListe");
 											$.mobile.changePage('hOrtListe.html');
 											return true;
 										},
@@ -423,7 +423,7 @@
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageOrtListe();
+							leereSessionStorageOrtListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -616,6 +616,7 @@
 								if (i < AnzOrt) {
 									sessionStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
 									initiiereOrtEdit();
+									leereSessionStorageOrtEdit("mitLatLngListe");
 									return;
 								} else {
 									melde("Das ist der letzte Ort");
@@ -626,6 +627,7 @@
 								if (i > 0) {
 									sessionStorage.OrtId = OrtListe.rows[i-1].value._id;
 									initiiereOrtEdit();
+									leereSessionStorageOrtEdit("mitLatLngListe");
 									return;
 								} else {
 									leereSessionStorageOrtEdit();

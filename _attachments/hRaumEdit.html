@@ -277,8 +277,8 @@
 										return $db.removeDoc(document, {
 											success: function () {
 												//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-												leereSessionStorageRaumEdit();
-												leereSessionStorageRaumListe()
+												leereSessionStorageRaumEdit("mitLatLngListe");
+												leereSessionStorageRaumListe("mitLatLngListe")
 												$.mobile.changePage('hRaumListe.html');
 												return true;
 											},
@@ -385,7 +385,7 @@
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageRaumListe();
+							leereSessionStorageRaumListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -601,6 +601,7 @@
 								if (i < AnzRaum) {
 									sessionStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit();
+									leereSessionStorageRaumEdit("mitLatLngListe");
 									return;
 								} else {
 									melde("Das ist der letzte Raum");
@@ -611,6 +612,7 @@
 								if (i > 0) {
 									sessionStorage.RaumId = RaumListe.rows[i-1].value._id;
 									initiiereRaumEdit();
+									leereSessionStorageRaumEdit("mitLatLngListe");
 									return;
 								} else {
 									leereSessionStorageRaumEdit();

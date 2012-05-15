@@ -275,8 +275,8 @@
 											return $db.removeDoc(document, {
 												success: function () {
 													//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-													leereSessionStorageProjektEdit();
-													leereSessionStorageProjektListe();
+													leereSessionStorageProjektEdit("mitLatLngListe");
+													leereSessionStorageProjektListe("mitLatLngListe");
 													//Rückmeldung += "\rProjekt gelöscht";
 													//melde(Rückmeldung);
 													$.mobile.changePage('hProjektListe.html');
@@ -410,7 +410,7 @@
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
 							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageProjektListe();
+							leereSessionStorageProjektListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -651,6 +651,7 @@
 									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
 									//initiiereProjektEdit();
+									leereSessionStorageProjektEdit("mitLatLngListe");
 									return;
 								} else {
 									melde("Das ist das letzte Projekt");
@@ -662,6 +663,7 @@
 									sessionStorage.ProjektId = Projektliste.rows[i-1].value._id;
 									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
 									//initiiereProjektEdit();
+									leereSessionStorageProjektEdit("mitLatLngListe");
 									return;
 								} else {
 									leereSessionStorageProjektEdit();

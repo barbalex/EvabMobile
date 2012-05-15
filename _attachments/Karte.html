@@ -59,6 +59,7 @@
 						pruefeAnmeldung();
 					}
 
+					//Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
 					switch(sessionStorage.zurueck) {
 						case "hProjektListe":
 							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true';
@@ -97,101 +98,131 @@
 					}
 
 					//erstellt Karten für hProjektListe bis hOrtListe
+					//im ersten Teil wird die Liste aller Orte erstellt und an den zweiten Teil übergeben
 					function erstelleKarteH() {
+						var contentHeight, hOrtLatLngListe;
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						$db = $.couch.db("evab");
-						//Zuerst Orte abfragen
-						$db.view(viewname, {
-							success: function (data) {
-								var i, anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, oName, oXKoord, oYKoord, lat2, lng2, latlng2, marker, contentString, mcOptions, markerCluster;
-								anzOrt = 0;
-								infowindow = new google.maps.InfoWindow();
-								//Orte zählen
-								for (i in data.rows) {
-									anzOrt += 1;
+						//zuständige hOrtLatLngListe ermitteln
+						switch (sessionStorage.zurueck) {
+							case "hProjektListe":
+							hOrtLatLngListe = "hOrteLatLngProjektliste";
+							break;
+						case "hProjektEdit":
+						case "hRaumListe":
+							hOrtLatLngListe = "hOrteLatLngProjekt";
+							break;
+						case "hRaumEdit":
+						case "hOrtListe":
+							hOrtLatLngListe = "hOrteLatLngRaum";
+							break;
+						}
+						//Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
+						if (window[hOrtLatLngListe]) {
+							erstelleKarteH_2(window[hOrtLatLngListe]);
+						} else if (sessionStorage[hOrtLatLngListe]) {
+							window[hOrtLatLngListe] = JSON.parse(sessionStorage[hOrtLatLngListe]);
+							erstelleKarteH_2(window[hOrtLatLngListe]);
+						} else {
+							$db = $.couch.db("evab");
+							$db.view(viewname, {
+								success: function (data) {
+									window[hOrtLatLngListe] = data;
+									sessionStorage[hOrtLatLngListe] = JSON.stringify(data);
+									erstelleKarteH_2(data);
 								}
-								//Keine Orte: Hinweis und zurück
-								if (anzOrt === 0) {
-									melde(KeinOrtMeldung);
-									history.back();
-								//Orte vorhanden: Karte aufbauen
+							});
+						}
+					}
+
+					function erstelleKarteH_2(hOrteLatLng) {
+						var i, anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, oName, oXKoord, oYKoord, lat2, lng2, latlng2, marker, contentString, mcOptions, markerCluster;
+						anzOrt = 0;
+						infowindow = new google.maps.InfoWindow();
+						//Orte zählen
+						for (i in hOrteLatLng.rows) {
+							anzOrt += 1;
+						}
+						//Keine Orte: Hinweis und zurück
+						if (anzOrt === 0) {
+							melde(KeinOrtMeldung);
+							history.back();
+						//Orte vorhanden: Karte aufbauen
+						} else {
+							//Karte mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
+							//auf die die Karte ausgerichtet werden kann
+							lat = 47.383333;
+							lng = 8.533333;
+							latlng = new google.maps.LatLng(lat, lng);
+							options = {
+								zoom: 15,
+								center: latlng,
+								streetViewControl: false,
+								mapTypeId: google.maps.MapTypeId.HYBRID
+							};
+							map = new google.maps.Map(document.getElementById("MapCanvas"),options);
+							//google.maps.event.trigger(map,'resize');
+							bounds = new google.maps.LatLngBounds();
+							//für alle Orte Marker erstellen
+							markers = [];
+							for (i in hOrteLatLng.rows) {
+								Ort = hOrteLatLng.rows[i].doc;
+								hOrtId = Ort._id;
+								oName = Ort.oName;
+								oXKoord = Ort.oXKoord;
+								oYKoord = Ort.oYKoord;
+								lat2 = Ort.oLatitudeDecDeg;
+								lng2 = Ort.oLongitudeDecDeg;
+								latlng2 = new google.maps.LatLng(lat2, lng2);
+								if (anzOrt === 1) {
+									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									latlng = latlng2;
 								} else {
-									//Karte mal auf Zürich zentrieren, falls in den data.rows keine Koordinaten kommen
-									//auf die die Karte ausgerichtet werden kann
-									lat = 47.383333;
-									lng = 8.533333;
-									latlng = new google.maps.LatLng(lat, lng);
-									options = {
-										zoom: 15,
-										center: latlng,
-										streetViewControl: false,
-										mapTypeId: google.maps.MapTypeId.HYBRID
-									};
-									map = new google.maps.Map(document.getElementById("MapCanvas"),options);
-									//google.maps.event.trigger(map,'resize');
-									bounds = new google.maps.LatLngBounds();
-									//für alle Orte Marker erstellen
-									markers = [];
-									for (i in data.rows) {
-										Ort = data.rows[i].doc;
-										hOrtId = Ort._id;
-										oName = Ort.oName;
-										oXKoord = Ort.oXKoord;
-										oYKoord = Ort.oYKoord;
-										lat2 = Ort.oLatitudeDecDeg;
-										lng2 = Ort.oLongitudeDecDeg;
-										latlng2 = new google.maps.LatLng(lat2, lng2);
-										if (anzOrt === 1) {
-											//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-											latlng = latlng2;
-										} else {
-											//Kartenausschnitt um diese Koordinate erweitern
-											bounds.extend(latlng2);
-										}
-										marker = new MarkerWithLabel({ 
-											map: map,
-											position: latlng2,
-											title: oName.toString(),
-											labelContent: oName,
-											labelAnchor: new google.maps.Point(22, 0),
-											labelClass: "MapLabel", // the CSS class for the label
-											labelStyle: {opacity: 0.75}
-										});
-										markers.push(marker);
-										contentString = '<div id="content">'+
-											'<div id="siteNotice">'+
-											'</div>'+
-											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-											'<div id="bodyContent" class="GmInfowindow">'+
-											'<p>X-Koordinate: ' + oXKoord + '</p>'+
-											'<p>Y-Koordinate: ' + oYKoord + '</p>'+
-											"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
-											'</div>'+
-											'</div>';
-										makeListener(map, marker, contentString);
-									}
-									mcOptions = {maxZoom: 17};
-									markerCluster = new MarkerClusterer(map, markers, mcOptions);
-									if (anzOrt === 1) {
-										//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-										map.setCenter(latlng);
-										map.setZoom(18);
-									} else {
-										//Karte auf Ausschnitt anpassen
-										map.fitBounds(bounds);
-									}
+									//Kartenausschnitt um diese Koordinate erweitern
+									bounds.extend(latlng2);
 								}
-								//diese Funktion muss hier sein, damit infowindow bekannt ist
-								function makeListener(map, marker, contentString) {
-									google.maps.event.addListener(marker, 'click', function () {
-										infowindow.setContent(contentString);
-										infowindow.open(map,marker);
-									});
-								}
+								marker = new MarkerWithLabel({ 
+									map: map,
+									position: latlng2,
+									title: oName.toString(),
+									labelContent: oName,
+									labelAnchor: new google.maps.Point(22, 0),
+									labelClass: "MapLabel", // the CSS class for the label
+									labelStyle: {opacity: 0.75}
+								});
+								markers.push(marker);
+								contentString = '<div id="content">'+
+									'<div id="siteNotice">'+
+									'</div>'+
+									'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
+									'<div id="bodyContent" class="GmInfowindow">'+
+									'<p>X-Koordinate: ' + oXKoord + '</p>'+
+									'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+									"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
+									'</div>'+
+									'</div>';
+								makeListener(map, marker, contentString);
 							}
-						});
+							mcOptions = {maxZoom: 17};
+							markerCluster = new MarkerClusterer(map, markers, mcOptions);
+							if (anzOrt === 1) {
+								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+								map.setCenter(latlng);
+								map.setZoom(18);
+							} else {
+								//Karte auf Ausschnitt anpassen
+								map.fitBounds(bounds);
+							}
+						}
+
+						//diese Funktion muss hier sein, damit infowindow bekannt ist
+						function makeListener(map, marker, contentString) {
+							google.maps.event.addListener(marker, 'click', function () {
+								infowindow.setContent(contentString);
+								infowindow.open(map,marker);
+							});
+						}
 					}
 
 					//wird benutzt in hOrtEdit.html

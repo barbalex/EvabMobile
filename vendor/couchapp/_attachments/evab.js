@@ -564,8 +564,7 @@ function erstelleNeuenOrt() {
 							OrtId = data.id;
 							sessionStorage.OrtId = OrtId;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							delete window.OrtListe;
-							delete sessionStorage.OrtListe;
+							leereSessionStorageOrtListe("mitLatLngListe");
 							sessionStorage.Status = "neu";	//das löst bei pageshow die Verortung aus
 							$.mobile.changePage("hOrtEdit.html");
 						},
@@ -614,8 +613,7 @@ function erstelleNeuenRaum() {
 					sessionStorage.RaumId = RaumId;
 					sessionStorage.Status = "neu";
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					delete window.RaumListe;
-					delete sessionStorage.RaumListe;
+					leereSessionStorageRaumListe("mitLatLngListe");
 					$.mobile.changePage("hRaumEdit.html");
 				},
 				error: function () {
@@ -645,8 +643,7 @@ function erstelleNeuesProjekt() {
 			sessionStorage.ProjektId = ProjektId;
 			sessionStorage.Status = "neu";
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			delete window.Projektliste;
-			delete sessionStorage.Projektliste;
+			leereSessionStorageProjektListe("mitLatLngListe");
 			$.mobile.changePage("hProjektEdit.html");
 		},
 		error: function () {
@@ -3320,28 +3317,49 @@ function oeffneZuletztBenutzteSeite() {
 
 //die nachfolgenden funktionen bereinigen die sessionStorage
 //sie entfernen die im jeweiligen Formular ergänzten sessionStorage-Einträge
+//mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
 
-function leereSessionStorageProjektListe() {
+function leereSessionStorageProjektListe(mitLatLngListe) {
 	delete sessionStorage.ProjektListe;
 	delete window.Projektliste;
+	if (mitLatLngListe) {
+		delete sessionStorage.hOrteLatLngProjektliste;
+		delete window.hOrteLatLngProjektliste;
+	}
 }
 
-function leereSessionStorageProjektEdit() {
+function leereSessionStorageProjektEdit(mitLatLngListe) {
 	delete sessionStorage.ProjektId;
+	if (mitLatLngListe) {
+		delete sessionStorage.hOrteLatLngProjekt;
+		delete window.hOrteLatLngProjekt;
+	}
 }
 
-function leereSessionStorageRaumListe() {
+function leereSessionStorageRaumListe(mitLatLngListe) {
 	delete sessionStorage.RaumListe;
 	delete window.RaumListe;
+	if (mitLatLngListe) {
+		delete sessionStorage.hOrteLatLngProjekt;
+		delete window.hOrteLatLngProjekt;
+	}
 }
 
-function leereSessionStorageRaumEdit() {
+function leereSessionStorageRaumEdit(mitLatLngListe) {
 	delete sessionStorage.RaumId;
+	if (mitLatLngListe) {
+		delete sessionStorage.hOrteLatLngRaum;
+		delete window.hOrteLatLngRaum;
+	}
 }
 
-function leereSessionStorageOrtListe() {
+function leereSessionStorageOrtListe(mitLatLngListe) {
 	delete sessionStorage.OrtListe;
 	delete window.OrtListe;
+	if (mitLatLngListe) {
+		delete sessionStorage.hOrteLatLngRaum;
+		delete window.hOrteLatLngRaum;
+	}
 }
 
 function leereSessionStorageOrtEdit() {
