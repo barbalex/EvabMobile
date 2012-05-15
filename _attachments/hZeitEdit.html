@@ -514,7 +514,7 @@
 						if (ZeitIdAktuell === sessionStorage.ZeitId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
-								if (i < AnzZeit) {
+								if (parseInt(i) < AnzZeit) {
 									sessionStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
 									initiiereZeitEdit();
 									return;
@@ -524,8 +524,8 @@
 								}
 								break;
 							case "vorige":
-								if (i > 0) {
-									sessionStorage.ZeitId = ZeitListe.rows[i-1].value._id;
+								if (parseInt(i) > 0) {
+									sessionStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
 									initiiereZeitEdit();
 									return;
 								} else {

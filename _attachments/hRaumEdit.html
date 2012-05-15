@@ -598,10 +598,11 @@
 						if (RaumIdAktuell === sessionStorage.RaumId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
-								if (i < AnzRaum) {
+								if (parseInt(i) < AnzRaum) {
 									sessionStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit();
-									leereSessionStorageRaumEdit("mitLatLngListe");
+									delete sessionStorage.hOrteLatLngRaum;
+									delete window.hOrteLatLngRaum;
 									return;
 								} else {
 									melde("Das ist der letzte Raum");
@@ -609,10 +610,11 @@
 								}
 								break;
 							case "voriger":
-								if (i > 0) {
-									sessionStorage.RaumId = RaumListe.rows[i-1].value._id;
+								if (parseInt(i) > 0) {
+									sessionStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
 									initiiereRaumEdit();
-									leereSessionStorageRaumEdit("mitLatLngListe");
+									delete sessionStorage.hOrteLatLngRaum;
+									delete window.hOrteLatLngRaum;
 									return;
 								} else {
 									leereSessionStorageRaumEdit();

@@ -628,7 +628,7 @@
 								if (FeldIdAktuell === sessionStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus vorwärts das nächste eigene oder offizielle suchen
-									if (i < AnzFelder) {
+									if (parseInt(i) < AnzFelder) {
 										//das aktuelle Feld ist nicht das letzte
 										for (y = parseInt(i)+1; y <= AnzFelder; y++) {
 											//alle verbleibenden Felder durchlaufen, eigenes suchen
@@ -698,7 +698,7 @@
 								if (FeldIdAktuell === sessionStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus rückwärts das nächste eigene oder offizielle suchen
-									if (i > 0) {
+									if (parseInt(i) > 0) {
 										//das aktuelle Feld ist nicht das erste 
 										for (y = parseInt(i)-1; y >= 0; y--) {
 											//alle vorhergehenden Felder durchlaufen, eigenes suchen

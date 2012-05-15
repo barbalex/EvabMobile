@@ -647,11 +647,12 @@
 						if (ProjIdAktuell === sessionStorage.ProjektId) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":
-								if (i < AnzProj) {
+								if (parseInt(i) < AnzProj) {
 									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
-									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
-									//initiiereProjektEdit();
-									leereSessionStorageProjektEdit("mitLatLngListe");
+									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
+									initiiereProjektEdit();
+									delete sessionStorage.hOrteLatLngProjekt;
+									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
 									melde("Das ist das letzte Projekt");
@@ -659,11 +660,12 @@
 								}
 								break;
 							case "voriges":
-								if (i > 0) {
-									sessionStorage.ProjektId = Projektliste.rows[i-1].value._id;
-									$.mobile.changePage("hProjektEdit.html", {allowSamePageTransition: true});
-									//initiiereProjektEdit();
-									leereSessionStorageProjektEdit("mitLatLngListe");
+								if (parseInt(i) > 0) {
+									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
+									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
+									initiiereProjektEdit();
+									delete sessionStorage.hOrteLatLngProjekt;
+									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
 									leereSessionStorageProjektEdit();

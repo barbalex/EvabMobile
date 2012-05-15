@@ -1045,6 +1045,7 @@ function initiiereProjektEdit() {
 			$("#pName").val(Projekt.pName);
 			//Variabeln bereitstellen
 			ProjektId = Projekt._id;
+			sessionStorage.ProjektId = Projekt._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlisteProjekt) {
@@ -2641,7 +2642,7 @@ function speichereLetzteUrl() {
 					speichereLetzteUrl_2();
 				} else {
 					sessionStorage.UserStatus = "neu";
-					window.open("index.html", target = "_self");
+					$.mobile.changePage("index.html");
 				}
 			}
 		});
@@ -2664,15 +2665,18 @@ function speichereLetzteUrl_2() {
 				//weitere anderswo benutzte Variabeln verfügbar machen
 				sessionStorage.ArtenSprache = User.ArtenSprache;
 				sessionStorage.Autor = User.Autor;
-				speichereLetzteUrl_3(User._id);
+				//speichereLetzteUrl_3(User._id);
 			}
 		});
 	} else {
-		UserId = sessionStorage.UserId;
-		speichereLetzteUrl_3(UserId);
+		//UserId = sessionStorage.UserId;
+		//speichereLetzteUrl_3(UserId);
 	}
 }
 
+//PROBLEM: Dies verursacht Verzögerungen, viel DB-Datenverkehr, aufgeblähte DB
+//und vor allem Daten-Konflikte
+//darum auf localStorage gewechselt und dies hier ausgeschaltet
 function speichereLetzteUrl_3(UserId) {
 	$db = $.couch.db("evab");
 	$db.openDoc(UserId, {
@@ -2867,7 +2871,7 @@ function pruefeAnmeldung() {
 					localStorage.Username = session.userCtx.name;
 				} else {
 					sessionStorage.UserStatus = "neu";
-					window.open("index.html", target = "_self");
+					$.mobile.changePage("index.html");
 				}
 			}
 		});

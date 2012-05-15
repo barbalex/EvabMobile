@@ -501,7 +501,7 @@
 						if (ArtIdAktuell === sessionStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
-								if (i < AnzArt) {
+								if (parseInt(i) < AnzArt) {
 									sessionStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
 									initiierehBeobEdit();
 									return;
@@ -511,8 +511,8 @@
 								}
 								break;
 							case "vorige":
-								if (i > 0) {
-									sessionStorage.hBeobId = hBeobListe.rows[i-1].value._id;
+								if (parseInt(i) > 0) {
+									sessionStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
 									initiierehBeobEdit();
 									return;
 								} else {

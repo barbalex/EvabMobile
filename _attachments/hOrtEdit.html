@@ -613,10 +613,9 @@
 						if (OrtIdAktuell === sessionStorage.OrtId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
-								if (i < AnzOrt) {
+								if (parseInt(i) < AnzOrt) {
 									sessionStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
 									initiiereOrtEdit();
-									leereSessionStorageOrtEdit("mitLatLngListe");
 									return;
 								} else {
 									melde("Das ist der letzte Ort");
@@ -624,10 +623,9 @@
 								}
 								break;
 							case "voriger":
-								if (i > 0) {
-									sessionStorage.OrtId = OrtListe.rows[i-1].value._id;
+								if (parseInt(i) > 0) {
+									sessionStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
 									initiiereOrtEdit();
-									leereSessionStorageOrtEdit("mitLatLngListe");
 									return;
 								} else {
 									leereSessionStorageOrtEdit();

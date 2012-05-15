@@ -366,7 +366,7 @@
 						if (BeobIdAktuell === sessionStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
-								if (i < AnzBeob) {
+								if (parseInt(i) < AnzBeob) {
 									sessionStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
 									initiiereBeobEdit();
 									return;
@@ -376,8 +376,8 @@
 								}
 								break;
 							case "vorige":
-								if (i > 0) {
-									sessionStorage.BeobId = BeobListe.rows[i-1].value._id;
+								if (parseInt(i) > 0) {
+									sessionStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
 									initiiereBeobEdit();
 									return;
 								} else {

@@ -66,21 +66,13 @@
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
-						case "hProjektEdit":
-							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true';
-							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
-							erstelleKarteH();
-							break;
+						case "hProjektEdit":	//gleich wie hRaumListe
 						case "hRaumListe":
 							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
-						case "hRaumEdit":
-							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true';
-							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
-							erstelleKarteH();
-							break;
+						case "hRaumEdit":	//gleich wie hOrtListe
 						case "hOrtListe":
 							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
@@ -109,11 +101,11 @@
 							case "hProjektListe":
 							hOrtLatLngListe = "hOrteLatLngProjektliste";
 							break;
-						case "hProjektEdit":
+						case "hProjektEdit":	//gleich wie hRaumListe
 						case "hRaumListe":
 							hOrtLatLngListe = "hOrteLatLngProjekt";
 							break;
-						case "hRaumEdit":
+						case "hRaumEdit":	//gleich wie hOrtListe
 						case "hOrtListe":
 							hOrtLatLngListe = "hOrteLatLngRaum";
 							break;
