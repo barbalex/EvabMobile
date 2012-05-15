@@ -363,8 +363,7 @@ function speichereNeueBeob_03(doc) {
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.BeobListe;
-						delete sessionStorage.BeobListe;
+						leereSessionStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					}
 				},
@@ -401,8 +400,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 						BeobId = data.id;
 						sessionStorage.BeobId = BeobId;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.BeobListe;
-						delete sessionStorage.BeobListe;
+						leereSessionStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					} else {
 						//Variabeln verfügbar machen
@@ -3379,6 +3377,8 @@ function leereSessionStoragehBeobEdit() {
 function leereSessionStorageBeobListe() {
 	delete sessionStorage.BeobListe;
 	delete window.BeobListe;
+	delete sessionStorage.BeobListeLatLng;
+	delete window.BeobListeLatLng;
 }
 
 function leereSessionStorageBeobEdit() {

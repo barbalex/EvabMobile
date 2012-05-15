@@ -154,7 +154,6 @@
 							}, $('#Passwort').val(), {
 							success : function () {
 								speichereUserInEvab();	//Informationen zum User in doc vom typ User eintragen
-								erstelleSichtbareFelder();
 								meldeUserAn();
 							},
 							error : function () {
@@ -220,6 +219,7 @@
 								sessionStorage.UserId = data._id;
 								sessionStorage.Autor = data.Autor;
 								sessionStorage.ArtenSprache = data.ArtenSprache;
+								erstelleSichtbareFelder();
 							},
 							error: function () {
 								melde("Oh je, Ihr User konnte nicht erstellt werden");
