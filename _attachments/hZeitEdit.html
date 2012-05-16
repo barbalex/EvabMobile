@@ -65,10 +65,10 @@
 			<form id="FormAnhängehZE" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big></div>
-				<div id="Anhänge"></div>			
+				<div id="AnhängehZE"></div>			
 				<div data-role="fieldcontain">
-					<label for="_attachments" class="ui-input-text">Dateien anfügen:</label>
-					<input type="file" id="_attachments" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+					<label for="_attachmentshZE" class="ui-input-text">Dateien anfügen:</label>
+					<input type="file" id="_attachmentshZE" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
 					<p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
 				<input type="hidden" id="_rev" name="_rev">
@@ -156,9 +156,9 @@
 				//Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehZE").on("change", ".speichernAnhang", function () {
 					var _attachments;
-					_attachments = $("#_attachments").val();
+					_attachments = $("#_attachmentshZE").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(localStorage.ZeitId);
+						speichereAnhänge(localStorage.ZeitId, "hZE");
 					}
 				});
 
@@ -254,7 +254,7 @@
 							delete Zeit._attachments[Dateiname];
 							$db.saveDoc(Zeit, {
 								success: function () {
-									erstelleAttachments(Zeit);
+									erstelleAttachments(Zeit, "hZE");
 								}
 							});
 						}

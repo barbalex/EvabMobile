@@ -876,9 +876,9 @@ function erstelleDynamischeFelderBeobEdit(Beob) {
 		GetGeolocation(Beob._id);
 		setTimeout("delete localStorage.Status", 500);	//jetzt ist der Datensatz nicht mehr neu
 	}
-	erstelleAttachments(Beob);
+	erstelleAttachments(Beob, "BE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängeBE').show();
 }
 
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
@@ -1101,9 +1101,9 @@ function initiiereProjektEdit_2(Projekt) {
 		$db.saveDoc(Projekt);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Projekt);
+	erstelleAttachments(Projekt, "hPE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängehPE').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -1526,9 +1526,9 @@ function initiiereRaumEdit_2(Raum) {
 		$db.saveDoc(Raum);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Raum);
+	erstelleAttachments(Raum, "hRE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängehRE').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -1709,9 +1709,9 @@ function initiiereOrtEdit_2(Ort) {
 	}*/
 	//erstelleAttachments nutzt die rev. Diese ist bei neuen Orten jetzt veraltet
 	//macht nichts: neue Orte haben noch keine attachments
-	erstelleAttachments(Ort);
+	erstelleAttachments(Ort, "hOE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängehOE').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 
@@ -1887,9 +1887,9 @@ function initiiereZeitEdit_2(Zeit) {
 		$db.saveDoc(Zeit);
 		setTimeout("delete localStorage.Status", 500);	//warten, generiereHtmlFuerZeitEditForm arbeitet auch damit!
 	}
-	erstelleAttachments(Zeit);
+	erstelleAttachments(Zeit, "hZE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängehZE').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -2076,9 +2076,9 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 		$db.saveDoc(Beob);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Beob);
+	erstelleAttachments(Beob, "hAE");
 	//Anhänge wieder einblenden
-	$('#FormAnhänge').show();
+	$('#FormAnhängehAE').show();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -2798,20 +2798,21 @@ function holeSessionStorageAusDb(AufrufendeSeite) {
 
 //speichert Anhänge
 //setzt ein passendes Formular mit den feldern _rev und _attachments voraus
+//nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
 //wird benutzt von allen Formularen mit Anhängen
-function speichereAnhänge(id) {
+function speichereAnhänge(id, Page) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function (data) {
 			$("#_rev").val(data._rev);
-			$("#FormAnhänge").ajaxSubmit({
+			$("#FormAnhänge" + Page).ajaxSubmit({
 				url: "/evab/" + id,
 				success: function () {
 					//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 					$db.openDoc(id, {
 						success: function (data2) {
 							//show attachments in form
-							erstelleAttachments(data2);
+							erstelleAttachments(data2, Page);
 						}
 					});
 				},
@@ -2820,7 +2821,7 @@ function speichereAnhänge(id) {
 					$db.openDoc(id, {
 						success: function (data3) {
 							//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
-							erstelleAttachments(data3);
+							erstelleAttachments(data3, Page);
 						}
 					});
 				}
@@ -2832,14 +2833,15 @@ function speichereAnhänge(id) {
 //erstellt Anhänge, d.h. schaut nach, ob welche existieren und zeigt sie im Formular an
 //setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
 //wird benutzt von allen Beobachtungs-Edit-Formularen
-function erstelleAttachments(doc) {
+//erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
+function erstelleAttachments(doc, Page) {
 	var attachments, rev, HtmlContainer, url, url_zumLöschen;
 	attachments = doc._attachments;
 	rev = doc._rev;
 	HtmlContainer = "";
 	if (attachments) {
 		$.each(attachments, function (Dateiname, val) {
-			url = "/evab/" + doc.id + "/" + Dateiname;
+			url = "/evab/" + doc._id + "/" + Dateiname;
 			url_zumLöschen = url + "?" + rev;	//theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<a href='";
 			HtmlContainer += url;
@@ -2849,9 +2851,9 @@ function erstelleAttachments(doc) {
 			HtmlContainer += Dateiname;
 			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
 		});
-		$("#_attachments").val("");
+		$("#_attachments" + Page).val("");
 	}
-	$("#Anhänge").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#Anhänge" + Page).html(HtmlContainer).trigger("create").trigger("refresh");
 }
 
 //kreiert ein neues Feld

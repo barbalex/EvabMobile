@@ -51,6 +51,8 @@
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 				delete localStorage.L;
+				//Vorsicht: Genauer als body funktioniert hier nicht, weil die nested List im DOM
+				//jedes mal eine eigene Page aufbaut
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
 					event.preventDefault();
