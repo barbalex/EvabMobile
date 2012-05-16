@@ -92,9 +92,9 @@ function(head, req) {
 		Datenzeile = '"';
 		for (z in FeldNamen) {
 			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
-				Feld = eval('Datensatz.' + FeldNamen[z]);
+				Feld = Datensatz[FeldNamen[z]];
 				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
-				if (FeldNamen[z] == "_attachments") {
+				if (FeldNamen[z] === "_attachments") {
 					for (x in Feld) {
 						FeldLength = parseInt(Feld[x]['length']);
 						FeldLengthLänge = parseInt(parseInt(FeldLength.length) -3);
