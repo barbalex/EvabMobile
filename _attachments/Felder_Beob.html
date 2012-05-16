@@ -182,7 +182,8 @@
 					success: function (data) {
 						var FeldId;
 						FeldId = data.rows[0].value._id;
-						window.open("_show/FeldEdit/" + FeldId + "?zurueck=Felder_Beob.html", target = "_self");
+						localStorage.zurueck = "Felder_Beob.html";
+						$.mobile.changePage("FeldEdit.html");
 					}
 				});
 			}

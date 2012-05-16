@@ -91,11 +91,11 @@
 
 					$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
 						event.preventDefault();
-						window.open("BeobListe.html", target = "_self");
+						$.mobile.changePage("BeobListe.html");
 					});
 
 					$("#ProjektListePage").on("swiperight", function () {
-						window.open("BeobListe.html", target = "_self");
+						$.mobile.changePage("BeobListe.html");
 					});
 
 					$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
@@ -117,7 +117,7 @@
 							'buttons' : {
 								'einfacher Modus': {
 									click: function () {
-										window.open("BeobListe.html", target = "_self");
+										$.mobile.changePage("BeobListe.html");
 									},
 									theme: "a",
 									icon: "arrow-l"

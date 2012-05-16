@@ -82,7 +82,7 @@
 
 				$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function (event) {
 					event.preventDefault();
-					window.open("hProjektListe.html", target = "_self");
+					$.mobile.changePage("hProjektListe.html");
 				});
 
 				//Neue Beobachtung managen
@@ -97,7 +97,7 @@
 				});
 
 				$("#BeobListePage").on("swiperight", "#BeobListePageContent", function () {
-					window.open("hProjektListe.html", target = "_self");
+					$.mobile.changePage("hProjektListe.html");
 				});
 
 				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
@@ -120,7 +120,7 @@
 						'buttons' : {
 							'hierarchischer Modus': {
 								click: function () {
-									window.open("hProjektListe.html", target = "_self");
+									$.mobile.changePage("hProjektListe.html");
 								},
 								theme: "a",
 								icon: "arrow-l"

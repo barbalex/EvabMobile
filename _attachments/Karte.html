@@ -53,7 +53,7 @@
 
 					//sicherstellen, dass localStorage.zurueck existiert (gibt sonst später Fehler)
 					if (!localStorage.zurueck) {
-						window.open("BeobListe.html", target = "_self")
+						$.mobile.changePage("BeobListe.html");
 					}
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
