@@ -50,13 +50,15 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-
-				$("#agl_ArtgruppenListe").on("click", "[name='ArtgruppenListItem']", function (event) {
+				delete localStorage.L;
+				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");
 					if ($(this).attr("L")) {
 						localStorage.L = $(this).attr("L");
+					} else {
+						delete localStorage.L;
 					}
 					$.mobile.changePage("Artenliste.html");
 				});

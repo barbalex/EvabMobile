@@ -47,7 +47,7 @@
 		<script type="text/javascript" charset="utf-8">
 
 			$("#al_Page").on("pageshow", function () {
-				erstelleArtenliste();
+				initiiereArtenliste();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -102,7 +102,7 @@
 											if (ArtGruppen_2) {
 												$.mobile.changePage("Artgruppenliste.html");
 											} else {
-												erstelleArtenliste();
+												initiiereArtenliste();
 											}
 										}
 									});

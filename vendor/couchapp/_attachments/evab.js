@@ -2925,7 +2925,7 @@ function oeffneBeob(BeobId) {
 
 //wird benutzt in Artenliste.html
 //wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
-function erstelleArtenliste() {
+function initiiereArtenliste() {
 	var viewname;
 	if (!localStorage.Username) {
 		pruefeAnmeldung();
@@ -2968,7 +2968,7 @@ function erstelleArtenliste_2() {
 }
 
 //wird benutzt in Artenliste.html
-//aufgerufen von erstelleArtenliste
+//aufgerufen von initiiereArtenliste
 function erstelleArtenlisteLateinisch() {
 	//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 	if (!localStorage.L) {
@@ -3008,7 +3008,7 @@ function erstelleArtenlisteLateinisch() {
 }
 
 //wird benutzt in Artenliste.html
-//aufgerufen von erstelleArtenliste
+//aufgerufen von initiiereArtenliste
 function erstelleArtenlisteDeutsch() {
 	//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 	if (!localStorage.L) {
