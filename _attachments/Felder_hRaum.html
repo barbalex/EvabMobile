@@ -54,9 +54,9 @@
 				function erstelleSichtbareFelder() {
 					$("#FeldlisteFhR").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteRaumEdit !== "undefined") {
+					if (window.FeldlisteRaumEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (typeof localStorage.FeldlisteRaumEdit !== "undefined" && localStorage.FeldlisteRaumEdit) {
+					} else if (localStorage.FeldlisteRaumEdit) {
 						FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
 						erstelleSichtbareFelder_2();
 					} else {

@@ -54,9 +54,9 @@
 				function erstelleSichtbareFelder() {
 					$("#FeldlisteFhO").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteOrtEdit !== "undefined") {
+					if (window.FeldlisteOrtEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (typeof localStorage.FeldlisteOrtEdit !== "undefined" && localStorage.FeldlisteOrtEdit) {
+					} else if (localStorage.FeldlisteOrtEdit) {
 						FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
 						erstelleSichtbareFelder_2();
 					} else {

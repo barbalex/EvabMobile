@@ -54,7 +54,7 @@
 				function erstelleSichtbareFelder() {
 					$("#FeldlisteFhP").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-					if (typeof FeldlisteProjekt !== "undefined") {
+					if (window.FeldlisteProjekt) {
 						erstelleSichtbareFelder_2();
 					} else if (localStorage.FeldlisteProjekt) {
 						FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);

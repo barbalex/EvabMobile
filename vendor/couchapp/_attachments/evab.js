@@ -962,14 +962,8 @@ function initiiereBeobliste() {
 
 function initiiereBeobliste_2() {
 	var i, anzBeob, beob, ListItemContainer, Titel2, Datum, Zeit, ArtGruppe, ImageLink, ArtName, externalPage;
-	anzBeob = 0;
+	anzBeob = BeobListe.rows.length;
 	ListItemContainer = "";
-	
-	for (i in BeobListe.rows) {   //Beobachtungen zählen
-		if (typeof i !== "function") {
-			anzBeob += 1;
-		}
-	}
 
 	Titel2 = " Beobachtungen";   //Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	if (anzBeob === 1) {
@@ -1117,7 +1111,7 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
-				if (typeof localStorage.Status !== "undefined" && localStorage.Status === "neu" && Feld.Standardwert) {
+				if (localStorage.Status === "neu" && Feld.Standardwert) {
 					FeldWert = Feld.Standardwert[localStorage.Username] || "";
 				} else {
 					FeldWert = Projekt[FeldName] || "";
@@ -1418,11 +1412,7 @@ function initiiereProjektliste_2() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
 	anzProj = 0;
 	ListItemContainer = "";
-	for (i in Projektliste.rows) {			//Beobachtungen zählen. Wenn noch keine: darauf hinweisen
-		if (typeof i !== "function") {
-			anzProj += 1;
-		}
-	}
+	anzProj = Projektliste.rows.length;
 
 	Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
 	if (anzProj === 1) {
@@ -1538,7 +1528,7 @@ function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
-				if (typeof localStorage.Status !== "undefined" && localStorage.Status === "neu" && Feld.Standardwert) {
+				if (localStorage.Status === "neu" && Feld.Standardwert) {
 					FeldWert = Feld.Standardwert[localStorage.Username] || "";
 				} else {
 					FeldWert = Raum[FeldName] || "";
@@ -1581,13 +1571,8 @@ function initiiereRaumListe() {
 
 function initiiereRaumListe_2() {
 	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
-	anzRaum = 0;
+	anzRaum = RaumListe.rows.length;
 	ListItemContainer = "";
-	for (i in RaumListe.rows) {	//Räume zählen
-		if (typeof i !== "function") {
-			anzRaum += 1;
-		}
-	}
 	Titel2 = " Räume";   //Im Titel der Seite die Anzahl Räume anzeigen
 	if (anzRaum === 1) {
 		Titel2 = " Raum";
@@ -1772,13 +1757,8 @@ function initiiereOrtListe() {
 
 function initiiereOrtListe_2() {
 	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
-	anzOrt = 0;
+	anzOrt = OrtListe.rows.length;
 	ListItemContainer = "";
-	for (i in OrtListe.rows) {	//Orte zählen. Wenn noch keine: darauf hinweisen
-		if (typeof i !== "function") {
-			anzOrt += 1;
-		}
-	}
 	Titel2 = " Orte";	//Im Titel der Seite die Anzahl Orte anzeigen
 	if (anzOrt === 1) {
 		Titel2 = " Ort";
@@ -1903,13 +1883,8 @@ function initiiereZeitListe() {
 
 function initiiereZeitListe_2() {
 	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
-	anzZeit = 0;
+	anzZeit = ZeitListe.rows.length;
 	ListItemContainer = "";
-	for (i in ZeitListe.rows) {	//Zeiten zählen. Wenn noch keine: darauf hinweisen
-		if (typeof i !== "function") {
-			anzZeit += 1;
-		}
-	}
 
 	Titel2 = " Zeiten";  //Im Titel der Seite die Anzahl Zeiten anzeigen
 	if (anzZeit === 1) {
@@ -1949,7 +1924,7 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
-				if (typeof localStorage.Status !== "undefined" && localStorage.Status === "neu" && Feld.Standardwert) {
+				if (localStorage.Status === "neu" && Feld.Standardwert) {
 					FeldWert = Feld.Standardwert[Zeit.User] || "";
 				} else {
 					FeldWert = Zeit[FeldName] || "";
@@ -2037,7 +2012,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	if (typeof localStorage.Status !== "undefined" && localStorage.Status === "neu") {
+	if (localStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		Formularwerte = {};
 		Formularwerte = $("#hArtEditForm").serializeObject();
@@ -2076,7 +2051,7 @@ function generiereHtmlFuerhArtEditForm (Feldliste, Beob) {
 				FeldName = Feld.FeldName;
 				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 				if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-					if (typeof localStorage.Status !== "undefined" && localStorage.Status === "neu" && Feld.Standardwert) {
+					if (localStorage.Status === "neu" && Feld.Standardwert) {
 						FeldWert = Feld.Standardwert[Beob.User] || "";
 					} else {
 						FeldWert = Beob[FeldName] || "";
@@ -2120,13 +2095,8 @@ function initiierehBeobListe() {
 
 function initiierehBeobListe_2() {
 	var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
-	anzArt = 0;
+	anzArt = hBeobListe.rows.length;
 	ListItemContainer = "";
-	for (i in hBeobListe.rows) {   //Arten zählen. Wenn noch keine: darauf hinweisen
-		if (typeof i !== "function") {
-			anzArt += 1;
-		}
-	}
 
 	Titel2 = " Arten";   //Im Titel der Seite die Anzahl Arten anzeigen
 	if (anzArt === 1) {
@@ -2634,7 +2604,7 @@ function speichereLetzteUrl() {
 	//damit - zusammen mit der letzen URL - die letzte Seite bekannt ist
 	//localStorage.LetzteId = id; idee um nicht von gesammter localStorage abhängig zu sein?
 	//if (typeof localStorage.Username === ("undefined" || null)) {
-	if (typeof localStorage.Username === "undefined" || localStorage.Username === null) {
+	if (localStorage.Username === null) {
 		$.ajax({
 			url: '/_session',
 			dataType: 'json',
@@ -2690,7 +2660,7 @@ function speichereLetzteUrl_3(UserId) {
 			//leider registriert das auch Änderungen der Feldliste etc.
 			//um das zu beheben, müsste immer eine Änderung der passenden id verfolgt werden
 			//damit könnte auch das parsen gespaart werden
-			if (typeof localStorage === "undefined" || JSON.stringify(User.localStorage) !== JSON.stringify(localStorage)) {
+			if (JSON.stringify(User.localStorage) !== JSON.stringify(localStorage)) {
 				User.localStorage = localStorage;
 				$db.saveDoc(User);
 			}
@@ -3296,7 +3266,7 @@ function pruefeAnmeldung_index() {
 	//User Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
 	//zuerst localStorage prüfen, dann cookie
-	if (typeof localStorage.Username !== "undefined" && localStorage.Username) {
+	if (localStorage.Username) {
 		oeffneZuletztBenutzteSeite();
 	} else {
 		$.ajax({
@@ -3318,7 +3288,7 @@ function pruefeAnmeldung_index() {
 //wird benutzt von index.html
 function oeffneZuletztBenutzteSeite() {
 	//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
-	if (typeof localStorage !== "undefined" && localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
+	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
 		LetzteUrl = localStorage.LetzteUrl;
 	} else {
 		LetzteUrl = "BeobListe.html";
@@ -3331,7 +3301,7 @@ function oeffneZuletztBenutzteSeite() {
 //mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
 
 function leereSessionStorageProjektListe(mitLatLngListe) {
-	delete localStorage.ProjektListe;
+	delete localStorage.Projektliste;
 	delete window.Projektliste;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjektliste;
