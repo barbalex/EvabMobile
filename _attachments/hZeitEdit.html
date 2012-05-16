@@ -89,20 +89,13 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#ZeitEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.hZeitEditWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.hZeitEditWirdInitiiert) {
-					initiiereZeitEdit();
-				}
-				delete sessionStorage.hZeitEditWirdInitiiert;
+				initiiereZeitEdit();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hZeitEdit");
-					sessionStorage.hZeitEditWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
@@ -165,7 +158,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(sessionStorage.ZeitId);
+						speichereAnhänge(localStorage.ZeitId);
 					}
 				});
 
@@ -256,7 +249,7 @@
 					event.preventDefault();
 					Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.ZeitId, {
+					$db.openDoc(localStorage.ZeitId, {
 						success: function (Zeit) {
 							delete Zeit._attachments[Dateiname];
 							$db.saveDoc(Zeit, {
@@ -285,7 +278,7 @@
 						Rückmeldung = "zugehörige Arten gelöscht";
 						// First open doc based on ID in order to get full document
 						$db = $.couch.db("evab");
-						$db.openDoc(sessionStorage.ZeitId, {
+						$db.openDoc(localStorage.ZeitId, {
 							success: function (document) {
 								// Zeit löschen
 								$db.removeDoc(document, {
@@ -315,7 +308,7 @@
 				//lösche alle einer Zeit zugeordnete Arten
 				function löscheArtenVonZeit() {
 					var viewname;
-					viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
+					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -358,7 +351,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
-						$db.openDoc(sessionStorage.ZeitId, {
+						$db.openDoc(localStorage.ZeitId, {
 							success: function (hZeit) {
 								//Werte aus dem Formular aktualisieren
 								if (Feldwert) {
@@ -371,7 +364,7 @@
 									success: function () {
 										//geändertes Zeit-Feld in hArt anpassen
 										var viewname;
-										viewname = 'evab/hArtIdVonZeit?startkey=["' + sessionStorage.ZeitId + '"]&endkey=["' + sessionStorage.ZeitId + '",{}]';
+										viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
 										$db.view(viewname, {
 											success: function (data) {
 												var hArtId;
@@ -433,7 +426,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitEdit.html";
+									localStorage.zurueck = "hZeitEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -448,7 +441,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitEdit.html";
+									localStorage.zurueck = "hZeitEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -456,7 +449,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitEdit.html";
+									localStorage.zurueck = "hZeitEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -464,7 +457,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -488,18 +481,18 @@
 					//nur abfragen, wenn sie noch nicht existiert
 					if (window.ZeitListe) {
 						nächsteVorigeZeit_2(NächsteOderVorige);
-					} else if (sessionStorage.ZeitListe) {
-						ZeitListe = JSON.parse(sessionStorage.ZeitListe);
+					} else if (localStorage.ZeitListe) {
+						ZeitListe = JSON.parse(localStorage.ZeitListe);
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
 						if (!localStorage.Username) {
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
 							success: function (data) {
 								ZeitListe = data;
-								sessionStorage.ZeitListe = JSON.stringify(data);
+								localStorage.ZeitListe = JSON.stringify(data);
 								nächsteVorigeZeit_2(NächsteOderVorige);
 							}
 						});
@@ -511,11 +504,11 @@
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].value._id;
 						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ZeitIdAktuell === sessionStorage.ZeitId) {
+						if (ZeitIdAktuell === localStorage.ZeitId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzZeit) {
-									sessionStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
+									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
 									initiiereZeitEdit();
 									return;
 								} else {
@@ -525,7 +518,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									sessionStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
+									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
 									initiiereZeitEdit();
 									return;
 								} else {

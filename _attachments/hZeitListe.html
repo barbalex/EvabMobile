@@ -60,20 +60,13 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#hZeitListePage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.hZeitListeWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.hZeitListeWirdInitiiert) {
-					initiiereZeitListe();
-				}
-				delete sessionStorage.hZeitListeWirdInitiiert;
+				initiiereZeitListe();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hZeitListe");
-					sessionStorage.hZeitListeWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
@@ -108,13 +101,13 @@
 				});
 
 				$("#Zeiten").on("swipeleft", ".Zeit", function () {
-					sessionStorage.ZeitId = $(this).attr('ZeitId');
+					localStorage.ZeitId = $(this).attr('ZeitId');
 					$.mobile.changePage("hArtListe.html");
 				});
 
 				$("#Zeiten").on("click", ".Zeit", function (event) {
 					event.preventDefault();
-					sessionStorage.ZeitId = $(this).attr('ZeitId');
+					localStorage.ZeitId = $(this).attr('ZeitId');
 					$.mobile.changePage("hZeitEdit.html");
 				});
 
@@ -159,7 +152,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitListe.html";
+									localStorage.zurueck = "hZeitListe.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -174,7 +167,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitListe.html";
+									localStorage.zurueck = "hZeitListe.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -182,7 +175,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hZeitListe.html";
+									localStorage.zurueck = "hZeitListe.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -190,7 +183,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",

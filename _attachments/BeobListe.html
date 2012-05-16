@@ -53,31 +53,24 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#BeobListePage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.BeobListeWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.BeobListeWirdInitiiert) {
-					initiiereBeobliste();
-				}
-				delete sessionStorage.BeobListeWirdInitiiert;
+				initiiereBeobliste();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("BeobListe");
-					sessionStorage.BeobListeWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#beobachtungen").on("swipeleft click", ".beob", function () {
-					sessionStorage.BeobId = $(this).attr('id');
+					localStorage.BeobId = $(this).attr('id');
 					$.mobile.changePage("BeobEdit.html");
 				});
 
 				$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function (event) {
 					event.preventDefault();
-					sessionStorage.zurueck = "BeobListe";
+					localStorage.zurueck = "BeobListe";
 					$.mobile.changePage("Karte.html");
 				});
 
@@ -111,9 +104,9 @@
 				function erstelleNeueBeob_1_Artgruppenliste() {
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereSessionStorageBeobListe();
-					sessionStorage.Status = "neu";
-					sessionStorage.Von = "BeobListe";
-					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
+					localStorage.Status = "neu";
+					localStorage.Von = "BeobListe";
+					delete localStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
@@ -134,7 +127,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "BeobListe.html";
+									localStorage.zurueck = "BeobListe.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -149,7 +142,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "BeobListe.html";
+									localStorage.zurueck = "BeobListe.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -157,7 +150,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "BeobListe.html";
+									localStorage.zurueck = "BeobListe.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -165,7 +158,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",

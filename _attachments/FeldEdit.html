@@ -191,22 +191,15 @@
 		<script type="text/javascript">
 			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
 			$("#FeldEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.FeldEditWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.FeldEditWirdInitiiert) {
-					initiiereFeldEdit();
-				}
-				delete sessionStorage.FeldEditWirdInitiiert;
+				initiiereFeldEdit();
 			});
 
 			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("FeldEdit");
-					sessionStorage.FeldEditWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
@@ -215,32 +208,32 @@
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
 					}
-					sessionStorage.FeldWert = this.value;
+					localStorage.FeldWert = this.value;
 					if (this.name) {
-						sessionStorage.FeldName = this.name;
-						sessionStorage.AlterFeldWert = Feld[this.name];
+						localStorage.FeldName = this.name;
+						localStorage.AlterFeldWert = Feld[this.name];
 					} else {
-						sessionStorage.FeldName = this.id;
-						sessionStorage.AlterFeldWert = Feld[this.id];
+						localStorage.FeldName = this.id;
+						localStorage.AlterFeldWert = Feld[this.id];
 					}
 					//Felder der Datenzentren dürfen nicht verändert werden
 					//ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 					if (Feld.User === "ZentrenBdKt") {
 						//Feldwert zurücksetzen	
-						if (sessionStorage.AlterFeldWert) {
-							$("#" + sessionStorage.FeldName).val(sessionStorage.AlterFeldWert);
+						if (localStorage.AlterFeldWert) {
+							$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
 						} else {
-							$("#" + sessionStorage.FeldName).val("");
+							$("#" + localStorage.FeldName).val("");
 						}
-						delete sessionStorage.FeldName;
-						delete sessionStorage.FeldWert;
-						delete sessionStorage.AlterFeldWert;
+						delete localStorage.FeldName;
+						delete localStorage.FeldWert;
+						delete localStorage.AlterFeldWert;
 						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein neues Feld erstellen");
-					} else if (sessionStorage.FeldName === "FeldName") {
+					} else if (localStorage.FeldName === "FeldName") {
 						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
 						//ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
 						//undefined als o.k.!!!!
-						if (sessionStorage.AlterFeldWert !== "undefined" && sessionStorage.AlterFeldWert) {
+						if (localStorage.AlterFeldWert !== "undefined" && localStorage.AlterFeldWert) {
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
@@ -252,7 +245,7 @@
 									for (i in data.rows) {
 										if (typeof i !== "function") {
 											Datensatz = data.rows[i].doc; 
-											TempFeld = Datensatz[sessionStorage.AlterFeldWert];
+											TempFeld = Datensatz[localStorage.AlterFeldWert];
 											if (TempFeld) {
 												anzVorkommen += 1;
 											}
@@ -270,10 +263,10 @@
 										if (anzVorkommen === 1) {
 											ds = "Datensatz";
 										}
-										$("#FeldName").val(sessionStorage.AlterFeldWert);
-										delete sessionStorage.FeldName;
-										delete sessionStorage.FeldWert;
-										delete sessionStorage.AlterFeldWert;
+										$("#FeldName").val(localStorage.AlterFeldWert);
+										delete localStorage.FeldName;
+										delete localStorage.FeldWert;
+										delete localStorage.AlterFeldWert;
 										melde("Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet.<br>Es kann deshalb nicht verändert werden.<br>Bereinigen Sie zuerst die Daten.");
 									}
 								}
@@ -285,11 +278,11 @@
 							//wenn nein: speichern
 							pruefeFeldNamen();
 						}
-					} else if (sessionStorage.FeldName === "Hierarchiestufe" && sessionStorage.FeldWert === "Art") {
+					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauenFeldEdit();
-					} else if (sessionStorage.FeldName === "Hierarchiestufe" && sessionStorage.FeldWert !== "Art") {
+					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc(Feld._id, {
@@ -311,7 +304,7 @@
 					setzeReihenfolgeMitVorgaenger(this.value);
 					//Feldliste soll neu aufgebaut werden
 					delete window.Feldliste;
-					delete sessionStorage.Feldliste;
+					delete localStorage.Feldliste;
 				});
 
 				$("#FeldEditFooter").on("click", "#NeuesFeldFeldEdit", function (event) {
@@ -504,7 +497,7 @@
 				//wenn nein: speichern
 				function pruefeFeldNamen() {
 					$db = $.couch.db("evab");
-					$db.view('evab/FeldNamen?key="' + sessionStorage.FeldWert + '"', {
+					$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"', {
 						success: function (data) {
 							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
 							if (!localStorage.Username) {
@@ -536,31 +529,31 @@
 							} else {
 								//Feldname kommt bei diesem User schon vor
 								//Wert im Feld zurücksetzen
-								if (sessionStorage.AlterFeldWert) {
-									$("#FeldName").val(sessionStorage.AlterFeldWert);
+								if (localStorage.AlterFeldWert) {
+									$("#FeldName").val(localStorage.AlterFeldWert);
 								} else {
 									$("#FeldName").val("");
 								}
 								setTimeout(function () { 
 									$('#FeldName').focus(); 
 								}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-								melde("Feldname " + sessionStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
-								delete sessionStorage.FeldName;
-								delete sessionStorage.FeldWert;
-								delete sessionStorage.AlterFeldWert;
+								melde("Feldname " + localStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
+								delete localStorage.FeldName;
+								delete localStorage.FeldWert;
+								delete localStorage.AlterFeldWert;
 							}
 						},
 						error: function () {
 							//Wert im Feld zurücksetzen
-							if (sessionStorage.AlterFeldWert) {
-								$("#FeldName").val(sessionStorage.AlterFeldWert);
+							if (localStorage.AlterFeldWert) {
+								$("#FeldName").val(localStorage.AlterFeldWert);
 							} else {
 								$("#FeldName").val("");
 							}
-							melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
-							delete sessionStorage.FeldName;
-							delete sessionStorage.FeldWert;
-							delete sessionStorage.AlterFeldWert;
+							melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
+							delete localStorage.FeldName;
+							delete localStorage.FeldWert;
+							delete localStorage.AlterFeldWert;
 						}
 					});
 				}
@@ -595,9 +588,9 @@
 					if (window.Feldliste) {
 						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 						geheZumNächstenFeld_2();
-					} else if (sessionStorage.Feldliste) {
-						//sessionStorage verwenden
-						Feldliste = JSON.parse(sessionStorage.Feldliste);
+					} else if (localStorage.Feldliste) {
+						//localStorage verwenden
+						Feldliste = JSON.parse(localStorage.Feldliste);
 						geheZumNächstenFeld_2();
 					} else {
 						if (!localStorage.Username) {
@@ -607,7 +600,7 @@
 						$db.view('evab/FeldListe', {
 							success: function (data) {
 								Feldliste = data;
-								sessionStorage.Feldliste = JSON.stringify(data);
+								localStorage.Feldliste = JSON.stringify(data);
 								geheZumNächstenFeld_2();
 							}
 						});
@@ -625,7 +618,7 @@
 							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
-								if (FeldIdAktuell === sessionStorage.FeldId) {
+								if (FeldIdAktuell === localStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus vorwärts das nächste eigene oder offizielle suchen
 									if (parseInt(i) < AnzFelder) {
@@ -636,7 +629,7 @@
 											//Nur eigene Felder und offizielle berücksichtigen
 											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
-												sessionStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
+												localStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
 												initiiereFeldEdit();
 												return;
 											} else {
@@ -665,9 +658,9 @@
 					if (window.Feldliste) {
 						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 						geheZumVorigenFeld_2();
-					} else if (sessionStorage.Feldliste) {
-						//sessionStorage verwenden
-						Feldliste = JSON.parse(sessionStorage.Feldliste);
+					} else if (localStorage.Feldliste) {
+						//localStorage verwenden
+						Feldliste = JSON.parse(localStorage.Feldliste);
 						geheZumVorigenFeld_2();
 					} else {
 						if (!localStorage.Username) {
@@ -677,7 +670,7 @@
 						$db.view('evab/FeldListe', {
 							success: function (data) {
 								Feldliste = data;
-								sessionStorage.Feldliste = JSON.stringify(data);
+								localStorage.Feldliste = JSON.stringify(data);
 								geheZumVorigenFeld_2();
 							}
 						});
@@ -695,7 +688,7 @@
 							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
-								if (FeldIdAktuell === sessionStorage.FeldId) {
+								if (FeldIdAktuell === localStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus rückwärts das nächste eigene oder offizielle suchen
 									if (parseInt(i) > 0) {
@@ -707,7 +700,7 @@
 											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
-												sessionStorage.FeldId = FeldIdVoriges;
+												localStorage.FeldId = FeldIdVoriges;
 												initiiereFeldEdit();
 												return;
 											} else {
@@ -750,14 +743,14 @@
 				}
 
 				function geheZurück() {
-					delete sessionStorage.FeldId;
-					delete sessionStorage.Feld;
-					if (sessionStorage.zurueck.slice(0, 6) === "Felder") {
+					delete localStorage.FeldId;
+					delete localStorage.Feld;
+					if (localStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
 						leereSessionStorageFeldEdit();
 						leereSessionStorageFeldListe();
-						$.mobile.changePage(sessionStorage.zurueck);
-						delete sessionStorage.zurueck;
+						$.mobile.changePage(localStorage.zurueck);
+						delete localStorage.zurueck;
 						
 					} else {
 						leereSessionStorageFeldEdit();
@@ -798,8 +791,8 @@
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
-									sessionStorage.Feld = JSON.stringify(data);
-									sessionStorage.FeldId = Feld._id;
+									localStorage.Feld = JSON.stringify(data);
+									localStorage.FeldId = Feld._id;
 								},
 								error: function () {
 									melde("Fehler: Feld nicht gespeichert");
@@ -831,14 +824,14 @@
 								Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
 								//Feldliste soll neu aufgebaut werden
 								delete window.Feldliste;
-								delete sessionStorage.Feldliste;
+								delete localStorage.Feldliste;
 							}
 							//Es braucht eine Reihenfolge
 							if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 								Formularfelder.Reihenfolge = 1;
 								//Feldliste soll neu aufgebaut werden
 								delete window.Feldliste;
-								delete sessionStorage.Feldliste;
+								delete localStorage.Feldliste;
 							}
 							//Es braucht einen Feldtyp
 							if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
@@ -902,25 +895,25 @@
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
-									sessionStorage.Feld = JSON.stringify(data);
+									localStorage.Feld = JSON.stringify(data);
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
-									if (sessionStorage.FeldName === "FeldName" || sessionStorage.FeldName === "FeldBeschreibung" || sessionStorage.FeldName === "Reihenfolge") {
+									if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
 										delete window.Feldliste;
-										delete sessionStorage.Feldliste;
+										delete localStorage.Feldliste;
 									}
 								},
 								error: function () {
-									melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
+									melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
 								}
 							});
 						},
 						error: function () {
-							melde("Fehler: Änderung in " + sessionStorage.FeldName + " nicht gespeichert");
+							melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
 						}
 					});
-					delete sessionStorage.FeldName;
-					delete sessionStorage.FeldWert;
-					delete sessionStorage.AlterFeldWert;
+					delete localStorage.FeldName;
+					delete localStorage.FeldWert;
+					delete localStorage.AlterFeldWert;
 				}
 			});
 		</script>

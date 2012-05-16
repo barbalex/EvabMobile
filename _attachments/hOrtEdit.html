@@ -98,19 +98,14 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.OrtId existiert und ungleich null ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.OrtId) {
-					initiiereOrtEdit();
-				}
+				initiiereOrtEdit();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hOrtEdit");
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function (event) {
@@ -121,14 +116,14 @@
 
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					delete localStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					delete sessionStorage.RaumListe;
+					delete localStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					delete localStorage.RaumListe;
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -141,12 +136,12 @@
 					Feldwert = Feldjson[Feldname];
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst
-						sessionStorage.oXKoord = $("#oXKoord").val();
-						sessionStorage.oYKoord = $("#oYKoord").val();
+						localStorage.oXKoord = $("#oXKoord").val();
+						localStorage.oYKoord = $("#oYKoord").val();
 						//Längen- und Breitengrade berechnen
-						sessionStorage.oLongitudeDecDeg = CHtoWGSlng(sessionStorage.oYKoord, sessionStorage.oXKoord);
-						sessionStorage.oLatitudeDecDeg = CHtoWGSlat(sessionStorage.oYKoord, sessionStorage.oXKoord);
-						speichereKoordinaten(sessionStorage.OrtId, "");
+						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
+						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
+						speichereKoordinaten(localStorage.OrtId, "");
 					} else {
 						speichern(Feldname, Feldwert);
 					}
@@ -169,7 +164,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(sessionStorage.OrtId);
+						speichereAnhänge(localStorage.OrtId);
 					}
 				});
 
@@ -220,13 +215,13 @@
 				$('#hOrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					sessionStorage.zurueck = "hOrtEdit";
+					localStorage.zurueck = "hOrtEdit";
 					$.mobile.changePage("Karte.html");
 				});
 
 				$('#hOrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
 					event.preventDefault();
-					GetGeolocation(sessionStorage.OrtId, "hOrtEditForm");
+					GetGeolocation(localStorage.OrtId);
 				});
 				
 				$(document).on("swipeleft", "#OrtEditPage", function () {
@@ -308,7 +303,7 @@
 							}
 							// First open doc based on ID in order to get full document
 							$db = $.couch.db("evab");
-							return $db.openDoc(sessionStorage.OrtId, {
+							return $db.openDoc(localStorage.OrtId, {
 								success: function (document) {
 									// lösche Ort
 									return $db.removeDoc(document, {
@@ -340,7 +335,7 @@
 				function löscheArtenVonOrt() {
 					var AnzArtenGelöscht, viewname;
 					AnzArtenGelöscht = 0;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -365,7 +360,7 @@
 				function löscheZeitenVonOrt() {
 					var AnzZeitenGelöscht, viewname;
 					AnzZeitenGelöscht = 0;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -390,7 +385,7 @@
 				//und gib diesen Wert zurück
 				function AnzZeitenVonOrt() {	//momentan nicht im Gebrauch, da callbacks nicht im Griff
 					var viewname, AnzahlZeiten;
-					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + sessionStorage.OrtId + '"';
+					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + localStorage.OrtId + '"';
 					AnzahlZeiten = 0;
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
@@ -427,7 +422,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
-						$db.openDoc(sessionStorage.OrtId, {
+						$db.openDoc(localStorage.OrtId, {
 							success: function (hOrt) {
 								//Werte aus dem Formular aktualisieren
 								if (Feldwert) {
@@ -456,7 +451,7 @@
 				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hZeit anpassen
 					var viewname;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -481,7 +476,7 @@
 				function speichereOrtfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + sessionStorage.OrtId + '"]&endkey=["' + sessionStorage.OrtId + '",{}]';
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -528,7 +523,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtEdit.html";
+									localStorage.zurueck = "hOrtEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -543,7 +538,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtEdit.html";
+									localStorage.zurueck = "hOrtEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -551,7 +546,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtEdit.html";
+									localStorage.zurueck = "hOrtEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -559,7 +554,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -584,8 +579,8 @@
 					if (window.OrtListe) {
 						//Ortliste liegt als Variable vor
 						nächsterVorigerOrt_2(NächsterOderVoriger);
-					} else if (sessionStorage.OrtListe) {
-						OrtListe = JSON.parse(sessionStorage.OrtListe);
+					} else if (localStorage.OrtListe) {
+						OrtListe = JSON.parse(localStorage.OrtListe);
 						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
 						//keine Ortliste vorhanden
@@ -594,11 +589,11 @@
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]', {
+						$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
 							success: function (data) {
 								//OrtListe für hOrtListe.html bereitstellen
 								OrtListe = data;
-								sessionStorage.OrtListe = JSON.stringify(OrtListe);
+								localStorage.OrtListe = JSON.stringify(OrtListe);
 								nächsterVorigerOrt_2(NächsterOderVoriger);
 							}
 						});
@@ -610,11 +605,11 @@
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].value._id;
 						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (OrtIdAktuell === sessionStorage.OrtId) {
+						if (OrtIdAktuell === localStorage.OrtId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (parseInt(i) < AnzOrt) {
-									sessionStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
+									localStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
 									initiiereOrtEdit();
 									return;
 								} else {
@@ -624,7 +619,7 @@
 								break;
 							case "voriger":
 								if (parseInt(i) > 0) {
-									sessionStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
+									localStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
 									initiiereOrtEdit();
 									return;
 								} else {

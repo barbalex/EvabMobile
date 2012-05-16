@@ -86,32 +86,25 @@
 			<script type="text/javascript">
 
 				$("#UserEditPage").on("pageshow", function () {
-					//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-					//darum prüfen, ob sessionStorage.UserEditWirdInitiiert nicht true ist
-					//sonst übernimmt holeSessionStorageAusDb das initiieren
-					if (!sessionStorage.UserEditWirdInitiiert) {
-						initiiereUserEdit();
-					}
-					delete sessionStorage.UserEditWirdInitiiert;
+					initiiereUserEdit();
 				});
 
 				$(":jqmData(role='page')").on("pageinit", function () {
-					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-					//wo sie von speichereLetzteUrl gespeichert wurde
-					if (sessionStorage.length === 0) {
-						holeSessionStorageAusDb("UserEdit");
-						sessionStorage.UserEditWirdInitiiert = true;
+					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+					//muss auf index.html umgeleitet werden
+					if (localStorage.length === 0) {
+						$.mobile.changePage("index.html");
 					}
 
 					//zurück-Button steuern
 					$("#UserEditPage").on('click', '#zurückUserEdit', function (event) {
 						event.preventDefault();
 						//sicherstellen, dass er immer ein zurück kennt
-						if (!sessionStorage.zurueck) {
-							sessionStorage.zurueck = "BeobListe.html";
+						if (!localStorage.zurueck) {
+							localStorage.zurueck = "BeobListe.html";
 						}
-						$.mobile.changePage(sessionStorage.zurueck);
-						delete sessionStorage.zurueck;
+						$.mobile.changePage(localStorage.zurueck);
+						delete localStorage.zurueck;
 					});
 
 					//jedes Feld bei Änderung speichern
@@ -148,7 +141,7 @@
 
 					function speichern(Feldname, Feldwert) {
 						$db = $.couch.db("evab");
-						$db.openDoc(sessionStorage.UserId, {
+						$db.openDoc(localStorage.UserId, {
 							success: function (doc) {
 									if (Feldwert) {
 										doc[Feldname] = Feldwert;
@@ -156,7 +149,7 @@
 										delete doc[Feldname]
 									}
 									if (Feldname === "ArtenSprache") {
-										sessionStorage.ArtenSprache = Feldwert;
+										localStorage.ArtenSprache = Feldwert;
 									}
 								$db.saveDoc(doc, {
 									error: function () {

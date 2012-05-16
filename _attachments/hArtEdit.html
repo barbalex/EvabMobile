@@ -91,19 +91,14 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.hBeobId existiert und ungleich null ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.hBeobId) {
-					initiierehBeobEdit();
-				}
+				initiierehBeobEdit();
 			});
 
 			$("#hArtEditPage").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hBeobEdit");
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function (event) {
@@ -180,14 +175,14 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(sessionStorage.hBeobId);
+						speichereAnhänge(localStorage.hBeobId);
 					}
 				});
 
 				//Neue Beobachtung managen
 				$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function (event) {
 					event.preventDefault();
-					sessionStorage.Status = "neu";
+					localStorage.Status = "neu";
 					zuArtgruppenliste();
 				});
 
@@ -297,7 +292,7 @@
 				function zuArtgruppenliste() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereSessionStoragehBeobListe();
-					sessionStorage.Von = "hArtEdit";
+					localStorage.Von = "hArtEdit";
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
@@ -305,22 +300,22 @@
 					var viewname;
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereSessionStoragehBeobListe();
-					sessionStorage.Von = "hArtEdit";
+					localStorage.Von = "hArtEdit";
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
-					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
-							sessionStorage.Von = "hArtEdit";
+							localStorage.Von = "hArtEdit";
 							if (ArtGruppen_2_L) {
-								sessionStorage.NestedList = true;
+								localStorage.NestedList = true;
 								$.mobile.changePage("Artgruppenliste.html");
 							} else {
-								delete sessionStorage.NestedList;
+								delete localStorage.NestedList;
 								$.mobile.changePage("Artenliste.html");
 							}
 						}
@@ -356,7 +351,7 @@
 							'Arteigenschaften': {
 								click: function () {
 									//Variabeln übergeben
-									sessionStorage.zurueck = "hArtEdit.html";
+									localStorage.zurueck = "hArtEdit.html";
 									$.mobile.changePage("ArtEdit.html");
 								},
 								theme: "a",
@@ -364,7 +359,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hArtEdit.html";
+									localStorage.zurueck = "hArtEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -379,7 +374,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hArtEdit.html";
+									localStorage.zurueck = "hArtEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -387,7 +382,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hArtEdit.html";
+									localStorage.zurueck = "hArtEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -395,7 +390,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -447,9 +442,9 @@
 							} else if (hArt[Feldname]) {
 								delete hArt[Feldname];
 							}
-							hArt.aArtId = sessionStorage.aArtId;
-							hArt.aArtName = sessionStorage.aArtName;
-							hArt.aArtGruppe = sessionStorage.aArtGruppe;
+							hArt.aArtId = localStorage.aArtId;
+							hArt.aArtName = localStorage.aArtName;
+							hArt.aArtGruppe = localStorage.aArtGruppe;
 							$db.saveDoc(hArt, {
 								error: function () {
 									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -472,8 +467,8 @@
 					if (window.hBeobListe) {
 						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
-					} else if (sessionStorage.hBeobListe) {
-						hBeobListe = JSON.parse(sessionStorage.hBeobListe);
+					} else if (localStorage.hBeobListe) {
+						hBeobListe = JSON.parse(localStorage.hBeobListe);
 						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
 						//keine Ortliste vorhanden
@@ -482,11 +477,11 @@
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ZeitId + '" ,{}]', {
+						$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
 							success: function (data) {
 								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 								hBeobListe = data;
-								sessionStorage.hBeobListe = JSON.stringify(hBeobListe);
+								localStorage.hBeobListe = JSON.stringify(hBeobListe);
 								nächsteVorigeArt_2(NächsteOderVorige);
 							}
 						});
@@ -498,11 +493,11 @@
 					for (i in hBeobListe.rows) {
 						ArtIdAktuell = hBeobListe.rows[i].value._id;
 						AnzArt = hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ArtIdAktuell === sessionStorage.hBeobId) {
+						if (ArtIdAktuell === localStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzArt) {
-									sessionStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
+									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
 									initiierehBeobEdit();
 									return;
 								} else {
@@ -512,7 +507,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									sessionStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
+									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
 									initiierehBeobEdit();
 									return;
 								} else {

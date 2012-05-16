@@ -51,8 +51,8 @@
 					var markersArray = [];
 					var InfoWindowArray = [];
 
-					//sicherstellen, dass sessionStorage.zurueck existiert (gibt sonst später Fehler)
-					if (!sessionStorage.zurueck) {
+					//sicherstellen, dass localStorage.zurueck existiert (gibt sonst später Fehler)
+					if (!localStorage.zurueck) {
 						window.open("BeobListe.html", target = "_self")
 					}
 					if (!localStorage.Username) {
@@ -60,7 +60,7 @@
 					}
 
 					//Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
-					switch(sessionStorage.zurueck) {
+					switch(localStorage.zurueck) {
 						case "hProjektListe":
 							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
@@ -68,13 +68,13 @@
 							break;
 						case "hProjektEdit":	//gleich wie hRaumListe
 						case "hRaumListe":
-							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]&include_docs=true';
+							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
 						case "hRaumEdit":	//gleich wie hOrtListe
 						case "hOrtListe":
-							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.RaumId + '" ,{}]&include_docs=true';
+							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
@@ -97,7 +97,7 @@
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
 						//zuständige hOrtLatLngListe ermitteln
-						switch (sessionStorage.zurueck) {
+						switch (localStorage.zurueck) {
 							case "hProjektListe":
 							hOrtLatLngListe = "hOrteLatLngProjektliste";
 							break;
@@ -113,15 +113,15 @@
 						//Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
 						if (window[hOrtLatLngListe]) {
 							erstelleKarteH_2(window[hOrtLatLngListe]);
-						} else if (sessionStorage[hOrtLatLngListe]) {
-							window[hOrtLatLngListe] = JSON.parse(sessionStorage[hOrtLatLngListe]);
+						} else if (localStorage[hOrtLatLngListe]) {
+							window[hOrtLatLngListe] = JSON.parse(localStorage[hOrtLatLngListe]);
 							erstelleKarteH_2(window[hOrtLatLngListe]);
 						} else {
 							$db = $.couch.db("evab");
 							$db.view(viewname, {
 								success: function (data) {
 									window[hOrtLatLngListe] = data;
-									sessionStorage[hOrtLatLngListe] = JSON.stringify(data);
+									localStorage[hOrtLatLngListe] = JSON.stringify(data);
 									erstelleKarteH_2(data);
 								}
 							});
@@ -223,9 +223,9 @@
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						if (sessionStorage.oLatitudeDecDeg && sessionStorage.oLongitudeDecDeg) {
-							lat = sessionStorage.oLatitudeDecDeg;
-							lng = sessionStorage.oLongitudeDecDeg;
+						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
+							lat = localStorage.oLatitudeDecDeg;
+							lng = localStorage.oLongitudeDecDeg;
 							ZoomLevel = 15;
 							verorted = true;
 						} else {
@@ -257,8 +257,8 @@
 											'</div>'+
 											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
 											'<div id="bodyContent" class="GmInfowindow">'+
-											'<p>X-Koordinate: ' + sessionStorage.oXKoord + '</p>'+
-											'<p>Y-Koordinate: ' + sessionStorage.oYKoord + '</p>'+
+											'<p>X-Koordinate: ' + localStorage.oXKoord + '</p>'+
+											'<p>Y-Koordinate: ' + localStorage.oYKoord + '</p>'+
 											'</div>'+
 											'</div>';
 							infowindow = new google.maps.InfoWindow({
@@ -286,8 +286,8 @@
 						//Beobachtungen holen. Prüfen, ob die Liste noch da ist
 						if (window.BeobListeLatLng) {
 							erstelleKarteBeobListe_2();
-						} else if (sessionStorage.BeobListeLatLng) {
-							window.BeobListeLatLng = JSON.parse(sessionStorage.BeobListeLatLng);
+						} else if (localStorage.BeobListeLatLng) {
+							window.BeobListeLatLng = JSON.parse(localStorage.BeobListeLatLng);
 							erstelleKarteBeobListe_2();
 						} else {
 							if (!localStorage.Username) {
@@ -297,7 +297,7 @@
 							$db.view('evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true', {
 								success: function (data) {
 									window.BeobListeLatLng = data;
-									sessionStorage.BeobListeLatLng = JSON.stringify(data);
+									localStorage.BeobListeLatLng = JSON.stringify(data);
 									erstelleKarteBeobListe_2();
 								}
 							});
@@ -401,9 +401,9 @@
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						if (sessionStorage.oLatitudeDecDeg && sessionStorage.oLongitudeDecDeg) {
-							lat = sessionStorage.oLatitudeDecDeg;
-							lng = sessionStorage.oLongitudeDecDeg;
+						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
+							lat = localStorage.oLatitudeDecDeg;
+							lng = localStorage.oLongitudeDecDeg;
 							ZoomLevel = 15;
 							verorted = true;
 						} else {
@@ -425,21 +425,21 @@
 						aAutor = $("#aAutor").val();
 						zDatum = $("#zDatum").val();
 						zUhrzeit = $("#zUhrzeit").val();
-						image = "Artgruppenbilder/" + sessionStorage.aArtGruppe + ".png";
+						image = "Artgruppenbilder/" + localStorage.aArtGruppe + ".png";
 						if (verorted === true) {
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map, 
-								title: sessionStorage.aArtName,
+								title: localStorage.aArtName,
 								icon: image,
 								draggable: true
 							});
 							//Marker in Array speichern, damit er gelöscht werden kann
 							markersArray.push(marker); 
 							contentString = '<div id="content">'+
-								'<h4 id="firstHeading" class="GmInfowindow">' + sessionStorage.aArtName + '</h4>'+
+								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
 								'<div id="bodyContent" class="GmInfowindow">'+
-								'<p>Art-Gruppe: ' + sessionStorage.aArtGruppe + '</p>'+
+								'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
 								'<p>Autor: ' + aAutor + '</p>'+
 								'<p>Datum: ' + zDatum + '</p>'+
 								'<p>Zeit: ' + zUhrzeit + '</p>'+
@@ -486,7 +486,7 @@
 						var marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							title: sessionStorage.aArtName,
+							title: localStorage.aArtName,
 							icon: image,
 							draggable: true
 						});
@@ -503,13 +503,13 @@
 						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
-						sessionStorage.oLatitudeDecDeg = lat;
-						sessionStorage.oLongitudeDecDeg = lng;
-						sessionStorage.oXKoord = DdInChX(lat, lng);
-						sessionStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oLatitudeDecDeg = lat;
+						localStorage.oLongitudeDecDeg = lng;
+						localStorage.oXKoord = DdInChX(lat, lng);
+						localStorage.oYKoord = DdInChY(lat, lng);
 						clearInfoWindows();
 						contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + sessionStorage.oXKoord + "/" + sessionStorage.oYKoord + '</p>' +
+										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 										'</div></div>';
 						infowindow = new google.maps.InfoWindow({
 							content: contentString
@@ -518,7 +518,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(sessionStorage.OrtId, "Auf Luftbild markiert");
+						speichereKoordinaten(localStorage.OrtId, "Auf Luftbild markiert");
 					}
 
 					//wird benutzt in BeobEdit.html
@@ -526,13 +526,13 @@
 						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
-						sessionStorage.oLatitudeDecDeg = lat;
-						sessionStorage.oLongitudeDecDeg = lng;
-						sessionStorage.oXKoord = DdInChX(lat, lng);
-						sessionStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oLatitudeDecDeg = lat;
+						localStorage.oLongitudeDecDeg = lng;
+						localStorage.oXKoord = DdInChX(lat, lng);
+						localStorage.oYKoord = DdInChY(lat, lng);
 						clearInfoWindows();
 						contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + sessionStorage.oXKoord + "/" + sessionStorage.oYKoord + '</p>' +
+										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 										'</div></div>';
 						infowindow = new google.maps.InfoWindow({
 							content: contentString
@@ -541,7 +541,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(sessionStorage.BeobId, "Auf Luftbild markiert");
+						speichereKoordinaten(localStorage.BeobId, "Auf Luftbild markiert");
 					}
 
 					//GoogleMap: alle Marker löschen
@@ -570,13 +570,13 @@
 					$("#KarteHeader").on('click', '#ZurueckKarte', function (event) {
 						var zurueck;
 						event.preventDefault();
-						if (sessionStorage.zurueck) {
-							zurueck = sessionStorage.zurueck + ".html";
+						if (localStorage.zurueck) {
+							zurueck = localStorage.zurueck + ".html";
 						} else {
 							zurueck = "BeobListe.html";
 						}
 						$.mobile.changePage(zurueck);
-						delete sessionStorage.zurueck;
+						delete localStorage.zurueck;
 					});
 				});
 

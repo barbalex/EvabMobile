@@ -58,17 +58,23 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#ArtEditPage").on("pageshow", function () {
-				erstelleArtEdit(sessionStorage.aArtId);
+				erstelleArtEdit(localStorage.aArtId);
 			});
 
 			$("#ArtEditPage").on("pageinit", function () {
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
+				}
+				
 				//zurück-Button steuern
 				$("#ArtEditPage").on('click', '#zurueckArtEdit', function (event) {
 					var zurueck;
 					event.preventDefault();
 					zurueck = "";
-					if (sessionStorage.zurueck) {
-						zurueck = sessionStorage.zurueck;
+					if (localStorage.zurueck) {
+						zurueck = localStorage.zurueck;
 					}
 					if (zurueck === "BeobEdit.html") {
 						$.mobile.changePage($('#BeobEditPage'));
@@ -79,8 +85,8 @@
 					} else {
 						$.mobile.changePage("BeobListe.html");
 					}
-					delete sessionStorage.zurueck;
-					delete sessionStorage.aArtGruppe;
+					delete localStorage.zurueck;
+					delete localStorage.aArtGruppe;
 				});
 
 				//Artwechsl managen, ausgehend von Artgruppe
@@ -96,7 +102,7 @@
 				});
 
 				function zuArtgruppenliste() {
-					sessionStorage.Von = "ArtEdit";
+					localStorage.Von = "ArtEdit";
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
@@ -105,17 +111,17 @@
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
 					var viewname, ArtGruppen_2_L;
-					viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
+					viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
-							sessionStorage.Von = "ArtEdit";
+							localStorage.Von = "ArtEdit";
 							if (ArtGruppen_2_L) {
-								sessionStorage.NestedList = true;
+								localStorage.NestedList = true;
 								$.mobile.changePage("Artgruppenliste.html");
 							} else {
-								delete sessionStorage.NestedList;
+								delete localStorage.NestedList;
 								$.mobile.changePage("Artenliste.html");
 							}
 						}

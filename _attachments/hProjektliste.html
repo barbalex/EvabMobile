@@ -53,20 +53,13 @@
 			</div>
 			<script type="text/javascript" charset="utf-8">
 				$("#ProjektListePage").on("pageshow", function () {
-					//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-					//darum prüfen, ob sessionStorage.hProjektListeWirdInitiiert nicht true ist
-					//sonst übernimmt holeSessionStorageAusDb das initiieren
-					if (!sessionStorage.hProjektListeWirdInitiiert) {
-						initiiereProjektliste();
-					}
-					delete sessionStorage.hProjektListeWirdInitiiert;
+					initiiereProjektliste();
 				});
 				$(":jqmData(role='page')").on("pageinit", function () {
-					//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-					//wo sie von speichereLetzteUrl gespeichert wurde
-					if (sessionStorage.length === 0) {
-						holeSessionStorageAusDb("hProjektListe");
-						sessionStorage.hProjektListeWirdInitiiert = true;
+					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+					//muss auf index.html umgeleitet werden
+					if (localStorage.length === 0) {
+						$.mobile.changePage("index.html");
 					}
 
 					//Menu aufbauen
@@ -82,13 +75,13 @@
 					});
 
 					$("#Projekte").on("swipeleft", ".Projekt", function () {
-						sessionStorage.ProjektId = $(this).attr('ProjektId');
+						localStorage.ProjektId = $(this).attr('ProjektId');
 						$.mobile.changePage("hRaumListe.html");
 					});
 
 					$("#Projekte").on("click", ".Projekt", function (event) {
 						event.preventDefault();
-						sessionStorage.ProjektId = $(this).attr('ProjektId');
+						localStorage.ProjektId = $(this).attr('ProjektId');
 						$.mobile.changePage("hProjektEdit.html");
 					});
 
@@ -107,7 +100,7 @@
 
 					$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
 						event.preventDefault();
-						sessionStorage.zurueck = "hProjektListe";
+						localStorage.zurueck = "hProjektListe";
 						$.mobile.changePage("Karte.html");
 					});
 
@@ -131,7 +124,7 @@
 								},
 								'Felder verwalten': {
 									click: function () {
-										sessionStorage.zurueck = "hProjektListe.html";
+										localStorage.zurueck = "hProjektListe.html";
 										$.mobile.changePage("FeldListe.html");
 									},
 									theme: "a",
@@ -146,7 +139,7 @@
 								},
 								'Einstellungen': {
 									click: function () {
-										sessionStorage.zurueck = "hProjektListe.html";
+										localStorage.zurueck = "hProjektListe.html";
 										öffneMeineEinstellungen();
 									},
 									theme: "a",
@@ -154,7 +147,7 @@
 								},
 								'lokal installieren': {
 									click: function () {
-										sessionStorage.zurueck = "hProjektListe.html";
+										localStorage.zurueck = "hProjektListe.html";
 										$.mobile.changePage("Installieren.html");
 									},
 									theme: "a",
@@ -162,7 +155,7 @@
 								},
 								'neu anmelden': {
 									click: function () {
-										sessionStorage.UserStatus = "neu";
+										localStorage.UserStatus = "neu";
 										$.mobile.changePage("index.html");
 									},
 									theme: "a",

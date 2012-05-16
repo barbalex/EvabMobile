@@ -52,31 +52,24 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#FeldListePage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.FeldListeWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.FeldListeWirdInitiiert) {
-					initiiereFeldliste();
-				}
-				delete sessionStorage.FeldListeWirdInitiiert;
+				initiiereFeldliste();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("Feldliste");
-					sessionStorage.FeldListeWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				//sicherstellen, dass zurueck nie leer ist
-				if (!sessionStorage.zurueck) {
-					sessionStorage.zurueck = "BeobListe.html";
+				if (!localStorage.zurueck) {
+					localStorage.zurueck = "BeobListe.html";
 				}
 
 				//Feld öffnen
 				$("#FeldListe").on('click', '.Feld', function (event) {
 					event.preventDefault();
-					sessionStorage.FeldId = $(this).attr('FeldId');
+					localStorage.FeldId = $(this).attr('FeldId');
 					$.mobile.changePage("FeldEdit.html");
 				});
 
@@ -94,8 +87,8 @@
 				//BackButton steuern
 				$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
 					event.preventDefault();
-					$.mobile.changePage(sessionStorage.zurueck);
-					delete sessionStorage.zurueck;
+					$.mobile.changePage(localStorage.zurueck);
+					delete localStorage.zurueck;
 				});
 			});
 		</script>

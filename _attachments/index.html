@@ -66,11 +66,11 @@
 			$("#indexPage").on("pageshow", function () {
 				//Wenn möglich alten cookie für die Anmeldung verwenden
 				//ausser User hat via Menü bewusst neu anmelden wollen
-				//sessionStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-				if (!sessionStorage.UserStatus) {
+				//localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+				if (!localStorage.UserStatus) {
 					pruefeAnmeldung_index();
-				} else if (sessionStorage.UserStatus === "neu") {
-					sessionStorage.clear();
+				} else if (localStorage.UserStatus === "neu") {
+					localStorage.clear();
 				}
 				if (!("autofocus" in document.createElement("input"))) {
 					$("#UserName").focus();
@@ -111,7 +111,7 @@
 							name : UserName,
 							password : Passwort,
 							success : function (r) {
-								delete sessionStorage.UserStatus;
+								delete localStorage.UserStatus;
 								authentifiziereUser();
 							},
 							error: function () {

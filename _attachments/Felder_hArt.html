@@ -84,7 +84,7 @@
 							});
 							//Globale Variablen für FeldlistehBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							delete window.FeldlistehBeobEdit;
-							delete sessionStorage.FeldlistehBeobEdit;
+							delete localStorage.FeldlistehBeobEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
@@ -99,8 +99,8 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (window.FeldlistehBeobEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (sessionStorage.FeldlistehBeobEdit) {
-						FeldlistehBeobEdit = JSON.parse(sessionStorage.FeldlistehBeobEdit);
+					} else if (localStorage.FeldlistehBeobEdit) {
+						FeldlistehBeobEdit = JSON.parse(localStorage.FeldlistehBeobEdit);
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
@@ -108,7 +108,7 @@
 						$db.view('evab/FeldListeArt', {
 							success: function (data) {
 								FeldlistehBeobEdit = data;
-								sessionStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
+								localStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
 								erstelleSichtbareFelder_2();
 							}
 						});

@@ -83,19 +83,14 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.ProjektId existiert und ungleich null ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.ProjektId) {
-					initiiereProjektEdit();
-				}
+				initiiereProjektEdit();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hProjektEdit");
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function (event) {
@@ -131,7 +126,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(sessionStorage.ProjektId);
+						speichereAnhänge(localStorage.ProjektId);
 					}
 				});
 				
@@ -218,7 +213,7 @@
 				$('#hProjektEditFooter').on('click', '#KarteOeffnenProjektEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					sessionStorage.zurueck = "hProjektEdit";
+					localStorage.zurueck = "hProjektEdit";
 					$.mobile.changePage("Karte.html");
 				});
 
@@ -269,7 +264,7 @@
 								} else {
 									Rückmeldung += "\rzugehörige Räume gelöscht";
 									$db = $.couch.db("evab");
-									return $db.openDoc(sessionStorage.ProjektId, {
+									return $db.openDoc(localStorage.ProjektId, {
 										success: function (document) {
 											// lösche Projekt
 											return $db.removeDoc(document, {
@@ -306,7 +301,7 @@
 				//lösche alle einem Projekt zugeordneten Räume
 				function löscheRäumeVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -329,7 +324,7 @@
 				//lösche alle einem Projekt zugeordneten Orte
 				function löscheOrteVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -352,7 +347,7 @@
 				//lösche alle einem Projekt zugeordneten Zeiten
 				function löscheZeitenVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -375,7 +370,7 @@
 				//lösche alle einem Projekt zugeordneten Arten
 				function löscheArtenVonProjekt() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -414,7 +409,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
-						$db.openDoc(sessionStorage.ProjektId, {
+						$db.openDoc(localStorage.ProjektId, {
 							success: function (hProjekt) {
 								if (Feldwert) {
 									hProjekt[Feldname] = Feldwert;
@@ -444,7 +439,7 @@
 				function speichereProjektfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -469,7 +464,7 @@
 				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -494,7 +489,7 @@
 				function speichereProjektfeldInOrten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -519,7 +514,7 @@
 				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + sessionStorage.ProjektId + '"]&endkey=["' + sessionStorage.ProjektId + '",{}]';
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -561,7 +556,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hProjektEdit.html";
+									localStorage.zurueck = "hProjektEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -576,7 +571,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "ProjektEdit.html";
+									localStorage.zurueck = "ProjektEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -584,7 +579,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "ProjektEdit.html";
+									localStorage.zurueck = "ProjektEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -592,7 +587,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -617,9 +612,9 @@
 					if (window.Projektliste) {
 						//globale Variable Projektliste existiert noch
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
-					} else if (sessionStorage.Projektliste) {
+					} else if (localStorage.Projektliste) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
-						Projektliste = JSON.parse(sessionStorage.Projektliste);
+						Projektliste = JSON.parse(localStorage.Projektliste);
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
 						//keine Projektliste übergeben
@@ -632,7 +627,7 @@
 							success: function (data) {
 								//Projektliste bereitstellen
 								Projektliste = data;
-								sessionStorage.Projektliste = JSON.stringify(Projektliste);
+								localStorage.Projektliste = JSON.stringify(Projektliste);
 								nächstesVorigesProjekt_2(NächstesOderVoriges);
 							}
 						});
@@ -644,14 +639,14 @@
 					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].value._id;
 						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (ProjIdAktuell === sessionStorage.ProjektId) {
+						if (ProjIdAktuell === localStorage.ProjektId) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":
 								if (parseInt(i) < AnzProj) {
-									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
+									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									initiiereProjektEdit();
-									delete sessionStorage.hOrteLatLngProjekt;
+									delete localStorage.hOrteLatLngProjekt;
 									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
@@ -661,10 +656,10 @@
 								break;
 							case "voriges":
 								if (parseInt(i) > 0) {
-									sessionStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
+									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									initiiereProjektEdit();
-									delete sessionStorage.hOrteLatLngProjekt;
+									delete localStorage.hOrteLatLngProjekt;
 									delete window.hOrteLatLngProjekt;
 									return;
 								} else {

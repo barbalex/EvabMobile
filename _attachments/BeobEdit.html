@@ -112,21 +112,14 @@
 		
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.BeobEditWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.BeobEditWirdInitiiert) {
-					initiiereBeobEdit();
-				}
-				delete sessionStorage.BeobEditWirdInitiiert;
+				initiiereBeobEdit();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("BeobEdit");
-					sessionStorage.BeobEditWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", function() {
@@ -139,8 +132,8 @@
 					event.preventDefault();
 					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereSessionStorageBeobListe();
-					sessionStorage.Status = "neu";
-					sessionStorage.Von = "BeobEdit";
+					localStorage.Status = "neu";
+					localStorage.Von = "BeobEdit";
 					$.mobile.changePage("Artgruppenliste.html");
 				});
 
@@ -149,8 +142,8 @@
 					event.preventDefault();
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereSessionStorageBeobListe();
-					delete sessionStorage.Status;	//ja kein Status neu
-					sessionStorage.Von = "BeobEdit";
+					delete localStorage.Status;	//ja kein Status neu
+					localStorage.Von = "BeobEdit";
 					$.mobile.changePage("Artgruppenliste.html");
 				});
 
@@ -167,19 +160,19 @@
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 					//wenn nein: direkt die Artenliste aufrufen
 					$db = $.couch.db("evab");
-					$db.view('evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"', {
+					$db.view('evab/Artgruppen?key="' + localStorage.aArtGruppe + '"', {
 						success: function (data) {
 							var ArtGruppen_2_L;
 							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
 							//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 							leereSessionStorageBeobListe();
-							sessionStorage.Von = "BeobEdit";
-							delete sessionStorage.Status;	//ja kein Status = neu
+							localStorage.Von = "BeobEdit";
+							delete localStorage.Status;	//ja kein Status = neu
 							if (ArtGruppen_2_L) {
-								sessionStorage.NestedList = true;
+								localStorage.NestedList = true;
 								$.mobile.changePage("Artengruppenliste.html");
 							} else {
-								delete sessionStorage.NestedList;
+								delete localStorage.NestedList;
 								$.mobile.changePage("Artenliste.html");
 							}
 						}
@@ -195,13 +188,13 @@
 					Feldwert = Feldjson[Feldname];
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst
-						sessionStorage.oXKoord = $("#oXKoord").val();
-						sessionStorage.oYKoord = $("#oYKoord").val();
+						localStorage.oXKoord = $("#oXKoord").val();
+						localStorage.oYKoord = $("#oYKoord").val();
 						//Längen- und Breitengrade berechnen
-						sessionStorage.oLongitudeDecDeg = CHtoWGSlng(sessionStorage.oYKoord, sessionStorage.oXKoord);
-						sessionStorage.oLatitudeDecDeg = CHtoWGSlat(sessionStorage.oYKoord, sessionStorage.oXKoord);
+						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
+						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						//und Koordinaten speichern
-						speichereKoordinaten(sessionStorage.BeobId, "");
+						speichereKoordinaten(localStorage.BeobId, "");
 					} else {
 						speichern(Feldname, Feldwert);
 					}
@@ -224,20 +217,20 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(sessionStorage.BeobId);
+						speichereAnhänge(localStorage.BeobId);
 					}
 				});
 				
 				$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function (event) {
 					var contentHeight;
 					event.preventDefault();
-					sessionStorage.zurueck = "BeobEdit";
+					localStorage.zurueck = "BeobEdit";
 					$.mobile.changePage("Karte.html");
 				});
 
 				$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
 					event.preventDefault();
-					GetGeolocation(sessionStorage.BeobId, "BeobEditForm");
+					GetGeolocation(localStorage.BeobId);
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
@@ -313,7 +306,7 @@
 					event.preventDefault();
 					Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.BeobId, {
+					$db.openDoc(localStorage.BeobId, {
 						success: function (Beob) {
 							delete Beob._attachments[Dateiname];
 							$db.saveDoc(Beob, {
@@ -336,8 +329,8 @@
 					if (window.BeobListe) {
 						//globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(NächsteOderVorige);
-					} else if (sessionStorage.BeobListe) {
-						BeobListe = JSON.parse(sessionStorage.BeobListe);
+					} else if (localStorage.BeobListe) {
+						BeobListe = JSON.parse(localStorage.BeobListe);
 						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
 						//keine Projektliste übergeben
@@ -351,7 +344,7 @@
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 								BeobListe = data;
-								sessionStorage.BeobListe = JSON.stringify(BeobListe);
+								localStorage.BeobListe = JSON.stringify(BeobListe);
 								nächsteVorigeBeob_2(NächsteOderVorige);
 							}
 						});
@@ -363,11 +356,11 @@
 					for (i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
 						AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (BeobIdAktuell === sessionStorage.BeobId) {
+						if (BeobIdAktuell === localStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzBeob) {
-									sessionStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
+									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -377,7 +370,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									sessionStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
+									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -419,7 +412,7 @@
 							'Arteigenschaften': {
 								click: function () {
 									//Variablen übergeben
-									sessionStorage.zurueck = "BeobEdit.html"
+									localStorage.zurueck = "BeobEdit.html"
 									$.mobile.changePage("ArtEdit.html");
 								},
 								theme: "a",
@@ -427,7 +420,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "BeobEdit.html";
+									localStorage.zurueck = "BeobEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -442,7 +435,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "BeobEdit.html";
+									localStorage.zurueck = "BeobEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -450,7 +443,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "BeobEdit.html";
+									localStorage.zurueck = "BeobEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -458,7 +451,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -475,7 +468,7 @@
 				
 				function löscheBeobachtung() {
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.BeobId, {
+					$db.openDoc(localStorage.BeobId, {
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
@@ -497,7 +490,7 @@
 				//Speichert alle Daten
 				function speichern(Feldname, Feldwert) {
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.BeobId, {
+					$db.openDoc(localStorage.BeobId, {
 						success: function (Beob) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
@@ -505,9 +498,9 @@
 							} else if (Beob[Feldname]) {
 								delete Beob[Feldname]
 							}
-							Beob.aArtGruppe = sessionStorage.aArtGruppe;
-							Beob.aArtName = sessionStorage.aArtName;
-							Beob.aArtId = sessionStorage.aArtId;
+							Beob.aArtGruppe = localStorage.aArtGruppe;
+							Beob.aArtName = localStorage.aArtName;
+							Beob.aArtId = localStorage.aArtId;
 							//alles speichern
 							$db.saveDoc(Beob, {
 								error: function () {

@@ -56,8 +56,8 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteProjekt !== "undefined") {
 						erstelleSichtbareFelder_2();
-					} else if (typeof sessionStorage.FeldlisteProjekt !== "undefined" && sessionStorage.FeldlisteProjekt) {
-						FeldlisteProjekt = JSON.parse(sessionStorage.FeldlisteProjekt);
+					} else if (localStorage.FeldlisteProjekt) {
+						FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
@@ -65,7 +65,7 @@
 						$db.view('evab/FeldListeProjekt', {
 							success: function (data) {
 								FeldlisteProjekt = data;
-								sessionStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
+								localStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -153,7 +153,7 @@
 							});
 							//Globale Variable für FeldlisteProjekt zurücksetzen, damit die Liste neu aufgebaut wird
 							delete window.FeldlisteProjekt;
-							delete sessionStorage.FeldlisteProjekt;
+							delete localStorage.FeldlisteProjekt;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

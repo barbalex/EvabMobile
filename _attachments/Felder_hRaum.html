@@ -56,8 +56,8 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteRaumEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
-					} else if (typeof sessionStorage.FeldlisteRaumEdit !== "undefined" && sessionStorage.FeldlisteRaumEdit) {
-						FeldlisteRaumEdit = JSON.parse(sessionStorage.FeldlisteRaumEdit);
+					} else if (typeof localStorage.FeldlisteRaumEdit !== "undefined" && localStorage.FeldlisteRaumEdit) {
+						FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
 						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
@@ -65,7 +65,7 @@
 						$db.view('evab/FeldListeRaum', {
 							success: function (data) {
 								FeldlisteRaumEdit = data;
-								sessionStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
+								localStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -155,7 +155,7 @@
 							});
 							//Globale Variable für FeldlisteRaumEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							delete window.FeldlisteRaumEdit;
-							delete sessionStorage.FeldlisteRaumEdit;
+							delete localStorage.FeldlisteRaumEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

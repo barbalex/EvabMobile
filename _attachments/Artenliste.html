@@ -57,16 +57,16 @@
 					event.preventDefault();
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
 					ArtId = $(this).attr("artid");
-					sessionStorage.aArtId = ArtId;
-					if (sessionStorage.Status === "neu") {
+					localStorage.aArtId = ArtId;
+					if (localStorage.Status === "neu") {
 						speichereNeueBeob(ArtBezeichnung, ArtId);
-					} else if (sessionStorage.Von === "ArtEdit") {
+					} else if (localStorage.Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						$.mobile.changePage("ArtEdit.html");
 					} else {
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);
 					}
-					delete sessionStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
+					delete localStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
 				});
 
 				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {
@@ -74,14 +74,14 @@
 					event.preventDefault();
 					ButtonText = this.text;
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.UserId, {
+					$db.openDoc(localStorage.UserId, {
 						success: function (doc) {
 							if (ButtonText.slice(0, 3) === "Deu") {
 								doc.ArtenSprache = "Deutsch";
-								sessionStorage.ArtenSprache = "Deutsch";
+								localStorage.ArtenSprache = "Deutsch";
 							} else {
 								doc.ArtenSprache = "Lateinisch";
-								sessionStorage.ArtenSprache = "Lateinisch";
+								localStorage.ArtenSprache = "Lateinisch";
 							}
 							$db.saveDoc(doc, {
 								success: function () {
@@ -89,7 +89,7 @@
 								//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
 								//wenn nein: direkt die Artenliste aktualisieren
 									var viewname;
-									viewname = 'evab/Artgruppen?key="' + sessionStorage.aArtGruppe + '"';
+									viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
 									$db.view(viewname, {
 										success: function (data) {
 										//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert

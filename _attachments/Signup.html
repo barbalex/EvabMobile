@@ -170,7 +170,7 @@
 								authentifiziereUser();
 							},
 							error: function () {
-								sessionStorage.UserStatus = "neu";
+								localStorage.UserStatus = "neu";
 								melde("Die automatische Anmeldung ist gescheitert.<br>Bitte melden Sie sich mit dem neuen Konto an.");
 								setTimeout('$.mobile.changePage("index.html")', 2800);
 							}
@@ -206,19 +206,19 @@
 						doc.Datenverwendung = window.Datenverwendung;
 						doc.ArtenSprache = "Lateinisch";
 						doc.Email = $("#Email").val();
-						//sessionStorage gründen
-						doc.sessionStorage.UserId = data._id;
-						doc.sessionStorage.Autor = data.Autor;
-						doc.sessionStorage.ArtenSprache = data.ArtenSprache;
-						doc.sessionStorage.LetzteUrl = "/evab/_design/evab/BeobListe.html";
+						//localStorage gründen
+						doc.localStorage.UserId = data._id;
+						doc.localStorage.Autor = data.Autor;
+						doc.localStorage.ArtenSprache = data.ArtenSprache;
+						doc.localStorage.LetzteUrl = "/evab/_design/evab/BeobListe.html";
 						$db = $.couch.db("evab");
 						$db.saveDoc(doc, {
 							success: function (data) {
 								alert("speichereUserInEvab: success");
-								//sessionStorage gründen
-								sessionStorage.UserId = data._id;
-								sessionStorage.Autor = data.Autor;
-								sessionStorage.ArtenSprache = data.ArtenSprache;
+								//localStorage gründen
+								localStorage.UserId = data._id;
+								localStorage.Autor = data.Autor;
+								localStorage.ArtenSprache = data.ArtenSprache;
 								erstelleSichtbareFelder();
 							},
 							error: function () {

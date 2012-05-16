@@ -61,20 +61,13 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtListePage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.hArtListeWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.hArtListeWirdInitiiert) {
-					initiierehBeobListe();
-				}
-				delete sessionStorage.hArtListeWirdInitiiert;
+				initiierehBeobListe();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hBeobListe");
-					sessionStorage.hArtListeWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
@@ -133,14 +126,14 @@
 				function öffneArtgruppenliste_hal() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereSessionStoragehBeobListe();
-					sessionStorage.Status = "neu";
-					sessionStorage.Von = "hArtListe";
-					delete sessionStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
+					localStorage.Status = "neu";
+					localStorage.Von = "hArtListe";
+					delete localStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
 				$("#Arten").on("swipeleft click", ".beob", function () {
-					sessionStorage.hBeobId = $(this).attr('hBeobId');
+					localStorage.hBeobId = $(this).attr('hBeobId');
 					$.mobile.changePage("hArtEdit.html");
 				});
 
@@ -175,7 +168,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hArtListe.html";
+									localStorage.zurueck = "hArtListe.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -190,7 +183,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hArtListe.html";
+									localStorage.zurueck = "hArtListe.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -198,7 +191,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hArtListe.html";
+									localStorage.zurueck = "hArtListe.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -206,7 +199,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",

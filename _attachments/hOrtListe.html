@@ -61,20 +61,13 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#hOrtListePage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.hOrtListeWirdInitiiert nicht true ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (!sessionStorage.hOrtListeWirdInitiiert) {
-					initiiereOrtListe();
-				}
-				delete sessionStorage.hOrtListeWirdInitiiert;
+				initiiereOrtListe();
 			});
 			$("#hOrtListePage").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hOrtListe");
-					sessionStorage.hOrtListeWirdInitiiert = true;
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 				
 				//Link zu Raum in Navbar und Titelleiste
@@ -105,13 +98,13 @@
 				});
 
 				$("#Orte").on("swipeleft", ".Ort", function () {
-					sessionStorage.OrtId = $(this).attr('OrtId');
+					localStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hZeitListe.html");
 				});
 
 				$("#Orte").on("click", ".Ort", function (event) {
 					event.preventDefault();
-					sessionStorage.OrtId = $(this).attr('OrtId');
+					localStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
@@ -128,7 +121,7 @@
 				$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', function (event) {
 					var contentHeight;
 					event.preventDefault();
-					sessionStorage.zurueck = "hOrtListe";
+					localStorage.zurueck = "hOrtListe";
 					$.mobile.changePage("Karte.html");
 				});
 
@@ -155,7 +148,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtListe.html";
+									localStorage.zurueck = "hOrtListe.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -170,7 +163,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtListe.html";
+									localStorage.zurueck = "hOrtListe.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -178,7 +171,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hOrtListe.html";
+									localStorage.zurueck = "hOrtListe.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -186,7 +179,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",

@@ -85,19 +85,14 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$("#RaumEditPage").on("pageshow", function () {
-				//Beim direkten Aufruf der Seite hat holeSessionStorageAusDb bei pageshow noch nicht beendet
-				//darum prüfen, ob sessionStorage.RaumId existiert und ungleich null ist
-				//sonst übernimmt holeSessionStorageAusDb das initiieren
-				if (sessionStorage.RaumId) {
-					initiiereRaumEdit();
-				}
+				initiiereRaumEdit();
 			});
 
 			$("#RaumEditPage").on("pageinit", function () {
-				//Beim direkten Aufruf dieser Seite muss die sessionStorage aus der DB gelesen werden
-				//wo sie von speichereLetzteUrl gespeichert wurde
-				if (sessionStorage.length === 0) {
-					holeSessionStorageAusDb("hRaumEdit");
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0) {
+					$.mobile.changePage("index.html");
 				}
 
 				$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
@@ -133,7 +128,7 @@
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(sessionStorage.RaumId);
+						speichereAnhänge(localStorage.RaumId);
 					}
 				});
 
@@ -171,7 +166,7 @@
 				//Link zu Projekt in Navbar und Titelleiste
 				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
-					delete sessionStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
+					delete localStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -227,7 +222,7 @@
 				$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function (event) {
 					var contentHeight;
 					event.preventDefault();
-					sessionStorage.zurueck = "hRaumEdit";
+					localStorage.zurueck = "hRaumEdit";
 					$.mobile.changePage("Karte.html");
 				});
 
@@ -236,7 +231,7 @@
 					event.preventDefault();
 					Dateiname = this.id;
 					$db = $.couch.db("evab");
-					$db.openDoc(sessionStorage.RaumId, {
+					$db.openDoc(localStorage.RaumId, {
 						success: function (Raum) {
 							delete Raum._attachments[Dateiname];
 							$db.saveDoc(Raum, {
@@ -271,7 +266,7 @@
 							} else {
 								Rückmeldung += "\rzugehörige Orte gelöscht";
 								$db = $.couch.db("evab");
-								return $db.openDoc(sessionStorage.RaumId, {
+								return $db.openDoc(localStorage.RaumId, {
 									success: function (document) {
 										// lösche Raum
 										return $db.removeDoc(document, {
@@ -304,7 +299,7 @@
 				//lösche alle einem Raum zugeordnete Orte
 				function löscheOrteVonRaum() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hOrtIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -327,7 +322,7 @@
 				//lösche alle einem Raum zugeordnete Zeiten
 				function löscheZeitenVonRaum() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hZeitIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -350,7 +345,7 @@
 				//lösche alle einem Raum zugeordnete Arten
 				function löscheArtenVonRaum() { 
 					var DokumentGelöscht, viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					return $db.view(viewname, {
 						success: function (data) {
@@ -389,7 +384,7 @@
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
-						$db.openDoc(sessionStorage.RaumId, {
+						$db.openDoc(localStorage.RaumId, {
 							success: function (hRaum) {
 								if (Feldwert) {
 									hRaum[Feldname] = Feldwert;
@@ -418,7 +413,7 @@
 				function speichereRaumfeldInArten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -443,7 +438,7 @@
 				function speichereRaumfeldInZeiten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hZeitIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -468,7 +463,7 @@
 				function speichereRaumfeldInOrten(Feldname, Feldwert) {
 					//geändertes Ort-Feld in hArt anpassen
 					var viewname;
-					viewname = 'evab/hOrtIdVonRaum?startkey=["' + sessionStorage.RaumId + '"]&endkey=["' + sessionStorage.RaumId + '",{}]';
+					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
@@ -512,7 +507,7 @@
 							},
 							'Felder verwalten': {
 								click: function () {
-									sessionStorage.zurueck = "hRaumEdit.html";
+									localStorage.zurueck = "hRaumEdit.html";
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
@@ -527,7 +522,7 @@
 							},
 							'Einstellungen': {
 								click: function () {
-									sessionStorage.zurueck = "hRaumEdit.html";
+									localStorage.zurueck = "hRaumEdit.html";
 									öffneMeineEinstellungen();
 								},
 								theme: "a",
@@ -535,7 +530,7 @@
 							},
 							'lokal installieren': {
 								click: function () {
-									sessionStorage.zurueck = "hRaumEdit.html";
+									localStorage.zurueck = "hRaumEdit.html";
 									$.mobile.changePage("Installieren.html");
 								},
 								theme: "a",
@@ -543,7 +538,7 @@
 							},
 							'neu anmelden': {
 								click: function () {
-									sessionStorage.UserStatus = "neu";
+									localStorage.UserStatus = "neu";
 									$.mobile.changePage("index.html");
 								},
 								theme: "a",
@@ -568,9 +563,9 @@
 					if (window.RaumListe) {
 						//globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
-					} else if (sessionStorage.RaumListe) {
+					} else if (localStorage.RaumListe) {
 						//Objekte werden als Strings übergeben, müssen geparst werden
-						RaumListe = JSON.parse(sessionStorage.RaumListe);
+						RaumListe = JSON.parse(localStorage.RaumListe);
 						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
 						//keine Raumliste übergeben
@@ -579,11 +574,11 @@
 							pruefeAnmeldung();
 						}
 						$db = $.couch.db("evab");
-						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + sessionStorage.ProjektId + '" ,{}]', {
+						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
 							success: function (data) {
 								//RaumListe bereitstellen
 								RaumListe = data;
-								sessionStorage.RaumListe = JSON.stringify(RaumListe);
+								localStorage.RaumListe = JSON.stringify(RaumListe);
 								nächsterVorigerRaum_2(NächsterOderVoriger);
 							}
 						});
@@ -595,13 +590,13 @@
 					for (i in RaumListe.rows) {
 						RaumIdAktuell = RaumListe.rows[i].value._id;
 						AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-						if (RaumIdAktuell === sessionStorage.RaumId) {
+						if (RaumIdAktuell === localStorage.RaumId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (parseInt(i) < AnzRaum) {
-									sessionStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
+									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit();
-									delete sessionStorage.hOrteLatLngRaum;
+									delete localStorage.hOrteLatLngRaum;
 									delete window.hOrteLatLngRaum;
 									return;
 								} else {
@@ -611,9 +606,9 @@
 								break;
 							case "voriger":
 								if (parseInt(i) > 0) {
-									sessionStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
+									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
 									initiiereRaumEdit();
-									delete sessionStorage.hOrteLatLngRaum;
+									delete localStorage.hOrteLatLngRaum;
 									delete window.hOrteLatLngRaum;
 									return;
 								} else {
