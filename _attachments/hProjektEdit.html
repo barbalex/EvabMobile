@@ -64,7 +64,7 @@
 					<input type="file" id="_attachmentshPE" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
 					<p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
-				<input type="hidden" id="_rev" name="_rev">
+				<input type="hidden" id="_revhPE" name="_rev">
 			</form>
 			<ul data-role="pagination">
 				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
@@ -218,18 +218,26 @@
 				});
 
 				$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function (event) {
-					var Dateiname;
+					var Dateiname, that;
 					event.preventDefault();
 					Dateiname = this.id;
+					that = this;
+					//$(this).parent().parent().remove();
 					$db = $.couch.db("evab");
-					$db.openDoc(ProjektId, {
+					$db.openDoc(localStorage.ProjektId, {
 						success: function (Projekt) {
 							delete Projekt._attachments[Dateiname];
 							$db.saveDoc(Projekt, {
-								success: function () {
-									erstelleAttachments(Projekt, "hPE");
+								success: function (data) {
+									$(that).parent().parent().remove();
+								},
+								error: function () {
+									melde("Fehler: Anhänge werden nicht richtig angezeigt");
 								}
 							});
+						},
+						error: function () {
+							melde("Fehler: Anhang wurde nicht entfernt");
 						}
 					});
 				});

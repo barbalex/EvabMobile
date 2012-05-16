@@ -648,8 +648,7 @@ function erstelleNeuesProjekt() {
 	$db.saveDoc(hProjekt, {
 		success: function (data) {
 			//Variabeln verfügbar machen
-			ProjektId = data.id;
-			localStorage.ProjektId = ProjektId;
+			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			leereSessionStorageProjektListe("mitLatLngListe");
@@ -790,6 +789,8 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 //initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
 //wird aufgerufen von BeobEdit.html und Felder_Beob.html
 function initiiereBeobEdit() {
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#AnhängeBE').hide();
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteBeobEdit) {
@@ -798,6 +799,8 @@ function initiiereBeobEdit() {
 		FeldlisteBeobEdit = JSON.parse(localStorage.FeldlisteBeobEdit);
 		initiiereBeobEdit_2();
 	} else {
+		//das dauert lnger - hinweisen
+		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob', {
@@ -842,11 +845,6 @@ function initiiereBeobEdit_2() {
 //Mitgeben: id der Beobachtung, Username
 function erstelleDynamischeFelderBeobEdit(Beob) {
 	var HtmlContainer, Formularwerte;
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	HtmlContainer = generiereHtmlFuerBeobEditForm (Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
@@ -876,9 +874,7 @@ function erstelleDynamischeFelderBeobEdit(Beob) {
 		GetGeolocation(Beob._id);
 		setTimeout("delete localStorage.Status", 500);	//jetzt ist der Datensatz nicht mehr neu
 	}
-	erstelleAttachments(Beob, "BE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängeBE').show();
+	zeigeAttachments(Beob, "BE");
 }
 
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
@@ -1040,18 +1036,14 @@ function initiiereInstallieren() {
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, Username
 function initiiereProjektEdit() {
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	$('#AnhängehPE').hide();
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.ProjektId, {
 		success: function (Projekt) {
 			//fixe Felder aktualisieren
 			$("#pName").val(Projekt.pName);
 			//Variabeln bereitstellen
-			ProjektId = Projekt._id;
 			localStorage.ProjektId = Projekt._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
@@ -1061,6 +1053,8 @@ function initiiereProjektEdit() {
 				FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);
 				initiiereProjektEdit_2(Projekt);
 			} else {
+				//das dauert länger - Hinweis einblenden
+				$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 				//Feldliste aus der DB holen
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeProjekt', {
@@ -1101,9 +1095,7 @@ function initiiereProjektEdit_2(Projekt) {
 		$db.saveDoc(Projekt);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Projekt, "hPE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängehPE').show();
+	zeigeAttachments(Projekt, "hPE");
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -1462,10 +1454,7 @@ function initiiereProjektliste_2() {
 //Mitgeben: id des Raums, Username
 function initiiereRaumEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+	$('#AnhängehRE').hide();
 	$db = $.couch.db("evab");
 	//Holt den Raum mit der id "RaumId" aus der DB
 	$db.openDoc(localStorage.RaumId, {
@@ -1473,8 +1462,7 @@ function initiiereRaumEdit() {
 			//fixes Feld setzen
 			$("#rName").val(Raum.rName);
 			//Variabeln bereitstellen
-			ProjektId = Raum.hProjektId;
-			localStorage.ProjektId = ProjektId;
+			localStorage.ProjektId = Raum.hProjektId;
 			RaumId = Raum._id;
 			localStorage.RaumId = RaumId;
 			//prüfen, ob die Feldliste schon geholt wurde
@@ -1485,6 +1473,8 @@ function initiiereRaumEdit() {
 				FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
 				initiiereRaumEdit_2(Raum);
 			} else {
+				//das dauert länger - hinweisen
+				$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeRaum', {
@@ -1526,9 +1516,7 @@ function initiiereRaumEdit_2(Raum) {
 		$db.saveDoc(Raum);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Raum, "hRE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängehRE').show();
+	zeigeAttachments(Raum, "hRE");
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -1627,10 +1615,7 @@ function initiiereRaumListe_2() {
 //Mitgeben: id des Orts
 function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+	$('#AnhängehOE').hide();
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.OrtId, {
 		success: function (Ort) {
@@ -1640,8 +1625,7 @@ function initiiereOrtEdit() {
 			$("#oYKoord").val(Ort.oYKoord);
 			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
 			//Variabeln bereitstellen
-			ProjektId = Ort.hProjektId;
-			localStorage.ProjektId = ProjektId;
+			localStorage.ProjektId = Ort.hProjektId;
 			RaumId = Ort.hRaumId;
 			localStorage.RaumId = RaumId;
 			OrtId = Ort._id;
@@ -1660,6 +1644,8 @@ function initiiereOrtEdit() {
 				FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
 				initiiereOrtEdit_2(Ort);
 			} else {
+				//das dauert länger - hinweisen
+				$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 				//holt die Feldliste aus der DB
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeOrt', {
@@ -1707,11 +1693,9 @@ function initiiereOrtEdit_2(Ort) {
 			}
 		});
 	}*/
-	//erstelleAttachments nutzt die rev. Diese ist bei neuen Orten jetzt veraltet
+	//zeigeAttachments nutzt die rev. Diese ist bei neuen Orten jetzt veraltet
 	//macht nichts: neue Orte haben noch keine attachments
-	erstelleAttachments(Ort, "hOE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängehOE').show();
+	zeigeAttachments(Ort, "hOE");
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 
@@ -1822,10 +1806,7 @@ function initiiereOrtListe_2() {
 //Mitgeben: id der Zeit
 function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+	$('#AnhängehZE').hide();
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.ZeitId, {
 		success: function (Zeit) {
@@ -1833,8 +1814,7 @@ function initiiereZeitEdit() {
 			$("#zDatum").val(Zeit.zDatum);
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
 			//Variabeln bereitstellen
-			ProjektId = Zeit.hProjektId;
-			localStorage.ProjektId = ProjektId;
+			localStorage.ProjektId = Zeit.hProjektId;
 			RaumId = Zeit.hRaumId;
 			localStorage.RaumId = RaumId;
 			OrtId = Zeit.hOrtId;
@@ -1849,8 +1829,10 @@ function initiiereZeitEdit() {
 				FeldlisteZeitEdit = JSON.parse(localStorage.FeldlisteZeitEdit);
 				initiiereZeitEdit_2(Zeit);
 			} else {
+				//Feldliste aus der DB holen
+				//das dauert länger - hinweisen
+				$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 				$db = $.couch.db("evab");
-				//holt die Feldliste aus der DB
 				$db.view('evab/FeldListeZeit', {
 					success: function (Feldliste) {
 						FeldlisteZeitEdit = Feldliste;
@@ -1887,9 +1869,7 @@ function initiiereZeitEdit_2(Zeit) {
 		$db.saveDoc(Zeit);
 		setTimeout("delete localStorage.Status", 500);	//warten, generiereHtmlFuerZeitEditForm arbeitet auch damit!
 	}
-	erstelleAttachments(Zeit, "hZE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängehZE').show();
+	zeigeAttachments(Zeit, "hZE");
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -1900,7 +1880,7 @@ function initiiereZeitListe() {
 	if (window.ZeitListe) {
 		//Zeitliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereZeitListe_2();
-	} else if (typeof localStorage.ZeitListe !== "undefined" && localStorage.ZeitListe) {
+	} else if (localStorage.ZeitListe) {
 		//Zeitliste aus localStorage holen
 		ZeitListe = JSON.parse(localStorage.ZeitListe);
 		initiiereZeitListe_2();
@@ -1992,13 +1972,14 @@ function initiierehBeobEdit() {
 	//in die fixen Felder Werte eingesetzt,
 	//die dynamischen Felder aufgebaut
 	//und die Nav-Links gesetzt
+	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	$('#AnhängehAE').hide();
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.hBeobId, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			//Variabeln bereitstellen
-			ProjektId = Beob.hProjektId;
-			localStorage.ProjektId = ProjektId;
+			localStorage.ProjektId = Beob.hProjektId;
 			RaumId = Beob.hRaumId;
 			localStorage.RaumId = RaumId;
 			OrtId = Beob.hOrtId;
@@ -2031,6 +2012,8 @@ function initiierehBeobEdit() {
 				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
 			} else {
 				//Feldliste aus der DB holen
+				//das dauert länger - hinweisen
+				$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 				$db = $.couch.db("evab");
 				$db.view('evab/FeldListeArt', {
 					success: function (data) {
@@ -2048,11 +2031,6 @@ function initiierehBeobEdit() {
 //Mitgeben: Feldliste, Beobachtung
 function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 	var HtmlContainer, Formularwerte;
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#FormAnhänge').hide();
-	//Anhänge entfernen, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#Anhänge').empty();
-	$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	HtmlContainer = generiereHtmlFuerhArtEditForm(Feldliste, Beob);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
@@ -2076,9 +2054,7 @@ function erstelleDynamischeFelderhArtEdit(Feldliste, Beob) {
 		$db.saveDoc(Beob);
 		setTimeout("delete localStorage.Status", 500);
 	}
-	erstelleAttachments(Beob, "hAE");
-	//Anhänge wieder einblenden
-	$('#FormAnhängehAE').show();
+	zeigeAttachments(Beob, "hAE");
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -2804,7 +2780,7 @@ function speichereAnhänge(id, Page) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function (data) {
-			$("#_rev").val(data._rev);
+			$("#_rev" + Page).val(data._rev);
 			$("#FormAnhänge" + Page).ajaxSubmit({
 				url: "/evab/" + id,
 				success: function () {
@@ -2812,7 +2788,10 @@ function speichereAnhänge(id, Page) {
 					$db.openDoc(id, {
 						success: function (data2) {
 							//show attachments in form
-							erstelleAttachments(data2, Page);
+							zeigeAttachments(data2, Page);
+						},
+						error: function () {
+							melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
 						}
 					});
 				},
@@ -2821,39 +2800,46 @@ function speichereAnhänge(id, Page) {
 					$db.openDoc(id, {
 						success: function (data3) {
 							//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
-							erstelleAttachments(data3, Page);
+							zeigeAttachments(data3, Page);
+						},
+						error: function () {
+							melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
 						}
 					});
 				}
 			});
+		},
+		error: function () {
+			melde("Fehler: Anhang nicht gespeichert");
 		}
 	});
 }
 
-//erstellt Anhänge, d.h. schaut nach, ob welche existieren und zeigt sie im Formular an
-//setzt ein passendes Formular mit dem Feld_attachments und eine div namens Anhänge voraus
-//wird benutzt von allen Beobachtungs-Edit-Formularen
+//zeigt Anhänge im Formular an
+//setzt ein passendes Formular mit dem Feld _attachments + Page voraus
+//und eine div namens Anhänge + Page, in der die Anhänge angezeigt werden
+//wird benutzt von allen (h)Beobachtungs-Edit-Formularen
 //erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
-function erstelleAttachments(doc, Page) {
-	var attachments, rev, HtmlContainer, url, url_zumLöschen;
-	attachments = doc._attachments;
-	rev = doc._rev;
+function zeigeAttachments(doc, Page) {
+	var HtmlContainer, url, url_zumLöschen;
 	HtmlContainer = "";
-	if (attachments) {
-		$.each(attachments, function (Dateiname, val) {
+	//$("#Anhänge" + Page).html("");
+	$("#_attachments" + Page).val("");
+	if (doc._attachments) {
+		$.each(doc._attachments, function (Dateiname, val) {
 			url = "/evab/" + doc._id + "/" + Dateiname;
-			url_zumLöschen = url + "?" + rev;	//theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
-			HtmlContainer += "<a href='";
+			//url_zumLöschen = url + "?" + doc._rev;	//theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+			HtmlContainer += "<div><a href='";
 			HtmlContainer += url;
 			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
 			HtmlContainer += Dateiname;
 			HtmlContainer += "</a><button name='LöscheAnhang' id='";
 			HtmlContainer += Dateiname;
-			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/><br>";
+			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/></div>";
 		});
-		$("#_attachments" + Page).val("");
 	}
-	$("#Anhänge" + Page).html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#Anhänge" + Page).html(HtmlContainer).trigger("create").show();
+	//$("#Anhänge" + Page).html(HtmlContainer).trigger("create").trigger("refresh");
 }
 
 //kreiert ein neues Feld
