@@ -41,7 +41,7 @@
 		<div id="FeldContent" data-role="content" data-theme="c" style="padding:0em;">
 			<form action="#" method="get">
 				<h3>Felder für Projekte wählen:</h3>
-				<div data-role="fieldcontain" id="Feldliste">
+				<div data-role="fieldcontain" id="FeldlisteFhP">
 				</div>
 			</form>
 		</div>
@@ -52,7 +52,7 @@
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
 				function erstelleSichtbareFelder() {
-					$("#Feldliste").empty();
+					$("#FeldlisteFhP").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteProjekt !== "undefined") {
 						erstelleSichtbareFelder_2();
@@ -114,20 +114,20 @@
 					}
 					$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
 					HtmlContainer += "\n\t</fieldset>\n</div>"
-					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("#FeldlisteFhP").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
 			});
 			
 			$(":jqmData(role='page')").on("pageinit", function () {
 				
-				$("#Felder_hProjektPage").on("click", "#Felder_hProjektPage_back", function (event) {
+				$("#Felder_hProjektPageHeader").on("click", "#Felder_hProjektPage_back", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function () {
+				$("#FeldlisteFhP").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();

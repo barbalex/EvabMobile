@@ -34,7 +34,7 @@
   </head>
   <body>
   	<div data-role="page" id="al_Page">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" id="al_Header" data-position="fixed" data-tap-toggle="false">
 			<h1>Art wählen</h1>
 			<a href="#" id="al_ButtonSprache" class="ui-btn-right">Lat</a>
 		</div>
@@ -69,7 +69,7 @@
 					delete localStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
 				});
 
-				$("#al_Page").on("click", "#al_ButtonSprache", function (event) {
+				$("#al_Header").on("click", "#al_ButtonSprache", function (event) {
 					var ButtonText;
 					event.preventDefault();
 					ButtonText = this.text;

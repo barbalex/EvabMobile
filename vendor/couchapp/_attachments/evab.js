@@ -703,7 +703,7 @@ function löscheDokument(DocId) {
 
 //generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
 //Mitgeben: id der Art, Username, Artgruppe
-function erstelleArtEdit(ArtId) {
+function initiiereArtEdit(ArtId) {
 	$("#ArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	//holt die Art aus der DB
 	$db = $.couch.db("evab");
@@ -1007,8 +1007,8 @@ function initiiereBeobliste_2() {
 			}
 		}
 	}
-	$("#beobachtungen").html(ListItemContainer);
-	$("#beobachtungen").listview("refresh");
+	$("#BeoblisteBL").html(ListItemContainer);
+	$("#BeoblisteBL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -1392,8 +1392,8 @@ function initiiereFeldliste_2() {
 	}
 	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
-	$("#FeldListe").html(ListItemContainer);
-	$("#FeldListe").listview("refresh");
+	$("#FeldListeFL").html(ListItemContainer);
+	$("#FeldListeFL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -1453,8 +1453,8 @@ function initiiereProjektliste_2() {
 			}
 		}
 	}
-	$("#Projekte").html(ListItemContainer);
-	$("#Projekte").listview("refresh");
+	$("#ProjektlistehPL").html(ListItemContainer);
+	$("#ProjektlistehPL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -1618,8 +1618,8 @@ function initiiereRaumListe_2() {
 			}
 		}
 	}
-	$("#Räume").html(ListItemContainer);
-	$("#Räume").listview("refresh");
+	$("#RaumlistehRL").html(ListItemContainer);
+	$("#RaumlistehRL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -1813,8 +1813,8 @@ function initiiereOrtListe_2() {
 			}
 		}
 	}
-	$("#Orte").html(ListItemContainer);
-	$("#Orte").listview("refresh");
+	$("#OrtlistehOL").html(ListItemContainer);
+	$("#OrtlistehOL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -1950,8 +1950,8 @@ function initiiereZeitListe_2() {
 			}
 		}
 	}
-	$("#Zeiten").html(ListItemContainer);
-	$("#Zeiten").listview("refresh");
+	$("#ZeitlistehZL").html(ListItemContainer);
+	$("#ZeitlistehZL").listview("refresh");
 	speichereLetzteUrl();
 }
 
@@ -2177,8 +2177,8 @@ function initiierehBeobListe_2() {
 			}
 		}
 	}
-	$("#Arten").html(ListItemContainer);
-	$("#Arten").listview("refresh");
+	$("#ArtlistehAL").html(ListItemContainer);
+	$("#ArtlistehAL").listview("refresh");
 	speichereLetzteUrl();
 }
 

@@ -42,13 +42,13 @@
 				<ul>
 					<li><a href="#" id="OeffneProjekthArtEdit">Projekt</a></li>
 					<li><a href="#" id="OeffneRaumhArtEdit">Raum</a></li>
-					<li><a href="#" rid="OeffneOrthArtEdit">Ort</a></li>
+					<li><a href="#" id="OeffneOrthArtEdit">Ort</a></li>
 					<li><a href="#" id="OeffneZeithArtEdit">Zeit</a></li>
 					<li><a href="#" name="OeffneArtListehArtEdit" class="ui-btn-active">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content" id="hArtEditContent">
+		<div data-role="content" id="hArtEditPageContent">
 			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
 				<div data-role='fieldcontain'>
 					<label for='aArtGruppe' class='select'>Artgruppe:</label>
@@ -64,7 +64,7 @@
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
-			<form id="FormAnhänge" action="" method="post" >
+			<form id="FormAnhängehAE" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
 				<div id="Anhänge"></div>			
@@ -171,7 +171,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
+				$("#FormAnhängehAE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
@@ -235,11 +235,11 @@
 					erstelleMenu_hae(this);
 				});
 
-				$(document).on("swipeleft", function () {
+				$("#hArtEditPage").on("swipeleft", function () {
 					nächsteVorigeArt("nächste");
 				});
 
-				$(document).on("swiperight", function () {
+				$("#hArtEditPage").on("swiperight", function () {
 					nächsteVorigeArt("vorige");
 				});
 
@@ -256,7 +256,7 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function (e) {
+				$("#hArtEditPage").on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
 						// Left arrow
@@ -272,7 +272,7 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+				$("#FormAnhängehAE").on("click", "[name='LöscheAnhang']", function (event) {
 					var Dateiname;
 					event.preventDefault();
 					Dateiname = this.id;

@@ -48,7 +48,7 @@
 			</div><!-- /navbar -->
   		</div>
 		<div data-role="content" id="hOrtListePageContent">
-			<ul id="Orte" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+			<ul id="OrtlistehOL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
 		<div data-role="footer" id="hOrtListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -71,7 +71,7 @@
 				}
 				
 				//Link zu Raum in Navbar und Titelleiste
-				$("body").on("click", "[name='OeffneRaumOrtListe']", function (event) {
+				$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", function (event) {
 					event.preventDefault();
 					leereSessionStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
@@ -86,7 +86,7 @@
 				});
 
 				//neuen Ort erstellen
-				$("body").on("click", ".NeuerOrtOrtListe", function (event) {
+				$("#hOrtListePage").on("click", ".NeuerOrtOrtListe", function (event) {
 					event.preventDefault();
 					erstelleNeuenOrt();
 				});
@@ -97,22 +97,22 @@
 					erstelleMenuOrtListe(this);
 				});
 
-				$("#Orte").on("swipeleft", ".Ort", function () {
+				$("#OrtlistehOL").on("swipeleft", ".Ort", function () {
 					localStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hZeitListe.html");
 				});
 
-				$("#Orte").on("click", ".Ort", function (event) {
+				$("#OrtlistehOL").on("click", ".Ort", function (event) {
 					event.preventDefault();
 					localStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
-				$("#Orte").on("swipeleft", ".erste", function () {
+				$("#OrtlistehOL").on("swipeleft", ".erste", function () {
 					erstelleNeuenOrt();
 				});
 
-				$(document).on("swiperight", "#hOrtListePage", function () {
+				$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", function () {
 					leereSessionStorageOrtListe();
 					leereSessionStorageRaumEdit();
 					$.mobile.changePage("hRaumListe.html");

@@ -475,7 +475,7 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function (e) {
+				$("#FeldEditPage").on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
 						// Left arrow

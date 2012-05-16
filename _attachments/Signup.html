@@ -39,7 +39,7 @@
 				<h1>Konto erstellen</h1>
 			</div>
 			<div data-role="content">
-				<form id="SubmitForm" action="#" method="get" autocomplete="off">
+				<form id="SignupForm" action="#" method="get" autocomplete="off">
 					<div data-role="fieldcontain">
 						<label for="UserName">Benutzername:</label>
 						<input id="UserName" name="UserName" type="text" placeholder="(erforderlich)" autofocus required/>
@@ -80,7 +80,7 @@
 					</div>
 				</form>
 			</div>
-			<div data-role="footer" id="SubmitFooter" data-position="fixed" data-tap-toggle="false">
+			<div data-role="footer" id="SignupFooter" data-position="fixed" data-tap-toggle="false">
 				<div data-role="navbar">
 					<ul>
 						<li><a href="#" id="SubmitButton" class="ui-btn-active" data-icon="check">Konto erstellen</a></li>
@@ -93,7 +93,7 @@
 					window.Datenverwendung = "JaAber";
 				});
 				$(":jqmData(role='page')").on("pageinit", function () {
-					$("#SubmitFooter").on("click", "#SubmitButton", function (event) {
+					$("#SignupFooter").on("click", "#SubmitButton", function (event) {
 						event.preventDefault();
 						if (validiereUserSignup()) {
 							erstelleKonto();
@@ -143,7 +143,7 @@
 						return true;
 					}
 
-					$("#SubmitForm").on("change", "[name='Datenverwendung']", function () {
+					$("#SignupForm").on("change", "[name='Datenverwendung']", function () {
 						window.Datenverwendung = $(this).attr("id");
 					});
 

@@ -39,7 +39,7 @@
 		</div>
 		<div data-role="content">
 			<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
-			<form id="LoginForm" action="#" method="get" autocomplete="on">
+			<form id="indexForm" action="#" method="get" autocomplete="on">
 				<div data-role="fieldcontain">
 					<label for="UserName">Name:</label>
 					<input id="UserName" name="UserName" type="text" autofocus required/>
@@ -85,7 +85,7 @@
 				});
 
 				//Reaktion auf Enter-Taste
-				$("#LoginForm").on("keydown", "#Passwort", function (e) {
+				$("#indexForm").on("keydown", "#Passwort", function (e) {
 					if (e.keyCode === 13) {
 						meldeUserAn();
 						e.preventDefault();

@@ -39,8 +39,8 @@
   			<h2 class="BeobListePageTitel">Beobachtungen</h2>
   			<a href='#' id='MenuBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
   		</div>
-		<div data-role="content">
-			<ul id="beobachtungen" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
+		<div data-role="content" id="BeobListePageContent">
+			<ul id="BeoblisteBL" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
 			</ul>
 		</div>
 		<div data-role="footer" id="BeobListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -63,7 +63,7 @@
 					$.mobile.changePage("index.html");
 				}
 
-				$("#beobachtungen").on("swipeleft click", ".beob", function () {
+				$("#BeoblisteBL").on("swipeleft click", ".beob", function () {
 					localStorage.BeobId = $(this).attr('id');
 					$.mobile.changePage("BeobEdit.html");
 				});
@@ -92,11 +92,11 @@
 				});
 
 				//Neue Beobachtung managen
-				$("#beobachtungen").on("swipeleft", ".erste", function () {
+				$("#BeoblisteBL").on("swipeleft", ".erste", function () {
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
 
-				$(document).on("swiperight", "#BeobListePage", function () {
+				$("#BeobListePage").on("swiperight", "#BeobListePageContent", function () {
 					window.open("hProjektListe.html", target = "_self");
 				});
 

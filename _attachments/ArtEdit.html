@@ -34,7 +34,7 @@
   </head>
   <body>
 	<div data-role="page" id="ArtEditPage">
-		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+		<div data-role="header" id="ArtEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" id="zurueckArtEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
 			<h1>Arteigenschaften</h1>
 		</div>
@@ -54,11 +54,10 @@
 
 				</div>
 			</form>
-			<p id="ArtEdit_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Informationen werden aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#ArtEditPage").on("pageshow", function () {
-				erstelleArtEdit(localStorage.aArtId);
+				initiiereArtEdit(localStorage.aArtId);
 			});
 
 			$("#ArtEditPage").on("pageinit", function () {
@@ -67,24 +66,16 @@
 				if (localStorage.length === 0) {
 					$.mobile.changePage("index.html");
 				}
-				
+
 				//zurück-Button steuern
-				$("#ArtEditPage").on('click', '#zurueckArtEdit', function (event) {
+				$("#ArtEditHeader").on('click', '#zurueckArtEdit', function (event) {
 					var zurueck;
 					event.preventDefault();
 					zurueck = "";
-					if (localStorage.zurueck) {
-						zurueck = localStorage.zurueck;
+					if (!localStorage.zurueck) {
+						localStorage.zurueck = "BeobListe.html";
 					}
-					if (zurueck === "BeobEdit.html") {
-						$.mobile.changePage($('#BeobEditPage'));
-						window.history.pushState("", "", "BeobEdit.html"); //funktioniert in IE erst ab 10!
-					} else if (zurueck === "hArtEdit.html") {
-						$.mobile.changePage($('#hArtEditPage'));
-						window.history.pushState("", "", "hArtEdit.html"); //funktioniert in IE erst ab 10!
-					} else {
-						$.mobile.changePage("BeobListe.html");
-					}
+					$.mobile.changePage(localStorage.zurueck);
 					delete localStorage.zurueck;
 					delete localStorage.aArtGruppe;
 				});

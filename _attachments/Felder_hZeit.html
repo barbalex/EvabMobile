@@ -41,7 +41,7 @@
 		<div id="FeldContent" data-role="content" style="padding:0em;">
 			<form action="#" method="get">
 				<h3>Felder für Zeiten wählen:</h3>
-				<div data-role="fieldcontain" id="Feldliste">
+				<div data-role="fieldcontain" id="FeldlisteFhZ">
 				</div>
 			</form>
 		</div>
@@ -53,7 +53,7 @@
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
 				function erstelleSichtbareFelder() {
-					$("#Feldliste").empty();
+					$("#FeldlisteFhZ").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (window.FeldlisteZeitEdit) {
 						erstelleSichtbareFelder_2();
@@ -115,7 +115,7 @@
 					}
 					$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
 					HtmlContainer += "\n\t</fieldset>\n</div>"
-					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("#FeldlisteFhZ").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
 			});
@@ -128,7 +128,7 @@
 				});
 
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function () {
+				$("#FeldlisteFhZ").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();

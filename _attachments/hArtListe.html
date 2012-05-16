@@ -49,7 +49,7 @@
 			</div><!-- /navbar -->
   		</div>
 		<div data-role="content" id="hArtListePageContent">
-			<ul id="Arten" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+			<ul id="ArtlistehAL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
 		<div data-role="footer" id="hArtListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -71,7 +71,7 @@
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
-				$("body").on("click", "[name='OeffneZeithArtListe']", function (event) {
+				$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
 					leereSessionStoragehBeobListe();
 					$.mobile.changePage("hZeitEdit.html");
@@ -119,7 +119,7 @@
 					öffneArtgruppenliste_hal();
 				});
 
-				$("#Arten").on("swipeleft", ".erste", function () {
+				$("#ArtlistehAL").on("swipeleft", ".erste", function () {
 					öffneArtgruppenliste_hal();
 				});
 
@@ -132,12 +132,12 @@
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
-				$("#Arten").on("swipeleft click", ".beob", function () {
+				$("#ArtlistehAL").on("swipeleft click", ".beob", function () {
 					localStorage.hBeobId = $(this).attr('hBeobId');
 					$.mobile.changePage("hArtEdit.html");
 				});
 
-				$(document).on("swiperight", function () {
+				$("#hArtListePage").on("swiperight", function () {
 					$.mobile.changePage("hZeitListe.html");
 				});
 

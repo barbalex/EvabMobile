@@ -40,7 +40,7 @@
 				<a href='#' id='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
 			</div>
 			<div data-role="content">
-				<ul id="Projekte" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+				<ul id="ProjektlistehPL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 				</ul>
 			</div>
 			<div data-role="footer" id="ProjektListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -69,23 +69,23 @@
 					});
 
 					//neues Projekt erstellen
-					$("body").on("click", ".NeuesProjektProjektListe", function (event) {
+					$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function (event) {
 						event.preventDefault();
 						erstelleNeuesProjekt();
 					});
 
-					$("#Projekte").on("swipeleft", ".Projekt", function () {
+					$("#ProjektlistehPL").on("swipeleft", ".Projekt", function () {
 						localStorage.ProjektId = $(this).attr('ProjektId');
 						$.mobile.changePage("hRaumListe.html");
 					});
 
-					$("#Projekte").on("click", ".Projekt", function (event) {
+					$("#ProjektlistehPL").on("click", ".Projekt", function (event) {
 						event.preventDefault();
 						localStorage.ProjektId = $(this).attr('ProjektId');
 						$.mobile.changePage("hProjektEdit.html");
 					});
 
-					$("#Projekte").on("swipeleft", ".erste", function () {
+					$("#ProjektlistehPL").on("swipeleft", ".erste", function () {
 						erstelleNeuesProjekt();
 					});
 
@@ -94,7 +94,7 @@
 						window.open("BeobListe.html", target = "_self");
 					});
 
-					$("body").on("swiperight", function () {
+					$("#ProjektListePage").on("swiperight", function () {
 						window.open("BeobListe.html", target = "_self");
 					});
 

@@ -47,7 +47,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content" id="hOrtEditContent">
+		<div data-role="content" id="OrtEditContent">
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
 					<label for="oName">Name:</label>
@@ -69,7 +69,7 @@
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
-			<form id="FormAnhänge" action="" method="post" >
+			<form id="FormAnhängehOE" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Skizzen, Bilder)</div>
 				<div id="Anhänge"></div>			
@@ -85,7 +85,7 @@
 				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
 			</ul>
 		</div>
-		<div data-role="footer" id="hOrtEditFooter" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="OrtEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-icon="plus" id="NeuerOrtOrtEdit" class="ui-btn-active">neu</a></li>				
@@ -160,7 +160,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
+				$("#FormAnhängehOE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length !== 0) {
@@ -169,19 +169,19 @@
 				});
 
 				//neuen Ort erstellen
-				$("#hOrtEditFooter").on('click', '#NeuerOrtOrtEdit', function (event) {
+				$("#OrtEditFooter").on('click', '#NeuerOrtOrtEdit', function (event) {
 					event.preventDefault();
 					erstelleNeuenOrt();
 				});
 
 				//sichtbare Felder wählen
-				$("#hOrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
+				$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("Felder_hOrt.html");
 				});
 
 				//Code für den Ort-Löschen-Dialog
-				$('#hOrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
+				$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog({
 						'mode' : 'bool',
@@ -212,23 +212,23 @@
 				});
 
 				//Karte managen
-				$('#hOrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
+				$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hOrtEdit";
 					$.mobile.changePage("Karte.html");
 				});
 
-				$('#hOrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
+				$('#OrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
 					event.preventDefault();
 					GetGeolocation(localStorage.OrtId);
 				});
 				
-				$(document).on("swipeleft", "#OrtEditPage", function () {
+				$("#OrtEditPage").on("swipeleft", "#OrtEditContent", function () {
 					nächsterVorigerOrt("nächster");
 				});
 
-				$(document).on("swiperight", "#OrtEditPage", function () {
+				$("#OrtEditPage").on("swiperight", "#OrtEditContent", function () {
 					nächsterVorigerOrt("voriger");
 				});
 
@@ -245,7 +245,7 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function (e) {
+				$("#OrtEditPage").on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 						// Left arrow
@@ -261,7 +261,7 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+				$("#FormAnhängehOE").on("click", "[name='LöscheAnhang']", function (event) {
 					var Dateiname;
 					event.preventDefault();
 					Dateiname = this.id;

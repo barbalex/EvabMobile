@@ -46,7 +46,7 @@
 			</div><!-- /navbar -->
   		</div>
 		<div data-role="content" id="hRaumListePageContent">
-			<ul id="Räume" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+			<ul id="RaumlistehRL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
 		<div data-role="footer" id="hRaumListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -69,14 +69,14 @@
 				}
 
 				//Link zu Projekt in Navbar und Titelleiste
-				$("body").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
+				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();
 					leereSessionStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
 				//neuen Raum erstellen
-				$("body").on("click", "[name='NeuerRaumRaumListe']", function (event) {
+				$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function (event) {
 					event.preventDefault();
 					erstelleNeuenRaum();
 				});
@@ -87,22 +87,22 @@
 					erstelleMenuRaumListe(this);
 				});
 
-				$("#Räume").on("swipeleft", ".Raum", function () {
+				$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
 					localStorage.RaumId = $(this).attr('RaumId');
 					$.mobile.changePage("hOrtListe.html");
 				});
 
-				$("#Räume").on("click", ".Raum", function (event) {
+				$("#RaumlistehRL").on("click", ".Raum", function (event) {
 					event.preventDefault();
 					localStorage.RaumId = $(this).attr('RaumId');
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
-				$("#Räume").on("swipeleft", ".erste", function () {
+				$("#RaumlistehRL").on("swipeleft", ".erste", function () {
 					erstelleNeuenRaum();
 				});
 
-				$(document).on("swiperight", '#RaumListePage', function () {
+				$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
 					leereSessionStorageRaumListe();
 					$.mobile.changePage("hProjektListe.html");
 				});

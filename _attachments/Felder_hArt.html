@@ -42,7 +42,7 @@
 			<form action="#" method="get">
 				<h3>Felder für Art wählen:</h3>
   				<p>Die Felder dieser Hierarchiestufe werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>
-				<div data-role="fieldcontain" id="Feldliste">
+				<div data-role="fieldcontain" id="FeldlisteFhA">
 				</div>
 			</form>
 		</div>
@@ -57,7 +57,7 @@
 				});
 
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function () {
+				$("#FeldlisteFhA").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
@@ -95,7 +95,7 @@
 				//generiert dynamisch die (Artgruppen-abhängigen) Felder im Formular Felder_hArt.html
 				//Mitgeben: Artgruppe, Username (aus Globalen Variabeln)
 				function erstelleSichtbareFelder() {
-					$("#Feldliste").empty();
+					$("#FeldlisteFhA").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (window.FeldlistehBeobEdit) {
 						erstelleSichtbareFelder_2();
@@ -160,7 +160,7 @@
 					}
 					$("#Felder_hArtPageHeader .Felder_hArtPageTitel").text(anzFelder + " Felder");
 					HtmlContainer += "\n\t</fieldset>\n</div>"
-					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("#FeldlisteFhA").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
 			});

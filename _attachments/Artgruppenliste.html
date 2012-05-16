@@ -51,7 +51,7 @@
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 
-				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
+				$("#agl_ArtgruppenListe").on("click", "[name='ArtgruppenListItem']", function (event) {
 					var aArtGruppe, L, link;
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");

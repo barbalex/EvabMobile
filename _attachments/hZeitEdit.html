@@ -48,7 +48,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content" id="hZeitEditContent">
+		<div data-role="content" id="ZeitEditPageContent">
 			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
 					<label for="zDatum">Datum:</label>
@@ -62,7 +62,7 @@
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
-			<form id="FormAnhänge" action="" method="post" >
+			<form id="FormAnhängehZE" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big></div>
 				<div id="Anhänge"></div>			
@@ -154,7 +154,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
+				$("#FormAnhängehZE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
@@ -207,11 +207,11 @@
 					erstelleMenuZeitEdit(this);
 				});
 
-				$(document).on("swipeleft", '#ZeitEditPage', function () {
+				$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', function () {
 					nächsteVorigeZeit("nächste");
 				});
 
-				$(document).on("swiperight", '#ZeitEditPage', function () {
+				$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', function () {
 					nächsteVorigeZeit("vorige");
 				});
 
@@ -228,7 +228,7 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function (e) {
+				$("#ZeitEditPage").on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 						// Left arrow
@@ -244,7 +244,7 @@
 					}
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+				$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function (event) {
 					var Dateiname;
 					event.preventDefault();
 					Dateiname = this.id;

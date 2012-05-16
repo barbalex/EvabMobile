@@ -42,7 +42,7 @@
 			<form action="#" method="get">
 				<h3>Felder für Beobachtungen wählen:</h3>
 				<p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>
-				<div data-role="fieldcontain" id="Feldliste">
+				<div data-role="fieldcontain" id="FeldlisteFB">
 				</div>
 			</form>
 		</div>
@@ -53,7 +53,7 @@
 				//generiert dynamisch die Felder im Checkbox Felder
 				//checked diejenigen, die der User anzeigen will
 				function erstelleSichtbareFelder() {
-					$("#Feldliste").empty();
+					$("#FeldlisteFB").empty();
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (typeof FeldlisteBeobEdit !== "undefined") {
 						erstelleSichtbareFelder_2();
@@ -115,7 +115,7 @@
 					}
 					$("#Felder_BeobPageHeader .Felder_BeobPageTitel").text(anzFelder + " Felder");
 					HtmlContainer += "\n\t</fieldset>\n</div>"
-					$("#Feldliste").html(HtmlContainer).trigger("create");
+					$("#FeldlisteFB").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
 			});
@@ -123,7 +123,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				
 				//Felder speichern (checkbox)
-				$("#Feldliste").on("change", "input[name='Felder']", function () {
+				$("#FeldlisteFB").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId;
 					if (!localStorage.Username) {
 						pruefeAnmeldung();
@@ -164,12 +164,12 @@
 					$.mobile.changePage("BeobEdit.html");
 				});
 
-				$("#Feldliste").on("taphold", "input[name='Felder']", function (event) {
+				$("#FeldlisteFB").on("taphold", "input[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					öffneFeld(this.id);
 				});
 
-				$("#Feldliste").on("contextmenu", "input[name='Felder']", function (event) {
+				$("#FeldlisteFB").on("contextmenu", "input[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					event.preventDefault();
 					öffneFeld(this.id);

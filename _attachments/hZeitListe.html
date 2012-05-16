@@ -47,8 +47,8 @@
 				</ul>
 			</div><!-- /navbar -->
   		</div>
-		<div data-role="content">
-			<ul id="Zeiten" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
+		<div data-role="content" id="hZeitListePageContent">
+			<ul id="ZeitlistehZL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." />
 			</ul>
 		</div>
 		<div data-role="footer" id="hZeitListePageFooter" data-position="fixed" data-tap-toggle="false">
@@ -70,7 +70,7 @@
 				}
 
 				//Link zu Raum in Navbar und Titelleiste
-				$("body").on("click", "[name='OeffneOrtZeitListe']", function (event) {
+				$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
 					leereSessionStorageZeitListe();
 					$.mobile.changePage("hOrtEdit.html");
@@ -100,22 +100,22 @@
 					erstelleNeueZeit(); 
 				});
 
-				$("#Zeiten").on("swipeleft", ".Zeit", function () {
+				$("#ZeitlistehZL").on("swipeleft", ".Zeit", function () {
 					localStorage.ZeitId = $(this).attr('ZeitId');
 					$.mobile.changePage("hArtListe.html");
 				});
 
-				$("#Zeiten").on("click", ".Zeit", function (event) {
+				$("#ZeitlistehZL").on("click", ".Zeit", function (event) {
 					event.preventDefault();
 					localStorage.ZeitId = $(this).attr('ZeitId');
 					$.mobile.changePage("hZeitEdit.html");
 				});
 
-				$("#Zeiten").on("swipeleft", ".erste", function () {
+				$("#ZeitlistehZL").on("swipeleft", ".erste", function () {
 					erstelleNeueZeit();
 				});
 
-				$(document).on("swiperight", function () {
+				$("#hZeitListePage").on("swiperight", function () {
 					$.mobile.changePage("hOrtListe.html");
 				});
 

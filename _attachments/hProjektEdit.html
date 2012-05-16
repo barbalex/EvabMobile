@@ -55,7 +55,7 @@
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
-			<form id="FormAnhänge" action="" method="post" >
+			<form id="FormAnhängehPE" action="" method="post" >
 				<hr />
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Projektberichte)</div>
 				<div id="Anhänge"></div>			
@@ -122,7 +122,7 @@
 				});
 
 				//Änderungen im Formular für Anhänge speichern
-				$("#FormAnhänge").on("change", ".speichernAnhang", function () {
+				$("#FormAnhängehPE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachments").val();
 					if (_attachments && _attachments.length > 0) {
@@ -173,11 +173,11 @@
 					$.mobile.changePage("Felder_hProjekt.html");
 				});
 
-				$(document).on("swipeleft", "#hProjektEditContent", function () {
+				$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", function () {
 					nächstesVorigesProjekt("nächstes");
 				});
 
-				$(document).on("swiperight", "#hProjektEditContent", function () {
+				$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", function () {
 					nächstesVorigesProjekt("voriges");
 				});
 
@@ -194,7 +194,7 @@
 				});
 
 				//Pagination Pfeiltasten initialisieren
-				$(document).on("keyup", function (e) {
+				$("#ProjektEditPage").on("keyup", function (e) {
 					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
 						// Left arrow
@@ -217,7 +217,7 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				$("#FormAnhänge").on("click", "[name='LöscheAnhang']", function (event) {
+				$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function (event) {
 					var Dateiname;
 					event.preventDefault();
 					Dateiname = this.id;

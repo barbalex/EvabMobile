@@ -34,7 +34,7 @@
   </head>
   <body>
   	<div data-role="page" id="InstallierenPage">
-  		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+  		<div data-role="header" id="InstallierenHeader" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="zurückInstallieren" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Beobachtungs-Liste</a>
   			<h2>lokal installieren</h2>
   		</div>
@@ -74,7 +74,7 @@
 				}
 
 				//zurück-Button steuern
-				$("#InstallierenPage").on('click', '#zurückInstallieren', function (event) {
+				$("#InstallierenHeader").on('click', '#zurückInstallieren', function (event) {
 					event.preventDefault();
 					if (!localStorage.zurueck) {
 						localStorage.zurueck = "BeobListe.html";
