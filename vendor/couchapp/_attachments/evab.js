@@ -622,8 +622,7 @@ function erstelleNeuenRaum() {
 			$db.saveDoc(doc, {
 				success: function (data) {
 					//Variabeln verfügbar machen
-					RaumId = data.id;
-					localStorage.RaumId = RaumId;
+					localStorage.RaumId = data.id;
 					localStorage.Status = "neu";
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStorageRaumListe("mitLatLngListe");
@@ -1451,7 +1450,6 @@ function initiiereRaumEdit() {
 			$("#rName").val(Raum.rName);
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Raum.hProjektId;
-			RaumId = Raum._id;
 			localStorage.RaumId = Raum._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
@@ -1606,7 +1604,6 @@ function initiiereOrtEdit() {
 			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Ort.hProjektId;
-			RaumId = Ort.hRaumId;
 			localStorage.RaumId = Ort.hRaumId;
 			OrtId = Ort._id;
 			localStorage.OrtId = Ort._id;
@@ -1766,12 +1763,11 @@ function initiiereZeitEdit() {
 			$("#zUhrzeit").val(Zeit.zUhrzeit);
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Zeit.hProjektId;
-			RaumId = Zeit.hRaumId;
-			localStorage.RaumId = RaumId;
+			localStorage.RaumId = Zeit.hRaumId;
 			OrtId = Zeit.hOrtId;
-			localStorage.OrtId = OrtId;
+			localStorage.OrtId = Zeit.hOrtId;
 			ZeitId = Zeit._id;
-			localStorage.ZeitId = ZeitId;
+			localStorage.ZeitId = Zeit._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlisteZeitEdit) {
@@ -1924,20 +1920,19 @@ function initiierehBeobEdit() {
 			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Beob.hProjektId;
-			RaumId = Beob.hRaumId;
-			localStorage.RaumId = RaumId;
+			localStorage.RaumId = Beob.hRaumId;
 			OrtId = Beob.hOrtId;
-			localStorage.OrtId = OrtId;
+			localStorage.OrtId = Beob.hOrtId;
 			ZeitId = Beob.hZeitId;
-			localStorage.ZeitId = ZeitId;
+			localStorage.ZeitId = Beob.hZeitId;
 			hBeobId = Beob._id;
-			localStorage.hBeobId = hBeobId;
+			localStorage.hBeobId = Beob._id;
 			aArtGruppe = Beob.aArtGruppe;
-			localStorage.aArtGruppe = aArtGruppe;
+			localStorage.aArtGruppe = Beob.aArtGruppe;
 			aArtName = Beob.aArtName;
-			localStorage.aArtName = aArtName;
+			localStorage.aArtName = Beob.aArtName;
 			aArtId = Beob.aArtId;
-			localStorage.aArtId = aArtId;
+			localStorage.aArtId = Beob.aArtId;
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
 			$("#aArtGruppe").val(aArtGruppe);
