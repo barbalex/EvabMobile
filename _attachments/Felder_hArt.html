@@ -125,8 +125,8 @@
 								anzFelder += 1;
 								FeldName = Feld.FeldName;
 								FeldBeschriftung = Feld.FeldBeschriftung;
-								if (Feld.ArtGruppe.indexOf(aArtGruppe) === -1) {
-									FeldBeschriftung += " (nicht sichtbar in Artgruppe " + aArtGruppe + ")";
+								if (Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
+									FeldBeschriftung += " (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")";
 								}
 								ListItem = "\n\t\t\<label for='";
 								ListItem += FeldName;

@@ -54,7 +54,6 @@
 				//Vorsicht: Genauer als body funktioniert hier nicht, weil die nested List im DOM
 				//jedes mal eine eigene Page aufbaut
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
-					var aArtGruppe, L, link;
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");
 					if ($(this).attr("L")) {

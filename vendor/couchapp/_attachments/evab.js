@@ -826,8 +826,7 @@ function initiiereBeobEdit_2() {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			localStorage.BeobId = Beob._id;
-			aArtGruppe = Beob.aArtGruppe;
-			localStorage.aArtGruppe = aArtGruppe;
+			localStorage.aArtGruppe = Beob.aArtGruppe;
 			aArtName = Beob.aArtName;
 			localStorage.aArtName = aArtName;
 			aArtId = Beob.aArtId;
@@ -1913,7 +1912,6 @@ function initiierehBeobEdit() {
 			localStorage.OrtId = Beob.hOrtId;
 			localStorage.ZeitId = Beob.hZeitId;
 			localStorage.hBeobId = Beob._id;
-			aArtGruppe = Beob.aArtGruppe;
 			localStorage.aArtGruppe = Beob.aArtGruppe;
 			aArtName = Beob.aArtName;
 			localStorage.aArtName = Beob.aArtName;
@@ -1921,8 +1919,8 @@ function initiierehBeobEdit() {
 			localStorage.aArtId = Beob.aArtId;
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
-			$("#aArtGruppe").val(aArtGruppe);
-			$("#aArtGruppe").html("<option value='" + aArtGruppe + "'>" + aArtGruppe + "</option>");
+			$("#aArtGruppe").val(localStorage.aArtGruppe);
+			$("#aArtGruppe").html("<option value='" + localStorage.aArtGruppe + "'>" + localStorage.aArtGruppe + "</option>");
 			$("#aArtGruppe").selectmenu("refresh");
 			$("#aArtName").selectmenu();
 			$("#aArtName").val(aArtName);
@@ -2059,10 +2057,9 @@ function initiierehBeobListe_2() {
 			if (typeof i !== "function") {
 				hBeob = hBeobListe.rows[i].value;
 				key = hBeobListe.rows[i].key;
-				aArtGruppe = hBeob.aArtGruppe;
-				ImageLink = "Artgruppenbilder/" + aArtGruppe + ".png";
+				ImageLink = "Artgruppenbilder/" + hBeob.aArtGruppe + ".png";
 				bArtName = key[2];
-				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + aArtGruppe + "\">" +
+				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + hBeob.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
 					"<h3>" + bArtName + "<\/h3>" +
