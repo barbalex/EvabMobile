@@ -499,7 +499,6 @@ function erstelleNeueZeit() {
 							$db.saveDoc(doc, {
 								success: function (Zeit) {
 									//Variabeln verfügbar machen
-									//ZeitId = Zeit.id;
 									localStorage.ZeitId = Zeit.id;
 									localStorage.Status = "neu";
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -1763,7 +1762,6 @@ function initiiereZeitEdit() {
 			localStorage.ProjektId = Zeit.hProjektId;
 			localStorage.RaumId = Zeit.hRaumId;
 			localStorage.OrtId = Zeit.hOrtId;
-			ZeitId = Zeit._id;
 			localStorage.ZeitId = Zeit._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
@@ -1919,7 +1917,6 @@ function initiierehBeobEdit() {
 			localStorage.ProjektId = Beob.hProjektId;
 			localStorage.RaumId = Beob.hRaumId;
 			localStorage.OrtId = Beob.hOrtId;
-			ZeitId = Beob.hZeitId;
 			localStorage.ZeitId = Beob.hZeitId;
 			hBeobId = Beob._id;
 			localStorage.hBeobId = Beob._id;
