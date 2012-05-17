@@ -3366,6 +3366,7 @@ function leereStorageOrtListe(mitLatLngListe) {
 	delete localStorage.OrtListe;
 	delete window.OrtListe;
 	delete window.OrteVonProjekt;
+	delete window.OrteVonRaum;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
@@ -3389,6 +3390,7 @@ function leereStorageZeitListe() {
 	delete window.ZeitListe;
 	delete window.ZeitenVonProjekt;
 	delete window.ZeitenVonRaum;
+	delete window.ZeitenVonOrt;
 }
 
 function leereStorageZeitEdit() {
@@ -3400,6 +3402,8 @@ function leereStoragehBeobListe() {
 	delete window.hBeobListe;
 	delete window.ArtenVonProjekt;
 	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
 function leereStoragehBeobEdit() {

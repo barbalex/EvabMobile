@@ -363,30 +363,15 @@
 								//alles speichern
 								$db.saveDoc(hZeit, {
 									success: function () {
-										//geändertes Zeit-Feld in hArt anpassen
-										var viewname;
-										viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
-										$db.view(viewname, {
-											success: function (data) {
-												var hArtId;
-												for (i in data.rows) {
-													hArtId = data.rows[i].key[1];
-													$db.openDoc(hArtId, {
-														success: function (hArt) {
-															if (Feldwert) {
-																hArt[Feldname] = Feldwert;
-															} else if (hArt[Feldname]) {
-																delete hArt[Feldname];
-															}
-															$db.saveDoc(hArt);
-														}
-													});
-												}
-											},
-											error: function () {
-												melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-											}
-										});
+										speichereZeitfeldInArten(Feldname, Feldwert);
+										//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
+										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
+										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+										//darum zwischenspeichern
+										window.ZeitIdZwischenspeicher = localStorage.ZeitId;
+										setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
+										setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
 									},
 									error: function () {
 										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -395,6 +380,48 @@
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
+				}
+
+				function speichereZeitfeldInArten(Feldname, Feldwert) {
+					//ArtenVonZeit wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn hArten neu bzw. gelöscht werden, 
+					//muss ArtenVonZeit gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					var viewname;
+					if (window.ArtenVonZeit && window.ZuletztGespeicherteZeitId && window.ZuletztGespeicherteZeitId === localStorage.ZeitId) {
+						//Liste aus globaler Variable verwenden
+						speichereZeitfeldInArten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonZeit = data;
+								speichereZeitfeldInArten_2(Feldname, Feldwert);
+							}
+						});
+					}
+				}
+
+				function speichereZeitfeldInArten_2(Feldname, Feldwert) {
+					//geändertes Zeit-Feld in hArt anpassen
+					var hArtId;
+					for (i in ArtenVonZeit.rows) {
+						hArtId = ArtenVonZeit.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
 							}
 						});
 					}

@@ -392,6 +392,14 @@
 									success: function () {
 										speichereOrtfeldInArten(Feldname, Feldwert);
 										speichereOrtfeldInZeiten(Feldname, Feldwert);
+										//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Zuletzt gespeicherte OrtId NACH dem speichern setzen
+										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+										//darum zwischenspeichern
+										window.OrtIdZwischenspeicher = localStorage.OrtId;
+										setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
+										setTimeout("delete window.OrtIdZwischenspeicher", 1500);
 									},
 									error: function () {
 										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -406,53 +414,89 @@
 				}
 
 				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hZeit anpassen
+					//ZeitenVonOrt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn Zeiten neu bzw. gelöscht werden, 
+					//muss ZeitenVonOrt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ZeitenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
+						//Liste aus globaler Variable verwenden
+						speichereOrtfeldInZeiten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonOrt = data;
+								speichereOrtfeldInZeiten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereOrtfeldInZeiten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hZeit anpassen
+					var hArtId;
+					for (i in ZeitenVonOrt.rows) {
+						hArtId = ZeitenVonOrt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereOrtfeldInArten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//ArtenVonOrt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn hArten neu bzw. gelöscht werden, 
+					//muss ArtenVonOrt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ArtenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
+						//Liste aus globaler Variable verwenden
+						speichereOrtfeldInArten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonOrt = data;
+								speichereOrtfeldInArten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereOrtfeldInArten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in ArtenVonOrt.rows) {
+						hArtId = ArtenVonOrt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 				
 				//Menü aufbauen
