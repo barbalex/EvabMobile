@@ -143,9 +143,6 @@
 
 				//Menü aufbauen
 				function erstelleMenu_hal(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',

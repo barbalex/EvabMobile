@@ -116,9 +116,6 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenuRaumListe(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',

@@ -262,9 +262,6 @@ function speichereNeueBeob(aArtBezeichnung, ArtId) {
 //aufgerufen bloss von Artenliste.html
 //hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
 	var doc;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	doc = {};
 	doc.User = localStorage.Username;
 	doc.aArtGruppe = localStorage.aArtGruppe;
@@ -458,9 +455,6 @@ function erstelleNeueZeit() {
 //ausgelöst durch hZeitListe.html oder hZeitEdit.html
 //dies ist der erste Schritt: doc bilden
 	var doc;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	doc = {};
 	doc.Typ = "hZeit";
 	doc.User = localStorage.Username;
@@ -544,9 +538,6 @@ function erstelleNeueZeit() {
 //erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt() {
 	var doc;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	doc = {};
 	doc.Typ = "hOrt";
 	doc.User = localStorage.Username;
@@ -687,9 +678,6 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen() {
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	if (!localStorage.UserId) {
 		$db = $.couch.db("evab");
 		$db.view('evab/User?key="' + localStorage.Username + '"', {
@@ -970,9 +958,6 @@ function initiiereBeobliste() {
 		initiiereBeobliste_2()
 	} else {
 		//Beobliste aus DB holen
-		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
 			success: function (data) {
@@ -1126,10 +1111,7 @@ function initiiereProjektEdit_2(Projekt) {
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm (Projekt) {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
+	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
@@ -1164,9 +1146,6 @@ function initiiereFeldEdit() {
 			localStorage.Feld = JSON.stringify(doc);
 			localStorage.FeldId = Feld._id;
 
-			if (!localStorage.Username) {
-				pruefeAnmeldung();
-			}
 			//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
 			SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
 			SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
@@ -1277,9 +1256,6 @@ function erstelleSelectFeldFolgtNach_2() {
 	var i, TempFeld, Optionen;
 	Optionen = [];
 	Optionen.push("");
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	for (i in Feldliste.rows) {
 		if (typeof i !== "function") {
 			TempFeld = Feldliste.rows[i].value;
@@ -1373,9 +1349,6 @@ function initiiereFeldliste_2() {
 	var i, Feld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
 	ListItemContainer = "";
 	anzFelder = 0;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}  
 	for (i in Feldliste.rows) {
 		if (typeof i !== "function") {
 			Feld = Feldliste.rows[i].value;
@@ -1420,9 +1393,6 @@ function initiiereProjektliste() {
 		Projektliste = JSON.parse(localStorage.Projektliste);
 		initiiereProjektliste_2();
 	} else {
-		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		//Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
@@ -1544,9 +1514,6 @@ function initiiereRaumEdit_2(Raum) {
 //der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm (Feldliste, Raum) {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
@@ -1581,9 +1548,6 @@ function initiiereRaumListe() {
 		initiiereRaumListe_2();
 	} else {
 		//Raumliste aud DB holen
-		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
 			success: function (data) {
@@ -1771,9 +1735,6 @@ function initiiereOrtListe() {
 		initiiereOrtListe_2();
 	} else {
 		//Ortliste aus DB holen
-		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
 			success: function (data) {
@@ -1899,9 +1860,6 @@ function initiiereZeitListe() {
 		initiiereZeitListe_2();
 	} else {
 		//Zeitliste aus DB holen
-  		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
 			success: function (data) {
@@ -2112,9 +2070,6 @@ function initiierehBeobListe() {
 		initiierehBeobListe_2();
 	} else {
 		//Beobliste aus DB holen
-  		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
 			success: function (data) {
@@ -2709,9 +2664,6 @@ function speichereLetzteUrl_3(UserId) {
 //daher wird die aufrufende Seite übergeben und nach getaner Arbeit deren Felder initiiert
 //Wenn localStorage null ist, verzichtet die aufrufende Seite auf das Initiieren
 function holeSessionStorageAusDb(AufrufendeSeite) {
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + localStorage.Username + '"', {
 		success: function (data) {
@@ -2851,9 +2803,6 @@ function zeigeAttachments(doc, Page) {
 //wird benutzt von FeldListe.html und FeldEdit.html
 function neuesFeld() {
 	var NeuesFeld;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	NeuesFeld = {};
 	NeuesFeld.Typ = "Feld";
 	NeuesFeld.User = localStorage.Username;
@@ -2920,9 +2869,6 @@ function oeffneBeob(BeobId) {
 //wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
 function initiiereArtenliste() {
 	var viewname;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	//Wenn Artensprache noch nicht bekannt ist, aus der DB holen
 	//sonst aus der localStorage
 	if (localStorage.ArtenSprache) {
@@ -3052,9 +2998,6 @@ function erstelleArtgruppenListe() {
 	if (localStorage.ArtenSprache) {
 		erstelleArtgruppenListe_2();
 	} else {
-		if (!localStorage.Username) {
-			pruefeAnmeldung();
-		}
 		viewname = 'evab/User?key="' + localStorage.Username + '"';
 		$db = $.couch.db("evab");
 		$db.view(viewname, {

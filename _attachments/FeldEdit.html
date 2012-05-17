@@ -205,9 +205,6 @@
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
 					var AlterFeldWert;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					localStorage.FeldWert = this.value;
 					if (this.name) {
 						localStorage.FeldName = this.name;
@@ -314,9 +311,6 @@
 
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
 					var Optionen, Feldwert, LetzterFeldwert, Formularelement, StandardwertOptionen;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					Optionen = $("#Optionen").val() || [];	//undefined verhindern
 					Feldwert = this.value || [];	//undefined verhindern
 					if (Optionen) {
@@ -382,9 +376,6 @@
 				//Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function (event) {
 					event.preventDefault();
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					if (Feld.User === "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 					} else {
@@ -500,9 +491,6 @@
 					$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"', {
 						success: function (data) {
 							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
 							AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 							//durch alle Felder mit demselben Artnamen laufen
 							//prüfen, ob sie eigene oder offielle sind
@@ -593,9 +581,6 @@
 						Feldliste = JSON.parse(localStorage.Feldliste);
 						geheZumNächstenFeld_2();
 					} else {
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListe', {
 							success: function (data) {
@@ -663,9 +648,6 @@
 						Feldliste = JSON.parse(localStorage.Feldliste);
 						geheZumVorigenFeld_2();
 					} else {
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListe', {
 							success: function (data) {
@@ -759,9 +741,6 @@
 				}
 
 				function speichereStandardwert() {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					$db = $.couch.db("evab");
 					$db.openDoc(Feld._id, {
 						success: function (doc) {

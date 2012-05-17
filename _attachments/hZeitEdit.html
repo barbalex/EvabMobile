@@ -429,9 +429,6 @@
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenuZeitEdit(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -513,9 +510,6 @@
 						ZeitListe = JSON.parse(localStorage.ZeitListe);
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
 							success: function (data) {

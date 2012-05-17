@@ -55,9 +55,6 @@
 					if (!localStorage.zurueck) {
 						$.mobile.changePage("BeobListe.html");
 					}
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 
 					//Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
 					switch(localStorage.zurueck) {
@@ -290,9 +287,6 @@
 							window.BeobListeLatLng = JSON.parse(localStorage.BeobListeLatLng);
 							erstelleKarteBeobListe_2();
 						} else {
-							if (!localStorage.Username) {
-								pruefeAnmeldung();
-							}
 							$db = $.couch.db("evab");
 							$db.view('evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true', {
 								success: function (data) {

@@ -342,9 +342,6 @@
 					} else {
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
 							success: function (data) {
@@ -400,9 +397,6 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',

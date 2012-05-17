@@ -59,9 +59,6 @@
 				//Felder speichern (checkbox)
 				$("#FeldlisteFhA").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					FeldName = $(this).prop("id");
 					FeldId = $(this).attr("feldid");
 					$db = $.couch.db("evab");
@@ -117,9 +114,6 @@
 
 				function erstelleSichtbareFelder_2() {
 					var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					anzFelder = 0;
 					for (i in FeldlistehBeobEdit.rows) {

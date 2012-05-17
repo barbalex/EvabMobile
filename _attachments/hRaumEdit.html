@@ -534,9 +534,6 @@
 
 				//Menü aufbauen
 				function erstelleMenu(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					$(thiz).simpledialog({
 						'mode' : 'bool',
 						'prompt' : 'Menü',
@@ -617,9 +614,6 @@
 					} else {
 						//keine Raumliste übergeben
 						//neu aus DB erstellen
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
 							success: function (data) {

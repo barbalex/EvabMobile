@@ -501,9 +501,6 @@
 				
 				//Menü aufbauen
 				function erstelleMenuOrtEdit(thiz) {
-					if (!localStorage.Username) {
-						pruefeAnmeldung();
-					}
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog({
 						'mode' : 'bool',
@@ -586,9 +583,6 @@
 					} else {
 						//keine Ortliste vorhanden
 						//neu aus DB erstellen
-						if (!localStorage.Username) {
-							pruefeAnmeldung();
-						}
 						$db = $.couch.db("evab");
 						$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
 							success: function (data) {
