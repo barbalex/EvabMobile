@@ -72,25 +72,25 @@
 				//Link zu Raum in Navbar und Titelleiste
 				$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitListe();
+					leereStorageZeitListe();
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
-					leereSessionStorageRaumEdit();
-					leereSessionStorageRaumListe();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -138,13 +138,13 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageZeitListe();
-									leereSessionStorageOrtEdit();
-									leereSessionStorageOrtListe();
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
-									leereSessionStorageOrtListe();
+									leereStorageZeitListe();
+									leereStorageOrtEdit();
+									leereStorageOrtListe();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
+									leereStorageOrtListe();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",

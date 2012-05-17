@@ -73,37 +73,37 @@
 				//Link zu Raum in Navbar und Titelleiste
 				$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
-					leereSessionStoragehBeobListe();
+					leereStoragehBeobListe();
 					$.mobile.changePage("hZeitEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", function (event) {
 					event.preventDefault();
-					leereSessionStoragehBeobListe();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
+					leereStoragehBeobListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", function (event) {
 					event.preventDefault();
-					leereSessionStoragehBeobListe();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
+					leereStoragehBeobListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", function (event) {
 					event.preventDefault();
-					leereSessionStoragehBeobListe();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
-					leereSessionStorageRaumEdit();
-					leereSessionStorageRaumListe();
+					leereStoragehBeobListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -125,7 +125,7 @@
 
 				function öffneArtgruppenliste_hal() {
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					leereSessionStoragehBeobListe();
+					leereStoragehBeobListe();
 					localStorage.Status = "neu";
 					localStorage.Von = "hArtListe";
 					delete localStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
@@ -153,14 +153,14 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStoragehBeobListe();
-									leereSessionStorageZeitEdit();
-									leereSessionStorageZeitListe();
-									leereSessionStorageOrtEdit();
-									leereSessionStorageOrtListe();
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
+									leereStoragehBeobListe();
+									leereStorageZeitEdit();
+									leereStorageZeitListe();
+									leereStorageOrtEdit();
+									leereStorageOrtListe();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",

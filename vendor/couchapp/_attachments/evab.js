@@ -372,7 +372,7 @@ function speichereNeueBeob_03(doc) {
 						BeobId = data.id;
 						localStorage.BeobId = BeobId;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						leereSessionStorageBeobListe();
+						leereStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					}
 				},
@@ -409,7 +409,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 						BeobId = data.id;
 						localStorage.BeobId = BeobId;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						leereSessionStorageBeobListe();
+						leereStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					} else {
 						//Variabeln verfügbar machen
@@ -578,7 +578,7 @@ function erstelleNeuenOrt() {
 							OrtId = data.id;
 							localStorage.OrtId = OrtId;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageOrtListe("mitLatLngListe");
+							leereStorageOrtListe("mitLatLngListe");
 							localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
 							//Vorsicht: Von hOrtEdit.html aus samepage transition!
 							if ($("#OrtEditPage").length > 0) {
@@ -632,7 +632,7 @@ function erstelleNeuenRaum() {
 					localStorage.RaumId = RaumId;
 					localStorage.Status = "neu";
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					leereSessionStorageRaumListe("mitLatLngListe");
+					leereStorageRaumListe("mitLatLngListe");
 					//Vorsicht: Von hRaumEdit.html aus same page transition!
 					if ($("#RaumEditPage").length > 0) {
 						$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
@@ -666,7 +666,7 @@ function erstelleNeuesProjekt() {
 			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			leereSessionStorageProjektListe("mitLatLngListe");
+			leereStorageProjektListe("mitLatLngListe");
 			//Vorsicht: Von hProjektEdit.html aus same page transition!
 			if ($("#RaumEditPage").length > 0) {
 				$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
@@ -2862,7 +2862,7 @@ function neuesFeld() {
 			Feld = data;
 			localStorage.Feld = JSON.stringify(data);
 			//Feldliste soll neu aufgebaut werden
-			leereSessionStorageFeldListe();
+			leereStorageFeldListe();
 			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
 		},
 		error: function () {
@@ -3328,34 +3328,23 @@ function oeffneZuletztBenutzteSeite() {
 //sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
 //mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
 
-function leereSessionStorageProjektListe(mitLatLngListe) {
+function leereStorageProjektListe(mitLatLngListe) {
 	delete localStorage.Projektliste;
-	//delete window.ZuletztGespeicherteProjektId;
-	delete window.Projektliste;
-	delete window.ArtenVonProjekt;
-	delete window.ZeitenVonProjekt;
-	delete window.OrteVonProjekt;
-	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjektliste;
 		delete window.hOrteLatLngProjektliste;
 	}
 }
 
-function leereSessionStorageProjektEdit(mitLatLngListe) {
+function leereStorageProjektEdit(mitLatLngListe) {
 	delete localStorage.ProjektId;
-	//delete window.ZuletztGespeicherteProjektId;
-	delete window.ArtenVonProjekt;
-	delete window.ZeitenVonProjekt;
-	delete window.OrteVonProjekt;
-	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
 	}
 }
 
-function leereSessionStorageRaumListe(mitLatLngListe) {
+function leereStorageRaumListe(mitLatLngListe) {
 	delete localStorage.RaumListe;
 	delete window.RaumListe;
 	delete window.RaeumeVonProjekt;
@@ -3365,7 +3354,7 @@ function leereSessionStorageRaumListe(mitLatLngListe) {
 	}
 }
 
-function leereSessionStorageRaumEdit(mitLatLngListe) {
+function leereStorageRaumEdit(mitLatLngListe) {
 	delete localStorage.RaumId;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngRaum;
@@ -3373,7 +3362,7 @@ function leereSessionStorageRaumEdit(mitLatLngListe) {
 	}
 }
 
-function leereSessionStorageOrtListe(mitLatLngListe) {
+function leereStorageOrtListe(mitLatLngListe) {
 	delete localStorage.OrtListe;
 	delete window.OrtListe;
 	delete window.OrteVonProjekt;
@@ -3383,7 +3372,7 @@ function leereSessionStorageOrtListe(mitLatLngListe) {
 	}
 }
 
-function leereSessionStorageOrtEdit() {
+function leereStorageOrtEdit() {
 	delete localStorage.OrtId;
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
@@ -3395,34 +3384,36 @@ function leereSessionStorageOrtEdit() {
 	delete localStorage.aArtGruppe;
 }
 
-function leereSessionStorageZeitListe() {
+function leereStorageZeitListe() {
 	delete localStorage.ZeitListe;
 	delete window.ZeitListe;
 	delete window.ZeitenVonProjekt;
+	delete window.ZeitenVonRaum;
 }
 
-function leereSessionStorageZeitEdit() {
+function leereStorageZeitEdit() {
 	delete localStorage.ZeitId;
 }
 
-function leereSessionStoragehBeobListe() {
+function leereStoragehBeobListe() {
 	delete localStorage.hBeobListe;
 	delete window.hBeobListe;
 	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
 }
 
-function leereSessionStoragehBeobEdit() {
+function leereStoragehBeobEdit() {
 	delete localStorage.hBeobId;
 }
 
-function leereSessionStorageBeobListe() {
+function leereStorageBeobListe() {
 	delete localStorage.BeobListe;
 	delete window.BeobListe;
 	delete localStorage.BeobListeLatLng;
 	delete window.BeobListeLatLng;
 }
 
-function leereSessionStorageBeobEdit() {
+function leereStorageBeobEdit() {
 	delete localStorage.BeobId;
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
@@ -3434,12 +3425,12 @@ function leereSessionStorageBeobEdit() {
 	delete localStorage.aArtGruppe;
 }
 
-function leereSessionStorageFeldListe() {
+function leereStorageFeldListe() {
 	delete localStorage.Feldliste
 	delete window.Feldliste;
 }
 
-function leereSessionStorageFeldEdit() {
+function leereStorageFeldEdit() {
 	delete localStorage.Feld;
 	delete window.Feld;
 	delete localStorage.FeldId;

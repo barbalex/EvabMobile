@@ -564,8 +564,8 @@
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
-									leereSessionStorageFeldEdit();
-									leereSessionStorageFeldListe();
+									leereStorageFeldEdit();
+									leereStorageFeldListe();
 									$.mobile.changePage("FeldListe.html");
 								},
 								error: function () {
@@ -747,13 +747,13 @@
 					delete localStorage.Feld;
 					if (localStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
-						leereSessionStorageFeldEdit();
-						leereSessionStorageFeldListe();
+						leereStorageFeldEdit();
+						leereStorageFeldListe();
 						$.mobile.changePage(localStorage.zurueck);
 						delete localStorage.zurueck;
 						
 					} else {
-						leereSessionStorageFeldEdit();
+						leereStorageFeldEdit();
 						$.mobile.changePage("FeldListe.html");
 					}
 				}

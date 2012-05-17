@@ -100,34 +100,34 @@
 
 				$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitEdit();
+					leereStorageZeitEdit();
 					$.mobile.changePage("hZeitListe.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
 					$.mobile.changePage("hOrtEdit.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
 					event.preventDefault();
-					leereSessionStorageZeitEdit();
-					leereSessionStorageZeitListe();
-					leereSessionStorageOrtEdit();
-					leereSessionStorageOrtListe();
-					leereSessionStorageRaumEdit();
-					leereSessionStorageRaumListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -166,7 +166,7 @@
 				$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
 					event.preventDefault();
 					//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-					leereSessionStorageZeitListe();
+					leereStorageZeitListe();
 					erstelleNeueZeit(); 
 				});
 
@@ -305,8 +305,8 @@
 									$db.removeDoc(document, {
 										success: function () {
 											//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-											leereSessionStorageZeitListe();
-											leereSessionStorageZeitEdit();
+											leereStorageZeitListe();
+											leereStorageZeitEdit();
 											$.mobile.changePage('hZeitListe.html');
 											melde("alles gelöscht");
 										},
@@ -348,7 +348,7 @@
 					if (validierehZeitEdit()) {
 						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
 							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageZeitListe();
+							leereStorageZeitListe();
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -413,13 +413,13 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageZeitEdit();
-									leereSessionStorageZeitListe();
-									leereSessionStorageOrtEdit();
-									leereSessionStorageOrtListe();
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
+									leereStorageZeitEdit();
+									leereStorageZeitListe();
+									leereStorageOrtEdit();
+									leereStorageOrtListe();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
@@ -523,7 +523,7 @@
 									initiiereZeitEdit();
 									return;
 								} else {
-									leereSessionStorageZeitEdit();
+									leereStorageZeitEdit();
 									$.mobile.changePage("hZeitListe.html");
 									return;
 								}

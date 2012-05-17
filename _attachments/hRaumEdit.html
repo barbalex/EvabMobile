@@ -97,7 +97,7 @@
 
 				$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
 					event.preventDefault();
-					leereSessionStorageRaumEdit();
+					leereStorageRaumEdit();
 					$.mobile.changePage("hRaumListe.html");
 				});
 
@@ -319,8 +319,8 @@
 													$db.removeDoc(document, {
 														success: function () {
 															//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-															leereSessionStorageRaumEdit("mitLatLngListe");
-															leereSessionStorageRaumListe("mitLatLngListe")
+															leereStorageRaumEdit("mitLatLngListe");
+															leereStorageRaumListe("mitLatLngListe")
 															$.mobile.changePage('hRaumListe.html');
 															melde("alles gelöscht");
 														},
@@ -365,7 +365,7 @@
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageRaumListe("mitLatLngListe");
+							leereStorageRaumListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -404,78 +404,132 @@
 				}
 
 				function speichereRaumfeldInArten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//ArtenVonRaum wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn hArten neu bzw. gelöscht werden, 
+					//muss ArtenVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ArtenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
+						//Liste aus globaler Variable verwenden
+						speichereRaumfeldInArten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonRaum = data;
+								speichereRaumfeldInArten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInArten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in ArtenVonRaum.rows) {
+						hArtId = ArtenVonRaum.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereRaumfeldInZeiten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//ZeitenVonRaum wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn Zeiten neu bzw. gelöscht werden, 
+					//muss ZeitenVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ZeitenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
+						//Liste aus globaler Variable verwenden
+						speichereRaumfeldInZeiten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonRaum = data;
+								speichereRaumfeldInZeiten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInZeiten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in ZeitenVonRaum.rows) {
+						hArtId = ZeitenVonRaum.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereRaumfeldInOrten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//OrteVonRaum wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn Orte neu bzw. gelöscht werden, 
+					//muss OrteVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der Storage-Verwaltung
+					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.OrteVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
+						//Liste aus globaler Variable verwenden
+						speichereRaumfeldInOrten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.OrteVonRaum = data;
+								speichereRaumfeldInOrten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInOrten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in OrteVonRaum.rows) {
+						hArtId = OrteVonRaum.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				//Menü aufbauen
@@ -490,9 +544,9 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
@@ -605,7 +659,7 @@
 									delete window.hOrteLatLngRaum;
 									return;
 								} else {
-									leereSessionStorageRaumEdit();
+									leereStorageRaumEdit();
 									$.mobile.changePage("hRaumListe.html");
 									return;
 								}

@@ -95,7 +95,7 @@
 
 				$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function (event) {
 					event.preventDefault();
-					leereSessionStorageProjektEdit();
+					leereStorageProjektEdit();
 					$.mobile.changePage("hProjektListe.html");
 				});
 
@@ -331,8 +331,8 @@
 															$db.removeDoc(document, {
 																success: function () {
 																	//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-																	leereSessionStorageProjektEdit("mitLatLngListe");
-																	leereSessionStorageProjektListe("mitLatLngListe");
+																	leereStorageProjektEdit("mitLatLngListe");
+																	leereStorageProjektListe("mitLatLngListe");
 																	$.mobile.changePage('hProjektListe.html');
 																	melde("alles gelöscht");
 																},
@@ -382,7 +382,7 @@
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
 							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageProjektListe("mitLatLngListe");
+							leereStorageProjektListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -401,7 +401,7 @@
 										speichereProjektfeldInOrten(Feldname, Feldwert);
 										speichereProjektfeldInRäumen(Feldname, Feldwert);
 										//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
 										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 										//darum zwischenspeichern
@@ -424,11 +424,11 @@
 				function speichereProjektfeldInArten(Feldname, Feldwert) {
 					//ArtenVonProjekt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn die ProjektId wechselt oder hBeob neu bzw. gelöscht werden, 
+					//Wenn hArten neu bzw. gelöscht werden, 
 					//muss ArtenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
 					//das geschieht in der sessionStorage-Verwaltung
 					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
 					if (window.ArtenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
 						//Liste aus globaler Variable verwenden
@@ -467,11 +467,11 @@
 				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 					//ZeitenVonProjekt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn die ProjektId wechselt oder hZeit neu bzw. gelöscht werden, 
+					//Wenn hZeit neu bzw. gelöscht werden, 
 					//muss ZeitenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
 					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
 					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
 					if (window.ZeitenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
 						//Liste aus globaler Variable verwenden
@@ -510,11 +510,11 @@
 				function speichereProjektfeldInOrten(Feldname, Feldwert) {
 					//OrteVonProjekt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn die ProjektId wechselt oder hOrt neu bzw. gelöscht werden, 
+					//Wenn hOrt neu bzw. gelöscht werden, 
 					//muss OrteVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
 					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
 					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
 					if (window.OrteVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
 						//Liste aus globaler Variable verwenden
@@ -553,11 +553,11 @@
 				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 					//RaeumeVonProjekt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn die ProjektId wechselt oder hRaum neu bzw. gelöscht werden, 
+					//Wenn hRaum neu bzw. gelöscht werden, 
 					//muss RaeumeVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
 					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
 					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
 					if (window.RaeumeVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
 						//Liste aus globaler Variable verwenden
@@ -605,7 +605,7 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageProjektEdit();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
@@ -720,7 +720,7 @@
 									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
-									leereSessionStorageProjektEdit();
+									leereStorageProjektEdit();
 									$.mobile.changePage("hProjektListe.html");
 									return;
 								}

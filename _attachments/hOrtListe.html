@@ -73,15 +73,15 @@
 				//Link zu Raum in Navbar und Titelleiste
 				$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", function (event) {
 					event.preventDefault();
-					leereSessionStorageOrtListe();
+					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", function (event) {
 					event.preventDefault();
-					leereSessionStorageOrtListe();
-					leereSessionStorageRaumEdit();
-					leereSessionStorageRaumListe();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -113,8 +113,8 @@
 				});
 
 				$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", function () {
-					leereSessionStorageOrtListe();
-					leereSessionStorageRaumEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
 					$.mobile.changePage("hRaumListe.html");
 				});
 
@@ -137,10 +137,10 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageOrtListe();
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
+									leereStorageOrtListe();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",

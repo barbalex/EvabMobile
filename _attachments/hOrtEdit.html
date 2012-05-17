@@ -110,7 +110,7 @@
 
 				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function (event) {
 					event.preventDefault();
-					leereSessionStorageOrtEdit();
+					leereStorageOrtEdit();
 					$.mobile.changePage("hOrtListe.html");
 				});
 
@@ -334,8 +334,8 @@
 											$db.removeDoc(document, {
 												success: function () {
 													//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-													leereSessionStorageOrtListe("mitLatLngListe")
-													leereSessionStorageOrtEdit("mitLatLngListe");
+													leereStorageOrtListe("mitLatLngListe")
+													leereStorageOrtEdit("mitLatLngListe");
 													$.mobile.changePage('hOrtListe.html');
 													melde("alles gelöscht");
 												},
@@ -375,7 +375,7 @@
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereSessionStorageOrtListe("mitLatLngListe");
+							leereStorageOrtListe("mitLatLngListe");
 						}
 						$db = $.couch.db("evab");
 						//Bestehendes Dokument öffnen
@@ -468,11 +468,11 @@
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
-									leereSessionStorageOrtEdit();
-									leereSessionStorageOrtListe();
-									leereSessionStorageRaumEdit();
-									leereSessionStorageRaumListe();
-									leereSessionStorageProjektEdit();
+									leereStorageOrtEdit();
+									leereStorageOrtListe();
+									leereStorageRaumEdit();
+									leereStorageRaumListe();
+									leereStorageProjektEdit();
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
@@ -580,7 +580,7 @@
 									initiiereOrtEdit();
 									return;
 								} else {
-									leereSessionStorageOrtEdit();
+									leereStorageOrtEdit();
 									$.mobile.changePage("hOrtListe.html");
 									return;
 								}
