@@ -512,7 +512,10 @@ function erstelleNeueZeit() {
 									delete window.ZeitListe;
 									delete localStorage.ZeitListe;
 									//Vorsicht: Von hZeitEdit.html aus samepage transition!
-									if ($("#ZeitEditPage").length > 0) {
+									if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
+										//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+										window.open("hZeitEdit.html", target = "_self");
+									} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
 										$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
 									} else {
 										$.mobile.changePage("hZeitEdit.html");
@@ -581,7 +584,10 @@ function erstelleNeuenOrt() {
 							leereStorageOrtListe("mitLatLngListe");
 							localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
 							//Vorsicht: Von hOrtEdit.html aus samepage transition!
-							if ($("#OrtEditPage").length > 0) {
+							if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
+								//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+								window.open("hOrtEdit.html", target = "_self");
+							} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
 								$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
 							} else {
 								$.mobile.changePage("hOrtEdit.html");
@@ -605,9 +611,6 @@ function erstelleNeuenOrt() {
 
 function erstelleNeuenRaum() {
 	var doc;
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	doc = {};
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Username;
@@ -634,7 +637,10 @@ function erstelleNeuenRaum() {
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStorageRaumListe("mitLatLngListe");
 					//Vorsicht: Von hRaumEdit.html aus same page transition!
-					if ($("#RaumEditPage").length > 0) {
+					if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
+						//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+						window.open("hRaumEdit.html", target = "_self");
+					} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
 						$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
 					} else {
 						$.mobile.changePage("hRaumEdit.html");
@@ -665,7 +671,10 @@ function erstelleNeuesProjekt() {
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			leereStorageProjektListe("mitLatLngListe");
 			//Vorsicht: Von hProjektEdit.html aus same page transition!
-			if ($("#RaumEditPage").length > 0) {
+			if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
+				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+				window.open("hProjektEdit.html", target = "_self");
+			} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
 				$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
 			} else {
 				$.mobile.changePage("hProjektEdit.html");
@@ -1049,7 +1058,8 @@ function initiiereInstallieren() {
 //Mitgeben: id des Projekts, Username
 function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	$('#AnhängehPE').hide();
+	//alert("jetzt wird AnhängehPE versteckt");
+	$('#AnhängehPE').hide().trigger('updatelayout');
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.ProjektId, {
 		success: function (Projekt) {
