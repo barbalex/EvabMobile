@@ -827,8 +827,7 @@ function initiiereBeobEdit_2() {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 			localStorage.BeobId = Beob._id;
 			localStorage.aArtGruppe = Beob.aArtGruppe;
-			aArtName = Beob.aArtName;
-			localStorage.aArtName = aArtName;
+			localStorage.aArtName = Beob.aArtName;
 			aArtId = Beob.aArtId;
 			localStorage.aArtId = aArtId;
 			localStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
@@ -1913,7 +1912,6 @@ function initiierehBeobEdit() {
 			localStorage.ZeitId = Beob.hZeitId;
 			localStorage.hBeobId = Beob._id;
 			localStorage.aArtGruppe = Beob.aArtGruppe;
-			aArtName = Beob.aArtName;
 			localStorage.aArtName = Beob.aArtName;
 			aArtId = Beob.aArtId;
 			localStorage.aArtId = Beob.aArtId;
@@ -1923,8 +1921,8 @@ function initiierehBeobEdit() {
 			$("#aArtGruppe").html("<option value='" + localStorage.aArtGruppe + "'>" + localStorage.aArtGruppe + "</option>");
 			$("#aArtGruppe").selectmenu("refresh");
 			$("#aArtName").selectmenu();
-			$("#aArtName").val(aArtName);
-			$("#aArtName").html("<option value='" + aArtName + "'>" + aArtName + "</option>");
+			$("#aArtName").val(localStorage.aArtName);
+			$("#aArtName").html("<option value='" + localStorage.aArtName + "'>" + localStorage.aArtName + "</option>");
 			$("#aArtName").selectmenu("refresh");
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
