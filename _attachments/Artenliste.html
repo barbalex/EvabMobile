@@ -53,18 +53,17 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
-					var ArtBezeichnung, ArtId;
+					var ArtBezeichnung;
 					event.preventDefault();
 					ArtBezeichnung = $(this).attr("ArtBezeichnung");
-					ArtId = $(this).attr("artid");
-					localStorage.aArtId = ArtId;
+					localStorage.aArtId = $(this).attr("artid");
 					if (localStorage.Status === "neu") {
-						speichereNeueBeob(ArtBezeichnung, ArtId);
+						speichereNeueBeob(ArtBezeichnung);
 					} else if (localStorage.Von === "ArtEdit") {
 						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
 						$.mobile.changePage("ArtEdit.html");
 					} else {
-						speichereBeobNeueArtgruppeArt(ArtBezeichnung, ArtId);
+						speichereBeobNeueArtgruppeArt(ArtBezeichnung);
 					}
 					delete localStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
 				});

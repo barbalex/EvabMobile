@@ -256,7 +256,7 @@ function speichereKoordinaten(id, Lagegenauigkeit) {
 	});
 }
 
-function speichereNeueBeob(aArtBezeichnung, ArtId) {
+function speichereNeueBeob(aArtBezeichnung) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //aufgerufen bloss von Artenliste.html
@@ -267,7 +267,7 @@ function speichereNeueBeob(aArtBezeichnung, ArtId) {
 	doc.aArtGruppe = localStorage.aArtGruppe;
 	delete localStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
-	doc.aArtId = ArtId;
+	doc.aArtId = localStorage.ArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	if (localStorage.Von === "hArtListe" || localStorage.Von === "hArtEdit") {
@@ -380,7 +380,7 @@ function speichereNeueBeob_03(doc) {
 
 //Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
 //erwartet localStorage.Von = von welchem Formular aufgerufen wurde
-function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
+function speichereBeobNeueArtgruppeArt(aArtName) {
 	var docId;
 	if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 		docId = localStorage.BeobId;
@@ -395,7 +395,7 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 				delete localStorage.aArtGruppe;
 			}
 			doc.aArtName = aArtName;
-			doc.aArtId = ArtId;
+			doc.aArtId = sessionStorage.ArtId;
 			$db.saveDoc(doc, {
 				success: function (data) {
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
@@ -828,8 +828,7 @@ function initiiereBeobEdit_2() {
 			localStorage.BeobId = Beob._id;
 			localStorage.aArtGruppe = Beob.aArtGruppe;
 			localStorage.aArtName = Beob.aArtName;
-			aArtId = Beob.aArtId;
-			localStorage.aArtId = aArtId;
+			localStorage.aArtId = Beob.aArtId;
 			localStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
 			localStorage.oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
 			localStorage.oLagegenauigkeit = Beob.oLagegenauigkeit || "";
@@ -1913,7 +1912,6 @@ function initiierehBeobEdit() {
 			localStorage.hBeobId = Beob._id;
 			localStorage.aArtGruppe = Beob.aArtGruppe;
 			localStorage.aArtName = Beob.aArtName;
-			aArtId = Beob.aArtId;
 			localStorage.aArtId = Beob.aArtId;
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
