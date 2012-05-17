@@ -1649,30 +1649,6 @@ function initiiereOrtEdit_2(Ort) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	//in neuen Datensätzen dynamisch erstellte Standardwerte speichern und verorten
-	/*if (localStorage.Status === "neu") {
-		$("#oName").focus();
-		Formularwerte = {};
-		Formularwerte = $("#hOrtEditForm").serializeObject();
-		//Werte aus dem Formular aktualisieren
-		for (i in Formularwerte) {
-			if (typeof i !== "function") {
-				if (Formularwerte[i]) {
-					Ort[i] = Formularwerte[i];
-				} else if (Ort[i]) {
-					delete Ort[i]
-				}
-			}
-		}
-		$db.saveDoc(Ort, {
-			success: function () {
-				GetGeolocation(Ort._id);
-				//Status zurücksetzen - es soll nur ein mal verortet werden
-				//Spät löschen, weil auch generiereHtmlFuerOrtEditForm damit arbeitet
-				setTimeout("delete localStorage.Status", 1000);
-			}
-		});
-	}*/
 	//zeigeAttachments nutzt die rev. Diese ist bei neuen Orten jetzt veraltet
 	//macht nichts: neue Orte haben noch keine attachments
 	zeigeAttachments(Ort, "hOE");
@@ -1716,7 +1692,8 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 				GetGeolocation(Ort._id);
 				//Status zurücksetzen - es soll nur ein mal verortet werden
 				//Spät löschen, weil auch generiereHtmlFuerOrtEditForm damit arbeitet
-				setTimeout("delete localStorage.Status", 1000);
+				//setTimeout("delete localStorage.Status", 1000);
+				delete localStorage.Status;
 			}
 		});
 	}
@@ -2463,7 +2440,8 @@ function warte(ms) {
 function GetGeolocation(docId) {
 	localStorage.docId = docId;
 	localStorage.VerortungImGang = true;
-	localStorage.VerortungErfolgreich = false;
+	localStorage.GrobVerortet = false;
+	localStorage.GenauVerortet = false;
 	watchID = null;
 	//Koordinaten zurücksetzen
 	delete localStorage.oXKoord;
@@ -2473,119 +2451,114 @@ function GetGeolocation(docId) {
 	delete localStorage.oLagegenauigkeit;
 	delete localStorage.oHoehe;
 	//dem Benutzer mitteilen, dass die Position ermittelt wird
-	//Felder nur ändern, wenn zuvor kein Wert enthalten war
-	//if (!$("input#oXKoord").val()) {
-	$("#oXKoord").val("Position ermitteln...");
+	
+	/*$("#oXKoord").val("Position ermitteln...");
 	$("#oYKoord").val("Position ermitteln...");
 	$("#oLongitudeDecDeg").val("Position ermitteln...");
 	$("#oLatitudeDecDeg").val("Position ermitteln...");
 	$("#oLagegenauigkeit").val("Position ermitteln...");
-	$("#oObergrenzeHöhe").val("Position ermitteln...");
-	//}
+	$("#oObergrenzeHöhe").val("Position ermitteln...");*/
+
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
+	VerortungMitteilen();
 	//nach spätestens 20 Sekunden aufhören zu messen
 	setTimeout("stopGeolocation()", 20000);
 	return watchID;
 }
 
+//solange kein Erfolg beschieden ist (Genauigkeit zu klein)
+//wird eine Mitteilung angezeigt
+function VerortungMitteilen() {
+	var Mitteilung = "Position ermitteln...";
+	if (localStorage.GrobVerortet === false) {
+		if ($("#oXKoord").val() === "Position ermitteln...") {
+			Mitteilung = "";
+		}
+		$("#oXKoord").val(Mitteilung);
+		$("#oYKoord").val(Mitteilung);
+		$("#oLongitudeDecDeg").val(Mitteilung);
+		$("#oLatitudeDecDeg").val(Mitteilung);
+		$("#oLagegenauigkeit").val(Mitteilung);
+		$("#oObergrenzeHöhe").val(Mitteilung);
+		setTimeout("VerortungMitteilen()", 1000);
+	}
+}
+
+function GeolocationAuslesen(position) {
+	var Höhe;
+	localStorage.oLagegenauigkeit = position.coords.accuracy;
+	localStorage.oLongitudeDecDeg = position.coords.longitude;
+	localStorage.oLatitudeDecDeg = position.coords.latitude;
+	localStorage.oXKoord = DdInChX(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
+	localStorage.oYKoord = DdInChY(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
+	$("#oXKoord").val(localStorage.oXKoord);
+	$("#oYKoord").val(localStorage.oYKoord);
+	$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
+	$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
+	$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
+	if (position.coords.altitude > 0) {
+		$("#oObergrenzeHöhe").val(position.coords.altitude);
+		localStorage.oObergrenzeHöhe = position.coords.altitude;
+	}
+	speichereKoordinaten(localStorage.docId, localStorage.oLagegenauigkeit);
+}
+
 //Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
-	var Höhe;
-	//Koordinaten nur behalten, wenn Mindestgenauigkeit erreicht ist
-	//und eine ev. zuvor erhaltene Genauigkeit unterschritten wird
-	localStorage.oLagegenauigkeit = position.coords.accuracy;
-	//if (oLagegenauigkeit < 100 && oLagegenauigkeit < $("#oLagegenauigkeit").val()) {
-	if (localStorage.oLagegenauigkeit < 100) {
-		localStorage.oLongitudeDecDeg = position.coords.longitude;
-		localStorage.oLatitudeDecDeg = position.coords.latitude;
-		Höhe = position.coords.altitude;
-		$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
-		localStorage.oXKoord = DdInChX(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
-		localStorage.oYKoord = DdInChY(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
-		$("#oXKoord").val(localStorage.oXKoord);
-		$("#oYKoord").val(localStorage.oYKoord);
-		$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-		$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-		if (Höhe > 0) {
-			$("#oObergrenzeHöhe").val(position.coords.altitude);
+	if (position.coords.accuracy < 100) {
+		localStorage.GrobVerortet = true;
+		GeolocationAuslesen(position);
+		if (position.coords.accuracy <= 5) {
+			localStorage.GenauVerortet = true;
+			stopGeolocation();
 		}
-		//stopGeolocation();
-		localStorage.VerortungErfolgreich = true;
-		speichereKoordinaten(localStorage.docId, localStorage.oLagegenauigkeit);
-		if (localStorage.oLagegenauigkeit > 30) {
-			melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
-		}
-
-	}
-	//Verortung abbrechen, wenn sehr genau
-	if (localStorage.oLagegenauigkeit < 5) {
-		
-		localStorage.VerortungErfolgreich = true;
-		stopGeolocation();
 	}
 }
 
 //Position ermitteln war nicht erfolgreich
 //onError Callback receives a PositionError object
 function onGeolocationError(error) {
+	localStorage.VerortungImGang = false;
 	melde("Keine Position erhalten\n" + error.message);
 	stopGeolocation();
 }
 
 //Beendet Ermittlung der Position
 function stopGeolocation() {
+	alert("stop Geolocation");
+	//Positionssuche beenden
 	navigator.geolocation.clearWatch(watchID);
 	watchID = null;
-	//verhindern, dass mehr als ein mal gespeichert wird
+	//verhindern, dass mehr als ein mal gespeichert wird, weil
+	//nach zwanzig Sekunden stopGeolocation nachmals aufgerufen wird
+	//darum nur, wenn Verortung im gang
 	if (localStorage.VerortungImGang === true) {
-		if (localStorage.VerortungErfolgreich === true) {
-			localStorage.oLagegenauigkeit = position.coords.accuracy;
-			localStorage.oLongitudeDecDeg = position.coords.longitude;
-			localStorage.oLatitudeDecDeg = position.coords.latitude;
-			localStorage.oHoehe = position.coords.altitude;
-			localStorage.oXKoord = DdInChX(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
-			localStorage.oYKoord = DdInChY(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
+		localStorage.VerortungImGang = false;
+		if (localStorage.GrobVerortet === true) {
+			if (localStorage.oLagegenauigkeit > 30) {
+				melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
+			}
 		} else {
 			melde("Keine genaue Position erhalten");
 		}
-		$("#oXKoord").val(localStorage.oXKoord);
-		$("#oYKoord").val(localStorage.oYKoord);
-		$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-		$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-		$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
-		$("#oObergrenzeHöhe").val(localStorage.oHoehe);
-		speichereKoordinaten(localStorage.docId, localStorage.oLagegenauigkeit);
+	} else if (localStorage.GrobVerortet === false) {
+		if ($("#oXKoord").val() === "Position ermitteln...") {
+			$("#oXKoord").val(localStorage.oXKoord);
+			$("#oYKoord").val(localStorage.oYKoord);
+			$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
+			$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
+			$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
+			melde("Keine genaue Position erhalten");
+		}
 	}
+	localStorage.VerortungImGang = false;
 	delete localStorage.docId;
-	delete localStorage.VerortungImGang;
-	delete localStorage.VerortungErfolgreich;
+	//verzögert löschen, damit sie noch da sind wenn der Übungsabbruch
+	//nach 20 Sekunden kommt
+	setTimeout("delete localStorage.VerortungImGang", 20000);
+	setTimeout("delete localStorage.GrobVerortet", 20000);
+	setTimeout("delete localStorage.GenauVerortet", 20000);
 }
-
-/*//Beendet Ermittlung der Position
-function stopGeolocation() {
-	//verhindern, dass mehr als ein mal gespeichert wird
-	if (localStorage.VerortungImGang === true) {
-		if (watchID !== null) {
-			navigator.geolocation.clearWatch(watchID);
-			watchID = null;
-			//Mitteilungen löschen
-			if ($("#oXKoord").val() === "Position ermitteln...") {
-				$("#oXKoord").val(localStorage.oXKoord);
-				$("#oYKoord").val(localStorage.oYKoord);
-				$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-				$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-				$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
-				melde("Keine genaue Position erhalten");
-			}
-		}
-		if (localStorage.VerortungErfolgreich === true) {
-			speichereKoordinaten(localStorage.docId, localStorage.oLagegenauigkeit);
-		}
-	}
-	delete localStorage.docId;
-	delete localStorage.VerortungImGang;
-	delete localStorage.VerortungErfolgreich;
-}*/
 
 function speichereLetzteUrl() {
 //damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
