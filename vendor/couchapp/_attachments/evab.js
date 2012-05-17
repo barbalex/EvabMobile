@@ -355,7 +355,6 @@ function speichereNeueBeob_03(doc) {
 			doc.aAutor = User.Autor;
 			$db.saveDoc(doc, {
 				success: function (data) {
-					BeobId = data.id;
 					if (doc.Typ === 'hArt') {
 						//Variabeln verfügbar machen
 						localStorage.hBeobId = data.id;
@@ -365,7 +364,6 @@ function speichereNeueBeob_03(doc) {
 						$.mobile.changePage("hArtEdit.html");
 					} else {
 						//Variabeln verfügbar machen
-						BeobId = data.id;
 						localStorage.BeobId = data.id;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
@@ -402,7 +400,6 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 				success: function (data) {
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 						//Variabeln verfügbar machen
-						BeobId = data.id;
 						localStorage.BeobId = data.id;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
@@ -828,8 +825,7 @@ function initiiereBeobEdit_2() {
 	$db.openDoc(localStorage.BeobId, {
 		success: function (Beob) {
 			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-			BeobId = Beob._id;
-			localStorage.BeobId = BeobId;
+			localStorage.BeobId = Beob._id;
 			aArtGruppe = Beob.aArtGruppe;
 			localStorage.aArtGruppe = aArtGruppe;
 			aArtName = Beob.aArtName;

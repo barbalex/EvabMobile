@@ -328,7 +328,6 @@
 							markers = [];
 							for (i in BeobListeLatLng.rows) {
 								beob = BeobListeLatLng.rows[i].doc;
-								var BeobId = beob._id;
 								var Datum = beob.zDatum;
 								var Zeit = beob.zUhrzeit;
 								var ArtGruppe = beob.aArtGruppe;
@@ -365,7 +364,7 @@
 									'<p>Autor: ' + Autor + '</p>'+
 									'<p>Datum: ' + Datum + '</p>'+
 									'<p>Zeit: ' + Zeit + '</p>'+
-									"<p><a <a href=\"#\" onclick=\"oeffneBeob('" + BeobId + "')\">bearbeiten<\/a></p>"+
+									"<p><a <a href=\"#\" onclick=\"oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>"+
 									'</div>'+
 									'</div>';
 								makeListener(map, marker, contentString);
