@@ -132,27 +132,70 @@
 				
 				//Code für den Projekt-Löschen-Dialog
 				$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', function (event) {
+					var that;
 					event.preventDefault();
-					$(this).simpledialog({
-						'mode' : 'bool',
-						'prompt' : 'Projekt sammt Räumen, Orten, Zeiten und Arten löschen?',
-						'forceInput': 'false',
-						'buttons' : {
-							'ja': {
-								click: function () {
-									$('#dialogoutput').text('ja');
-									löscheProjekt();
-								},
-								icon: "delete",
-								theme: "c"
-							},
-							'nein': {
-								click: function () {
-									$('#dialogoutput').text('nein');
-								}
+					that = this;
+					//Anzahl Räume des Projekts zählen
+					$db = $.couch.db("evab");
+					$db.view('evab/hRaumIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
+						success: function (data) {
+							var anzRaeume;
+							anzRaeume = 0;
+							if (data.rows.length > 0) {
+								anzRaeume = data.rows[0].value;
 							}
+							//Anzahl Orte des Projekts zählen
+							$db.view('evab/hOrtIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
+								success: function (data) {
+									var anzOrte;
+									anzOrte = 0;
+									if (data.rows.length > 0) {
+										anzOrte = data.rows[0].value;
+									}
+									//Anzahl Zeiten des Projekts zählen
+									$db.view('evab/hZeitIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
+										success: function (data) {
+											var anzZeiten;
+											anzZeiten = 0;
+											if (data.rows.length > 0) {
+												anzZeiten = data.rows[0].value;
+											}
+											//Anzahl Arten des Projekts zählen
+											$db.view('evab/hArtIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
+												success: function (data2) {
+													var anzArten;
+													anzArten = 0;
+													if (data2.rows.length > 0) {
+														anzArten = data2.rows[0].value;
+													}
+													$(that).simpledialog({
+														'mode' : 'bool',
+														'prompt' : 'Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
+														'forceInput': 'false',
+														'buttons' : {
+															'ja': {
+																click: function () {
+																	$('#dialogoutput').text('ja');
+																	löscheProjekt();
+																},
+																icon: "delete",
+																theme: "c"
+															},
+															'nein': {
+																click: function () {
+																	$('#dialogoutput').text('nein');
+																}
+															}
+														}
+													})
+												}
+											});
+										}
+									});
+								}
+							});
 						}
-					})
+					});
 				});
 
 				//Menu aufbauen
@@ -243,157 +286,83 @@
 				});
 
 				function löscheProjekt() {
-					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, RäumeGelöscht, Rückmeldung;
-					ArtenGelöscht = löscheArtenVonProjekt();
-					if (ArtenGelöscht === false) {
-						melde("Fehler: Zugehörige Arten nicht gelöscht");
-						return false;
-					} else {
-						Rückmeldung = "zugehörige Arten gelöscht";
-						ZeitenGelöscht = löscheZeitenVonProjekt();
-						if (ZeitenGelöscht === false) {
-							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
-							melde(Rückmeldung);
-							return false;
-						} else {
-							Rückmeldung += "\rzugehörige Zeiten gelöscht";
-							OrteGelöscht = löscheOrteVonProjekt();
-							if (OrteGelöscht === false) {
-								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
-								melde(Rückmeldung);
-								return false;
-							} else {
-								Rückmeldung += "\rzugehörige Orte gelöscht";
-								RäumeGelöscht = löscheRäumeVonProjekt();
-								if (RäumeGelöscht === false) {
-									Rückmeldung += "\rFehler: Zugehörige Räume nicht gelöscht";
-									melde(Rückmeldung);
-									return false;
-								} else {
-									Rückmeldung += "\rzugehörige Räume gelöscht";
-									$db = $.couch.db("evab");
-									return $db.openDoc(localStorage.ProjektId, {
-										success: function (document) {
-											// lösche Projekt
-											return $db.removeDoc(document, {
-												success: function () {
-													//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-													leereSessionStorageProjektEdit("mitLatLngListe");
-													leereSessionStorageProjektListe("mitLatLngListe");
-													//Rückmeldung += "\rProjekt gelöscht";
-													//melde(Rückmeldung);
-													$.mobile.changePage('hProjektListe.html');
-													return true;
+					var viewname;
+					//Zuerst die Arten löschen
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (hBeob) {
+							var hArtId, viewname2;
+							for (i in hBeob.rows) {
+								hArtId = hBeob.rows[i].key[1];
+								löscheDokument(hArtId);
+							}
+							//dann die Zeiten
+							viewname2 = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+							$db.view(viewname2, {
+								success: function (Zeiten) {
+									var ZeitId, viewname3;
+									for (i in Zeiten.rows) {
+										ZeitId = Zeiten.rows[i].key[1];
+										löscheDokument(ZeitId);
+									}
+									//dann die Orte
+									viewname3 = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+									$db.view(viewname3, {
+										success: function (Orte) {
+											var OrtId;
+											for (i in Orte.rows) {
+												OrtId = Orte.rows[i].key[1];
+												löscheDokument(OrtId);
+											}
+											//dann die Räume
+											var viewname4;
+											viewname4 = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+											$db.view(viewname4, {
+												success: function (Raeume) {
+													var RaumId;
+													for (i in Raeume.rows) {
+														RaumId = Raeume.rows[i].key[1];
+														löscheDokument(RaumId);
+													}
+													//zuletzt das Projekt
+													$db.openDoc(localStorage.ProjektId, {
+														success: function (document) {
+															$db.removeDoc(document, {
+																success: function () {
+																	//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+																	leereSessionStorageProjektEdit("mitLatLngListe");
+																	leereSessionStorageProjektListe("mitLatLngListe");
+																	$.mobile.changePage('hProjektListe.html');
+																	melde("alles gelöscht");
+																},
+																error: function () {
+																	melde("Fehler: Projekt nicht gelöscht");
+																}
+															});
+														},
+														error: function () {
+															melde("Fehler: Projekt nicht gelöscht");
+														}
+													});
 												},
 												error: function () {
-													Rückmeldung += "\rFehler: Projekt nicht gelöscht";
-													melde(Rückmeldung);
-													return false;
+													melde("Fehler: Räume und Projekt nicht gelöscht");
 												}
 											});
 										},
 										error: function () {
-											Rückmeldung += "\rFehler: Projekt nicht gelöscht";
-											melde(Rückmeldung);
-											return false;
+											melde("Fehler: Orte, Räume und Projekt nicht gelöscht");
 										}
 									});
+								},
+								error: function () {
+									melde("Fehler: Zeiten, Orte, Räume und Projekt nicht gelöscht");
 								}
-
-							}
-
-						}
-					}
-				}
-
-				//lösche alle einem Projekt zugeordneten Räume
-				function löscheRäumeVonProjekt() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, RaumId;
-							for (i in data.rows) {
-								RaumId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(RaumId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
+							});
 						},
 						error: function () {
-							return false;
-						}
-					});
-				}
-
-				//lösche alle einem Projekt zugeordneten Orte
-				function löscheOrteVonProjekt() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, OrtId;
-							for (i in data.rows) {
-								OrtId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(OrtId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
-						},
-						error: function () {
-							return false;
-						}
-					});
-				}	
-
-				//lösche alle einem Projekt zugeordneten Zeiten
-				function löscheZeitenVonProjekt() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, ZeitId;
-							for (i in data.rows) {
-								ZeitId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
-						},
-						error: function () {
-							return false;
-						}
-					});
-				}
-
-				//lösche alle einem Projekt zugeordneten Arten
-				function löscheArtenVonProjekt() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, ArtId;
-							for (i in data.rows) {
-								ArtId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
-						},
-						error: function () {
-							return false;
+							melde("Fehler: Nichts gelöscht");
 						}
 					});
 				}

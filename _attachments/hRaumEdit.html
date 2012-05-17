@@ -75,7 +75,7 @@
 		<div data-role="footer" id="hRaumEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" data-icon="plus" rid="NeuerRaumRaumEdit" class="ui-btn-active">neu</a></li>
+					<li><a href="#" data-icon="plus" id="NeuerRaumRaumEdit" class="ui-btn-active">neu</a></li>
 					<li><a href="#" id="LoescheRaumRaumEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
 					<li><a href="#" id="KarteOeffnenRaumEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderRaumEdit" data-icon="info">Felder</a></li>
@@ -137,7 +137,7 @@
 					var that;
 					event.preventDefault();
 					that = this;
-					//Anzahl Zeiten von Ort zählen
+					//Anzahl Orte des Raums zählen
 					$db = $.couch.db("evab");
 					$db.view('evab/hOrtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
 						success: function (data) {
@@ -146,6 +146,7 @@
 							if (data.rows.length > 0) {
 								anzOrte = data.rows[0].value;
 							}
+							//Anzahl Zeiten des Raums zählen
 							$db.view('evab/hZeitIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
 								success: function (data) {
 									var anzZeiten;
@@ -153,6 +154,7 @@
 									if (data.rows.length > 0) {
 										anzZeiten = data.rows[0].value;
 									}
+									//Anzahl Arten des Raums zählen
 									$db.view('evab/hArtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
 										success: function (data2) {
 											var anzArten;
