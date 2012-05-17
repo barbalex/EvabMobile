@@ -569,8 +569,7 @@ function erstelleNeuenOrt() {
 					$db.saveDoc(doc, {
 						success: function (data) {
 							//Variabeln verfügbar machen
-							OrtId = data.id;
-							localStorage.OrtId = OrtId;
+							localStorage.OrtId = data.id;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereStorageOrtListe("mitLatLngListe");
 							localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
@@ -1605,7 +1604,6 @@ function initiiereOrtEdit() {
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Ort.hProjektId;
 			localStorage.RaumId = Ort.hRaumId;
-			OrtId = Ort._id;
 			localStorage.OrtId = Ort._id;
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 			localStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg;
@@ -1764,7 +1762,6 @@ function initiiereZeitEdit() {
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Zeit.hProjektId;
 			localStorage.RaumId = Zeit.hRaumId;
-			OrtId = Zeit.hOrtId;
 			localStorage.OrtId = Zeit.hOrtId;
 			ZeitId = Zeit._id;
 			localStorage.ZeitId = Zeit._id;
@@ -1921,7 +1918,6 @@ function initiierehBeobEdit() {
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Beob.hProjektId;
 			localStorage.RaumId = Beob.hRaumId;
-			OrtId = Beob.hOrtId;
 			localStorage.OrtId = Beob.hOrtId;
 			ZeitId = Beob.hZeitId;
 			localStorage.ZeitId = Beob.hZeitId;

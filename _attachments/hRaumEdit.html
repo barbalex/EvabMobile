@@ -308,7 +308,7 @@
 									viewname3 = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 									$db.view(viewname3, {
 										success: function (Orte) {
-											var i, OrtId;
+											var OrtId;
 											for (i in Orte.rows) {
 												OrtId = Orte.rows[i].key[1];
 												löscheDokument(OrtId);
