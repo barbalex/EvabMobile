@@ -358,8 +358,7 @@ function speichereNeueBeob_03(doc) {
 					BeobId = data.id;
 					if (doc.Typ === 'hArt') {
 						//Variabeln verfügbar machen
-						hBeobId = data.id;
-						localStorage.hBeobId = hBeobId;
+						localStorage.hBeobId = data.id;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.hBeobListe;
 						delete localStorage.hBeobListe;
@@ -367,7 +366,7 @@ function speichereNeueBeob_03(doc) {
 					} else {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
-						localStorage.BeobId = BeobId;
+						localStorage.BeobId = data.id;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
@@ -404,14 +403,13 @@ function speichereBeobNeueArtgruppeArt(aArtName, ArtId) {
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 						//Variabeln verfügbar machen
 						BeobId = data.id;
-						localStorage.BeobId = BeobId;
+						localStorage.BeobId = data.id;
 						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					} else {
 						//Variabeln verfügbar machen
-						hBeobId = data.id;
-						localStorage.hBeobId = hBeobId;
+						localStorage.hBeobId = data.id;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						delete window.hBeobListe;
 						delete localStorage.hBeobListe;
@@ -1918,7 +1916,6 @@ function initiierehBeobEdit() {
 			localStorage.RaumId = Beob.hRaumId;
 			localStorage.OrtId = Beob.hOrtId;
 			localStorage.ZeitId = Beob.hZeitId;
-			hBeobId = Beob._id;
 			localStorage.hBeobId = Beob._id;
 			aArtGruppe = Beob.aArtGruppe;
 			localStorage.aArtGruppe = Beob.aArtGruppe;

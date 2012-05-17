@@ -410,10 +410,8 @@
 				}
 
 				function löscheBeobachtung() {
-					var docId;
-					docId = hBeobId;
 					$db = $.couch.db("evab");
-					$db.openDoc(docId, {
+					$db.openDoc(localStorage.hBeobId, {
 						success: function (document) {
 							$db.removeDoc(document, {
 								success: function () {
@@ -438,7 +436,7 @@
 				function speichern(Feldname, Feldwert) {
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
-					$db.openDoc(hBeobId, {
+					$db.openDoc(localStorage.hBeobId, {
 						success: function (hArt) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
