@@ -654,9 +654,6 @@ function erstelleNeuenRaum() {
 function erstelleNeuesProjekt() {
 	var hProjekt;
 	hProjekt = {};
-	if (!localStorage.Username) {
-		pruefeAnmeldung();
-	}
 	hProjekt.Typ = "hProjekt";
 	hProjekt.User = localStorage.Username;
 	$db = $.couch.db("evab");
@@ -3330,6 +3327,7 @@ function oeffneZuletztBenutzteSeite() {
 
 function leereStorageProjektListe(mitLatLngListe) {
 	delete localStorage.Projektliste;
+	delete window.Projektliste;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjektliste;
 		delete window.hOrteLatLngProjektliste;
