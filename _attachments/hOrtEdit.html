@@ -182,27 +182,48 @@
 
 				//Code für den Ort-Löschen-Dialog
 				$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
+					var anzZeiten, anzArten, that;
 					event.preventDefault();
-					$(this).simpledialog({
-						'mode' : 'bool',
-						'prompt' : 'Ort sammt Zeiten und Arten löschen?',
-						'forceInput': 'false',
-						'buttons' : {
-							'ja': {
-								click: function () {
-									$('#dialogoutput').text('ja');
-									löscheOrt();
-								},
-								icon: "delete",
-								theme: "c"
-							},
-							'nein': {
-								click: function () {
-									$('#dialogoutput').text('nein');
-								}
+					that = this;
+
+					//Anzahl Zeiten von Ort zählen
+					$db = $.couch.db("evab");
+					$db.view('evab/hZeitIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
+						success: function (data) {
+							anzZeiten = 0;
+							if (data.rows.length > 0) {
+								anzZeiten = data.rows[0].value;
 							}
+							$db.view('evab/hArtIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
+								success: function (data2) {
+									anzArten = 0;
+									if (data2.rows.length > 0) {
+										anzArten = data2.rows[0].value;
+									}
+									$(that).simpledialog({
+										'mode' : 'bool',
+										'prompt' : 'Ort sammt ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
+										'forceInput': 'false',
+										'buttons' : {
+											'ja': {
+												click: function () {
+													$('#dialogoutput').text('ja');
+													löscheOrt();
+												},
+												icon: "delete",
+												theme: "c"
+											},
+											'nein': {
+												click: function () {
+													$('#dialogoutput').text('nein');
+												}
+											}
+										}
+									})
+								}
+							});
 						}
-					})
+					});				
 				});
 
 				//Menu aufbauen
@@ -340,74 +361,35 @@
 				
 				//lösche alle einem Ort zugeordnete Arten
 				function löscheArtenVonOrt() {
-					var AnzArtenGelöscht, viewname;
+					var viewname;
 					AnzArtenGelöscht = 0;
 					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
-					return $db.view(viewname, {
+					$db.view(viewname, {
 						success: function (data) {
-							var i, ArtId, DokumentGelöscht;
+							var ArtId;
 							for (i in data.rows) {
 								ArtId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-								AnzArtenGelöscht += 1;
+								löscheDokument(ArtId);
 							}
-							return AnzArtenGelöscht;  //WIESO KLAPPT DAS NICHT?
-						},
-						error: function () {
-							return false;
 						}
 					});
 				}
 
 				//lösche alle einem Ort zugeordnete Zeiten
 				function löscheZeitenVonOrt() {
-					var AnzZeitenGelöscht, viewname;
-					AnzZeitenGelöscht = 0;
+					var viewname;
 					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
-					return $db.view(viewname, {
+					$db.view(viewname, {
 						success: function (data) {
-							var i, ZeitId, DokumentGelöscht;
+							var ZeitId;
 							for (i in data.rows) {
 								ZeitId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-								AnzZeitenGelöscht += 1;
+								löscheDokument(ZeitId);
 							}
-							return AnzZeitenGelöscht;	//WIESE KLAPPT DAS NICHT?
-						},
-						error: function () {
-							return false;
 						}
 					});
-				}
-
-				//zähle Anzahl Zeiten, die einem Ort zugewiesen sind
-				//und gib diesen Wert zurück
-				function AnzZeitenVonOrt() {	//momentan nicht im Gebrauch, da callbacks nicht im Griff
-					var viewname, AnzahlZeiten;
-					viewname = 'evab/hZeitIdVonOrtAnzahl?key="' + localStorage.OrtId + '"';
-					AnzahlZeiten = 0;
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i;
-							for (i in data.rows) {
-								AnzahlZeiten = data.rows[i].value;
-							}
-							return AnzahlZeiten;
-						},
-						error: function () {
-							return AnzahlZeiten;
-						}
-					});
-					return AnzahlZeiten;
 				}
 
 				function validatehOrtEdit() {

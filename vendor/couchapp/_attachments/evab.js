@@ -965,7 +965,8 @@ function initiiereBeobliste_2() {
 	anzBeob = BeobListe.rows.length;
 	ListItemContainer = "";
 
-	Titel2 = " Beobachtungen";   //Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	Titel2 = " Beobachtungen";
 	if (anzBeob === 1) {
 		Titel2 = " Beobachtung";
 	}
@@ -1410,11 +1411,11 @@ function initiiereProjektliste() {
 
 function initiiereProjektliste_2() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
-	anzProj = 0;
 	ListItemContainer = "";
 	anzProj = Projektliste.rows.length;
 
-	Titel2 = " Projekte";				//Im Titel der Seite die Anzahl Projekte anzeigen
+	//Im Titel der Seite die Anzahl Projekte anzeigen
+	Titel2 = " Projekte";
 	if (anzProj === 1) {
 		Titel2 = " Projekt";
 	}
@@ -1573,11 +1574,14 @@ function initiiereRaumListe_2() {
 	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
 	anzRaum = RaumListe.rows.length;
 	ListItemContainer = "";
-	Titel2 = " Räume";   //Im Titel der Seite die Anzahl Räume anzeigen
+
+	//Im Titel der Seite die Anzahl Räume anzeigen
+	Titel2 = " Räume";
 	if (anzRaum === 1) {
 		Titel2 = " Raum";
 	}
 	$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
+	
 	if (anzRaum === 0) {
 		ListItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
@@ -1759,7 +1763,9 @@ function initiiereOrtListe_2() {
 	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
 	anzOrt = OrtListe.rows.length;
 	ListItemContainer = "";
-	Titel2 = " Orte";	//Im Titel der Seite die Anzahl Orte anzeigen
+
+	//Im Titel der Seite die Anzahl Orte anzeigen
+	Titel2 = " Orte";
 	if (anzOrt === 1) {
 		Titel2 = " Ort";
 	}
@@ -1886,7 +1892,8 @@ function initiiereZeitListe_2() {
 	anzZeit = ZeitListe.rows.length;
 	ListItemContainer = "";
 
-	Titel2 = " Zeiten";  //Im Titel der Seite die Anzahl Zeiten anzeigen
+	//Im Titel der Seite die Anzahl Zeiten anzeigen
+	Titel2 = " Zeiten";
 	if (anzZeit === 1) {
 		Titel2 = " Zeit";
 	}
@@ -2098,7 +2105,8 @@ function initiierehBeobListe_2() {
 	anzArt = hBeobListe.rows.length;
 	ListItemContainer = "";
 
-	Titel2 = " Arten";   //Im Titel der Seite die Anzahl Arten anzeigen
+	//Im Titel der Seite die Anzahl Arten anzeigen
+	Titel2 = " Arten";
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
