@@ -382,6 +382,14 @@
 										speichereRaumfeldInArten(Feldname, Feldwert);
 										speichereRaumfeldInZeiten(Feldname, Feldwert);
 										speichereRaumfeldInOrten(Feldname, Feldwert);
+										//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Zuletzt gespeicherte RaumId NACH dem speichern setzen
+										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+										//darum zwischenspeichern
+										window.RaumIdZwischenspeicher = localStorage.RaumId;
+										setTimeout("window.ZuletztGespeicherteRaumId = window.RaumIdZwischenspeicher", 1000);
+										setTimeout("delete window.RaumIdZwischenspeicher", 1500);
 									},
 									error: function () {
 										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");

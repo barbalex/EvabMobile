@@ -3330,7 +3330,12 @@ function oeffneZuletztBenutzteSeite() {
 
 function leereSessionStorageProjektListe(mitLatLngListe) {
 	delete localStorage.Projektliste;
+	//delete window.ZuletztGespeicherteProjektId;
 	delete window.Projektliste;
+	delete window.ArtenVonProjekt;
+	delete window.ZeitenVonProjekt;
+	delete window.OrteVonProjekt;
+	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjektliste;
 		delete window.hOrteLatLngProjektliste;
@@ -3339,6 +3344,11 @@ function leereSessionStorageProjektListe(mitLatLngListe) {
 
 function leereSessionStorageProjektEdit(mitLatLngListe) {
 	delete localStorage.ProjektId;
+	//delete window.ZuletztGespeicherteProjektId;
+	delete window.ArtenVonProjekt;
+	delete window.ZeitenVonProjekt;
+	delete window.OrteVonProjekt;
+	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
@@ -3348,6 +3358,7 @@ function leereSessionStorageProjektEdit(mitLatLngListe) {
 function leereSessionStorageRaumListe(mitLatLngListe) {
 	delete localStorage.RaumListe;
 	delete window.RaumListe;
+	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
@@ -3365,6 +3376,7 @@ function leereSessionStorageRaumEdit(mitLatLngListe) {
 function leereSessionStorageOrtListe(mitLatLngListe) {
 	delete localStorage.OrtListe;
 	delete window.OrtListe;
+	delete window.OrteVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
@@ -3386,6 +3398,7 @@ function leereSessionStorageOrtEdit() {
 function leereSessionStorageZeitListe() {
 	delete localStorage.ZeitListe;
 	delete window.ZeitListe;
+	delete window.ZeitenVonProjekt;
 }
 
 function leereSessionStorageZeitEdit() {
@@ -3395,6 +3408,7 @@ function leereSessionStorageZeitEdit() {
 function leereSessionStoragehBeobListe() {
 	delete localStorage.hBeobListe;
 	delete window.hBeobListe;
+	delete window.ArtenVonProjekt;
 }
 
 function leereSessionStoragehBeobEdit() {

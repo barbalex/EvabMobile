@@ -400,6 +400,14 @@
 										speichereProjektfeldInZeiten(Feldname, Feldwert);
 										speichereProjektfeldInOrten(Feldname, Feldwert);
 										speichereProjektfeldInRäumen(Feldname, Feldwert);
+										//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
+										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+										//darum zwischenspeichern
+										window.ProjektIdZwischenspeicher = localStorage.ProjektId;
+										setTimeout("window.ZuletztGespeicherteProjektId = window.ProjektIdZwischenspeicher", 1000);
+										setTimeout("delete window.ProjektIdZwischenspeicher", 1500);
 									},
 									error: function () {
 										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -414,103 +422,175 @@
 				}
 
 				function speichereProjektfeldInArten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//ArtenVonProjekt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss.
+					//Wenn die ProjektId wechselt oder hBeob neu bzw. gelöscht werden, 
+					//muss ArtenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der sessionStorage-Verwaltung
+					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ArtenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
+						//Liste aus globaler Variable verwenden
+						speichereProjektfeldInArten_2(Feldname, Feldwert);
+					} else {
+						//Liste neu aus DB holen
+						viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonProjekt = data;
+								speichereProjektfeldInArten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInArten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in ArtenVonProjekt.rows) {
+						hArtId = ArtenVonProjekt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//ZeitenVonProjekt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss
+					//Wenn die ProjektId wechselt oder hZeit neu bzw. gelöscht werden, 
+					//muss ZeitenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
+					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.ZeitenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
+						//Liste aus globaler Variable verwenden
+						speichereProjektfeldInZeiten_2(Feldname, Feldwert);
+					} else {
+						//Liste aus der DB neu holen
+						viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonProjekt = data;
+								speichereProjektfeldInZeiten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInZeiten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in ZeitenVonProjekt.rows) {
+						hArtId = ZeitenVonProjekt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereProjektfeldInOrten(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//OrteVonProjekt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss
+					//Wenn die ProjektId wechselt oder hOrt neu bzw. gelöscht werden, 
+					//muss OrteVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
+					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.OrteVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
+						//Liste aus globaler Variable verwenden
+						speichereProjektfeldInOrten_2(Feldname, Feldwert);
+					} else {
+						//Liste aus der DB neu holen
+						viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.OrteVonProjekt = data;
+								speichereProjektfeldInOrten_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInOrten_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in OrteVonProjekt.rows) {
+						hArtId = OrteVonProjekt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
+					//RaeumeVonProjekt wird als globale Variable gespeichert
+					//damit die DB nicht jedes mal abgefragt werden muss
+					//Wenn die ProjektId wechselt oder hRaum neu bzw. gelöscht werden, 
+					//muss RaeumeVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
+					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
+					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+					//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 					var viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								$db.openDoc(hArtId, {
-									success: function (hArt) {
-										if (Feldwert) {
-											hArt[Feldname] = Feldwert;
-										} else if (hArt[Feldname]) {
-											delete hArt[Feldname];
-										}
-										$db.saveDoc(hArt);
-									}
-								});
+					if (window.RaeumeVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
+						//Liste aus globaler Variable verwenden
+						speichereProjektfeldInRäumen_2(Feldname, Feldwert);
+					} else {
+						//Liste aus der DB neu holen
+						viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.RaeumeVonProjekt = data;
+								speichereProjektfeldInRäumen_2(Feldname, Feldwert);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInRäumen_2(Feldname, Feldwert) {
+					//geändertes Ort-Feld in hArt anpassen
+					var hArtId;
+					for (i in RaeumeVonProjekt.rows) {
+						hArtId = RaeumeVonProjekt.rows[i].key[1];
+						$db.openDoc(hArtId, {
+							success: function (hArt) {
+								if (Feldwert) {
+									hArt[Feldname] = Feldwert;
+								} else if (hArt[Feldname]) {
+									delete hArt[Feldname];
+								}
+								$db.saveDoc(hArt);
+							}
+						});
+					}
 				}
 
 				//Menü aufbauen
