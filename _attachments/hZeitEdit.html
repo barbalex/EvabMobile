@@ -178,27 +178,40 @@
 
 				//Code für den Zeit-Löschen-Dialog
 				$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function (event) {
+					var that;
 					event.preventDefault();
-					$(this).simpledialog({
-						'mode' : 'bool',
-						'prompt' : 'Zeit sammt Arten löschen?',
-						'forceInput': 'false',
-						'buttons' : {
-							'ja': {
-								click: function () {
-									$('#dialogoutput').text('ja');
-									löscheZeit();
-								},
-								icon: "delete",
-								theme: "c"
-							},
-							'nein': {
-								click: function () {
-									$('#dialogoutput').text('nein');
-								}
+					that = this;
+					//Anzahl Zeiten von Ort zählen
+					$db = $.couch.db("evab");
+					$db.view('evab/hArtIdVonZeitAnzahl?key="' + localStorage.ZeitId + '"&reduce=true', {
+						success: function (data) {
+							var anzArten;
+							anzArten = 0;
+							if (data.rows.length > 0) {
+								anzArten = data.rows[0].value;
 							}
+							$(that).simpledialog({
+								'mode' : 'bool',
+								'prompt' : 'Zeit sammt ' + anzArten + ' Arten löschen?',
+								'forceInput': 'false',
+								'buttons' : {
+									'ja': {
+										click: function () {
+											$('#dialogoutput').text('ja');
+											löscheZeit();
+										},
+										icon: "delete",
+										theme: "c"
+									},
+									'nein': {
+										click: function () {
+											$('#dialogoutput').text('nein');
+										}
+									}
+								}
+							})
 						}
-					})
+					});
 				});
 
 				//Menu aufbauen
@@ -276,60 +289,41 @@
 				});
 
 				function löscheZeit() {
-					var Rückmeldung, ArtenGelöscht;
-					ArtenGelöscht = löscheArtenVonZeit();
-					if (ArtenGelöscht === false) {
-						melde("Fehler: zugehörige Arten nicht gelöscht");
-						return false;
-					} else {
-						Rückmeldung = "zugehörige Arten gelöscht";
-						// First open doc based on ID in order to get full document
-						$db = $.couch.db("evab");
-						$db.openDoc(localStorage.ZeitId, {
-							success: function (document) {
-								// Zeit löschen
-								$db.removeDoc(document, {
-									success: function () {
-										//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-										leereSessionStorageZeitListe();
-										leereSessionStorageZeitEdit();
-										$.mobile.changePage('hZeitListe.html');
-										return true;
-									},
-									error: function () {
-										Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
-										melde(Rückmeldung);
-										return false;
-									}
-								});
-							},
-							error: function () {
-								Rückmeldung += "<br>Fehler: Zeit nicht gelöscht";
-								melde(Rückmeldung);
-								return false;
-							}
-						});
-					}
-				}
-
-				//lösche alle einer Zeit zugeordnete Arten
-				function löscheArtenVonZeit() {
 					var viewname;
+					//zuerst Arten löschen
 					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var i, ArtId;
+							var hArtId;
 							for (i in data.rows) {
-								ArtId = data.rows[i].key[1];
-								löscheDokument(ArtId);
+								hArtId = data.rows[i].key[1];
+								löscheDokument(hArtId);
 							}
-							return true;
+							$db.openDoc(localStorage.ZeitId, {
+								success: function (document) {
+									$db.removeDoc(document, {
+										success: function () {
+											//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+											leereSessionStorageZeitListe();
+											leereSessionStorageZeitEdit();
+											$.mobile.changePage('hZeitListe.html');
+											melde("alles gelöscht");
+										},
+										error: function () {
+											melde("Fehler: Zeit nicht gelöscht");
+										}
+									});
+								},
+								error: function () {
+									melde("Fehler: Zeit nicht gelöscht");
+								}
+							});
 						},
 						error: function () {
-							return false;
+							melde("Fehler: Zeit sammt Arten nicht gelöscht");
 						}
-					});
+					});							
 				}
 
 				function validierehZeitEdit() {

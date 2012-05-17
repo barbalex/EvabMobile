@@ -182,20 +182,21 @@
 
 				//Code für den Ort-Löschen-Dialog
 				$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
-					var anzZeiten, anzArten, that;
+					var that;
 					event.preventDefault();
 					that = this;
-
 					//Anzahl Zeiten von Ort zählen
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
 						success: function (data) {
+							var anzZeiten;
 							anzZeiten = 0;
 							if (data.rows.length > 0) {
 								anzZeiten = data.rows[0].value;
 							}
 							$db.view('evab/hArtIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
 								success: function (data2) {
+									var anzArten;
 									anzArten = 0;
 									if (data2.rows.length > 0) {
 										anzArten = data2.rows[0].value;
@@ -307,87 +308,54 @@
 				});
 
 				function löscheOrt() {
-					var ArtenGelöscht, ZeitenGelöscht, Rückmeldung;
-					ArtenGelöscht = löscheArtenVonOrt();
-					if (ArtenGelöscht !== 0 && ArtenGelöscht === false) {
-						melde("Fehler: Zugehörige Arten nicht gelöscht");
-						return false;
-					} else {
-						if (ArtenGelöscht >= 0) {
-							Rückmeldung = ArtenGelöscht + " zugehörige Arten gelöscht";
-						} else {
-							Rückmeldung = "zugehörige Arten gelöscht";
-						}
-						ZeitenGelöscht = löscheZeitenVonOrt();
-						if (ZeitenGelöscht !== 0 && ZeitenGelöscht === false) {
-							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
-							melde(Rückmeldung);
-							return false;
-						} else {
-							if (ZeitenGelöscht >= 0) {
-								Rückmeldung += "\r" + ZeitenGelöscht + " zugehörige Zeiten gelöscht";
-							} else {
-								Rückmeldung += "\rzugehörige Zeiten gelöscht";
-							}
-							// First open doc based on ID in order to get full document
-							$db = $.couch.db("evab");
-							return $db.openDoc(localStorage.OrtId, {
-								success: function (document) {
-									// lösche Ort
-									return $db.removeDoc(document, {
-										success: function () {
-											//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-											leereSessionStorageOrtListe("mitLatLngListe")
-											leereSessionStorageOrtEdit("mitLatLngListe");
-											$.mobile.changePage('hOrtListe.html');
-											return true;
-										},
-										error: function () {
-											Rückmeldung += "\rFehler: Ort nicht gelöscht";
-											melde(Rückmeldung);
-											return false;
-										}
-									});
-								},
-								error: function () {
-									Rückmeldung += "\rFehler: Ort nicht gelöscht";
-									melde(Rückmeldung);
-									return false;
-								}
-							});
-						}
-					}
-				}
-				
-				//lösche alle einem Ort zugeordnete Arten
-				function löscheArtenVonOrt() {
+					//zuerst Arten löschen
 					var viewname;
-					AnzArtenGelöscht = 0;
 					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var ArtId;
+							var hArtId, viewname2;
 							for (i in data.rows) {
-								ArtId = data.rows[i].key[1];
-								löscheDokument(ArtId);
+								hArtId = data.rows[i].key[1];
+								löscheDokument(hArtId);
 							}
-						}
-					});
-				}
-
-				//lösche alle einem Ort zugeordnete Zeiten
-				function löscheZeitenVonOrt() {
-					var viewname;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var ZeitId;
-							for (i in data.rows) {
-								ZeitId = data.rows[i].key[1];
-								löscheDokument(ZeitId);
-							}
+							//dann die Zeiten löschen
+							viewname2 = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
+							$db.view(viewname2, {
+								success: function (data) {
+									var ZeitId;
+									for (i in data.rows) {
+										ZeitId = data.rows[i].key[1];
+										löscheDokument(ZeitId);
+									}
+									//zuletzt den Ort löschen
+									$db.openDoc(localStorage.OrtId, {
+										success: function (document) {
+											$db.removeDoc(document, {
+												success: function () {
+													//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+													leereSessionStorageOrtListe("mitLatLngListe")
+													leereSessionStorageOrtEdit("mitLatLngListe");
+													$.mobile.changePage('hOrtListe.html');
+													melde("alles gelöscht");
+												},
+												error: function () {
+													melde("Fehler: Der Ort wurde nicht gelöscht");
+												}
+											});
+										},
+										error: function () {
+											melde("Fehler: Der Ort wurde nicht gelöscht");
+										}
+									});
+								},
+								error: function () {
+									melde("Fehler: Zeiten und Ort wurden nicht gelöscht");
+								}
+							});
+						},
+						error: function () {
+							melde("Fehler: Es wurde nichts gelöscht");
 						}
 					});
 				}
