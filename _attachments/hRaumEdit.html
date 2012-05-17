@@ -134,27 +134,58 @@
 
 				//Code für den Raum-Löschen-Dialog
 				$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function (event) {
+					var that;
 					event.preventDefault();
-					$(this).simpledialog({
-						'mode' : 'bool',
-						'prompt' : 'Raum sammt Orten, Zeiten und Arten löschen?',
-						'forceInput': 'false',
-						'buttons' : {
-							'ja': {
-								click: function () {
-									$('#dialogoutput').text('ja');
-									löscheRaum();
-								},
-								icon: "delete",
-								theme: "c"
-							},
-							'nein': {
-								click: function () {
-									$('#dialogoutput').text('nein');
-								}
+					that = this;
+					//Anzahl Zeiten von Ort zählen
+					$db = $.couch.db("evab");
+					$db.view('evab/hOrtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
+						success: function (data) {
+							var anzOrte;
+							anzOrte = 0;
+							if (data.rows.length > 0) {
+								anzOrte = data.rows[0].value;
 							}
+							$db.view('evab/hZeitIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
+								success: function (data) {
+									var anzZeiten;
+									anzZeiten = 0;
+									if (data.rows.length > 0) {
+										anzZeiten = data.rows[0].value;
+									}
+									$db.view('evab/hArtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
+										success: function (data2) {
+											var anzArten;
+											anzArten = 0;
+											if (data2.rows.length > 0) {
+												anzArten = data2.rows[0].value;
+											}
+											$(that).simpledialog({
+												'mode' : 'bool',
+												'prompt' : 'Raum sammt ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
+												'forceInput': 'false',
+												'buttons' : {
+													'ja': {
+														click: function () {
+															$('#dialogoutput').text('ja');
+															löscheRaum();
+														},
+														icon: "delete",
+														theme: "c"
+													},
+													'nein': {
+														click: function () {
+															$('#dialogoutput').text('nein');
+														}
+													}
+												}
+											})
+										}
+									});
+								}
+							});
 						}
-					})
+					});
 				});
 
 				//Menu aufbauen
@@ -251,123 +282,68 @@
 				});
 			
 				function löscheRaum() {
-					var ArtenGelöscht, ZeitenGelöscht, OrteGelöscht, Rückmeldung;
-					ArtenGelöscht = löscheArtenVonRaum();
-					if (ArtenGelöscht === false) {
-						melde("Fehler: Zugehörige Arten nicht gelöscht");
-						return false;
-					} else {
-						Rückmeldung = "zugehörige Arten gelöscht";
-						ZeitenGelöscht = löscheZeitenVonRaum();
-						if (ZeitenGelöscht === false) {
-							Rückmeldung += "\rFehler: Zugehörige Zeiten nicht gelöscht";
-							melde(Rückmeldung);
-							return false;
-						} else {
-							Rückmeldung += "\rzugehörige Zeiten gelöscht";
-							OrteGelöscht = löscheOrteVonRaum();
-							if (OrteGelöscht === false) {
-								Rückmeldung += "\rFehler: Zugehörige Orte nicht gelöscht";
-								melde(Rückmeldung);
-								return false;
-							} else {
-								Rückmeldung += "\rzugehörige Orte gelöscht";
-								$db = $.couch.db("evab");
-								return $db.openDoc(localStorage.RaumId, {
-									success: function (document) {
-										// lösche Raum
-										return $db.removeDoc(document, {
-											success: function () {
-												//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-												leereSessionStorageRaumEdit("mitLatLngListe");
-												leereSessionStorageRaumListe("mitLatLngListe")
-												$.mobile.changePage('hRaumListe.html');
-												return true;
-											},
-											error: function () {
-												Rückmeldung += "\rFehler: Raum nicht gelöscht";
-												melde(Rückmeldung);
-												return false;
-											}
-										});
-									},
-									error: function () {
-										Rückmeldung += "\rFehler: Raum nicht gelöscht";
-										melde(Rückmeldung);
-										return false;
-									}
-								});
-							}
-
-						}
-					}
-				}
-
-				//lösche alle einem Raum zugeordnete Orte
-				function löscheOrteVonRaum() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, OrtId;
-							for (i in data.rows) {
-								OrtId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(OrtId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
-						},
-						error: function () {
-							return false;
-						}
-					});
-				}
-
-				//lösche alle einem Raum zugeordnete Zeiten
-				function löscheZeitenVonRaum() { 
-					var DokumentGelöscht, viewname;
-					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-					$db = $.couch.db("evab");
-					return $db.view(viewname, {
-						success: function (data) {
-							var i, ZeitId;
-							for (i in data.rows) {
-								ZeitId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ZeitId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
-							}
-							return true;
-						},
-						error: function () {
-							return false;
-						}
-					});
-				}
-
-				//lösche alle einem Raum zugeordnete Arten
-				function löscheArtenVonRaum() { 
-					var DokumentGelöscht, viewname;
+					//zuerst Arten löschen
+					var viewname;
 					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
 					$db = $.couch.db("evab");
-					return $db.view(viewname, {
+					$db.view(viewname, {
 						success: function (data) {
-							var i, ArtId;
+							var hArtId, viewname2;
 							for (i in data.rows) {
-								ArtId = data.rows[i].key[1];
-								DokumentGelöscht = löscheDokument(ArtId);
-								if (DokumentGelöscht === false) {
-									return false;
-								}
+								hArtId = data.rows[i].key[1];
+								löscheDokument(hArtId);
 							}
-							return true;
+							//dann Zeiten löschen
+							viewname2 = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+							$db.view(viewname2, {
+								success: function (Zeiten) {
+									var ZeitId, viewname3
+									for (i in Zeiten.rows) {
+										ZeitId = Zeiten.rows[i].key[1];
+										löscheDokument(ZeitId);
+									}
+									//dann Orte löschen
+									viewname3 = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+									$db.view(viewname3, {
+										success: function (Orte) {
+											var i, OrtId;
+											for (i in Orte.rows) {
+												OrtId = Orte.rows[i].key[1];
+												löscheDokument(OrtId);
+											}
+											//zuletzt den Raum löschen
+											$db.openDoc(localStorage.RaumId, {
+												success: function (document) {
+													$db.removeDoc(document, {
+														success: function () {
+															//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+															leereSessionStorageRaumEdit("mitLatLngListe");
+															leereSessionStorageRaumListe("mitLatLngListe")
+															$.mobile.changePage('hRaumListe.html');
+															melde("alles gelöscht");
+														},
+														error: function () {
+															melde("Fehler: Ort nicht gelöscht");
+														}
+													});
+												},
+												error: function () {
+													melde("Fehler: Ort nicht gelöscht");
+												}
+											});
+										},
+										error: function () {
+											melde("Fehler: Orte und Raum nicht gelöscht");
+										}
+									});
+								},
+								error: function () {
+									melde("Fehler:: Zeiten, Orte und Raum nicht gelöscht");
+								}
+							});
 						},
 						error: function () {
-							return false;
+							melde("Fehler: Nichts gelöscht");
 						}
 					});
 				}

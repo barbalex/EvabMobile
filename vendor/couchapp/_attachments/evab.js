@@ -511,7 +511,12 @@ function erstelleNeueZeit() {
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 									delete window.ZeitListe;
 									delete localStorage.ZeitListe;
-									$.mobile.changePage("hZeitEdit.html");
+									//Vorsicht: Von hZeitEdit.html aus samepage transition!
+									if ($("#ZeitEditPage").length > 0) {
+										$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
+									} else {
+										$.mobile.changePage("hZeitEdit.html");
+									}
 								},
 								error: function () {
 									melde("Fehler: neue Zeit nicht erstellt");
@@ -574,8 +579,13 @@ function erstelleNeuenOrt() {
 							localStorage.OrtId = OrtId;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereSessionStorageOrtListe("mitLatLngListe");
-							localStorage.Status = "neu";	//das löst bei pageshow die Verortung aus
-							$.mobile.changePage("hOrtEdit.html");
+							localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
+							//Vorsicht: Von hOrtEdit.html aus samepage transition!
+							if ($("#OrtEditPage").length > 0) {
+								$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
+							} else {
+								$.mobile.changePage("hOrtEdit.html");
+							}
 						},
 						error: function () {
 							melde("Fehler: neuer Ort nicht erstellt");
@@ -623,7 +633,12 @@ function erstelleNeuenRaum() {
 					localStorage.Status = "neu";
 					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereSessionStorageRaumListe("mitLatLngListe");
-					$.mobile.changePage("hRaumEdit.html");
+					//Vorsicht: Von hRaumEdit.html aus same page transition!
+					if ($("#RaumEditPage").length > 0) {
+						$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
+					} else {
+						$.mobile.changePage("hRaumEdit.html");
+					}
 				},
 				error: function () {
 					melde("Fehler: neuer Raum nicht erstellt");
@@ -652,7 +667,12 @@ function erstelleNeuesProjekt() {
 			localStorage.Status = "neu";
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			leereSessionStorageProjektListe("mitLatLngListe");
-			$.mobile.changePage("hProjektEdit.html");
+			//Vorsicht: Von hProjektEdit.html aus same page transition!
+			if ($("#RaumEditPage").length > 0) {
+				$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
+			} else {
+				$.mobile.changePage("hProjektEdit.html");
+			}
 		},
 		error: function () {
 			melde("Fehler: neues Projekt nicht erstellt");
@@ -1455,7 +1475,7 @@ function initiiereRaumEdit() {
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Raum.hProjektId;
 			RaumId = Raum._id;
-			localStorage.RaumId = RaumId;
+			localStorage.RaumId = Raum._id;
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlisteRaumEdit) {
@@ -1616,9 +1636,9 @@ function initiiereOrtEdit() {
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Ort.hProjektId;
 			RaumId = Ort.hRaumId;
-			localStorage.RaumId = RaumId;
+			localStorage.RaumId = Ort.hRaumId;
 			OrtId = Ort._id;
-			localStorage.OrtId = OrtId;
+			localStorage.OrtId = Ort._id;
 			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 			localStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg;
 			localStorage.oLatitudeDecDeg = Ort.oLatitudeDecDeg;
@@ -2843,7 +2863,7 @@ function neuesFeld() {
 			localStorage.Feld = JSON.stringify(data);
 			//Feldliste soll neu aufgebaut werden
 			leereSessionStorageFeldListe();
-			$.mobile.changePage("FeldEdit.html");
+			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
