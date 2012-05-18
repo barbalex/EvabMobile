@@ -2359,13 +2359,18 @@ function warte(ms) {
 } 
 
 //verorted mit Hilfe aller Methoden
+//wird benutzt von BeobEdit.html und hOrtEdit.html
 //erwartet die docId, um am Ende der Verortung die neuen Koordinaten zu speichern
 function GetGeolocation(docId) {
+	//benötigte Variabeln setzen
 	localStorage.docId = docId;
-	localStorage.VerortungImGang = true;
-	localStorage.GrobVerortet = false;
-	localStorage.GenauVerortet = false;
+	localStorage.VerortungAbgeschlossen = "false";
+	localStorage.NavbarVerortungAnimieren = "true";
+	localStorage.GrobVerortet = "false";
 	watchID = null;
+	//dem Benutzer mitteilen, dass die Position ermittelt wird
+	VerortungMitteilen();
+	NavbarVerortungAnimieren();
 	//Koordinaten zurücksetzen
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
@@ -2373,27 +2378,20 @@ function GetGeolocation(docId) {
 	delete localStorage.oLatitudeDecDeg;
 	delete localStorage.oLagegenauigkeit;
 	delete localStorage.oHoehe;
-	//dem Benutzer mitteilen, dass die Position ermittelt wird
-	
-	/*$("#oXKoord").val("Position ermitteln...");
-	$("#oYKoord").val("Position ermitteln...");
-	$("#oLongitudeDecDeg").val("Position ermitteln...");
-	$("#oLatitudeDecDeg").val("Position ermitteln...");
-	$("#oLagegenauigkeit").val("Position ermitteln...");
-	$("#oObergrenzeHöhe").val("Position ermitteln...");*/
-
+	//Mit der Verortung beginnen
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
-	VerortungMitteilen();
-	//nach spätestens 20 Sekunden aufhören zu messen
+	//nach spätestens 20 Sekunden aufhören
 	setTimeout("stopGeolocation()", 20000);
 	return watchID;
 }
 
 //solange kein Erfolg beschieden ist (Genauigkeit zu klein)
 //wird eine Mitteilung angezeigt
+//diese wird jede Sekunde ein- und ausgeblendet
 function VerortungMitteilen() {
-	var Mitteilung = "Position ermitteln...";
-	if (localStorage.GrobVerortet === false) {
+	var Mitteilung;
+	if (localStorage.GrobVerortet === "false") {
+		Mitteilung = "Position ermitteln...";
 		if ($("#oXKoord").val() === "Position ermitteln...") {
 			Mitteilung = "";
 		}
@@ -2407,33 +2405,48 @@ function VerortungMitteilen() {
 	}
 }
 
+function NavbarVerortungAnimieren() {
+	if (localStorage.NavbarVerortungAnimieren && localStorage.NavbarVerortungAnimieren === "true") {
+		$(".neu").removeClass("ui-btn-active");
+		$(".verorten").addClass("ui-btn-active").fadeToggle("slow");
+		setTimeout("NavbarVerortungAnimieren()", 1000);
+	} else {
+		$(".verorten").removeClass("ui-btn-active").fadeIn("slow");
+		$(".neu").addClass("ui-btn-active");
+	}
+}
+
 function GeolocationAuslesen(position) {
-	var Höhe;
-	localStorage.oLagegenauigkeit = position.coords.accuracy;
+	localStorage.oLagegenauigkeit = Math.floor(position.coords.accuracy);
 	localStorage.oLongitudeDecDeg = position.coords.longitude;
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
-	localStorage.oXKoord = DdInChX(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
-	localStorage.oYKoord = DdInChY(localStorage.oLatitudeDecDeg, localStorage.oLongitudeDecDeg);
+	localStorage.oXKoord = DdInChX(position.coords.latitude, position.coords.longitude);
+	localStorage.oYKoord = DdInChY(position.coords.latitude, position.coords.longitude);
 	$("#oXKoord").val(localStorage.oXKoord);
 	$("#oYKoord").val(localStorage.oYKoord);
-	$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-	$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-	$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
+	$("#oLongitudeDecDeg").val(position.coords.longitude);
+	$("#oLatitudeDecDeg").val(position.coords.latitude);
+	$("#oLagegenauigkeit").val(position.coords.accuracy);
 	if (position.coords.altitude > 0) {
 		$("#oObergrenzeHöhe").val(position.coords.altitude);
-		localStorage.oObergrenzeHöhe = position.coords.altitude;
+		localStorage.oHoehe = position.coords.altitude;
 	}
 	speichereKoordinaten(localStorage.docId);
 }
 
 //Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
-	if (position.coords.accuracy < 100) {
-		localStorage.GrobVerortet = true;
-		GeolocationAuslesen(position);
-		if (position.coords.accuracy <= 5) {
-			localStorage.GenauVerortet = true;
-			stopGeolocation();
+	//nur erste Position akzeptieren oder solche, die genauer sind als vorige
+	if (!localStorage.oLagegenauigkeit || position.coords.accuracy < localStorage.oLagegenauigkeit) {
+		//alert("1");
+		if (position.coords.accuracy < 100) {
+			//alert("Genauigkeit unter 100m");
+			localStorage.GrobVerortet = true;
+			GeolocationAuslesen(position);
+			if (position.coords.accuracy <= 5) {
+				localStorage.VerortungAbgeschlossen = "true";
+				stopGeolocation();
+			}
 		}
 	}
 }
@@ -2441,7 +2454,6 @@ function onGeolocationSuccess(position) {
 //Position ermitteln war nicht erfolgreich
 //onError Callback receives a PositionError object
 function onGeolocationError(error) {
-	localStorage.VerortungImGang = false;
 	melde("Keine Position erhalten\n" + error.message);
 	stopGeolocation();
 }
@@ -2449,37 +2461,39 @@ function onGeolocationError(error) {
 //Beendet Ermittlung der Position
 function stopGeolocation() {
 	//Positionssuche beenden
+	//wenn keine watchID mehr, wurde sie schon beendet
+	if (localStorage.VerortungAbgeschlossen === "false") {
+		setTimeout("delete localStorage.VerortungAbgeschlossen", 25000);
+		//alert("yeah, Verortung wird abgeschlossen!");
+		beendePositionsermittlung();
+		delete localStorage.NavbarVerortungAnimieren;
+		if (localStorage.oLagegenauigkeit > 30) {
+			melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
+		} else if (!localStorage.oLagegenauigkeit) {
+			//Felder leeren
+			$("#oXKoord").val("");
+			$("#oYKoord").val("");
+			$("#oLongitudeDecDeg").val("");
+			$("#oLatitudeDecDeg").val("");
+			$("#oLagegenauigkeit").val("");
+			//Diesen neuen Stand speichern
+			speichereKoordinaten(localStorage.docId);
+			//Leerwerte speichern
+			melde("Keine genaue Position erhalten");
+		}
+		//Variabeln aufräumen
+		delete localStorage.docId;
+		delete localStorage.GrobVerortet;
+	} else {
+		//damit die Animation der Navbar aufhört
+		delete localStorage.NavbarVerortungAnimieren;
+	}
+}
+
+//separat, damit auch beim Datensatzwechsel möglich
+function beendePositionsermittlung() {
 	navigator.geolocation.clearWatch(watchID);
 	watchID = null;
-	//verhindern, dass mehr als ein mal gespeichert wird, weil
-	//nach zwanzig Sekunden stopGeolocation nachmals aufgerufen wird
-	//darum nur, wenn Verortung im gang
-	if (localStorage.VerortungImGang === true) {
-		localStorage.VerortungImGang = false;
-		if (localStorage.GrobVerortet === true) {
-			if (localStorage.oLagegenauigkeit > 30) {
-				melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
-			}
-		} else {
-			melde("Keine genaue Position erhalten");
-		}
-	} else if (localStorage.GrobVerortet === false) {
-		if ($("#oXKoord").val() === "Position ermitteln...") {
-			$("#oXKoord").val(localStorage.oXKoord);
-			$("#oYKoord").val(localStorage.oYKoord);
-			$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-			$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-			$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
-			melde("Keine genaue Position erhalten");
-		}
-	}
-	localStorage.VerortungImGang = false;
-	delete localStorage.docId;
-	//verzögert löschen, damit sie noch da sind wenn der Übungsabbruch
-	//nach 20 Sekunden kommt
-	setTimeout("delete localStorage.VerortungImGang", 20000);
-	setTimeout("delete localStorage.GrobVerortet", 20000);
-	setTimeout("delete localStorage.GenauVerortet", 20000);
 }
 
 //damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen

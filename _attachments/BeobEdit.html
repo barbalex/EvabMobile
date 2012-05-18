@@ -101,9 +101,9 @@
 		<div data-role="footer" id="BeobEditFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar" id="BeobEditPageFooterNavbar">
 				<ul>
-					<li><a href="#" id="NeueBeobBeobEdit" data-icon="plus" class="ui-btn-active">neu</a></li>					
+					<li><a href="#" id="NeueBeobBeobEdit" class="neu" data-icon="plus" class="ui-btn-active">neu</a></li>					
 					<li><a href="#" id="LoescheBeobBeobEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="verorteBeobBeobEdit" data-icon="evab-location">verorten</a></li>						
+					<li><a href="#" id="verorteBeobBeobEdit" class="verorten" data-icon="evab-location">verorten</a></li>						
 					<li><a href="#" id="OeffneKarteBeobEdit" data-icon="mappin">Karte</a></li>
 					<li><a href="#" id="waehleFelderBeobEdit" data-icon="info">Felder</a></li>
 				</ul>
@@ -113,6 +113,10 @@
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function () {
 				initiiereBeobEdit();
+			});
+
+			$("#BeobEditPage").on("pagehide", function () {
+				beendePositionsermittlung();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {

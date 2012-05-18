@@ -94,6 +94,10 @@
 				initiierehBeobEdit();
 			});
 
+			$("#hArtEditPage").on("pagehide", function () {
+				beendePositionsermittlung();
+			});
+
 			$("#hArtEditPage").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
