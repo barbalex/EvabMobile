@@ -1875,7 +1875,7 @@ function initiierehBeobEdit() {
 	//die dynamischen Felder aufgebaut
 	//und die Nav-Links gesetzt
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#AnhängehAE').hide();
+	//$('#AnhängehAE').hide();
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.hBeobId, {
 		success: function (Beob) {
@@ -1901,10 +1901,10 @@ function initiierehBeobEdit() {
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlistehBeobEdit) {
-				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
+				erstelleDynamischeFelderhArtEdit(Beob);
 			} else if (localStorage.FeldlistehBeobEdit) {
 				FeldlistehBeobEdit = JSON.parse(localStorage.FeldlistehBeobEdit);
-				erstelleDynamischeFelderhArtEdit(FeldlistehBeobEdit, Beob);
+				erstelleDynamischeFelderhArtEdit(Beob);
 			} else {
 				//Feldliste aus der DB holen
 				//das dauert länger - hinweisen
