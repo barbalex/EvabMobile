@@ -1363,7 +1363,7 @@ function initiiereProjektliste() {
 function initiiereProjektliste_2() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
 	ListItemContainer = "";
-	anzProj = Projektliste.rows.length || 0;
+	anzProj = Projektliste.rows.length;
 
 	//Im Titel der Seite die Anzahl Projekte anzeigen
 	Titel2 = " Projekte";
@@ -3081,9 +3081,27 @@ function oeffneZuletztBenutzteSeite() {
 	$.mobile.changePage(LetzteUrl);
 }
 
-//die nachfolgenden funktionen bereinigen die localStorage
+//die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
 //sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
 //mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
+
+function leereAlleVariabeln() {
+	localStorage.clear();
+	leereStorageProjektListe("mitLatLngListe");
+	leereStorageProjektEdit("mitLatLngListe");
+	leereStorageRaumListe("mitLatLngListe");
+	leereStorageRaumEdit("mitLatLngListe");
+	leereStorageOrtListe("mitLatLngListe");
+	leereStorageOrtEdit();
+	leereStorageZeitListe();
+	leereStorageZeitEdit();
+	leereStoragehBeobListe();
+	leereStoragehBeobEdit();
+	leereStorageBeobListe();
+	leereStorageBeobEdit();
+	leereStorageFeldListe();
+	leereStorageFeldEdit();
+}
 
 function leereStorageProjektListe(mitLatLngListe) {
 	delete localStorage.Projektliste;

@@ -92,7 +92,7 @@
 					//Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
 					window.Datenverwendung = "JaAber";
 					//sicherstellen, dass nichts vom letzten User übrig bleibt
-					localStorage.clear();
+					leereAlleVariabeln();
 				});
 				$(":jqmData(role='page')").on("pageinit", function () {
 					$("#SignupFooter").on("click", "#SubmitButton", function (event) {

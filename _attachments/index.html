@@ -73,10 +73,9 @@
 							if (localStorage.UserId && localStorage.ArtenSprache && localStorage.Autor) {
 								oeffneZuletztBenutzteSeite();
 							} else {
+								//Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
 								stelleUserDatenBereit();
 							}
-						} else if (localStorage.UserStatus === "neu") {
-							localStorage.clear();
 						}
 					}
 				}
@@ -123,6 +122,8 @@
 	
 				function meldeUserAn() {
 					var UserName, Passwort;
+					//sicherstellen, dass die localStorage leer ist
+					leereAlleVariabeln();
 					UserName = $('input[name=UserName]').val();
 					Passwort = $('input[name=Passwort]').val();
 					if (validiereUserIndex) {
