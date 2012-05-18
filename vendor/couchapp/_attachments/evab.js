@@ -243,7 +243,7 @@ function speichereNeueBeob(aArtBezeichnung) {
 	doc.aArtGruppe = localStorage.aArtGruppe;
 	delete localStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
-	doc.aArtId = localStorage.ArtId;
+	doc.aArtId = localStorage.aArtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
 	if (localStorage.Von === "hArtListe" || localStorage.Von === "hArtEdit") {
@@ -252,6 +252,7 @@ function speichereNeueBeob(aArtBezeichnung) {
 		doc.hRaumId = localStorage.RaumId;
 		doc.hOrtId = localStorage.OrtId;
 		doc.hZeitId = localStorage.ZeitId;
+		doc.aArtId = localStorage.aArtId;
 		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
 		speichereNeueBeob_02(doc);
 	} else {
@@ -688,11 +689,11 @@ function löscheDokument(DocId) {
 
 //generiert in ArtEdit.html dynamisch das collapsible set mit den Feldlisten
 //Mitgeben: id der Art, Username, Artgruppe
-function initiiereArtEdit(ArtId) {
+function initiiereArtEdit() {
 	$("#ArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 	//holt die Art aus der DB
 	$db = $.couch.db("evab");
-	$db.openDoc(ArtId, {
+	$db.openDoc(localStorage.aArtId, {
 		success: function (Art) {
 			var HtmlContainer;
 			//diese Variabeln werden in ArtEdit.html gebraucht
@@ -776,7 +777,7 @@ function generiereHtmlFuerReadOnlyListZeile(Feldname, Feldwert) {
 //wird aufgerufen von BeobEdit.html und Felder_Beob.html
 function initiiereBeobEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	$('#AnhängeBE').hide();
+	//$('#AnhängeBE').hide();
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteBeobEdit) {
@@ -2364,12 +2365,13 @@ function warte(ms) {
 function GetGeolocation(docId) {
 	//benötigte Variabeln setzen
 	localStorage.docId = docId;
+	//Zweck: Wenn nach 20 Sekunden stopGeolocation wirkt,
+	//weiss diese Variable, ob in der Zwischenzeit die Verortung abgeschlossen wurde
+	//und meldet nicht nochmals, dass z.B. keine Position erhalten wurde...
 	localStorage.VerortungAbgeschlossen = "false";
+	//Zweck: Genau solange animieren, wie verortet wird
 	localStorage.NavbarVerortungAnimieren = "true";
-	localStorage.GrobVerortet = "false";
-	watchID = null;
-	//dem Benutzer mitteilen, dass die Position ermittelt wird
-	VerortungMitteilen();
+	//dem Benutzer zeigen, dass verortet wird
 	NavbarVerortungAnimieren();
 	//Koordinaten zurücksetzen
 	delete localStorage.oXKoord;
@@ -2379,32 +2381,15 @@ function GetGeolocation(docId) {
 	delete localStorage.oLagegenauigkeit;
 	delete localStorage.oHoehe;
 	//Mit der Verortung beginnen
+	watchID = null;
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
 	//nach spätestens 20 Sekunden aufhören
 	setTimeout("stopGeolocation()", 20000);
 	return watchID;
 }
 
-//solange kein Erfolg beschieden ist (Genauigkeit zu klein)
-//wird eine Mitteilung angezeigt
-//diese wird jede Sekunde ein- und ausgeblendet
-function VerortungMitteilen() {
-	var Mitteilung;
-	if (localStorage.GrobVerortet === "false") {
-		Mitteilung = "Position ermitteln...";
-		if ($("#oXKoord").val() === "Position ermitteln...") {
-			Mitteilung = "";
-		}
-		$("#oXKoord").val(Mitteilung);
-		$("#oYKoord").val(Mitteilung);
-		$("#oLongitudeDecDeg").val(Mitteilung);
-		$("#oLatitudeDecDeg").val(Mitteilung);
-		$("#oLagegenauigkeit").val(Mitteilung);
-		$("#oObergrenzeHöhe").val(Mitteilung);
-		setTimeout("VerortungMitteilen()", 1000);
-	}
-}
-
+//solange verortet wird, 
+//wird die Verortung in der Navbar jede Sekunde ein- und ausgeblendet
 function NavbarVerortungAnimieren() {
 	if (localStorage.NavbarVerortungAnimieren && localStorage.NavbarVerortungAnimieren === "true") {
 		$(".neu").removeClass("ui-btn-active");
@@ -2412,7 +2397,7 @@ function NavbarVerortungAnimieren() {
 		setTimeout("NavbarVerortungAnimieren()", 1000);
 	} else {
 		$(".verorten").removeClass("ui-btn-active").fadeIn("slow");
-		$(".neu").addClass("ui-btn-active");
+		//$(".neu").addClass("ui-btn-active");
 	}
 }
 
@@ -2441,7 +2426,6 @@ function onGeolocationSuccess(position) {
 		//alert("1");
 		if (position.coords.accuracy < 100) {
 			//alert("Genauigkeit unter 100m");
-			localStorage.GrobVerortet = true;
 			GeolocationAuslesen(position);
 			if (position.coords.accuracy <= 5) {
 				localStorage.VerortungAbgeschlossen = "true";
@@ -2464,9 +2448,12 @@ function stopGeolocation() {
 	//wenn keine watchID mehr, wurde sie schon beendet
 	if (localStorage.VerortungAbgeschlossen === "false") {
 		setTimeout("delete localStorage.VerortungAbgeschlossen", 25000);
-		//alert("yeah, Verortung wird abgeschlossen!");
+		//beendePositionsermittlung ist ausgelagert, damit es auch
+		//von den beiden Seiten aufgerufen werden kann, wenn sie hiden
 		beendePositionsermittlung();
+		//Animation beenden
 		delete localStorage.NavbarVerortungAnimieren;
+		//auf den Erfolg reagieren
 		if (localStorage.oLagegenauigkeit > 30) {
 			melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
 		} else if (!localStorage.oLagegenauigkeit) {
@@ -2476,14 +2463,12 @@ function stopGeolocation() {
 			$("#oLongitudeDecDeg").val("");
 			$("#oLatitudeDecDeg").val("");
 			$("#oLagegenauigkeit").val("");
-			//Diesen neuen Stand speichern
+			//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
 			speichereKoordinaten(localStorage.docId);
-			//Leerwerte speichern
 			melde("Keine genaue Position erhalten");
 		}
-		//Variabeln aufräumen
+		//Variablen aufräumen
 		delete localStorage.docId;
-		delete localStorage.GrobVerortet;
 	} else {
 		//damit die Animation der Navbar aufhört
 		delete localStorage.NavbarVerortungAnimieren;
@@ -2492,8 +2477,11 @@ function stopGeolocation() {
 
 //separat, damit auch beim Datensatzwechsel möglich
 function beendePositionsermittlung() {
-	navigator.geolocation.clearWatch(watchID);
-	watchID = null;
+	//Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
+	if (typeof watchID !== "undefined") {
+		navigator.geolocation.clearWatch(watchID);
+		watchID = null;
+	}
 }
 
 //damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
