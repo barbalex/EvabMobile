@@ -141,6 +141,7 @@
 									success: function () {
 										//Feldliste soll neu aufgebaut werden
 										leereStorageFeldListe();
+										localStorage.Autor = $("#Autor").val();
 									},
 									error: function () {
 										melde("Fehler: Änderung am Autor nicht gespeichert");

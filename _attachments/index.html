@@ -64,14 +64,23 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#indexPage").on("pageshow", function () {
-				//Wenn möglich alten cookie für die Anmeldung verwenden
+				//Wenn möglich localStorage.Username für die Anmeldung verwenden
 				//ausser User hat via Menü bewusst neu anmelden wollen
 				//localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-				if (localStorage.length === 0 || !localStorage.UserStatus) {
-					pruefeAnmeldung_index();
-				} else if (localStorage.UserStatus === "neu") {
-					localStorage.clear();
+				if (localStorage.length > 0) {
+					if (localStorage.Username) {
+						if (localStorage.UserStatus !== "neu") {
+							if (localStorage.UserId && localStorage.ArtenSprache && localStorage.Autor) {
+								oeffneZuletztBenutzteSeite();
+							} else {
+								stelleUserDatenBereit();
+							}
+						} else if (localStorage.UserStatus === "neu") {
+							localStorage.clear();
+						}
+					}
 				}
+					
 				if (!("autofocus" in document.createElement("input"))) {
 					$("#UserName").focus();
 				}
@@ -91,8 +100,8 @@
 						e.preventDefault();
 					}
 				});
-	
-				function meldeUserAn() {
+
+				function validiereUserIndex() {
 					var UserName, Passwort;
 					UserName = $('input[name=UserName]').val();
 					Passwort = $('input[name=Passwort]').val();
@@ -101,41 +110,36 @@
 							$('#UserName').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						melde("Bitte Benutzernamen eingeben");
+						return false;
 					} else if (!Passwort) {
 						setTimeout(function () { 
 							$('#Passwort').focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						melde("Bitte Passwort eingeben");
-					} else {
+						return false;
+					}
+					return true;
+				}
+	
+				function meldeUserAn() {
+					var UserName, Passwort;
+					UserName = $('input[name=UserName]').val();
+					Passwort = $('input[name=Passwort]').val();
+					if (validiereUserIndex) {
 						$.couch.login({
 							name : UserName,
 							password : Passwort,
 							success : function (r) {
+								localStorage.Username = r["name"];
+								//Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
+								stelleUserDatenBereit();
 								delete localStorage.UserStatus;
-								authentifiziereUser();
 							},
 							error: function () {
 								melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
 							}
 						});
-					} 
-				}
-				
-				function authentifiziereUser() {
-					$.couch.session({
-						success : function (r) {
-							var userCtx;
-							userCtx = r.userCtx;
-							if (userCtx.name) {
-								localStorage.Username = userCtx.name;
-								oeffneZuletztBenutzteSeite();
-							} else if (userCtx.roles.indexOf("_admin") !== -1) {
-								melde("Oops, die Datenbank hat keine Benutzer!");
-							} else {
-								melde("Sie konnten nicht eingeloggt werden");
-							}
-						}
-					});
+					}
 				}
 			});
 	  </script>

@@ -239,6 +239,7 @@ function speichereNeueBeob(aArtBezeichnung) {
 	var doc;
 	doc = {};
 	doc.User = localStorage.Username;
+	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
 	delete localStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
@@ -310,22 +311,22 @@ function speichereNeueBeob_02(doc) {
 									speichereNeueBeob_03(doc);
 								},
 								error: function () {
-									melde("Beobachtung nicht gespeichert.");
+									speichereNeueBeob_03(doc);
 								}
 							});
 						},
 						error: function () {
-							melde("Beobachtung nicht gespeichert.");
+							speichereNeueBeob_03(doc);
 						}
 					});
 				},
 				error: function () {
-					melde("Beobachtung nicht gespeichert.");
+					speichereNeueBeob_03(doc);
 				}
 			});
 		},
 		error: function () {
-			melde("Beobachtung nicht gespeichert.");
+			speichereNeueBeob_03(doc);
 		}
 	});
 }
@@ -335,32 +336,22 @@ function speichereNeueBeob_02(doc) {
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
 function speichereNeueBeob_03(doc) {
-	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + doc.User + '"', {
-		success: function (Userliste) {
-			User = Userliste.rows[0].value;
-			doc.aAutor = User.Autor;
-			$db.saveDoc(doc, {
-				success: function (data) {
-					if (doc.Typ === 'hArt') {
-						//Variabeln verfügbar machen
-						localStorage.hBeobId = data.id;
-						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.hBeobListe;
-						delete localStorage.hBeobListe;
-						$.mobile.changePage("hArtEdit.html");
-					} else {
-						//Variabeln verfügbar machen
-						localStorage.BeobId = data.id;
-						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						leereStorageBeobListe();
-						$.mobile.changePage("BeobEdit.html");
-					}
-				},
-				error: function () {
-					melde("Beobachtung nicht gespeichert.");
-				}
-			});
+	$db.saveDoc(doc, {
+		success: function (data) {
+			if (doc.Typ === 'hArt') {
+				//Variabeln verfügbar machen
+				localStorage.hBeobId = data.id;
+				//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+				delete window.hBeobListe;
+				delete localStorage.hBeobListe;
+				$.mobile.changePage("hArtEdit.html");
+			} else {
+				//Variabeln verfügbar machen
+				localStorage.BeobId = data.id;
+				//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+				leereStorageBeobListe();
+				$.mobile.changePage("BeobEdit.html");
+			}
 		},
 		error: function () {
 			melde("Beobachtung nicht gespeichert.");
@@ -668,7 +659,6 @@ function öffneMeineEinstellungen() {
 				User = data.rows[0].value;
 				//UserId = data.rows[0].value._id;
 				localStorage.UserId = UserId;
-				localStorage.Autor = User.Autor;
 				$.mobile.changePage("UserEdit.html");
 			}
 		});
@@ -998,18 +988,8 @@ function initiiereUserEdit() {
 			$("#" + User.ArtenSprache).prop("checked",true).checkboxradio("refresh");
 			$("[name='Datenverwendung']").checkboxradio();
 			$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
-			//Feld aAutor öffnen
-			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
-				success: function (doc) {
-					if (doc.Standardwert) {
-						if (doc.Standardwert[localStorage.Username]) {
-							$("#Autor").val(doc.Standardwert[localStorage.Username]);
-						}
-					}
-					speichereLetzteUrl();
-				}
-			});
-
+			$("#Autor").val(localStorage.Autor);
+			speichereLetzteUrl();
 		}
 	});
 }
@@ -1024,7 +1004,6 @@ function initiiereInstallieren() {
 //Mitgeben: id des Projekts, Username
 function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
-	//alert("jetzt wird AnhängehPE versteckt");
 	//$('#AnhängehPE').hide().trigger('updatelayout');
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.ProjektId, {
@@ -1384,7 +1363,7 @@ function initiiereProjektliste() {
 function initiiereProjektliste_2() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
 	ListItemContainer = "";
-	anzProj = Projektliste.rows.length;
+	anzProj = Projektliste.rows.length || 0;
 
 	//Im Titel der Seite die Anzahl Projekte anzeigen
 	Titel2 = " Projekte";
@@ -2503,62 +2482,30 @@ function stopGeolocation() {
 	setTimeout("delete localStorage.GenauVerortet", 20000);
 }
 
-function speichereLetzteUrl() {
-//damit kann bei erneuter Anmeldung die letzte Ansicht wiederhergestellt werden
+//damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
 //host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
-//UserId wird zurück gegeben. Wird meist benutzt, um im Menü meine Einstellungen zu öffnen
-	//damit - zusammen mit der letzen URL - die letzte Seite bekannt ist
-	//localStorage.LetzteId = id; idee um nicht von gesammter localStorage abhängig zu sein?
-	//if (typeof localStorage.Username === ("undefined" || null)) {
-	if (localStorage.Username === null) {
-		$.ajax({
-			url: '/_session',
-			dataType: 'json',
-			async: false,
-			success: function (session) {
-				//if (session.userCtx.name !== (undefined || null)) {
-				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
-					Username = session.userCtx.name;
-					localStorage.Username = Username;
-					speichereLetzteUrl_2();
-				} else {
-					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
-				}
-			}
-		});
-	} else {
-		speichereLetzteUrl_2();
-	}
+function speichereLetzteUrl() {
+	localStorage.LetzteUrl = window.location.pathname + window.location.search;
 }
 
-function speichereLetzteUrl_2() {
-	var User, UserId;
-	localStorage.LetzteUrl = window.location.pathname + window.location.search;
-	//UserId nur abfragen, wenn nicht schon erfolgt
-	if (!localStorage.UserId) {
-		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + localStorage.Username + '"', {
-			success: function (data) {
-				User = data.rows[0].value;
-				//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
-				localStorage.UserId = User._id;
-				//weitere anderswo benutzte Variabeln verfügbar machen
-				localStorage.ArtenSprache = User.ArtenSprache;
-				localStorage.Autor = User.Autor;
-				//speichereLetzteUrl_3(User._id);
+function holeAutor() {
+	//aAutor holen
+	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+		success: function (doc) {
+			if (doc.Standardwert) {
+				if (doc.Standardwert[localStorage.Username]) {
+					localStorage.Autor = doc.Standardwert[localStorage.Username];
+				}
 			}
-		});
-	} else {
-		//UserId = localStorage.UserId;
-		//speichereLetzteUrl_3(UserId);
-	}
+		}
+	});
 }
 
 //PROBLEM: Dies verursacht Verzögerungen, viel DB-Datenverkehr, aufgeblähte DB
 //und vor allem Daten-Konflikte
 //darum auf localStorage gewechselt und dies hier ausgeschaltet
-function speichereLetzteUrl_3(UserId) {
+//MOMENTAN NICHT IM GEBRAUCH
+function localStorageInUserSpeichern(UserId) {
 	$db = $.couch.db("evab");
 	$db.openDoc(UserId, {
 		success: function (User) {
@@ -2574,72 +2521,20 @@ function speichereLetzteUrl_3(UserId) {
 	});
 }
 
-//Wenn Seiten direkt geöffnet werden, muss die localStorage wieder hergestellt werden
-//Dieser Vorgang ist langsam. Bis er beendet ist, hätte die aufrufende Seite bereits mit dem Initiieren der Felder begonnen
-//und dabei wegen mangelndem sesstionStorage Fehler produziert
-//daher wird die aufrufende Seite übergeben und nach getaner Arbeit deren Felder initiiert
-//Wenn localStorage null ist, verzichtet die aufrufende Seite auf das Initiieren
-function holeSessionStorageAusDb(AufrufendeSeite) {
+//Wenn die localStorage mit localStorageInUserSpeichern() in de DB gespeichert wurde
+//kann sie mit dieser Funktion wieder geholt werden
+//MOMENTAN NICHT IM GEBRAUCH
+function holeLocalStorageAusDb() {
 	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + localStorage.Username + '"', {
+	$db.openDoc(sessionStorage.UserId, {
 		success: function (data) {
-			var SessionStorageObjekt = {};
+			var localStorageObjekt = {};
 			User = data.rows[0].value;
-			SessionStorageObjekt = User.localStorage;
-			for (i in SessionStorageObjekt) {
+			localStorageObjekt = User.localStorage;
+			for (i in localStorageObjekt) {
 				if (typeof i !== "function") {
-					localStorage[i] = SessionStorageObjekt[i];
+					localStorage[i] = localStorageObjekt[i];
 				}
-			}
-			switch(AufrufendeSeite) {
-				case "hBeobEdit":
-					initiierehBeobEdit();
-				break;
-				case "hBeobListe":
-					initiierehBeobListe();
-				break;
-				case "hZeitEdit":
-					initiiereZeitEdit();
-				break;
-				case "hZeitListe":
-					initiiereZeitListe();
-				break;
-				case "hOrtEdit":
-					initiiereOrtEdit();
-				break;
-				case "hOrtListe":
-					initiiereOrtListe();
-				break;
-				case "hRaumEdit":
-					initiiereRaumEdit();
-				break;
-				case "hRaumListe":
-					initiiereRaumListe();
-				break;
-				case "hProjektEdit":
-					initiiereProjektEdit();
-				break;
-				case "hProjektListe":
-					initiiereProjektliste();
-				break;
-				case "BeobEdit":
-					initiiereBeobEdit();
-				break;
-				case "BeobListe":
-					initiiereBeobliste();
-				break;
-				case "FeldEdit":
-					initiiereFeldEdit();
-				break;
-				case "Feldliste":
-					initiiereFeldliste();
-				break;
-				case "UserEdit":
-					initiiereUserEdit();
-				break;
-				case "Installieren":
-					initiiereInstallieren();
-				break;
 			}
 		}
 	});
@@ -3154,31 +3049,28 @@ function erstelleArgruppenListeDeutsch_2() {
 	$("#agl_Hinweistext").empty().remove();
 }
 
-//wird benutzt von index.html
-function pruefeAnmeldung_index() {		
-	//User Anmeldung überprüfen
-	//Wenn angemeldet, globale Variable User aktualisieren und zuletzt geöffnete Seite öffnen
-	//zuerst localStorage prüfen, dann cookie
-	if (localStorage.Username) {
-		oeffneZuletztBenutzteSeite();
-	} else {
-		$.ajax({
-			url: '/_session',
-			dataType: 'json',
-			async: false,
-			success: function (session) {
-				if (session.userCtx.name) {
-					localStorage.Username = session.userCtx.name;
-					oeffneZuletztBenutzteSeite();
-				} else {
-					$("#UserName").focus();
-				}
-			}
-		});
-	}
+//Stellt die Daten des Users bereit
+//In der Regel nach gelungener Anmeldung
+//Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
+//braucht den Usernamen
+function stelleUserDatenBereit() {
+	$db = $.couch.db("evab");
+	$db.view('evab/User?key="' + localStorage.Username + '"', {
+		success: function (data) {
+			var User;
+			User = data.rows[0].value;
+			//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
+			localStorage.UserId = User._id;
+			//weitere anderswo benutzte Variabeln verfügbar machen
+			localStorage.ArtenSprache = User.ArtenSprache;
+			holeAutor();
+			oeffneZuletztBenutzteSeite();
+		}
+	});
 }
 
-//wird benutzt von index.html
+//wird benutzt von stelleUserDatenBereit()
+//öffnet die zuletzt benutzte Seite oder BeobListe.html
 function oeffneZuletztBenutzteSeite() {
 	//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
