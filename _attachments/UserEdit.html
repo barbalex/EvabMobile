@@ -49,7 +49,7 @@
 					<hr />
 					<div data-role="fieldcontain">
 						<label for="Autor">Autor:</label>
-						<input id="Autor" name="Autor" class="Feld" type="text" placeholder="(erforderlich)" required/>
+						<input id="Autor" name="Autor" type="text" placeholder="(erforderlich)" required/>
 						<p>Eingabe empfohlen. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
 					</div>
 					<hr />
@@ -117,6 +117,40 @@
 						if (validiereUserUserEdit()) {
 							speichern(Feldname, Feldwert);
 						}
+					});
+
+					//Autor bei Änderung speichern
+					$("#UserEditForm").on("change", "#Autor", function () {
+						$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+							success: function (doc) {
+								if ($("#Autor").val()) {
+									//Wenn Autor erfasst ist, speichern
+									//Falls Standardwert noch nicht existiert, 
+									//uss zuerst das Objekt geschaffen werden
+									if (!doc.Standardwert) {
+										doc.Standardwert = {};
+									}
+									doc.Standardwert[localStorage.Username] = $("#Autor").val();
+								} else {
+									//Wenn kein Autor erfasst ist, einen allfälligen löschen
+									if (doc.Standardwert) {
+										delete doc.Standardwert[localStorage.Username];
+									}
+								}
+								$db.saveDoc(doc, {
+									success: function () {
+										//Feldliste soll neu aufgebaut werden
+										leereStorageFeldListe();
+									},
+									error: function () {
+										melde("Fehler: Änderung am Autor nicht gespeichert");
+									}
+								});
+							},
+							error: function () {
+								melde("Fehler: Änderung am Autor nicht gespeichert");
+							}
+						});
 					});
 
 					//kontrollierren, ob die erforderlichen Felder etwas enthalten

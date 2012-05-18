@@ -27,30 +27,6 @@ function erstelleNeueUhrzeit() {
 	return Zeit;
 };
 
-/*
-funktion, mit der man recht einfach einen Paramater aus der URL lesen kann. 
-Sollte der Parameter nicht vorhanden sein, so liefert die Funktion einen leeren String zurück, andernfalls den Inhalt des Parameters.
- 
-Hier noch ein Verwendungsbeispiel:
-URL: http://www.example.com/?titel=test&trinken=bier&essen=schweinshaxe
-wasEssenWir = get_url_param('essen');
-*/
-function get_url_param(name) {
-	var regexS, regex, results;
-	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-
-	regexS = "[\\?&]"+name+"=([^&#]*)";
-	regex = new RegExp(regexS);
-	results = regex.exec(window.location.href);
-	//results = regex.exec( $(this).data("url") );
-
-	if (!results) {
-		return "";
-	} else {
-		return results[1];
-	}
-}
-
 
 //wandelt decimal degrees (vom GPS) in WGS84 um
 function DdInWgs84BreiteGrad(Breite) {
@@ -215,8 +191,8 @@ function melde(Meldung) {
 		});
 }
 
-//wird benutzt von hOrtEdit.html und BeobEdit.html
-function speichereKoordinaten(id, Lagegenauigkeit) {
+//wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
+function speichereKoordinaten(id) {
 	$db = $.couch.db("evab");
 	$db.openDoc(id, {
 		success: function (doc) {
@@ -226,7 +202,7 @@ function speichereKoordinaten(id, Lagegenauigkeit) {
 			doc.oLatitudeDecDeg = localStorage.oLatitudeDecDeg;
 			doc.oXKoord = localStorage.oXKoord;
 			doc.oYKoord = localStorage.oYKoord;
-			doc.oLagegenauigkeit = Lagegenauigkeit;
+			doc.oLagegenauigkeit = localStorage.oLagegenauigkeit;
 			//Höhe nur speichern, wenn vorhanden
 			//wenn nicht vorhanden: Allflligen alten Wert löschen
 			if (localStorage.oHoehe) {
@@ -242,7 +218,7 @@ function speichereKoordinaten(id, Lagegenauigkeit) {
 					$("#oYKoord").val(localStorage.oYKoord);
 					$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
 					$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-					$("#oLagegenauigkeit").val(Lagegenauigkeit);
+					$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
 					$("#oObergrenzeHöhe").val(localStorage.oHoehe);
 				},
 				error: function () {
@@ -256,11 +232,10 @@ function speichereKoordinaten(id, Lagegenauigkeit) {
 	});
 }
 
-function speichereNeueBeob(aArtBezeichnung) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //aufgerufen bloss von Artenliste.html
-//hArtListe und hArtEdit geben hProjektId, hRaumId, hOrtId und hZeitId mit
+function speichereNeueBeob(aArtBezeichnung) {
 	var doc;
 	doc = {};
 	doc.User = localStorage.Username;
@@ -285,11 +260,11 @@ function speichereNeueBeob(aArtBezeichnung) {
 	}
 }
 
-function speichereNeueBeob_02(doc) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 //dies ist der zweite Schritt:
 //Felder der höheren Hierarchieebenen anfügen
+function speichereNeueBeob_02(doc) {
 	$db = $.couch.db("evab");
 	$db.openDoc(doc.hZeitId, {
 		success: function (Zeit) {
@@ -333,21 +308,33 @@ function speichereNeueBeob_02(doc) {
 										}
 									}
 									speichereNeueBeob_03(doc);
+								},
+								error: function () {
+									melde("Beobachtung nicht gespeichert.");
 								}
 							});
+						},
+						error: function () {
+							melde("Beobachtung nicht gespeichert.");
 						}
 					});
+				},
+				error: function () {
+					melde("Beobachtung nicht gespeichert.");
 				}
 			});
+		},
+		error: function () {
+			melde("Beobachtung nicht gespeichert.");
 		}
 	});
 }
 
-function speichereNeueBeob_03(doc) {
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
+function speichereNeueBeob_03(doc) {
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + doc.User + '"', {
 		success: function (Userliste) {
@@ -374,6 +361,9 @@ function speichereNeueBeob_03(doc) {
 					melde("Beobachtung nicht gespeichert.");
 				}
 			});
+		},
+		error: function () {
+			melde("Beobachtung nicht gespeichert.");
 		}
 	});
 }
@@ -1003,13 +993,23 @@ function initiiereUserEdit() {
 		success: function (User) {
 			//fixe Felder aktualisieren
 			$("#UserName").val(User.UserName);
-			$("#Autor").val(User.Autor);
 			$("#Email").val(User.Email);
 			$("[name='ArtenSprache']").checkboxradio();
 			$("#" + User.ArtenSprache).prop("checked",true).checkboxradio("refresh");
 			$("[name='Datenverwendung']").checkboxradio();
 			$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
-			speichereLetzteUrl();
+			//Feld aAutor öffnen
+			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+				success: function (doc) {
+					if (doc.Standardwert) {
+						if (doc.Standardwert[localStorage.Username]) {
+							$("#Autor").val(doc.Standardwert[localStorage.Username]);
+						}
+					}
+					speichereLetzteUrl();
+				}
+			});
+
 		}
 	});
 }
@@ -1159,9 +1159,10 @@ function initiiereFeldEdit() {
 				if (["aArtGruppe", "aArtName"].indexOf(doc.FeldName) > -1) {
 					$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
 					$("#Standardwert").attr("disabled", true);
-				} else if (doc.FeldName === "aAutor") {
+				//ausschalten, soll jetzt im Feld verwaltet werden
+				/*} else if (doc.FeldName === "aAutor") {
 					$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
-					$("#Standardwert").attr("disabled", true);
+					$("#Standardwert").attr("disabled", true);*/
 				} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(doc.FeldName) > -1) {
 					$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
 					$("#Standardwert").attr("disabled", true);
@@ -1868,7 +1869,7 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 
 //managt den Aufbau aller Daten und Felder für hBeobEdit.html
 //erwartet die hBeobId
-//wird aufgerufen von hBeobEdit.html und Felder_Beob.html
+//wird aufgerufen von hBeobEdit.html bei pageshow
 function initiierehBeobEdit() {
 	//hier werden Variablen gesetzt,
 	//in die fixen Felder Werte eingesetzt,
@@ -1891,12 +1892,12 @@ function initiierehBeobEdit() {
 			localStorage.aArtId = Beob.aArtId;
 			//fixe Felder aktualisieren
 			$("#aArtGruppe").selectmenu();
-			$("#aArtGruppe").val(localStorage.aArtGruppe);
-			$("#aArtGruppe").html("<option value='" + localStorage.aArtGruppe + "'>" + localStorage.aArtGruppe + "</option>");
+			$("#aArtGruppe").val(Beob.aArtGruppe);
+			$("#aArtGruppe").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
 			$("#aArtGruppe").selectmenu("refresh");
 			$("#aArtName").selectmenu();
-			$("#aArtName").val(localStorage.aArtName);
-			$("#aArtName").html("<option value='" + localStorage.aArtName + "'>" + localStorage.aArtName + "</option>");
+			$("#aArtName").val(Beob.aArtName);
+			$("#aArtName").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
 			$("#aArtName").selectmenu("refresh");
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
@@ -2443,7 +2444,7 @@ function GeolocationAuslesen(position) {
 		$("#oObergrenzeHöhe").val(position.coords.altitude);
 		localStorage.oObergrenzeHöhe = position.coords.altitude;
 	}
-	speichereKoordinaten(localStorage.docId, localStorage.oLagegenauigkeit);
+	speichereKoordinaten(localStorage.docId);
 }
 
 //Position ermitteln war erfolgreich

@@ -202,24 +202,49 @@
 						doc = {};
 						doc.Typ = "User";
 						doc.UserName = $('#UserName').val();
-						doc.Autor = $("#Autor").val();
 						doc.Datenverwendung = window.Datenverwendung;
 						doc.ArtenSprache = "Lateinisch";
 						doc.Email = $("#Email").val();
-						//localStorage gründen
-						doc.localStorage.UserId = data._id;
-						doc.localStorage.Autor = data.Autor;
-						doc.localStorage.ArtenSprache = data.ArtenSprache;
-						doc.localStorage.LetzteUrl = "/evab/_design/evab/BeobListe.html";
 						$db = $.couch.db("evab");
 						$db.saveDoc(doc, {
 							success: function (data) {
 								alert("speichereUserInEvab: success");
 								//localStorage gründen
+								localStorage.Username = data.UserName;
 								localStorage.UserId = data._id;
-								localStorage.Autor = data.Autor;
+								localStorage.Autor = $("#Autor").val();
 								localStorage.ArtenSprache = data.ArtenSprache;
-								erstelleSichtbareFelder();
+								//Autor speichern
+								$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+									success: function (Feld) {
+										if ($("#Autor").val()) {
+											//Wenn Autor erfasst ist, speichern
+											//Falls Standardwert noch nicht existiert, 
+											//uss zuerst das Objekt geschaffen werden
+											if (!Feld.Standardwert) {
+												Feld.Standardwert = {};
+											}
+											Feld.Standardwert[localStorage.Username] = $("#Autor").val();
+										} else {
+											//Wenn kein Autor erfasst ist, einen allfälligen löschen
+											if (Feld.Standardwert) {
+												delete Feld.Standardwert[localStorage.Username];
+											}
+										}
+										$db.saveDoc(Feld, {
+											success: function () {
+												//Felder sictbar schalten
+												erstelleSichtbareFelder();
+											},
+											error: function () {
+												melde("Fehler: Änderung am Autor nicht gespeichert");
+											}
+										});
+									},
+									error: function () {
+										melde("Fehler: Änderung am Autor nicht gespeichert");
+									}
+								});
 							},
 							error: function () {
 								melde("Oh je, Ihr User konnte nicht erstellt werden");
@@ -241,8 +266,9 @@
 								for (i in data.rows) {
 									if (typeof i !== "function") {
 										Feld = data.rows[i].value;
-										//Nur offizielle Felder berücksichtigen
-										if (Feld.User === "ZentrenBdKt") {
+										//Nur ausgewählte offizielle Felder berücksichtigen
+										//if (Feld.User === "ZentrenBdKt") {
+										if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oObergrenzeHöhe", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(doc.FeldName) > -1) {
 											$db.openDoc(Feld._id, {
 												success: function (Feld) {
 													Feld.SichtbarImModusHierarchisch.push(Username);

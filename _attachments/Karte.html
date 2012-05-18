@@ -500,6 +500,7 @@
 						localStorage.oLongitudeDecDeg = lng;
 						localStorage.oXKoord = DdInChX(lat, lng);
 						localStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
 						contentString = '<div id="content"><div id="bodyContent">'+
 										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
@@ -511,7 +512,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.OrtId, "Auf Luftbild markiert");
+						speichereKoordinaten(localStorage.OrtId);
 					}
 
 					//wird benutzt in BeobEdit.html
@@ -523,6 +524,7 @@
 						localStorage.oLongitudeDecDeg = lng;
 						localStorage.oXKoord = DdInChX(lat, lng);
 						localStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
 						contentString = '<div id="content"><div id="bodyContent">'+
 										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
@@ -532,9 +534,9 @@
 						});
 						InfoWindowArray.push(infowindow);
 						google.maps.event.addListener(marker, 'click', function () {
-						infowindow.open(map,marker);
+							infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.BeobId, "Auf Luftbild markiert");
+						speichereKoordinaten(localStorage.BeobId);
 					}
 
 					//GoogleMap: alle Marker löschen

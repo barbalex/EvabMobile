@@ -141,7 +141,8 @@
 						//Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
-						speichereKoordinaten(localStorage.OrtId, "");
+						localStorage.oLagegenauigkeit = "";
+						speichereKoordinaten(localStorage.OrtId);
 					} else {
 						speichern(Feldname, Feldwert);
 					}
