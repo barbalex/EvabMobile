@@ -198,15 +198,15 @@ function speichereKoordinaten(id) {
 		success: function (doc) {
 			//Längen- und Breitengrad sind in keinem Feld dargestellt
 			//sie müssen aus ihren Variabeln gespeichert werden
-			doc.oLongitudeDecDeg = localStorage.oLongitudeDecDeg;
-			doc.oLatitudeDecDeg = localStorage.oLatitudeDecDeg;
-			doc.oXKoord = localStorage.oXKoord;
-			doc.oYKoord = localStorage.oYKoord;
-			doc.oLagegenauigkeit = localStorage.oLagegenauigkeit;
+			doc.oLongitudeDecDeg = parseFloat(localStorage.oLongitudeDecDeg);
+			doc.oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg);
+			doc.oXKoord = parseInt(localStorage.oXKoord);
+			doc.oYKoord = parseInt(localStorage.oYKoord);
+			doc.oLagegenauigkeit = parseInt(localStorage.oLagegenauigkeit);
 			//Höhe nur speichern, wenn vorhanden
 			//wenn nicht vorhanden: Allflligen alten Wert löschen
 			if (localStorage.oHoehe) {
-				doc.oObergrenzeHöhe = localStorage.oHoehe;
+				doc.oObergrenzeHöhe = parseInt(localStorage.oHoehe);
 			} else {
 				delete doc.oObergrenzeHöhe;
 			}
@@ -218,8 +218,8 @@ function speichereKoordinaten(id) {
 					$("#oYKoord").val(localStorage.oYKoord);
 					$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
 					$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-					$("#oLagegenauigkeit").val(localStorage.oLagegenauigkeit);
-					$("#oObergrenzeHöhe").val(localStorage.oHoehe);
+					$("#oLagegenauigkeit").val(parseInt(localStorage.oLagegenauigkeit));
+					$("#oObergrenzeHöhe").val(parseInt(localStorage.oHoehe));
 				},
 				error: function () {
 					melde("Fehler: Koordinaten nicht gespeichert");
@@ -879,11 +879,12 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 				if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 					//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 					if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
-						if (Status === "neu" && Feld.Standardwert) {
-							FeldWert = Feld.Standardwert[localStorage.Username] || "";
+						if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+							FeldWert = Feld.Standardwert[localStorage.Username];
 							//Objekt Beob um den Standardwert ergänzen, um später zu speichern
 							Beob[FeldName] = FeldWert;
 						} else {
+							//"" verhindert die Anzeige von undefined im Feld
 							FeldWert = Beob[FeldName] || "";
 						}
 						FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1063,11 +1064,12 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
-				if (localStorage.Status === "neu" && Feld.Standardwert) {
-					FeldWert = Feld.Standardwert[localStorage.Username] || "";
-					//Objekt Projekt um den Standardwert ergänzen, um später zu speichern
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+					FeldWert = Feld.Standardwert[localStorage.Username];
+					//Projekt um den Standardwert ergänzen, um später zu speichern
 					Projekt[FeldName] = FeldWert;
 				} else {
+					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = Projekt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1097,7 +1099,6 @@ function initiiereFeldEdit() {
 			var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
 			//Feld bereitstellen
 			Feld = doc;
-			localStorage.Feld = JSON.stringify(doc);
 			localStorage.FeldId = Feld._id;
 
 			//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
@@ -1131,6 +1132,9 @@ function initiiereFeldEdit() {
 				Standardwert = doc.Standardwert[localStorage.Username];
 				if (Standardwert) {
 					$("#Standardwert").val(Standardwert);
+				} else {
+					//Auch leere Werte setzen, sonst bleibt letzter!
+					$("#Standardwert").val("");
 				}
 			}
 
@@ -1178,6 +1182,8 @@ function initiiereFeldEdit() {
 
 			erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
 			speichereLetzteUrl();
+			//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
+			$(":jqmData(role='page')").focus();
 		}
 	});
 }
@@ -1339,6 +1345,32 @@ function initiiereFeldliste_2() {
 	speichereLetzteUrl();
 }
 
+//Übernimmt einen Feldnamen, einen Feldwert und seinen Typ (number?)
+//und eine Datensatzliste (z.B. alle Räume eines Projekts)
+//speichert das neue Feld in alle Datensätze
+function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste) {
+	//geändertes Ort-Feld in doc anpassen
+	var ID;
+	for (i in Datensatzliste.rows) {
+		ID = Datensatzliste.rows[i].key[1];
+		$db.openDoc(ID, {
+			success: function (doc) {
+				if (Feldwert) {
+					if (InputTyp === "number") {
+						doc[Feldname] = parseInt(Feldwert);
+					} else {
+						doc[Feldname] = Feldwert;
+					}
+				} else if (doc[Feldname]) {
+					delete doc[Feldname];
+				}
+				$db.saveDoc(doc);
+			}
+		});
+	}
+}
+
+
 function initiiereProjektliste() {
 	//hat ProjektEdit.html eine Projektliste übergeben?
 	if (window.Projektliste) {
@@ -1459,10 +1491,11 @@ function generiereHtmlFuerRaumEditForm (Raum) {
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
 				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-					FeldWert = Feld.Standardwert[localStorage.Username] || "";
+					FeldWert = Feld.Standardwert[localStorage.Username];
 					//Objekt Raum um den Standardwert ergänzen, um später zu speichern
 					Raum[FeldName] = FeldWert;
 				} else {
+					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = Raum[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1618,11 +1651,12 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-				if (localStorage.Status === "neu" && Feld.Standardwert) {
-					FeldWert = Feld.Standardwert[localStorage.Username] || "";
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+					FeldWert = Feld.Standardwert[localStorage.Username];
 					//Objekt Ort um den Standardwert ergänzen, um später zu speichern
 					Ort[FeldName] = FeldWert;
 				} else {
+					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = Ort[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -1934,11 +1968,12 @@ function generiereHtmlFuerhArtEditForm (Beob) {
 				FeldName = Feld.FeldName;
 				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 				if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-					if (localStorage.Status === "neu" && Feld.Standardwert) {
-						FeldWert = Feld.Standardwert[Beob.User] || "";
+					if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[Beob.User]) {
+						FeldWert = Feld.Standardwert[Beob.User];
 						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
 						Beob[FeldName] = FeldWert;
 					} else {
+						//"" verhindert, dass im Feld undefined erscheint
 						FeldWert = Beob[FeldName] || "";
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -2365,10 +2400,6 @@ function warte(ms) {
 function GetGeolocation(docId) {
 	//benötigte Variabeln setzen
 	localStorage.docId = docId;
-	//Zweck: Wenn nach 20 Sekunden stopGeolocation wirkt,
-	//weiss diese Variable, ob in der Zwischenzeit die Verortung abgeschlossen wurde
-	//und meldet nicht nochmals, dass z.B. keine Position erhalten wurde...
-	localStorage.VerortungAbgeschlossen = "false";
 	//Zweck: Genau solange animieren, wie verortet wird
 	localStorage.NavbarVerortungAnimieren = "true";
 	//dem Benutzer zeigen, dass verortet wird
@@ -2384,7 +2415,7 @@ function GetGeolocation(docId) {
 	watchID = null;
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
 	//nach spätestens 20 Sekunden aufhören
-	setTimeout("stopGeolocation()", 20000);
+	window.stop = setTimeout("stopGeolocation()", 20000);
 	return watchID;
 }
 
@@ -2428,7 +2459,6 @@ function onGeolocationSuccess(position) {
 			//alert("Genauigkeit unter 100m");
 			GeolocationAuslesen(position);
 			if (position.coords.accuracy <= 5) {
-				localStorage.VerortungAbgeschlossen = "true";
 				stopGeolocation();
 			}
 		}
@@ -2446,33 +2476,31 @@ function onGeolocationError(error) {
 function stopGeolocation() {
 	//Positionssuche beenden
 	//wenn keine watchID mehr, wurde sie schon beendet
-	if (localStorage.VerortungAbgeschlossen === "false") {
-		setTimeout("delete localStorage.VerortungAbgeschlossen", 25000);
-		//beendePositionsermittlung ist ausgelagert, damit es auch
-		//von den beiden Seiten aufgerufen werden kann, wenn sie hiden
-		beendePositionsermittlung();
-		//Animation beenden
-		delete localStorage.NavbarVerortungAnimieren;
-		//auf den Erfolg reagieren
-		if (localStorage.oLagegenauigkeit > 30) {
-			melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
-		} else if (!localStorage.oLagegenauigkeit) {
-			//Felder leeren
-			$("#oXKoord").val("");
-			$("#oYKoord").val("");
-			$("#oLongitudeDecDeg").val("");
-			$("#oLatitudeDecDeg").val("");
-			$("#oLagegenauigkeit").val("");
-			//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
-			speichereKoordinaten(localStorage.docId);
-			melde("Keine genaue Position erhalten");
-		}
-		//Variablen aufräumen
-		delete localStorage.docId;
-	} else {
-		//damit die Animation der Navbar aufhört
-		delete localStorage.NavbarVerortungAnimieren;
+	//stop timeout stoppen
+	clearTimeout(stop);
+	delete window.stop;
+	delete localStorage.VerortungAbgeschlossen;
+	//beendePositionsermittlung ist ausgelagert, damit es auch
+	//von den beiden Seiten aufgerufen werden kann, wenn sie hiden
+	beendePositionsermittlung();
+	//Animation beenden
+	delete localStorage.NavbarVerortungAnimieren;
+	//auf den Erfolg reagieren
+	if (localStorage.oLagegenauigkeit > 30) {
+		melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
+	} else if (!localStorage.oLagegenauigkeit) {
+		//Felder leeren
+		$("#oXKoord").val("");
+		$("#oYKoord").val("");
+		$("#oLongitudeDecDeg").val("");
+		$("#oLatitudeDecDeg").val("");
+		$("#oLagegenauigkeit").val("");
+		//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
+		speichereKoordinaten(localStorage.docId);
+		melde("Keine genaue Position erhalten");
 	}
+	//Variablen aufräumen
+	delete localStorage.docId;
 }
 
 //separat, damit auch beim Datensatzwechsel möglich
@@ -2608,7 +2636,9 @@ function zeigeAttachments(doc, Page) {
 			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/></div>";
 		});
 	}
-	$("#Anhänge" + Page).html(HtmlContainer).trigger("create").show();
+	$("#Anhänge" + Page).html(HtmlContainer).trigger("create");
+	//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
+	$(":jqmData(role='page')").focus();
 }
 
 //kreiert ein neues Feld
@@ -2628,7 +2658,6 @@ function neuesFeld() {
 		success: function (data) {
 			localStorage.FeldId = data.id;
 			Feld = data;
-			localStorage.Feld = JSON.stringify(data);
 			//Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
 			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
@@ -3225,7 +3254,6 @@ function leereStorageFeldListe() {
 }
 
 function leereStorageFeldEdit() {
-	delete localStorage.Feld;
 	delete window.Feld;
 	delete localStorage.FeldId;
 }

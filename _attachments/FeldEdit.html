@@ -58,7 +58,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input id="Standardwert" name="Standardwert" type="text" placeholder="dieser Wert wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
+					<input id="Standardwert" name="Standardwert" type="text" placeholder="wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
 				</div>
 			</form>
 				<hr>
@@ -276,10 +276,12 @@
 							pruefeFeldNamen();
 						}
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
+						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
 						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauenFeldEdit();
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
+						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc(Feld._id, {
@@ -293,6 +295,9 @@
 							}
 						});
 					} else {
+						if (localStorage.FeldName === "FeldBeschriftung") {
+							$(".FeldEditHeaderTitel").text(Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
+						}
 						speichereFeldeigenschaften();
 					}
 				});
@@ -726,7 +731,6 @@
 
 				function geheZurück() {
 					delete localStorage.FeldId;
-					delete localStorage.Feld;
 					if (localStorage.zurueck.slice(0, 6) === "Felder") {
 						//direkt zurück, Feldliste auslassen
 						leereStorageFeldEdit();
@@ -770,8 +774,7 @@
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
-									localStorage.Feld = JSON.stringify(data);
-									localStorage.FeldId = Feld._id;
+									//localStorage.FeldId = Feld._id;
 									//Feldlisten leeren, damit Standardwert auch sofort verwendet werden kann!
 									leereStorageFeldListe();
 								},
@@ -789,7 +792,7 @@
 				//speichert
 				function speichereFeldeigenschaften() {
 					$db = $.couch.db("evab");
-					$db.openDoc(Feld._id, {
+					$db.openDoc(localStorage.FeldId, {
 						success: function (doc) {
 							var Formularfelder, idx1, idx2;
 							Formularfelder = $("#FeldEditForm").serializeObjectNull();
@@ -874,7 +877,6 @@
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
-									localStorage.Feld = JSON.stringify(data);
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
 										leereStorageFeldListe();

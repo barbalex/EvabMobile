@@ -154,24 +154,14 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hArtEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("#" + this.name).serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
@@ -437,14 +427,24 @@
 				}
 
 				//Speichert alle Daten
-				function speichern(Feldname, Feldwert) {
+				function speichern(that) {
+					var Feldname, Feldjson, Feldwert, InputTyp;
+					Feldname = that.name;
+					InputTyp = $(that).attr("type");
+					//nötig, damit Arrays richtig kommen
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					$db = $.couch.db("evab");
 					//Bestehendes Dokument öffnen
 					$db.openDoc(localStorage.hBeobId, {
 						success: function (hArt) {
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
-								hArt[Feldname] = Feldwert;
+								if (InputTyp === "number") {
+									hArt[Feldname] = parseInt(Feldwert);
+								} else {
+									hArt[Feldname] = Feldwert;
+								}
 							} else if (hArt[Feldname]) {
 								delete hArt[Feldname];
 							}

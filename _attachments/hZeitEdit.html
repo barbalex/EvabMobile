@@ -135,22 +135,12 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hZeitEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hZeitEditForm").on("change", ".speichern", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
@@ -344,7 +334,16 @@
 					return true;
 				}
 
-				function speichern(Feldname, Feldwert) {
+				//speichert nach jedem change event in einem Feld mit Class speichern
+				//den Wert in die DB
+				//erwartet das Feld als Objekt
+				function speichern(that) {
+					var Feldname, Feldjson, Feldwert, InputTyp;
+					Feldname = that.name;
+					InputTyp = $(that).attr("type");
+					//nötig, damit Arrays richtig kommen
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					if (validierehZeitEdit()) {
 						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
 							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -356,14 +355,18 @@
 							success: function (hZeit) {
 								//Werte aus dem Formular aktualisieren
 								if (Feldwert) {
-									hZeit[Feldname] = Feldwert;
+									if (InputTyp === "number") {
+										hZeit[Feldname] = parseInt(Feldwert);
+									} else {
+										hZeit[Feldname] = Feldwert;
+									}
 								} else if (hZeit[Feldname]) {
 									delete hZeit[Feldname]
 								}
 								//alles speichern
 								$db.saveDoc(hZeit, {
 									success: function () {
-										speichereZeitfeldInArten(Feldname, Feldwert);
+										speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
 										//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
@@ -385,7 +388,7 @@
 					}
 				}
 
-				function speichereZeitfeldInArten(Feldname, Feldwert) {
+				function speichereZeitfeldInArten(Feldname, Feldwert, InputTyp) {
 					//ArtenVonZeit wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn hArten neu bzw. gelöscht werden, 
@@ -396,32 +399,14 @@
 					var viewname;
 					if (window.ArtenVonZeit && window.ZuletztGespeicherteZeitId && window.ZuletztGespeicherteZeitId === localStorage.ZeitId) {
 						//Liste aus globaler Variable verwenden
-						speichereZeitfeldInArten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonZeit = data;
-								speichereZeitfeldInArten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereZeitfeldInArten_2(Feldname, Feldwert) {
-					//geändertes Zeit-Feld in hArt anpassen
-					var hArtId;
-					for (i in ArtenVonZeit.rows) {
-						hArtId = ArtenVonZeit.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
 							}
 						});
 					}

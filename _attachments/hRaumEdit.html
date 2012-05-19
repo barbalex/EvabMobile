@@ -103,24 +103,14 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function () {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Slider-Felder erst bei mouseup speichern
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hRaumEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
@@ -361,7 +351,13 @@
 					return true;
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function speichern(that) {
+					var Feldname, Feldjson, Feldwert;
+					Feldname = that.name;
+					InputTyp = $(that).attr("type");
+					//nötig, damit Arrays richtig kommen
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
@@ -372,16 +368,20 @@
 						$db.openDoc(localStorage.RaumId, {
 							success: function (hRaum) {
 								if (Feldwert) {
-									hRaum[Feldname] = Feldwert;
+									if (InputTyp === "number") {
+										hRaum[Feldname] = parseInt(Feldwert);
+									} else {
+										hRaum[Feldname] = Feldwert;
+									}
 								} else if (hRaum[Feldname]) {
 									delete hRaum[Feldname]
 								}
 								//alles speichern
 								$db.saveDoc(hRaum, {
 									success: function () {
-										speichereRaumfeldInArten(Feldname, Feldwert);
-										speichereRaumfeldInZeiten(Feldname, Feldwert);
-										speichereRaumfeldInOrten(Feldname, Feldwert);
+										speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
+										speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
+										speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
 										//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
 										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte RaumId NACH dem speichern setzen
@@ -403,7 +403,7 @@
 					}
 				}
 
-				function speichereRaumfeldInArten(Feldname, Feldwert) {
+				function speichereRaumfeldInArten(Feldname, Feldwert, InputTyp) {
 					//ArtenVonRaum wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn hArten neu bzw. gelöscht werden, 
@@ -414,7 +414,7 @@
 					var viewname;
 					if (window.ArtenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
 						//Liste aus globaler Variable verwenden
-						speichereRaumfeldInArten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
@@ -422,31 +422,13 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonRaum = data;
-								speichereRaumfeldInArten_2(Feldname, Feldwert);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
 							}
 						});
 					}
 				}
 
-				function speichereRaumfeldInArten_2(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
-					var hArtId;
-					for (i in ArtenVonRaum.rows) {
-						hArtId = ArtenVonRaum.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
-							}
-						});
-					}
-				}
-
-				function speichereRaumfeldInZeiten(Feldname, Feldwert) {
+				function speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp) {
 					//ZeitenVonRaum wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn Zeiten neu bzw. gelöscht werden, 
@@ -457,7 +439,7 @@
 					var viewname;
 					if (window.ZeitenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
 						//Liste aus globaler Variable verwenden
-						speichereRaumfeldInZeiten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
@@ -465,31 +447,13 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ZeitenVonRaum = data;
-								speichereRaumfeldInZeiten_2(Feldname, Feldwert);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
 							}
 						});
 					}
 				}
 
-				function speichereRaumfeldInZeiten_2(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
-					var hArtId;
-					for (i in ZeitenVonRaum.rows) {
-						hArtId = ZeitenVonRaum.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
-							}
-						});
-					}
-				}
-
-				function speichereRaumfeldInOrten(Feldname, Feldwert) {
+				function speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp) {
 					//OrteVonRaum wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn Orte neu bzw. gelöscht werden, 
@@ -500,7 +464,7 @@
 					var viewname;
 					if (window.OrteVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
 						//Liste aus globaler Variable verwenden
-						speichereRaumfeldInOrten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
@@ -508,25 +472,7 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.OrteVonRaum = data;
-								speichereRaumfeldInOrten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereRaumfeldInOrten_2(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
-					var hArtId;
-					for (i in OrteVonRaum.rows) {
-						hArtId = OrteVonRaum.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
 							}
 						});
 					}

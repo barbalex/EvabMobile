@@ -129,11 +129,8 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
-					var Feldname, Feldjson, Feldwert;
+					var Feldname;
 					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
 						//Wenn Koordinaten und beide erfasst
 						localStorage.oXKoord = $("#oXKoord").val();
@@ -144,7 +141,7 @@
 						localStorage.oLagegenauigkeit = "";
 						speichereKoordinaten(localStorage.OrtId);
 					} else {
-						speichern(Feldname, Feldwert);
+						speichern(this);
 					}
 				});
 
@@ -152,12 +149,7 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#hOrtEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
@@ -372,7 +364,13 @@
 					return true;
 				}
 
-				function speichern(Feldname, Feldwert) {
+				function speichern(that) {
+					var Feldname, Feldjson, Feldwert;
+					Feldname = that.name;
+					InputTyp = $(that).attr("type");
+					//nötig, damit Arrays richtig kommen
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -384,15 +382,19 @@
 							success: function (hOrt) {
 								//Werte aus dem Formular aktualisieren
 								if (Feldwert) {
-									hOrt[Feldname] = Feldwert;
+									if (InputTyp === "number") {
+										hOrt[Feldname] = parseInt(Feldwert);
+									} else {
+										hOrt[Feldname] = Feldwert;
+									}
 								} else if (hOrt[Feldname]) {
 									delete hOrt[Feldname]
 								}
 								//alles speichern
 								$db.saveDoc(hOrt, {
 									success: function () {
-										speichereOrtfeldInArten(Feldname, Feldwert);
-										speichereOrtfeldInZeiten(Feldname, Feldwert);
+										speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
+										speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
 										//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
 										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte OrtId NACH dem speichern setzen
@@ -414,7 +416,7 @@
 					}
 				}
 
-				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
+				function speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp) {
 					//ZeitenVonOrt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn Zeiten neu bzw. gelöscht werden, 
@@ -425,7 +427,7 @@
 					var viewname;
 					if (window.ZeitenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
 						//Liste aus globaler Variable verwenden
-						speichereOrtfeldInZeiten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
@@ -433,31 +435,13 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ZeitenVonOrt = data;
-								speichereOrtfeldInZeiten_2(Feldname, Feldwert);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
 							}
 						});
 					}
 				}
 
-				function speichereOrtfeldInZeiten_2(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hZeit anpassen
-					var hArtId;
-					for (i in ZeitenVonOrt.rows) {
-						hArtId = ZeitenVonOrt.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
-							}
-						});
-					}
-				}
-
-				function speichereOrtfeldInArten(Feldname, Feldwert) {
+				function speichereOrtfeldInArten(Feldname, Feldwert, InputTyp) {
 					//ArtenVonOrt wird als globale Variable gespeichert
 					//damit die DB nicht jedes mal abgefragt werden muss.
 					//Wenn hArten neu bzw. gelöscht werden, 
@@ -468,7 +452,7 @@
 					var viewname;
 					if (window.ArtenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
 						//Liste aus globaler Variable verwenden
-						speichereOrtfeldInArten_2(Feldname, Feldwert);
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
 					} else {
 						//Liste neu aus DB holen
 						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
@@ -476,25 +460,7 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonOrt = data;
-								speichereOrtfeldInArten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereOrtfeldInArten_2(Feldname, Feldwert) {
-					//geändertes Ort-Feld in hArt anpassen
-					var hArtId;
-					for (i in ArtenVonOrt.rows) {
-						hArtId = ArtenVonOrt.rows[i].key[1];
-						$db.openDoc(hArtId, {
-							success: function (hArt) {
-								if (Feldwert) {
-									hArt[Feldname] = Feldwert;
-								} else if (hArt[Feldname]) {
-									delete hArt[Feldname];
-								}
-								$db.saveDoc(hArt);
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
 							}
 						});
 					}
