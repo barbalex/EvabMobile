@@ -635,9 +635,14 @@ function erstelleNeuesProjekt() {
 	$db = $.couch.db("evab");
 	$db.saveDoc(hProjekt, {
 		success: function (data) {
+			//_id und _rev ergänzen
+			hProjekt._id = data.id;
+			hProjekt._rev = data.rev;
 			//Variabeln verfügbar machen
 			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
+			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
+			window.hProjekt = hProjekt;
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			leereStorageProjektListe("mitLatLngListe");
 			//Vorsicht: Von hProjektEdit.html aus same page transition!
@@ -1023,41 +1028,52 @@ function initiiereInstallieren() {
 
 //generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Projekts, Username
+//bei neuen Projekten wird das zuvor erzeugte Projekt übernommen, um die DB-Anfrage zu sparen
 function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	//$('#AnhängehPE').hide().trigger('updatelayout');
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.ProjektId, {
-		success: function (Projekt) {
-			//fixe Felder aktualisieren
-			$("#pName").val(Projekt.pName);
-			//Variabeln bereitstellen
-			localStorage.ProjektId = Projekt._id;
-			//prüfen, ob die Feldliste schon geholt wurde
-			//wenn ja: deren globale Variable verwenden
-			if (window.FeldlisteProjekt) {
-				initiiereProjektEdit_2(Projekt);
-			} else if (localStorage.FeldlisteProjekt) {
-				FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);
-				initiiereProjektEdit_2(Projekt);
-			} else {
-				//das dauert länger - Hinweis einblenden
-				$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-				//Feldliste aus der DB holen
-				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeProjekt', {
-					success: function (Feldliste) {
-						FeldlisteProjekt = Feldliste;
-						localStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
-						initiiereProjektEdit_2(Projekt);
-					}
-				});
+	if (window.hProjekt) {
+		initiiereProjektEdit_2(window.hProjekt);
+		//gleich löschen - wird nur bei neuen Projekt gebraucht
+		delete window.hProjekt;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ProjektId, {
+			success: function (hProjekt) {
+				initiiereProjektEdit_2(hProjekt);
 			}
-		}
-	});
+		});
+	}
 }
 
 function initiiereProjektEdit_2(Projekt) {
+	//fixe Felder aktualisieren
+	$("#pName").val(Projekt.pName);
+	//Variabeln bereitstellen
+	localStorage.ProjektId = Projekt._id;
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (window.FeldlisteProjekt) {
+		initiiereProjektEdit_3(Projekt);
+	} else if (localStorage.FeldlisteProjekt) {
+		FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);
+		initiiereProjektEdit_3(Projekt);
+	} else {
+		//das dauert länger - Hinweis einblenden
+		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		//Feldliste aus der DB holen
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeProjekt', {
+			success: function (Feldliste) {
+				FeldlisteProjekt = Feldliste;
+				localStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
+				initiiereProjektEdit_3(Projekt);
+			}
+		});
+	}
+}
+
+function initiiereProjektEdit_3(Projekt) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
 	//Linie nur anfügen, wenn Felder erstellt wurden
@@ -1734,10 +1750,10 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		$db = $.couch.db("evab");
 		$db.saveDoc(Ort, {
 			success: function (data) {
-				GetGeolocation(Ort.id);
-				//Status zurücksetzen - es soll nur ein mal verortet werden
+				GetGeolocation(data.id);
 			}
 		});
+		//Status zurücksetzen - es soll nur ein mal verortet werden
 		delete localStorage.Status;
 	} else {
 		//Attachments gibt es bei neuen Orten nicht
