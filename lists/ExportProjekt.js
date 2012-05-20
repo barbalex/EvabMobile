@@ -47,7 +47,7 @@ function(head, req) {
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
+			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
@@ -81,7 +81,7 @@ function(head, req) {
 		FeldNamenEnthalten = [];
 		for (name in Datensatz) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
+			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 				FeldNamenEnthalten.push(name);
 			}
 		}
@@ -92,6 +92,7 @@ function(head, req) {
 		for (z in FeldNamen) {
 			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
 				Feld = eval('Datensatz.' + FeldNamen[z]);
+				Feld = Datensatz[FeldNamen[z]];
 				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
 				if (FeldNamen[z] == "_attachments") {
 					for (x in Feld) {

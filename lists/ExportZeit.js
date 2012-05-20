@@ -46,11 +46,13 @@ function(head, req) {
 		}
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
-				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
-				if (FeldNamen.indexOf(name) == -1) {
-					FeldNamen.push(name);
+			if (typeof name !== "function") {
+				//war mal auch ausgeschlossen: name !== '_rev' && 
+				if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
+					//alle noch nicht im Array enthaltenen Feldnamen ergänzen
+					if (FeldNamen.indexOf(name) == -1) {
+						FeldNamen.push(name);
+					}
 				}
 			}
 		}
@@ -60,11 +62,13 @@ function(head, req) {
 	//Titelzeile erstellen
 	Titelzeile = '"';
 	for (i in FeldNamen) {
-		//_attachments zu Anhänge umbenennen
-		if (FeldNamen[i] === "_attachments") {
-			Titelzeile += '"Anhänge\t"';
-		} else {
-			Titelzeile += FeldNamen[i] + '"\t"';
+		if (typeof i !== "function") {
+			//_attachments zu Anhänge umbenennen
+			if (FeldNamen[i] === "_attachments") {
+				Titelzeile += '"Anhänge\t"';
+			} else {
+				Titelzeile += FeldNamen[i] + '"\t"';
+			}
 		}
 	}
 
@@ -76,43 +80,49 @@ function(head, req) {
 
 	//durch Datensätze loopen. i = Datensatz
 	for (y in Datensätze) {
-		Datensatz = Datensätze[y];
-		//für jeden Datensatz die Liste der enthaltenen Felder erstellen
-		FeldNamenEnthalten = [];
-		for (name in Datensatz) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
-				FeldNamenEnthalten.push(name);
-			}
-		}
-		//Durch FeldNamen loopen
-		//wenn FeldName des Datensatzes enthalten ist, dessen Wert anfügen
-		//sonst leeren Wert
-		Datenzeile = '"';
-		for (z in FeldNamen) {
-			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
-				Feld = eval('Datensatz.' + FeldNamen[z]);
-				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
-				if (FeldNamen[z] == "_attachments") {
-					for (x in Feld) {
-						FeldLength = parseInt(Feld[x]['length']);
-						FeldLengthLänge = parseInt(parseInt(FeldLength.length) -3);
-						Datenzeile += x + " (" + Feld[x].content_type + ", " + Math.floor(Feld[x]['length']/1000) + " KB), ";
+		if (typeof y !== "function") {
+			Datensatz = Datensätze[y];
+			//für jeden Datensatz die Liste der enthaltenen Felder erstellen
+			FeldNamenEnthalten = [];
+			for (name in Datensatz) {
+				if (typeof name !== "function") {
+					//war mal auch ausgeschlossen: name !== '_rev' && 
+					if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
+						FeldNamenEnthalten.push(name);
 					}
-					//letztes Komma und Leerzeichen abschneiden
-					Datenzeilenlänge = (Datenzeile.length -2);
-					Datenzeile = Datenzeile.slice(0, Datenzeilenlänge);
-				} else {
-					Datenzeile += Feld;
 				}
-				Datenzeile += '"\t"';
-			} else {
-				Datenzeile += '"\t"';
 			}
+			//Durch FeldNamen loopen
+			//wenn FeldName des Datensatzes enthalten ist, dessen Wert anfügen
+			//sonst leeren Wert
+			Datenzeile = '"';
+			for (z in FeldNamen) {
+				if (typeof z !== "function") {
+					if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
+						Feld = Datensatz[FeldNamen[z]];
+						//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
+						if (FeldNamen[z] == "_attachments") {
+							for (x in Feld) {
+								FeldLength = parseInt(Feld[x]['length']);
+								FeldLengthLänge = parseInt(parseInt(FeldLength.length) -3);
+								Datenzeile += x + " (" + Feld[x].content_type + ", " + Math.floor(Feld[x]['length']/1000) + " KB), ";
+							}
+							//letztes Komma und Leerzeichen abschneiden
+							Datenzeilenlänge = (Datenzeile.length -2);
+							Datenzeile = Datenzeile.slice(0, Datenzeilenlänge);
+						} else {
+							Datenzeile += Feld;
+						}
+						Datenzeile += '"\t"';
+					} else {
+						Datenzeile += '"\t"';
+					}
+				}
+			}
+			Datenzeilenlänge = (Datenzeile.length -3);
+			//letztes \t abschneiden, mit \n zur nächsten Zeile
+			Datenzeile = Datenzeile.slice(0, Datenzeilenlänge) + '"\n';
+			send(Datenzeile);
 		}
-		Datenzeilenlänge = (Datenzeile.length -3);
-		//letztes \t abschneiden, mit \n zur nächsten Zeile
-		Datenzeile = Datenzeile.slice(0, Datenzeilenlänge) + '"\n';
-		send(Datenzeile);
 	}
 }
