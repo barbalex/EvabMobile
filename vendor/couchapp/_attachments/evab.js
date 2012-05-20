@@ -601,6 +601,11 @@ function erstelleNeuenRaum() {
 			//speichern
 			$db.saveDoc(doc, {
 				success: function (data) {
+					//_id und _rev ergänzen
+					doc._id = data.id;
+					doc._rev = data.rev;
+					//damit hRaumEdit.html den Raum nicht aus der DB holen muss
+					window.hRaum = doc;
 					//Variabeln verfügbar machen
 					localStorage.RaumId = data.id;
 					localStorage.Status = "neu";
@@ -638,11 +643,11 @@ function erstelleNeuesProjekt() {
 			//_id und _rev ergänzen
 			hProjekt._id = data.id;
 			hProjekt._rev = data.rev;
+			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
+			window.hProjekt = hProjekt;
 			//Variabeln verfügbar machen
 			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
-			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
-			window.hProjekt = hProjekt;
 			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			leereStorageProjektListe("mitLatLngListe");
 			//Vorsicht: Von hProjektEdit.html aus same page transition!
@@ -1510,44 +1515,54 @@ function initiiereProjektliste_2() {
 
 //generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //Mitgeben: id des Raums, Username
+//Bei neuen Räumen wird der Raum übernommen um eine DB-Abfrage zu sparen
 function initiiereRaumEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehRE').hide();
-	$db = $.couch.db("evab");
-	//Holt den Raum mit der id "RaumId" aus der DB
-	$db.openDoc(localStorage.RaumId, {
-		success: function (Raum) {
-			//fixes Feld setzen
-			$("#rName").val(Raum.rName);
-			//Variabeln bereitstellen
-			localStorage.ProjektId = Raum.hProjektId;
-			localStorage.RaumId = Raum._id;
-			//prüfen, ob die Feldliste schon geholt wurde
-			//wenn ja: deren globale Variable verwenden
-			if (window.FeldlisteRaumEdit) {
-				initiiereRaumEdit_2(Raum);
-			} else if (localStorage.FeldlisteRaumEdit) {
-				FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
-				initiiereRaumEdit_2(Raum);
-			} else {
-				//das dauert länger - hinweisen
-				$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-				//holt die Feldliste aus der DB
-				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeRaum', {
-					success: function (Feldliste) {
-						//Variabeln bereitstellen
-						FeldlisteRaumEdit = Feldliste;
-						localStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
-						initiiereRaumEdit_2(Raum);
-					}
-				});
+	if (window.hRaum) {
+		initiiereRaumEdit_2(window.hRaum);
+		//gleich löschen - wird nur bei neuen Räumen gebraucht
+		delete window.hRaum;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.RaumId, {
+			success: function (hRaum) {
+				initiiereRaumEdit_2(hRaum);
 			}
-		}
-	});
+		});
+	}
 }
 
 function initiiereRaumEdit_2(Raum) {
+	//fixes Feld setzen
+	$("#rName").val(Raum.rName);
+	//Variabeln bereitstellen
+	localStorage.ProjektId = Raum.hProjektId;
+	localStorage.RaumId = Raum._id;
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (window.FeldlisteRaumEdit) {
+		initiiereRaumEdit_3(Raum);
+	} else if (localStorage.FeldlisteRaumEdit) {
+		FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
+		initiiereRaumEdit_3(Raum);
+	} else {
+		//das dauert länger - hinweisen
+		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		//holt die Feldliste aus der DB
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeRaum', {
+			success: function (Feldliste) {
+				//Variabeln bereitstellen
+				FeldlisteRaumEdit = Feldliste;
+				localStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
+				initiiereRaumEdit_3(Raum);
+			}
+		});
+	}
+}
+
+function initiiereRaumEdit_3(Raum) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerRaumEditForm (Raum);
 	//Linie nur anfügen, wenn Felder erstellt wurden
