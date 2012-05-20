@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
-  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
-  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-  	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-  	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+<head>
+	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>EvAB</title>
+	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
 	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
 	<script type="text/javascript">			
 		$(document).on("mobileinit", function () {
@@ -30,51 +30,49 @@
 	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
 
   <body>
-  	<div data-role="page" id="BeobEditPage">
-  		<div data-role="header" id="BeobEditHeader" data-position="fixed" data-tap-toggle="false">
-  			<a href="#" id="OeffneBeobListeBeobEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Beobachtungs-Liste</a>
-  			<h2>Beobachtung</h2>
-  			<a href='#' id='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
-  		</div>
+	<div data-role="page" id="BeobEditPage">
+		<div data-role="header" id="BeobEditHeader" data-position="fixed" data-tap-toggle="false">
+			<a href="#" id="OeffneBeobListeBeobEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Beobachtungs-Liste</a>
+			<h2>Beobachtung</h2>
+			<a href='#' id='MenuBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+		</div>
 		<div id="BeobEditContent" data-role="content" style="padding:0em;">
 			<form id="BeobEditForm" action="#" method="get" autocomplete="off">
 				<div data-role="fieldcontain">
-					<label for="aArtGruppe" class="select speichern">Artgruppe:</label>
-					<select id="aArtGruppe" name="aArtGruppe" data-icon="arrow-r" data-native-menu="true">
-					</select>
+					<label for="aArtGruppeBE" class="select speichern">Artgruppe:</label>
+					<select id="aArtGruppeBE" name="aArtGruppe" data-icon="arrow-r" data-native-menu="true"></select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="aArtName" class="select speichern">Artname:</label>
-					<select id="aArtName" name="aArtName" data-icon="arrow-r" data-native-menu="true">
-					</select>
+					<label for="aArtNameBE" class="select speichern">Artname:</label>
+					<select id="aArtNameBE" name="aArtName" data-icon="arrow-r" data-native-menu="true"></select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="aAutor">Autor:</label>
-					<input id="aAutor" name="aAutor" class="speichern" type="text" required/>
+					<label for="aAutorBE">Autor:</label>
+					<input id="aAutorBE" name="aAutor" class="speichern" type="text" required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" class="speichern" type="text" />
+					<label for="oXKoordBE">X-Koordinate:</label>
+					<input id="oXKoordBE" name="oXKoord" class="speichern" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" class="speichern" type="text" />
+					<label for="oYKoordBE">Y-Koordinate:</label>
+					<input id="oYKoordBE" name="oYKoord" class="speichern" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oLagegenauigkeit">Lage Genauigkeit:</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" class="speichern" type="text" />
+					<label for="oLagegenauigkeitBE">Lage Genauigkeit:</label>
+					<input id="oLagegenauigkeitBE" name="oLagegenauigkeit" class="speichern" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required/>
+					<label for="zDatumBE">Datum:</label>
+					<input id="zDatumBE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zUhrzeit">Zeit:</label>
-					<input id="zUhrzeit" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}'/>
+					<label for="zUhrzeitBE">Zeit:</label>
+					<input id="zUhrzeitBE" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}'/>
 				</div>
 				<div id="BeobEditFormHtml">
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
@@ -82,7 +80,7 @@
 			</form>
 			<form id="FormAnhängeBE" action="" method="post" >
 				<hr />
-				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
+				<div style="display:inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
 				<div id="AnhängeBE">
 
 				</div>			
@@ -142,7 +140,7 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#BeobEditForm").on("click", "#aArtGruppe", function (event) {
+				$("#BeobEditForm").on("click", "[name='aArtGruppe']", function (event) {
 					event.preventDefault();
 					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
@@ -158,7 +156,7 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#BeobEditForm").on('click', '#aArtName', function (event) {
+				$("#BeobEditForm").on('click', '[name="aArtName"]', function (event) {
 					event.preventDefault();
 					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
 					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
@@ -190,10 +188,10 @@
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
-					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
+					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 						//Wenn Koordinaten und beide erfasst
-						localStorage.oXKoord = $("#oXKoord").val();
-						localStorage.oYKoord = $("#oYKoord").val();
+						localStorage.oXKoord = $("[name='oXKoord']").val();
+						localStorage.oYKoord = $("[name='oYKoord']").val();
 						//Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
@@ -364,7 +362,7 @@
 					var i, BeobIdAktuell, AnzBeob;
 					for (i in BeobListe.rows) {
 						BeobIdAktuell = BeobListe.rows[i].value._id;
-						AnzBeob = BeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzBeob = BeobListe.rows.length -1;		//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (BeobIdAktuell === localStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":

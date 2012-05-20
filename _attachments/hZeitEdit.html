@@ -51,12 +51,12 @@
 		<div data-role="content" id="ZeitEditPageContent">
 			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
-					<label for="zDatum">Datum:</label>
-					<input id="zDatum" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required/>
+					<label for="zDatumhZE">Datum:</label>
+					<input id="zDatumhZE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="zUhrzeit">Zeit:</label>
-					<input id="zUhrzeit" name="zUhrzeit" class="speichern" type="time" data-role="datebox" data-options='{"mode": "timeflipbox"}'/>
+					<label for="zUhrzeithZE">Zeit:</label>
+					<input id="zUhrzeithZE" name="zUhrzeit" class="speichern" type="time" data-role="datebox" data-options='{"mode": "timeflipbox"}'/>
 				</div>
 				<div id="hZeitEditFormHtml">
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
@@ -313,17 +313,17 @@
 				}
 
 				function validierehZeitEdit() {
-					if (!$("#zDatum").val()) {
+					if (!$("[name='zDatum']").val()) {
 						melde("Bitte Datum erfassen");
 						setTimeout(function() { 
-							$('#zDatum').focus(); 
+							$("[name='zDatum']").focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
-					if (!$("#zUhrzeit").val()) {
+					if (!$("[name='zUhrzeit']").val()) {
 						melde("Bitte Zeit erfassen");
 						setTimeout(function() { 
-							$('#zUhrzeit').focus(); 
+							$("[name='zUhrzeit']").focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}

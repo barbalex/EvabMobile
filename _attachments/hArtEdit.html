@@ -181,13 +181,13 @@
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#hArtEditForm").on("click", "#aArtGruppe", function (event) {
+				$("#hArtEditForm").on("click", "[name='aArtGruppe']", function (event) {
 					event.preventDefault();
 					zuArtgruppenliste();
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#hArtEditForm").on("click", "#aArtName", function (event) {
+				$("#hArtEditForm").on("click", "[name='aArtName']", function (event) {
 					event.preventDefault();
 					zuArtliste();
 				});

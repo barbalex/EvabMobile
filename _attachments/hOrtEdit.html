@@ -50,20 +50,20 @@
 		<div data-role="content" id="OrtEditContent">
 			<form action="#" method="get" autocomplete="off" id="hOrtEditForm">
 				<div data-role="fieldcontain">
-					<label for="oName">Name:</label>
-					<input id="oName" name="oName" class="speichern" type="text" placeholder="(Eingabe erforderlich)" required/>
+					<label for="oNamehOE">Name:</label>
+					<input id="oNamehOE" name="oName" class="speichern" type="text" placeholder="(Eingabe erforderlich)" required/>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oXKoord">X-Koordinate:</label>
-					<input id="oXKoord" name="oXKoord" class="speichern" type="text" />
+					<label for="oXKoordhOE">X-Koordinate:</label>
+					<input id="oXKoordhOE" name="oXKoord" class="speichern" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oYKoord">Y-Koordinate:</label>
-					<input id="oYKoord" name="oYKoord" class="speichern" type="text" />
+					<label for="oYKoordhOE">Y-Koordinate:</label>
+					<input id="oYKoordhOE" name="oYKoord" class="speichern" type="text" />
 				</div>
 				<div data-role="fieldcontain">
-					<label for="oLagegenauigkeit">Lage Genauigkeit (Text):</label>
-					<input id="oLagegenauigkeit" name="oLagegenauigkeit" class="speichern" type="text" />
+					<label for="oLagegenauigkeithOE">Lage Genauigkeit (Text):</label>
+					<input id="oLagegenauigkeithOE" name="oLagegenauigkeit" class="speichern" type="text" />
 				</div>
 				<div id="hOrtEditFormHtml">
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
@@ -131,10 +131,10 @@
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
 					var Feldname;
 					Feldname = this.name;
-					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("#oXKoord").val() && $("#oYKoord").val()) {
+					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 						//Wenn Koordinaten und beide erfasst
-						localStorage.oXKoord = $("#oXKoord").val();
-						localStorage.oYKoord = $("#oYKoord").val();
+						localStorage.oXKoord = $("[name='oXKoord']").val();
+						localStorage.oYKoord = $("[name='oYKoord']").val();
 						//Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
@@ -347,10 +347,10 @@
 				}
 
 				function validatehOrtEdit() {
-					if (!$("#oName").val()) {
+					if (!$("[name='oName']").val()) {
 						melde("Bitte Ortnamen eingeben");
 						setTimeout(function() { 
-							$('#oName').focus(); 
+							$("[name='oName']").focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}

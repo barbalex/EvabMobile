@@ -214,11 +214,11 @@ function speichereKoordinaten(id) {
 			$db.saveDoc(doc, {
 				success: function () {
 					//melde("Koordinaten gespeichert");
-					$("#oXKoord").val(localStorage.oXKoord);
-					$("#oYKoord").val(localStorage.oYKoord);
-					$("#oLatitudeDecDeg").val(localStorage.oLatitudeDecDeg);
-					$("#oLongitudeDecDeg").val(localStorage.oLongitudeDecDeg);
-					$("#oLagegenauigkeit").val(parseInt(localStorage.oLagegenauigkeit));
+					$("[name='oXKoord']").val(localStorage.oXKoord);
+					$("[name='oYKoord']").val(localStorage.oYKoord);
+					$("[name='oLatitudeDecDeg']").val(localStorage.oLatitudeDecDeg);
+					$("[name='oLongitudeDecDeg']").val(localStorage.oLongitudeDecDeg);
+					$("[name='oLagegenauigkeit']").val(parseInt(localStorage.oLagegenauigkeit));
 					$("#oObergrenzeHöhe").val(parseInt(localStorage.oHoehe));
 				},
 				error: function () {
@@ -843,20 +843,20 @@ function erstelleDynamischeFelderBeobEdit(Beob) {
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 //erwartet das Objekt Beob, welches die Werte enthält
 function setzeFixeFelderInBeobEdit(Beob) {
-	$("#aArtGruppe").selectmenu();
-	$("#aArtGruppe").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
-	$("#aArtGruppe").val(Beob.aArtGruppe);
-	$("#aArtGruppe").selectmenu("refresh");
-	$("#aArtName").selectmenu();
-	$("#aArtName").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
-	$("#aArtName").val(Beob.aArtName);
-	$("#aArtName").selectmenu("refresh");
-	$("#aAutor").val(Beob.aAutor);
-	$("#oXKoord").val(Beob.oXKoord);
-	$("#oYKoord").val(Beob.oYKoord);
-	$("#oLagegenauigkeit").val(Beob.oLagegenauigkeit);
-	$("#zDatum").val(Beob.zDatum);
-	$("#zUhrzeit").val(Beob.zUhrzeit);
+	$("[name='aArtGruppe']").selectmenu();
+	$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
+	$("[name='aArtGruppe']").val(Beob.aArtGruppe);
+	$("[name='aArtGruppe']").selectmenu("refresh");
+	$("[name='aArtName']").selectmenu();
+	$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
+	$("[name='aArtName']").val(Beob.aArtName);
+	$("[name='aArtName']").selectmenu("refresh");
+	$("[name='aAutor']").val(Beob.aAutor);
+	$("[name='oXKoord']").val(Beob.oXKoord);
+	$("[name='oYKoord']").val(Beob.oYKoord);
+	$("[name='oLagegenauigkeit']").val(Beob.oLagegenauigkeit);
+	$("[name='zDatum']").val(Beob.zDatum);
+	$("[name='zUhrzeit']").val(Beob.zUhrzeit);
 }
 
 //generiert das Html für das Formular in BeobEdit.html
@@ -1631,10 +1631,10 @@ function initiiereOrtEdit() {
 	$db.openDoc(localStorage.OrtId, {
 		success: function (Ort) {
 			//fixe Felder aktualisieren
-			$("#oName").val(Ort.oName);
-			$("#oXKoord").val(Ort.oXKoord);
-			$("#oYKoord").val(Ort.oYKoord);
-			$("#oLagegenauigkeit").val(Ort.oLagegenauigkeit);
+			$("[name='oName']").val(Ort.oName);
+			$("[name='oXKoord']").val(Ort.oXKoord);
+			$("[name='oYKoord']").val(Ort.oYKoord);
+			$("[name='oLagegenauigkeit']").val(Ort.oLagegenauigkeit);
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Ort.hProjektId;
 			localStorage.RaumId = Ort.hRaumId;
@@ -1714,7 +1714,7 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	}
 	//Allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
-		$("#oName").focus();
+		$("[name='oName']").focus();
 		$db = $.couch.db("evab");
 		$db.saveDoc(Ort, {
 			success: function () {
@@ -1792,8 +1792,8 @@ function initiiereZeitEdit() {
 	$db.openDoc(localStorage.ZeitId, {
 		success: function (Zeit) {
 			//fixe Felder aktualisieren
-			$("#zDatum").val(Zeit.zDatum);
-			$("#zUhrzeit").val(Zeit.zUhrzeit);
+			$("[name='zDatum']").val(Zeit.zDatum);
+			$("[name='zUhrzeit']").val(Zeit.zUhrzeit);
 			//Variabeln bereitstellen
 			localStorage.ProjektId = Zeit.hProjektId;
 			localStorage.RaumId = Zeit.hRaumId;
@@ -1952,14 +1952,14 @@ function initiierehBeobEdit() {
 			localStorage.aArtName = Beob.aArtName;
 			localStorage.aArtId = Beob.aArtId;
 			//fixe Felder aktualisieren
-			$("#aArtGruppe").selectmenu();
-			$("#aArtGruppe").val(Beob.aArtGruppe);
-			$("#aArtGruppe").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
-			$("#aArtGruppe").selectmenu("refresh");
-			$("#aArtName").selectmenu();
-			$("#aArtName").val(Beob.aArtName);
-			$("#aArtName").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
-			$("#aArtName").selectmenu("refresh");
+			$("[name='aArtGruppe']").selectmenu();
+			$("[name='aArtGruppe']").val(Beob.aArtGruppe);
+			$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
+			$("[name='aArtGruppe']").selectmenu("refresh");
+			$("[name='aArtName']").selectmenu();
+			$("[name='aArtName']").val(Beob.aArtName);
+			$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
+			$("[name='aArtName']").selectmenu("refresh");
 			//prüfen, ob die Feldliste schon geholt wurde
 			//wenn ja: deren globale Variable verwenden
 			if (window.FeldlistehBeobEdit) {
@@ -2485,11 +2485,11 @@ function GeolocationAuslesen(position) {
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
 	localStorage.oXKoord = DdInChX(position.coords.latitude, position.coords.longitude);
 	localStorage.oYKoord = DdInChY(position.coords.latitude, position.coords.longitude);
-	$("#oXKoord").val(localStorage.oXKoord);
-	$("#oYKoord").val(localStorage.oYKoord);
-	$("#oLongitudeDecDeg").val(position.coords.longitude);
-	$("#oLatitudeDecDeg").val(position.coords.latitude);
-	$("#oLagegenauigkeit").val(position.coords.accuracy);
+	$("[name='oXKoord']").val(localStorage.oXKoord);
+	$("[name='oYKoord']").val(localStorage.oYKoord);
+	$("[name='oLongitudeDecDeg']").val(position.coords.longitude);
+	$("[name='oLatitudeDecDeg']").val(position.coords.latitude);
+	$("[name='oLagegenauigkeit']").val(position.coords.accuracy);
 	if (position.coords.altitude > 0) {
 		$("#oObergrenzeHöhe").val(position.coords.altitude);
 		localStorage.oHoehe = position.coords.altitude;
@@ -2537,11 +2537,11 @@ function stopGeolocation() {
 		melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
 	} else if (!localStorage.oLagegenauigkeit) {
 		//Felder leeren
-		$("#oXKoord").val("");
-		$("#oYKoord").val("");
-		$("#oLongitudeDecDeg").val("");
-		$("#oLatitudeDecDeg").val("");
-		$("#oLagegenauigkeit").val("");
+		$("[name='oXKoord']").val("");
+		$("[name='oYKoord']").val("");
+		$("[name='oLongitudeDecDeg']").val("");
+		$("[name='oLatitudeDecDeg']").val("");
+		$("[name='oLagegenauigkeit']").val("");
 		//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
 		speichereKoordinaten(localStorage.docId);
 		melde("Keine genaue Position erhalten");
