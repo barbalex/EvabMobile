@@ -417,53 +417,31 @@
 				}
 
 				function speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//ZeitenVonOrt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn Zeiten neu bzw. gelöscht werden, 
-					//muss ZeitenVonOrt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ZeitenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ZeitenVonOrt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
-							}
-						});
-					}
+					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ZeitenVonOrt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
+						}
+					});
 				}
 
 				function speichereOrtfeldInArten(Feldname, Feldwert, InputTyp) {
-					//ArtenVonOrt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn hArten neu bzw. gelöscht werden, 
-					//muss ArtenVonOrt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ArtenVonOrt && window.ZuletztGespeicherteOrtId && window.ZuletztGespeicherteOrtId === localStorage.OrtId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonOrt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
-							}
-						});
-					}
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ArtenVonOrt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
+						}
+					});
 				}
 				
 				//Menü aufbauen

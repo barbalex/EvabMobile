@@ -389,27 +389,16 @@
 				}
 
 				function speichereZeitfeldInArten(Feldname, Feldwert, InputTyp) {
-					//ArtenVonZeit wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn hArten neu bzw. gelöscht werden, 
-					//muss ArtenVonZeit gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ArtenVonZeit && window.ZuletztGespeicherteZeitId && window.ZuletztGespeicherteZeitId === localStorage.ZeitId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonZeit = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
-							}
-						});
-					}
+					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
+					$db.view(viewname, {
+						success: function (data) {
+							window.ArtenVonZeit = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
+						}
+					});
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates

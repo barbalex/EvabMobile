@@ -422,103 +422,59 @@
 				}
 
 				function speichereProjektfeldInArten(Feldname, Feldwert, InputTyp) {
-					//ArtenVonProjekt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn hArten neu bzw. gelöscht werden, 
-					//muss ArtenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der sessionStorage-Verwaltung
-					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ArtenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonProjekt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
-							}
-						});
-					}
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ArtenVonProjekt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
+						}
+					});
 				}
 
 				function speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//ZeitenVonProjekt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn hZeit neu bzw. gelöscht werden, 
-					//muss ZeitenVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
-					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ZeitenVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
-					} else {
-						//Liste aus der DB neu holen
-						viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ZeitenVonProjekt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
-							}
-						});
-					}
+					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ZeitenVonProjekt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
+						}
+					});
 				}
 
 				function speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp) {
-					//OrteVonProjekt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn hOrt neu bzw. gelöscht werden, 
-					//muss OrteVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
-					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.OrteVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
-					} else {
-						//Liste aus der DB neu holen
-						viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.OrteVonProjekt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
-							}
-						});
-					}
+					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.OrteVonProjekt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
+						}
+					});
 				}
 
 				function speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp) {
-					//RaeumeVonProjekt wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss
-					//Wenn hRaum neu bzw. gelöscht werden, 
-					//muss RaeumeVonProjekt gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der sessionStorage-Verwaltung und in nächsteVorigeZeit
-					//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.RaeumeVonProjekt && window.ZuletztGespeicherteProjektId && window.ZuletztGespeicherteProjektId === localStorage.ProjektId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
-					} else {
-						//Liste aus der DB neu holen
-						viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.RaeumeVonProjekt = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
-							}
-						});
-					}
+					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.RaeumeVonProjekt = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
+						}
+					});
 				}
 
 				//Menü aufbauen

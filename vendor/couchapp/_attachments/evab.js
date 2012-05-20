@@ -1350,7 +1350,37 @@ function initiiereFeldliste_2() {
 //speichert das neue Feld in alle Datensätze
 function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste) {
 	//geändertes Ort-Feld in doc anpassen
+	var JsonBulkListe, DsBulkListe, Docs, row;
+	DsBulkListe = {};
+	Docs = [];
+	for (i in Datensatzliste.rows) {
+		row = Datensatzliste.rows[i].doc;
+		if (Feldwert) {
+			if (InputTyp === "number") {
+				row[Feldname] = parseInt(Feldwert);
+			} else {
+				row[Feldname] = Feldwert;
+			}
+		} else if (row[Feldname]) {
+			delete row[Feldname];
+		}
+		Docs.push(row);
+	}
+	DsBulkListe.docs = Docs;
+	JsonBulkListe = JSON.stringify(DsBulkListe);
+	//$db = $.couch.db("evab");
+	//$db.bulkSave(JsonBulkListe);
+	$.ajax({
+		type: "POST",
+		url: "../../_bulk_docs",
+		contentType: "application/json", data: JSON.stringify(DsBulkListe)
+	});
+}
+
+function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Datensatzliste) {
+	//geändertes Ort-Feld in doc anpassen
 	var ID;
+	$db = $.couch.db("evab");
 	for (i in Datensatzliste.rows) {
 		ID = Datensatzliste.rows[i].key[1];
 		$db.openDoc(ID, {
@@ -3154,7 +3184,6 @@ function leereStorageProjektEdit(mitLatLngListe) {
 function leereStorageRaumListe(mitLatLngListe) {
 	delete localStorage.RaumListe;
 	delete window.RaumListe;
-	delete window.RaeumeVonProjekt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
@@ -3172,8 +3201,6 @@ function leereStorageRaumEdit(mitLatLngListe) {
 function leereStorageOrtListe(mitLatLngListe) {
 	delete localStorage.OrtListe;
 	delete window.OrtListe;
-	delete window.OrteVonProjekt;
-	delete window.OrteVonRaum;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
@@ -3195,9 +3222,6 @@ function leereStorageOrtEdit() {
 function leereStorageZeitListe() {
 	delete localStorage.ZeitListe;
 	delete window.ZeitListe;
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
 }
 
 function leereStorageZeitEdit() {
@@ -3207,10 +3231,6 @@ function leereStorageZeitEdit() {
 function leereStoragehBeobListe() {
 	delete localStorage.hBeobListe;
 	delete window.hBeobListe;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
 }
 
 function leereStoragehBeobEdit() {

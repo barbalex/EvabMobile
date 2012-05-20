@@ -404,78 +404,45 @@
 				}
 
 				function speichereRaumfeldInArten(Feldname, Feldwert, InputTyp) {
-					//ArtenVonRaum wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn hArten neu bzw. gelöscht werden, 
-					//muss ArtenVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ArtenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonRaum = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
-							}
-						});
-					}
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ArtenVonRaum = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
+						}
+					});
 				}
 
 				function speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//ZeitenVonRaum wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn Zeiten neu bzw. gelöscht werden, 
-					//muss ZeitenVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.ZeitenVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ZeitenVonRaum = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
-							}
-						});
-					}
+					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.ZeitenVonRaum = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
+						}
+					});
 				}
 
 				function speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp) {
-					//OrteVonRaum wird als globale Variable gespeichert
-					//damit die DB nicht jedes mal abgefragt werden muss.
-					//Wenn Orte neu bzw. gelöscht werden, 
-					//muss OrteVonRaum gelöscht werden, damit sie neu aus DB abgefragt wird
-					//das geschieht in der Storage-Verwaltung
-					//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-					//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+					//Diese Listen sollen NICHT als globale Variable gespeichert werden
+					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					if (window.OrteVonRaum && window.ZuletztGespeicherteRaumId && window.ZuletztGespeicherteRaumId === localStorage.RaumId) {
-						//Liste aus globaler Variable verwenden
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
-					} else {
-						//Liste neu aus DB holen
-						viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.OrteVonRaum = data;
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
-							}
-						});
-					}
+					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+					$db = $.couch.db("evab");
+					$db.view(viewname, {
+						success: function (data) {
+							window.OrteVonRaum = data;
+							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
+						}
+					});
 				}
 
 				//Menü aufbauen
