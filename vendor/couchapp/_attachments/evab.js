@@ -480,6 +480,11 @@ function erstelleNeueZeit() {
 							//speichern
 							$db.saveDoc(doc, {
 								success: function (Zeit) {
+									//_id und _rev ergänzen
+									doc._id = Zeit.id;
+									doc._rev = Zeit.rev;
+									//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
+									window.hZeit = doc;
 									//Variabeln verfügbar machen
 									localStorage.ZeitId = Zeit.id;
 									localStorage.Status = "neu";
@@ -1678,7 +1683,7 @@ function initiiereRaumListe_2() {
 //Mitgeben: id des Orts
 function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	//$('#AnhängehRE').hide();
+	//$('#AnhängehOE').hide();
 	if (window.hOrt) {
 		initiiereOrtEdit_2(window.hOrt);
 		//gleich löschen - wird nur bei neuen Orten gebraucht
@@ -1850,42 +1855,52 @@ function initiiereOrtListe_2() {
 function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.ZeitId, {
-		success: function (Zeit) {
-			//fixe Felder aktualisieren
-			$("[name='zDatum']").val(Zeit.zDatum);
-			$("[name='zUhrzeit']").val(Zeit.zUhrzeit);
-			//Variabeln bereitstellen
-			localStorage.ProjektId = Zeit.hProjektId;
-			localStorage.RaumId = Zeit.hRaumId;
-			localStorage.OrtId = Zeit.hOrtId;
-			localStorage.ZeitId = Zeit._id;
-			//prüfen, ob die Feldliste schon geholt wurde
-			//wenn ja: deren globale Variable verwenden
-			if (window.FeldlisteZeitEdit) {
+	if (window.hZeit) {
+		initiiereZeitEdit_2(window.hZeit);
+		//gleich löschen - wird nur bei neuen Zeiten gebraucht
+		delete window.hZeit;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ZeitId, {
+			success: function (Zeit) {
 				initiiereZeitEdit_2(Zeit);
-			} else if (localStorage.FeldlisteZeitEdit) {
-				FeldlisteZeitEdit = JSON.parse(localStorage.FeldlisteZeitEdit);
-				initiiereZeitEdit_2(Zeit);
-			} else {
-				//Feldliste aus der DB holen
-				//das dauert länger - hinweisen
-				$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeZeit', {
-					success: function (Feldliste) {
-						FeldlisteZeitEdit = Feldliste;
-						localStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
-						initiiereZeitEdit_2(Zeit);
-					}
-				});
 			}
-		}
-	});
+		});
+	}
 }
 
 function initiiereZeitEdit_2(Zeit) {
+	//fixe Felder aktualisieren
+	$("[name='zDatum']").val(Zeit.zDatum);
+	$("[name='zUhrzeit']").val(Zeit.zUhrzeit);
+	//Variabeln bereitstellen
+	localStorage.ProjektId = Zeit.hProjektId;
+	localStorage.RaumId = Zeit.hRaumId;
+	localStorage.OrtId = Zeit.hOrtId;
+	localStorage.ZeitId = Zeit._id;
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (window.FeldlisteZeitEdit) {
+		initiiereZeitEdit_3(Zeit);
+	} else if (localStorage.FeldlisteZeitEdit) {
+		FeldlisteZeitEdit = JSON.parse(localStorage.FeldlisteZeitEdit);
+		initiiereZeitEdit_3(Zeit);
+	} else {
+		//Feldliste aus der DB holen
+		//das dauert länger - hinweisen
+		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeZeit', {
+			success: function (Feldliste) {
+				FeldlisteZeitEdit = Feldliste;
+				localStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
+				initiiereZeitEdit_3(Zeit);
+			}
+		});
+	}
+}
+
+function initiiereZeitEdit_3(Zeit) {
 	var HtmlContainer = generiereHtmlFuerZeitEditForm(Zeit);
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
