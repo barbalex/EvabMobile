@@ -39,15 +39,17 @@
 			<a href="#" id="al_ButtonSprache" class="ui-btn-right">Lat</a>
 		</div>
 		<div data-role="content">
-			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
-				
-			</ul>
+			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen..."></ul>
 			<p id="al_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
 		</div>
 		<script type="text/javascript" charset="utf-8">
 
 			$("#al_Page").on("pageshow", function () {
 				initiiereArtenliste();
+			});
+
+			$("#al_Page").on("pagehide", function () {
+				$("#al_ArtenListe").hide();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {

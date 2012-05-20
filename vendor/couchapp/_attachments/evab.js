@@ -2777,26 +2777,62 @@ function initiiereArtenliste() {
 	}
 }
 
+//Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
+//möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, Artensprache, allfälliger Unterauswahl
 function erstelleArtenliste_2() {
+	//wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
+	//nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
+	//aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
+	if (window.Artenliste) {
+		if (localStorage.ArtenSpracheZuletzt === localStorage.ArtenSprache) {
+			if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
+				if (localStorage.L && localStorage.LZuletzt && (localStorage.L === localStorage.LZuletzt)) {
+					//ohne al_Artenliste.length zeigt er eine leere Liste...???
+					if ($("#al_Page").length > 0 && $("#al_ArtenListe").length > 0) {
+						$("#al_ArtenListe").show().listview("refresh");
+					} else {
+						erstelleArtenliste();
+					}
+					return;
+				}
+				if (!localStorage.L && !localStorage.LZuletzt) {
+					if ($("#al_Page").length > 0 && $("#al_ArtenListe").length > 0) {
+						$("#al_ArtenListe").show().listview("refresh");
+					} else {
+						erstelleArtenliste();
+					}
+					return;
+				}
+			}
+		}
+	}
+	//sonst aus der DB holen und die Variabeln aktualisieren
+	localStorage.ArtenSpracheZuletzt = localStorage.ArtenSprache;
+	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
+	if (localStorage.L) {
+		localStorage.LZuletzt = localStorage.L;
+	} else {
+		delete localStorage.LZuletzt;
+	}
 	switch(localStorage.ArtenSprache) {
 	case "Lateinisch":
 		$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
-		erstelleArtenlisteLateinisch();
+		holeArtenlisteLateinisch();
 		break;
 	case "Deutsch":
 		$("#al_ButtonSprache .ui-btn-text").text("Lateinisch");
-		erstelleArtenlisteDeutsch();
+		holeArtenlisteDeutsch();
 		break;
 	//default ist nötig, falls localStorage.ArtenSprache unerwarteterweise undefined ist
 	default:
 		$("#al_ButtonSprache .ui-btn-text").text("Deutsch");
-		erstelleArtenlisteLateinisch();
+		holeArtenlisteLateinisch();
 	}
 }
 
 //wird benutzt in Artenliste.html
 //aufgerufen von initiiereArtenliste
-function erstelleArtenlisteLateinisch() {
+function holeArtenlisteLateinisch() {
 	//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 	if (!localStorage.L) {
 		viewname = 'evab/Artliste?startkey=["' + localStorage.aArtGruppe + '"]&endkey=["' + localStorage.aArtGruppe + '",{},{}]';
@@ -2806,37 +2842,15 @@ function erstelleArtenlisteLateinisch() {
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
-			var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
-			ListItemContainer = "";
-			for (i in data.rows) {
-				if (typeof i !== "function") {
-					ArtBezeichnung = data.rows[i].key[2];
-					Art = data.rows[i].value;
-					ArtId = Art._id;
-					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-					ListItemContainer += ArtBezeichnung;
-					ListItemContainer += "\" ArtId=\"";
-					ListItemContainer += ArtId;
-					ListItemContainer += "\">";
-					ListItemContainer += "<a href=\"#\"><h3>";
-					ListItemContainer += ArtBezeichnung;
-					ListItemContainer += "<\/h3>";
-					if (Art.HinweisVerwandschaft) {
-						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-					}
-					ListItemContainer += "<\/a><\/li>";
-				}
-			}
-			$("#al_ArtenListe").html(ListItemContainer);
-			$("#al_ArtenListe").listview("refresh");
-			$("#al_Hinweistext").empty().remove();
+			window.Artenliste = data;
+			erstelleArtenliste();
 		}
 	});
 }
 
 //wird benutzt in Artenliste.html
 //aufgerufen von initiiereArtenliste
-function erstelleArtenlisteDeutsch() {
+function holeArtenlisteDeutsch() {
 	//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
 	if (!localStorage.L) {
 		viewname = 'evab/ArtlisteDeutsch?startkey=["' + localStorage.aArtGruppe + '"]&endkey=["' + localStorage.aArtGruppe + '",{},{}]';
@@ -2846,32 +2860,39 @@ function erstelleArtenlisteDeutsch() {
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
-			var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
-			ListItemContainer = "";
-			for (i in data.rows) {
-				if (typeof i !== "function") {
-					ArtBezeichnung = data.rows[i].key[2];
-					Art = data.rows[i].value;
-					ArtId = Art._id;
-					ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
-					ListItemContainer += ArtBezeichnung;
-					ListItemContainer += "\" ArtId=\"";
-					ListItemContainer += ArtId;
-					ListItemContainer += "\">";
-					ListItemContainer += "<a href=\"#\"><h3>";
-					ListItemContainer += ArtBezeichnung;
-					ListItemContainer += "<\/h3>";
-					if (Art.HinweisVerwandschaft) {
-						ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
-					}
-					ListItemContainer += "<\/a><\/li>";
-				}
-			}
-			$("#al_ArtenListe").html(ListItemContainer);
-			$("#al_ArtenListe").listview("refresh");
-			$("#al_Hinweistext").empty().remove();
+			window.Artenliste = data;
+			erstelleArtenliste();
 		}
 	});
+}
+
+//bekommt eine Artenliste und baut damit im Formular die Artenliste auf
+function erstelleArtenliste() {
+	var i, ListItemContainer, ArtBezeichnung, Art, ArtId;
+	ListItemContainer = "";
+	for (i in window.Artenliste.rows) {
+		if (typeof i !== "function") {
+			ArtBezeichnung = window.Artenliste.rows[i].key[2];
+			Art = window.Artenliste.rows[i].value;
+			ArtId = Art._id;
+			ListItemContainer += "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+			ListItemContainer += ArtBezeichnung;
+			ListItemContainer += "\" ArtId=\"";
+			ListItemContainer += ArtId;
+			ListItemContainer += "\">";
+			ListItemContainer += "<a href=\"#\"><h3>";
+			ListItemContainer += ArtBezeichnung;
+			ListItemContainer += "<\/h3>";
+			if (Art.HinweisVerwandschaft) {
+				ListItemContainer += "<p>" + Art.HinweisVerwandschaft + "<\/p>";
+			}
+			ListItemContainer += "<\/a><\/li>";
+		}
+	}
+	$("#al_ArtenListe").html(ListItemContainer);
+	$("#al_ArtenListe").show();
+	$("#al_ArtenListe").listview("refresh");
+	$("#al_Hinweistext").empty().remove();
 }
 
 //wird benutzt in Artgruppenliste.html
