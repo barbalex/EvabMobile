@@ -339,16 +339,22 @@ function speichereNeueBeob_02(doc) {
 function speichereNeueBeob_03(doc) {
 	$db.saveDoc(doc, {
 		success: function (data) {
+			//doc um id und rev ergänzen
+			doc._id = data.id;
+			doc._rev = data.rev;
 			if (doc.Typ === 'hArt') {
 				//Variabeln verfügbar machen
 				localStorage.hBeobId = data.id;
+				//damit hArtEdit.html die hBeob nicht aus der DB holen muss
+				window.hBeob = doc;
 				//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-				delete window.hBeobListe;
-				delete localStorage.hBeobListe;
+				leereStoragehBeobListe();
 				$.mobile.changePage("hArtEdit.html");
 			} else {
 				//Variabeln verfügbar machen
 				localStorage.BeobId = data.id;
+				//damit BeobEdit.html die Beob nicht aus der DB holen muss
+				window.Beob = doc;
 				//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStorageBeobListe();
 				$.mobile.changePage("BeobEdit.html");
@@ -390,8 +396,7 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 						//Variabeln verfügbar machen
 						localStorage.hBeobId = data.id;
 						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						delete window.hBeobListe;
-						delete localStorage.hBeobListe;
+						leereStoragehBeobListe();
 						$.mobile.changePage("hArtEdit.html");
 					}
 				},
@@ -801,26 +806,38 @@ function initiiereBeobEdit() {
 	}
 }
 
+//allfällige Beob übernehmen von speichereNeueBeob
+//um die DB-Abfrage zu sparen
 function initiiereBeobEdit_2() {
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.BeobId, {
-		success: function (Beob) {
-			//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-			localStorage.BeobId = Beob._id;
-			localStorage.aArtGruppe = Beob.aArtGruppe;
-			localStorage.aArtName = Beob.aArtName;
-			localStorage.aArtId = Beob.aArtId;
-			localStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-			localStorage.oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
-			localStorage.oLagegenauigkeit = Beob.oLagegenauigkeit || "";
-			localStorage.oXKoord = Beob.oXKoord;
-			localStorage.oYKoord = Beob.oYKoord;
-			setzeFixeFelderInBeobEdit(Beob);
-			erstelleDynamischeFelderBeobEdit(Beob);
-			//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-			speichereLetzteUrl();
-		}
-	});
+	if (window.Beob) {
+		initiiereBeobEdit_3(window.Beob);
+		//gleich löschen - wird nur bei neuen Beob gebraucht
+		delete window.Beob;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.BeobId, {
+			success: function (Beob) {
+				initiiereBeobEdit_3(Beob);
+			}
+		});
+	}
+}
+
+function initiiereBeobEdit_3() {
+	//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+	localStorage.BeobId = Beob._id;
+	localStorage.aArtGruppe = Beob.aArtGruppe;
+	localStorage.aArtName = Beob.aArtName;
+	localStorage.aArtId = Beob.aArtId;
+	localStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
+	localStorage.oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
+	localStorage.oLagegenauigkeit = Beob.oLagegenauigkeit || "";
+	localStorage.oXKoord = Beob.oXKoord;
+	localStorage.oYKoord = Beob.oYKoord;
+	setzeFixeFelderInBeobEdit(Beob);
+	erstelleDynamischeFelderBeobEdit(Beob);
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
 }
 
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -900,7 +917,6 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 		$db = $.couch.db("evab");
 		$db.saveDoc(Beob, {
 			success: function (data) {
-				//verorten
 				GetGeolocation(data.id);
 			}
 		});
@@ -1717,7 +1733,7 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		$("[name='oName']").focus();
 		$db = $.couch.db("evab");
 		$db.saveDoc(Ort, {
-			success: function () {
+			success: function (data) {
 				GetGeolocation(Ort.id);
 				//Status zurücksetzen - es soll nur ein mal verortet werden
 			}
@@ -1932,56 +1948,68 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html bei pageshow
 function initiierehBeobEdit() {
+	if (window.hBeob) {
+		initiierehBeobEdit_2(window.hBeob);
+		//gleich löschen - wird nur bei neuen hBeob gebraucht
+		delete window.hBeob;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.hBeobId, {
+			success: function (Beob) {
+				initiierehBeobEdit_2(Beob);
+			}
+		});
+	}
+}
+
+function initiierehBeobEdit_2(Beob) {
 	//hier werden Variablen gesetzt,
 	//in die fixen Felder Werte eingesetzt,
 	//die dynamischen Felder aufgebaut
 	//und die Nav-Links gesetzt
+	
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehAE').hide();
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.hBeobId, {
-		success: function (Beob) {
-			//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
-			//Variabeln bereitstellen
-			localStorage.ProjektId = Beob.hProjektId;
-			localStorage.RaumId = Beob.hRaumId;
-			localStorage.OrtId = Beob.hOrtId;
-			localStorage.ZeitId = Beob.hZeitId;
-			localStorage.hBeobId = Beob._id;
-			localStorage.aArtGruppe = Beob.aArtGruppe;
-			localStorage.aArtName = Beob.aArtName;
-			localStorage.aArtId = Beob.aArtId;
-			//fixe Felder aktualisieren
-			$("[name='aArtGruppe']").selectmenu();
-			$("[name='aArtGruppe']").val(Beob.aArtGruppe);
-			$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
-			$("[name='aArtGruppe']").selectmenu("refresh");
-			$("[name='aArtName']").selectmenu();
-			$("[name='aArtName']").val(Beob.aArtName);
-			$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
-			$("[name='aArtName']").selectmenu("refresh");
-			//prüfen, ob die Feldliste schon geholt wurde
-			//wenn ja: deren globale Variable verwenden
-			if (window.FeldlistehBeobEdit) {
+	
+	//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+	//Variabeln bereitstellen
+	localStorage.ProjektId = Beob.hProjektId;
+	localStorage.RaumId = Beob.hRaumId;
+	localStorage.OrtId = Beob.hOrtId;
+	localStorage.ZeitId = Beob.hZeitId;
+	localStorage.hBeobId = Beob._id;
+	localStorage.aArtGruppe = Beob.aArtGruppe;
+	localStorage.aArtName = Beob.aArtName;
+	localStorage.aArtId = Beob.aArtId;
+	//fixe Felder aktualisieren
+	$("[name='aArtGruppe']").selectmenu();
+	$("[name='aArtGruppe']").val(Beob.aArtGruppe);
+	$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
+	$("[name='aArtGruppe']").selectmenu("refresh");
+	$("[name='aArtName']").selectmenu();
+	$("[name='aArtName']").val(Beob.aArtName);
+	$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
+	$("[name='aArtName']").selectmenu("refresh");
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (window.FeldlistehBeobEdit) {
+		erstelleDynamischeFelderhArtEdit(Beob);
+	} else if (localStorage.FeldlistehBeobEdit) {
+		FeldlistehBeobEdit = JSON.parse(localStorage.FeldlistehBeobEdit);
+		erstelleDynamischeFelderhArtEdit(Beob);
+	} else {
+		//Feldliste aus der DB holen
+		//das dauert länger - hinweisen
+		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeArt', {
+			success: function (data) {
+				FeldlistehBeobEdit = data;
+				localStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
 				erstelleDynamischeFelderhArtEdit(Beob);
-			} else if (localStorage.FeldlistehBeobEdit) {
-				FeldlistehBeobEdit = JSON.parse(localStorage.FeldlistehBeobEdit);
-				erstelleDynamischeFelderhArtEdit(Beob);
-			} else {
-				//Feldliste aus der DB holen
-				//das dauert länger - hinweisen
-				$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeArt', {
-					success: function (data) {
-						FeldlistehBeobEdit = data;
-						localStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
-						erstelleDynamischeFelderhArtEdit(Beob);
-					}
-				});
 			}
-		}
-	});
+		});
+	}
 }
 
 //generiert dynamisch die Artgruppen-abhängigen Felder
