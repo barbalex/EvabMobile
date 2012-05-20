@@ -22,7 +22,7 @@ function(head, req) {
 
 	//Array mit allen Feldnamen erstellen
 	while(row = getRow()) {
-		Datensatz = row.doc;
+		Datensatz = row.value;
 		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
 		switch (Datensatz.Typ) {
 			case "hProjekt":
@@ -91,8 +91,7 @@ function(head, req) {
 		Datenzeile = '"';
 		for (z in FeldNamen) {
 			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
-				//Feld = eval('Datensatz.' + FeldNamen[z]);
-				Feld = Datensatz[FeldNamen[z]];
+				Feld = eval('Datensatz.' + FeldNamen[z]);
 				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
 				if (FeldNamen[z] == "_attachments") {
 					for (x in Feld) {

@@ -22,7 +22,7 @@ function(head, req) {
 
 	//Array mit allen Feldnamen erstellen
 	while(row = getRow()) {
-		Datensatz = row.value;
+		Datensatz = row.doc;
 		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
 		switch (Datensatz.Typ) {
 			case "hProjekt":
