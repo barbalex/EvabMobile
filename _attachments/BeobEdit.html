@@ -94,8 +94,8 @@
 				<input type="hidden" id="_revBE" name="_rev">
 			</form>
 			<ul data-role="pagination">
-				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
-				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+				<li class="ui-pagination-prev"><a href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a href="#">Next</a></li>
 			</ul>
 		</div>
 		<div data-role="footer" id="BeobEditFooter" data-position="fixed" data-tap-toggle="false">
@@ -278,13 +278,13 @@
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationPrev", function (event) {
+				$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob('vorige');
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#BeobEditPage").on("vclick", "#PaginationNext", function (event) {
+				$("#BeobEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob('nächste');
 				});

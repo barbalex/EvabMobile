@@ -74,8 +74,8 @@
 				<input type="hidden" id="_revhZE" name="_rev">
 			</form>
 			<ul data-role="pagination">
-				<li class="ui-pagination-prev"><a id="PaginationPrev" href="#">Prev</a></li>
-				<li class="ui-pagination-next"><a id="PaginationNext" href="#">Next</a></li>
+				<li class="ui-pagination-prev"><a href="#">Prev</a></li>
+				<li class="ui-pagination-next"><a href="#">Next</a></li>
 			</ul>
 		</div>
 		<div data-role="footer" id="ZeitEditPageFooter" data-position="fixed" data-tap-toggle="false">
@@ -219,13 +219,13 @@
 				});
 
 				//Pagination Pfeil voriger initialisieren
-				$("#ZeitEditPage").on("vclick", "#PaginationPrev", function (event) {
+				$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit("vorige");
 				});
 
 				//Pagination Pfeil nächster initialisieren
-				$("#ZeitEditPage").on("vclick", "#PaginationNext", function (event) {
+				$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit("nächste");
 				});
