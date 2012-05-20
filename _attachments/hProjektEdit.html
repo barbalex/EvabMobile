@@ -278,43 +278,29 @@
 				function löscheProjekt() {
 					var viewname;
 					//Zuerst die Arten löschen
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (hBeob) {
-							var hArtId, viewname2;
-							for (i in hBeob.rows) {
-								hArtId = hBeob.rows[i].key[1];
-								löscheDokument(hArtId);
-							}
+							var viewname2;
+							loescheDatensatzliste(hBeob);
 							//dann die Zeiten
-							viewname2 = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+							viewname2 = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
 							$db.view(viewname2, {
 								success: function (Zeiten) {
-									var ZeitId, viewname3;
-									for (i in Zeiten.rows) {
-										ZeitId = Zeiten.rows[i].key[1];
-										löscheDokument(ZeitId);
-									}
+									var viewname3;
+									loescheDatensatzliste(Zeiten);
 									//dann die Orte
-									viewname3 = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+									viewname3 = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
 									$db.view(viewname3, {
 										success: function (Orte) {
-											var OrtId;
-											for (i in Orte.rows) {
-												OrtId = Orte.rows[i].key[1];
-												löscheDokument(OrtId);
-											}
+											loescheDatensatzliste(Orte);
 											//dann die Räume
 											var viewname4;
-											viewname4 = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]';
+											viewname4 = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
 											$db.view(viewname4, {
 												success: function (Raeume) {
-													var RaumId;
-													for (i in Raeume.rows) {
-														RaumId = Raeume.rows[i].key[1];
-														löscheDokument(RaumId);
-													}
+													loescheDatensatzliste(Raeume);
 													//zuletzt das Projekt
 													$db.openDoc(localStorage.ProjektId, {
 														success: function (document) {

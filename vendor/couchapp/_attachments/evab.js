@@ -1349,7 +1349,6 @@ function initiiereFeldliste_2() {
 //und eine Datensatzliste (z.B. alle Räume eines Projekts)
 //speichert das neue Feld in alle Datensätze
 function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste) {
-	//geändertes Ort-Feld in doc anpassen
 	var JsonBulkListe, DsBulkListe, Docs, row;
 	DsBulkListe = {};
 	Docs = [];
@@ -1378,7 +1377,6 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 }
 
 function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Datensatzliste) {
-	//geändertes Ort-Feld in doc anpassen
 	var ID;
 	$db = $.couch.db("evab");
 	for (i in Datensatzliste.rows) {
@@ -1398,6 +1396,26 @@ function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Date
 			}
 		});
 	}
+}
+
+function loescheDatensatzliste(Datensatzliste) {
+	var JsonBulkListe, DsBulkListe, Docs, row;
+	DsBulkListe = {};
+	Docs = [];
+	for (i in Datensatzliste.rows) {
+		row = Datensatzliste.rows[i].doc;
+		row["_deleted"] = true;
+		Docs.push(row);
+	}
+	DsBulkListe.docs = Docs;
+	JsonBulkListe = JSON.stringify(DsBulkListe);
+	//$db = $.couch.db("evab");
+	//$db.bulkSave(JsonBulkListe);
+	$.ajax({
+		type: "POST",
+		url: "../../_bulk_docs",
+		contentType: "application/json", data: JSON.stringify(DsBulkListe)
+	});
 }
 
 

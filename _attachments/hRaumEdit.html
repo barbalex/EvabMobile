@@ -276,33 +276,23 @@
 				function löscheRaum() {
 					//zuerst Arten löschen
 					var viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var hArtId, viewname2;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								löscheDokument(hArtId);
-							}
+							var viewname2;
+							loescheDatensatzliste(data);
 							//dann Zeiten löschen
-							viewname2 = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+							viewname2 = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
 							$db.view(viewname2, {
 								success: function (Zeiten) {
-									var ZeitId, viewname3
-									for (i in Zeiten.rows) {
-										ZeitId = Zeiten.rows[i].key[1];
-										löscheDokument(ZeitId);
-									}
+									var viewname3
+									loescheDatensatzliste(Zeiten);
 									//dann Orte löschen
-									viewname3 = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]';
+									viewname3 = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
 									$db.view(viewname3, {
 										success: function (Orte) {
-											var OrtId;
-											for (i in Orte.rows) {
-												OrtId = Orte.rows[i].key[1];
-												löscheDokument(OrtId);
-											}
+											loescheDatensatzliste(Orte);
 											//zuletzt den Raum löschen
 											$db.openDoc(localStorage.RaumId, {
 												success: function (document) {

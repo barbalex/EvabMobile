@@ -303,24 +303,17 @@
 				function löscheOrt() {
 					//zuerst Arten löschen
 					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
+					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var hArtId, viewname2;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								löscheDokument(hArtId);
-							}
+							var viewname2;
+							loescheDatensatzliste(data);
 							//dann die Zeiten löschen
-							viewname2 = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]';
+							viewname2 = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
 							$db.view(viewname2, {
-								success: function (data) {
-									var ZeitId;
-									for (i in data.rows) {
-										ZeitId = data.rows[i].key[1];
-										löscheDokument(ZeitId);
-									}
+								success: function (data2) {
+									loescheDatensatzliste(data2);
 									//zuletzt den Ort löschen
 									$db.openDoc(localStorage.OrtId, {
 										success: function (document) {

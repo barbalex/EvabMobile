@@ -281,15 +281,11 @@
 				function löscheZeit() {
 					var viewname;
 					//zuerst Arten löschen
-					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]';
+					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
 					$db = $.couch.db("evab");
 					$db.view(viewname, {
 						success: function (data) {
-							var hArtId;
-							for (i in data.rows) {
-								hArtId = data.rows[i].key[1];
-								löscheDokument(hArtId);
-							}
+							loescheDatensatzliste(data);
 							$db.openDoc(localStorage.ZeitId, {
 								success: function (document) {
 									$db.removeDoc(document, {
