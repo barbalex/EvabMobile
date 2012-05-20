@@ -549,6 +549,11 @@ function erstelleNeuenOrt() {
 					//speichern
 					$db.saveDoc(doc, {
 						success: function (data) {
+							//_id und _rev ergänzen
+							doc._id = data.id;
+							doc._rev = data.rev;
+							//damit hOrtEdit.html den Ort nicht aus der DB holen muss
+							window.hOrt = doc;
 							//Variabeln verfügbar machen
 							localStorage.OrtId = data.id;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -1673,51 +1678,61 @@ function initiiereRaumListe_2() {
 //Mitgeben: id des Orts
 function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
-	//$('#AnhängehOE').hide();
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.OrtId, {
-		success: function (Ort) {
-			//fixe Felder aktualisieren
-			$("[name='oName']").val(Ort.oName);
-			$("[name='oXKoord']").val(Ort.oXKoord);
-			$("[name='oYKoord']").val(Ort.oYKoord);
-			$("[name='oLagegenauigkeit']").val(Ort.oLagegenauigkeit);
-			//Variabeln bereitstellen
-			localStorage.ProjektId = Ort.hProjektId;
-			localStorage.RaumId = Ort.hRaumId;
-			localStorage.OrtId = Ort._id;
-			//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
-			localStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg;
-			localStorage.oLatitudeDecDeg = Ort.oLatitudeDecDeg;
-			localStorage.oLagegenauigkeit = Ort.oLagegenauigkeit;
-			localStorage.oXKoord = Ort.oXKoord;
-			localStorage.oYKoord = Ort.oYKoord;
-			//prüfen, ob die Feldliste schon geholt wurde
-			//wenn ja: deren globale Variable verwenden
-			if (window.FeldlisteOrtEdit) {
-				initiiereOrtEdit_2(Ort);
-			} else if (localStorage.FeldlisteOrtEdit) {
-				FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
-				initiiereOrtEdit_2(Ort);
-			} else {
-				//das dauert länger - hinweisen
-				$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-				//holt die Feldliste aus der DB
-				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeOrt', {
-					success: function (Feldliste) {
-						//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
-						FeldlisteOrtEdit = Feldliste;
-						localStorage.FeldlisteOrtEdit = JSON.stringify(FeldlisteOrtEdit);
-						initiiereOrtEdit_2(Ort);
-					}
-				});
+	//$('#AnhängehRE').hide();
+	if (window.hOrt) {
+		initiiereOrtEdit_2(window.hOrt);
+		//gleich löschen - wird nur bei neuen Orten gebraucht
+		delete window.hOrt;
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.OrtId, {
+			success: function (hOrt) {
+				initiiereOrtEdit_2(hOrt);
 			}
-		}
-	});		
+		});
+	}
 }
 
 function initiiereOrtEdit_2(Ort) {
+	//fixe Felder aktualisieren
+	$("[name='oName']").val(Ort.oName);
+	$("[name='oXKoord']").val(Ort.oXKoord);
+	$("[name='oYKoord']").val(Ort.oYKoord);
+	$("[name='oLagegenauigkeit']").val(Ort.oLagegenauigkeit);
+	//Variabeln bereitstellen
+	localStorage.ProjektId = Ort.hProjektId;
+	localStorage.RaumId = Ort.hRaumId;
+	localStorage.OrtId = Ort._id;
+	//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
+	localStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg;
+	localStorage.oLatitudeDecDeg = Ort.oLatitudeDecDeg;
+	localStorage.oLagegenauigkeit = Ort.oLagegenauigkeit;
+	localStorage.oXKoord = Ort.oXKoord;
+	localStorage.oYKoord = Ort.oYKoord;
+	//prüfen, ob die Feldliste schon geholt wurde
+	//wenn ja: deren globale Variable verwenden
+	if (window.FeldlisteOrtEdit) {
+		initiiereOrtEdit_3(Ort);
+	} else if (localStorage.FeldlisteOrtEdit) {
+		FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
+		initiiereOrtEdit_3(Ort);
+	} else {
+		//das dauert länger - hinweisen
+		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		//holt die Feldliste aus der DB
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeOrt', {
+			success: function (Feldliste) {
+				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
+				FeldlisteOrtEdit = Feldliste;
+				localStorage.FeldlisteOrtEdit = JSON.stringify(FeldlisteOrtEdit);
+				initiiereOrtEdit_3(Ort);
+			}
+		});
+	}	
+}
+
+function initiiereOrtEdit_3(Ort) {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
 	//Linie nur anfügen, wenn Felder erstellt wurden
