@@ -318,7 +318,7 @@
 					var Optionen, Feldwert, LetzterFeldwert, Formularelement, StandardwertOptionen;
 					Optionen = $("#Optionen").val() || [];	//undefined verhindern
 					Feldwert = this.value || [];	//undefined verhindern
-					if (Optionen) {
+					if (Optionen.length > 0) {
 						//es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 						LetzterFeldwert = [];
 						if (Feld.Standardwert) {
@@ -328,7 +328,7 @@
 						}
 						//Standardwert in Array verwandeln
 						StandardwertOptionen = [];
-						if (Feldwert) {
+						if (Feldwert.length > 0) {
 							//Fehler verhindern, falls Feldwert undefined ist
 							StandardwertOptionen = Feldwert.split(",");
 						}
@@ -746,16 +746,18 @@
 
 				function speichereStandardwert() {
 					$db = $.couch.db("evab");
-					$db.openDoc(Feld._id, {
+					$db.openDoc(localStorage.FeldId, {
 						success: function (doc) {
+							var Feldwert;
+							Feldwert = $("#Standardwert").val();
 							//Standardwert managen
 							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 							//darum manuell für diesen User updaten
 							if (doc.Standardwert) {
 								//Standardwert existierte
-								if ($("#Standardwert").val()) {
+								if (Feldwert) {
 									//neuen Standardwert setzen
-									doc.Standardwert[localStorage.Username] = $("#Standardwert").val();
+									doc.Standardwert[localStorage.Username] = Feldwert;
 								} else {
 									//Standardwert ist leer
 									if (doc.Standardwert[localStorage.Username]) {
@@ -765,17 +767,17 @@
 								}
 							} else {
 								//Bisher gab es noch keinen Standardwert
-								if ($("#Standardwert").val()) {
+								if (Feldwert) {
 									//Objekt für Standardwert schaffen und neuen Wert setzen
 									doc.Standardwert = {};
-									doc.Standardwert[localStorage.Username] = $("#Standardwert").val();
+									doc.Standardwert[localStorage.Username] = Feldwert;
 								}
 							}
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
-									//localStorage.FeldId = Feld._id;
-									//Feldlisten leeren, damit Standardwert auch sofort verwendet werden kann!
+									localStorage.FeldId = Feld.id;
+									//Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
 									leereStorageFeldListe();
 								},
 								error: function () {
@@ -877,6 +879,7 @@
 							$db.saveDoc(doc, {
 								success: function (data) {
 									Feld = data;
+									localStorage.FeldId = Feld.id;
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
 										leereStorageFeldListe();

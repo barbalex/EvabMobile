@@ -898,9 +898,12 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 	if (localStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
-		$db.saveDoc(Beob);
-		//verorten
-		GetGeolocation(Beob._id);
+		$db.saveDoc(Beob, {
+			success: function (data) {
+				//verorten
+				GetGeolocation(data.id);
+			}
+		});
 		delete localStorage.Status;
 	} else {
 		//Neue Datensätze haben keine Attachments
@@ -1556,12 +1559,8 @@ function generiereHtmlFuerRaumEditForm (Raum) {
 	if (localStorage.Status === "neu") {
 		$("#rName").focus();
 		$db = $.couch.db("evab");
-		$db.saveDoc(Raum, {
-			success: function () {
-				//Status zurücksetzen - es soll nur ein mal verortet werden
-				delete localStorage.Status;
-			}
-		});
+		$db.saveDoc(Raum);
+		delete localStorage.Status;
 	} else {
 		//Attachments gibt's bei neuen Datensätzen nicht
 		zeigeAttachments(Raum, "hRE");
@@ -1719,11 +1718,11 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 		$db = $.couch.db("evab");
 		$db.saveDoc(Ort, {
 			success: function () {
-				GetGeolocation(Ort._id);
+				GetGeolocation(Ort.id);
 				//Status zurücksetzen - es soll nur ein mal verortet werden
-				delete localStorage.Status;
 			}
 		});
+		delete localStorage.Status;
 	} else {
 		//Attachments gibt es bei neuen Orten nicht
 		zeigeAttachments(Ort, "hOE");

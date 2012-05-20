@@ -257,7 +257,7 @@
 						success: function (Zeit) {
 							delete Zeit._attachments[Dateiname];
 							$db.saveDoc(Zeit, {
-								success: function (data) {
+								success: function () {
 									$(that).parent().parent().remove();
 								},
 								error: function () {

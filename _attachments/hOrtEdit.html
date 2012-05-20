@@ -286,7 +286,7 @@
 						success: function (Ort) {
 							delete Ort._attachments[Dateiname];
 							$db.saveDoc(Ort, {
-								success: function (data) {
+								success: function () {
 									$(that).parent().parent().remove();
 								},
 								error: function () {
@@ -389,7 +389,7 @@
 										speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
 										speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
 										//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
-										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte OrtId NACH dem speichern setzen
 										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 										//darum zwischenspeichern

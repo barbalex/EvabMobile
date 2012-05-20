@@ -276,7 +276,7 @@
 						success: function (hBeob) {
 							delete hBeob._attachments[Dateiname];
 							$db.saveDoc(hBeob, {
-								success: function (data) {
+								success: function () {
 									$(that).parent().parent().remove();
 								},
 								error: function () {

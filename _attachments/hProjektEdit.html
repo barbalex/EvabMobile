@@ -261,7 +261,7 @@
 						success: function (Projekt) {
 							delete Projekt._attachments[Dateiname];
 							$db.saveDoc(Projekt, {
-								success: function (data) {
+								success: function () {
 									$(that).parent().parent().remove();
 								},
 								error: function () {

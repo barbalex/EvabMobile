@@ -259,7 +259,7 @@
 						success: function (Raum) {
 							delete Raum._attachments[Dateiname];
 							$db.saveDoc(Raum, {
-								success: function (data) {
+								success: function () {
 									$(that).parent().parent().remove();
 								},
 								error: function () {
@@ -373,7 +373,7 @@
 										speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
 										speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
 										//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 										//Zuletzt gespeicherte RaumId NACH dem speichern setzen
 										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 										//darum zwischenspeichern

@@ -191,6 +191,9 @@
 										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 									}
 								});
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
