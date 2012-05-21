@@ -191,6 +191,35 @@ function melde(Meldung) {
 		});
 }
 
+//wird in ArtEdit verwendet
+function geheZurueckAE() {
+	var zurueck;
+	zurueck = "";
+	if (!localStorage.zurueck) {
+		leereAlleVariabeln();
+		localStorage.zurueck = "BeobListe.html";
+	}
+	$.mobile.changePage(localStorage.zurueck);
+	delete localStorage.zurueck;
+	delete localStorage.aArtGruppe;
+}
+
+//wird in FeldEdit.html verwendet
+function geheZurueckFE() {
+	delete localStorage.FeldId;
+	if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) === "Felder") {
+		//direkt zurück, Feldliste auslassen
+		leereStorageFeldEdit();
+		leereStorageFeldListe();
+		$.mobile.changePage(localStorage.zurueck);
+		delete localStorage.zurueck;
+		
+	} else {
+		leereAlleVariabeln();
+		$.mobile.changePage("BeobListe.html");
+	}
+}
+
 //wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
 function speichereKoordinaten(id) {
 	$db = $.couch.db("evab");
@@ -2047,9 +2076,9 @@ function generiereHtmlFuerhArtEditForm (Beob) {
 	ListItem = "";
 	HtmlContainer = "";
 	ArtGruppe = Beob.aArtGruppe;
-	for (i in FeldlistehBeobEdit.rows) {
+	for (i in window.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlistehBeobEdit.rows[i].value;
+			Feld = window.FeldlistehBeobEdit.rows[i].value;
 			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 			if (typeof Feld.ArtGruppe !== "undefined") {
 				FeldName = Feld.FeldName;
@@ -3304,7 +3333,6 @@ function leereStoragehBeobEdit() {
 
 function leereStorageBeobListe() {
 	delete window.BeobListe;
-	delete localStorage.BeobListeLatLng;
 	delete window.BeobListeLatLng;
 	delete window.Beob;
 }

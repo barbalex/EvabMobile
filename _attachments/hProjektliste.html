@@ -59,7 +59,9 @@
 					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 					//muss auf index.html umgeleitet werden
 					if (localStorage.length === 0) {
+						leereAlleVariabeln();
 						$.mobile.changePage("index.html");
+						return;
 					}
 
 					//Menu aufbauen

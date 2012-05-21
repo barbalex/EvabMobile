@@ -189,8 +189,14 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script type="text/javascript">
-			//Code, der bei Verwendung von ajax bei jedem Aufruf laufen soll (swipen)
+			//Sollte keine id vorliegen, zu FeldListe.html wechseln
+			//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+			//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 			$("#FeldEditPage").on("pageshow", function () {
+				if (!localStorage.FeldId) {
+					leereAlleVariabeln();
+					geheZurueckFE();
+				}
 				initiiereFeldEdit();
 			});
 
@@ -199,7 +205,11 @@
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
 				if (localStorage.length === 0) {
+					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
+				} else if (!localStorage.FeldId) {
+					leereAlleVariabeln();
+					geheZurueckFE();
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
@@ -447,7 +457,7 @@
 				//BackButton steuern
 				$("#FeldEditHeader").on('click', '#zurueckFeldEdit', function (event) {
 					event.preventDefault();
-					geheZurück();
+					geheZurueckFE();
 				});
 
 				//swipen steuern
@@ -685,7 +695,7 @@
 												if (y === 1) {
 													//am ersten Feld angelangt und es ist kein eigenes
 													//wir gehen zur Feldliste
-													geheZurück();
+													geheZurueckFE();
 													return;
 												}
 											}
@@ -693,7 +703,7 @@
 									} else {
 										//das aktuelle Feld ist das erste
 										//wir gehen zur Feldliste
-										geheZurück();
+										geheZurueckFE();
 										return;
 									}
 								}
@@ -718,21 +728,6 @@
 							speichereFeldeigenschaften();
 						}
 					});
-				}
-
-				function geheZurück() {
-					delete localStorage.FeldId;
-					if (localStorage.zurueck.slice(0, 6) === "Felder") {
-						//direkt zurück, Feldliste auslassen
-						leereStorageFeldEdit();
-						leereStorageFeldListe();
-						$.mobile.changePage(localStorage.zurueck);
-						delete localStorage.zurueck;
-						
-					} else {
-						leereStorageFeldEdit();
-						$.mobile.changePage("FeldListe.html");
-					}
 				}
 
 				function speichereStandardwert() {

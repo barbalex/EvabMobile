@@ -110,6 +110,15 @@
 		
 		<script type="text/javascript">
 			$("#BeobEditPage").on("pageshow", function () {
+				//Sollte keine id vorliegen, zu BeobListe.html wechseln
+				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				if (!localStorage.BeobId) {
+					leereStorageBeobListe();
+					leereStorageBeobEdit();
+					$.mobile.changePage("BeobListe.html");
+					return;
+				}
 				initiiereBeobEdit();
 			});
 
@@ -121,7 +130,14 @@
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
 				if (localStorage.length === 0) {
+					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.BeobId) {
+					leereStorageBeobListe();
+					leereStorageBeobEdit();
+					$.mobile.changePage("BeobListe.html");
+					return;
 				}
 
 				$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", function() {
@@ -347,7 +363,7 @@
 							success: function (data) {
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
-								BeobListe = data;
+								window.BeobListe = data;
 								nächsteVorigeBeob_2(NächsteOderVorige);
 							}
 						});
@@ -356,14 +372,15 @@
 
 				function nächsteVorigeBeob_2(NächsteOderVorige) {
 					var i, BeobIdAktuell, AnzBeob;
-					for (i in BeobListe.rows) {
-						BeobIdAktuell = BeobListe.rows[i].value._id;
-						AnzBeob = BeobListe.rows.length -1;		//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					for (i in window.BeobListe.rows) {
+						BeobIdAktuell = window.BeobListe.rows[i].value._id;
+						AnzBeob = window.BeobListe.rows.length -1;		//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (BeobIdAktuell === localStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzBeob) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
+									delete window.Beob;
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -374,6 +391,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
+									delete window.Beob;
 									initiiereBeobEdit();
 									return;
 								} else {

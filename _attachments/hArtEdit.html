@@ -91,6 +91,14 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
+				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				if (!localStorage.hBeobId) {
+					leereAlleVariabeln();
+					$.mobile.changePage("hProjektListe.html");
+					return;
+				}
 				initiierehBeobEdit();
 			});
 
@@ -102,7 +110,13 @@
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
 				if (localStorage.length === 0) {
+					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.hBeobId) {
+					leereAlleVariabeln();
+					$.mobile.changePage("hProjektListe.html");
+					return;
 				}
 
 				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function (event) {
@@ -452,6 +466,9 @@
 							hArt.aArtName = localStorage.aArtName;
 							hArt.aArtGruppe = localStorage.aArtGruppe;
 							$db.saveDoc(hArt, {
+								success: function () {
+									localStorage.hBeobId = data.id;
+								},
 								error: function () {
 									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 								}
@@ -474,8 +491,7 @@
 						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
-						//keine Ortliste vorhanden
-						//neu aus DB erstellen
+						//keine Ortliste vorhanden, neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
 							success: function (data) {
@@ -489,14 +505,15 @@
 
 				function nächsteVorigeArt_2(NächsteOderVorige) {
 					var i, ArtIdAktuell, AnzArt;
-					for (i in hBeobListe.rows) {
-						ArtIdAktuell = hBeobListe.rows[i].value._id;
-						AnzArt = hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+					for (i in window.hBeobListe.rows) {
+						ArtIdAktuell = window.hBeobListe.rows[i].value._id;
+						AnzArt = window.hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ArtIdAktuell === localStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzArt) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
+									delete window.hBeob;
 									initiierehBeobEdit();
 									return;
 								} else {
@@ -507,6 +524,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
+									delete window.hBeob;
 									initiierehBeobEdit();
 									return;
 								} else {
