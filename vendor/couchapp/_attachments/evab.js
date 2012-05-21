@@ -2126,7 +2126,7 @@ function initiierehBeobListe() {
 }
 
 function initiierehBeobListe_2() {
-	var i, anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, bArtName;
+	var anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, hBeob;
 	anzArt = hBeobListe.rows.length;
 	ListItemContainer = "";
 
@@ -2140,16 +2140,13 @@ function initiierehBeobListe_2() {
 	if (anzArt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (i in hBeobListe.rows) {	//Liste aufbauen
+		for (i in hBeobListe.rows) {
 			if (typeof i !== "function") {
 				hBeob = hBeobListe.rows[i].value;
-				key = hBeobListe.rows[i].key;
-				ImageLink = "Artgruppenbilder/" + hBeob.aArtGruppe + ".png";
-				bArtName = key[2];
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + hBeob.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<img class=\"ui-li-thumb\" src=\"" + ImageLink + "\" />" +
-					"<h3>" + bArtName + "<\/h3>" +
+					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + hBeob.aArtGruppe + ".png\" />" +
+					"<h3>" + hBeob.aArtName + "<\/h3>" +
 					"<\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
@@ -2591,7 +2588,6 @@ function stopGeolocation() {
 	if (typeof watchID !== "undefined") {
 		navigator.geolocation.clearWatch(watchID);
 		delete window.watchID;
-		alert("watchID deleted");
 	}
 	//Animation beenden
 	delete localStorage.NavbarVerortungAnimieren;
