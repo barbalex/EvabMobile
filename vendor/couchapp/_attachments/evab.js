@@ -843,7 +843,7 @@ function initiiereBeobEdit_2() {
 	}
 }
 
-function initiiereBeobEdit_3() {
+function initiiereBeobEdit_3(Beob) {
 	//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 	localStorage.BeobId = Beob._id;
 	localStorage.aArtGruppe = Beob.aArtGruppe;
