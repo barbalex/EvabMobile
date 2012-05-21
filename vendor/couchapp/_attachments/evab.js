@@ -3273,7 +3273,6 @@ function leereAlleVariabeln() {
 function leereStorageProjektListe(mitLatLngListe) {
 	delete window.Projektliste;
 	if (mitLatLngListe) {
-		delete localStorage.hOrteLatLngProjektliste;
 		delete window.hOrteLatLngProjektliste;
 	}
 }
@@ -3281,7 +3280,6 @@ function leereStorageProjektListe(mitLatLngListe) {
 function leereStorageProjektEdit(mitLatLngListe) {
 	delete localStorage.ProjektId;
 	if (mitLatLngListe) {
-		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
 	}
 }
@@ -3289,7 +3287,6 @@ function leereStorageProjektEdit(mitLatLngListe) {
 function leereStorageRaumListe(mitLatLngListe) {
 	delete window.RaumListe;
 	if (mitLatLngListe) {
-		delete localStorage.hOrteLatLngProjekt;
 		delete window.hOrteLatLngProjekt;
 	}
 }
@@ -3297,7 +3294,6 @@ function leereStorageRaumListe(mitLatLngListe) {
 function leereStorageRaumEdit(mitLatLngListe) {
 	delete localStorage.RaumId;
 	if (mitLatLngListe) {
-		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
 	}
 }
@@ -3306,7 +3302,6 @@ function leereStorageOrtListe(mitLatLngListe) {
 	delete window.OrtListe;
 	delete window.hOrt;
 	if (mitLatLngListe) {
-		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
 	}
 }

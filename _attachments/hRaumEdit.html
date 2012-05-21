@@ -535,7 +535,6 @@
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									initiiereRaumEdit();
-									delete localStorage.hOrteLatLngRaum;
 									delete window.hOrteLatLngRaum;
 									return;
 								} else {
@@ -547,7 +546,6 @@
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
 									initiiereRaumEdit();
-									delete localStorage.hOrteLatLngRaum;
 									delete window.hOrteLatLngRaum;
 									return;
 								} else {

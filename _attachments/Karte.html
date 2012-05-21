@@ -110,15 +110,11 @@
 						//Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
 						if (window[hOrtLatLngListe]) {
 							erstelleKarteH_2(window[hOrtLatLngListe]);
-						} else if (localStorage[hOrtLatLngListe]) {
-							window[hOrtLatLngListe] = JSON.parse(localStorage[hOrtLatLngListe]);
-							erstelleKarteH_2(window[hOrtLatLngListe]);
 						} else {
 							$db = $.couch.db("evab");
 							$db.view(viewname, {
 								success: function (data) {
 									window[hOrtLatLngListe] = data;
-									localStorage[hOrtLatLngListe] = JSON.stringify(data);
 									erstelleKarteH_2(data);
 								}
 							});
@@ -276,15 +272,11 @@
 						//Beobachtungen holen. Prüfen, ob die Liste noch da ist
 						if (window.BeobListeLatLng) {
 							erstelleKarteBeobListe_2();
-						} else if (localStorage.BeobListeLatLng) {
-							window.BeobListeLatLng = JSON.parse(localStorage.BeobListeLatLng);
-							erstelleKarteBeobListe_2();
 						} else {
 							$db = $.couch.db("evab");
 							$db.view('evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true', {
 								success: function (data) {
 									window.BeobListeLatLng = data;
-									localStorage.BeobListeLatLng = JSON.stringify(data);
 									erstelleKarteBeobListe_2();
 								}
 							});

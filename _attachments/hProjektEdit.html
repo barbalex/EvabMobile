@@ -562,7 +562,6 @@
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									initiiereProjektEdit();
-									delete localStorage.hOrteLatLngProjekt;
 									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
@@ -575,7 +574,6 @@
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									initiiereProjektEdit();
-									delete localStorage.hOrteLatLngProjekt;
 									delete window.hOrteLatLngProjekt;
 									return;
 								} else {
