@@ -126,7 +126,7 @@
 					}
 
 					function erstelleKarteH_2(hOrteLatLng) {
-						var anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, oName, oXKoord, oYKoord, lat2, lng2, latlng2, marker, contentString, mcOptions, markerCluster;
+						var anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, latlng2, marker, contentString, mcOptions, markerCluster;
 						infowindow = new google.maps.InfoWindow();
 						//Orte zählen
 						anzOrt = hOrteLatLng.rows.length;
@@ -155,12 +155,7 @@
 							for (i in hOrteLatLng.rows) {
 								Ort = hOrteLatLng.rows[i].doc;
 								hOrtId = Ort._id;
-								oName = Ort.oName;
-								oXKoord = Ort.oXKoord;
-								oYKoord = Ort.oYKoord;
-								lat2 = Ort.oLatitudeDecDeg;
-								lng2 = Ort.oLongitudeDecDeg;
-								latlng2 = new google.maps.LatLng(lat2, lng2);
+								latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
 								if (anzOrt === 1) {
 									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 									latlng = latlng2;
@@ -171,8 +166,8 @@
 								marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,
-									title: oName.toString(),
-									labelContent: oName,
+									title: Ort.oName.toString(),
+									labelContent: Ort.oName,
 									labelAnchor: new google.maps.Point(22, 0),
 									labelClass: "MapLabel", // the CSS class for the label
 									labelStyle: {opacity: 0.75}
@@ -184,9 +179,8 @@
 									'<div id="bodyContent" class="GmInfowindow">'+
 									'<p>Projekt: ' + Ort.pName + '</p>'+
 									'<p>Raum: ' + Ort.rName + '</p>'+
-									'<p>Ort: ' + oName + '</p>'+
-									'<p>X-Koordinate: ' + oXKoord + '</p>'+
-									'<p>Y-Koordinate: ' + oYKoord + '</p>'+
+									'<p>Ort: ' + Ort.oName + '</p>'+
+									'<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>'+
 									"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
 									'</div>'+
 									'</div>';
@@ -215,7 +209,7 @@
 
 					//wird benutzt in hOrtEdit.html
 					function erstelleKartehOrtEdit() {
-						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, oName, marker, contentString, infowindow;
+						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, marker, contentString, infowindow;
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
@@ -238,25 +232,25 @@
 							mapTypeId: google.maps.MapTypeId.HYBRID
 						};
 						map = new google.maps.Map(document.getElementById("MapCanvas"),options);
-						oName = $("#oName").val();
 						if (verorted === true) {
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map, 
-								title: oName,
+								title: window.Ort.oName,
 								draggable: true
 							});
 							//Marker in Array speichern, damit er gelöscht werden kann
 							markersArray.push(marker);
 							contentString = '<div id="content">'+
-											'<div id="siteNotice">'+
-											'</div>'+
-											'<h4 id="firstHeading" class="GmInfowindow">' + oName + '</h4>'+
-											'<div id="bodyContent" class="GmInfowindow">'+
-											'<p>X-Koordinate: ' + localStorage.oXKoord + '</p>'+
-											'<p>Y-Koordinate: ' + localStorage.oYKoord + '</p>'+
-											'</div>'+
-											'</div>';
+									'<div id="siteNotice">'+
+									'</div>'+
+									'<div id="bodyContent" class="GmInfowindow">'+
+									'<p>Projekt: ' + window.Ort.pName + '</p>'+
+									'<p>Raum: ' + window.Ort.rName + '</p>'+
+									'<p>Ort: ' + window.Ort.oName + '</p>'+
+									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
+									'</div>'+
+									'</div>';
 							infowindow = new google.maps.InfoWindow({
 								content: contentString
 							});
@@ -269,7 +263,7 @@
 							});
 						}
 						google.maps.event.addListener(map, 'click', function (event) {
-							placeMarkerhOrtEdit(event.latLng, map, marker, oName);
+							placeMarkerhOrtEdit(event.latLng, map, marker);
 						});
 					}
 
@@ -298,7 +292,7 @@
 					}
 
 					function erstelleKarteBeobListe_2() {
-						var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, options, map, bounds, marker, markers;
+						var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, latlng2, options, map, bounds, marker, markers, contentString, mcOptions, markerCluster;
 						infowindow = new google.maps.InfoWindow();
 						//Anzahl Beobachtungen zählen
 						anzBeob = BeobListeLatLng.rows.length;
@@ -324,15 +318,8 @@
 							markers = [];
 							for (i in BeobListeLatLng.rows) {
 								beob = BeobListeLatLng.rows[i].doc;
-								var Datum = beob.zDatum;
-								var Zeit = beob.zUhrzeit;
-								var ArtGruppe = beob.aArtGruppe;
-								image = "Artgruppenbilder/" + ArtGruppe + ".png";
-								var ArtName = beob.aArtName;
-								var Autor = beob.aAutor;
-								var lat2 = beob.oLatitudeDecDeg;
-								var lng2 = beob.oLongitudeDecDeg;
-								var latlng2 = new google.maps.LatLng(lat2, lng2);
+								image = "Artgruppenbilder/" + beob.aArtGruppe + ".png";
+								latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 								if (anzBeob === 1) {
 									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 									latlng = latlng2;
@@ -343,30 +330,31 @@
 								marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,  
-									title: ArtName,
+									title: beob.aArtName,
 									icon: image,
-									labelContent: ArtName,
+									labelContent: beob.aArtName,
 									labelAnchor: new google.maps.Point(22, 0),
 									labelClass: "MapLabel", // the CSS class for the label
 									labelStyle: {opacity: 0.75}
 								});
 								markers.push(marker);
-								var contentString = '<div id="content">'+
+								contentString = '<div id="content">'+
 									'<div id="siteNotice">'+
 									'</div>'+
-									'<h4 id="firstHeading" class="GmInfowindow">' + ArtName + '</h4>'+
+									'<h4 id="firstHeading" class="GmInfowindow">' + beob.aArtName + '</h4>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Art-Gruppe: ' + ArtGruppe + '</p>'+
-									'<p>Autor: ' + Autor + '</p>'+
-									'<p>Datum: ' + Datum + '</p>'+
-									'<p>Zeit: ' + Zeit + '</p>'+
+									'<p>Art-Gruppe: ' + beob.aArtGruppe + '</p>'+
+									'<p>Autor: ' + beob.aAutor + '</p>'+
+									'<p>Datum: ' + beob.zDatum + '</p>'+
+									'<p>Zeit: ' + beob.zUhrzeit + '</p>'+
+									'<p>Koordinaten: ' + beob.oXKoord + " / " + beob.oYKoord + '</p>' +
 									"<p><a <a href=\"#\" onclick=\"oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>"+
 									'</div>'+
 									'</div>';
 								makeListener(map, marker, contentString);
 							}
-							var mcOptions = {maxZoom: 17};
-							var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+							mcOptions = {maxZoom: 17};
+							markerCluster = new MarkerClusterer(map, markers, mcOptions);
 							if (anzBeob === 1) {
 								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 								map.setCenter(latlng);
@@ -386,7 +374,7 @@
 					}
 
 					function erstelleKarteBeobEdit() {
-						var map, verorted, lat, lng, ZoomLevel, latlng, options, mapcanvas, map, aAutor, zDatum, zUhrzeit, image, marker, contentString, infowindow;
+						var map, verorted, lat, lng, ZoomLevel, latlng, options, mapcanvas, map, image, marker, contentString, infowindow;
 						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
@@ -411,9 +399,6 @@
 						mapcanvas = $('#MapCanvas');
 						map = new google.maps.Map(mapcanvas[0],options);
 						//google.maps.event.trigger(map,'resize');
-						aAutor = $("#aAutor").val();
-						zDatum = $("#zDatum").val();
-						zUhrzeit = $("#zUhrzeit").val();
 						image = "Artgruppenbilder/" + localStorage.aArtGruppe + ".png";
 						if (verorted === true) {
 							marker = new google.maps.Marker({
@@ -429,9 +414,9 @@
 								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
 								'<div id="bodyContent" class="GmInfowindow">'+
 								'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-								'<p>Autor: ' + aAutor + '</p>'+
-								'<p>Datum: ' + zDatum + '</p>'+
-								'<p>Zeit: ' + zUhrzeit + '</p>'+
+								'<p>Autor: ' + window.Beob.aAutor + '</p>'+
+								'<p>Datum: ' + window.Beob.zDatum + '</p>'+
+								'<p>Zeit: ' + window.Beob.zUhrzeit + '</p>'+
 								'<p>Koordinaten: ' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 								'</div>'+
 								'</div>';
@@ -452,14 +437,14 @@
 					}
 
 					//wird benutzt in hOrtEdit.html
-					function placeMarkerhOrtEdit(location, map, marker, oName) {
+					function placeMarkerhOrtEdit(location, map, marker) {
 						var marker;
 						//zuerst bisherige Marker löschen
 						clearMarkers();
 						marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							title: oName,
+							title: window.Ort.oName,
 							draggable: true
 						});
 						//Marker in Array speichern, damit er gelöscht werden kann
@@ -499,9 +484,16 @@
 						localStorage.oYKoord = DdInChY(lat, lng);
 						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
-						contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
-										'</div></div>';
+						contentString = '<div id="content">'+
+									'<div id="siteNotice">'+
+									'</div>'+
+									'<div id="bodyContent" class="GmInfowindow">'+
+									'<p>Projekt: ' + window.Ort.pName + '</p>'+
+									'<p>Raum: ' + window.Ort.rName + '</p>'+
+									'<p>Ort: ' + window.Ort.oName + '</p>'+
+									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
+									'</div>'+
+									'</div>';
 						infowindow = new google.maps.InfoWindow({
 							content: contentString
 						});
@@ -523,9 +515,16 @@
 						localStorage.oYKoord = DdInChY(lat, lng);
 						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
-						contentString = '<div id="content"><div id="bodyContent">'+
-										'<p>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
-										'</div></div>';
+						contentString = '<div id="content">'+
+								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
+								'<div id="bodyContent" class="GmInfowindow">'+
+								'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
+								'<p>Autor: ' + $("#aAutorBE").val() + '</p>'+
+								'<p>Datum: ' + $("#zDatumBE").val() + '</p>'+
+								'<p>Zeit: ' + $("#zUhrzeitBE").val() + '</p>'+
+								'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
+								'</div>'+
+								'</div>';
 						infowindow = new google.maps.InfoWindow({
 							content: contentString
 						});

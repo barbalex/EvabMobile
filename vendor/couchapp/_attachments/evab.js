@@ -202,7 +202,12 @@ function speichereKoordinaten(id) {
 			doc.oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg);
 			doc.oXKoord = parseInt(localStorage.oXKoord);
 			doc.oYKoord = parseInt(localStorage.oYKoord);
-			doc.oLagegenauigkeit = parseInt(localStorage.oLagegenauigkeit);
+			//parseInt verhindert das Speichern von Text, darum prüfen
+			if (localStorage.oLagegenauigkeit === "Auf Luftbild markiert") {
+				doc.oLagegenauigkeit = localStorage.oLagegenauigkeit;
+			} else {
+				doc.oLagegenauigkeit = parseInt(localStorage.oLagegenauigkeit);
+			}
 			//Höhe nur speichern, wenn vorhanden
 			//wenn nicht vorhanden: Allflligen alten Wert löschen
 			if (localStorage.oHoehe) {
@@ -831,13 +836,12 @@ function initiiereBeobEdit() {
 function initiiereBeobEdit_2() {
 	if (window.Beob) {
 		initiiereBeobEdit_3(window.Beob);
-		//gleich löschen - wird nur bei neuen Beob gebraucht
-		delete window.Beob;
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (Beob) {
 				initiiereBeobEdit_3(Beob);
+				window.Beob = Beob;
 			}
 		});
 	}
@@ -1705,6 +1709,7 @@ function initiiereOrtEdit_2(Ort) {
 	$("[name='oYKoord']").val(Ort.oYKoord);
 	$("[name='oLagegenauigkeit']").val(Ort.oLagegenauigkeit);
 	//Variabeln bereitstellen
+	window.Ort = Ort;	//wind von Karte.html benutzt
 	localStorage.ProjektId = Ort.hProjektId;
 	localStorage.RaumId = Ort.hRaumId;
 	localStorage.OrtId = Ort._id;
@@ -3344,6 +3349,7 @@ function leereStorageOrtEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
+	delete window.Ort;
 }
 
 function leereStorageZeitListe() {
@@ -3381,6 +3387,7 @@ function leereStorageBeobEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
+	delete window.Beob;
 }
 
 function leereStorageFeldListe() {
