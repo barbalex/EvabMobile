@@ -207,13 +207,16 @@ function geheZurueckAE() {
 //wird in FeldEdit.html verwendet
 function geheZurueckFE() {
 	delete localStorage.FeldId;
-	if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) === "Felder") {
+	if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) !== "Felder") {
+		//direkt zurück, Feldliste auslassen
+		leereStorageFeldEdit();
+		$.mobile.changePage("FeldListe.html");
+	} else if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) === "Felder") {
 		//direkt zurück, Feldliste auslassen
 		leereStorageFeldEdit();
 		leereStorageFeldListe();
 		$.mobile.changePage(localStorage.zurueck);
 		delete localStorage.zurueck;
-		
 	} else {
 		leereAlleVariabeln();
 		$.mobile.changePage("BeobListe.html");
@@ -946,25 +949,23 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 	for (i in FeldlisteBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = FeldlisteBeobEdit.rows[i].value;
-			//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if (typeof Feld.ArtGruppe !== "undefined") {
-				FeldName = Feld.FeldName;
-				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-				if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
-					//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-					if (Feld.Hierarchiestufe !== "Art" || Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) {
-						if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-							FeldWert = Feld.Standardwert[localStorage.Username];
-							//Objekt Beob um den Standardwert ergänzen, um später zu speichern
-							Beob[FeldName] = FeldWert;
-						} else {
-							//"" verhindert die Anzeige von undefined im Feld
-							FeldWert = Beob[FeldName] || "";
-						}
-						FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-						Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-						HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+				//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
+					if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+						FeldWert = Feld.Standardwert[localStorage.Username];
+						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
+						Beob[FeldName] = FeldWert;
+					} else {
+						//"" verhindert die Anzeige von undefined im Feld
+						FeldWert = Beob[FeldName] || "";
 					}
+					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+					HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 				}
 			}
 		}
@@ -2074,23 +2075,21 @@ function generiereHtmlFuerhArtEditForm (Beob) {
 	for (i in window.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.FeldlistehBeobEdit.rows[i].value;
+			FeldName = Feld.FeldName;
+			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if (typeof Feld.ArtGruppe !== "undefined") {
-				FeldName = Feld.FeldName;
-				//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-				if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-					if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[Beob.User]) {
-						FeldWert = Feld.Standardwert[Beob.User];
-						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
-						Beob[FeldName] = FeldWert;
-					} else {
-						//"" verhindert, dass im Feld undefined erscheint
-						FeldWert = Beob[FeldName] || "";
-					}
-					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-					HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+			if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[Beob.User]) {
+					FeldWert = Feld.Standardwert[Beob.User];
+					//Objekt Beob um den Standardwert ergänzen, um später zu speichern
+					Beob[FeldName] = FeldWert;
+				} else {
+					//"" verhindert, dass im Feld undefined erscheint
+					FeldWert = Beob[FeldName] || "";
 				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
 		}
 	}
