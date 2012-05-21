@@ -1244,16 +1244,11 @@ function erstelleSelectFeldFolgtNach() {
 		if (window.Feldliste) {
 			//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 			erstelleSelectFeldFolgtNach_2();
-		} else if (localStorage.Feldliste) {
-			//localStorage verwenden
-			Feldliste = JSON.parse(localStorage.Feldliste);
-			erstelleSelectFeldFolgtNach_2();
 		} else {
 			$db = $.couch.db("evab");
 			$db.view("evab/FeldListe", {
 				success: function (data) {
-					Feldliste = data;
-					localStorage.Feldliste = JSON.stringify(data);
+					window.Feldliste = data;
 					erstelleSelectFeldFolgtNach_2();
 				}
 			});
@@ -1336,18 +1331,12 @@ function initiiereFeldliste() {
 	if (window.Feldliste) {
 		//Feldliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereFeldliste_2();
-	} else if (localStorage.Feldliste) {
-		//Feldliste aus localStorage holen
-		Feldliste = JSON.parse(localStorage.Feldliste);
-		initiiereFeldliste_2();
 	} else {
 		//FeldListe aus DB holen
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe", {
 			success: function (data) {
-				Feldliste = data;
-				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-				localStorage.Feldliste = JSON.stringify(Feldliste);
+				window.Feldliste = data;
 				initiiereFeldliste_2();
 			}
 		});
@@ -3334,10 +3323,9 @@ function leereStorageBeobEdit() {
 }
 
 function leereStorageFeldListe() {
-	delete localStorage.Feldliste
 	delete window.Feldliste;
 	delete window.FeldlisteBeobEdit;
-	delete window. FeldlistehBeobEdit;
+	delete window.FeldlistehBeobEdit;
 	delete window.FeldlisteZeitEdit;
 	delete window.FeldlisteOrtEdit;
 	delete window.FeldlisteRaumEdit;
