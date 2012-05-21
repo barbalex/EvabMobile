@@ -177,7 +177,7 @@
 			</form>
 			<ul data-role="pagination">
 				<li class="ui-pagination-prev"><a href="#">Prev</a></li>
-				<li class="ui-pagination-next"><a href="#"></a> href="#">Next</a></li>
+				<li class="ui-pagination-next"><a href="#">Next</a></li>
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" data-tap-toggle="false" id="FeldEditFooter">
@@ -204,12 +204,15 @@
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
-					var AlterFeldWert;
-					localStorage.FeldWert = this.value;
+					var AlterFeldWert, Feldjson;
 					if (this.name) {
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + localStorage.FeldName + "']").serializeObject();
+						localStorage.FeldWert = Feldjson[localStorage.FeldName];
 						localStorage.FeldName = this.name;
 						localStorage.AlterFeldWert = Feld[this.name];
 					} else {
+						localStorage.FeldWert = this.value;
 						localStorage.FeldName = this.id;
 						localStorage.AlterFeldWert = Feld[this.id];
 					}
@@ -277,11 +280,13 @@
 						}
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
+						leereStorageFeldListe();
 						speichereFeldeigenschaften();
 						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauenFeldEdit();
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
 						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
+						leereStorageFeldListe();
 						speichereFeldeigenschaften();
 						$db = $.couch.db("evab");
 						$db.openDoc(Feld._id, {
@@ -878,8 +883,11 @@
 							}
 							$db.saveDoc(doc, {
 								success: function (data) {
-									Feld = data;
-									localStorage.FeldId = Feld.id;
+									//rev aktualisieren
+									doc._rev = data.rev;
+									doc._id = data.id;
+									Feld = doc;
+									localStorage.FeldId = data.id;
 									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
 									if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
 										leereStorageFeldListe();
