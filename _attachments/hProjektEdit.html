@@ -536,10 +536,6 @@
 					if (window.Projektliste) {
 						//globale Variable Projektliste existiert noch
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
-					} else if (localStorage.Projektliste) {
-						//Objekte werden als Strings übergeben, müssen geparst werden
-						Projektliste = JSON.parse(localStorage.Projektliste);
-						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
@@ -547,8 +543,7 @@
 						$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
 							success: function (data) {
 								//Projektliste bereitstellen
-								Projektliste = data;
-								localStorage.Projektliste = JSON.stringify(Projektliste);
+								window.Projektliste = data;
 								nächstesVorigesProjekt_2(NächstesOderVoriges);
 							}
 						});

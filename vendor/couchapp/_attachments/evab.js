@@ -1479,18 +1479,13 @@ function initiiereProjektliste() {
 	//hat ProjektEdit.html eine Projektliste übergeben?
 	if (window.Projektliste) {
 		initiiereProjektliste_2();
-	} else if (localStorage.Projektliste) {
-		//Daten für die Projektliste aus localStorage holen
-		Projektliste = JSON.parse(localStorage.Projektliste);
-		initiiereProjektliste_2();
 	} else {
 		//Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
 			success: function (data) {
 				//Projektliste für ProjektEdit bereitstellen
-				Projektliste = data;
-				localStorage.Projektliste = JSON.stringify(Projektliste);
+				window.Projektliste = data;
 				initiiereProjektliste_2();
 			}
 		});
@@ -3276,7 +3271,6 @@ function leereAlleVariabeln() {
 }
 
 function leereStorageProjektListe(mitLatLngListe) {
-	delete localStorage.Projektliste;
 	delete window.Projektliste;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjektliste;
