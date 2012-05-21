@@ -1857,9 +1857,6 @@ function initiiereZeitEdit_2(Zeit) {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteZeitEdit) {
 		initiiereZeitEdit_3(Zeit);
-	} else if (localStorage.FeldlisteZeitEdit) {
-		FeldlisteZeitEdit = JSON.parse(localStorage.FeldlisteZeitEdit);
-		initiiereZeitEdit_3(Zeit);
 	} else {
 		//Feldliste aus der DB holen
 		//das dauert länger - hinweisen
@@ -1867,8 +1864,7 @@ function initiiereZeitEdit_2(Zeit) {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeZeit', {
 			success: function (Feldliste) {
-				FeldlisteZeitEdit = Feldliste;
-				localStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
+				window.FeldlisteZeitEdit = Feldliste;
 				initiiereZeitEdit_3(Zeit);
 			}
 		});
@@ -3348,7 +3344,6 @@ function leereStorageFeldListe() {
 	delete window.FeldlisteBeobEdit;
 	delete localStorage.FeldlistehBeobEdit;
 	delete window. FeldlistehBeobEdit;
-	delete localStorage.FeldlisteZeitEdit;
 	delete window.FeldlisteZeitEdit;
 	delete window.FeldlisteOrtEdit;
 	delete window.FeldlisteRaumEdit;

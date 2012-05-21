@@ -57,16 +57,12 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (window.FeldlisteZeitEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (localStorage.FeldlisteZeitEdit) {
-						FeldlisteZeitEdit = JSON.parse(localStorage.FeldlisteZeitEdit);
-						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeZeit', {
 							success: function (data) {
-								FeldlisteZeitEdit = data;
-								localStorage.FeldlisteZeitEdit = JSON.stringify(FeldlisteZeitEdit);
+								window.FeldlisteZeitEdit = data;
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -150,7 +146,6 @@
 							});
 							//Globale Variablen für FeldlisteZeitEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							delete window.FeldlisteZeitEdit;
-							delete localStorage.FeldlisteZeitEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
