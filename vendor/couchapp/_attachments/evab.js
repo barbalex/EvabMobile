@@ -2021,9 +2021,6 @@ function initiierehBeobEdit_2(Beob) {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlistehBeobEdit) {
 		erstelleDynamischeFelderhArtEdit(Beob);
-	} else if (localStorage.FeldlistehBeobEdit) {
-		FeldlistehBeobEdit = JSON.parse(localStorage.FeldlistehBeobEdit);
-		erstelleDynamischeFelderhArtEdit(Beob);
 	} else {
 		//Feldliste aus der DB holen
 		//das dauert länger - hinweisen
@@ -2031,8 +2028,7 @@ function initiierehBeobEdit_2(Beob) {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt', {
 			success: function (data) {
-				FeldlistehBeobEdit = data;
-				localStorage.FeldlistehBeobEdit = JSON.stringify(FeldlistehBeobEdit);
+				window.FeldlistehBeobEdit = data;
 				erstelleDynamischeFelderhArtEdit(Beob);
 			}
 		});
@@ -3342,7 +3338,6 @@ function leereStorageFeldListe() {
 	delete window.Feldliste;
 	delete localStorage.FeldlisteBeobEdit;
 	delete window.FeldlisteBeobEdit;
-	delete localStorage.FeldlistehBeobEdit;
 	delete window. FeldlistehBeobEdit;
 	delete window.FeldlisteZeitEdit;
 	delete window.FeldlisteOrtEdit;
