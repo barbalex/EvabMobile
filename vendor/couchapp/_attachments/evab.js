@@ -1546,9 +1546,6 @@ function initiiereRaumEdit_2(Raum) {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteRaumEdit) {
 		initiiereRaumEdit_3(Raum);
-	} else if (localStorage.FeldlisteRaumEdit) {
-		FeldlisteRaumEdit = JSON.parse(localStorage.FeldlisteRaumEdit);
-		initiiereRaumEdit_3(Raum);
 	} else {
 		//das dauert länger - hinweisen
 		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1557,8 +1554,7 @@ function initiiereRaumEdit_2(Raum) {
 		$db.view('evab/FeldListeRaum', {
 			success: function (Feldliste) {
 				//Variabeln bereitstellen
-				FeldlisteRaumEdit = Feldliste;
-				localStorage.FeldlisteRaumEdit = JSON.stringify(FeldlisteRaumEdit);
+				window.FeldlisteRaumEdit = Feldliste;
 				initiiereRaumEdit_3(Raum);
 			}
 		});
@@ -3360,7 +3356,6 @@ function leereStorageFeldListe() {
 	delete window.FeldlisteZeitEdit;
 	delete localStorage.FeldlisteOrtEdit;
 	delete window.FeldlisteOrtEdit;
-	delete localStorage.FeldlisteRaumEdit;
 	delete window.FeldlisteRaumEdit;
 	delete window.FeldlisteProjekt;
 }
