@@ -189,7 +189,7 @@
 				//Link zu Projekt in Navbar und Titelleiste
 				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
-					delete localStorage.RaumListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Projekt man kommt!
+					leereStorageRaumListe("mitLatLngListe");
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -510,10 +510,6 @@
 					if (window.RaumListe) {
 						//globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
-					} else if (localStorage.RaumListe) {
-						//Objekte werden als Strings übergeben, müssen geparst werden
-						RaumListe = JSON.parse(localStorage.RaumListe);
-						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
 						//keine Raumliste übergeben
 						//neu aus DB erstellen
@@ -521,8 +517,7 @@
 						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
 							success: function (data) {
 								//RaumListe bereitstellen
-								RaumListe = data;
-								localStorage.RaumListe = JSON.stringify(RaumListe);
+								window.RaumListe = data;
 								nächsterVorigerRaum_2(NächsterOderVoriger);
 							}
 						});

@@ -1636,19 +1636,13 @@ function initiiereRaumListe() {
 	if (window.RaumListe) {
 		//Raumliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereRaumListe_2();
-	} else	if (localStorage.RaumListe) {
-		//Raumliste aus localStorage holen
-		RaumListe = JSON.parse(localStorage.RaumListe);
-		initiiereRaumListe_2();
 	} else {
 		//Raumliste aud DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
 			success: function (data) {
-				RaumListe = data;
 				//RaumListe für haumEdit bereitstellen
-				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-				localStorage.RaumListe = JSON.stringify(RaumListe);
+				window.RaumListe = data;
 				initiiereRaumListe_2();
 			}
 		});
@@ -3299,7 +3293,6 @@ function leereStorageProjektEdit(mitLatLngListe) {
 }
 
 function leereStorageRaumListe(mitLatLngListe) {
-	delete localStorage.RaumListe;
 	delete window.RaumListe;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngProjekt;
