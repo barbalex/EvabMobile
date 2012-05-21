@@ -820,9 +820,6 @@ function initiiereBeobEdit() {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteBeobEdit) {
 		initiiereBeobEdit_2();
-	} else if (localStorage.FeldlisteBeobEdit) {
-		FeldlisteBeobEdit = JSON.parse(localStorage.FeldlisteBeobEdit);
-		initiiereBeobEdit_2();
 	} else {
 		//das dauert lnger - hinweisen
 		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -831,8 +828,7 @@ function initiiereBeobEdit() {
 		$db.view('evab/FeldListeBeob', {
 			success: function (data) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
-				FeldlisteBeobEdit = data;
-				localStorage.FeldlisteBeobEdit = JSON.stringify(data);
+				window.FeldlisteBeobEdit = data;
 				initiiereBeobEdit_2();
 			}
 		});
@@ -1076,9 +1072,6 @@ function initiiereProjektEdit_2(Projekt) {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteProjekt) {
 		initiiereProjektEdit_3(Projekt);
-	} else if (localStorage.FeldlisteProjekt) {
-		FeldlisteProjekt = JSON.parse(localStorage.FeldlisteProjekt);
-		initiiereProjektEdit_3(Projekt);
 	} else {
 		//das dauert länger - Hinweis einblenden
 		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1086,8 +1079,7 @@ function initiiereProjektEdit_2(Projekt) {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeProjekt', {
 			success: function (Feldliste) {
-				FeldlisteProjekt = Feldliste;
-				localStorage.FeldlisteProjekt = JSON.stringify(FeldlisteProjekt);
+				window.FeldlisteProjekt = Feldliste;
 				initiiereProjektEdit_3(Projekt);
 			}
 		});
@@ -3370,7 +3362,6 @@ function leereStorageFeldListe() {
 	delete window.FeldlisteOrtEdit;
 	delete localStorage.FeldlisteRaumEdit;
 	delete window.FeldlisteRaumEdit;
-	delete localStorage.FeldlisteProjekt;
 	delete window.FeldlisteProjekt;
 }
 
