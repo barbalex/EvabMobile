@@ -239,7 +239,7 @@
 										Feld = data.rows[i].value;
 										//Nur ausgewählte offizielle Felder berücksichtigen
 										//if (Feld.User === "ZentrenBdKt") {
-										if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oObergrenzeHöhe", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
+										if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
 											$db.openDoc(Feld._id, {
 												success: function (Feld) {
 													Feld.SichtbarImModusHierarchisch.push(Username);

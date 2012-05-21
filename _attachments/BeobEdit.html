@@ -114,7 +114,7 @@
 			});
 
 			$("#BeobEditPage").on("pagehide", function () {
-				beendePositionsermittlung();
+				stopGeolocation();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -339,9 +339,6 @@
 					if (window.BeobListe) {
 						//globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(NächsteOderVorige);
-					} else if (localStorage.BeobListe) {
-						BeobListe = JSON.parse(localStorage.BeobListe);
-						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
@@ -351,7 +348,6 @@
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 								BeobListe = data;
-								localStorage.BeobListe = JSON.stringify(BeobListe);
 								nächsteVorigeBeob_2(NächsteOderVorige);
 							}
 						});

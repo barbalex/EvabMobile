@@ -204,15 +204,12 @@
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
-					var AlterFeldWert, Feldjson;
+					var AlterFeldWert;
+					localStorage.FeldWert = this.value;
 					if (this.name) {
-						//nötig, damit Arrays richtig kommen
-						Feldjson = $("[name='" + localStorage.FeldName + "']").serializeObject();
-						localStorage.FeldWert = Feldjson[localStorage.FeldName];
 						localStorage.FeldName = this.name;
 						localStorage.AlterFeldWert = Feld[this.name];
 					} else {
-						localStorage.FeldWert = this.value;
 						localStorage.FeldName = this.id;
 						localStorage.AlterFeldWert = Feld[this.id];
 					}

@@ -211,9 +211,11 @@ function speichereKoordinaten(id) {
 			//Höhe nur speichern, wenn vorhanden
 			//wenn nicht vorhanden: Allflligen alten Wert löschen
 			if (localStorage.oHoehe) {
-				doc.oObergrenzeHöhe = parseInt(localStorage.oHoehe);
+				doc.oHöhe = parseInt(localStorage.oHoehe);
+				doc.oHöheGenauigkeit = parseFloat(localStorage.oHoeheGenauigkeit);
 			} else {
-				delete doc.oObergrenzeHöhe;
+				delete doc.oHöhe;
+				delete doc.oHöheGenauigkeit;
 			}
 			//alles speichern
 			$db.saveDoc(doc, {
@@ -223,8 +225,15 @@ function speichereKoordinaten(id) {
 					$("[name='oYKoord']").val(localStorage.oYKoord);
 					$("[name='oLatitudeDecDeg']").val(localStorage.oLatitudeDecDeg);
 					$("[name='oLongitudeDecDeg']").val(localStorage.oLongitudeDecDeg);
-					$("[name='oLagegenauigkeit']").val(parseInt(localStorage.oLagegenauigkeit));
-					$("#oObergrenzeHöhe").val(parseInt(localStorage.oHoehe));
+					if (localStorage.oLagegenauigkeit) {
+						$("[name='oLagegenauigkeit']").val(parseInt(localStorage.oLagegenauigkeit));
+					}
+					if (localStorage.oHoehe) {
+						$("[name='oHöhe']").val(parseInt(localStorage.oHoehe));	
+					}
+					if (localStorage.oHoeheGenauigkeit) {
+						$("[name='oHöheGenauigkeit']").val(parseInt(localStorage.oHoeheGenauigkeit));
+					}
 				},
 				error: function () {
 					melde("Fehler: Koordinaten nicht gespeichert");
@@ -957,11 +966,7 @@ function initiiereBeobliste() {
 	//hat BeobEdit.html eine BeobListe übergeben?
 	if (window.BeobListe) {
 		//Beobliste aus globaler Variable holen - muss nicht geparst werden
-		initiiereBeobliste_2()
-	} else if (localStorage.BeobListe) {
-		//Beobliste aus localStorage holen
-		BeobListe = JSON.parse(localStorage.BeobListe);
-		initiiereBeobliste_2()
+		initiiereBeobliste_2();
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
@@ -969,9 +974,7 @@ function initiiereBeobliste() {
 			success: function (data) {
 				//BeobListe für BeobEdit bereitstellen
 				BeobListe = data;
-				//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
-				localStorage.BeobListe = JSON.stringify(BeobListe);
-				initiiereBeobliste_2()
+				initiiereBeobliste_2();
 			}
 		});
 	}
@@ -2552,6 +2555,7 @@ function GetGeolocation(docId) {
 	delete localStorage.oLatitudeDecDeg;
 	delete localStorage.oLagegenauigkeit;
 	delete localStorage.oHoehe;
+	delete localStorage.oHoeheGenauigkeit;
 	//Mit der Verortung beginnen
 	watchID = null;
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
@@ -2585,8 +2589,10 @@ function GeolocationAuslesen(position) {
 	$("[name='oLatitudeDecDeg']").val(position.coords.latitude);
 	$("[name='oLagegenauigkeit']").val(position.coords.accuracy);
 	if (position.coords.altitude > 0) {
-		$("#oObergrenzeHöhe").val(position.coords.altitude);
+		$("[name='oHöhe']").val(position.coords.altitude);
+		$("[name='oHöheGenauigkeit']").val(position.coords.altitudeAccuracy);
 		localStorage.oHoehe = position.coords.altitude;
+		localStorage.oHoeheGenauigkeit = position.coords.altitudeAccuracy;
 	}
 	speichereKoordinaten(localStorage.docId);
 }
@@ -2621,9 +2627,11 @@ function stopGeolocation() {
 	clearTimeout(stop);
 	delete window.stop;
 	delete localStorage.VerortungAbgeschlossen;
-	//beendePositionsermittlung ist ausgelagert, damit es auch
-	//von den beiden Seiten aufgerufen werden kann, wenn sie hiden
-	beendePositionsermittlung();
+	//Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
+	if (typeof watchID !== "undefined") {
+		navigator.geolocation.clearWatch(watchID);
+		watchID = null;
+	}
 	//Animation beenden
 	delete localStorage.NavbarVerortungAnimieren;
 	//auf den Erfolg reagieren
@@ -2636,21 +2644,14 @@ function stopGeolocation() {
 		$("[name='oLongitudeDecDeg']").val("");
 		$("[name='oLatitudeDecDeg']").val("");
 		$("[name='oLagegenauigkeit']").val("");
+		$("[name='oHöhe']").val("");
+		$("[name='oHöheGenauigkeit']").val("");
 		//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
 		speichereKoordinaten(localStorage.docId);
 		melde("Keine genaue Position erhalten");
 	}
 	//Variablen aufräumen
 	delete localStorage.docId;
-}
-
-//separat, damit auch beim Datensatzwechsel möglich
-function beendePositionsermittlung() {
-	//Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
-	if (typeof watchID !== "undefined") {
-		navigator.geolocation.clearWatch(watchID);
-		watchID = null;
-	}
 }
 
 //damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
@@ -3333,6 +3334,7 @@ function leereStorageRaumEdit(mitLatLngListe) {
 function leereStorageOrtListe(mitLatLngListe) {
 	delete localStorage.OrtListe;
 	delete window.OrtListe;
+	delete window.hOrt;
 	if (mitLatLngListe) {
 		delete localStorage.hOrteLatLngRaum;
 		delete window.hOrteLatLngRaum;
@@ -3349,7 +3351,7 @@ function leereStorageOrtEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.Ort;
+	delete window.hOrt;
 }
 
 function leereStorageZeitListe() {
@@ -3364,17 +3366,19 @@ function leereStorageZeitEdit() {
 function leereStoragehBeobListe() {
 	delete localStorage.hBeobListe;
 	delete window.hBeobListe;
+	delete window.hBeob;
 }
 
 function leereStoragehBeobEdit() {
 	delete localStorage.hBeobId;
+	delete window.hBeob;
 }
 
 function leereStorageBeobListe() {
-	delete localStorage.BeobListe;
 	delete window.BeobListe;
 	delete localStorage.BeobListeLatLng;
 	delete window.BeobListeLatLng;
+	delete window.Beob;
 }
 
 function leereStorageBeobEdit() {
