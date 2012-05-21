@@ -3336,7 +3336,6 @@ function leereStorageBeobEdit() {
 function leereStorageFeldListe() {
 	delete localStorage.Feldliste
 	delete window.Feldliste;
-	delete localStorage.FeldlisteBeobEdit;
 	delete window.FeldlisteBeobEdit;
 	delete window. FeldlistehBeobEdit;
 	delete window.FeldlisteZeitEdit;
