@@ -116,14 +116,16 @@
 
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
-					delete localStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					leereStorage.OrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
 					event.preventDefault();
-					delete localStorage.OrtListe;	//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					delete localStorage.RaumListe;
+					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					leereStorageOrtListe();
+					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
@@ -515,9 +517,6 @@
 					if (window.OrtListe) {
 						//Ortliste liegt als Variable vor
 						nächsterVorigerOrt_2(NächsterOderVoriger);
-					} else if (localStorage.OrtListe) {
-						OrtListe = JSON.parse(localStorage.OrtListe);
-						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
 						//keine Ortliste vorhanden
 						//neu aus DB erstellen
@@ -525,8 +524,7 @@
 						$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
 							success: function (data) {
 								//OrtListe für hOrtListe.html bereitstellen
-								OrtListe = data;
-								localStorage.OrtListe = JSON.stringify(OrtListe);
+								window.OrtListe = data;
 								nächsterVorigerOrt_2(NächsterOderVoriger);
 							}
 						});

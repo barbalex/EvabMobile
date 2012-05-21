@@ -1810,18 +1810,13 @@ function initiiereOrtListe() {
 	if (window.OrtListe) {
 		//Ortliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereOrtListe_2();
-	} else if (localStorage.OrtListe) {
-		//Ortliste aus localStorage holen
-		OrtListe = JSON.parse(localStorage.OrtListe);
-		initiiereOrtListe_2();
 	} else {
 		//Ortliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
 			success: function (data) {
 				//OrtListe für hOrtEdit bereitstellen
-				OrtListe = data;
-				localStorage.OrtListe = JSON.stringify(data);	//Objekte werden als Strings übergeben, müssen in String umgewandelt werden
+				window.OrtListe = data;
 				initiiereOrtListe_2();
 			}
 		});
@@ -3321,7 +3316,6 @@ function leereStorageRaumEdit(mitLatLngListe) {
 }
 
 function leereStorageOrtListe(mitLatLngListe) {
-	delete localStorage.OrtListe;
 	delete window.OrtListe;
 	delete window.hOrt;
 	if (mitLatLngListe) {
