@@ -92,7 +92,7 @@
 				$(":jqmData(role='page')").on("pageinit", function () {
 					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 					//muss auf index.html umgeleitet werden
-					if (localStorage.length === 0) {
+					if (localStorage.length === 0 || !localStorage.Username) {
 						$.mobile.changePage("index.html");
 					}
 

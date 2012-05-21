@@ -109,10 +109,16 @@
 				initiiereOrtEdit();
 			});
 
+			$("#OrtEditPage").on("pagehide", function () {
+				if (typeof watchID !== "undefined") {
+					stopGeolocation();
+				}
+			});
+
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0) {
+				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
@@ -555,6 +561,10 @@
 							case "nächster":
 								if (parseInt(i) < AnzOrt) {
 									localStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
+									//allfällige Lokalisierung abbrechen
+									if (typeof watchID !== "undefined") {
+										stopGeolocation();
+									}
 									initiiereOrtEdit();
 									return;
 								} else {
@@ -565,6 +575,10 @@
 							case "voriger":
 								if (parseInt(i) > 0) {
 									localStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
+									//allfällige Lokalisierung abbrechen
+									if (typeof watchID !== "undefined") {
+										stopGeolocation();
+									}
 									initiiereOrtEdit();
 									return;
 								} else {

@@ -997,7 +997,7 @@ function initiiereBeobliste() {
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
 			success: function (data) {
 				//BeobListe für BeobEdit bereitstellen
-				BeobListe = data;
+				window.BeobListe = data;
 				initiiereBeobliste_2();
 			}
 		});
@@ -1005,7 +1005,7 @@ function initiiereBeobliste() {
 }
 
 function initiiereBeobliste_2() {
-	var i, anzBeob, beob, ListItemContainer, Titel2, Datum, Zeit, ArtGruppe, ImageLink, ArtName, externalPage;
+	var anzBeob, beob, ListItemContainer, Titel2;
 	anzBeob = BeobListe.rows.length;
 	ListItemContainer = "";
 
@@ -1019,25 +1019,20 @@ function initiiereBeobliste_2() {
 	if (anzBeob === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
 	} else {
-		for (i in BeobListe.rows) {	//Liste aufbauen
+		for (i in window.BeobListe.rows) {
 			if (typeof i !== "function") {
-				beob = BeobListe.rows[i].value;
-				key = BeobListe.rows[i].key;
-				Datum = beob.zDatum;
-				Zeit = beob.zUhrzeit;
-				ArtGruppe = beob.aArtGruppe;
-				ImageLink = "Artgruppenbilder/" + ArtGruppe + ".png";
-				ArtName = beob.aArtName;
+				beob = window.BeobListe.rows[i].value;
+				key = window.BeobListe.rows[i].key;
 				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
 				ListItemContainer += beob._id;
 				ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
-				ListItemContainer += ImageLink;
+				ListItemContainer += "Artgruppenbilder/" + beob.aArtGruppe + ".png";
 				ListItemContainer += "\" /><h3 class=\"aArtName\">";
-				ListItemContainer += ArtName;
+				ListItemContainer += beob.aArtName;
 				ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-				ListItemContainer += Datum;
+				ListItemContainer += beob.zDatum;
 				ListItemContainer += "&nbsp; &nbsp;";
-				ListItemContainer += Zeit;
+				ListItemContainer += beob.zUhrzeit;
 				ListItemContainer += "<\/p><\/a> <\/li>";
 			}
 		}
@@ -2568,9 +2563,7 @@ function GeolocationAuslesen(position) {
 function onGeolocationSuccess(position) {
 	//nur erste Position akzeptieren oder solche, die genauer sind als vorige
 	if (!localStorage.oLagegenauigkeit || position.coords.accuracy < localStorage.oLagegenauigkeit) {
-		//alert("1");
 		if (position.coords.accuracy < 100) {
-			//alert("Genauigkeit unter 100m");
 			GeolocationAuslesen(position);
 			if (position.coords.accuracy <= 5) {
 				stopGeolocation();
@@ -2597,7 +2590,8 @@ function stopGeolocation() {
 	//Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
 	if (typeof watchID !== "undefined") {
 		navigator.geolocation.clearWatch(watchID);
-		watchID = null;
+		delete window.watchID;
+		alert("watchID deleted");
 	}
 	//Animation beenden
 	delete localStorage.NavbarVerortungAnimieren;
@@ -3323,7 +3317,6 @@ function leereStorageZeitEdit() {
 
 function leereStoragehBeobListe() {
 	delete window.hBeobListe;
-	delete window.hBeob;
 }
 
 function leereStoragehBeobEdit() {
@@ -3334,7 +3327,6 @@ function leereStoragehBeobEdit() {
 function leereStorageBeobListe() {
 	delete window.BeobListe;
 	delete window.BeobListeLatLng;
-	delete window.Beob;
 }
 
 function leereStorageBeobEdit() {
