@@ -56,16 +56,12 @@
 					//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
 					if (window.FeldlisteOrtEdit) {
 						erstelleSichtbareFelder_2();
-					} else if (localStorage.FeldlisteOrtEdit) {
-						FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
-						erstelleSichtbareFelder_2();
 					} else {
 						//holt die Feldliste aus der DB
 						$db = $.couch.db("evab");
 						$db.view('evab/FeldListeOrt', {
 							success: function (data) {
-								FeldlisteOrtEdit = data;
-								localStorage.FeldlisteOrtEdit = JSON.stringify(FeldlisteOrtEdit);
+								window.FeldlisteOrtEdit = data;
 								erstelleSichtbareFelder_2();
 							}
 						});
@@ -149,7 +145,6 @@
 							});
 							//Globale Variable für FeldlisteOrtEdit zurücksetzen, damit die Liste neu aufgebaut wird
 							delete window.FeldlisteOrtEdit;
-							delete localStorage.FeldlisteOrtEdit;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

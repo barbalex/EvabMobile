@@ -1702,9 +1702,6 @@ function initiiereOrtEdit_2(Ort) {
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteOrtEdit) {
 		initiiereOrtEdit_3(Ort);
-	} else if (localStorage.FeldlisteOrtEdit) {
-		FeldlisteOrtEdit = JSON.parse(localStorage.FeldlisteOrtEdit);
-		initiiereOrtEdit_3(Ort);
 	} else {
 		//das dauert länger - hinweisen
 		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1713,8 +1710,7 @@ function initiiereOrtEdit_2(Ort) {
 		$db.view('evab/FeldListeOrt', {
 			success: function (Feldliste) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
-				FeldlisteOrtEdit = Feldliste;
-				localStorage.FeldlisteOrtEdit = JSON.stringify(FeldlisteOrtEdit);
+				window.FeldlisteOrtEdit = Feldliste;
 				initiiereOrtEdit_3(Ort);
 			}
 		});
@@ -3354,7 +3350,6 @@ function leereStorageFeldListe() {
 	delete window. FeldlistehBeobEdit;
 	delete localStorage.FeldlisteZeitEdit;
 	delete window.FeldlisteZeitEdit;
-	delete localStorage.FeldlisteOrtEdit;
 	delete window.FeldlisteOrtEdit;
 	delete window.FeldlisteRaumEdit;
 	delete window.FeldlisteProjekt;
