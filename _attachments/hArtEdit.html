@@ -473,9 +473,6 @@
 					if (window.hBeobListe) {
 						//hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
-					} else if (localStorage.hBeobListe) {
-						hBeobListe = JSON.parse(localStorage.hBeobListe);
-						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
 						//keine Ortliste vorhanden
 						//neu aus DB erstellen
@@ -483,8 +480,7 @@
 						$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
 							success: function (data) {
 								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-								hBeobListe = data;
-								localStorage.hBeobListe = JSON.stringify(hBeobListe);
+								window.hBeobListe = data;
 								nächsteVorigeArt_2(NächsteOderVorige);
 							}
 						});

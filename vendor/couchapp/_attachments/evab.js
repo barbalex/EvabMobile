@@ -2145,18 +2145,13 @@ function initiierehBeobListe() {
 	if (window.hBeobListe) {
 		//Beobliste aus globaler Variable holen - muss nicht geparst werden
 		initiierehBeobListe_2();
-	} else if (localStorage.hBeobListe) {
-		//Beobliste aus localStorage holen
-		hBeobListe = JSON.parse(localStorage.hBeobListe);
-		initiierehBeobListe_2();
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
 			success: function (data) {
 				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-				hBeobListe = data;
-				localStorage.hBeobListe = JSON.stringify(hBeobListe);
+				window.hBeobListe = data;
 				initiierehBeobListe_2();
 			}
 		});
@@ -3364,7 +3359,6 @@ function leereStorageZeitEdit() {
 }
 
 function leereStoragehBeobListe() {
-	delete localStorage.hBeobListe;
 	delete window.hBeobListe;
 	delete window.hBeob;
 }
