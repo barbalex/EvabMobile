@@ -504,7 +504,6 @@ function erstelleNeueZeit() {
 									localStorage.Status = "neu";
 									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 									delete window.ZeitListe;
-									delete localStorage.ZeitListe;
 									//Vorsicht: Von hZeitEdit.html aus samepage transition!
 									if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
 										//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
@@ -1925,18 +1924,13 @@ function initiiereZeitListe() {
 	if (window.ZeitListe) {
 		//Zeitliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereZeitListe_2();
-	} else if (localStorage.ZeitListe) {
-		//Zeitliste aus localStorage holen
-		ZeitListe = JSON.parse(localStorage.ZeitListe);
-		initiiereZeitListe_2();
 	} else {
 		//Zeitliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
-				ZeitListe = data;
-				localStorage.ZeitListe = JSON.stringify(data);
+				window.ZeitListe = data;
 				initiiereZeitListe_2();
 			}
 		});
@@ -3350,7 +3344,6 @@ function leereStorageOrtEdit() {
 }
 
 function leereStorageZeitListe() {
-	delete localStorage.ZeitListe;
 	delete window.ZeitListe;
 }
 

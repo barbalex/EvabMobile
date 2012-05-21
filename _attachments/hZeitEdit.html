@@ -476,15 +476,11 @@
 					//nur abfragen, wenn sie noch nicht existiert
 					if (window.ZeitListe) {
 						nächsteVorigeZeit_2(NächsteOderVorige);
-					} else if (localStorage.ZeitListe) {
-						ZeitListe = JSON.parse(localStorage.ZeitListe);
-						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
 						$db = $.couch.db("evab");
 						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
 							success: function (data) {
-								ZeitListe = data;
-								localStorage.ZeitListe = JSON.stringify(data);
+								window.ZeitListe = data;
 								nächsteVorigeZeit_2(NächsteOderVorige);
 							}
 						});
