@@ -205,23 +205,18 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#BeobEditForm").on("change", ".speichern", function () {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
+					if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 						//Wenn Koordinaten und beide erfasst
 						localStorage.oXKoord = $("[name='oXKoord']").val();
 						localStorage.oYKoord = $("[name='oYKoord']").val();
 						//Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
-						localStorage.oLagegenauigkeit = "";
+						localStorage.oLagegenauigkeit = null;
 						//und Koordinaten speichern
-						speichereKoordinaten(localStorage.BeobId);
+						speichereKoordinaten(localStorage.BeobId, "Beob");
 					} else {
-						speichern(Feldname, Feldwert);
+						speichern(this);
 					}
 				});
 
@@ -229,12 +224,7 @@
 				//change wird für jeden geswipten Wert ausgelöst!
 				//ungelöstes Problem: swipe reagiert!
 				$("#BeobEditForm").on("mouseup", ".ui-slider", function (event) {
-					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
-					speichern(Feldname, Feldwert);
+					speichern(this);
 				});
 
 				//Änderungen im Formular für Anhänge speichern
@@ -255,7 +245,7 @@
 
 				$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
 					event.preventDefault();
-					GetGeolocation(localStorage.BeobId);
+					GetGeolocation(localStorage.BeobId, "Beob");
 				});
 
 				//Code für den Beobachtung-Löschen-Dialog
@@ -512,22 +502,45 @@
 				}
 
 				//Speichert alle Daten
-				function speichern(Feldname, Feldwert) {
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.BeobId, {
-						success: function (Beob) {
+				function speichern(that) {
+					//prüfen, ob Beob als Objekt vorliegt
+					if (window.Beob) {
+						//Objekt verwenden
+						speichern_2(Feldname, Feldwert);
+					} else {
+						//Beob aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.BeobId, {
+							success: function (data) {
+								window.Beob = data;
+								speichern_2(Feldname, Feldwert);
+					}
+				}
+
+				function speichern_2(that) {
+							var Feldname, Feldjson, Feldwert;
+							Feldname = this.name;
+							InputTyp = $(that).attr("type");
+							//nötig, damit Arrays richtig kommen
+							Feldjson = $("[name='" + Feldname + "']").serializeObject();
+							Feldwert = Feldjson[Feldname];
 							//Werte aus dem Formular aktualisieren
 							if (Feldwert) {
-								Beob[Feldname] = Feldwert;
-							} else if (Beob[Feldname]) {
-								delete Beob[Feldname]
+								if (InputTyp === "number") {
+									window.Beob[Feldname] = parseInt(Feldwert);
+								} else {
+									window.Beob[Feldname] = Feldwert;
+								}
+							} else if (window.Beob[Feldname]) {
+								delete window.Beob[Feldname]
 							}
-							Beob.aArtGruppe = localStorage.aArtGruppe;
-							Beob.aArtName = localStorage.aArtName;
-							Beob.aArtId = localStorage.aArtId;
+							window.Beob.aArtGruppe = localStorage.aArtGruppe;
+							window.Beob.aArtName = localStorage.aArtName;
+							window.Beob.aArtId = localStorage.aArtId;
 							//alles speichern
-							$db.saveDoc(Beob, {
-								error: function () {
+							$db.saveDoc(window.Beob, {
+								error: function (data) {
+									window.Beob._rev = data.rev;
 									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 								}
 							});

@@ -164,8 +164,8 @@
 						//Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
-						localStorage.oLagegenauigkeit = "";
-						speichereKoordinaten(localStorage.OrtId);
+						localStorage.oLagegenauigkeit = null;
+						speichereKoordinaten(localStorage.OrtId, "Ort");
 					} else {
 						speichern(this);
 					}
@@ -256,7 +256,7 @@
 
 				$('#OrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
 					event.preventDefault();
-					GetGeolocation(localStorage.OrtId);
+					GetGeolocation(localStorage.OrtId, "Ort");
 				});
 				
 				$("#OrtEditPage").on("swipeleft", "#OrtEditContent", function () {
@@ -361,6 +361,26 @@
 				}
 
 				function speichern(that) {
+					//prüfen, ob Ort existiert
+					if (window.Ort) {
+						//bestehedes Objekt verwenden
+						speichern_2(that);
+					} else {
+						//kein Ort > aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.OrtId, {
+							success: function (data) {
+								window.Ort = data;
+								speichern_2(that);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
+				}
+
+				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
 					InputTyp = $(that).attr("type");
@@ -372,38 +392,30 @@
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereStorageOrtListe("mitLatLngListe");
 						}
-						$db = $.couch.db("evab");
-						//Bestehendes Dokument öffnen
-						$db.openDoc(localStorage.OrtId, {
-							success: function (hOrt) {
-								//Werte aus dem Formular aktualisieren
-								if (Feldwert) {
-									if (InputTyp === "number") {
-										hOrt[Feldname] = parseInt(Feldwert);
-									} else {
-										hOrt[Feldname] = Feldwert;
-									}
-								} else if (hOrt[Feldname]) {
-									delete hOrt[Feldname]
-								}
-								//alles speichern
-								$db.saveDoc(hOrt, {
-									success: function () {
-										speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
-										speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
-										//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
-										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-										//Zuletzt gespeicherte OrtId NACH dem speichern setzen
-										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-										//darum zwischenspeichern
-										window.OrtIdZwischenspeicher = localStorage.OrtId;
-										setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
-										setTimeout("delete window.OrtIdZwischenspeicher", 1500);
-									},
-									error: function () {
-										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-									}
-								});
+						//Werte aus dem Formular aktualisieren
+						if (Feldwert) {
+							if (InputTyp === "number") {
+								window.Ort[Feldname] = parseInt(Feldwert);
+							} else {
+								window.Ort[Feldname] = Feldwert;
+							}
+						} else if (window.Ort[Feldname]) {
+							delete window.Ort[Feldname]
+						}
+						//alles speichern
+						$db.saveDoc(window.Ort, {
+							success: function (data) {
+								window.Ort._rev = data.rev;
+								speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
+								speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
+								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								//Zuletzt gespeicherte OrtId NACH dem speichern setzen
+								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								//darum zwischenspeichern
+								window.OrtIdZwischenspeicher = localStorage.OrtId;
+								setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
+								setTimeout("delete window.OrtIdZwischenspeicher", 1500);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");

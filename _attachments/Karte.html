@@ -76,6 +76,7 @@
 							erstelleKarteH();
 							break;
 						case "hOrtEdit":
+							OrtOderBeob = "Ort";
 							erstelleKartehOrtEdit();
 							break;
 						case "BeobListe":
@@ -493,7 +494,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.OrtId);
+						speichereKoordinaten(localStorage.OrtId, "Ort");
 					}
 
 					//wird benutzt in BeobEdit.html
@@ -524,7 +525,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 							infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.BeobId);
+						speichereKoordinaten(localStorage.BeobId, "Beob");
 					}
 
 					//GoogleMap: alle Marker löschen
