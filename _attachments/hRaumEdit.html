@@ -326,6 +326,27 @@
 				}
 
 				function speichern(that) {
+					//prüfen, ob Objekt Raum existiert
+					//fehlt z.B. nach refresh
+					if (window.Raum) {
+						speichern_2(that);
+					} else {
+						//kein Raum > aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.RaumId, {
+							success: function (data) {
+								window.Raum = data;
+								speichern_2(that);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
+							}
+						});
+					}
+
+				}
+
+				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
 					InputTyp = $(that).attr("type");
@@ -337,38 +358,30 @@
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageRaumListe("mitLatLngListe");
 						}
-						$db = $.couch.db("evab");
-						//Bestehendes Dokument öffnen
-						$db.openDoc(localStorage.RaumId, {
-							success: function (hRaum) {
-								if (Feldwert) {
-									if (InputTyp === "number") {
-										hRaum[Feldname] = parseInt(Feldwert);
-									} else {
-										hRaum[Feldname] = Feldwert;
-									}
-								} else if (hRaum[Feldname]) {
-									delete hRaum[Feldname]
-								}
-								//alles speichern
-								$db.saveDoc(hRaum, {
-									success: function () {
-										speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
-										speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
-										speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
-										//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-										//Zuletzt gespeicherte RaumId NACH dem speichern setzen
-										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-										//darum zwischenspeichern
-										window.RaumIdZwischenspeicher = localStorage.RaumId;
-										setTimeout("window.ZuletztGespeicherteRaumId = window.RaumIdZwischenspeicher", 1000);
-										setTimeout("delete window.RaumIdZwischenspeicher", 1500);
-									},
-									error: function () {
-										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-									}
-								});
+						if (Feldwert) {
+							if (InputTyp === "number") {
+								window.Raum[Feldname] = parseInt(Feldwert);
+							} else {
+								window.Raum[Feldname] = Feldwert;
+							}
+						} else if (window.Raum[Feldname]) {
+							delete window.Raum[Feldname]
+						}
+						//alles speichern
+						$db.saveDoc(window.Raum, {
+							success: function (data) {
+								window.Raum._rev = data.rev;
+								speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
+								speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
+								speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
+								//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								//Zuletzt gespeicherte RaumId NACH dem speichern setzen
+								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								//darum zwischenspeichern
+								window.RaumIdZwischenspeicher = localStorage.RaumId;
+								setTimeout("window.ZuletztGespeicherteRaumId = window.RaumIdZwischenspeicher", 1000);
+								setTimeout("delete window.RaumIdZwischenspeicher", 1500);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
