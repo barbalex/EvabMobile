@@ -442,37 +442,50 @@
 
 				//Speichert alle Daten
 				function speichern(that) {
+					//prüfen, ob hBeob als Objekt vorliegt
+					if (window.hBeob) {
+						//dieses verwenden
+						speichern_2(that);
+					} else {
+						//Objekt aud DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.hBeobId, {
+							success: function (data) {
+								window.hBeob = data;
+								speichern_2(that);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
+
+				}
+
+				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert, InputTyp;
 					Feldname = that.name;
 					InputTyp = $(that).attr("type");
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
-					$db = $.couch.db("evab");
-					//Bestehendes Dokument öffnen
-					$db.openDoc(localStorage.hBeobId, {
-						success: function (hArt) {
-							//Werte aus dem Formular aktualisieren
-							if (Feldwert) {
-								if (InputTyp === "number") {
-									hArt[Feldname] = parseInt(Feldwert);
-								} else {
-									hArt[Feldname] = Feldwert;
-								}
-							} else if (hArt[Feldname]) {
-								delete hArt[Feldname];
-							}
-							hArt.aArtId = localStorage.aArtId;
-							hArt.aArtName = localStorage.aArtName;
-							hArt.aArtGruppe = localStorage.aArtGruppe;
-							$db.saveDoc(hArt, {
-								success: function (data) {
-									localStorage.hBeobId = data.id;
-								},
-								error: function () {
-									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-								}
-							});
+					//Werte aus dem Formular aktualisieren
+					if (Feldwert) {
+						if (InputTyp === "number") {
+							window.hBeob[Feldname] = parseInt(Feldwert);
+						} else {
+							window.hBeob[Feldname] = Feldwert;
+						}
+					} else if (window.hBeob[Feldname]) {
+						delete window.hBeob[Feldname];
+					}
+					window.hBeob.aArtId = localStorage.aArtId;
+					window.hBeob.aArtName = localStorage.aArtName;
+					window.hBeob.aArtGruppe = localStorage.aArtGruppe;
+					$db.saveDoc(window.hBeob, {
+						success: function (data) {
+							window.hBeob._rev = data.rev;
+							localStorage.hBeobId = data.id;
 						},
 						error: function () {
 							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
