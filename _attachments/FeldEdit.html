@@ -212,7 +212,7 @@
 					$.mobile.changePage("index.html");
 				} else if (!localStorage.FeldId) {
 					leereAlleVariabeln();
-					geheZurueckFE();
+					$.mobile.changePage("BeobListe.html");
 				}
 
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
@@ -296,19 +296,12 @@
 						ArtGruppeAufbauenFeldEdit();
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
 						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
+						if (window.Feld.Hierarchiestufe === "Art") {
+							//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
+							$("#Artgruppenliste").empty();
+						}
 						leereStorageFeldListe();
 						speichereFeldeigenschaften();
-						$db = $.couch.db("evab");
-						$db.openDoc(Feld._id, {
-							success: function (doc) {
-								var letzteHierarchiestufe;
-								letzteHierarchiestufe = doc.Hierarchiestufe;
-								if (letzteHierarchiestufe === "Art") {
-									//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
-									$("#Artgruppenliste").empty();
-								}
-							}
-						});
 					} else {
 						if (localStorage.FeldName === "FeldBeschriftung") {
 							$(".FeldEditHeaderTitel").text(Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
@@ -736,45 +729,58 @@
 				}
 
 				function speichereStandardwert() {
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.FeldId, {
-						success: function (doc) {
-							var Feldwert;
-							Feldwert = $("#Standardwert").val();
-							//Standardwert managen
-							//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
-							//darum manuell für diesen User updaten
-							if (doc.Standardwert) {
-								//Standardwert existierte
-								if (Feldwert) {
-									//neuen Standardwert setzen
-									doc.Standardwert[localStorage.Username] = Feldwert;
-								} else {
-									//Standardwert ist leer
-									if (doc.Standardwert[localStorage.Username]) {
-										//bisherigen Standardwert löschen
-										delete doc.Standardwert[localStorage.Username];
-									}
-								}
-							} else {
-								//Bisher gab es noch keinen Standardwert
-								if (Feldwert) {
-									//Objekt für Standardwert schaffen und neuen Wert setzen
-									doc.Standardwert = {};
-									doc.Standardwert[localStorage.Username] = Feldwert;
-								}
+					//Prüfen, ob Feld als Objekt vorliegt
+					if (window.Feld) {
+						//dieses verwenden
+						speichereStandardwert_2();
+					} else {
+						//aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.FeldId, {
+							success: function (doc) {
+								window.Feld = doc;
+								speichereStandardwert_2();
+							},
+							error: function () {
+								melde("Fehler: Feld nicht gespeichert");
 							}
-							$db.saveDoc(doc, {
-								success: function (data) {
-									Feld = data;
-									localStorage.FeldId = Feld.id;
-									//Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
-									leereStorageFeldListe();
-								},
-								error: function () {
-									melde("Fehler: Feld nicht gespeichert");
-								}
-							});
+						});
+					}
+
+				}
+
+				function speichereStandardwert_2() {
+					var Feldwert;
+					Feldwert = $("#Standardwert").val();
+					//Standardwert managen
+					//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+					//darum manuell für diesen User updaten
+					if (window.Feld.Standardwert) {
+						//Standardwert existierte
+						if (Feldwert) {
+							//neuen Standardwert setzen
+							window.Feld.Standardwert[localStorage.Username] = Feldwert;
+						} else {
+							//Standardwert ist leer
+							if (window.Feld.Standardwert[localStorage.Username]) {
+								//bisherigen Standardwert löschen
+								delete window.Feld.Standardwert[localStorage.Username];
+							}
+						}
+					} else {
+						//Bisher gab es noch keinen Standardwert
+						if (Feldwert) {
+							//Objekt für Standardwert schaffen und neuen Wert setzen
+							window.Feld.Standardwert = {};
+							window.Feld.Standardwert[localStorage.Username] = Feldwert;
+						}
+					}
+					$db.saveDoc(window.Feld, {
+						success: function (data) {
+							window.Feld._rev = data.rev;
+							localStorage.FeldId = data.id;
+							//Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
+							leereStorageFeldListe();
 						},
 						error: function () {
 							melde("Fehler: Feld nicht gespeichert");
@@ -784,105 +790,115 @@
 
 				//speichert
 				function speichereFeldeigenschaften() {
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.FeldId, {
-						success: function (doc) {
-							var Formularfelder, idx1, idx2;
-							Formularfelder = $("#FeldEditForm").serializeObjectNull();
-							//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
-							if (Formularfelder.Optionen) {
-								Formularfelder.Optionen = Formularfelder.Optionen.split(",");
+					//prüfen, ob das Feld als Objekt vorliegt
+					if (window.Feld) {
+						//bestehendes Objekt verwenden
+						speichereFeldeigenschaften_2();
+					} else {
+						//Objekt aus der DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.FeldId, {
+							success: function (data) {
+								window.Feld = data;
+								speichereFeldeigenschaften_2();
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
 							}
-							/*if (doc.ArtGruppe) {
-								doc.ArtGruppe = doc.ArtGruppe.split(", ");
-							}*/
-							//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
-							if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-								Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
-								//Feldliste soll neu aufgebaut werden
-								leereStorageFeldListe();
-							}
-							//Es braucht eine Reihenfolge
-							if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-								Formularfelder.Reihenfolge = 1;
-								//Feldliste soll neu aufgebaut werden
-								leereStorageFeldListe();
-							}
-							//Es braucht einen Feldtyp
-							if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-								Formularfelder.Formularelement = "textinput";
-								Formularfelder.InputTyp = "text";
-							}
-							//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
-							if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
-								delete Formularfelder.InputTyp;
-								$("#" + Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
-							}
-							//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
-							if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
-								Formularfelder.InputTyp = "text";
-							}
-							//Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
-							//Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
-							//Soll das Feld im Modus einfach sichtbar sein?
-							idx1 = doc.SichtbarImModusEinfach.indexOf(localStorage.Username);
-							if ($("#SichtbarImModusEinfach").val() === "ja") {
-								//User ergänzen, wenn noch nicht enthalten
-								if (idx1 === -1) {
-									doc.SichtbarImModusEinfach.push(localStorage.Username);
+						});
+					}
+				}
+
+				function speichereFeldeigenschaften_2() {
+					var Formularfelder, idx1, idx2;
+					Formularfelder = $("#FeldEditForm").serializeObjectNull();
+					//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+					if (Formularfelder.Optionen) {
+						Formularfelder.Optionen = Formularfelder.Optionen.split(",");
+					}
+					/*if (window.Feld.ArtGruppe) {
+						window.Feld.ArtGruppe = window.Feld.ArtGruppe.split(", ");
+					}*/
+					//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
+						//Feldliste soll neu aufgebaut werden
+						leereStorageFeldListe();
+					}
+					//Es braucht eine Reihenfolge
+					if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Reihenfolge = 1;
+						//Feldliste soll neu aufgebaut werden
+						leereStorageFeldListe();
+					}
+					//Es braucht einen Feldtyp
+					if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
+						Formularfelder.Formularelement = "textinput";
+						Formularfelder.InputTyp = "text";
+					}
+					//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+					if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
+						delete Formularfelder.InputTyp;
+						$("#" + Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
+					}
+					//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+					if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
+						Formularfelder.InputTyp = "text";
+					}
+					//Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
+					//Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
+					//Soll das Feld im Modus einfach sichtbar sein?
+					idx1 = window.Feld.SichtbarImModusEinfach.indexOf(localStorage.Username);
+					if ($("#SichtbarImModusEinfach").val() === "ja") {
+						//User ergänzen, wenn noch nicht enthalten
+						if (idx1 === -1) {
+							window.Feld.SichtbarImModusEinfach.push(localStorage.Username);
+						}
+					} else {
+						//User entfernen, wenn enthalten
+						if (idx1 !== -1) {
+							window.Feld.SichtbarImModusEinfach.splice(idx1, 1);
+						}
+					}
+					//Soll das Feld im Modus hierarchisch sichtbar sein?
+					idx2 = window.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+					if ($("#SichtbarImModusHierarchisch").val() === "ja") {
+						//User ergänzen, wenn noch nicht enthalten
+						if (idx2 === -1) {
+							window.Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
+						}
+					} else {
+						//User entfernen, wenn enthalten
+						if (idx2 !== -1) {
+							window.Feld.SichtbarImModusHierarchisch.splice(idx2, 1);
+						}
+					}
+					//Formularfelder in Dokument schreiben
+					//setzt Vorhandensein von Feldnamen voraus!
+					for (i in Formularfelder) {
+						if (typeof i !== "function") {
+							if (Formularfelder[i]) {
+								if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
+									//Zahl wird sonst in Text verwandelt und falsch sortiert
+									window.Feld[i] = parseInt(Formularfelder[i]);
+								} else {
+									window.Feld[i] = Formularfelder[i];
 								}
 							} else {
-								//User entfernen, wenn enthalten
-								if (idx1 !== -1) {
-									doc.SichtbarImModusEinfach.splice(idx1, 1);
-								}
+								//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
+								delete window.Feld[i];
 							}
-							//Soll das Feld im Modus hierarchisch sichtbar sein?
-							idx2 = doc.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
-							if ($("#SichtbarImModusHierarchisch").val() === "ja") {
-								//User ergänzen, wenn noch nicht enthalten
-								if (idx2 === -1) {
-									doc.SichtbarImModusHierarchisch.push(localStorage.Username);
-								}
-							} else {
-								//User entfernen, wenn enthalten
-								if (idx2 !== -1) {
-									doc.SichtbarImModusHierarchisch.splice(idx2, 1);
-								}
+						}
+					}
+					$db.saveDoc(window.Feld, {
+						success: function (data) {
+							//rev aktualisieren
+							window.Feld._rev = data.rev;
+							localStorage.FeldId = data.id;
+							//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
+							if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
+								leereStorageFeldListe();
 							}
-							//Formularfelder in Dokument schreiben
-							//setzt Vorhandensein von Feldnamen voraus!
-							for (i in Formularfelder) {
-								if (typeof i !== "function") {
-									if (Formularfelder[i]) {
-										if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
-											//Zahl wird sonst in Text verwandelt und falsch sortiert
-											doc[i] = parseInt(Formularfelder[i]);
-										} else {
-											doc[i] = Formularfelder[i];
-										}
-									} else {
-										//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
-										delete doc[i];
-									}
-								}
-							}
-							$db.saveDoc(doc, {
-								success: function (data) {
-									//rev aktualisieren
-									doc._rev = data.rev;
-									doc._id = data.id;
-									Feld = doc;
-									localStorage.FeldId = data.id;
-									//Wenn FeldName oder FeldBeschreibung geändert wird: Feldliste soll neu aufbauen
-									if (localStorage.FeldName === "FeldName" || localStorage.FeldName === "FeldBeschreibung" || localStorage.FeldName === "Reihenfolge") {
-										leereStorageFeldListe();
-									}
-								},
-								error: function () {
-									melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
-								}
-							});
 						},
 						error: function () {
 							melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");

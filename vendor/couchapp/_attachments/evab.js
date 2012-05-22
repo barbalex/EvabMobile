@@ -206,7 +206,7 @@ function geheZurueckAE() {
 
 //wird in FeldEdit.html verwendet
 function geheZurueckFE() {
-	delete localStorage.FeldId;
+	leereStorageFeldEdit();
 	if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) !== "Felder") {
 		//direkt zurück, Feldliste auslassen
 		leereStorageFeldEdit();
@@ -1188,6 +1188,7 @@ function initiiereFeldEdit() {
 			success: function (doc) {
 				//Feld bereitstellen
 				window.Feld = doc;
+				initiiereFeldEdit_2();
 			}
 		});
 	}
@@ -1196,9 +1197,9 @@ function initiiereFeldEdit() {
 function initiiereFeldEdit_2() {
 	var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
 	//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
-	SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
-	SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
-	//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusHierarchisch noch nicht
+	SichtbarImModusHierarchisch = window.Feld.SichtbarImModusHierarchisch;
+	SichtbarImModusEinfach = window.Feld.SichtbarImModusEinfach;
+	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusHierarchisch noch nicht
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
 	} else {
@@ -1206,7 +1207,7 @@ function initiiereFeldEdit_2() {
 	}
 	$("select#SichtbarImModusHierarchisch").slider();
 	$("select#SichtbarImModusHierarchisch").slider("refresh");
-	//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusEinfach noch nicht
+	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusEinfach noch nicht
 	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
 		$("select#SichtbarImModusEinfach").val("ja");
 	} else {
@@ -1215,64 +1216,63 @@ function initiiereFeldEdit_2() {
 	$("select#SichtbarImModusEinfach").slider();
 	$("select#SichtbarImModusEinfach").slider("refresh");
 	//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
-	if (Feld.Hierarchiestufe === "Art") {
-		ArtGruppeAufbauenFeldEdit(doc.ArtGruppe);
+	if (window.Feld.Hierarchiestufe === "Art") {
+		ArtGruppeAufbauenFeldEdit(window.Feld.ArtGruppe);
 	}
 
 	//allfälligen Standardwert anzeigen
 	//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
 	//darum hier auslesen und setzen
-	if (doc.Standardwert) {
-		Standardwert = doc.Standardwert[localStorage.Username];
+	//Zuerst leeren Wert setzen, sonst bleibt letzter, wenn keiner existiert!
+	$("#Standardwert").val("");
+	if (window.Feld.Standardwert) {
+		Standardwert = window.Feld.Standardwert[localStorage.Username];
 		if (Standardwert) {
 			$("#Standardwert").val(Standardwert);
-		} else {
-			//Auch leere Werte setzen, sonst bleibt letzter!
-			$("#Standardwert").val("");
 		}
 	}
 
-	if (doc.FeldName) {
+	if (window.Feld.FeldName) {
 		//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
-		if (["aArtGruppe", "aArtName"].indexOf(doc.FeldName) > -1) {
+		if (["aArtGruppe", "aArtName"].indexOf(window.Feld.FeldName) > -1) {
 			$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
 			$("#Standardwert").attr("disabled", true);
 		//ausschalten, soll jetzt im Feld verwaltet werden
-		/*} else if (doc.FeldName === "aAutor") {
+		/*} else if (window.Feld.FeldName === "aAutor") {
 			$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
 			$("#Standardwert").attr("disabled", true);*/
-		} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(doc.FeldName) > -1) {
+		} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(window.Feld.FeldName) > -1) {
 			$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
 			$("#Standardwert").attr("disabled", true);
-		} else if (["zDatum", "zUhrzeit"].indexOf(doc.FeldName) > -1) {
+		} else if (["zDatum", "zUhrzeit"].indexOf(window.Feld.FeldName) > -1) {
 			$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
 			$("#Standardwert").attr("disabled", true);
 		}
 	}
-	$(".FeldEditHeaderTitel").text(doc.Hierarchiestufe + ": " + doc.FeldBeschriftung);
+	$(".FeldEditHeaderTitel").text(window.Feld.Hierarchiestufe + ": " + window.Feld.FeldBeschriftung);
 	
 	//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
 	$("input[name='Hierarchiestufe']").checkboxradio();
-	$("#" + doc.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
+	$("#" + window.Feld.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
 	$("input[name='Formularelement']").checkboxradio();
-	$("#" + doc.Formularelement).prop("checked",true).checkboxradio("refresh");
+	$("#" + window.Feld.Formularelement).prop("checked",true).checkboxradio("refresh");
 	$("input[name='InputTyp']").checkboxradio();
-	$("#" + doc.InputTyp).prop("checked",true).checkboxradio("refresh");
+	$("#" + window.Feld.InputTyp).prop("checked",true).checkboxradio("refresh");
 
 	//Werte in übrige Felder einfügen
-	$("#FeldName").val(doc.FeldName);
-	$("#FeldBeschriftung").val(doc.FeldBeschriftung);
-	$("#FeldBeschreibung").val(doc.FeldBeschreibung);	//Textarea - anders refreshen?
-	$("#Reihenfolge").val(doc.Reihenfolge);
-	$("#FeldNameEvab").val(doc.FeldNameEvab);
-	$("#FeldNameZdsf").val(doc.FeldNameZdsf);
-	$("#FeldNameCscf").val(doc.FeldNameCscf);
-	$("#FeldNameNism").val(doc.FeldNameNism);
-	$("#FeldNameWslFlechten").val(doc.FeldNameWslFlechten);
-	$("#FeldNameWslPilze").val(doc.FeldNameWslPilze);
-	$("#Optionen").val(doc.Optionen);	//Textarea - anders refreshen?
-	$("#SliderMinimum").val(doc.SliderMinimum);
-	$("#SliderMaximum").val(doc.SliderMaximum);
+	$("#FeldName").val(window.Feld.FeldName);
+	$("#FeldBeschriftung").val(window.Feld.FeldBeschriftung);
+	$("#FeldBeschreibung").val(window.Feld.FeldBeschreibung);	//Textarea - anders refreshen?
+	$("#Reihenfolge").val(window.Feld.Reihenfolge);
+	$("#FeldNameEvab").val(window.Feld.FeldNameEvab);
+	$("#FeldNameZdsf").val(window.Feld.FeldNameZdsf);
+	$("#FeldNameCscf").val(window.Feld.FeldNameCscf);
+	$("#FeldNameNism").val(window.Feld.FeldNameNism);
+	$("#FeldNameWslFlechten").val(window.Feld.FeldNameWslFlechten);
+	$("#FeldNameWslPilze").val(window.Feld.FeldNameWslPilze);
+	$("#Optionen").val(window.Feld.Optionen);	//Textarea - anders refreshen?
+	$("#SliderMinimum").val(window.Feld.SliderMinimum);
+	$("#SliderMaximum").val(window.Feld.SliderMaximum);
 
 	erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
 	speichereLetzteUrl();
@@ -1388,24 +1388,24 @@ function initiiereFeldliste() {
 }
 
 function initiiereFeldliste_2() {
-	var i, Feld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
+	var i, TempFeld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
 	ListItemContainer = "";
 	anzFelder = 0;
 	for (i in Feldliste.rows) {
 		if (typeof i !== "function") {
-			Feld = Feldliste.rows[i].value;
+			TempFeld = Feldliste.rows[i].value;
 			//Liste aufbauen
 			//Nur eigene Felder und offizielle
-			if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
-				Hierarchiestufe = Feld.Hierarchiestufe;
-				FeldBeschriftung = Feld.FeldBeschriftung;
+			if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+				Hierarchiestufe = TempFeld.Hierarchiestufe;
+				FeldBeschriftung = TempFeld.FeldBeschriftung;
 				FeldBeschreibung = "";
-				if (Feld.FeldBeschreibung) {
-					FeldBeschreibung = Feld.FeldBeschreibung;
+				if (TempFeld.FeldBeschreibung) {
+					FeldBeschreibung = TempFeld.FeldBeschreibung;
 				}
 				ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
 				ListItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
-				ListItemContainer += Feld._id;
+				ListItemContainer += TempFeld._id;
 				ListItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
 				ListItemContainer += ImageLink + "\" /><h2>";
 				ListItemContainer += Hierarchiestufe;
@@ -2781,7 +2781,9 @@ function neuesFeld() {
 	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
 			localStorage.FeldId = data.id;
-			window.Feld = data;
+			NeuesFeld.Feld._id = data.id;
+			NeuesFeld.Feld._rev = data.rev;
+			window.Feld = NeuesFeld;
 			//Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
 			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
