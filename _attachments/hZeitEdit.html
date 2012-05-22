@@ -300,7 +300,6 @@
 									leereStorageZeitListe();
 									leereStorageZeitEdit();
 									$.mobile.changePage('hZeitListe.html');
-									melde("alles gelöscht");
 								},
 								error: function () {
 									melde("Fehler: Zeit nicht gelöscht");
@@ -393,7 +392,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ArtenVonZeit = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
+							}
 						}
 					});
 				}

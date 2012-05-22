@@ -382,7 +382,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ArtenVonRaum = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
+							}
 						}
 					});
 				}
@@ -396,7 +398,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ZeitenVonRaum = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
+							}
 						}
 					});
 				}
@@ -410,7 +414,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.OrteVonRaum = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
+							}
 						}
 					});
 				}

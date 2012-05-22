@@ -417,7 +417,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ZeitenVonOrt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
+							}
 						}
 					});
 				}
@@ -431,7 +433,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ArtenVonOrt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
+							}
 						}
 					});
 				}

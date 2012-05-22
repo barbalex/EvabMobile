@@ -387,7 +387,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ArtenVonProjekt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
+							}
 						}
 					});
 				}
@@ -401,7 +403,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.ZeitenVonProjekt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
+							}
 						}
 					});
 				}
@@ -415,7 +419,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.OrteVonProjekt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
+							if (data.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
+							}
 						}
 					});
 				}
@@ -429,7 +435,7 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.RaeumeVonProjekt = data;
-							if (window.RaeumeVonProjekt.rows.length > 0) {
+							if (data.rows.length > 0) {
 								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
 							}
 						}
