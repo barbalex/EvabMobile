@@ -233,7 +233,7 @@
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map, 
-								title: window.Ort.oName,
+								title: window.hOrt.oName,
 								draggable: true
 							});
 							//Marker in Array speichern, damit er gelöscht werden kann
@@ -242,9 +242,9 @@
 									'<div id="siteNotice">'+
 									'</div>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Projekt: ' + window.Ort.pName + '</p>'+
-									'<p>Raum: ' + window.Ort.rName + '</p>'+
-									'<p>Ort: ' + window.Ort.oName + '</p>'+
+									'<p>Projekt: ' + window.hOrt.pName + '</p>'+
+									'<p>Raum: ' + window.hOrt.rName + '</p>'+
+									'<p>Ort: ' + window.hOrt.oName + '</p>'+
 									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
 									'</div>'+
 									'</div>';
@@ -407,9 +407,9 @@
 								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
 								'<div id="bodyContent" class="GmInfowindow">'+
 								'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-								'<p>Autor: ' + window.Beob.aAutor + '</p>'+
-								'<p>Datum: ' + window.Beob.zDatum + '</p>'+
-								'<p>Zeit: ' + window.Beob.zUhrzeit + '</p>'+
+								'<p>Autor: ' + window.Beobachtung.aAutor + '</p>'+
+								'<p>Datum: ' + window.Beobachtung.zDatum + '</p>'+
+								'<p>Zeit: ' + window.Beobachtung.zUhrzeit + '</p>'+
 								'<p>Koordinaten: ' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 								'</div>'+
 								'</div>';
@@ -437,7 +437,7 @@
 						marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							title: window.Ort.oName,
+							title: window.hOrt.oName,
 							draggable: true
 						});
 						//Marker in Array speichern, damit er gelöscht werden kann
@@ -481,9 +481,9 @@
 									'<div id="siteNotice">'+
 									'</div>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Projekt: ' + window.Ort.pName + '</p>'+
-									'<p>Raum: ' + window.Ort.rName + '</p>'+
-									'<p>Ort: ' + window.Ort.oName + '</p>'+
+									'<p>Projekt: ' + window.hOrt.pName + '</p>'+
+									'<p>Raum: ' + window.hOrt.rName + '</p>'+
+									'<p>Ort: ' + window.hOrt.oName + '</p>'+
 									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
 									'</div>'+
 									'</div>';
@@ -494,7 +494,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.OrtId, "Ort");
+						speichereKoordinaten(localStorage.OrtId, "hOrt");
 					}
 
 					//wird benutzt in BeobEdit.html
@@ -525,7 +525,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 							infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.BeobId, "Beob");
+						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					}
 
 					//GoogleMap: alle Marker löschen

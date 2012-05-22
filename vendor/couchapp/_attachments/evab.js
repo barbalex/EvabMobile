@@ -405,7 +405,7 @@ function speichereNeueBeob_03(doc) {
 				//Variabeln verfügbar machen
 				localStorage.hBeobId = data.id;
 				//damit hArtEdit.html die hBeob nicht aus der DB holen muss
-				window.hBeob = doc;
+				window.hArt = doc;
 				//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStoragehBeobListe();
 				$.mobile.changePage("hArtEdit.html");
@@ -413,7 +413,7 @@ function speichereNeueBeob_03(doc) {
 				//Variabeln verfügbar machen
 				localStorage.BeobId = data.id;
 				//damit BeobEdit.html die Beob nicht aus der DB holen muss
-				window.Beob = doc;
+				window.Beobachtung = doc;
 				//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStorageBeobListe();
 				$.mobile.changePage("BeobEdit.html");
@@ -543,7 +543,7 @@ function erstelleNeueZeit() {
 									doc._id = Zeit.id;
 									doc._rev = Zeit.rev;
 									//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
-									window.Zeit = doc;
+									window.hZeit = doc;
 									//Variabeln verfügbar machen
 									localStorage.ZeitId = Zeit.id;
 									localStorage.Status = "neu";
@@ -616,7 +616,7 @@ function erstelleNeuenOrt() {
 							doc._id = data.id;
 							doc._rev = data.rev;
 							//damit hOrtEdit.html den Ort nicht aus der DB holen muss
-							window.Ort = doc;
+							window.hOrt = doc;
 							//Variabeln verfügbar machen
 							localStorage.OrtId = data.id;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -673,7 +673,7 @@ function erstelleNeuenRaum() {
 					doc._id = data.id;
 					doc._rev = data.rev;
 					//damit hRaumEdit.html den Raum nicht aus der DB holen muss
-					window.Raum = doc;
+					window.hRaum = doc;
 					//Variabeln verfügbar machen
 					localStorage.RaumId = data.id;
 					localStorage.Status = "neu";
@@ -701,18 +701,18 @@ function erstelleNeuenRaum() {
 }
 
 function erstelleNeuesProjekt() {
-	var hProjekt;
-	hProjekt = {};
-	hProjekt.Typ = "hProjekt";
-	hProjekt.User = localStorage.Username;
+	var doc;
+	doc = {};
+	doc.Typ = "hProjekt";
+	doc.User = localStorage.Username;
 	$db = $.couch.db("evab");
-	$db.saveDoc(hProjekt, {
+	$db.saveDoc(doc, {
 		success: function (data) {
 			//_id und _rev ergänzen
-			hProjekt._id = data.id;
-			hProjekt._rev = data.rev;
+			doc._id = data.id;
+			doc._rev = data.rev;
 			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
-			window.Projekt = hProjekt;
+			window.hProjekt = doc;
 			//Variabeln verfügbar machen
 			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
@@ -883,32 +883,32 @@ function initiiereBeobEdit() {
 //allfällige Beob übernehmen von speichereNeueBeob
 //um die DB-Abfrage zu sparen
 function initiiereBeobEdit_2() {
-	if (window.Beob) {
-		initiiereBeobEdit_3(window.Beob);
+	if (window.Beobachtung) {
+		initiiereBeobEdit_3(window.Beobachtung);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (data) {
-				window.Beob = data;
+				window.Beobachtung = data;
 				initiiereBeobEdit_3(data);
 			}
 		});
 	}
 }
 
-function initiiereBeobEdit_3(Beob) {
+function initiiereBeobEdit_3() {
 	//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-	localStorage.BeobId = Beob._id;
-	localStorage.aArtGruppe = Beob.aArtGruppe;
-	localStorage.aArtName = Beob.aArtName;
-	localStorage.aArtId = Beob.aArtId;
-	localStorage.oLongitudeDecDeg = Beob.oLongitudeDecDeg || "";
-	localStorage.oLatitudeDecDeg = Beob.oLatitudeDecDeg || "";
-	localStorage.oLagegenauigkeit = Beob.oLagegenauigkeit || "";
-	localStorage.oXKoord = Beob.oXKoord;
-	localStorage.oYKoord = Beob.oYKoord;
-	setzeFixeFelderInBeobEdit(Beob);
-	erstelleDynamischeFelderBeobEdit(Beob);
+	localStorage.BeobId = window.Beobachtung._id;
+	localStorage.aArtGruppe = window.Beobachtung.aArtGruppe;
+	localStorage.aArtName = window.Beobachtung.aArtName;
+	localStorage.aArtId = window.Beobachtung.aArtId;
+	localStorage.oLongitudeDecDeg = window.Beobachtung.oLongitudeDecDeg || "";
+	localStorage.oLatitudeDecDeg = window.Beobachtung.oLatitudeDecDeg || "";
+	localStorage.oLagegenauigkeit = window.Beobachtung.oLagegenauigkeit || "";
+	localStorage.oXKoord = window.Beobachtung.oXKoord;
+	localStorage.oYKoord = window.Beobachtung.oYKoord;
+	setzeFixeFelderInBeobEdit(window.Beobachtung);
+	erstelleDynamischeFelderBeobEdit();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
@@ -916,9 +916,9 @@ function initiiereBeobEdit_3(Beob) {
 //generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 //und aktualisiert die Links für pagination
 //Mitgeben: id der Beobachtung, Username
-function erstelleDynamischeFelderBeobEdit(Beob) {
+function erstelleDynamischeFelderBeobEdit() {
 	var HtmlContainer, Formularwerte;
-	HtmlContainer = generiereHtmlFuerBeobEditForm (Beob);
+	HtmlContainer = generiereHtmlFuerBeobEditForm();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -932,33 +932,33 @@ function erstelleDynamischeFelderBeobEdit(Beob) {
 
 //setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 //erwartet das Objekt Beob, welches die Werte enthält
-function setzeFixeFelderInBeobEdit(Beob) {
+function setzeFixeFelderInBeobEdit() {
 	$("[name='aArtGruppe']").selectmenu();
-	$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
-	$("[name='aArtGruppe']").val(Beob.aArtGruppe);
+	$("[name='aArtGruppe']").html("<option value='" + window.Beobachtung.aArtGruppe + "'>" + window.Beobachtung.aArtGruppe + "</option>");
+	$("[name='aArtGruppe']").val(window.Beobachtung.aArtGruppe);
 	$("[name='aArtGruppe']").selectmenu("refresh");
 	$("[name='aArtName']").selectmenu();
-	$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
-	$("[name='aArtName']").val(Beob.aArtName);
+	$("[name='aArtName']").html("<option value='" + window.Beobachtung.aArtName + "'>" + window.Beobachtung.aArtName + "</option>");
+	$("[name='aArtName']").val(window.Beobachtung.aArtName);
 	$("[name='aArtName']").selectmenu("refresh");
-	$("[name='aAutor']").val(Beob.aAutor);
-	$("[name='oXKoord']").val(Beob.oXKoord);
-	$("[name='oYKoord']").val(Beob.oYKoord);
-	$("[name='oLagegenauigkeit']").val(Beob.oLagegenauigkeit);
-	$("[name='zDatum']").val(Beob.zDatum);
-	$("[name='zUhrzeit']").val(Beob.zUhrzeit);
+	$("[name='aAutor']").val(window.Beobachtung.aAutor);
+	$("[name='oXKoord']").val(window.Beobachtung.oXKoord);
+	$("[name='oYKoord']").val(window.Beobachtung.oYKoord);
+	$("[name='oLagegenauigkeit']").val(window.Beobachtung.oLagegenauigkeit);
+	$("[name='zDatum']").val(window.Beobachtung.zDatum);
+	$("[name='zUhrzeit']").val(window.Beobachtung.zUhrzeit);
 }
 
 //generiert das Html für das Formular in BeobEdit.html
 //erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerBeobEditForm (Beob) {
+function generiereHtmlFuerBeobEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe, Status;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
 	Status = localStorage.Status;
-	ArtGruppe = Beob.aArtGruppe;
+	ArtGruppe = window.Beobachtung.aArtGruppe;
 	for (i in FeldlisteBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = FeldlisteBeobEdit.rows[i].value;
@@ -971,10 +971,10 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 					if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 						FeldWert = Feld.Standardwert[localStorage.Username];
 						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
-						Beob[FeldName] = FeldWert;
+						window.Beobachtung[FeldName] = FeldWert;
 					} else {
 						//"" verhindert die Anzeige von undefined im Feld
-						FeldWert = Beob[FeldName] || "";
+						FeldWert = window.Beobachtung[FeldName] || "";
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -986,15 +986,16 @@ function generiereHtmlFuerBeobEditForm (Beob) {
 	if (localStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
-		$db.saveDoc(Beob, {
+		$db.saveDoc(window.Beobachtung, {
 			success: function (data) {
-				GetGeolocation(data.id, "Beob");
+				window.Beobachtung._rev = data.rev;
+				GetGeolocation(data.id, "Beobachtung");
 			}
 		});
 		delete localStorage.Status;
 	} else {
 		//Neue Datensätze haben keine Attachments
-		zeigeAttachments(Beob, "BE");
+		zeigeAttachments(window.Beobachtung, "BE");
 	}
 	return HtmlContainer;
 }
@@ -1056,6 +1057,48 @@ function initiiereBeobliste_2() {
 	speichereLetzteUrl();
 }
 
+//löscht Anhänge
+//erwartet den Datensatz als Objekt und das Objekt, dass geklickt wurde
+function loescheAnhang(that, Objekt, id) {
+	if (Objekt) {
+		//Es wurde ein Objekt übergeben, keine DB-Abfrage nötig
+		loescheAnhang_2(that, Objekt);
+	} else {
+		//Objekt aus der DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(id, {
+			success: function (data) {
+				Objekt = data;
+				loescheAnhang_2(that, Objekt);
+			},
+			error: function () {
+				melde("Fehler: Anhang wurde nicht entfernt");
+			}
+		});
+	}
+}
+
+function loescheAnhang_2(that, Objekt) {
+	var Dateiname;
+	Dateiname = that.id;
+	//Anhang aus Objekt entfernen
+	delete window[Objekt.Typ]._attachments[Dateiname];
+	//Objekt in DB speichern
+	$db.saveDoc(window[Objekt.Typ], {
+		success: function (data) {
+			//rev im Objekt ergänzen
+			//die globale Variable heisst gleich, wie der Typ im Objekt
+			window[Objekt.Typ]._rev = data.rev;
+			//im Formular den Anhang und die Lösch-Schaltfläche entfernen
+			$(that).parent().parent().remove();
+		},
+		error: function () {
+			melde("Fehler: Anhänge werden nicht richtig angezeigt");
+		}
+	});
+	
+}
+
 //initiiert UserEdit.html
 //Mitgeben: localStorage.UserId
 function initiiereUserEdit() {
@@ -1087,29 +1130,29 @@ function initiiereInstallieren() {
 function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	//$('#AnhängehPE').hide().trigger('updatelayout');
-	//window.Projekt existiert schon bei neuem Projekt
-	if (window.Projekt) {
-		initiiereProjektEdit_2(window.Projekt);
+	//window.hProjekt existiert schon bei neuem Projekt
+	if (window.hProjekt) {
+		initiiereProjektEdit_2(window.hProjekt);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
 			success: function (data) {
-				window.Projekt = data;
+				window.hProjekt = data;
 				initiiereProjektEdit_2(data);
 			}
 		});
 	}
 }
 
-function initiiereProjektEdit_2(Projekt) {
+function initiiereProjektEdit_2() {
 	//fixe Felder aktualisieren
-	$("#pName").val(Projekt.pName);
+	$("#pName").val(window.hProjekt.pName);
 	//Variabeln bereitstellen
-	localStorage.ProjektId = Projekt._id;
+	localStorage.ProjektId = window.hProjekt._id;
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteProjekt) {
-		initiiereProjektEdit_3(Projekt);
+		initiiereProjektEdit_3();
 	} else {
 		//das dauert länger - Hinweis einblenden
 		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1118,15 +1161,15 @@ function initiiereProjektEdit_2(Projekt) {
 		$db.view('evab/FeldListeProjekt', {
 			success: function (Feldliste) {
 				window.FeldlisteProjekt = Feldliste;
-				initiiereProjektEdit_3(Projekt);
+				initiiereProjektEdit_3();
 			}
 		});
 	}
 }
 
-function initiiereProjektEdit_3(Projekt) {
+function initiiereProjektEdit_3() {
 	var HtmlContainer, Formularwerte;
-	HtmlContainer = generiereHtmlFuerProjektEditForm(Projekt);
+	HtmlContainer = generiereHtmlFuerProjektEditForm();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1139,7 +1182,7 @@ function initiiereProjektEdit_3(Projekt) {
 //generiert das Html für das Formular in hProjektEdit.html
 //erwartet Feldliste als Objekt; Projekt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerProjektEditForm (Projekt) {
+function generiereHtmlFuerProjektEditForm () {
 	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
@@ -1152,11 +1195,11 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
 				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
-					//Projekt um den Standardwert ergänzen, um später zu speichern
-					Projekt[FeldName] = FeldWert;
+					//window.hProjekt um den Standardwert ergänzen, um später zu speichern
+					window.hProjekt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = Projekt[FeldName] || "";
+					FeldWert = window.hProjekt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1168,11 +1211,15 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 		$("#pName").focus();
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
-		$db.saveDoc(Projekt);
+		$db.saveDoc(window.hProjekt, {
+			success: function L(data) {
+				window.hProjekt._rev = data.rev;
+			}
+		});
 		delete localStorage.Status;
 	} else {
 		//neue Datensätze haben keine Attachments
-		zeigeAttachments(Projekt, "hPE");
+		zeigeAttachments(window.hProjekt, "hPE");
 	}
 	return HtmlContainer;
 }
@@ -1562,29 +1609,29 @@ function initiiereProjektliste_2() {
 function initiiereRaumEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehRE').hide();
-	if (window.Raum) {
-		initiiereRaumEdit_2(window.Raum);
+	if (window.hRaum) {
+		initiiereRaumEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
 			success: function (data) {
-				window.Raum = data;
-				initiiereRaumEdit_2(data);
+				window.hRaum = data;
+				initiiereRaumEdit_2();
 			}
 		});
 	}
 }
 
-function initiiereRaumEdit_2(Raum) {
+function initiiereRaumEdit_2() {
 	//fixes Feld setzen
-	$("#rName").val(Raum.rName);
+	$("#rName").val(window.hRaum.rName);
 	//Variabeln bereitstellen
-	localStorage.ProjektId = Raum.hProjektId;
-	localStorage.RaumId = Raum._id;
+	localStorage.ProjektId = window.hRaum.hProjektId;
+	localStorage.RaumId = window.hRaum._id;
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteRaumEdit) {
-		initiiereRaumEdit_3(Raum);
+		initiiereRaumEdit_3();
 	} else {
 		//das dauert länger - hinweisen
 		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1594,15 +1641,15 @@ function initiiereRaumEdit_2(Raum) {
 			success: function (Feldliste) {
 				//Variabeln bereitstellen
 				window.FeldlisteRaumEdit = Feldliste;
-				initiiereRaumEdit_3(Raum);
+				initiiereRaumEdit_3();
 			}
 		});
 	}
 }
 
-function initiiereRaumEdit_3(Raum) {
+function initiiereRaumEdit_3() {
 	var HtmlContainer, Formularwerte;
-	HtmlContainer = generiereHtmlFuerRaumEditForm (Raum);
+	HtmlContainer = generiereHtmlFuerRaumEditForm ();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1613,9 +1660,9 @@ function initiiereRaumEdit_3(Raum) {
 }
 
 //generiert das Html für das Formular in hRaumEdit.html
-//erwartet Feldliste als Objekt; Raum als Objekt
+//erwartet Feldliste als Objekt; window.hRaum als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerRaumEditForm (Raum) {
+function generiereHtmlFuerRaumEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
@@ -1628,11 +1675,11 @@ function generiereHtmlFuerRaumEditForm (Raum) {
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
 				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
-					//Objekt Raum um den Standardwert ergänzen, um später zu speichern
-					Raum[FeldName] = FeldWert;
+					//Objekt window.hRaum um den Standardwert ergänzen, um später zu speichern
+					window.hRaum[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = Raum[FeldName] || "";
+					FeldWert = window.hRaum[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1644,11 +1691,15 @@ function generiereHtmlFuerRaumEditForm (Raum) {
 	if (localStorage.Status === "neu") {
 		$("#rName").focus();
 		$db = $.couch.db("evab");
-		$db.saveDoc(Raum);
+		$db.saveDoc(window.hRaum, {
+			success: function (data) {
+				window.hRaum._rev = data.rev;
+			}
+		});
 		delete localStorage.Status;
 	} else {
 		//Attachments gibt's bei neuen Datensätzen nicht
-		zeigeAttachments(Raum, "hRE");
+		zeigeAttachments(window.hRaum, "hRE");
 	}
 	return HtmlContainer;
 }
@@ -1706,40 +1757,39 @@ function initiiereRaumListe_2() {
 function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehOE').hide();
-	if (window.Ort) {
-		initiiereOrtEdit_2(window.Ort);
+	if (window.hOrt) {
+		initiiereOrtEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function (data) {
-				window.Ort = data;
-				initiiereOrtEdit_2(data);
+				window.hOrt = data;
+				initiiereOrtEdit_2();
 			}
 		});
 	}
 }
 
-function initiiereOrtEdit_2(Ort) {
+function initiiereOrtEdit_2() {
 	//fixe Felder aktualisieren
-	$("[name='oName']").val(Ort.oName);
-	$("[name='oXKoord']").val(Ort.oXKoord);
-	$("[name='oYKoord']").val(Ort.oYKoord);
-	$("[name='oLagegenauigkeit']").val(Ort.oLagegenauigkeit);
+	$("[name='oName']").val(window.hOrt.oName);
+	$("[name='oXKoord']").val(window.hOrt.oXKoord);
+	$("[name='oYKoord']").val(window.hOrt.oYKoord);
+	$("[name='oLagegenauigkeit']").val(window.hOrt.oLagegenauigkeit);
 	//Variabeln bereitstellen
-	window.Ort = Ort;	//wind von Karte.html benutzt
-	localStorage.ProjektId = Ort.hProjektId;
-	localStorage.RaumId = Ort.hRaumId;
-	localStorage.OrtId = Ort._id;
+	localStorage.ProjektId = window.hOrt.hProjektId;
+	localStorage.RaumId = window.hOrt.hRaumId;
+	localStorage.OrtId = window.hOrt._id;
 	//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
-	localStorage.oLongitudeDecDeg = Ort.oLongitudeDecDeg;
-	localStorage.oLatitudeDecDeg = Ort.oLatitudeDecDeg;
-	localStorage.oLagegenauigkeit = Ort.oLagegenauigkeit;
-	localStorage.oXKoord = Ort.oXKoord;
-	localStorage.oYKoord = Ort.oYKoord;
+	localStorage.oLongitudeDecDeg = window.hOrt.oLongitudeDecDeg;
+	localStorage.oLatitudeDecDeg = window.hOrt.oLatitudeDecDeg;
+	localStorage.oLagegenauigkeit = window.hOrt.oLagegenauigkeit;
+	localStorage.oXKoord = window.hOrt.oXKoord;
+	localStorage.oYKoord = window.hOrt.oYKoord;
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteOrtEdit) {
-		initiiereOrtEdit_3(Ort);
+		initiiereOrtEdit_3();
 	} else {
 		//das dauert länger - hinweisen
 		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
@@ -1749,15 +1799,15 @@ function initiiereOrtEdit_2(Ort) {
 			success: function (Feldliste) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.FeldlisteOrtEdit = Feldliste;
-				initiiereOrtEdit_3(Ort);
+				initiiereOrtEdit_3();
 			}
 		});
 	}	
 }
 
-function initiiereOrtEdit_3(Ort) {
+function initiiereOrtEdit_3() {
 	var HtmlContainer, Formularwerte;
-	HtmlContainer = generiereHtmlFuerOrtEditForm(Ort);
+	HtmlContainer = generiereHtmlFuerOrtEditForm();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1770,9 +1820,9 @@ function initiiereOrtEdit_3(Ort) {
 }
 
 //generiert das Html für das Formular in hOrtEdit.html
-//erwartet Feldliste als Objekt (aus der globalen Variable); Ort als Objekt
+//erwartet Feldliste als Objekt (aus der globalen Variable); window.hOrt als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerOrtEditForm (Ort) {
+function generiereHtmlFuerOrtEditForm () {
 	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
@@ -1782,14 +1832,14 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 			Feld = FeldlisteOrtEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Ort.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
 				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
-					//Objekt Ort um den Standardwert ergänzen, um später zu speichern
-					Ort[FeldName] = FeldWert;
+					//Objekt window.hOrt um den Standardwert ergänzen, um später zu speichern
+					window.hOrt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = Ort[FeldName] || "";
+					FeldWert = window.hOrt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -1801,16 +1851,17 @@ function generiereHtmlFuerOrtEditForm (Ort) {
 	if (localStorage.Status === "neu") {
 		$("[name='oName']").focus();
 		$db = $.couch.db("evab");
-		$db.saveDoc(Ort, {
+		$db.saveDoc(window.hOrt, {
 			success: function (data) {
-				GetGeolocation(data.id, "Ort");
+				window.hOrt._rev = data.rev;
+				GetGeolocation(data.id, "hOrt");
 			}
 		});
 		//Status zurücksetzen - es soll nur ein mal verortet werden
 		delete localStorage.Status;
 	} else {
 		//Attachments gibt es bei neuen Orten nicht
-		zeigeAttachments(Ort, "hOE");
+		zeigeAttachments(window.hOrt, "hOE");
 	}
 	return HtmlContainer;
 }
@@ -1835,7 +1886,7 @@ function initiiereOrtListe() {
 }
 
 function initiiereOrtListe_2() {
-	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
+	var i, anzOrt, externalPage, listItem, ListItemContainer, Titel2;
 	anzOrt = OrtListe.rows.length;
 	ListItemContainer = "";
 
@@ -1851,9 +1902,9 @@ function initiiereOrtListe_2() {
 	} else {
 		for (i in OrtListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
-				Ort = OrtListe.rows[i].value;
+				window.hOrt = OrtListe.rows[i].value;
 				key = OrtListe.rows[i].key;
-				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
+				listItem = "<li OrtId=\"" + window.hOrt._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + window.hOrt.oName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
 		}
@@ -1869,32 +1920,32 @@ function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
 	//hZeit existiert schon bei neuer Zeit
-	if (window.Zeit) {
-		initiiereZeitEdit_2(window.Zeit);
+	if (window.hZeit) {
+		initiiereZeitEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
 			success: function (data) {
-				window.Zeit = data;
-				initiiereZeitEdit_2(data);
+				window.hZeit = data;
+				initiiereZeitEdit_2();
 			}
 		});
 	}
 }
 
-function initiiereZeitEdit_2(Zeit) {
+function initiiereZeitEdit_2() {
 	//fixe Felder aktualisieren
-	$("[name='zDatum']").val(Zeit.zDatum);
-	$("[name='zUhrzeit']").val(Zeit.zUhrzeit);
+	$("[name='zDatum']").val(window.hZeit.zDatum);
+	$("[name='zUhrzeit']").val(window.hZeit.zUhrzeit);
 	//Variabeln bereitstellen
-	localStorage.ProjektId = Zeit.hProjektId;
-	localStorage.RaumId = Zeit.hRaumId;
-	localStorage.OrtId = Zeit.hOrtId;
-	localStorage.ZeitId = Zeit._id;
+	localStorage.ProjektId = window.hZeit.hProjektId;
+	localStorage.RaumId = window.hZeit.hRaumId;
+	localStorage.OrtId = window.hZeit.hOrtId;
+	localStorage.ZeitId = window.hZeit._id;
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteZeitEdit) {
-		initiiereZeitEdit_3(Zeit);
+		initiiereZeitEdit_3();
 	} else {
 		//Feldliste aus der DB holen
 		//das dauert länger - hinweisen
@@ -1903,14 +1954,14 @@ function initiiereZeitEdit_2(Zeit) {
 		$db.view('evab/FeldListeZeit', {
 			success: function (Feldliste) {
 				window.FeldlisteZeitEdit = Feldliste;
-				initiiereZeitEdit_3(Zeit);
+				initiiereZeitEdit_3();
 			}
 		});
 	}
 }
 
-function initiiereZeitEdit_3(Zeit) {
-	var HtmlContainer = generiereHtmlFuerZeitEditForm(Zeit);
+function initiiereZeitEdit_3() {
+	var HtmlContainer = generiereHtmlFuerZeitEditForm();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1972,7 +2023,7 @@ function initiiereZeitListe_2() {
 //generiert das Html für das Formular in hZeitEdit.html
 //erwartet Feldliste als Objekt; Zeit als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerZeitEditForm(Zeit) {
+function generiereHtmlFuerZeitEditForm() {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
 	ListItem = "";
@@ -1982,13 +2033,13 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 			Feld = FeldlisteZeitEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === Zeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Zeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
+			if ((Feld.User === window.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
 				if (localStorage.Status === "neu" && Feld.Standardwert) {
-					FeldWert = Feld.Standardwert[Zeit.User] || "";
-					//Objekt Zeit um den Standardwert ergänzen, um später zu speichern
-					Zeit[FeldName] = FeldWert;
+					FeldWert = Feld.Standardwert[window.hZeit.User] || "";
+					//Objekt window.hZeit um den Standardwert ergänzen, um später zu speichern
+					window.hZeit[FeldName] = FeldWert;
 				} else {
-					FeldWert = Zeit[FeldName] || "";
+					FeldWert = window.hZeit[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -2000,11 +2051,15 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 	if (localStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
-		$db.saveDoc(Zeit);
+		$db.saveDoc(window.hZeit, {
+			success: function (data) {
+				window.hZeit._rev = data.rev;
+			}
+		});
 		delete localStorage.Status;
 	} else {
 		//Neue Datensätze haben keine Attachments
-		zeigeAttachments(Zeit, "hZE");
+		zeigeAttachments(window.hZeit, "hZE");
 	}
 	return HtmlContainer;
 }
@@ -2013,20 +2068,20 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html bei pageshow
 function initiierehBeobEdit() {
-	if (window.hBeob) {
-		initiierehBeobEdit_2(window.hBeob);
+	if (window.hArt) {
+		initiierehBeobEdit_2(window.hArt);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
 			success: function (data) {
-				window.hBeob = data;
+				window.hArt = data;
 				initiierehBeobEdit_2(data);
 			}
 		});
 	}
 }
 
-function initiierehBeobEdit_2(Beob) {
+function initiierehBeobEdit_2() {
 	//hier werden Variablen gesetzt,
 	//in die fixen Felder Werte eingesetzt,
 	//die dynamischen Felder aufgebaut
@@ -2037,27 +2092,27 @@ function initiierehBeobEdit_2(Beob) {
 	
 	//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
 	//Variabeln bereitstellen
-	localStorage.ProjektId = Beob.hProjektId;
-	localStorage.RaumId = Beob.hRaumId;
-	localStorage.OrtId = Beob.hOrtId;
-	localStorage.ZeitId = Beob.hZeitId;
-	localStorage.hBeobId = Beob._id;
-	localStorage.aArtGruppe = Beob.aArtGruppe;
-	localStorage.aArtName = Beob.aArtName;
-	localStorage.aArtId = Beob.aArtId;
+	localStorage.ProjektId = window.hArt.hProjektId;
+	localStorage.RaumId = window.hArt.hRaumId;
+	localStorage.OrtId = window.hArt.hOrtId;
+	localStorage.ZeitId = window.hArt.hZeitId;
+	localStorage.hBeobId = window.hArt._id;
+	localStorage.aArtGruppe = window.hArt.aArtGruppe;
+	localStorage.aArtName = window.hArt.aArtName;
+	localStorage.aArtId = window.hArt.aArtId;
 	//fixe Felder aktualisieren
 	$("[name='aArtGruppe']").selectmenu();
-	$("[name='aArtGruppe']").val(Beob.aArtGruppe);
-	$("[name='aArtGruppe']").html("<option value='" + Beob.aArtGruppe + "'>" + Beob.aArtGruppe + "</option>");
+	$("[name='aArtGruppe']").val(window.hArt.aArtGruppe);
+	$("[name='aArtGruppe']").html("<option value='" + window.hArt.aArtGruppe + "'>" + window.hArt.aArtGruppe + "</option>");
 	$("[name='aArtGruppe']").selectmenu("refresh");
 	$("[name='aArtName']").selectmenu();
-	$("[name='aArtName']").val(Beob.aArtName);
-	$("[name='aArtName']").html("<option value='" + Beob.aArtName + "'>" + Beob.aArtName + "</option>");
+	$("[name='aArtName']").val(window.hArt.aArtName);
+	$("[name='aArtName']").html("<option value='" + window.hArt.aArtName + "'>" + window.hArt.aArtName + "</option>");
 	$("[name='aArtName']").selectmenu("refresh");
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlistehBeobEdit) {
-		erstelleDynamischeFelderhArtEdit(Beob);
+		erstelleDynamischeFelderhArtEdit();
 	} else {
 		//Feldliste aus der DB holen
 		//das dauert länger - hinweisen
@@ -2066,7 +2121,7 @@ function initiierehBeobEdit_2(Beob) {
 		$db.view('evab/FeldListeArt', {
 			success: function (data) {
 				window.FeldlistehBeobEdit = data;
-				erstelleDynamischeFelderhArtEdit(Beob);
+				erstelleDynamischeFelderhArtEdit();
 			}
 		});
 	}
@@ -2074,9 +2129,9 @@ function initiierehBeobEdit_2(Beob) {
 
 //generiert dynamisch die Artgruppen-abhängigen Felder
 //Mitgeben: Feldliste, Beobachtung
-function erstelleDynamischeFelderhArtEdit(Beob) {
+function erstelleDynamischeFelderhArtEdit() {
 	var HtmlContainer, Formularwerte;
-	HtmlContainer = generiereHtmlFuerhArtEditForm(Beob);
+	HtmlContainer = generiereHtmlFuerhArtEditForm();
 	//Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -2089,26 +2144,26 @@ function erstelleDynamischeFelderhArtEdit(Beob) {
 //generiert das Html für Formular in hArtEdit.html
 //erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 //der HtmlContainer wird zurück gegeben
-function generiereHtmlFuerhArtEditForm (Beob) {
+function generiereHtmlFuerhArtEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, ArtGruppe;
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	ArtGruppe = Beob.aArtGruppe;
+	ArtGruppe = window.hArt.aArtGruppe;
 	for (i in window.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.FeldlistehBeobEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if ((Feld.User === Beob.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(Beob.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[Beob.User]) {
-					FeldWert = Feld.Standardwert[Beob.User];
-					//Objekt Beob um den Standardwert ergänzen, um später zu speichern
-					Beob[FeldName] = FeldWert;
+			if ((Feld.User === window.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.hArt.User]) {
+					FeldWert = Feld.Standardwert[window.hArt.User];
+					//Objekt window.hArt um den Standardwert ergänzen, um später zu speichern
+					window.hArt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert, dass im Feld undefined erscheint
-					FeldWert = Beob[FeldName] || "";
+					FeldWert = window.hArt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -2119,11 +2174,15 @@ function generiereHtmlFuerhArtEditForm (Beob) {
 	if (localStorage.Status === "neu") {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
-		$db.saveDoc(Beob);
+		$db.saveDoc(window.hArt, {
+			success: function (data) {
+				window.hArt._rev = data.rev;
+			}
+		});
 		delete localStorage.Status;
 	} else {
 		//Neue Datensätze haben keine Anhänge
-		zeigeAttachments(Beob, "hAE");
+		zeigeAttachments(window.hArt, "hAE");
 	}
 	return HtmlContainer;
 }
@@ -2148,7 +2207,7 @@ function initiierehBeobListe() {
 }
 
 function initiierehBeobListe_2() {
-	var anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, hBeob;
+	var anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, hBeobTemp;
 	anzArt = hBeobListe.rows.length;
 	ListItemContainer = "";
 
@@ -2164,11 +2223,11 @@ function initiierehBeobListe_2() {
 	} else {
 		for (i in hBeobListe.rows) {
 			if (typeof i !== "function") {
-				hBeob = hBeobListe.rows[i].value;
-				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeob._id + "\" aArtGruppe=\"" + hBeob.aArtGruppe + "\">" +
+				hBeobTemp = hBeobListe.rows[i].value;
+				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + hBeob.aArtGruppe + ".png\" />" +
-					"<h3>" + hBeob.aArtName + "<\/h3>" +
+					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + hBeobTemp.aArtGruppe + ".png\" />" +
+					"<h3>" + hBeobTemp.aArtName + "<\/h3>" +
 					"<\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
@@ -3290,7 +3349,7 @@ function leereStorageProjektListe(mitLatLngListe) {
 
 function leereStorageProjektEdit(mitLatLngListe) {
 	delete localStorage.ProjektId;
-	delete window.Projekt;
+	delete window.hProjekt;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
@@ -3305,7 +3364,7 @@ function leereStorageRaumListe(mitLatLngListe) {
 
 function leereStorageRaumEdit(mitLatLngListe) {
 	delete localStorage.RaumId;
-	delete window.Raum;
+	delete window.hRaum;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
@@ -3328,7 +3387,7 @@ function leereStorageOrtEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.Ort;
+	delete window.hOrt;
 }
 
 function leereStorageZeitListe() {
@@ -3337,7 +3396,7 @@ function leereStorageZeitListe() {
 
 function leereStorageZeitEdit() {
 	delete localStorage.ZeitId;
-	delete window.Zeit;
+	delete window.hZeit;
 }
 
 function leereStoragehBeobListe() {
@@ -3346,7 +3405,7 @@ function leereStoragehBeobListe() {
 
 function leereStoragehBeobEdit() {
 	delete localStorage.hBeobId;
-	delete window.hBeob;
+	delete window.hArt;
 }
 
 function leereStorageBeobListe() {
@@ -3364,7 +3423,7 @@ function leereStorageBeobEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.Beob;
+	delete window.Beobachtung;
 }
 
 function leereStorageFeldListe() {

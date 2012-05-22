@@ -328,14 +328,14 @@
 				function speichern(that) {
 					//prüfen, ob Objekt Raum existiert
 					//fehlt z.B. nach refresh
-					if (window.Raum) {
+					if (window.hRaum) {
 						speichern_2(that);
 					} else {
 						//kein Raum > aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.RaumId, {
 							success: function (data) {
-								window.Raum = data;
+								window.hRaum = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -360,17 +360,17 @@
 						}
 						if (Feldwert) {
 							if (InputTyp === "number") {
-								window.Raum[Feldname] = parseInt(Feldwert);
+								window.hRaum[Feldname] = parseInt(Feldwert);
 							} else {
-								window.Raum[Feldname] = Feldwert;
+								window.hRaum[Feldname] = Feldwert;
 							}
-						} else if (window.Raum[Feldname]) {
-							delete window.Raum[Feldname]
+						} else if (window.hRaum[Feldname]) {
+							delete window.hRaum[Feldname]
 						}
 						//alles speichern
-						$db.saveDoc(window.Raum, {
+						$db.saveDoc(window.hRaum, {
 							success: function (data) {
-								window.Raum._rev = data.rev;
+								window.hRaum._rev = data.rev;
 								speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
 								speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
 								speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
@@ -538,7 +538,7 @@
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
 									delete window.hOrteLatLngRaum;
-									delete window.Raum;
+									delete window.hRaum;
 									initiiereRaumEdit();
 									return;
 								} else {
@@ -550,7 +550,7 @@
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
 									delete window.hOrteLatLngRaum;
-									delete window.Raum;
+									delete window.hRaum;
 									initiiereRaumEdit();
 									return;
 								} else {

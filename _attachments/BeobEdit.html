@@ -214,7 +214,7 @@
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
 						//und Koordinaten speichern
-						speichereKoordinaten(localStorage.BeobId, "Beob");
+						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					} else {
 						speichern(this);
 					}
@@ -376,7 +376,11 @@
 							case "nächste":
 								if (parseInt(i) < AnzBeob) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
-									delete window.Beob;
+									delete window.Beobachtung;
+									//allfällige Lokalisierung abbrechen
+									if (typeof watchID !== "undefined") {
+										stopGeolocation();
+									}
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -387,7 +391,11 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
-									delete window.Beob;
+									delete window.Beobachtung;
+									//allfällige Lokalisierung abbrechen
+									if (typeof watchID !== "undefined") {
+										stopGeolocation();
+									}
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -504,7 +512,7 @@
 				//Speichert alle Daten
 				function speichern(that) {
 					//prüfen, ob Beob als Objekt vorliegt
-					if (window.Beob) {
+					if (window.Beobachtung) {
 						//Objekt verwenden
 						speichern_2(Feldname, Feldwert);
 					} else {
@@ -512,40 +520,40 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.BeobId, {
 							success: function (data) {
-								window.Beob = data;
+								window.Beobachtung = data;
 								speichern_2(Feldname, Feldwert);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
 					}
 				}
 
 				function speichern_2(that) {
-							var Feldname, Feldjson, Feldwert;
-							Feldname = this.name;
-							InputTyp = $(that).attr("type");
-							//nötig, damit Arrays richtig kommen
-							Feldjson = $("[name='" + Feldname + "']").serializeObject();
-							Feldwert = Feldjson[Feldname];
-							//Werte aus dem Formular aktualisieren
-							if (Feldwert) {
-								if (InputTyp === "number") {
-									window.Beob[Feldname] = parseInt(Feldwert);
-								} else {
-									window.Beob[Feldname] = Feldwert;
-								}
-							} else if (window.Beob[Feldname]) {
-								delete window.Beob[Feldname]
-							}
-							window.Beob.aArtGruppe = localStorage.aArtGruppe;
-							window.Beob.aArtName = localStorage.aArtName;
-							window.Beob.aArtId = localStorage.aArtId;
-							//alles speichern
-							$db.saveDoc(window.Beob, {
-								error: function (data) {
-									window.Beob._rev = data.rev;
-									melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-								}
-							});
-						},
-						error: function () {
+					var Feldname, Feldjson, Feldwert;
+					Feldname = this.name;
+					InputTyp = $(that).attr("type");
+					//nötig, damit Arrays richtig kommen
+					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					Feldwert = Feldjson[Feldname];
+					//Werte aus dem Formular aktualisieren
+					if (Feldwert) {
+						if (InputTyp === "number") {
+							window.Beobachtung[Feldname] = parseInt(Feldwert);
+						} else {
+							window.Beobachtung[Feldname] = Feldwert;
+						}
+					} else if (window.Beobachtung[Feldname]) {
+						delete window.Beobachtung[Feldname]
+					}
+					window.Beobachtung.aArtGruppe = localStorage.aArtGruppe;
+					window.Beobachtung.aArtName = localStorage.aArtName;
+					window.Beobachtung.aArtId = localStorage.aArtId;
+					//alles speichern
+					$db.saveDoc(window.Beobachtung, {
+						error: function (data) {
+							window.Beobachtung._rev = data.rev;
 							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 						}
 					});

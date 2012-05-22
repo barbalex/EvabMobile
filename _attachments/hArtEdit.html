@@ -287,9 +287,9 @@
 					that = this;
 					$db = $.couch.db("evab");
 					$db.openDoc(localStorage.hBeobId, {
-						success: function (hBeob) {
-							delete hBeob._attachments[Dateiname];
-							$db.saveDoc(hBeob, {
+						success: function (hBeobTemp) {
+							delete hBeobTemp._attachments[Dateiname];
+							$db.saveDoc(hBeobTemp, {
 								success: function () {
 									$(that).parent().parent().remove();
 								},
@@ -443,7 +443,7 @@
 				//Speichert alle Daten
 				function speichern(that) {
 					//prüfen, ob hBeob als Objekt vorliegt
-					if (window.hBeob) {
+					if (window.hArt) {
 						//dieses verwenden
 						speichern_2(that);
 					} else {
@@ -451,7 +451,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.hBeobId, {
 							success: function (data) {
-								window.hBeob = data;
+								window.hArt = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -472,19 +472,19 @@
 					//Werte aus dem Formular aktualisieren
 					if (Feldwert) {
 						if (InputTyp === "number") {
-							window.hBeob[Feldname] = parseInt(Feldwert);
+							window.hArt[Feldname] = parseInt(Feldwert);
 						} else {
-							window.hBeob[Feldname] = Feldwert;
+							window.hArt[Feldname] = Feldwert;
 						}
-					} else if (window.hBeob[Feldname]) {
-						delete window.hBeob[Feldname];
+					} else if (window.hArt[Feldname]) {
+						delete window.hArt[Feldname];
 					}
-					window.hBeob.aArtId = localStorage.aArtId;
-					window.hBeob.aArtName = localStorage.aArtName;
-					window.hBeob.aArtGruppe = localStorage.aArtGruppe;
-					$db.saveDoc(window.hBeob, {
+					window.hArt.aArtId = localStorage.aArtId;
+					window.hArt.aArtName = localStorage.aArtName;
+					window.hArt.aArtGruppe = localStorage.aArtGruppe;
+					$db.saveDoc(window.hArt, {
 						success: function (data) {
-							window.hBeob._rev = data.rev;
+							window.hArt._rev = data.rev;
 							localStorage.hBeobId = data.id;
 						},
 						error: function () {
@@ -526,7 +526,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzArt) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
-									delete window.hBeob;
+									delete window.hArt;
 									initiierehBeobEdit();
 									return;
 								} else {
@@ -537,7 +537,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
-									delete window.hBeob;
+									delete window.hArt;
 									initiierehBeobEdit();
 									return;
 								} else {

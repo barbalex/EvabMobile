@@ -165,7 +165,7 @@
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
-						speichereKoordinaten(localStorage.OrtId, "Ort");
+						speichereKoordinaten(localStorage.OrtId, "hOrt");
 					} else {
 						speichern(this);
 					}
@@ -362,7 +362,7 @@
 
 				function speichern(that) {
 					//prüfen, ob Ort existiert
-					if (window.Ort) {
+					if (window.hOrt) {
 						//bestehedes Objekt verwenden
 						speichern_2(that);
 					} else {
@@ -370,7 +370,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.OrtId, {
 							success: function (data) {
-								window.Ort = data;
+								window.hOrt = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -395,17 +395,17 @@
 						//Werte aus dem Formular aktualisieren
 						if (Feldwert) {
 							if (InputTyp === "number") {
-								window.Ort[Feldname] = parseInt(Feldwert);
+								window.hOrt[Feldname] = parseInt(Feldwert);
 							} else {
-								window.Ort[Feldname] = Feldwert;
+								window.hOrt[Feldname] = Feldwert;
 							}
-						} else if (window.Ort[Feldname]) {
-							delete window.Ort[Feldname]
+						} else if (window.hOrt[Feldname]) {
+							delete window.hOrt[Feldname]
 						}
 						//alles speichern
-						$db.saveDoc(window.Ort, {
+						$db.saveDoc(window.hOrt, {
 							success: function (data) {
-								window.Ort._rev = data.rev;
+								window.hOrt._rev = data.rev;
 								speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
 								speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
@@ -562,7 +562,7 @@
 									if (typeof watchID !== "undefined") {
 										stopGeolocation();
 									}
-									delete window.Ort;
+									delete window.hOrt;
 									initiiereOrtEdit();
 									return;
 								} else {
@@ -577,7 +577,7 @@
 									if (typeof watchID !== "undefined") {
 										stopGeolocation();
 									}
-									delete window.Ort;
+									delete window.hOrt;
 									initiiereOrtEdit();
 									return;
 								} else {

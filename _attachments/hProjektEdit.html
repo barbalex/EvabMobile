@@ -259,28 +259,10 @@
 				});
 
 				$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function (event) {
-					var Dateiname, that;
+					var that;
 					event.preventDefault();
-					Dateiname = this.id;
 					that = this;
-					//$(this).parent().parent().remove();
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.ProjektId, {
-						success: function (Projekt) {
-							delete Projekt._attachments[Dateiname];
-							$db.saveDoc(Projekt, {
-								success: function () {
-									$(that).parent().parent().remove();
-								},
-								error: function () {
-									melde("Fehler: Anhänge werden nicht richtig angezeigt");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: Anhang wurde nicht entfernt");
-						}
-					});
+					loescheAnhang(that, window.hProjekt, localStorage.ProjektId);
 				});
 
 				function löscheProjekt(Arten, Zeiten, Orte, Raeume) {
@@ -319,10 +301,10 @@
 				}
 
 				function validierehProjektEdit() {
-					if (!$("#pName").val()) {
+					if (!$("[name='pName']").val()) {
 						melde("Bitte Projektnamen eingeben");
 						setTimeout(function() { 
-							$('#pName').focus(); 
+							$("[name='pName']").focus(); 
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
@@ -330,13 +312,13 @@
 				}
 
 				function speichern(that) {
-					if (window.Projekt) {
+					if (window.hProjekt) {
 						speichern_2(that);
 					} else {
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ProjektId, {
 							success: function (data) {
-								window.Projekt = data;
+								window.hProjekt = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -360,17 +342,17 @@
 						}
 						if (Feldwert) {
 							if (InputTyp === "number") {
-								window.Projekt[Feldname] = parseInt(Feldwert);
+								window.hProjekt[Feldname] = parseInt(Feldwert);
 							} else {
-								window.Projekt[Feldname] = Feldwert;
+								window.hProjekt[Feldname] = Feldwert;
 							}
-						} else if (window.Projekt[Feldname]) {
-							delete window.Projekt[Feldname]
+						} else if (window.hProjekt[Feldname]) {
+							delete window.hProjekt[Feldname]
 						}
 						//alles speichern
-						$db.saveDoc(window.Projekt, {
+						$db.saveDoc(window.hProjekt, {
 							success: function (data) {
-								window.Projekt._rev = data.rev;
+								window.hProjekt._rev = data.rev;
 								speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
 								speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
 								speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
@@ -380,9 +362,9 @@
 								//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
 								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 								//darum zwischenspeichern
-								window.ProjektIdZwischenspeicher = localStorage.ProjektId;
-								setTimeout("window.ZuletztGespeicherteProjektId = window.ProjektIdZwischenspeicher", 1000);
-								setTimeout("delete window.ProjektIdZwischenspeicher", 1500);
+								window.hProjektIdZwischenspeicher = localStorage.ProjektId;
+								setTimeout("window.ZuletztGespeicherteProjektId = window.hProjektIdZwischenspeicher", 1000);
+								setTimeout("delete window.hProjektIdZwischenspeicher", 1500);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -554,7 +536,7 @@
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									delete window.hOrteLatLngProjekt;
-									delete window.Projekt;
+									delete window.hProjekt;
 									initiiereProjektEdit();
 									return;
 								} else {
@@ -567,7 +549,7 @@
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									delete window.hOrteLatLngProjekt;
-									delete window.Projekt;
+									delete window.hProjekt;
 									initiiereProjektEdit();
 									return;
 								} else {

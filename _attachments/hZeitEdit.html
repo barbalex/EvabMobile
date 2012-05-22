@@ -338,7 +338,7 @@
 				//erwartet das Feld als Objekt
 				function speichern(that) {
 					//prüfen, ob die Zeit als Objekt vorliegt
-					if (window.Zeit) {
+					if (window.hZeit) {
 						//dieses verwenden
 						speichern_2(that);
 					} else {
@@ -346,7 +346,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ZeitId, {
 							success: function (data) {
-								window.Zeit = data;
+								window.hZeit = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -372,17 +372,17 @@
 						//Werte aus dem Formular aktualisieren
 						if (Feldwert) {
 							if (InputTyp === "number") {
-								window.Zeit[Feldname] = parseInt(Feldwert);
+								window.hZeit[Feldname] = parseInt(Feldwert);
 							} else {
-								window.Zeit[Feldname] = Feldwert;
+								window.hZeit[Feldname] = Feldwert;
 							}
-						} else if (window.Zeit[Feldname]) {
-							delete window.Zeit[Feldname]
+						} else if (window.hZeit[Feldname]) {
+							delete window.hZeit[Feldname]
 						}
 						//alles speichern
-						$db.saveDoc(window.Zeit, {
+						$db.saveDoc(window.hZeit, {
 							success: function (data) {
-								window.Zeit._rev = data.rev;
+								window.hZeit._rev = data.rev;
 								speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 								//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
@@ -515,6 +515,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzZeit) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
+									delete window.hZeit;
 									initiiereZeitEdit();
 									return;
 								} else {
@@ -525,6 +526,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
+									delete window.hZeit;
 									initiiereZeitEdit();
 									return;
 								} else {
