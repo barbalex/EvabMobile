@@ -418,26 +418,37 @@
 				}
 
 				function löscheBeobachtung() {
+					if (window.hArt) {
+						//vorhandenes Objekt nutzen
+						löscheBeobachtung_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.hBeobId, {
+							success: function (data) {
+								window.hArt = data;
+								löscheBeobachtung_2();
+							},
+							error: function () {
+								melde("Fehler: Art nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheBeobachtung_2() {
 					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.hBeobId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									leereStoragehBeobListe();
-									leereStoragehBeobEdit();
-									$.mobile.changePage("hArtListe.html");
-								},
-								error: function () {
-									melde("Fehler: Art nicht gelöscht");
-								}
-							});
+					$db.removeDoc(window.hArt, {
+						success: function () {
+							//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							leereStoragehBeobListe();
+							leereStoragehBeobEdit();
+							$.mobile.changePage("hArtListe.html");
 						},
 						error: function () {
 							melde("Fehler: Art nicht gelöscht");
 						}
 					});
-					return false;
 				}
 
 				//Speichert alle Daten

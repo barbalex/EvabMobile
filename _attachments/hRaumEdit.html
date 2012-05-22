@@ -293,20 +293,32 @@
 					if (Arten.rows.length > 0) {
 						loescheIdIdRevListe(Arten);
 					}
-					//zuletzt den Raum löschen
-					$db.openDoc(localStorage.RaumId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-									leereStorageRaumEdit("mitLatLngListe");
-									leereStorageRaumListe("mitLatLngListe")
-									$.mobile.changePage('hRaumListe.html');
-								},
-								error: function () {
-									melde("Fehler: Raum nicht gelöscht");
-								}
-							});
+					if (window.hRaum) {
+						//Objekt benutzen
+						löscheRaum_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.RaumId, {
+							success: function (data) {
+								window.hRaum = data;
+								löscheRaum_2();
+							},
+							error: function () {
+								melde("Fehler: Raum nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheRaum_2() {
+					$db = $.couch.db("evab");
+					$db.removeDoc(window.hRaum, {
+						success: function () {
+							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							leereStorageRaumEdit("mitLatLngListe");
+							leereStorageRaumListe("mitLatLngListe")
+							$.mobile.changePage('hRaumListe.html');
 						},
 						error: function () {
 							melde("Fehler: Raum nicht gelöscht");

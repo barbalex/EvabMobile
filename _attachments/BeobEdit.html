@@ -259,6 +259,10 @@
 							'ja': {
 								click: function () {
 									$('#dialogoutput').text('ja');
+									//allfällige Lokalisierung abbrechen
+									if (typeof watchID !== "undefined") {
+										stopGeolocation();
+									}
 									löscheBeobachtung();
 								},
 								icon: "delete",
@@ -489,19 +493,42 @@
 				}
 				
 				function löscheBeobachtung() {
+					if (window.Beobachtung) {
+						//vorhandenes Objekt nutzen
+						löscheBeobachtung_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.BeobId, {
+							success: function (data) {
+								window.Beobachtung = data;
+								löscheBeobachtung_2();
+							},
+							error: function () {
+								melde("Fehler: Beobachtung nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheBeobachtung_2() {
 					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.BeobId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									leereStorageBeobListe();
-									$.mobile.changePage("BeobListe.html");
-								},
-								error: function () {
-									melde("Fehler: Beobachtung nicht gelöscht");
+					$db.removeDoc(window.Beobachtung, {
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.BeobListe) {
+								for (i in window.BeobListe.rows) {
+									if (window.BeobListe.rows[i].value._id === data.id) {
+										window.BeobListe.rows.splice(i, 1);
+										break;
+									}
 								}
-							});
+							} else {
+								//Keine BeobListe mehr. Storage löschen
+								leereStorageBeobListe;
+							}
+							leereStorageBeobEdit();
+							$.mobile.changePage("BeobListe.html");
 						},
 						error: function () {
 							melde("Fehler: Beobachtung nicht gelöscht");

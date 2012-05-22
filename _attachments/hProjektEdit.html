@@ -280,19 +280,32 @@
 						loescheIdIdRevListe(Arten);
 					}
 					//zuletzt das Projekt
-					$db.openDoc(localStorage.ProjektId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-									leereStorageProjektEdit("mitLatLngListe");
-									leereStorageProjektListe("mitLatLngListe");
-									$.mobile.changePage('hProjektListe.html');
-								},
-								error: function () {
-									melde("Fehler: Projekt nicht gelöscht");
-								}
-							});
+					if (window.hProjekt) {
+						//Objekt verwenden
+						löscheProjekt_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.ProjektId, {
+							success: function (data) {
+								window.hProjekt = data;
+								löscheProjekt_2();
+							},
+							error: function () {
+								melde("Fehler: Projekt nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheProjekt_2() {
+					$db = $.couch.db("evab");
+					$db.removeDoc(window.hProjekt, {
+						success: function () {
+							//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							leereStorageProjektEdit("mitLatLngListe");
+							leereStorageProjektListe("mitLatLngListe");
+							$.mobile.changePage('hProjektListe.html');
 						},
 						error: function () {
 							melde("Fehler: Projekt nicht gelöscht");

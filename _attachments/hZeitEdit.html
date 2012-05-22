@@ -295,24 +295,37 @@
 						loescheIdIdRevListe(Arten);
 					}
 					//dann die Zeit
-					$db.openDoc(localStorage.ZeitId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-									leereStorageZeitListe();
-									leereStorageZeitEdit();
-									$.mobile.changePage('hZeitListe.html');
-								},
-								error: function () {
-									melde("Fehler: Zeit nicht gelöscht");
-								}
-							});
+					if (window.hZeit) {
+						//Objekt nutzen
+						löscheZeit_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.ZeitId, {
+							success: function (data) {
+								window.hZeit = data;
+								löscheZeit_2();
+							},
+							error: function () {
+								melde("Fehler: Zeit nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheZeit_2() {
+					$db = $.couch.db("evab");
+					$db.removeDoc(window.hZeit, {
+						success: function () {
+							//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+							leereStorageZeitListe();
+							leereStorageZeitEdit();
+							$.mobile.changePage('hZeitListe.html');
 						},
 						error: function () {
 							melde("Fehler: Zeit nicht gelöscht");
 						}
-					});							
+					});
 				}
 
 				function validierehZeitEdit() {

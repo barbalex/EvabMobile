@@ -222,6 +222,10 @@
 											'ja': {
 												click: function () {
 													$('#dialogoutput').text('ja');
+													//allfällige Lokalisierung abbrechen
+													if (typeof watchID !== "undefined") {
+														stopGeolocation();
+													}
 													löscheOrt(Arten, Zeiten);
 												},
 												icon: "delete",
@@ -329,19 +333,32 @@
 						loescheIdIdRevListe(Arten);
 					}
 					//zuletzt den Ort löschen
-					$db.openDoc(localStorage.OrtId, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-									leereStorageOrtListe("mitLatLngListe")
-									leereStorageOrtEdit("mitLatLngListe");
-									$.mobile.changePage('hOrtListe.html');
-								},
-								error: function () {
-									melde("Fehler: Der Ort wurde nicht gelöscht");
-								}
-							});
+					if (window.hOrt) {
+						//Objekt nutzen
+						löscheOrt_2();
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.OrtId, {
+							success: function (data) {
+								window.hOrt = data;
+								löscheOrt_2();
+							},
+							error: function () {
+								melde("Fehler: Der Ort wurde nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function löscheOrt_2() {
+					$db = $.couch.db("evab");
+					$db.removeDoc(window.hOrt, {
+						success: function () {
+							//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							leereStorageOrtListe("mitLatLngListe")
+							leereStorageOrtEdit("mitLatLngListe");
+							$.mobile.changePage('hOrtListe.html');
 						},
 						error: function () {
 							melde("Fehler: Der Ort wurde nicht gelöscht");
