@@ -330,6 +330,23 @@
 				}
 
 				function speichern(that) {
+					if (window.Projekt) {
+						speichern_2(that);
+					} else {
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.ProjektId, {
+							success: function (data) {
+								window.Projekt = data;
+								speichern_2(that);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
+							}
+						});
+					}
+				}
+
+				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
 					InputTyp = $(that).attr("type");
@@ -341,39 +358,31 @@
 							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageProjektListe("mitLatLngListe");
 						}
-						$db = $.couch.db("evab");
-						//Bestehendes Dokument öffnen
-						$db.openDoc(localStorage.ProjektId, {
-							success: function (hProjekt) {
-								if (Feldwert) {
-									if (InputTyp === "number") {
-										hProjekt[Feldname] = parseInt(Feldwert);
-									} else {
-										hProjekt[Feldname] = Feldwert;
-									}
-								} else if (hProjekt[Feldname]) {
-									delete hProjekt[Feldname]
-								}
-								//alles speichern
-								$db.saveDoc(hProjekt, {
-									success: function () {
-										speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
-										speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
-										speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
-										speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp);
-										//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-										//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-										//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
-										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-										//darum zwischenspeichern
-										window.ProjektIdZwischenspeicher = localStorage.ProjektId;
-										setTimeout("window.ZuletztGespeicherteProjektId = window.ProjektIdZwischenspeicher", 1000);
-										setTimeout("delete window.ProjektIdZwischenspeicher", 1500);
-									},
-									error: function () {
-										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-									}
-								});
+						if (Feldwert) {
+							if (InputTyp === "number") {
+								window.Projekt[Feldname] = parseInt(Feldwert);
+							} else {
+								window.Projekt[Feldname] = Feldwert;
+							}
+						} else if (window.Projekt[Feldname]) {
+							delete window.Projekt[Feldname]
+						}
+						//alles speichern
+						$db.saveDoc(window.Projekt, {
+							success: function (data) {
+								window.Projekt._rev = data.rev;
+								speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp);
+								//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
+								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								//darum zwischenspeichern
+								window.ProjektIdZwischenspeicher = localStorage.ProjektId;
+								setTimeout("window.ZuletztGespeicherteProjektId = window.ProjektIdZwischenspeicher", 1000);
+								setTimeout("delete window.ProjektIdZwischenspeicher", 1500);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
