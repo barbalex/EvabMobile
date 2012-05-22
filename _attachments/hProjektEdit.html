@@ -86,7 +86,11 @@
 				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (!localStorage.ProjektId) {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.ProjektId) {
 					leereAlleVariabeln();
 					$.mobile.changePage("hProjektListe.html");
 					return;
@@ -540,8 +544,9 @@
 								if (parseInt(i) < AnzProj) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
-									initiiereProjektEdit();
 									delete window.hOrteLatLngProjekt;
+									delete window.Projekt;
+									initiiereProjektEdit();
 									return;
 								} else {
 									melde("Das ist das letzte Projekt");
@@ -552,8 +557,9 @@
 								if (parseInt(i) > 0) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
-									initiiereProjektEdit();
 									delete window.hOrteLatLngProjekt;
+									delete window.Projekt;
+									initiiereProjektEdit();
 									return;
 								} else {
 									leereStorageProjektEdit();

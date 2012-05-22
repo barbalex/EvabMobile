@@ -53,6 +53,11 @@
 		</div>
 		<script type="text/javascript" charset="utf-8">
 			$("#BeobListePage").on("pageshow", function () {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+					return;
+				}
 				initiiereBeobliste();
 			});
 

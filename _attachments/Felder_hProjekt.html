@@ -73,7 +73,7 @@
 					HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 					anzFelder = 0;
 					for (i in FeldlisteProjekt.rows) {
-						Feld = FeldlisteProjekt.rows[i].value;
+						Feld = window.FeldlisteProjekt.rows[i].value;
 						FeldName = Feld.FeldName;
 						//Nur eigene und offizielle Felder berücksichtigen
 						if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {

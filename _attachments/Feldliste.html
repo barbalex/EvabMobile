@@ -52,6 +52,9 @@
 		</div><!-- /footer -->
 		<script type="text/javascript" charset="utf-8">
 			$("#FeldListePage").on("pageshow", function () {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					$.mobile.changePage("index.html");
+				}
 				initiiereFeldliste();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {

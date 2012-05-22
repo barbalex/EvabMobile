@@ -86,6 +86,9 @@
 			<script type="text/javascript">
 
 				$("#UserEditPage").on("pageshow", function () {
+					if (localStorage.length === 0 || !localStorage.Username) {
+						$.mobile.changePage("index.html");
+					}
 					initiiereUserEdit();
 				});
 

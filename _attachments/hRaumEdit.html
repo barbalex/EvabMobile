@@ -88,7 +88,11 @@
 				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (!localStorage.RaumId) {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.RaumId) {
 					leereAlleVariabeln();
 					$.mobile.changePage("hProjektListe.html");
 					return;
@@ -520,8 +524,9 @@
 							case "nächster":
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
-									initiiereRaumEdit();
 									delete window.hOrteLatLngRaum;
+									delete window.Raum;
+									initiiereRaumEdit();
 									return;
 								} else {
 									melde("Das ist der letzte Raum");
@@ -531,8 +536,9 @@
 							case "voriger":
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
-									initiiereRaumEdit();
 									delete window.hOrteLatLngRaum;
+									delete window.Raum;
+									initiiereRaumEdit();
 									return;
 								} else {
 									leereStorageRaumEdit();

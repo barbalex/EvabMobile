@@ -193,7 +193,10 @@
 			//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 			//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 			$("#FeldEditPage").on("pageshow", function () {
-				if (!localStorage.FeldId) {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+				} else if (!localStorage.FeldId) {
 					leereAlleVariabeln();
 					geheZurueckFE();
 				}
@@ -626,6 +629,7 @@
 											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
 												localStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
+												delete window.Feld;
 												initiiereFeldEdit();
 												return;
 											} else {
@@ -689,6 +693,7 @@
 												//das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
 												localStorage.FeldId = FeldIdVoriges;
+												delete window.Feld;
 												initiiereFeldEdit();
 												return;
 											} else {

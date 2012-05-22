@@ -530,7 +530,7 @@ function erstelleNeueZeit() {
 									doc._id = Zeit.id;
 									doc._rev = Zeit.rev;
 									//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
-									window.hZeit = doc;
+									window.Zeit = doc;
 									//Variabeln verfügbar machen
 									localStorage.ZeitId = Zeit.id;
 									localStorage.Status = "neu";
@@ -603,7 +603,7 @@ function erstelleNeuenOrt() {
 							doc._id = data.id;
 							doc._rev = data.rev;
 							//damit hOrtEdit.html den Ort nicht aus der DB holen muss
-							window.hOrt = doc;
+							window.Ort = doc;
 							//Variabeln verfügbar machen
 							localStorage.OrtId = data.id;
 							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -660,7 +660,7 @@ function erstelleNeuenRaum() {
 					doc._id = data.id;
 					doc._rev = data.rev;
 					//damit hRaumEdit.html den Raum nicht aus der DB holen muss
-					window.hRaum = doc;
+					window.Raum = doc;
 					//Variabeln verfügbar machen
 					localStorage.RaumId = data.id;
 					localStorage.Status = "neu";
@@ -699,7 +699,7 @@ function erstelleNeuesProjekt() {
 			hProjekt._id = data.id;
 			hProjekt._rev = data.rev;
 			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
-			window.hProjekt = hProjekt;
+			window.Projekt = hProjekt;
 			//Variabeln verfügbar machen
 			localStorage.ProjektId = data.id;
 			localStorage.Status = "neu";
@@ -875,9 +875,9 @@ function initiiereBeobEdit_2() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
-			success: function (Beob) {
-				initiiereBeobEdit_3(Beob);
-				window.Beob = Beob;
+			success: function (data) {
+				window.Beob = data;
+				initiiereBeobEdit_3(data);
 			}
 		});
 	}
@@ -1074,15 +1074,15 @@ function initiiereInstallieren() {
 function initiiereProjektEdit() {
 	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	//$('#AnhängehPE').hide().trigger('updatelayout');
-	if (window.hProjekt) {
-		initiiereProjektEdit_2(window.hProjekt);
-		//gleich löschen - wird nur bei neuen Projekt gebraucht
-		delete window.hProjekt;
+	//window.Projekt existiert schon bei neuem Projekt
+	if (window.Projekt) {
+		initiiereProjektEdit_2(window.Projekt);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
-			success: function (hProjekt) {
-				initiiereProjektEdit_2(hProjekt);
+			success: function (data) {
+				window.Projekt = data;
+				initiiereProjektEdit_2(data);
 			}
 		});
 	}
@@ -1166,99 +1166,105 @@ function generiereHtmlFuerProjektEditForm (Projekt) {
 
 //initiiert FeldEdit.html
 function initiiereFeldEdit() {
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.FeldId, {
-		success: function (doc) {
-			var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
-			//Feld bereitstellen
-			Feld = doc;
-			localStorage.FeldId = Feld._id;
-
-			//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
-			SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
-			SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
-			//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusHierarchisch noch nicht
-			if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
-				$("#SichtbarImModusHierarchisch").val("ja");
-			} else {
-				$("#SichtbarImModusHierarchisch").val("nein");
+	//Bei neuem Feld gibt es Feld schon
+	if (window.Feld) {
+		initiiereFeldEdit_2();
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.FeldId, {
+			success: function (doc) {
+				//Feld bereitstellen
+				window.Feld = doc;
 			}
-			$("select#SichtbarImModusHierarchisch").slider();
-			$("select#SichtbarImModusHierarchisch").slider("refresh");
-			//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusEinfach noch nicht
-			if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
-				$("select#SichtbarImModusEinfach").val("ja");
-			} else {
-				$("select#SichtbarImModusEinfach").val("nein");
-			}
-			$("select#SichtbarImModusEinfach").slider();
-			$("select#SichtbarImModusEinfach").slider("refresh");
-			//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
-			if (Feld.Hierarchiestufe === "Art") {
-				ArtGruppeAufbauenFeldEdit(doc.ArtGruppe);
-			}
+		});
+	}
+}
 
-			//allfälligen Standardwert anzeigen
-			//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
-			//darum hier auslesen und setzen
-			if (doc.Standardwert) {
-				Standardwert = doc.Standardwert[localStorage.Username];
-				if (Standardwert) {
-					$("#Standardwert").val(Standardwert);
-				} else {
-					//Auch leere Werte setzen, sonst bleibt letzter!
-					$("#Standardwert").val("");
-				}
-			}
+function initiiereFeldEdit_2() {
+	var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
+	//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
+	SichtbarImModusHierarchisch = doc.SichtbarImModusHierarchisch;
+	SichtbarImModusEinfach = doc.SichtbarImModusEinfach;
+	//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusHierarchisch noch nicht
+	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
+		$("#SichtbarImModusHierarchisch").val("ja");
+	} else {
+		$("#SichtbarImModusHierarchisch").val("nein");
+	}
+	$("select#SichtbarImModusHierarchisch").slider();
+	$("select#SichtbarImModusHierarchisch").slider("refresh");
+	//Vorsicht: Bei neuen Feldern gibt es doc.SichtbarImModusEinfach noch nicht
+	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
+		$("select#SichtbarImModusEinfach").val("ja");
+	} else {
+		$("select#SichtbarImModusEinfach").val("nein");
+	}
+	$("select#SichtbarImModusEinfach").slider();
+	$("select#SichtbarImModusEinfach").slider("refresh");
+	//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+	if (Feld.Hierarchiestufe === "Art") {
+		ArtGruppeAufbauenFeldEdit(doc.ArtGruppe);
+	}
 
-			if (doc.FeldName) {
-				//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
-				if (["aArtGruppe", "aArtName"].indexOf(doc.FeldName) > -1) {
-					$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
-					$("#Standardwert").attr("disabled", true);
-				//ausschalten, soll jetzt im Feld verwaltet werden
-				/*} else if (doc.FeldName === "aAutor") {
-					$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
-					$("#Standardwert").attr("disabled", true);*/
-				} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(doc.FeldName) > -1) {
-					$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
-					$("#Standardwert").attr("disabled", true);
-				} else if (["zDatum", "zUhrzeit"].indexOf(doc.FeldName) > -1) {
-					$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
-					$("#Standardwert").attr("disabled", true);
-				}
-			}
-			$(".FeldEditHeaderTitel").text(doc.Hierarchiestufe + ": " + doc.FeldBeschriftung);
-			
-			//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
-			$("input[name='Hierarchiestufe']").checkboxradio();
-			$("#" + doc.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
-			$("input[name='Formularelement']").checkboxradio();
-			$("#" + doc.Formularelement).prop("checked",true).checkboxradio("refresh");
-			$("input[name='InputTyp']").checkboxradio();
-			$("#" + doc.InputTyp).prop("checked",true).checkboxradio("refresh");
-
-			//Werte in übrige Felder einfügen
-			$("#FeldName").val(doc.FeldName);
-			$("#FeldBeschriftung").val(doc.FeldBeschriftung);
-			$("#FeldBeschreibung").val(doc.FeldBeschreibung);	//Textarea - anders refreshen?
-			$("#Reihenfolge").val(doc.Reihenfolge);
-			$("#FeldNameEvab").val(doc.FeldNameEvab);
-			$("#FeldNameZdsf").val(doc.FeldNameZdsf);
-			$("#FeldNameCscf").val(doc.FeldNameCscf);
-			$("#FeldNameNism").val(doc.FeldNameNism);
-			$("#FeldNameWslFlechten").val(doc.FeldNameWslFlechten);
-			$("#FeldNameWslPilze").val(doc.FeldNameWslPilze);
-			$("#Optionen").val(doc.Optionen);	//Textarea - anders refreshen?
-			$("#SliderMinimum").val(doc.SliderMinimum);
-			$("#SliderMaximum").val(doc.SliderMaximum);
-
-			erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
-			speichereLetzteUrl();
-			//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
-			$(":jqmData(role='page')").focus();
+	//allfälligen Standardwert anzeigen
+	//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+	//darum hier auslesen und setzen
+	if (doc.Standardwert) {
+		Standardwert = doc.Standardwert[localStorage.Username];
+		if (Standardwert) {
+			$("#Standardwert").val(Standardwert);
+		} else {
+			//Auch leere Werte setzen, sonst bleibt letzter!
+			$("#Standardwert").val("");
 		}
-	});
+	}
+
+	if (doc.FeldName) {
+		//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+		if (["aArtGruppe", "aArtName"].indexOf(doc.FeldName) > -1) {
+			$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
+			$("#Standardwert").attr("disabled", true);
+		//ausschalten, soll jetzt im Feld verwaltet werden
+		/*} else if (doc.FeldName === "aAutor") {
+			$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+			$("#Standardwert").attr("disabled", true);*/
+		} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(doc.FeldName) > -1) {
+			$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
+			$("#Standardwert").attr("disabled", true);
+		} else if (["zDatum", "zUhrzeit"].indexOf(doc.FeldName) > -1) {
+			$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
+			$("#Standardwert").attr("disabled", true);
+		}
+	}
+	$(".FeldEditHeaderTitel").text(doc.Hierarchiestufe + ": " + doc.FeldBeschriftung);
+	
+	//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
+	$("input[name='Hierarchiestufe']").checkboxradio();
+	$("#" + doc.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
+	$("input[name='Formularelement']").checkboxradio();
+	$("#" + doc.Formularelement).prop("checked",true).checkboxradio("refresh");
+	$("input[name='InputTyp']").checkboxradio();
+	$("#" + doc.InputTyp).prop("checked",true).checkboxradio("refresh");
+
+	//Werte in übrige Felder einfügen
+	$("#FeldName").val(doc.FeldName);
+	$("#FeldBeschriftung").val(doc.FeldBeschriftung);
+	$("#FeldBeschreibung").val(doc.FeldBeschreibung);	//Textarea - anders refreshen?
+	$("#Reihenfolge").val(doc.Reihenfolge);
+	$("#FeldNameEvab").val(doc.FeldNameEvab);
+	$("#FeldNameZdsf").val(doc.FeldNameZdsf);
+	$("#FeldNameCscf").val(doc.FeldNameCscf);
+	$("#FeldNameNism").val(doc.FeldNameNism);
+	$("#FeldNameWslFlechten").val(doc.FeldNameWslFlechten);
+	$("#FeldNameWslPilze").val(doc.FeldNameWslPilze);
+	$("#Optionen").val(doc.Optionen);	//Textarea - anders refreshen?
+	$("#SliderMinimum").val(doc.SliderMinimum);
+	$("#SliderMaximum").val(doc.SliderMaximum);
+
+	erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
+	speichereLetzteUrl();
+	//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
+	$(":jqmData(role='page')").focus();
 }
 
 //wird von FeldEdit.html aufgerufen
@@ -1543,15 +1549,14 @@ function initiiereProjektliste_2() {
 function initiiereRaumEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehRE').hide();
-	if (window.hRaum) {
-		initiiereRaumEdit_2(window.hRaum);
-		//gleich löschen - wird nur bei neuen Räumen gebraucht
-		delete window.hRaum;
+	if (window.Raum) {
+		initiiereRaumEdit_2(window.Raum);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
-			success: function (hRaum) {
-				initiiereRaumEdit_2(hRaum);
+			success: function (data) {
+				window.Raum = data;
+				initiiereRaumEdit_2(data);
 			}
 		});
 	}
@@ -1688,15 +1693,14 @@ function initiiereRaumListe_2() {
 function initiiereOrtEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehOE').hide();
-	if (window.hOrt) {
-		initiiereOrtEdit_2(window.hOrt);
-		//gleich löschen - wird nur bei neuen Orten gebraucht
-		delete window.hOrt;
+	if (window.Ort) {
+		initiiereOrtEdit_2(window.Ort);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
-			success: function (hOrt) {
-				initiiereOrtEdit_2(hOrt);
+			success: function (data) {
+				window.Ort = data;
+				initiiereOrtEdit_2(data);
 			}
 		});
 	}
@@ -1851,15 +1855,15 @@ function initiiereOrtListe_2() {
 function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
-	if (window.hZeit) {
-		initiiereZeitEdit_2(window.hZeit);
-		//gleich löschen - wird nur bei neuen Zeiten gebraucht
-		delete window.hZeit;
+	//hZeit existiert schon bei neuer Zeit
+	if (window.Zeit) {
+		initiiereZeitEdit_2(window.Zeit);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
-			success: function (Zeit) {
-				initiiereZeitEdit_2(Zeit);
+			success: function (data) {
+				window.Zeit = data;
+				initiiereZeitEdit_2(data);
 			}
 		});
 	}
@@ -1998,13 +2002,12 @@ function generiereHtmlFuerZeitEditForm(Zeit) {
 function initiierehBeobEdit() {
 	if (window.hBeob) {
 		initiierehBeobEdit_2(window.hBeob);
-		//gleich löschen - wird nur bei neuen hBeob gebraucht
-		delete window.hBeob;
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
-			success: function (Beob) {
-				initiierehBeobEdit_2(Beob);
+			success: function (data) {
+				window.hBeob = data;
+				initiierehBeobEdit_2(data);
 			}
 		});
 	}
@@ -2762,7 +2765,7 @@ function neuesFeld() {
 	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
 			localStorage.FeldId = data.id;
-			Feld = data;
+			window.Feld = data;
 			//Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
 			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
@@ -3269,6 +3272,7 @@ function leereStorageProjektListe(mitLatLngListe) {
 
 function leereStorageProjektEdit(mitLatLngListe) {
 	delete localStorage.ProjektId;
+	delete window.Projekt;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
@@ -3283,6 +3287,7 @@ function leereStorageRaumListe(mitLatLngListe) {
 
 function leereStorageRaumEdit(mitLatLngListe) {
 	delete localStorage.RaumId;
+	delete window.Raum;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
@@ -3290,7 +3295,6 @@ function leereStorageRaumEdit(mitLatLngListe) {
 
 function leereStorageOrtListe(mitLatLngListe) {
 	delete window.OrtListe;
-	delete window.hOrt;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
@@ -3306,7 +3310,7 @@ function leereStorageOrtEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.hOrt;
+	delete window.Ort;
 }
 
 function leereStorageZeitListe() {
@@ -3315,6 +3319,7 @@ function leereStorageZeitListe() {
 
 function leereStorageZeitEdit() {
 	delete localStorage.ZeitId;
+	delete window.Zeit;
 }
 
 function leereStoragehBeobListe() {

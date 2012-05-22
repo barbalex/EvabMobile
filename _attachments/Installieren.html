@@ -64,6 +64,9 @@
 		</div>
 		<script type="text/javascript">
 			$("#InstallierenPage").on("pageshow", function () {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					$.mobile.changePage("index.html");
+				}
 				initiiereInstallieren();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {

@@ -101,7 +101,11 @@
 				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (!localStorage.OrtId) {
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.OrtId) {
 					leereAlleVariabeln();
 					$.mobile.changePage("hProjektListe.html");
 					return;
@@ -546,6 +550,7 @@
 									if (typeof watchID !== "undefined") {
 										stopGeolocation();
 									}
+									delete window.Ort;
 									initiiereOrtEdit();
 									return;
 								} else {
@@ -560,6 +565,7 @@
 									if (typeof watchID !== "undefined") {
 										stopGeolocation();
 									}
+									delete window.Ort;
 									initiiereOrtEdit();
 									return;
 								} else {
