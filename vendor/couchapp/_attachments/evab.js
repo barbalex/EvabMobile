@@ -1068,8 +1068,8 @@ function loescheAnhang(that, Objekt, id) {
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
-				Objekt = data;
-				loescheAnhang_2(that, Objekt);
+				window[Objekt.Typ] = data;
+				loescheAnhang_2(that, window[Objekt.Typ]);
 			},
 			error: function () {
 				melde("Fehler: Anhang wurde nicht entfernt");
@@ -1132,13 +1132,13 @@ function initiiereProjektEdit() {
 	//$('#AnhängehPE').hide().trigger('updatelayout');
 	//window.hProjekt existiert schon bei neuem Projekt
 	if (window.hProjekt) {
-		initiiereProjektEdit_2(window.hProjekt);
+		initiiereProjektEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
 			success: function (data) {
 				window.hProjekt = data;
-				initiiereProjektEdit_2(data);
+				initiiereProjektEdit_2();
 			}
 		});
 	}
@@ -2757,41 +2757,55 @@ function holeLocalStorageAusDb() {
 //setzt ein passendes Formular mit den feldern _rev und _attachments voraus
 //nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
 //wird benutzt von allen Formularen mit Anhängen
-function speichereAnhänge(id, Page) {
-	$db = $.couch.db("evab");
-	$db.openDoc(id, {
-		success: function (data) {
-			$("#_rev" + Page).val(data._rev);
-			$("#FormAnhänge" + Page).ajaxSubmit({
-				url: "/evab/" + id,
-				success: function () {
-					//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
-					$db.openDoc(id, {
-						success: function (data2) {
-							//show attachments in form
-							zeigeAttachments(data2, Page);
-						},
-						error: function () {
-							melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
-						}
-					});
+function speichereAnhänge(id, Objekt, Page) {
+	//prüfen, ob der Datensatz als Objekt übergeben wurde
+	if (Objekt) {
+		//das Objekt verwenden
+		speichereAnhänge_2(id, Objekt, Page);
+	} else {
+		//Objekt aus der DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(id, {
+			success: function (data) {
+				window[Objekt.Typ] = data;
+				speichereAnhänge_2(id, data, Page);
+			},
+			error: function () {
+				melde("Fehler: Anhang nicht gespeichert");
+			}
+		});
+	}
+}
+
+function speichereAnhänge_2(id, Objekt, Page) {
+	$("#_rev" + Page).val(window[Objekt.Typ]._rev);
+	$("#FormAnhänge" + Page).ajaxSubmit({
+		url: "/evab/" + id,
+		success: function () {
+			//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			$db.openDoc(id, {
+				success: function (data2) {
+					window[Objekt.Typ] = data2;
+					//show attachments in form
+					zeigeAttachments(data2, Page);
 				},
 				error: function () {
-					//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
-					$db.openDoc(id, {
-						success: function (data3) {
-							//da form.jquery.js einen Fehler hat, meldet es einen solchen zurück, obwohl der Vorgang funktioniert!
-							zeigeAttachments(data3, Page);
-						},
-						error: function () {
-							melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
-						}
-					});
+					melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
 				}
 			});
 		},
+		//form.jquery.js meldet einen Fehler, obwohl der Vorgang funktioniert!
 		error: function () {
-			melde("Fehler: Anhang nicht gespeichert");
+			//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			$db.openDoc(id, {
+				success: function (data3) {
+					window[Objekt.Typ] = data3;
+					zeigeAttachments(data3, Page);
+				},
+				error: function () {
+					melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
+				}
+			});
 		}
 	});
 }
@@ -2804,7 +2818,6 @@ function speichereAnhänge(id, Page) {
 function zeigeAttachments(doc, Page) {
 	var HtmlContainer, url, url_zumLöschen;
 	HtmlContainer = "";
-	//$("#Anhänge" + Page).html("");
 	$("#_attachments" + Page).val("");
 	if (doc._attachments) {
 		$.each(doc._attachments, function (Dateiname, val) {

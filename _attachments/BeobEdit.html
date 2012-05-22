@@ -232,7 +232,7 @@
 					var _attachments;
 					_attachments = $("#_attachmentsBE").val();
 					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(localStorage.BeobId, "BE");
+						speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
 					}
 				});
 				
