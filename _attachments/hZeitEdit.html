@@ -337,6 +337,27 @@
 				//den Wert in die DB
 				//erwartet das Feld als Objekt
 				function speichern(that) {
+					//prüfen, ob die Zeit als Objekt vorliegt
+					if (window.Zeit) {
+						//dieses verwenden
+						speichern_2(that);
+					} else {
+						//Objekt aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(localStorage.ZeitId, {
+							success: function (data) {
+								window.Zeit = data;
+								speichern_2(that);
+							},
+							error: function () {
+								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							}
+						});
+					}
+
+				}
+
+				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert, InputTyp;
 					Feldname = that.name;
 					InputTyp = $(that).attr("type");
@@ -348,37 +369,29 @@
 							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereStorageZeitListe();
 						}
-						$db = $.couch.db("evab");
-						//Bestehendes Dokument öffnen
-						$db.openDoc(localStorage.ZeitId, {
-							success: function (hZeit) {
-								//Werte aus dem Formular aktualisieren
-								if (Feldwert) {
-									if (InputTyp === "number") {
-										hZeit[Feldname] = parseInt(Feldwert);
-									} else {
-										hZeit[Feldname] = Feldwert;
-									}
-								} else if (hZeit[Feldname]) {
-									delete hZeit[Feldname]
-								}
-								//alles speichern
-								$db.saveDoc(hZeit, {
-									success: function () {
-										speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
-										//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
-										//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
-										//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
-										//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-										//darum zwischenspeichern
-										window.ZeitIdZwischenspeicher = localStorage.ZeitId;
-										setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
-										setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
-									},
-									error: function () {
-										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-									}
-								});
+						//Werte aus dem Formular aktualisieren
+						if (Feldwert) {
+							if (InputTyp === "number") {
+								window.Zeit[Feldname] = parseInt(Feldwert);
+							} else {
+								window.Zeit[Feldname] = Feldwert;
+							}
+						} else if (window.Zeit[Feldname]) {
+							delete window.Zeit[Feldname]
+						}
+						//alles speichern
+						$db.saveDoc(window.Zeit, {
+							success: function (data) {
+								window.Zeit._rev = data.rev;
+								speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
+								//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
+								//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
+								//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
+								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								//darum zwischenspeichern
+								window.ZeitIdZwischenspeicher = localStorage.ZeitId;
+								setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
+								setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
