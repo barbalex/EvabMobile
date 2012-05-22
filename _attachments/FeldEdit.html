@@ -559,25 +559,47 @@
 				}
 
 				function loescheFeld() {
+					if (window.Feld) {
+						//Objekt nutzen
+						loescheFeld_2();
+					} else {
+						//Feld aus DB holen
+						$db = $.couch.db("evab");
+						$db.openDoc(Feld._id, {
+							success: function (data) {
+								window.Feld = data;
+								loescheFeld_2();
+							},
+							error: function () {
+								melde("Fehler: nicht gelöscht");
+							}
+						});
+					}
+				}
+
+				function loescheFeld_2() {
 					$db = $.couch.db("evab");
-					$db.openDoc(Feld._id, {
-						success: function (document) {
-							$db.removeDoc(document, {
-								success: function () {
-									leereStorageFeldEdit();
-									leereStorageFeldListe();
-									$.mobile.changePage("FeldListe.html");
-								},
-								error: function () {
-									melde("Fehler: nicht gelöscht");
+					$db.removeDoc(window.Feld, {
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.Feldliste) {
+								for (i in window.Feldliste.rows) {
+									if (window.Feldliste.rows[i].value._id === data.id) {
+										window.Feldliste.rows.splice(i, 1);
+										break;
+									}
 								}
-							});
+							} else {
+								//Keine Feldliste mehr. Storage löschen
+								leereStorageFeldListe();
+							}
+							leereStorageFeldEdit();
+							$.mobile.changePage("FeldListe.html");
 						},
 						error: function () {
 							melde("Fehler: nicht gelöscht");
 						}
 					});
-					return false;
 				}
 
 

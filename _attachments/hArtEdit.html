@@ -439,9 +439,19 @@
 				function löscheBeobachtung_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hArt, {
-						success: function () {
-							//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereStoragehBeobListe();
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.hBeobListe) {
+								for (i in window.hBeobListe.rows) {
+									if (window.hBeobListe.rows[i].value._id === data.id) {
+										window.hBeobListe.rows.splice(i, 1);
+										break;
+									}
+								}
+							} else {
+								//Keine Ortliste mehr. Storage löschen
+								leereStoragehBeobListe();
+							}
 							leereStoragehBeobEdit();
 							$.mobile.changePage("hArtListe.html");
 						},

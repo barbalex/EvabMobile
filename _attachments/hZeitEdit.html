@@ -316,9 +316,19 @@
 				function löscheZeit_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hZeit, {
-						success: function () {
-							//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-							leereStorageZeitListe();
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.ZeitListe) {
+								for (i in window.ZeitListe.rows) {
+									if (window.ZeitListe.rows[i].value._id === data.id) {
+										window.ZeitListe.rows.splice(i, 1);
+										break;
+									}
+								}
+							} else {
+								//Keine ZeitListe mehr. Storage löschen
+								leereStorageZeitListe;
+							}
 							leereStorageZeitEdit();
 							$.mobile.changePage('hZeitListe.html');
 						},

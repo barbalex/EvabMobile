@@ -354,9 +354,19 @@
 				function löscheOrt_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hOrt, {
-						success: function () {
-							//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereStorageOrtListe("mitLatLngListe")
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.OrtListe) {
+								for (i in window.OrtListe.rows) {
+									if (window.OrtListe.rows[i].value._id === data.id) {
+										window.OrtListe.rows.splice(i, 1);
+										break;
+									}
+								}
+							} else {
+								//Keine Ortliste mehr. Storage löschen
+								leereStorageOrtListe("mitLatLngListe");
+							}
 							leereStorageOrtEdit("mitLatLngListe");
 							$.mobile.changePage('hOrtListe.html');
 						},

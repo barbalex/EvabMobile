@@ -247,15 +247,16 @@ function speichereKoordinaten(id, OrtOderBeob) {
 function speichereKoordinaten_2(OrtOderBeob) {
 	//Längen- und Breitengrad sind in keinem Feld dargestellt
 	//sie müssen aus ihren Variabeln gespeichert werden
-	window[OrtOderBeob].oLongitudeDecDeg = parseFloat(localStorage.oLongitudeDecDeg);
-	window[OrtOderBeob].oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg);
-	window[OrtOderBeob].oXKoord = parseInt(localStorage.oXKoord);
-	window[OrtOderBeob].oYKoord = parseInt(localStorage.oYKoord);
+	// || null, um NAN zu verhindern, wenn keine Werte gemessen werden
+	window[OrtOderBeob].oLongitudeDecDeg = parseFloat(localStorage.oLongitudeDecDeg) || null;
+	window[OrtOderBeob].oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg) || null;
+	window[OrtOderBeob].oXKoord = parseInt(localStorage.oXKoord) || null;
+	window[OrtOderBeob].oYKoord = parseInt(localStorage.oYKoord) || null;
 	//parseInt verhindert das Speichern von Text, darum prüfen
 	if (localStorage.oLagegenauigkeit === "Auf Luftbild markiert") {
 		window[OrtOderBeob].oLagegenauigkeit = localStorage.oLagegenauigkeit;
 	} else {
-		window[OrtOderBeob].oLagegenauigkeit = parseInt(localStorage.oLagegenauigkeit);
+		window[OrtOderBeob].oLagegenauigkeit = parseInt(localStorage.oLagegenauigkeit) || null;
 	}
 	//Höhe nur speichern, wenn vorhanden
 	//wenn nicht vorhanden: Allflligen alten Wert löschen
@@ -1886,7 +1887,7 @@ function initiiereOrtListe() {
 }
 
 function initiiereOrtListe_2() {
-	var i, anzOrt, externalPage, listItem, ListItemContainer, Titel2;
+	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
 	anzOrt = OrtListe.rows.length;
 	ListItemContainer = "";
 
@@ -1902,9 +1903,9 @@ function initiiereOrtListe_2() {
 	} else {
 		for (i in OrtListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
-				window.hOrt = OrtListe.rows[i].value;
+				Ort = OrtListe.rows[i].value;
 				key = OrtListe.rows[i].key;
-				listItem = "<li OrtId=\"" + window.hOrt._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + window.hOrt.oName + "<\/h3><\/a> <\/li>";
+				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
 		}
@@ -2853,8 +2854,8 @@ function neuesFeld() {
 	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
 			localStorage.FeldId = data.id;
-			NeuesFeld.Feld._id = data.id;
-			NeuesFeld.Feld._rev = data.rev;
+			NeuesFeld._id = data.id;
+			NeuesFeld._rev = data.rev;
 			window.Feld = NeuesFeld;
 			//Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();

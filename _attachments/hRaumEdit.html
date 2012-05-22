@@ -314,10 +314,21 @@
 				function löscheRaum_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hRaum, {
-						success: function () {
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.RaumListe) {
+								for (i in window.RaumListe.rows) {
+									if (window.RaumListe.rows[i].value._id === data.id) {
+										window.RaumListe.rows.splice(i, 1);
+										break;
+									}
+								}
+							} else {
+								//Keine Raumliste mehr. Storage löschen
+								leereStorageRaumListe("mitLatLngListe");
+							}
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageRaumEdit("mitLatLngListe");
-							leereStorageRaumListe("mitLatLngListe")
 							$.mobile.changePage('hRaumListe.html');
 						},
 						error: function () {

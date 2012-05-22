@@ -301,10 +301,21 @@
 				function löscheProjekt_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hProjekt, {
-						success: function () {
+						success: function (data) {
+							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							if (window.Projektliste) {
+								for (i in window.Projektliste.rows) {
+									if (window.Projektliste.rows[i].value._id === data.id) {
+										window.Projektliste.rows.splice(i, 1);
+										break;
+									}
+								}
+							} else {
+								//Keine Projektliste mehr. Storage löschen
+								leereStorageProjektListe("mitLatLngListe");
+							}
 							//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageProjektEdit("mitLatLngListe");
-							leereStorageProjektListe("mitLatLngListe");
 							$.mobile.changePage('hProjektListe.html');
 						},
 						error: function () {
