@@ -140,38 +140,27 @@
 					event.preventDefault();
 					that = this;
 					//Anzahl Räume des Projekts zählen
+					//die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 					$db = $.couch.db("evab");
-					$db.view('evab/hRaumIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
-						success: function (data) {
+					$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+						success: function (Raeume) {
 							var anzRaeume;
-							anzRaeume = 0;
-							if (data.rows.length > 0) {
-								anzRaeume = data.rows[0].value;
-							}
+							anzRaeume = Raeume.rows.length;
 							//Anzahl Orte des Projekts zählen
-							$db.view('evab/hOrtIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
-								success: function (data) {
+							$db.view('evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+								success: function (Orte) {
 									var anzOrte;
-									anzOrte = 0;
-									if (data.rows.length > 0) {
-										anzOrte = data.rows[0].value;
-									}
+									anzOrte = Orte.rows.length;
 									//Anzahl Zeiten des Projekts zählen
-									$db.view('evab/hZeitIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
-										success: function (data) {
+									$db.view('evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+										success: function (Zeiten) {
 											var anzZeiten;
-											anzZeiten = 0;
-											if (data.rows.length > 0) {
-												anzZeiten = data.rows[0].value;
-											}
+											anzZeiten = Zeiten.rows.length;
 											//Anzahl Arten des Projekts zählen
-											$db.view('evab/hArtIdVonProjektAnzahl?key="' + localStorage.ProjektId + '"&reduce=true', {
-												success: function (data2) {
+											$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+												success: function (Arten) {
 													var anzArten;
-													anzArten = 0;
-													if (data2.rows.length > 0) {
-														anzArten = data2.rows[0].value;
-													}
+													anzArten = Arten.rows.length;
 													$(that).simpledialog({
 														'mode' : 'bool',
 														'prompt' : 'Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
@@ -180,7 +169,8 @@
 															'ja': {
 																click: function () {
 																	$('#dialogoutput').text('ja');
-																	löscheProjekt();
+																	//die Listen übergeben, damit ohne DB-Abfrage gelöscht werden kann
+																	löscheProjekt(Arten, Zeiten, Orte, Raeume);
 																},
 																icon: "delete",
 																theme: "c"
@@ -289,70 +279,37 @@
 					});
 				});
 
-				function löscheProjekt() {
-					var viewname;
-					//Zuerst die Arten löschen
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (hBeob) {
-							var viewname2;
-							loescheDatensatzliste(hBeob);
-							//dann die Zeiten
-							viewname2 = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-							$db.view(viewname2, {
-								success: function (Zeiten) {
-									var viewname3;
-									loescheDatensatzliste(Zeiten);
-									//dann die Orte
-									viewname3 = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-									$db.view(viewname3, {
-										success: function (Orte) {
-											loescheDatensatzliste(Orte);
-											//dann die Räume
-											var viewname4;
-											viewname4 = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-											$db.view(viewname4, {
-												success: function (Raeume) {
-													loescheDatensatzliste(Raeume);
-													//zuletzt das Projekt
-													$db.openDoc(localStorage.ProjektId, {
-														success: function (document) {
-															$db.removeDoc(document, {
-																success: function () {
-																	//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-																	leereStorageProjektEdit("mitLatLngListe");
-																	leereStorageProjektListe("mitLatLngListe");
-																	$.mobile.changePage('hProjektListe.html');
-																	melde("alles gelöscht");
-																},
-																error: function () {
-																	melde("Fehler: Projekt nicht gelöscht");
-																}
-															});
-														},
-														error: function () {
-															melde("Fehler: Projekt nicht gelöscht");
-														}
-													});
-												},
-												error: function () {
-													melde("Fehler: Räume und Projekt nicht gelöscht");
-												}
-											});
-										},
-										error: function () {
-											melde("Fehler: Orte, Räume und Projekt nicht gelöscht");
-										}
-									});
+				function löscheProjekt(Arten, Zeiten, Orte, Raeume) {
+					//nur löschen, wo Datensätze vorkommen
+					if (Raeume.rows.length > 0) {
+						loescheIdIdRevListe(Raeume);
+					}
+					if (Orte.rows.length > 0) {
+						loescheIdIdRevListe(Orte);
+					}
+					if (Zeiten.rows.length > 0) {
+						loescheIdIdRevListe(Zeiten);
+					}
+					if (Arten.rows.length > 0) {
+						loescheIdIdRevListe(Arten);
+					}
+					//zuletzt das Projekt
+					$db.openDoc(localStorage.ProjektId, {
+						success: function (document) {
+							$db.removeDoc(document, {
+								success: function () {
+									//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+									leereStorageProjektEdit("mitLatLngListe");
+									leereStorageProjektListe("mitLatLngListe");
+									$.mobile.changePage('hProjektListe.html');
 								},
 								error: function () {
-									melde("Fehler: Zeiten, Orte, Räume und Projekt nicht gelöscht");
+									melde("Fehler: Projekt nicht gelöscht");
 								}
 							});
 						},
 						error: function () {
-							melde("Fehler: Nichts gelöscht");
+							melde("Fehler: Projekt nicht gelöscht");
 						}
 					});
 				}
@@ -472,7 +429,9 @@
 					$db.view(viewname, {
 						success: function (data) {
 							window.RaeumeVonProjekt = data;
-							speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
+							if (window.RaeumeVonProjekt.rows.length > 0) {
+								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
+							}
 						}
 					});
 				}

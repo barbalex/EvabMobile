@@ -202,20 +202,14 @@
 					that = this;
 					//Anzahl Zeiten von Ort zählen
 					$db = $.couch.db("evab");
-					$db.view('evab/hZeitIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
-						success: function (data) {
+					$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
+						success: function (Zeiten) {
 							var anzZeiten;
-							anzZeiten = 0;
-							if (data.rows.length > 0) {
-								anzZeiten = data.rows[0].value;
-							}
-							$db.view('evab/hArtIdVonOrtAnzahl?key="' + localStorage.OrtId + '"&reduce=true', {
-								success: function (data2) {
+							anzZeiten = Zeiten.rows.length;
+							$db.view('evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
+								success: function (Arten) {
 									var anzArten;
-									anzArten = 0;
-									if (data2.rows.length > 0) {
-										anzArten = data2.rows[0].value;
-									}
+									anzArten = Arten.rows.length;
 									$(that).simpledialog({
 										'mode' : 'bool',
 										'prompt' : 'Ort sammt ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
@@ -224,7 +218,7 @@
 											'ja': {
 												click: function () {
 													$('#dialogoutput').text('ja');
-													löscheOrt();
+													löscheOrt(Arten, Zeiten);
 												},
 												icon: "delete",
 												theme: "c"
@@ -322,48 +316,31 @@
 					});
 				});
 
-				function löscheOrt() {
-					//zuerst Arten löschen
-					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var viewname2;
-							loescheDatensatzliste(data);
-							//dann die Zeiten löschen
-							viewname2 = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-							$db.view(viewname2, {
-								success: function (data2) {
-									loescheDatensatzliste(data2);
-									//zuletzt den Ort löschen
-									$db.openDoc(localStorage.OrtId, {
-										success: function (document) {
-											$db.removeDoc(document, {
-												success: function () {
-													//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-													leereStorageOrtListe("mitLatLngListe")
-													leereStorageOrtEdit("mitLatLngListe");
-													$.mobile.changePage('hOrtListe.html');
-													melde("alles gelöscht");
-												},
-												error: function () {
-													melde("Fehler: Der Ort wurde nicht gelöscht");
-												}
-											});
-										},
-										error: function () {
-											melde("Fehler: Der Ort wurde nicht gelöscht");
-										}
-									});
+				function löscheOrt(Arten, Zeiten) {
+					//nur löschen, wo Datensätze vorkommen
+					if (Zeiten.rows.length > 0) {
+						loescheIdIdRevListe(Zeiten);
+					}
+					if (Arten.rows.length > 0) {
+						loescheIdIdRevListe(Arten);
+					}
+					//zuletzt den Ort löschen
+					$db.openDoc(localStorage.OrtId, {
+						success: function (document) {
+							$db.removeDoc(document, {
+								success: function () {
+									//OrtListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+									leereStorageOrtListe("mitLatLngListe")
+									leereStorageOrtEdit("mitLatLngListe");
+									$.mobile.changePage('hOrtListe.html');
 								},
 								error: function () {
-									melde("Fehler: Zeiten und Ort wurden nicht gelöscht");
+									melde("Fehler: Der Ort wurde nicht gelöscht");
 								}
 							});
 						},
 						error: function () {
-							melde("Fehler: Es wurde nichts gelöscht");
+							melde("Fehler: Der Ort wurde nicht gelöscht");
 						}
 					});
 				}

@@ -1460,23 +1460,30 @@ function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Date
 	}
 }
 
-function loescheDatensatzliste(Datensatzliste) {
-	var JsonBulkListe, DsBulkListe, Docs, row;
-	DsBulkListe = {};
+//löscht Datensätze in Massen
+//nimmt das Ergebnis einer Abfrage entgegen, welche im key einen Array hat
+//Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
+//Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
+function loescheIdIdRevListe(Datensatzobjekt) {
+	var ObjektMitDeleteListe, Docs, Datensatz, rowkey;
+	ObjektMitDeleteListe = {};
 	Docs = [];
-	for (i in Datensatzliste.rows) {
-		row = Datensatzliste.rows[i].doc;
-		row["_deleted"] = true;
-		Docs.push(row);
+	for (i in Datensatzobjekt.rows) {
+		if (typeof i !== "function") {
+			//unsere Daten sind im key
+			rowkey = Datensatzobjekt.rows[i].key;
+			Datensatz = {};
+			Datensatz._id = rowkey[1];
+			Datensatz._rev = rowkey[2];
+			Datensatz._deleted = true;
+			Docs.push(Datensatz);
+		}
 	}
-	DsBulkListe.docs = Docs;
-	JsonBulkListe = JSON.stringify(DsBulkListe);
-	//$db = $.couch.db("evab");
-	//$db.bulkSave(JsonBulkListe);
+	ObjektMitDeleteListe.docs = Docs;
 	$.ajax({
 		type: "POST",
 		url: "../../_bulk_docs",
-		contentType: "application/json", data: JSON.stringify(DsBulkListe)
+		contentType: "application/json", data: JSON.stringify(ObjektMitDeleteListe)
 	});
 }
 

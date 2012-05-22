@@ -143,29 +143,20 @@
 					that = this;
 					//Anzahl Orte des Raums zählen
 					$db = $.couch.db("evab");
-					$db.view('evab/hOrtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
-						success: function (data) {
+					$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+						success: function (Orte) {
 							var anzOrte;
-							anzOrte = 0;
-							if (data.rows.length > 0) {
-								anzOrte = data.rows[0].value;
-							}
+							anzOrte = Orte.rows.length;
 							//Anzahl Zeiten des Raums zählen
-							$db.view('evab/hZeitIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
-								success: function (data) {
+							$db.view('evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+								success: function (Zeiten) {
 									var anzZeiten;
-									anzZeiten = 0;
-									if (data.rows.length > 0) {
-										anzZeiten = data.rows[0].value;
-									}
+									anzZeiten = Zeiten.rows.length;
 									//Anzahl Arten des Raums zählen
-									$db.view('evab/hArtIdVonRaumAnzahl?key="' + localStorage.RaumId + '"&reduce=true', {
-										success: function (data2) {
+									$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+										success: function (Arten) {
 											var anzArten;
-											anzArten = 0;
-											if (data2.rows.length > 0) {
-												anzArten = data2.rows[0].value;
-											}
+											anzArten = Arten.rows.length;
 											$(that).simpledialog({
 												'mode' : 'bool',
 												'prompt' : 'Raum sammt ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?',
@@ -174,7 +165,7 @@
 													'ja': {
 														click: function () {
 															$('#dialogoutput').text('ja');
-															löscheRaum();
+															löscheRaum(Arten, Zeiten, Orte);
 														},
 														icon: "delete",
 														theme: "c"
@@ -287,59 +278,34 @@
 					});
 				});
 			
-				function löscheRaum() {
-					//zuerst Arten löschen
-					var viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var viewname2;
-							loescheDatensatzliste(data);
-							//dann Zeiten löschen
-							viewname2 = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-							$db.view(viewname2, {
-								success: function (Zeiten) {
-									var viewname3
-									loescheDatensatzliste(Zeiten);
-									//dann Orte löschen
-									viewname3 = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-									$db.view(viewname3, {
-										success: function (Orte) {
-											loescheDatensatzliste(Orte);
-											//zuletzt den Raum löschen
-											$db.openDoc(localStorage.RaumId, {
-												success: function (document) {
-													$db.removeDoc(document, {
-														success: function () {
-															//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-															leereStorageRaumEdit("mitLatLngListe");
-															leereStorageRaumListe("mitLatLngListe")
-															$.mobile.changePage('hRaumListe.html');
-															melde("alles gelöscht");
-														},
-														error: function () {
-															melde("Fehler: Ort nicht gelöscht");
-														}
-													});
-												},
-												error: function () {
-													melde("Fehler: Ort nicht gelöscht");
-												}
-											});
-										},
-										error: function () {
-											melde("Fehler: Orte und Raum nicht gelöscht");
-										}
-									});
+				function löscheRaum(Arten, Zeiten, Orte) {
+					//nur löschen, wo Datensätze vorkommen
+					if (Orte.rows.length > 0) {
+						loescheIdIdRevListe(Orte);
+					}
+					if (Zeiten.rows.length > 0) {
+						loescheIdIdRevListe(Zeiten);
+					}
+					if (Arten.rows.length > 0) {
+						loescheIdIdRevListe(Arten);
+					}
+					//zuletzt den Raum löschen
+					$db.openDoc(localStorage.RaumId, {
+						success: function (document) {
+							$db.removeDoc(document, {
+								success: function () {
+									//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+									leereStorageRaumEdit("mitLatLngListe");
+									leereStorageRaumListe("mitLatLngListe")
+									$.mobile.changePage('hRaumListe.html');
 								},
 								error: function () {
-									melde("Fehler:: Zeiten, Orte und Raum nicht gelöscht");
+									melde("Fehler: Raum nicht gelöscht");
 								}
 							});
 						},
 						error: function () {
-							melde("Fehler: Nichts gelöscht");
+							melde("Fehler: Raum nicht gelöscht");
 						}
 					});
 				}

@@ -184,13 +184,10 @@
 					that = this;
 					//Anzahl Zeiten von Ort zählen
 					$db = $.couch.db("evab");
-					$db.view('evab/hArtIdVonZeitAnzahl?key="' + localStorage.ZeitId + '"&reduce=true', {
-						success: function (data) {
+					$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
+						success: function (Arten) {
 							var anzArten;
-							anzArten = 0;
-							if (data.rows.length > 0) {
-								anzArten = data.rows[0].value;
-							}
+							anzArten = Arten.rows.length;
 							$(that).simpledialog({
 								'mode' : 'bool',
 								'prompt' : 'Zeit sammt ' + anzArten + ' Arten löschen?',
@@ -199,7 +196,7 @@
 									'ja': {
 										click: function () {
 											$('#dialogoutput').text('ja');
-											löscheZeit();
+											löscheZeit(Arten);
 										},
 										icon: "delete",
 										theme: "c"
@@ -289,28 +286,21 @@
 					'monthsOfYear': Monate
 				});
 
-				function löscheZeit() {
-					var viewname;
-					//zuerst Arten löschen
-					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							loescheDatensatzliste(data);
-							$db.openDoc(localStorage.ZeitId, {
-								success: function (document) {
-									$db.removeDoc(document, {
-										success: function () {
-											//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-											leereStorageZeitListe();
-											leereStorageZeitEdit();
-											$.mobile.changePage('hZeitListe.html');
-											melde("alles gelöscht");
-										},
-										error: function () {
-											melde("Fehler: Zeit nicht gelöscht");
-										}
-									});
+				function löscheZeit(Arten) {
+					//nur löschen, wo Datensätze vorkommen
+					if (Arten.rows.length > 0) {
+						loescheIdIdRevListe(Arten);
+					}
+					//dann die Zeit
+					$db.openDoc(localStorage.ZeitId, {
+						success: function (document) {
+							$db.removeDoc(document, {
+								success: function () {
+									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+									leereStorageZeitListe();
+									leereStorageZeitEdit();
+									$.mobile.changePage('hZeitListe.html');
+									melde("alles gelöscht");
 								},
 								error: function () {
 									melde("Fehler: Zeit nicht gelöscht");
@@ -318,7 +308,7 @@
 							});
 						},
 						error: function () {
-							melde("Fehler: Zeit sammt Arten nicht gelöscht");
+							melde("Fehler: Zeit nicht gelöscht");
 						}
 					});							
 				}
