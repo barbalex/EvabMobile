@@ -406,6 +406,8 @@
 						$db.saveDoc(window.hZeit, {
 							success: function (data) {
 								window.hZeit._rev = data.rev;
+								//tiefere Hierarchiestufen aktualisieren
+								//löst ihre Aktualisierung nur aus, wenn sie Datensätze hat
 								speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 								//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
@@ -424,18 +426,27 @@
 				}
 
 				function speichereZeitfeldInArten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
-					$db.view(viewname, {
-						success: function (data) {
-							window.ArtenVonZeit = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit);
+					if (window.ArtenVonZeit) {
+						//vorhandenes Objekt nutzen
+						speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonZeit = data;
+								speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ArtenVonZeit.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonZeit, "ArtenVonZeit");
+					}
 				}
 
 				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
@@ -538,7 +549,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzZeit) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
-									delete window.hZeit;
+									leereStorageZeitEdit("ohneId");
 									initiiereZeitEdit();
 									return;
 								} else {
@@ -549,7 +560,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
-									delete window.hZeit;
+									leereStorageZeitEdit("ohneId");
 									initiiereZeitEdit();
 									return;
 								} else {

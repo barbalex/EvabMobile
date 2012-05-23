@@ -222,10 +222,6 @@
 											'ja': {
 												click: function () {
 													$('#dialogoutput').text('ja');
-													//allfällige Lokalisierung abbrechen
-													if (typeof watchID !== "undefined") {
-														stopGeolocation();
-													}
 													löscheOrt(Arten, Zeiten);
 												},
 												icon: "delete",
@@ -433,7 +429,9 @@
 						$db.saveDoc(window.hOrt, {
 							success: function (data) {
 								window.hOrt._rev = data.rev;
-								speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
+								//tiefere Hierarchiestufen aktualisieren
+								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
+								//wenn sie selber Datensätze hat
 								speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -452,35 +450,55 @@
 				}
 
 				function speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ZeitenVonOrt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt);
+					if (window.ZeitenVonOrt) {
+						//vorhandenes Objekt nutzen
+						speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonOrt = data;
+								speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ZeitenVonOrt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt, "ZeitenVonOrt");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				function speichereOrtfeldInArten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ArtenVonOrt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt);
+					if (window.ArtenVonOrt) {
+						//vorhandenes Objekt nutzen
+						speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonOrt = data;
+								speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ArtenVonOrt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt, "ArtenVonOrt");
+					}
 				}
 				
 				//Menü aufbauen
@@ -585,11 +603,7 @@
 							case "nächster":
 								if (parseInt(i) < AnzOrt) {
 									localStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
-									//allfällige Lokalisierung abbrechen
-									if (typeof watchID !== "undefined") {
-										stopGeolocation();
-									}
-									delete window.hOrt;
+									leereStorageOrtEdit("ohneId");
 									initiiereOrtEdit();
 									return;
 								} else {
@@ -600,11 +614,7 @@
 							case "voriger":
 								if (parseInt(i) > 0) {
 									localStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
-									//allfällige Lokalisierung abbrechen
-									if (typeof watchID !== "undefined") {
-										stopGeolocation();
-									}
-									delete window.hOrt;
+									leereStorageOrtEdit("ohneId");
 									initiiereOrtEdit();
 									return;
 								} else {

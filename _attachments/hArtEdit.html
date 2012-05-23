@@ -547,7 +547,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzArt) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
-									delete window.hArt;
+									leereStoragehBeobEdit("ohneId");
 									initiierehBeobEdit();
 									return;
 								} else {
@@ -558,7 +558,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
-									delete window.hArt;
+									leereStoragehBeobEdit("ohneId");
 									initiierehBeobEdit();
 									return;
 								} else {

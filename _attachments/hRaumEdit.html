@@ -394,8 +394,9 @@
 						$db.saveDoc(window.hRaum, {
 							success: function (data) {
 								window.hRaum._rev = data.rev;
-								speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
-								speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
+								//tiefere Hierarchiestufen aktualisieren
+								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
+								//wenn sie selber Datensätze hat
 								speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -414,51 +415,82 @@
 				}
 
 				function speichereRaumfeldInArten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ArtenVonRaum = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum);
+					if (window.ArtenVonRaum) {
+						//vorhandenes Objekt nutzen
+						speichereRaumfeldInArten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonRaum = data;
+								speichereRaumfeldInArten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInArten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ArtenVonRaum.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum, "ArtenVonRaum");
+					}
 				}
 
 				function speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ZeitenVonRaum = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum);
+					if (window.ZeitenVonRaum) {
+						//vorhandenes Objekt nutzen
+						speichereRaumfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonRaum = data;
+								speichereRaumfeldInZeiten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ZeitenVonRaum.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum, "ZeitenVonRaum");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				function speichereRaumfeldInOrten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.OrteVonRaum = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum);
+					if (window.OrteVonRaum) {
+						//vorhandenes Objekt nutzen
+						speichereRaumfeldInOrten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.OrteVonRaum = data;
+								speichereRaumfeldInOrten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereRaumfeldInOrten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.OrteVonRaum.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum, "OrteVonRaum");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				//Menü aufbauen
@@ -560,8 +592,7 @@
 							case "nächster":
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
-									delete window.hOrteLatLngRaum;
-									delete window.hRaum;
+									leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									initiiereRaumEdit();
 									return;
 								} else {
@@ -572,8 +603,7 @@
 							case "voriger":
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
-									delete window.hOrteLatLngRaum;
-									delete window.hRaum;
+									leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									initiiereRaumEdit();
 									return;
 								} else {

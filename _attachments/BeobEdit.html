@@ -259,10 +259,6 @@
 							'ja': {
 								click: function () {
 									$('#dialogoutput').text('ja');
-									//allfällige Lokalisierung abbrechen
-									if (typeof watchID !== "undefined") {
-										stopGeolocation();
-									}
 									löscheBeobachtung();
 								},
 								icon: "delete",
@@ -380,11 +376,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzBeob) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
-									delete window.Beobachtung;
-									//allfällige Lokalisierung abbrechen
-									if (typeof watchID !== "undefined") {
-										stopGeolocation();
-									}
+									leereStorageBeobEdit("ohneId");
 									initiiereBeobEdit();
 									return;
 								} else {
@@ -395,11 +387,7 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
-									delete window.Beobachtung;
-									//allfällige Lokalisierung abbrechen
-									if (typeof watchID !== "undefined") {
-										stopGeolocation();
-									}
+									leereStorageBeobEdit("ohneId");
 									initiiereBeobEdit();
 									return;
 								} else {

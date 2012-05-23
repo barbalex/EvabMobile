@@ -1475,10 +1475,12 @@ function initiiereFeldliste_2() {
 }
 
 //Übernimmt einen Feldnamen, einen Feldwert und seinen Typ (number?)
-//und eine Datensatzliste (z.B. alle Räume eines Projekts)
-//speichert das neue Feld in alle Datensätze
-function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste) {
+//und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
+//speichert das neue Feld in alle Datensätze der Liste in der DB
+//und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
+function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste, DatensatzlisteName) {
 	var JsonBulkListe, DsBulkListe, Docs, row;
+	//nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
 	Docs = [];
 	for (i in Datensatzliste.rows) {
@@ -1503,6 +1505,10 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 		url: "../../_bulk_docs",
 		contentType: "application/json", data: JSON.stringify(DsBulkListe)
 	});
+	//Datensatzliste nachführen, damit sie nächstens mal nicht aus DB geholt werden muss
+	if (DatensatzlisteName) {
+		window[DatensatzlisteName] = Datensatzliste;
+	}
 }
 
 function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Datensatzliste) {
@@ -3361,12 +3367,19 @@ function leereStorageProjektListe(mitLatLngListe) {
 	}
 }
 
-function leereStorageProjektEdit(mitLatLngListe) {
-	delete localStorage.ProjektId;
+//ohneId wird beim paginaten benutzt, da die ID übermittelt werden muss
+function leereStorageProjektEdit(mitLatLngListe, ohneId) {
+	if (!ohneId) {
+		delete localStorage.ProjektId;
+	}
 	delete window.hProjekt;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
+	delete window.RaeumeVonProjekt;
+	delete window.OrteVonProjekt;
+	delete window.ZeitenVonProjekt;
+	delete window.ArtenVonProjekt;
 }
 
 function leereStorageRaumListe(mitLatLngListe) {
@@ -3374,14 +3387,23 @@ function leereStorageRaumListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
+	delete window.RaeumeVonProjekt;
 }
 
-function leereStorageRaumEdit(mitLatLngListe) {
-	delete localStorage.RaumId;
+function leereStorageRaumEdit(mitLatLngListe, ohneId) {
+	if (!ohneId) {
+		delete localStorage.RaumId;
+	}
 	delete window.hRaum;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
+	delete window.OrteVonProjekt;
+	delete window.ZeitenVonProjekt;
+	delete window.ArtenVonProjekt;
+	delete window.OrteVonRaum;
+	delete window.ZeitenVonRaum;
+	delete window.ArtenVonRaum;
 }
 
 function leereStorageOrtListe(mitLatLngListe) {
@@ -3389,10 +3411,15 @@ function leereStorageOrtListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
+	delete window.OrteVonProjekt;
+	delete window.OrteVonRaum;
 }
 
-function leereStorageOrtEdit() {
-	delete localStorage.OrtId;
+function leereStorageOrtEdit(ohneId) {
+	if (!ohneId) {
+		delete localStorage.OrtId;
+	}
+	delete window.hOrt;
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
 	delete localStorage.oLagegenauigkeit;
@@ -3401,24 +3428,48 @@ function leereStorageOrtEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.hOrt;
+	delete window.ZeitenVonProjekt;
+	delete window.ArtenVonProjekt;
+	delete window.ZeitenVonRaum;
+	delete window.ArtenVonRaum;
+	delete window.ZeitenVonOrt;
+	delete window.ArtenVonOrt;
+	//allfällige Lokalisierung abbrechen
+	if (typeof watchID !== "undefined") {
+		stopGeolocation();
+	}
 }
 
 function leereStorageZeitListe() {
 	delete window.ZeitListe;
+	delete window.ZeitenVonProjekt;
+	delete window.ZeitenVonRaum;
+	delete window.ZeitenVonOrt;
 }
 
-function leereStorageZeitEdit() {
-	delete localStorage.ZeitId;
+function leereStorageZeitEdit(ohneId) {
+	if (!ohneId) {
+		delete localStorage.ZeitId;
+	}
 	delete window.hZeit;
+	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
 function leereStoragehBeobListe() {
 	delete window.hBeobListe;
+	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
-function leereStoragehBeobEdit() {
-	delete localStorage.hBeobId;
+function leereStoragehBeobEdit(ohneId) {
+	if (!ohneId) {
+		delete localStorage.hBeobId;
+	}
 	delete window.hArt;
 }
 
@@ -3427,8 +3478,11 @@ function leereStorageBeobListe() {
 	delete window.BeobListeLatLng;
 }
 
-function leereStorageBeobEdit() {
-	delete localStorage.BeobId;
+function leereStorageBeobEdit(ohneId) {
+	if (!ohneId) {
+		delete localStorage.BeobId;
+	}
+	delete window.Beobachtung;
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
 	delete localStorage.oLagegenauigkeit;
@@ -3437,7 +3491,10 @@ function leereStorageBeobEdit() {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	delete window.Beobachtung;
+	//allfällige Lokalisierung abbrechen
+	if (typeof watchID !== "undefined") {
+		stopGeolocation();
+	}
 }
 
 function leereStorageFeldListe() {
@@ -3450,9 +3507,11 @@ function leereStorageFeldListe() {
 	delete window.FeldlisteProjekt;
 }
 
-function leereStorageFeldEdit() {
+function leereStorageFeldEdit(ohneId) {
+	if (!ohneId) {
+		delete localStorage.FeldId;
+	}
 	delete window.Feld;
-	delete localStorage.FeldId;
 }
 
 

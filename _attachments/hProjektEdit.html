@@ -377,9 +377,9 @@
 						$db.saveDoc(window.hProjekt, {
 							success: function (data) {
 								window.hProjekt._rev = data.rev;
-								speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
-								speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
-								speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
+								//tiefere Hierarchiestufen aktualisieren
+								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
+								//wenn sie selber Datensätze hat
 								speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp);
 								//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -398,67 +398,109 @@
 				}
 
 				function speichereProjektfeldInArten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ArtenVonProjekt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt);
+					if (window.ArtenVonProjekt) {
+						//vorhandenes Objekt nutzen
+						speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ArtenVonProjekt = data;
+								speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ArtenVonProjekt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonProjekt, "ArtenVonProjekt");
+					}
 				}
 
 				function speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
-					var viewname;
-					viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.ZeitenVonProjekt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt);
+					var viewname
+					if (window.ZeitenVonProjekt) {
+						//vorhandenes Objekt benutzen
+						speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.ZeitenVonProjekt = data;
+								speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.ZeitenVonProjekt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonProjekt, "ZeitenVonProjekt");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				function speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.OrteVonProjekt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt);
+					if (window.OrteVonProjekt) {
+						//vorhandenes Objekt nutzen
+						speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.OrteVonProjekt = data;
+								speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.OrteVonProjekt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonProjekt, "OrteVonProjekt");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				function speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp) {
-					//Diese Listen sollen NICHT als globale Variable gespeichert werden
-					//denn ihr Ihalt wird nach jedem Aufruf verändert!
 					var viewname;
-					viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							window.RaeumeVonProjekt = data;
-							if (data.rows.length > 0) {
-								speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt);
+					if (window.RaeumeVonProjekt) {
+						//vorhandenes Objekt nutzen
+						speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp);
+					} else {
+						//Objekt aus DB holen
+						viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
+						$db = $.couch.db("evab");
+						$db.view(viewname, {
+							success: function (data) {
+								window.RaeumeVonProjekt = data;
+								speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp);
 							}
-						}
-					});
+						});
+					}
+				}
+
+				function speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp) {
+					//nur machen, wenn Datensätze vorkommen
+					if (window.RaeumeVonProjekt.rows.length > 0) {
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.RaeumeVonProjekt, "RaeumeVonProjekt");
+						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
+						speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
+					}
 				}
 
 				//Menü aufbauen
@@ -559,8 +601,7 @@
 								if (parseInt(i) < AnzProj) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
-									delete window.hOrteLatLngProjekt;
-									delete window.hProjekt;
+									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;
 								} else {
@@ -572,8 +613,7 @@
 								if (parseInt(i) > 0) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
-									delete window.hOrteLatLngProjekt;
-									delete window.hProjekt;
+									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;
 								} else {

@@ -644,7 +644,7 @@
 											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
 												localStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
-												delete window.Feld;
+												leereStorageFeldEdit("ohneId");
 												initiiereFeldEdit();
 												return;
 											} else {
@@ -708,7 +708,7 @@
 												//das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
 												localStorage.FeldId = FeldIdVoriges;
-												delete window.Feld;
+												leereStorageFeldEdit("ohneId");
 												initiiereFeldEdit();
 												return;
 											} else {
