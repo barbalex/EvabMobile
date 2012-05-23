@@ -417,6 +417,10 @@
 								window.ZeitIdZwischenspeicher = localStorage.ZeitId;
 								setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
 								setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
+								//nicht aktualisierte hierarchisch tiefere Listen löschen
+								delete window.ArtenVonProjekt;
+								delete window.ArtenVonRaum;
+								delete window.ArtenVonOrt;
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");

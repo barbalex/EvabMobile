@@ -1483,8 +1483,8 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 	//nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
 	Docs = [];
-	for (i in Datensatzliste.rows) {
-		row = Datensatzliste.rows[i].doc;
+	for (i in window[DatensatzlisteName].rows) {
+		row = window[DatensatzlisteName].rows[i].doc;
 		if (Feldwert) {
 			if (InputTyp === "number") {
 				row[Feldname] = parseInt(Feldwert);
@@ -1505,10 +1505,6 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 		url: "../../_bulk_docs",
 		contentType: "application/json", data: JSON.stringify(DsBulkListe)
 	});
-	//Datensatzliste nachführen, damit sie nächstens mal nicht aus DB geholt werden muss
-	if (DatensatzlisteName) {
-		window[DatensatzlisteName] = Datensatzliste;
-	}
 }
 
 function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Datensatzliste) {
@@ -3376,10 +3372,17 @@ function leereStorageProjektEdit(mitLatLngListe, ohneId) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
+	//hierarchisch tiefere Listen löschen
 	delete window.RaeumeVonProjekt;
 	delete window.OrteVonProjekt;
+	delete window.OrteVonRaum;
 	delete window.ZeitenVonProjekt;
+	delete window.ZeitenVonRaum;
+	delete window.ZeitenVonOrt;
 	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
 function leereStorageRaumListe(mitLatLngListe) {
@@ -3387,7 +3390,6 @@ function leereStorageRaumListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
-	delete window.RaeumeVonProjekt;
 }
 
 function leereStorageRaumEdit(mitLatLngListe, ohneId) {
@@ -3398,12 +3400,16 @@ function leereStorageRaumEdit(mitLatLngListe, ohneId) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
+	//hierarchisch tiefere Listen löschen
 	delete window.OrteVonProjekt;
-	delete window.ZeitenVonProjekt;
-	delete window.ArtenVonProjekt;
 	delete window.OrteVonRaum;
+	delete window.ZeitenVonProjekt;
 	delete window.ZeitenVonRaum;
+	delete window.ZeitenVonOrt;
+	delete window.ArtenVonProjekt;
 	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
 function leereStorageOrtListe(mitLatLngListe) {
@@ -3411,8 +3417,6 @@ function leereStorageOrtListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
-	delete window.OrteVonProjekt;
-	delete window.OrteVonRaum;
 }
 
 function leereStorageOrtEdit(ohneId) {
@@ -3428,12 +3432,14 @@ function leereStorageOrtEdit(ohneId) {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
+	//hierarchisch tiefere Listen löschen
 	delete window.ZeitenVonProjekt;
-	delete window.ArtenVonProjekt;
 	delete window.ZeitenVonRaum;
-	delete window.ArtenVonRaum;
 	delete window.ZeitenVonOrt;
+	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 	//allfällige Lokalisierung abbrechen
 	if (typeof watchID !== "undefined") {
 		stopGeolocation();
@@ -3442,9 +3448,6 @@ function leereStorageOrtEdit(ohneId) {
 
 function leereStorageZeitListe() {
 	delete window.ZeitListe;
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
 }
 
 function leereStorageZeitEdit(ohneId) {
@@ -3452,6 +3455,7 @@ function leereStorageZeitEdit(ohneId) {
 		delete localStorage.ZeitId;
 	}
 	delete window.hZeit;
+	//hierarchisch tiefere Listen löschen
 	delete window.ArtenVonProjekt;
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
@@ -3460,10 +3464,6 @@ function leereStorageZeitEdit(ohneId) {
 
 function leereStoragehBeobListe() {
 	delete window.hBeobListe;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
 }
 
 function leereStoragehBeobEdit(ohneId) {
