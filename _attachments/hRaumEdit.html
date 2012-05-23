@@ -442,7 +442,7 @@
 				function speichereRaumfeldInArten_2(Feldname, Feldwert, InputTyp) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ArtenVonRaum.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonRaum, "ArtenVonRaum");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ArtenVonRaum");
 					}
 				}
 
@@ -467,7 +467,7 @@
 				function speichereRaumfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ZeitenVonRaum.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonRaum, "ZeitenVonRaum");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ZeitenVonRaum");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
 						speichereRaumfeldInArten(Feldname, Feldwert, InputTyp);
 					}
@@ -494,7 +494,7 @@
 				function speichereRaumfeldInOrten_2(Feldname, Feldwert, InputTyp) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.OrteVonRaum.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.OrteVonRaum, "OrteVonRaum");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "OrteVonRaum");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
 						speichereRaumfeldInZeiten(Feldname, Feldwert, InputTyp);
 					}

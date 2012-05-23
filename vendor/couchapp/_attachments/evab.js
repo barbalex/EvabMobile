@@ -1478,7 +1478,7 @@ function initiiereFeldliste_2() {
 //und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
 //speichert das neue Feld in alle Datensätze der Liste in der DB
 //und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
-function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzliste, DatensatzlisteName) {
+function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, DatensatzlisteName) {
 	var JsonBulkListe, DsBulkListe, Docs, row;
 	//nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
@@ -1505,28 +1505,6 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 		url: "../../_bulk_docs",
 		contentType: "application/json", data: JSON.stringify(DsBulkListe)
 	});
-}
-
-function speichereFeldInDatensatzlisteEinzeln(Feldname, Feldwert, InputTyp, Datensatzliste) {
-	var ID;
-	$db = $.couch.db("evab");
-	for (i in Datensatzliste.rows) {
-		ID = Datensatzliste.rows[i].key[1];
-		$db.openDoc(ID, {
-			success: function (doc) {
-				if (Feldwert) {
-					if (InputTyp === "number") {
-						doc[Feldname] = parseInt(Feldwert);
-					} else {
-						doc[Feldname] = Feldwert;
-					}
-				} else if (doc[Feldname]) {
-					delete doc[Feldname];
-				}
-				$db.saveDoc(doc);
-			}
-		});
-	}
 }
 
 //löscht Datensätze in Massen

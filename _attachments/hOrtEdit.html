@@ -476,7 +476,7 @@
 				function speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ZeitenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ZeitenVonOrt, "ZeitenVonOrt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ZeitenVonOrt");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
 						speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
 					}
@@ -503,7 +503,7 @@
 				function speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ArtenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, window.ArtenVonOrt, "ArtenVonOrt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ArtenVonOrt");
 					}
 				}
 				
