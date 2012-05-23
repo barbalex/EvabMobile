@@ -209,7 +209,8 @@
 				//sichtbare Felder wählen
 				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_hArt.html");
+					localStorage.AufrufendeSeiteFW = "hArtEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				//Code für den Art-Löschen-Dialog

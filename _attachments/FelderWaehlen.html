@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  		<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
+		<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>EvAB</title>
+		<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
+		<link rel="stylesheet" href="style/evab.css" type="text/css"/>
+		<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+		<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
+		<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
+		<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
+		<script type="text/javascript">
+			$(document).on("mobileinit", function () {
+				$.mobile.page.prototype.options.degradeInputs.date = 'text';
+				$.mobile.page.prototype.options.degradeInputs.time = 'text';
+				$.mobile.selectmenu.prototype.options.nativeMenu = false;
+				$.event.special.swipe.horizontalDistanceThreshold = 250;
+				$.mobile.buttonMarkup.hoverDelay = 0;
+			});
+		</script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.couch.app.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
+		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+  </head>
+  <body>
+  	<div data-role="page" id="FelderWaehlenPage">
+  		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FelderWaehlenPageHeader">
+  			<a id="FelderWaehlenPage_back" href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext">zurück</a>
+  			<h2 class="FelderWaehlenPageTitel">sichtbare Felder</h2>
+  		</div>
+		<div id="FelderWaehlenPageContent" data-role="content" data-theme="c" style="padding:0em;">
+			<form id="FelderWaehlenPageForm" action="#" method="get">
+				<div id="TextUeberListe_FW">
+				<h3>Felder für Beobachtungen wählen:</h3>
+				<p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>
+				</div>
+				<div data-role="fieldcontain" id="FeldlisteFW">
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			$("#FelderWaehlenPage").on("pageshow", function () {
+				//Sollte keine id vorliegen, zu BeobListe.html wechseln
+				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+					return;
+				} else if (!localStorage.AufrufendeSeiteFW) {
+					leereAlleVariabeln("ohneClear");
+					$.mobile.changePage("BeobListe.html");
+					return;
+				}
+				initiiereFelderWaehlen();
+			});
+
+			$("#FelderWaehlenPage").on("pagehide", function () {
+				//globale Variabeln aufräumen
+				delete localStorage.FeldlisteFwName;
+				delete localStorage.KriterienFürZuWählendeFelder;
+				//verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
+				$("#FeldlisteFW").empty();
+			});
+
+			$(":jqmData(role='page')").on("pageinit", function () {
+				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				//muss auf index.html umgeleitet werden
+				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
+					$.mobile.changePage("index.html");
+				} else if (!localStorage.AufrufendeSeiteFW) {
+					//oh, kein zurück bekannt
+					leereAlleVariabeln();
+					$.mobile.changePage("BeobListe.html");
+				}
+
+				$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", function (event) {
+					event.preventDefault();
+					$.mobile.changePage(localStorage.AufrufendeSeiteFW + ".html");
+				});
+				
+				//Felder speichern (checkbox)
+				$("#FeldlisteFW").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId;
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
+					$db = $.couch.db("evab");
+					$db.openDoc(FeldId, {
+						success: function (Feld) {
+							var SichtbarImModusX, idx;
+							//Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
+							if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
+								SichtbarImModusX = "SichtbarImModusEinfach";
+							} else {
+								SichtbarImModusX = "SichtbarImModusHierarchisch";
+							}
+							SichtbarImModusX = Feld[SichtbarImModusX] || [];
+							if ($("#" + FeldName).prop("checked") === true) {
+								SichtbarImModusX.push(localStorage.Username);
+							} else {
+								idx = SichtbarImModusX.indexOf(localStorage.Username);
+								if (idx !== -1) {
+									SichtbarImModusX.splice(idx, 1);
+								}
+							}
+							Feld[SichtbarImModusX] = SichtbarImModusX;
+							$db.saveDoc(Feld, {
+								error: function () {
+									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+								}
+							});
+							//Globale Variable für window[FeldlisteFwName] zurücksetzen, damit die Liste neu aufgebaut wird
+							delete window[localStorage.FeldlisteFwName];
+						},
+						error: function () {
+							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+						}
+					});
+				});
+
+				//JETZT FOLGT VERSUCH, TAPHOLD ZU IMPLEMENTIEREN
+				//NOCH NICHT IMPLEMENTIERT
+
+				$("#FeldlisteFW").on("taphold", "[name='Felder']", function (event) {
+					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					öffneFeld(this.id);
+				});
+
+				$("#FeldlisteFW").on("contextmenu", "[name='Felder']", function (event) {
+					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					event.preventDefault();
+					öffneFeld(this.id);
+				});
+			});
+
+			function öffneFeld(FeldName) {
+				$db = $.couch.db("evab");
+				$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
+					success: function (data) {
+						localStorage.FeldId = data.rows[0].value._id;
+						localStorage.zurueck = "FelderWaehlen.html";
+						$.mobile.changePage("FeldEdit.html");
+					}
+				});
+			}
+		</script>
+	</div>
+  </body>
+</html>

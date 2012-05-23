@@ -177,7 +177,8 @@
 				//sichtbare Felder wählen
 				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_hZeit.html");
+					localStorage.AufrufendeSeiteFW = "hZeitEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				//Code für den Zeit-Löschen-Dialog

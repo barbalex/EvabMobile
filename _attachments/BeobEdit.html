@@ -174,7 +174,8 @@
 				//sichtbare Felder wählen
 				$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_Beob.html");
+					localStorage.AufrufendeSeiteFW = "BeobEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von ArtName

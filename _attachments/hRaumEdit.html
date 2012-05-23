@@ -211,7 +211,8 @@
 				//sichtbare Felder wählen
 				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_hRaum.html");
+					localStorage.AufrufendeSeiteFW = "hRaumEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {

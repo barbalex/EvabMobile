@@ -207,17 +207,18 @@ function geheZurueckAE() {
 //wird in FeldEdit.html verwendet
 function geheZurueckFE() {
 	leereStorageFeldEdit();
-	if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) !== "Felder") {
-		//direkt zurück, Feldliste auslassen
+	if (localStorage.zurueck && localStorage.zurueck !== "FelderWaehlen.html") {
+		//via die Feldliste zurück
 		leereStorageFeldEdit();
 		$.mobile.changePage("FeldListe.html");
-	} else if (localStorage.zurueck && localStorage.zurueck.slice(0, 6) === "Felder") {
+	} else if (localStorage.zurueck && localStorage.zurueck === "FelderWaehlen.html") {
 		//direkt zurück, Feldliste auslassen
 		leereStorageFeldEdit();
 		leereStorageFeldListe();
 		$.mobile.changePage(localStorage.zurueck);
 		delete localStorage.zurueck;
 	} else {
+		//uups, kein zurück vorhanden
 		leereAlleVariabeln();
 		$.mobile.changePage("BeobListe.html");
 	}
@@ -2818,6 +2819,124 @@ function zeigeAttachments(doc, Page) {
 	$(":jqmData(role='page')").focus();
 }
 
+//initiiert FelderWaehlen.html
+//generiert dynamisch die Felder im Checkbox Felder
+//checked diejenigen, die der User anzeigen will
+function initiiereFelderWaehlen() {
+	var TextUeberListe_FW, FeldlisteViewname;
+	//Je nach aufrufender Seite Variabeln setzen
+	switch(localStorage.AufrufendeSeiteFW) {
+		case "hProjektEdit":
+			TextUeberListe_FW = "<h3>Felder für Projekte wählen:</h3>";
+			localStorage.FeldlisteFwName = "FeldlisteProjekt";
+			FeldlisteViewname = "FeldListeProjekt";
+			localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Projekt' && FeldName !== 'pName'";
+			break;
+		case "hRaumEdit":
+			TextUeberListe_FW = "<h3>Felder für Räume wählen:</h3>";
+			localStorage.FeldlisteFwName = "FeldlisteRaumEdit";
+			FeldlisteViewname = "FeldListeRaum";
+			localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Raum' && FeldName !== 'rName'";
+			break;
+		case "hOrtEdit":
+			TextUeberListe_FW = "<h3>Felder für Orte wählen:</h3>";
+			localStorage.FeldlisteFwName = "FeldlisteOrtEdit";
+			FeldlisteViewname = "FeldListeOrt";
+			localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Ort' && FeldName !== 'oName' && FeldName !== 'oXKoord' && FeldName !== 'oYKoord' && FeldName !== 'oLagegenauigkeit'";
+			break;
+		case "hZeitEdit":
+			TextUeberListe_FW = "<h3>Felder für Zeiten wählen:</h3>";
+			localStorage.FeldlisteFwName = "FeldlisteZeitEdit";
+			FeldlisteViewname = "FeldListeZeit";
+			localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Zeit' && Feld.FeldName !== 'zDatum' && Feld.FeldName !== 'zUhrzeit'";
+			break;
+		case "hArtEdit":
+			TextUeberListe_FW = "<h3>Felder für Art wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
+			localStorage.FeldlisteFwName = "FeldlistehBeobEdit";
+			FeldlisteViewname = "FeldListeArt";
+			localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
+			break;
+		case "BeobEdit":
+			TextUeberListe_FW = "<h3>Felder für Beobachtungen wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
+			localStorage.FeldlisteFwName = "FeldlisteBeobEdit";
+			FeldlisteViewname = "FeldListeBeob";
+			localStorage.KriterienFürZuWählendeFelder = "['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1";
+			break;
+	}
+	$("#TextUeberListe_FW").html(TextUeberListe_FW);
+	
+	//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+	if (window[localStorage.FeldlisteFwName]) {
+		initiiereFelderWaehlen_2();
+	} else {
+		//holt die Feldliste aus der DB
+		$db = $.couch.db("evab");
+		$db.view('evab/' + FeldlisteViewname, {
+			success: function (data) {
+				window[localStorage.FeldlisteFwName] = data;
+				initiiereFelderWaehlen_2();
+			}
+		});
+	}
+}
+
+function initiiereFelderWaehlen_2() {
+	var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
+	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
+	anzFelder = 0;
+	for (i in window[localStorage.FeldlisteFwName].rows) {
+		Feld = window[localStorage.FeldlisteFwName].rows[i].value;
+		FeldName = Feld.FeldName;
+		//Nur eigene und offizielle Felder berücksichtigen
+		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
+			//im Formular fix integrierte Felder nicht aufbauen
+			if (eval(localStorage.KriterienFürZuWählendeFelder)) {
+				anzFelder += 1;
+				FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
+				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
+					FeldBeschriftung += "<span style='font-weight:normal;'> (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")</span>";
+				}
+				ListItem = "\n\t\t\<label for='";
+				ListItem += FeldName;
+				ListItem += "'>";
+				ListItem += FeldBeschriftung;
+				ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+				ListItem += "Felder";
+				ListItem += "' id='";
+				ListItem += FeldName;
+				ListItem += "' FeldId='";
+				ListItem += Feld._id;
+				ListItem += "' value='";
+				ListItem += FeldName;
+				ListItem += "' class='custom'";
+				if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
+					if (Feld.SichtbarImModusEinfach) {
+						if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
+							//wenn sichtbar, anzeigen
+							ListItem += " checked='checked'";
+						}
+					}
+				} else {
+					if (Feld.SichtbarImModusHierarchisch) {
+						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
+							//wenn sichtbar, anzeigen
+							ListItem += " checked='checked'";
+						}
+					}
+				}
+				ListItem += "/>";
+				HtmlContainer += ListItem;
+			}
+		}
+	}
+	$("#FelderWaehlenPageHeader .FelderWaehlenPageTitel").text(anzFelder + " Felder");
+	HtmlContainer += "\n\t</fieldset>\n</div>"
+	$("#FeldlisteFW").html(HtmlContainer).trigger("create");
+	$("input[name='Felder']").checkboxradio();
+	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	speichereLetzteUrl();
+}
+
 //kreiert ein neues Feld
 //wird benutzt von FeldListe.html und FeldEdit.html
 function neuesFeld() {
@@ -3316,8 +3435,12 @@ function oeffneZuletztBenutzteSeite() {
 //sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
 //mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
 
-function leereAlleVariabeln() {
-	localStorage.clear();
+function leereAlleVariabeln(ohneClear) {
+	//ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
+	//Username soll erhalten bleiben
+	if (!ohneClear) {
+		localStorage.clear();
+	}
 	leereStorageProjektListe("mitLatLngListe");
 	leereStorageProjektEdit("mitLatLngListe");
 	leereStorageRaumListe("mitLatLngListe");

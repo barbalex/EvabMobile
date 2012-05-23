@@ -211,7 +211,8 @@
 				//sichtbare Felder wählen
 				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_hProjekt.html");
+					localStorage.AufrufendeSeiteFW = "hProjektEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", function () {

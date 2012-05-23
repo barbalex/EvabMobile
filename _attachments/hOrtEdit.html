@@ -141,7 +141,7 @@
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
 					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					leereStorage.OrtListe();
+					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
 
@@ -196,7 +196,8 @@
 				//sichtbare Felder wählen
 				$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("Felder_hOrt.html");
+					localStorage.AufrufendeSeiteFW = "hOrtEdit";
+					$.mobile.changePage("FelderWaehlen.html");
 				});
 
 				//Code für den Ort-Löschen-Dialog
