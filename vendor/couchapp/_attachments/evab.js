@@ -2864,8 +2864,10 @@ function initiiereFelderWaehlen() {
 			break;
 	}
 	$("#TextUeberListe_FW").html(TextUeberListe_FW);
-	
 	//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+	//Für FelderWaehlen.html könnte an sich immer die vollständige Liste verwendet werden
+	//besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
+	//darum wird hier für jede Seite eine eigene verwendet
 	if (window[localStorage.FeldlisteFwName]) {
 		initiiereFelderWaehlen_2();
 	} else {

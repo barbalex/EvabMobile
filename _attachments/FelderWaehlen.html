@@ -92,36 +92,42 @@
 				
 				//Felder speichern (checkbox)
 				$("#FeldlisteFW").on("change", "input[name='Felder']", function () {
-					var FeldName, FeldId;
+					var FeldName, FeldId, Feld, FeldPosition;
 					FeldName = $(this).prop("id");
 					FeldId = $(this).attr("feldid");
-					$db = $.couch.db("evab");
-					$db.openDoc(FeldId, {
-						success: function (Feld) {
-							var SichtbarImModusX, idx;
-							//Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
-							if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
-								SichtbarImModusX = "SichtbarImModusEinfach";
-							} else {
-								SichtbarImModusX = "SichtbarImModusHierarchisch";
+					for (i in window[localStorage.FeldlisteFwName].rows) {
+						if (typeof window[localStorage.FeldlisteFwName] !== "function") {
+							if (window[localStorage.FeldlisteFwName].rows[i].value._id === FeldId) {
+								Feld = window[localStorage.FeldlisteFwName].rows[i].value;
+								FeldPosition = parseInt(i);
+								break;
 							}
-							SichtbarImModusX = Feld[SichtbarImModusX] || [];
-							if ($("#" + FeldName).prop("checked") === true) {
-								SichtbarImModusX.push(localStorage.Username);
-							} else {
-								idx = SichtbarImModusX.indexOf(localStorage.Username);
-								if (idx !== -1) {
-									SichtbarImModusX.splice(idx, 1);
-								}
-							}
-							Feld[SichtbarImModusX] = SichtbarImModusX;
-							$db.saveDoc(Feld, {
-								error: function () {
-									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-								}
-							});
-							//Globale Variable für window[FeldlisteFwName] zurücksetzen, damit die Liste neu aufgebaut wird
-							delete window[localStorage.FeldlisteFwName];
+						}
+					}
+					var SichtbarImModusX, idx;
+					//Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
+					if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
+						SichtbarImModusX = "SichtbarImModusEinfach";
+					} else {
+						SichtbarImModusX = "SichtbarImModusHierarchisch";
+					}
+					SichtbarImModusX = Feld[SichtbarImModusX] || [];
+					if ($("#" + FeldName).prop("checked") === true) {
+						SichtbarImModusX.push(localStorage.Username);
+					} else {
+						idx = SichtbarImModusX.indexOf(localStorage.Username);
+						if (idx !== -1) {
+							SichtbarImModusX.splice(idx, 1);
+						}
+					}
+					Feld[SichtbarImModusX] = SichtbarImModusX;
+					//Änderung in DB speichern
+					$db.saveDoc(Feld, {
+						success: function (data) {
+							//neue rev holen
+							Feld._rev = data.rev;
+							//Änderung in Feldliste-Objekt speichern
+							window[localStorage.FeldlisteFwName].rows[FeldPosition].value = Feld;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
