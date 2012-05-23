@@ -47,46 +47,8 @@
 			</form>
 		</div>
 		<script type="text/javascript">
-			$(":jqmData(role='page')").on("pageinit", function () {
-			
+			$("#Felder_hArtPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
-
-				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function (event) {
-					event.preventDefault();
-					$.mobile.changePage("hArtEdit.html");
-				});
-
-				//Felder speichern (checkbox)
-				$("#FeldlisteFhA").on("change", "input[name='Felder']", function () {
-					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
-					FeldName = $(this).prop("id");
-					FeldId = $(this).attr("feldid");
-					$db = $.couch.db("evab");
-					$db.openDoc(FeldId, {
-						success: function (Feld) {
-							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
-							if ($("#" + FeldName).prop("checked") === true) {
-								SichtbarImModusHierarchisch.push(localStorage.Username);
-							} else {
-								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
-								if (idx !== -1) {
-									SichtbarImModusHierarchisch.splice(idx, 1);
-								}
-							}
-							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
-							$db.saveDoc(Feld, {
-								error: function () {
-									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-								}
-							});
-							//Globale Variablen für FeldlistehBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
-							delete window.FeldlistehBeobEdit;
-						},
-						error: function () {
-							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
-						}
-					});
-				});
 
 				//generiert dynamisch die (Artgruppen-abhängigen) Felder im Formular Felder_hArt.html
 				//Mitgeben: Artgruppe, Username (aus Globalen Variabeln)
@@ -152,6 +114,46 @@
 					$("#FeldlisteFhA").html(HtmlContainer).trigger("create");
 					$("input[name='Felder']").checkboxradio();
 				}
+			});
+
+			$(":jqmData(role='page')").on("pageinit", function () {
+				
+				$("#Felder_hArtPage").on("click", "#Felder_hArtPage_back", function (event) {
+					event.preventDefault();
+					$.mobile.changePage("hArtEdit.html");
+				});
+
+				//Felder speichern (checkbox)
+				$("#FeldlisteFhA").on("change", "input[name='Felder']", function () {
+					var FeldName, FeldId, SichtbarImModusHierarchisch, idx;
+					FeldName = $(this).prop("id");
+					FeldId = $(this).attr("feldid");
+					$db = $.couch.db("evab");
+					$db.openDoc(FeldId, {
+						success: function (Feld) {
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
+							if ($("#" + FeldName).prop("checked") === true) {
+								SichtbarImModusHierarchisch.push(localStorage.Username);
+							} else {
+								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+								if (idx !== -1) {
+									SichtbarImModusHierarchisch.splice(idx, 1);
+								}
+							}
+							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
+							$db.saveDoc(Feld, {
+								error: function () {
+									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+								}
+							});
+							//Globale Variablen für FeldlistehBeobEdit zurücksetzen, damit die Liste neu aufgebaut wird
+							delete window.FeldlistehBeobEdit;
+						},
+						error: function () {
+							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+						}
+					});
+				});
 			});
 		</script>
 	</div>

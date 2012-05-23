@@ -46,6 +46,7 @@
 			</form>
 		</div>
 		<script type="text/javascript">
+		
 			$("#Felder_hProjektPage").on("pageshow", function () {
 				erstelleSichtbareFelder();
 
@@ -127,15 +128,17 @@
 					$db = $.couch.db("evab");
 					$db.openDoc(FeldId, {
 						success: function (Feld) {
-							var idx;
-							if ($("#" + FeldName).prop("checked") === true) {
-								Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
+							var SichtbarImModusHierarchisch, idx;
+							SichtbarImModusHierarchisch = Feld.SichtbarImModusHierarchisch || [];
+							if ($("#" + FeldName).prop("checked") == true) {
+								SichtbarImModusHierarchisch.push(localStorage.Username);
 							} else {
-								idx = Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+								idx = SichtbarImModusHierarchisch.indexOf(localStorage.Username);
 								if (idx !== -1) {
-									Feld.SichtbarImModusHierarchisch.splice(idx, 1);
+									SichtbarImModusHierarchisch.splice(idx, 1);
 								}
 							}
+							Feld.SichtbarImModusHierarchisch = SichtbarImModusHierarchisch;
 							$db.saveDoc(Feld, {
 								error: function () {
 									melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
