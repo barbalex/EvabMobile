@@ -225,6 +225,8 @@ function geheZurueckFE() {
 }
 
 //wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
+//die Felder werden als localStorag übernommen
+//und in ein übergebenes Objekt OrtOderBeob gespeichert
 function speichereKoordinaten(id, OrtOderBeob) {
 	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
 	if (window[OrtOderBeob]) {
@@ -248,9 +250,66 @@ function speichereKoordinaten(id, OrtOderBeob) {
 function speichereKoordinaten_2(OrtOderBeob) {
 	//Längen- und Breitengrad sind in keinem Feld dargestellt
 	//sie müssen aus ihren Variabeln gespeichert werden
+	//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+	var ZuSpeicherndeFelder;
+	ZuSpeicherndeFelder = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+	for (i in ZuSpeicherndeFelder) {
+		if (typeof i !== "function") {
+			if (window[OrtOderBeob][i]) {
+				if (localStorage[i]) {
+					if (typeof i === "number" && isInt(i)) {
+						//Wert ist Int
+						window[OrtOderBeob][i] = parseInt(localStorage[i]);
+					} else if (typeof i === "number") {
+						//i ist Float
+						window[OrtOderBeob][i] = parseFloat(localStorage[i]);
+					} else {
+						window[OrtOderBeob][i] = localStorage[i];
+					}
+				} else {
+					delete window[OrtOderBeob][i];
+				}
+			}
+		}
+	}
+	//alles speichern
+	$db.saveDoc(window[OrtOderBeob], {
+		success: function (data) {
+			window[OrtOderBeob]._rev = data.rev;
+			//Werte im Formular anzeigen
+			// || null: verhindert, das "NAN" oder "undefined" angezeigt wird
+			$("[name='oXKoord']").val(window[OrtOderBeob].oXKoord || null);
+			$("[name='oYKoord']").val(window[OrtOderBeob].oYKoord || null);
+			$("[name='oLatitudeDecDeg']").val(window[OrtOderBeob].oLatitudeDecDeg || null);
+			$("[name='oLongitudeDecDeg']").val(window[OrtOderBeob].oLongitudeDecDeg || null);
+			$("[name='oLagegenauigkeit']").val(window[OrtOderBeob].oLagegenauigkeit || null);
+			$("[name='oHöhe']").val(window[OrtOderBeob].oHoehe || null);	
+			$("[name='oHöheGenauigkeit']").val(window[OrtOderBeob].oHoeheGenauigkeit || null);
+		},
+		error: function () {
+			melde("Fehler: Koordinaten nicht gespeichert");
+		}
+	});
+}
+
+/*function speichereKoordinaten_2(OrtOderBeob) {
+	//Längen- und Breitengrad sind in keinem Feld dargestellt
+	//sie müssen aus ihren Variabeln gespeichert werden
 	// || null, um NAN zu verhindern, wenn keine Werte gemessen werden
-	window[OrtOderBeob].oLongitudeDecDeg = parseFloat(localStorage.oLongitudeDecDeg) || null;
-	window[OrtOderBeob].oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg) || null;
+	if (window[OrtOderBeob].oLongitudeDecDeg) {
+		if (localStorage.oLongitudeDecDeg) {
+			window[OrtOderBeob].oLongitudeDecDeg = parseFloat(localStorage.oLongitudeDecDeg);
+		} else {
+			delete window[OrtOderBeob].oLongitudeDecDeg;
+		}
+	}
+	if (window[OrtOderBeob].oLatitudeDecDeg) {
+		if (localStorage.oLatitudeDecDeg) {
+			window[OrtOderBeob].oLatitudeDecDeg = parseFloat(localStorage.oLatitudeDecDeg);
+		} else {
+			delete window[OrtOderBeob].oLatitudeDecDeg;
+		}
+	}
 	window[OrtOderBeob].oXKoord = parseInt(localStorage.oXKoord) || null;
 	window[OrtOderBeob].oYKoord = parseInt(localStorage.oYKoord) || null;
 	//parseInt verhindert das Speichern von Text, darum prüfen
@@ -261,9 +320,9 @@ function speichereKoordinaten_2(OrtOderBeob) {
 	}
 	//Höhe nur speichern, wenn vorhanden
 	//wenn nicht vorhanden: Allflligen alten Wert löschen
-	if (localStorage.oHoehe) {
-		window[OrtOderBeob].oHöhe = parseInt(localStorage.oHoehe);
-		window[OrtOderBeob].oHöheGenauigkeit = parseFloat(localStorage.oHoeheGenauigkeit);
+	if (localStorage.oHöhe) {
+		window[OrtOderBeob].oHöhe = parseInt(localStorage.oHöhe);
+		window[OrtOderBeob].oHöheGenauigkeit = parseFloat(localStorage.oHöheGenauigkeit);
 	} else {
 		delete window[OrtOderBeob].oHöhe;
 		delete window[OrtOderBeob].oHöheGenauigkeit;
@@ -272,25 +331,25 @@ function speichereKoordinaten_2(OrtOderBeob) {
 	$db.saveDoc(window[OrtOderBeob], {
 		success: function (data) {
 			window[OrtOderBeob]._rev = data.rev;
-			//melde("Koordinaten gespeichert");
-			$("[name='oXKoord']").val(localStorage.oXKoord);
-			$("[name='oYKoord']").val(localStorage.oYKoord);
-			$("[name='oLatitudeDecDeg']").val(localStorage.oLatitudeDecDeg);
-			$("[name='oLongitudeDecDeg']").val(localStorage.oLongitudeDecDeg);
-			if (localStorage.oLagegenauigkeit) {
-				$("[name='oLagegenauigkeit']").val(parseInt(localStorage.oLagegenauigkeit));
-			}
-			if (localStorage.oHoehe) {
-				$("[name='oHöhe']").val(parseInt(localStorage.oHoehe));	
-			}
-			if (localStorage.oHoeheGenauigkeit) {
-				$("[name='oHöheGenauigkeit']").val(parseInt(localStorage.oHoeheGenauigkeit));
-			}
+			//Werte im Formular anzeigen
+			// || null: verhindert, das "NAN" oder "undefined" angezeigt wird
+			$("[name='oXKoord']").val(window[OrtOderBeob].oXKoord || null);
+			$("[name='oYKoord']").val(window[OrtOderBeob].oYKoord || null);
+			$("[name='oLatitudeDecDeg']").val(window[OrtOderBeob].oLatitudeDecDeg || null);
+			$("[name='oLongitudeDecDeg']").val(window[OrtOderBeob].oLongitudeDecDeg || null);
+			$("[name='oLagegenauigkeit']").val(window[OrtOderBeob].oLagegenauigkeit || null);
+			$("[name='oHöhe']").val(window[OrtOderBeob].oHoehe || null);	
+			$("[name='oHöheGenauigkeit']").val(window[OrtOderBeob].oHoeheGenauigkeit || null);
 		},
 		error: function () {
 			melde("Fehler: Koordinaten nicht gespeichert");
 		}
 	});
+}*/
+
+//dient der Unterscheidung von Int und Float
+function isInt(n) {
+   return typeof n === 'number' && parseFloat(n) == parseInt(n) && !isNaN(n);
 }
 
 //Neue Beobachtungen werden gespeichert
@@ -2578,8 +2637,8 @@ function GetGeolocation(docId, OrtOderBeob) {
 	delete localStorage.oLongitudeDecDeg;
 	delete localStorage.oLatitudeDecDeg;
 	delete localStorage.oLagegenauigkeit;
-	delete localStorage.oHoehe;
-	delete localStorage.oHoeheGenauigkeit;
+	delete localStorage.oHöhe;
+	delete localStorage.oHöheGenauigkeit;
 	//Mit der Verortung beginnen
 	watchID = null;
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
@@ -2615,8 +2674,8 @@ function GeolocationAuslesen(position) {
 	if (position.coords.altitude > 0) {
 		$("[name='oHöhe']").val(position.coords.altitude);
 		$("[name='oHöheGenauigkeit']").val(position.coords.altitudeAccuracy);
-		localStorage.oHoehe = position.coords.altitude;
-		localStorage.oHoeheGenauigkeit = position.coords.altitudeAccuracy;
+		localStorage.oHöhe = position.coords.altitude;
+		localStorage.oHöheGenauigkeit = position.coords.altitudeAccuracy;
 	}
 	speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
 }
