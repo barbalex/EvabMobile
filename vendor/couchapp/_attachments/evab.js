@@ -886,13 +886,13 @@ function initiiereBeobEdit() {
 //um die DB-Abfrage zu sparen
 function initiiereBeobEdit_2() {
 	if (window.Beobachtung) {
-		initiiereBeobEdit_3(window.Beobachtung);
+		initiiereBeobEdit_3();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (data) {
 				window.Beobachtung = data;
-				initiiereBeobEdit_3(data);
+				initiiereBeobEdit_3();
 			}
 		});
 	}

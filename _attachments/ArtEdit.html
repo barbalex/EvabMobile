@@ -65,7 +65,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.aArtId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					geheZurueckAE();
 				}
 				initiiereArtEdit();
@@ -79,7 +79,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.aArtId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					geheZurueckAE();
 					return;
 				}

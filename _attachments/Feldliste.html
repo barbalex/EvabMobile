@@ -53,6 +53,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$("#FeldListePage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				}
 				initiiereFeldliste();
@@ -61,6 +62,7 @@
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Username) {
+					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				}
 

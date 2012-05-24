@@ -72,14 +72,16 @@
 						if (localStorage.UserStatus !== "neu") {
 							if (localStorage.UserId && localStorage.ArtenSprache && localStorage.Autor) {
 								oeffneZuletztBenutzteSeite();
+								return;
 							} else {
 								//Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
 								stelleUserDatenBereit();
+								return;
 							}
 						}
 					}
 				}
-				//Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden
+				//Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
 				leereAlleVariabeln();
 					
 				if (!("autofocus" in document.createElement("input"))) {

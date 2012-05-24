@@ -69,6 +69,7 @@
 				//globale Variabeln aufräumen
 				delete localStorage.FeldlisteFwName;
 				delete localStorage.KriterienFürZuWählendeFelder;
+				delete localStorage.AufrufendeSeiteFW;
 				//verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
 				$("#FeldlisteFW").empty();
 			});
@@ -81,7 +82,7 @@
 					$.mobile.changePage("index.html");
 				} else if (!localStorage.AufrufendeSeiteFW) {
 					//oh, kein zurück bekannt
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 				}
 
@@ -140,14 +141,16 @@
 
 				$("#FeldlisteFW").on("taphold", "[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					event.preventDefault();
+					alert("taphold");
 					öffneFeld(this.id);
 				});
 
-				$("#FeldlisteFW").on("contextmenu", "[name='Felder']", function (event) {
+				/*$("#FeldlisteFW").on("contextmenu", "[name='Felder']", function (event) {
 					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					event.preventDefault();
 					öffneFeld(this.id);
-				});
+				});*/
 			});
 
 			function öffneFeld(FeldName) {

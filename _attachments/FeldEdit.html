@@ -197,7 +197,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if (!localStorage.FeldId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					geheZurueckFE();
 				}
 				initiiereFeldEdit();
@@ -211,7 +211,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if (!localStorage.FeldId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 				}
 

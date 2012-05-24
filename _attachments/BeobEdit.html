@@ -118,8 +118,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.BeobId) {
-					leereStorageBeobListe();
-					leereStorageBeobEdit();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 					return;
 				}
@@ -140,8 +139,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.BeobId) {
-					leereStorageBeobListe();
-					leereStorageBeobEdit();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 					return;
 				}

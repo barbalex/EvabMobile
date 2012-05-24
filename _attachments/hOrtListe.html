@@ -69,7 +69,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.RaumId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;
 				}
@@ -83,7 +83,7 @@
 					$.mobile.changePage("index.html");
 					return;
 				} else if (!localStorage.RaumId) {
-					leereAlleVariabeln();
+					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;
 				}
