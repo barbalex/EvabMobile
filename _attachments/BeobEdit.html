@@ -204,6 +204,7 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#BeobEditForm").on("change", ".speichern", function () {
+					var FelderArray;
 					if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 						//Wenn Koordinaten und beide erfasst
 						localStorage.oXKoord = $("[name='oXKoord']").val();
@@ -213,7 +214,9 @@
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
 						//und Koordinaten speichern
-						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
+						//Höhe und -genauigkei mitgeben, damit allfällige alte Werte gelöscht werden
+						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.BeobId, "Beobachtung", FelderArray);
 					} else {
 						speichern(this);
 					}

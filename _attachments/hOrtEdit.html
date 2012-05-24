@@ -155,7 +155,7 @@
 
 				//Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
-					var Feldname;
+					var Feldname, FelderArray;
 					Feldname = this.name;
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 						//Wenn Koordinaten und beide erfasst
@@ -165,7 +165,9 @@
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
-						speichereKoordinaten(localStorage.OrtId, "hOrt");
+						//oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
+						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
 					} else {
 						speichern(this);
 					}

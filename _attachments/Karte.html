@@ -468,7 +468,7 @@
 
 					//wird benutzt in hOrtEdit.html
 					function SetLocationhOrtEdit(LatLng, map, marker) {
-						var lat, lng, contentString, infowindow;
+						var lat, lng, contentString, infowindow, FelderArray;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
@@ -494,12 +494,14 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.OrtId, "hOrt");
+						//Höhe und -genauigkeit mitgeben damit allfällige alte Werte gelöscht werden
+						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
 					}
 
 					//wird benutzt in BeobEdit.html
 					function SetLocationBeobEdit(LatLng, map, marker) {
-						var lat, lng, contentString, infowindow;
+						var lat, lng, contentString, infowindow, FelderArray;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
@@ -525,7 +527,9 @@
 						google.maps.event.addListener(marker, 'click', function () {
 							infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
+						//Höhe und -genauigkeit mitgeben, damit allfällige alte Werte gelöscht werden
+						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.BeobId, "Beobachtung", FelderArray);
 					}
 
 					//GoogleMap: alle Marker löschen
