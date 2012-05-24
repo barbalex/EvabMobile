@@ -163,7 +163,8 @@
 								marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,
-									title: Ort.oName.toString(),
+									//title muss String sein
+									title: Ort.oName.toString() || "",
 									labelContent: Ort.oName,
 									labelAnchor: new google.maps.Point(22, 0),
 									labelClass: "MapLabel", // the CSS class for the label
@@ -232,8 +233,9 @@
 						if (verorted === true) {
 							marker = new google.maps.Marker({
 								position: latlng, 
-								map: map, 
-								title: window.hOrt.oName,
+								map: map,
+								//title muss String sein
+								title: window.hOrt.oName.toString() || "",
 								draggable: true
 							});
 							//Marker in Array speichern, damit er gelöscht werden kann
@@ -322,8 +324,9 @@
 								}
 								marker = new MarkerWithLabel({ 
 									map: map,
-									position: latlng2,  
-									title: beob.aArtName,
+									position: latlng2,
+									//title muss String sein
+									title: beob.aArtName.toString(),
 									icon: image,
 									labelContent: beob.aArtName,
 									labelAnchor: new google.maps.Point(22, 0),
@@ -396,8 +399,9 @@
 						if (verorted === true) {
 							marker = new google.maps.Marker({
 								position: latlng, 
-								map: map, 
-								title: localStorage.aArtName,
+								map: map,
+								//title muss String sein
+								title: localStorage.aArtName.toString(),
 								icon: image,
 								draggable: true
 							});
@@ -437,7 +441,8 @@
 						marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							title: window.hOrt.oName,
+							//title muss String sein
+							title: window.hOrt.oName.toString() || "",
 							draggable: true
 						});
 						//Marker in Array speichern, damit er gelöscht werden kann
@@ -454,7 +459,8 @@
 						var marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							title: localStorage.aArtName,
+							//title muss String sein
+							title: localStorage.aArtName.toString(),
 							icon: image,
 							draggable: true
 						});
@@ -468,7 +474,7 @@
 
 					//wird benutzt in hOrtEdit.html
 					function SetLocationhOrtEdit(LatLng, map, marker) {
-						var lat, lng, contentString, infowindow, FelderArray;
+						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
@@ -494,14 +500,12 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						//Höhe und -genauigkeit mitgeben damit allfällige alte Werte gelöscht werden
-						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
+						speichereKoordinaten(localStorage.OrtId, "hOrt");
 					}
 
 					//wird benutzt in BeobEdit.html
 					function SetLocationBeobEdit(LatLng, map, marker) {
-						var lat, lng, contentString, infowindow, FelderArray;
+						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
@@ -527,9 +531,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 							infowindow.open(map,marker);
 						});
-						//Höhe und -genauigkeit mitgeben, damit allfällige alte Werte gelöscht werden
-						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.BeobId, "Beobachtung", FelderArray);
+						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					}
 
 					//GoogleMap: alle Marker löschen

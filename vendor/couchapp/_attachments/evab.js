@@ -1410,18 +1410,18 @@ function initiiereFeldliste_2() {
 //die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array FelderArray überbeben
 //die Felder werden in der DB und im übergebenen Objekt DatensatzObjekt gespeichert
 //und anschliessend in Formularfeldern aktualisiert
-function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(id, DatensatzObjektName, FelderArray) {
+function speichereKoordinaten(id, DatensatzObjektName) {
 	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
 	if (window[DatensatzObjektName]) {
 		//ja: Objekt verwenden
-		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
+		speichereKoordinaten_2(DatensatzObjektName);
 	} else {
 		//nein: Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
 				window[DatensatzObjektName] = data;
-				speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
+				speichereKoordinaten_2(DatensatzObjektName);
 			},
 			error: function () {
 				melde("Fehler: Koordinaten nicht gespeichert");
@@ -1430,18 +1430,20 @@ function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(id, Date
 	}
 }
 
-function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray) {
+function speichereKoordinaten_2(DatensatzObjektName) {
 	//Längen- und Breitengrad sind in keinem Feld dargestellt
 	//sie müssen aus ihren Variabeln gespeichert werden
 	//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+	var FelderArray;
+	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 	for (i in FelderArray) {
 		if (typeof i !== "function") {
 			if (window[DatensatzObjektName][i]) {
 				if (localStorage[i]) {
-					if (typeof i === "number" && isInt(i)) {
+					if (myTypeOf(i) === "integer") {
 						//Wert ist Int
 						window[DatensatzObjektName][i] = parseInt(localStorage[i]);
-					} else if (typeof i === "number") {
+					} else if (myTypeOf(i) === "float") {
 						//i ist Float
 						window[DatensatzObjektName][i] = parseFloat(localStorage[i]);
 					} else {
@@ -2636,7 +2638,6 @@ function NavbarVerortungAnimieren() {
 }
 
 function GeolocationAuslesen(position) {
-	var FelderArray;
 	localStorage.oLagegenauigkeit = Math.floor(position.coords.accuracy);
 	localStorage.oLongitudeDecDeg = position.coords.longitude;
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
@@ -2653,8 +2654,7 @@ function GeolocationAuslesen(position) {
 		localStorage.oHöhe = position.coords.altitude;
 		localStorage.oHöheGenauigkeit = position.coords.altitudeAccuracy;
 	}
-	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-	speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.docId, localStorage.OrtOderBeob, FelderArray);
+	speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
 }
 
 //Position ermitteln war erfolgreich
@@ -2679,7 +2679,6 @@ function onGeolocationError(error) {
 
 //Beendet Ermittlung der Position
 function stopGeolocation() {
-	var FelderArray;
 	//Positionssuche beenden
 	//wenn keine watchID mehr, wurde sie schon beendet
 	//stop timeout stoppen
@@ -2706,8 +2705,7 @@ function stopGeolocation() {
 		$("[name='oHöhe']").val("");
 		$("[name='oHöheGenauigkeit']").val("");
 		//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
-		FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.docId, localStorage.OrtOderBeob, FelderArray);
+		speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
 		melde("Keine genaue Position erhalten");
 	}
 	//Variablen aufräumen
