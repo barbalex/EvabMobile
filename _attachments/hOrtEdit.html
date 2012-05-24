@@ -169,6 +169,7 @@
 						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
 					} else {
+						//alert("value = " + this.value + "\nparseInt = " + parseInt(this.value) + "\nparseFloat = " + parseFloat(this.value));
 						speichern(this);
 					}
 				});
@@ -409,7 +410,6 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
-					InputTyp = $(that).attr("type");
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
@@ -420,7 +420,9 @@
 						}
 						//Werte aus dem Formular aktualisieren
 						if (Feldwert) {
-							if (InputTyp === "number") {
+							if (myTypeOf(Feldwert) === "float") {
+								window.hOrt[Feldname] = parseFloat(Feldwert);
+							} else if (myTypeOf(Feldwert) === "integer") {
 								window.hOrt[Feldname] = parseInt(Feldwert);
 							} else {
 								window.hOrt[Feldname] = Feldwert;
@@ -435,7 +437,7 @@
 								//tiefere Hierarchiestufen aktualisieren
 								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
 								//wenn sie selber Datensätze hat
-								speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp);
+								speichereOrtfeldInZeiten(Feldname, Feldwert);
 								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								//Zuletzt gespeicherte OrtId NACH dem speichern setzen
@@ -458,11 +460,11 @@
 					}
 				}
 
-				function speichereOrtfeldInZeiten(Feldname, Feldwert, InputTyp) {
+				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
 					var viewname;
 					if (window.ZeitenVonOrt) {
 						//vorhandenes Objekt nutzen
-						speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+						speichereOrtfeldInZeiten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
@@ -470,26 +472,26 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ZeitenVonOrt = data;
-								speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+								speichereOrtfeldInZeiten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereOrtfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
+				function speichereOrtfeldInZeiten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ZeitenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ZeitenVonOrt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "ZeitenVonOrt");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereOrtfeldInArten(Feldname, Feldwert, InputTyp);
+						speichereOrtfeldInArten(Feldname, Feldwert);
 					}
 				}
 
-				function speichereOrtfeldInArten(Feldname, Feldwert, InputTyp) {
+				function speichereOrtfeldInArten(Feldname, Feldwert) {
 					var viewname;
 					if (window.ArtenVonOrt) {
 						//vorhandenes Objekt nutzen
-						speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp);
+						speichereOrtfeldInArten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
@@ -497,16 +499,16 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonOrt = data;
-								speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp);
+								speichereOrtfeldInArten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereOrtfeldInArten_2(Feldname, Feldwert, InputTyp) {
+				function speichereOrtfeldInArten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ArtenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ArtenVonOrt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "ArtenVonOrt");
 					}
 				}
 				

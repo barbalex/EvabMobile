@@ -382,9 +382,8 @@
 				}
 
 				function speichern_2(that) {
-					var Feldname, Feldjson, Feldwert, InputTyp;
+					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
-					InputTyp = $(that).attr("type");
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
@@ -395,7 +394,9 @@
 						}
 						//Werte aus dem Formular aktualisieren
 						if (Feldwert) {
-							if (InputTyp === "number") {
+							if (myTypeOf(Feldwert) === "float") {
+								window.hZeit[Feldname] = parseFloat(Feldwert);
+							} else if (myTypeOf(Feldwert) === "integer") {
 								window.hZeit[Feldname] = parseInt(Feldwert);
 							} else {
 								window.hZeit[Feldname] = Feldwert;
@@ -409,7 +410,7 @@
 								window.hZeit._rev = data.rev;
 								//tiefere Hierarchiestufen aktualisieren
 								//löst ihre Aktualisierung nur aus, wenn sie Datensätze hat
-								speichereZeitfeldInArten(Feldname, Feldwert, InputTyp);
+								speichereZeitfeldInArten(Feldname, Feldwert);
 								//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 								//Datensatzwechseldie Listen nicht (immer) aus der DB geholt werden müssen
 								//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
@@ -430,27 +431,27 @@
 					}
 				}
 
-				function speichereZeitfeldInArten(Feldname, Feldwert, InputTyp) {
+				function speichereZeitfeldInArten(Feldname, Feldwert) {
 					var viewname;
 					if (window.ArtenVonZeit) {
 						//vorhandenes Objekt nutzen
-						speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp);
+						speichereZeitfeldInArten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{}]&include_docs=true';
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonZeit = data;
-								speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp);
+								speichereZeitfeldInArten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereZeitfeldInArten_2(Feldname, Feldwert, InputTyp) {
+				function speichereZeitfeldInArten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ArtenVonZeit.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ArtenVonZeit");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "ArtenVonZeit");
 					}
 				}
 

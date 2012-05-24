@@ -531,14 +531,14 @@
 					//prüfen, ob Beob als Objekt vorliegt
 					if (window.Beobachtung) {
 						//Objekt verwenden
-						speichern_2(Feldname, Feldwert);
+						speichern_2(that);
 					} else {
 						//Beob aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.BeobId, {
 							success: function (data) {
 								window.Beobachtung = data;
-								speichern_2(Feldname, Feldwert);
+								speichern_2(that);
 							},
 							error: function () {
 								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
@@ -549,14 +549,15 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = this.name;
-					InputTyp = $(that).attr("type");
+					Feldname = that.name;
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
 					//Werte aus dem Formular aktualisieren
 					if (Feldwert) {
-						if (InputTyp === "number") {
+						if (myTypeOf(Feldwert) === "float") {
+							window.Beobachtung[Feldname] = parseFloat(Feldwert);
+						} else if (myTypeOf(Feldwert) === "integer") {
 							window.Beobachtung[Feldname] = parseInt(Feldwert);
 						} else {
 							window.Beobachtung[Feldname] = Feldwert;

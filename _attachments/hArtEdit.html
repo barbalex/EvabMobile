@@ -485,15 +485,16 @@
 				}
 
 				function speichern_2(that) {
-					var Feldname, Feldjson, Feldwert, InputTyp;
+					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
-					InputTyp = $(that).attr("type");
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
 					Feldwert = Feldjson[Feldname];
 					//Werte aus dem Formular aktualisieren
 					if (Feldwert) {
-						if (InputTyp === "number") {
+						if (myTypeOf(Feldwert) === "float") {
+							window.hArt[Feldname] = parseFloat(Feldwert);
+						} else if (myTypeOf(Feldwert) === "integer") {
 							window.hArt[Feldname] = parseInt(Feldwert);
 						} else {
 							window.hArt[Feldname] = Feldwert;

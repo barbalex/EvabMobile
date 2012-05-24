@@ -356,9 +356,9 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					Feldname = that.name;
-					InputTyp = $(that).attr("type");
 					//nötig, damit Arrays richtig kommen
 					Feldjson = $("[name='" + Feldname + "']").serializeObject();
+					//alert("Wert ist = " + JSON.stringify(Feldjson));
 					Feldwert = Feldjson[Feldname];
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
@@ -366,7 +366,9 @@
 							leereStorageProjektListe("mitLatLngListe");
 						}
 						if (Feldwert) {
-							if (InputTyp === "number") {
+							if (myTypeOf(Feldwert) === "float") {
+								window.hProjekt[Feldname] = parseFloat(Feldwert);
+							} else if (myTypeOf(Feldwert) === "integer") {
 								window.hProjekt[Feldname] = parseInt(Feldwert);
 							} else {
 								window.hProjekt[Feldname] = Feldwert;
@@ -381,7 +383,7 @@
 								//tiefere Hierarchiestufen aktualisieren
 								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
 								//wenn sie selber Datensätze hat
-								speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInRäumen(Feldname, Feldwert);
 								//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
@@ -405,11 +407,11 @@
 					}
 				}
 
-				function speichereProjektfeldInArten(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInArten(Feldname, Feldwert) {
 					var viewname;
 					if (window.ArtenVonProjekt) {
 						//vorhandenes Objekt nutzen
-						speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInArten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
@@ -417,24 +419,24 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ArtenVonProjekt = data;
-								speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInArten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereProjektfeldInArten_2(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInArten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ArtenVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ArtenVonProjekt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "ArtenVonProjekt");
 					}
 				}
 
-				function speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
 					var viewname
 					if (window.ZeitenVonProjekt) {
 						//vorhandenes Objekt benutzen
-						speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInZeiten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
@@ -442,26 +444,26 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.ZeitenVonProjekt = data;
-								speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInZeiten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereProjektfeldInZeiten_2(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInZeiten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.ZeitenVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "ZeitenVonProjekt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "ZeitenVonProjekt");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInArten(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInArten(Feldname, Feldwert);
 					}
 				}
 
-				function speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInOrten(Feldname, Feldwert) {
 					var viewname;
 					if (window.OrteVonProjekt) {
 						//vorhandenes Objekt nutzen
-						speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInOrten_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
@@ -469,26 +471,26 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.OrteVonProjekt = data;
-								speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInOrten_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereProjektfeldInOrten_2(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInOrten_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.OrteVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "OrteVonProjekt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "OrteVonProjekt");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInZeiten(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInZeiten(Feldname, Feldwert);
 					}
 				}
 
-				function speichereProjektfeldInRäumen(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
 					var viewname;
 					if (window.RaeumeVonProjekt) {
 						//vorhandenes Objekt nutzen
-						speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInRäumen_2(Feldname, Feldwert);
 					} else {
 						//Objekt aus DB holen
 						viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
@@ -496,18 +498,18 @@
 						$db.view(viewname, {
 							success: function (data) {
 								window.RaeumeVonProjekt = data;
-								speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp);
+								speichereProjektfeldInRäumen_2(Feldname, Feldwert);
 							}
 						});
 					}
 				}
 
-				function speichereProjektfeldInRäumen_2(Feldname, Feldwert, InputTyp) {
+				function speichereProjektfeldInRäumen_2(Feldname, Feldwert) {
 					//nur machen, wenn Datensätze vorkommen
 					if (window.RaeumeVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, "RaeumeVonProjekt");
+						speichereFeldInDatensatzliste(Feldname, Feldwert, "RaeumeVonProjekt");
 						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInOrten(Feldname, Feldwert, InputTyp);
+						speichereProjektfeldInOrten(Feldname, Feldwert);
 					}
 				}
 

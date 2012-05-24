@@ -224,101 +224,6 @@ function geheZurueckFE() {
 	}
 }
 
-/*//wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
-//die Felder werden als localStorag übernommen
-//und in ein übergebenes Objekt OrtOderBeob gespeichert
-function speichereKoordinaten(id, OrtOderBeob) {
-	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
-	if (window[OrtOderBeob]) {
-		//ja: Objekt verwenden
-		speichereKoordinaten_2(OrtOderBeob);
-	} else {
-		//nein: Objekt aus DB holen
-		$db = $.couch.db("evab");
-		$db.openDoc(id, {
-			success: function (data) {
-				window[OrtOderBeob] = data;
-				speichereKoordinaten_2(OrtOderBeob);
-			},
-			error: function () {
-				melde("Fehler: Koordinaten nicht gespeichert");
-			}
-		});
-	}
-}*/
-
-//wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
-//die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array überbeben
-//die Felder werden in ein übergebenes Objekt DatensatzObjekt gespeichert
-//und anschliessend in Formularfeldern aktualisiert
-function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(id, DatensatzObjektName, FelderArray) {
-	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
-	if (window[DatensatzObjektName]) {
-		//ja: Objekt verwenden
-		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
-	} else {
-		//nein: Objekt aus DB holen
-		$db = $.couch.db("evab");
-		$db.openDoc(id, {
-			success: function (data) {
-				window[DatensatzObjektName] = data;
-				speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
-			},
-			error: function () {
-				melde("Fehler: Koordinaten nicht gespeichert");
-			}
-		});
-	}
-}
-
-function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray) {
-	//Längen- und Breitengrad sind in keinem Feld dargestellt
-	//sie müssen aus ihren Variabeln gespeichert werden
-	//Variablen müssen in Objekt und localStorage denselben Namen verwenden
-	for (i in FelderArray) {
-		if (typeof i !== "function") {
-			if (window[DatensatzObjektName][i]) {
-				if (localStorage[i]) {
-					if (typeof i === "number" && isInt(i)) {
-						//Wert ist Int
-						window[DatensatzObjektName][i] = parseInt(localStorage[i]);
-					} else if (typeof i === "number") {
-						//i ist Float
-						window[DatensatzObjektName][i] = parseFloat(localStorage[i]);
-					} else {
-						window[DatensatzObjektName][i] = localStorage[i];
-					}
-				} else {
-					delete window[DatensatzObjektName][i];
-				}
-			}
-		}
-	}
-	//alles speichern
-	$db.saveDoc(window[DatensatzObjektName], {
-		success: function (data) {
-			window[DatensatzObjektName]._rev = data.rev;
-			//Werte im Formular anzeigen
-			// || null: verhindert, das "NAN" oder "undefined" angezeigt wird
-			$("[name='oXKoord']").val(window[DatensatzObjektName].oXKoord || null);
-			$("[name='oYKoord']").val(window[DatensatzObjektName].oYKoord || null);
-			$("[name='oLatitudeDecDeg']").val(window[DatensatzObjektName].oLatitudeDecDeg || null);
-			$("[name='oLongitudeDecDeg']").val(window[DatensatzObjektName].oLongitudeDecDeg || null);
-			$("[name='oLagegenauigkeit']").val(window[DatensatzObjektName].oLagegenauigkeit || null);
-			$("[name='oHöhe']").val(window[DatensatzObjektName].oHoehe || null);	
-			$("[name='oHöheGenauigkeit']").val(window[DatensatzObjektName].oHoeheGenauigkeit || null);
-		},
-		error: function () {
-			melde("Fehler: Koordinaten nicht gespeichert");
-		}
-	});
-}
-
-//dient der Unterscheidung von Int und Float
-function isInt(n) {
-   return typeof n === 'number' && parseFloat(n) == parseInt(n) && !isNaN(n);
-}
-
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //aufgerufen bloss von Artenliste.html
@@ -996,7 +901,7 @@ function generiereHtmlFuerBeobEditForm () {
 				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 				//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
-					if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+					if (window.Beobachtung[FeldName] && Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 						FeldWert = Feld.Standardwert[localStorage.Username];
 						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
 						window.Beobachtung[FeldName] = FeldWert;
@@ -1221,7 +1126,7 @@ function generiereHtmlFuerProjektEditForm () {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+				if (window.hProjekt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
 					//window.hProjekt um den Standardwert ergänzen, um später zu speichern
 					window.hProjekt[FeldName] = FeldWert;
@@ -1501,11 +1406,100 @@ function initiiereFeldliste_2() {
 	speichereLetzteUrl();
 }
 
+//wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
+//die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array FelderArray überbeben
+//die Felder werden in der DB und im übergebenen Objekt DatensatzObjekt gespeichert
+//und anschliessend in Formularfeldern aktualisiert
+function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(id, DatensatzObjektName, FelderArray) {
+	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
+	if (window[DatensatzObjektName]) {
+		//ja: Objekt verwenden
+		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
+	} else {
+		//nein: Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(id, {
+			success: function (data) {
+				window[DatensatzObjektName] = data;
+				speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray);
+			},
+			error: function () {
+				melde("Fehler: Koordinaten nicht gespeichert");
+			}
+		});
+	}
+}
+
+function speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular_2(DatensatzObjektName, FelderArray) {
+	//Längen- und Breitengrad sind in keinem Feld dargestellt
+	//sie müssen aus ihren Variabeln gespeichert werden
+	//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+	for (i in FelderArray) {
+		if (typeof i !== "function") {
+			if (window[DatensatzObjektName][i]) {
+				if (localStorage[i]) {
+					if (typeof i === "number" && isInt(i)) {
+						//Wert ist Int
+						window[DatensatzObjektName][i] = parseInt(localStorage[i]);
+					} else if (typeof i === "number") {
+						//i ist Float
+						window[DatensatzObjektName][i] = parseFloat(localStorage[i]);
+					} else {
+						window[DatensatzObjektName][i] = localStorage[i];
+					}
+				} else {
+					delete window[DatensatzObjektName][i];
+				}
+			}
+		}
+	}
+	//alles speichern
+	$db.saveDoc(window[DatensatzObjektName], {
+		success: function (data) {
+			window[DatensatzObjektName]._rev = data.rev;
+			//Werte im Formular anzeigen
+			// || null: verhindert, dass bei fehlenden Werten "NAN" oder "undefined" angezeigt wird
+			$("[name='oXKoord']").val(window[DatensatzObjektName].oXKoord || null);
+			$("[name='oYKoord']").val(window[DatensatzObjektName].oYKoord || null);
+			$("[name='oLatitudeDecDeg']").val(window[DatensatzObjektName].oLatitudeDecDeg || null);
+			$("[name='oLongitudeDecDeg']").val(window[DatensatzObjektName].oLongitudeDecDeg || null);
+			$("[name='oLagegenauigkeit']").val(window[DatensatzObjektName].oLagegenauigkeit || null);
+			$("[name='oHöhe']").val(window[DatensatzObjektName].oHoehe || null);	
+			$("[name='oHöheGenauigkeit']").val(window[DatensatzObjektName].oHoeheGenauigkeit || null);
+		},
+		error: function () {
+			melde("Fehler: Koordinaten nicht gespeichert");
+		}
+	});
+}
+
+//dient der Unterscheidung von Int und Float
+function isInt(n) {
+   return typeof n === 'number' && parseFloat(n) == parseInt(n) && !isNaN(n);
+}
+
+//Hilfsfunktion, die typeof ersetzt und ergänzt
+//typeof gibt bei input-Feldern immer String zurück!
+function myTypeOf(Wert) {
+	var Type;
+	if (parseInt(Wert) && parseFloat(Wert) && parseInt(Wert) != parseFloat(Wert)) {
+		//es ist eine Float
+		Type = "float";
+	} else if (parseInt(Wert)) {
+		//es ist eine Integer
+		Type = "integer";
+	} else {
+		//als String behandeln
+		Type = "string";
+	}
+	return Type;
+}
+
 //Übernimmt einen Feldnamen, einen Feldwert und seinen Typ (number?)
 //und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
 //speichert das neue Feld in alle Datensätze der Liste in der DB
 //und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
-function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, DatensatzlisteName) {
+function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
 	var JsonBulkListe, DsBulkListe, Docs, row;
 	//nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
@@ -1513,7 +1507,9 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, InputTyp, Datensatzli
 	for (i in window[DatensatzlisteName].rows) {
 		row = window[DatensatzlisteName].rows[i].doc;
 		if (Feldwert) {
-			if (InputTyp === "number") {
+			if (myTypeOf(Feldwert) === "float") {
+				row[Feldname] = parseFloat(Feldwert);
+			} else if (myTypeOf(Feldwert) === "integer") {
 				row[Feldname] = parseInt(Feldwert);
 			} else {
 				row[Feldname] = Feldwert;
@@ -1681,7 +1677,7 @@ function generiereHtmlFuerRaumEditForm () {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+				if (window.hRaum[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
 					//Objekt window.hRaum um den Standardwert ergänzen, um später zu speichern
 					window.hRaum[FeldName] = FeldWert;
@@ -1841,7 +1837,7 @@ function generiereHtmlFuerOrtEditForm () {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
+				if (window.hOrt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
 					FeldWert = Feld.Standardwert[localStorage.Username];
 					//Objekt window.hOrt um den Standardwert ergänzen, um später zu speichern
 					window.hOrt[FeldName] = FeldWert;
@@ -2042,7 +2038,7 @@ function generiereHtmlFuerZeitEditForm() {
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === window.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
-				if (localStorage.Status === "neu" && Feld.Standardwert) {
+				if (window.hZeit[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && window.hZeit[FeldName]) {
 					FeldWert = Feld.Standardwert[window.hZeit.User] || "";
 					//Objekt window.hZeit um den Standardwert ergänzen, um später zu speichern
 					window.hZeit[FeldName] = FeldWert;
@@ -2165,7 +2161,7 @@ function generiereHtmlFuerhArtEditForm () {
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 			if ((Feld.User === window.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.hArt.User]) {
+				if (window.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.hArt.User]) {
 					FeldWert = Feld.Standardwert[window.hArt.User];
 					//Objekt window.hArt um den Standardwert ergänzen, um später zu speichern
 					window.hArt[FeldName] = FeldWert;
@@ -2533,16 +2529,23 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 		o = {};
 		a = this.serializeArray();
 		$.each(a, function () {
-			if (this.value !== "") {
+			if (this.value) {
 				if (o[this.name]) {
 					if (!o[this.name].push) {
 						o[this.name] = [o[this.name]];
 					}
 					o[this.name].push(this.value);
 				} else {
-					if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
+					//alert(this.value);
+					//alert(typeof this.value);
+					if (myTypeOf(this.value) === "integer") {
+						//typ ist Int
 						o[this.name] = parseInt(this.value);
+					} else if (myTypeOf(this.value) === "float") {
+						//typ ist Float
+						o[this.name] = parseFloat(this.value);
 					} else {
+						//anderer Typ, als String behandeln
 						o[this.name] = this.value;
 					}
 				}
@@ -2567,9 +2570,14 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 				}
 				o[this.name].push(this.value);
 			} else {
-				if (typeof this === 'number') {   //verhindern, dass Nummern in Strings verwandelt werden
+				if (myTypeOf(Feldwert) === "integer") {
+					//typ ist Int
 					o[this.name] = parseInt(this.value);
+				} else if (myTypeOf(Feldwert) === "float") {
+					//typ ist Float
+					o[this.name] = parseFloat(this.value);
 				} else {
+					//anderer Typ, als String behandeln
 					o[this.name] = this.value;
 				}
 			}
