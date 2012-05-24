@@ -326,7 +326,7 @@
 									map: map,
 									position: latlng2,
 									//title muss String sein
-									title: beob.aArtName.toString(),
+									title: beob.aArtName.toString() || "",
 									icon: image,
 									labelContent: beob.aArtName,
 									labelAnchor: new google.maps.Point(22, 0),
@@ -401,7 +401,7 @@
 								position: latlng, 
 								map: map,
 								//title muss String sein
-								title: localStorage.aArtName.toString(),
+								title: localStorage.aArtName.toString() || "",
 								icon: image,
 								draggable: true
 							});
@@ -422,7 +422,7 @@
 							});
 							InfoWindowArray.push(infowindow);
 							google.maps.event.addListener(marker, 'click', function () {
-							infowindow.open(map,marker);
+								infowindow.open(map,marker);
 							});
 							google.maps.event.addListener(marker, "dragend", function (event) {
 								SetLocationBeobEdit(event.latLng, map, marker);
@@ -460,7 +460,7 @@
 							position: location, 
 							map: map,
 							//title muss String sein
-							title: localStorage.aArtName.toString(),
+							title: localStorage.aArtName.toString() || "",
 							icon: image,
 							draggable: true
 						});

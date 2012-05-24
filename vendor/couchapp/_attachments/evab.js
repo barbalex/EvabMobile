@@ -1437,22 +1437,24 @@ function speichereKoordinaten_2(DatensatzObjektName) {
 	var FelderArray;
 	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 	for (i in FelderArray) {
+		//alert("FelderArray[i] = " + FelderArray[i])
 		if (typeof i !== "function") {
-			if (window[DatensatzObjektName][i]) {
-				if (localStorage[i]) {
-					if (myTypeOf(i) === "integer") {
+			//if (window[DatensatzObjektName][i]) {
+				if (localStorage[FelderArray[i]]) {
+					//alert(window[DatensatzObjektName][FelderArray[i]] + " = " + localStorage[FelderArray[i]]);
+					if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
 						//Wert ist Int
-						window[DatensatzObjektName][i] = parseInt(localStorage[i]);
-					} else if (myTypeOf(i) === "float") {
+						window[DatensatzObjektName][FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
+					} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
 						//i ist Float
-						window[DatensatzObjektName][i] = parseFloat(localStorage[i]);
+						window[DatensatzObjektName][FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
 					} else {
-						window[DatensatzObjektName][i] = localStorage[i];
+						window[DatensatzObjektName][FelderArray[i]] = localStorage[FelderArray[i]];
 					}
 				} else {
-					delete window[DatensatzObjektName][i];
+					delete window[DatensatzObjektName][FelderArray[i]];
 				}
-			}
+			//}
 		}
 	}
 	//alles speichern
