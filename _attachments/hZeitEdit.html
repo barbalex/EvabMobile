@@ -144,15 +144,18 @@
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
-				//ungelöstes Problem: swipe reagiert!
-				$("#hZeitEditForm").on("mouseup", ".ui-slider", function (event) {
+				//Für jedes Feld bei Änderung speichern
+				$("#hZeitEditForm").on("change", ".speichern", function (event) {
 					speichern(this);
 				});
 
-				//Für jedes Feld bei Änderung speichern
-				$("#hZeitEditForm").on("change", ".speichern", function (event) {
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
+				//ungelöstes Problem: swipe reagiert!
+				$("#hZeitEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#hZeitEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -222,11 +225,17 @@
 				});
 
 				$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', function () {
-					nächsteVorigeZeit("nächste");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeZeit("nächste");
+					}
 				});
 
 				$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', function () {
-					nächsteVorigeZeit("vorige");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeZeit("vorige");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -382,10 +391,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					if (validierehZeitEdit()) {
 						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
 							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird

@@ -121,10 +121,13 @@
 					speichern(this);
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
-				$("#hProjektEditForm").on("mouseup", ".ui-slider", function (event) {
+				$("#hProjektEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#hProjektEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -215,11 +218,17 @@
 				});
 
 				$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", function () {
-					nächstesVorigesProjekt("nächstes");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächstesVorigesProjekt("nächstes");
+					}
 				});
 
 				$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", function () {
-					nächstesVorigesProjekt("voriges");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächstesVorigesProjekt("voriges");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -354,11 +363,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					//alert("Wert ist = " + JSON.stringify(Feldjson));
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
 							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird

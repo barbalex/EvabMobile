@@ -123,10 +123,13 @@
 					speichern(this);
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
-				$("#hRaumEditForm").on("mouseup", ".ui-slider", function (event) {
+				$("#hRaumEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#hRaumEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -215,11 +218,17 @@
 				});
 
 				$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {
-					nächsterVorigerRaum("nächster");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsterVorigerRaum("nächster");
+					}
 				});
 
 				$("#RaumEditPage").on("swiperight", "#hRaumEditContent", function () {
-					nächsterVorigerRaum("voriger");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsterVorigerRaum("voriger");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -371,10 +380,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
 							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird

@@ -170,10 +170,13 @@
 					speichern(this);
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
-				$("#hArtEditForm").on("mouseup", ".ui-slider", function (event) {
+				$("#hArtEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#hArtEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -244,11 +247,17 @@
 				});
 
 				$("#hArtEditPage").on("swipeleft", function () {
-					nächsteVorigeArt("nächste");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeArt("nächste");
+					}
 				});
 
 				$("#hArtEditPage").on("swiperight", function () {
-					nächsteVorigeArt("vorige");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeArt("vorige");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -485,10 +494,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					//Werte aus dem Formular aktualisieren
 					if (Feldwert) {
 						if (myTypeOf(Feldwert) === "float") {

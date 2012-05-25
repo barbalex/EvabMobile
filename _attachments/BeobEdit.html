@@ -218,10 +218,13 @@
 					}
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
-				$("#BeobEditForm").on("mouseup", ".ui-slider", function (event) {
+				$("#BeobEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#BeobEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -278,11 +281,17 @@
 				});
 
 				$("#BeobEditPage").on("swipeleft", "#BeobEditContent", function () {
-					nächsteVorigeBeob("nächste");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeBeob("nächste");
+					}
 				});
 
 				$("#BeobEditPage").on("swiperight", "#BeobEditContent", function () {
-					nächsteVorigeBeob("vorige");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsteVorigeBeob("vorige");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -545,10 +554,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					//Werte aus dem Formular aktualisieren
 					if (Feldwert) {
 						if (myTypeOf(Feldwert) === "float") {

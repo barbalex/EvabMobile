@@ -173,10 +173,13 @@
 					}
 				});
 
-				//Slider-Felder erst bei mouseup speichern
-				//change wird für jeden geswipten Wert ausgelöst!
+				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
+				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
-				$("#hOrtEditForm").on("mouseup", ".ui-slider", function (event) {
+				$("#hOrtEditForm").on("blur", '.speichernSlider', function (event) {
+					speichern(this);
+				});
+				$("#hOrtEditForm").on("mouseup", '.ui-slider-handle', function (event) {
 					speichern(this);
 				});
 
@@ -263,11 +266,17 @@
 				});
 				
 				$("#OrtEditPage").on("swipeleft", "#OrtEditContent", function () {
-					nächsterVorigerOrt("nächster");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsterVorigerOrt("nächster");
+					}
 				});
 
 				$("#OrtEditPage").on("swiperight", "#OrtEditContent", function () {
-					nächsterVorigerOrt("voriger");
+					if (!$("*:focus").attr("aria-valuenow")) {
+						//kein slider
+						nächsterVorigerOrt("voriger");
+					}
 				});
 
 				//Pagination Pfeil voriger initialisieren
@@ -408,10 +417,17 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					Feldname = that.name;
-					//nötig, damit Arrays richtig kommen
-					Feldjson = $("[name='" + Feldname + "']").serializeObject();
-					Feldwert = Feldjson[Feldname];
+					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+						//slider
+						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+						Feldwert = $(that).attr("aria-valuenow");
+					} else {
+						//alle anderen Feldtypen
+						Feldname = that.name;
+						//nötig, damit Arrays richtig kommen
+						Feldjson = $("[name='" + Feldname + "']").serializeObject();
+						Feldwert = Feldjson[Feldname];
+					}
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
 							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
