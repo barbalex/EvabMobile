@@ -116,7 +116,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.BeobId) {
+				} else if (!localStorage.Status && !localStorage.BeobId) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 					return;
@@ -137,7 +137,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.BeobId) {
+				} else if (!localStorage.Status && !localStorage.BeobId) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 					return;

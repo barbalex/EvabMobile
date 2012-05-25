@@ -94,7 +94,7 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.ZeitId) {
+				} else if (!localStorage.Status && !localStorage.ZeitId) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 				}
@@ -106,7 +106,7 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.ZeitId) {
+				} else if (!localStorage.Status && !localStorage.ZeitId) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 				}

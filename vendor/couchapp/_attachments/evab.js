@@ -260,79 +260,8 @@ function speichereNeueBeob_02(doc) {
 	var ObjektNamenArray;
 	//die zu ergänzenden Objekte (Hierarchiestufen) aufzählen und - falls sie aus der DB geholt werden müssen - die ID mitgeben
 	ObjektNamenArray = {"hZeit": localStorage.ZeitId, "hOrt": localStorage.OrtId, "hRaum": localStorage.RaumId, "hProjekt": localStorage.ProjektId};
-	doc = ergaenzeFelderZuDoc(doc, ObjektNamenArray);
-	speichereNeueBeob_03(doc);
+	speichereNeueBeob_03(ergaenzeFelderZuDoc(doc, ObjektNamenArray));
 }
-
-/*//Neue Beobachtungen werden gespeichert
-//ausgelöst durch hArtListe.html oder hArtEdit.html
-//dies ist der zweite Schritt:
-//Felder der höheren Hierarchieebenen anfügen
-function speichereNeueBeob_02(doc) {
-	$db = $.couch.db("evab");
-	$db.openDoc(doc.hZeitId, {
-		success: function (Zeit) {
-			for (i in Zeit) {
-				if (typeof i !== "function") {
-					//FeldName = i, Feldwert = Zeit[i]
-					//ein paar Felder wollen wir nicht
-					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hOrtId', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-						doc[i] = Zeit[i];
-					}
-				}
-			}
-			$db.openDoc(doc.hOrtId, {
-				success: function (Ort) {
-					for (i in Ort) {
-						if (typeof i !== "function") {
-							//ein paar Felder wollen wir nicht
-							if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-								doc[i] = Ort[i];
-							}
-						}
-					}
-					$db.openDoc(doc.hRaumId, {
-						success: function (Raum) {
-							for (i in Raum) {
-								if (typeof i !== "function") {
-									//ein paar Felder wollen wir nicht
-									if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-										doc[i] = Raum[i];
-									}
-								}
-							}
-							$db.openDoc(doc.hProjektId, {
-								success: function (Projekt) {
-									for (i in Projekt) {
-										if (typeof i !== "function") {
-											//ein paar Felder wollen wir nicht
-											if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-												doc[i] = Projekt[i];
-											}
-										}
-									}
-									speichereNeueBeob_03(doc);
-								},
-								error: function () {
-									speichereNeueBeob_03(doc);
-								}
-							});
-						},
-						error: function () {
-							speichereNeueBeob_03(doc);
-						}
-					});
-				},
-				error: function () {
-					speichereNeueBeob_03(doc);
-				}
-			});
-		},
-		error: function () {
-			speichereNeueBeob_03(doc);
-		}
-	});
-}*/
 
 //übernimmt ein Objekt "doc", dem Felder aus anderen Objekten ergänzt werden sollen
 //übernimmt ein Objekt "ObjektNamenObjekt", der die Namen aller Objekte enthält,
@@ -498,35 +427,24 @@ function erstelleNeueZeit() {
 	doc.hOrtId = localStorage.OrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	//Felder aus den höheren Hierarchiestufen ergänzen
-	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId, "hOrt": localStorage.OrtId});
-	//speichern
-	$db.saveDoc(doc, {
-		success: function (Zeit) {
-			//_id und _rev ergänzen
-			doc._id = Zeit.id;
-			doc._rev = Zeit.rev;
-			//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
-			window.hZeit = doc;
-			//Variabeln verfügbar machen
-			localStorage.ZeitId = Zeit.id;
-			localStorage.Status = "neu";
-			//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			delete window.ZeitListe;
-			//Vorsicht: Von hZeitEdit.html aus samepage transition!
-			if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
-				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-				window.open("hZeitEdit.html", target = "_self");
-			} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
-				$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
-			} else {
-				$.mobile.changePage("hZeitEdit.html");
-			}
-		},
-		error: function () {
-			melde("Fehler: neue Zeit nicht erstellt");
-		}
-	});
+	//Felder aus den höheren Hierarchiestufen ergänzen und speichern an hZeitEdit.html übergeben
+	window.hZeit = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId, "hOrt": localStorage.OrtId});
+	//Variabeln verfügbar machen
+	delete localStorage.ZeitId;
+	localStorage.Status = "neu";
+	//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	delete window.ZeitListe;
+	//Vorsicht: Von hZeitEdit.html aus samepage transition!
+	if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
+		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		//das Objekt muss über die localStorage übermittelt werden
+		localStorage.hZeit = JSON.stringify(window.hZeit);
+		window.open("hZeitEdit.html", target = "_self");
+	} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
+		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
+	} else {
+		$.mobile.changePage("hZeitEdit.html");
+	}
 }
 
 //erstellt einen neuen Ort
@@ -539,35 +457,24 @@ function erstelleNeuenOrt() {
 	doc.User = localStorage.Username;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
-	//Felder aus den höheren Hierarchiestufen ergänzen
-	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId});
-	//speichern
-	$db.saveDoc(doc, {
-		success: function (data) {
-			//_id und _rev ergänzen
-			doc._id = data.id;
-			doc._rev = data.rev;
-			//damit hOrtEdit.html den Ort nicht aus der DB holen muss
-			window.hOrt = doc;
-			//Variabeln verfügbar machen
-			localStorage.OrtId = data.id;
-			//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			leereStorageOrtListe("mitLatLngListe");
-			localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
-			//Vorsicht: Von hOrtEdit.html aus samepage transition!
-			if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
-				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-				window.open("hOrtEdit.html", target = "_self");
-			} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
-				$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
-			} else {
-				$.mobile.changePage("hOrtEdit.html");
-			}
-		},
-		error: function () {
-			melde("Fehler: neuer Ort nicht erstellt");
-		}
-	});
+	//Felder aus den höheren Hierarchiestufen ergänzen und in hOrtEdit.html an hOrtEdit.html übergeben
+	window.hOrt = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId});
+	//Variabeln verfügbar machen
+	delete localStorage.OrtId;
+	//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	leereStorageOrtListe("mitLatLngListe");
+	localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
+	//Vorsicht: Von hOrtEdit.html aus samepage transition!
+	if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
+		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		//das Objekt muss über die localStorage übermittelt werden
+		localStorage.hOrt = JSON.stringify(window.hOrt);
+		window.open("hOrtEdit.html", target = "_self");
+	} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
+		$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
+	} else {
+		$.mobile.changePage("hOrtEdit.html");
+	}
 }
 
 function erstelleNeuenRaum() {
@@ -576,69 +483,51 @@ function erstelleNeuenRaum() {
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Username;
 	doc.hProjektId = localStorage.ProjektId;
-	//Felder aus den höheren Hierarchiestufen ergänzen
-	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId});
-	//doc speichern
-	$db.saveDoc(doc, {
-		success: function (data) {
-			//_id und _rev ergänzen
-			doc._id = data.id;
-			doc._rev = data.rev;
-			//damit hRaumEdit.html den Raum nicht aus der DB holen muss
-			window.hRaum = doc;
-			//Variabeln verfügbar machen
-			localStorage.RaumId = data.id;
-			localStorage.Status = "neu";
-			//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			leereStorageRaumListe("mitLatLngListe");
-			//Vorsicht: Von hRaumEdit.html aus same page transition!
-			if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
-				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-				window.open("hRaumEdit.html", target = "_self");
-			} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-				$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
-			} else {
-				$.mobile.changePage("hRaumEdit.html");
-			}
-		},
-		error: function () {
-			melde("Fehler: neuer Raum nicht erstellt");
-		}
-	});
+	//Felder aus den höheren Hierarchiestufen ergänzen und  in Objekt speichern, das an hRaumEdit.html übergeben wird
+	window.hRaum = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId});
+	//Variabeln verfügbar machen
+	delete localStorage.RaumId;
+	localStorage.Status = "neu";
+	//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	leereStorageRaumListe("mitLatLngListe");
+	//Vorsicht: Von hRaumEdit.html aus same page transition!
+	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
+		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		//das Objekt muss über die localStorage übermittelt werden
+		localStorage.hRaum = JSON.stringify(window.hRaum);
+		window.open("hRaumEdit.html", target = "_self");
+	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
+		$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
+	} else {
+		$.mobile.changePage("hRaumEdit.html");
+	}
 }
 
+//erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
+//das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
 function erstelleNeuesProjekt() {
 	var doc;
 	doc = {};
 	doc.Typ = "hProjekt";
 	doc.User = localStorage.Username;
-	$db = $.couch.db("evab");
-	$db.saveDoc(doc, {
-		success: function (data) {
-			//_id und _rev ergänzen
-			doc._id = data.id;
-			doc._rev = data.rev;
-			//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
-			window.hProjekt = doc;
-			//Variabeln verfügbar machen
-			localStorage.ProjektId = data.id;
-			localStorage.Status = "neu";
-			//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			leereStorageProjektListe("mitLatLngListe");
-			//Vorsicht: Von hProjektEdit.html aus same page transition!
-			if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
-				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-				window.open("hProjektEdit.html", target = "_self");
-			} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
-				$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
-			} else {
-				$.mobile.changePage("hProjektEdit.html");
-			}
-		},
-		error: function () {
-			melde("Fehler: neues Projekt nicht erstellt");
-		}
-	});
+	//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
+	window.hProjekt = doc;
+	//ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
+	delete localStorage.ProjektId;
+	localStorage.Status = "neu";
+	//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	leereStorageProjektListe("mitLatLngListe");
+	//Vorsicht: Von hProjektEdit.html aus same page transition!
+	if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
+		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		//das Objekt muss über die localStorage übermittelt werden
+		localStorage.hProjekt = JSON.stringify(window.hProjekt);
+		window.open("hProjektEdit.html", target = "_self");
+	} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
+		$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
+	} else {
+		$.mobile.changePage("hProjektEdit.html");
+	}
 }
 
 function öffneMeineEinstellungen() {
@@ -805,7 +694,12 @@ function initiiereBeobEdit_2() {
 
 function initiiereBeobEdit_3() {
 	//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-	localStorage.BeobId = window.Beobachtung._id;
+	//bei neuen Beob hat das Objekt noch keine ID
+	if (window.Beobachtung._id) {
+		localStorage.BeobId = window.Beobachtung._id;
+	} else {
+		localStorage.BeobId = "neu";
+	}
 	localStorage.aArtGruppe = window.Beobachtung.aArtGruppe;
 	localStorage.aArtName = window.Beobachtung.aArtName;
 	localStorage.aArtId = window.Beobachtung.aArtId;
@@ -895,7 +789,9 @@ function generiereHtmlFuerBeobEditForm () {
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.Beobachtung, {
 			success: function (data) {
+				window.Beobachtung._id = data.id;
 				window.Beobachtung._rev = data.rev;
+				localStorage.BeobId = data.id;
 				GetGeolocation(data.id, "Beobachtung");
 			}
 		});
@@ -1040,6 +936,11 @@ function initiiereProjektEdit() {
 	//window.hProjekt existiert schon bei neuem Projekt
 	if (window.hProjekt) {
 		initiiereProjektEdit_2();
+	} else if (localStorage.Status === "neu") {
+		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		window.hProjekt = JSON.parse(localStorage.hProjekt);
+		delete localStorage.hProjekt;
+		initiiereProjektEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
@@ -1054,8 +955,12 @@ function initiiereProjektEdit() {
 function initiiereProjektEdit_2() {
 	//fixe Felder aktualisieren
 	$("#pName").val(window.hProjekt.pName);
-	//Variabeln bereitstellen
-	localStorage.ProjektId = window.hProjekt._id;
+	//Variabeln bereitstellen (bei neuen Projekten wird ProjektId später nachgeschoben)
+	if (window.hProjekt._id) {
+		localStorage.ProjektId = window.hProjekt._id;
+	} else {
+		localStorage.ProjektId = "neu";
+	}
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteProjekt) {
@@ -1119,8 +1024,11 @@ function generiereHtmlFuerProjektEditForm () {
 		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hProjekt, {
-			success: function L(data) {
+			success: function (data) {
+				window.hProjekt._id = data.id;
 				window.hProjekt._rev = data.rev;
+				//
+				localStorage.ProjektId = data.id;
 			}
 		});
 		delete localStorage.Status;
@@ -1445,62 +1353,65 @@ function speichereFelderAusLocalStorageInObjektliste(ObjektlistenName, FelderArr
 function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
 	//in allen Objekten in der Objektliste
 	var DsBulkListe, Docs, row;
-	DsBulkListe = {};
-	Docs = [];
-	for (i in window[ObjektlistenName].rows) {
-		row = window[ObjektlistenName].rows[i].doc;
-		if (typeof i !== "function") {
-			//Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
-			if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
-				//im Objekt alle in FelderArray aufgelisteten Felder suchen
-				for (i in FelderArray) {
-					if (typeof i !== "function") {
-						//und ihre Werte aktualisieren
-						if (localStorage[FelderArray[i]]) {
-							if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
-								row[FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
-							} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
-								row[FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
-							} else {
-								row[FelderArray[i]] = localStorage[FelderArray[i]];
-							}
-						} else {
-							delete row[FelderArray[i]];
-						}
-					}
-				}
-				Docs.push(row);
-			}
-		}
-	}
-	DsBulkListe.docs = Docs;
-	//Objektliste in DB speichern
-	$.ajax({
-		type: "POST",
-		url: "../../_bulk_docs",
-		contentType: "application/json", data: JSON.stringify(DsBulkListe),
-		success: function(data) {
-			//_rev in den Objekten in Objektliste aktualisieren
-			//für alle zurückgegebenen aktualisierten Zeilen
-			//offenbar muss data zuerst geparst werden ??!!
-			data = JSON.parse(data);
-			for (y in data) {
-				if (typeof y !== "function") {
-					//das zugehörige Objekt in der Objektliste suchen
-				    for (i in window[ObjektlistenName].rows) {
-				    	row = window[ObjektlistenName].rows[i].doc;
+	//nur machen, wenn rows vorhanden!
+	if (window[ObjektlistenName].rows.length > 0) {
+		DsBulkListe = {};
+		Docs = [];
+		for (i in window[ObjektlistenName].rows) {
+			row = window[ObjektlistenName].rows[i].doc;
+			if (typeof i !== "function") {
+				//Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
+				if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
+					//im Objekt alle in FelderArray aufgelisteten Felder suchen
+					for (i in FelderArray) {
 						if (typeof i !== "function") {
-							//und dessen rev aktualisieren
-							if (row._id === data[y].id) {
-								row._rev = data[y].rev;
-								break;
+							//und ihre Werte aktualisieren
+							if (localStorage[FelderArray[i]]) {
+								if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
+									row[FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
+								} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
+									row[FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
+								} else {
+									row[FelderArray[i]] = localStorage[FelderArray[i]];
+								}
+							} else {
+								delete row[FelderArray[i]];
+							}
+						}
+					}
+					Docs.push(row);
+				}
+			}
+		}
+		DsBulkListe.docs = Docs;
+		//Objektliste in DB speichern
+		$.ajax({
+			type: "POST",
+			url: "../../_bulk_docs",
+			contentType: "application/json", data: JSON.stringify(DsBulkListe),
+			success: function(data) {
+				//_rev in den Objekten in Objektliste aktualisieren
+				//für alle zurückgegebenen aktualisierten Zeilen
+				//offenbar muss data zuerst geparst werden ??!!
+				data = JSON.parse(data);
+				for (y in data) {
+					if (typeof y !== "function") {
+						//das zugehörige Objekt in der Objektliste suchen
+					    for (i in window[ObjektlistenName].rows) {
+					    	row = window[ObjektlistenName].rows[i].doc;
+							if (typeof i !== "function") {
+								//und dessen rev aktualisieren
+								if (row._id === data[y].id) {
+									row._rev = data[y].rev;
+									break;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-	});
+		});
+	}
 }
 
 //Neue Daten liegen in localStorage vor
@@ -1685,6 +1596,11 @@ function initiiereRaumEdit() {
 	//$('#AnhängehRE').hide();
 	if (window.hRaum) {
 		initiiereRaumEdit_2();
+	} else if (localStorage.Status === "neu") {
+		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		window.hRaum = JSON.parse(localStorage.hRaum);
+		delete localStorage.hRaum;
+		initiiereRaumEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
@@ -1701,7 +1617,12 @@ function initiiereRaumEdit_2() {
 	$("#rName").val(window.hRaum.rName);
 	//Variabeln bereitstellen
 	localStorage.ProjektId = window.hRaum.hProjektId;
-	localStorage.RaumId = window.hRaum._id;
+	//bei neuen Räumen hat das Objekt noch keine ID
+	if (window.hRaum._id) {
+		localStorage.RaumId = window.hRaum._id;
+	} else {
+		localStorage.RaumId = "neu";
+	}
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteRaumEdit) {
@@ -1767,7 +1688,9 @@ function generiereHtmlFuerRaumEditForm () {
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hRaum, {
 			success: function (data) {
+				window.hRaum._id = data.id;
 				window.hRaum._rev = data.rev;
+				localStorage.RaumId = data.id;
 			}
 		});
 		delete localStorage.Status;
@@ -1833,6 +1756,11 @@ function initiiereOrtEdit() {
 	//$('#AnhängehOE').hide();
 	if (window.hOrt) {
 		initiiereOrtEdit_2();
+	} else if (localStorage.Status === "neu") {
+		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		window.hOrt = JSON.parse(localStorage.hOrt);
+		delete localStorage.hOrt;
+		initiiereOrtEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
@@ -1853,7 +1781,12 @@ function initiiereOrtEdit_2() {
 	//Variabeln bereitstellen
 	localStorage.ProjektId = window.hOrt.hProjektId;
 	localStorage.RaumId = window.hOrt.hRaumId;
-	localStorage.OrtId = window.hOrt._id;
+	//bei neuen Orten hat das Objekt noch keine ID
+	if (window.hOrt._id) {
+		localStorage.OrtId = window.hOrt._id;
+	} else {
+		localStorage.OrtId = "neu";
+	}
 	//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 	localStorage.oLongitudeDecDeg = window.hOrt.oLongitudeDecDeg;
 	localStorage.oLatitudeDecDeg = window.hOrt.oLatitudeDecDeg;
@@ -1927,7 +1860,9 @@ function generiereHtmlFuerOrtEditForm () {
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hOrt, {
 			success: function (data) {
+				window.hOrt._id = data.id;
 				window.hOrt._rev = data.rev;
+				localStorage.OrtId = data.id;
 				GetGeolocation(data.id, "hOrt");
 			}
 		});
@@ -1994,7 +1929,13 @@ function initiiereZeitEdit() {
 	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
 	//hZeit existiert schon bei neuer Zeit
+	//alert("window.hZeit = " + JSON.stringify(window.hZeit));
 	if (window.hZeit) {
+		initiiereZeitEdit_2();
+	} else if (localStorage.Status === "neu") {
+		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		window.hZeit = JSON.parse(localStorage.hZeit);
+		delete localStorage.hZeit;
 		initiiereZeitEdit_2();
 	} else {
 		$db = $.couch.db("evab");
@@ -2015,7 +1956,10 @@ function initiiereZeitEdit_2() {
 	localStorage.ProjektId = window.hZeit.hProjektId;
 	localStorage.RaumId = window.hZeit.hRaumId;
 	localStorage.OrtId = window.hZeit.hOrtId;
-	localStorage.ZeitId = window.hZeit._id;
+	//bei neuen Zeiten hat das Objekt noch keine ID
+	if (window.hZeit._id) {
+		localStorage.ZeitId = window.hZeit._id;
+	}
 	//prüfen, ob die Feldliste schon geholt wurde
 	//wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteZeitEdit) {
@@ -2127,7 +2071,9 @@ function generiereHtmlFuerZeitEditForm() {
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hZeit, {
 			success: function (data) {
+				window.hZeit._id = data.id;
 				window.hZeit._rev = data.rev;
+				localStorage.ZeitId = data.id;
 			}
 		});
 		delete localStorage.Status;
@@ -2170,7 +2116,12 @@ function initiierehBeobEdit_2() {
 	localStorage.RaumId = window.hArt.hRaumId;
 	localStorage.OrtId = window.hArt.hOrtId;
 	localStorage.ZeitId = window.hArt.hZeitId;
-	localStorage.hBeobId = window.hArt._id;
+	//bei neuen hBeob hat das Objekt noch keine ID
+	if (window.hArt._id) {
+		localStorage.hBeobId = window.hArt._id;
+	} else {
+		localStorage.hBeobId = "neu";
+	}
 	localStorage.aArtGruppe = window.hArt.aArtGruppe;
 	localStorage.aArtName = window.hArt.aArtName;
 	localStorage.aArtId = window.hArt.aArtId;
@@ -2250,7 +2201,9 @@ function generiereHtmlFuerhArtEditForm () {
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hArt, {
 			success: function (data) {
+				window.hArt._id = data.id;
 				window.hArt._rev = data.rev;
+				localStorage.hBeobId = data.id;
 			}
 		});
 		delete localStorage.Status;

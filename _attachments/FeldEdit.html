@@ -195,7 +195,7 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.FeldId) {
+				} else if (!localStorage.Status && !localStorage.FeldId) {
 					leereAlleVariabeln("ohneClear");
 					geheZurueckFE();
 				}
@@ -209,7 +209,7 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.FeldId) {
+				} else if (!localStorage.Status && !localStorage.FeldId) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 				}
