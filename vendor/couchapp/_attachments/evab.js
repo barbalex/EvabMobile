@@ -254,7 +254,17 @@ function speichereNeueBeob(aArtBezeichnung) {
 	}
 }
 
-//Neue Beobachtungen werden gespeichert
+//dies ist der zweite Schritt, nur für Typ = hArt:
+//Felder der höheren Hierarchieebenen anfügen
+function speichereNeueBeob_02(doc) {
+	var ObjektNamenArray;
+	//die zu ergänzenden Objekte (Hierarchiestufen) aufzählen und - falls sie aus der DB geholt werden müssen - die ID mitgeben
+	ObjektNamenArray = {"hZeit": localStorage.ZeitId, "hOrt": localStorage.OrtId, "hRaum": localStorage.RaumId, "hProjekt": localStorage.ProjektId};
+	doc = ergaenzeFelderZuDoc(doc, ObjektNamenArray);
+	speichereNeueBeob_03(doc);
+}
+
+/*//Neue Beobachtungen werden gespeichert
 //ausgelöst durch hArtListe.html oder hArtEdit.html
 //dies ist der zweite Schritt:
 //Felder der höheren Hierarchieebenen anfügen
@@ -322,6 +332,57 @@ function speichereNeueBeob_02(doc) {
 			speichereNeueBeob_03(doc);
 		}
 	});
+}*/
+
+//übernimmt ein Objekt "doc", dem Felder aus anderen Objekten ergänzt werden sollen
+//übernimmt ein Objekt "ObjektNamenObjekt", der die Namen aller Objekte enthält,
+//inklusive ihrer ID's, falls sie aus der DB geholt werden müssen
+//mit deren Felder die doc aktualisiert werden soll
+//gibt das Objekt "doc" zurück
+function ergaenzeFelderZuDoc(doc, ObjektNamenObjekt) {
+	var ObjektName, Objekt, ObjektId;
+	//prüfen, ob (noch) Objekte im Objekt enthalten sind
+	for (i in ObjektNamenObjekt) {
+		if (i) {
+			//das erste Objekt aus ObjektNamenObjekt entnehmen
+			ObjektId = ObjektNamenObjekt[i];
+			ObjektName = i;
+			//entnommenen Namen löschen
+			delete ObjektNamenObjekt[i];
+			if (window[ObjektName]) {
+				//Objekt schon vorhanden
+				ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName);
+			} else {
+				//Objekt aus DB holen
+				$db = $.couch.db("evab");
+				$db.openDoc(ObjektId, {
+					success: function (data) {
+						window[ObjektName] = data;
+						ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName);
+					}
+				});
+			}
+		}
+	}
+	return doc;
+}
+
+//übernimmt das Objekt als globale Variable, die doc und ein ObjektNamenObjekt
+//ergänzt die Felder aus dem Objekt im doc
+//gibt doc und ObjektNamenObjekt wieder an ergaenzeFelderZuDoc weiter
+function ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName) {
+	//mit allen Feldern des Objekts...
+	for (i in window[ObjektName]) {
+		if (typeof i !== "function") {
+			//FeldName = i, Feldwert = window.hZeit[i]
+			//...ausser ein paar unerwünschten...
+			if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
+				//...die doc ergänzen
+				doc[i] = window[ObjektName][i];
+			}
+		}
+	}
+	ergaenzeFelderZuDoc(doc, ObjektNamenObjekt);
 }
 
 //Neue Beobachtungen werden gespeichert
@@ -437,75 +498,33 @@ function erstelleNeueZeit() {
 	doc.hOrtId = localStorage.OrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	//Daten aus höheren Hierarchiestufen ergänzen
-	$db = $.couch.db("evab");
-	$db.openDoc(doc.hOrtId, {
-		success: function (Ort) {
-			for (i in Ort) {
-				if (typeof i !== "function") {
-					//ein paar Felder wollen wir nicht
-					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hRaumId', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-						doc[i] = Ort[i];
-					}
-				}
+	//Felder aus den höheren Hierarchiestufen ergänzen
+	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId, "hOrt": localStorage.OrtId});
+	//speichern
+	$db.saveDoc(doc, {
+		success: function (Zeit) {
+			//_id und _rev ergänzen
+			doc._id = Zeit.id;
+			doc._rev = Zeit.rev;
+			//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
+			window.hZeit = doc;
+			//Variabeln verfügbar machen
+			localStorage.ZeitId = Zeit.id;
+			localStorage.Status = "neu";
+			//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			delete window.ZeitListe;
+			//Vorsicht: Von hZeitEdit.html aus samepage transition!
+			if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
+				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+				window.open("hZeitEdit.html", target = "_self");
+			} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
+				$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
+			} else {
+				$.mobile.changePage("hZeitEdit.html");
 			}
-			$db.openDoc(doc.hRaumId, {
-				success: function (Raum) {
-					for (i in Raum) {
-						if (typeof i !== "function") {
-							//ein paar Felder wollen wir nicht
-							if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-								doc[i] = Raum[i];
-							}
-						}
-					}
-					$db.openDoc(doc.hProjektId, {
-						success: function (Projekt) {
-							for (i in Projekt) {
-								if (typeof i !== "function") {
-									//ein paar Felder wollen wir nicht
-									if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-										doc[i] = Projekt[i];
-									}
-								}
-							}
-							//speichern
-							$db.saveDoc(doc, {
-								success: function (Zeit) {
-									//_id und _rev ergänzen
-									doc._id = Zeit.id;
-									doc._rev = Zeit.rev;
-									//damit hZeitEdit.html die Zeit nicht aus der DB holen muss
-									window.hZeit = doc;
-									//Variabeln verfügbar machen
-									localStorage.ZeitId = Zeit.id;
-									localStorage.Status = "neu";
-									//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-									delete window.ZeitListe;
-									//Vorsicht: Von hZeitEdit.html aus samepage transition!
-									if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
-										//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-										window.open("hZeitEdit.html", target = "_self");
-									} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
-										$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
-									} else {
-										$.mobile.changePage("hZeitEdit.html");
-									}
-								},
-								error: function () {
-									melde("Fehler: neue Zeit nicht erstellt");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: neue Zeit nicht erstellt");
-						}
-					});
-				},
-				error: function () {
-					melde("Fehler: neue Zeit nicht erstellt");
-				}
-			});
+		},
+		error: function () {
+			melde("Fehler: neue Zeit nicht erstellt");
 		}
 	});
 }
@@ -520,60 +539,30 @@ function erstelleNeuenOrt() {
 	doc.User = localStorage.Username;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
-	//Daten aus höheren Hierarchiestufen ergänzen
-	$db = $.couch.db("evab");
-	$db.openDoc(doc.hRaumId, {
-		success: function (Raum) {
-			for (i in Raum) {
-				if (typeof i !== "function") {
-					//ein paar Felder wollen wir nicht
-					if (['_id', '_rev', '_conflict', 'Typ', 'User', 'hProjektId', '_attachments'].indexOf(i) === -1) {
-						doc[i] = Raum[i];
-					}
-				}
+	//Felder aus den höheren Hierarchiestufen ergänzen
+	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId});
+	//speichern
+	$db.saveDoc(doc, {
+		success: function (data) {
+			//_id und _rev ergänzen
+			doc._id = data.id;
+			doc._rev = data.rev;
+			//damit hOrtEdit.html den Ort nicht aus der DB holen muss
+			window.hOrt = doc;
+			//Variabeln verfügbar machen
+			localStorage.OrtId = data.id;
+			//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			leereStorageOrtListe("mitLatLngListe");
+			localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
+			//Vorsicht: Von hOrtEdit.html aus samepage transition!
+			if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
+				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+				window.open("hOrtEdit.html", target = "_self");
+			} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
+				$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
+			} else {
+				$.mobile.changePage("hOrtEdit.html");
 			}
-			$db.openDoc(doc.hProjektId, {
-				success: function (Projekt) {
-					for (i in Projekt) {
-						if (typeof i !== "function") {
-							//ein paar Felder wollen wir nicht
-							if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-								doc[i] = Projekt[i];
-							}
-						}
-					}
-					//speichern
-					$db.saveDoc(doc, {
-						success: function (data) {
-							//_id und _rev ergänzen
-							doc._id = data.id;
-							doc._rev = data.rev;
-							//damit hOrtEdit.html den Ort nicht aus der DB holen muss
-							window.hOrt = doc;
-							//Variabeln verfügbar machen
-							localStorage.OrtId = data.id;
-							//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereStorageOrtListe("mitLatLngListe");
-							localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
-							//Vorsicht: Von hOrtEdit.html aus samepage transition!
-							if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
-								//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-								window.open("hOrtEdit.html", target = "_self");
-							} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
-								$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
-							} else {
-								$.mobile.changePage("hOrtEdit.html");
-							}
-						},
-						error: function () {
-							melde("Fehler: neuer Ort nicht erstellt");
-						}
-					});
-				},
-				error: function () {
-					melde("Fehler: neuer Ort nicht erstellt");
-				}
-			});
 		},
 		error: function () {
 			melde("Fehler: neuer Ort nicht erstellt");
@@ -587,45 +576,30 @@ function erstelleNeuenRaum() {
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Username;
 	doc.hProjektId = localStorage.ProjektId;
-	//Daten aus höheren Hierarchiestufen ergänzen
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.ProjektId, {
-		success: function (Projekt) {
-			for (i in Projekt) {
-				if (typeof i !== "function") {
-					//ein paar Felder wollen wir nicht
-					if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-						doc[i] = Projekt[i];
-					}
-				}
+	//Felder aus den höheren Hierarchiestufen ergänzen
+	doc = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId});
+	//doc speichern
+	$db.saveDoc(doc, {
+		success: function (data) {
+			//_id und _rev ergänzen
+			doc._id = data.id;
+			doc._rev = data.rev;
+			//damit hRaumEdit.html den Raum nicht aus der DB holen muss
+			window.hRaum = doc;
+			//Variabeln verfügbar machen
+			localStorage.RaumId = data.id;
+			localStorage.Status = "neu";
+			//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			leereStorageRaumListe("mitLatLngListe");
+			//Vorsicht: Von hRaumEdit.html aus same page transition!
+			if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
+				//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+				window.open("hRaumEdit.html", target = "_self");
+			} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
+				$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
+			} else {
+				$.mobile.changePage("hRaumEdit.html");
 			}
-			//speichern
-			$db.saveDoc(doc, {
-				success: function (data) {
-					//_id und _rev ergänzen
-					doc._id = data.id;
-					doc._rev = data.rev;
-					//damit hRaumEdit.html den Raum nicht aus der DB holen muss
-					window.hRaum = doc;
-					//Variabeln verfügbar machen
-					localStorage.RaumId = data.id;
-					localStorage.Status = "neu";
-					//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-					leereStorageRaumListe("mitLatLngListe");
-					//Vorsicht: Von hRaumEdit.html aus same page transition!
-					if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
-						//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-						window.open("hRaumEdit.html", target = "_self");
-					} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-						$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
-					} else {
-						$.mobile.changePage("hRaumEdit.html");
-					}
-				},
-				error: function () {
-					melde("Fehler: neuer Raum nicht erstellt");
-				}
-			});
 		},
 		error: function () {
 			melde("Fehler: neuer Raum nicht erstellt");
