@@ -2591,10 +2591,10 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 				}
 				o[this.name].push(this.value);
 			} else {
-				if (myTypeOf(Feldwert) === "integer") {
+				if (myTypeOf(this.value) === "integer") {
 					//typ ist Int
 					o[this.name] = parseInt(this.value);
-				} else if (myTypeOf(Feldwert) === "float") {
+				} else if (myTypeOf(this.value) === "float") {
 					//typ ist Float
 					o[this.name] = parseFloat(this.value);
 				} else {
