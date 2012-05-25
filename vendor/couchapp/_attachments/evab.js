@@ -1408,20 +1408,23 @@ function initiiereFeldliste_2() {
 
 //wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
 //die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array FelderArray überbeben
-//die Felder werden in der DB und im übergebenen Objekt DatensatzObjekt gespeichert
+//die Felder werden in der DB und im übergebenen Objekt "DatensatzObjekt" gespeichert
 //und anschliessend in Formularfeldern aktualisiert
-function speichereKoordinaten(id, DatensatzObjektName) {
+//function speichereKoordinaten übernimmt id und den ObjektNamen
+//kontrolliert, ob das Objekt existiert
+//wenn nein wird es aus der DB geholt
+function speichereKoordinaten(id, ObjektName) {
 	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
-	if (window[DatensatzObjektName]) {
+	if (window[ObjektName]) {
 		//ja: Objekt verwenden
-		speichereKoordinaten_2(DatensatzObjektName);
+		speichereKoordinaten_2(id, ObjektName);
 	} else {
 		//nein: Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
-				window[DatensatzObjektName] = data;
-				speichereKoordinaten_2(DatensatzObjektName);
+				window[ObjektName] = data;
+				speichereKoordinaten_2(id, ObjektName);
 			},
 			error: function () {
 				melde("Fehler: Koordinaten nicht gespeichert");
@@ -1430,51 +1433,143 @@ function speichereKoordinaten(id, DatensatzObjektName) {
 	}
 }
 
-function speichereKoordinaten_2(DatensatzObjektName) {
-	//Längen- und Breitengrad sind in keinem Feld dargestellt
-	//sie müssen aus ihren Variabeln gespeichert werden
-	//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+//setzt das DatensatzObjekt voraus
+//aktualisiert darin die Felder, welche in FelderArray aufgelistet sind
+//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+function speichereKoordinaten_2(id, ObjektName) {
 	var FelderArray;
 	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-	for (i in FelderArray) {
-		//alert("FelderArray[i] = " + FelderArray[i])
+	speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, "FormularAktualisieren");
+	//nun die Koordinaten in den Zeiten und Arten dieses Objekts aktualisieren
+	speichereFelderAusLocalStorageInObjektliste("ZeitenVonOrt", FelderArray, "hOrtId", id, "hZeitIdVonOrt");
+	speichereFelderAusLocalStorageInObjektliste("ArtenVonOrt", FelderArray, "hOrtId", id, "hArtIdVonOrt");
+}
+
+//übernimmt eine Liste von Feldern und eine Objektliste (via Name)
+//sucht in der Objektliste nach den Objekten mit der BezugsId
+//aktualisiert diese Objekte
+//wird verwendet, um die Koordinaten von Orten in Zeiten und Arten zu schreiben
+//im ersten Schritt prüfen, ob die Objektliste vorhanden ist. Wenn nicht, aus DB holen
+function speichereFelderAusLocalStorageInObjektliste(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert, Querystring) {
+	var viewname;
+	if (window[ObjektlistenName]) {
+		//vorhandene Objektliste nutzen
+		speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
+	} else {
+		//Objektliste aus DB holen
+		viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
+		$db = $.couch.db("evab");
+		$db.view(viewname, {
+			success: function (data) {
+				window[ObjektlistenName] = data;
+				speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
+			}
+		});
+	}
+}
+
+function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
+	//in allen Objekten in der Objektliste
+	var DsBulkListe, Docs, row;
+	DsBulkListe = {};
+	Docs = [];
+	for (i in window[ObjektlistenName].rows) {
+		row = window[ObjektlistenName].rows[i].doc;
 		if (typeof i !== "function") {
-			//if (window[DatensatzObjektName][i]) {
-				if (localStorage[FelderArray[i]]) {
-					//alert(window[DatensatzObjektName][FelderArray[i]] + " = " + localStorage[FelderArray[i]]);
-					if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
-						//Wert ist Int
-						window[DatensatzObjektName][FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
-					} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
-						//i ist Float
-						window[DatensatzObjektName][FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
-					} else {
-						window[DatensatzObjektName][FelderArray[i]] = localStorage[FelderArray[i]];
+			//Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
+			if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
+				//im Objekt alle in FelderArray aufgelisteten Felder suchen
+				for (i in FelderArray) {
+					if (typeof i !== "function") {
+						//und ihre Werte aktualisieren
+						if (localStorage[FelderArray[i]]) {
+							if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
+								row[FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
+							} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
+								row[FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
+							} else {
+								row[FelderArray[i]] = localStorage[FelderArray[i]];
+							}
+						} else {
+							delete row[FelderArray[i]];
+						}
 					}
-				} else {
-					delete window[DatensatzObjektName][FelderArray[i]];
 				}
-			//}
+				Docs.push(row);
+			}
 		}
 	}
-	//alles speichern
-	$db.saveDoc(window[DatensatzObjektName], {
-		success: function (data) {
-			window[DatensatzObjektName]._rev = data.rev;
-			//Werte im Formular anzeigen
-			// || null: verhindert, dass bei fehlenden Werten "NAN" oder "undefined" angezeigt wird
-			$("[name='oXKoord']").val(window[DatensatzObjektName].oXKoord || null);
-			$("[name='oYKoord']").val(window[DatensatzObjektName].oYKoord || null);
-			$("[name='oLatitudeDecDeg']").val(window[DatensatzObjektName].oLatitudeDecDeg || null);
-			$("[name='oLongitudeDecDeg']").val(window[DatensatzObjektName].oLongitudeDecDeg || null);
-			$("[name='oLagegenauigkeit']").val(window[DatensatzObjektName].oLagegenauigkeit || null);
-			$("[name='oHöhe']").val(window[DatensatzObjektName].oHoehe || null);	
-			$("[name='oHöheGenauigkeit']").val(window[DatensatzObjektName].oHoeheGenauigkeit || null);
-		},
-		error: function () {
-			melde("Fehler: Koordinaten nicht gespeichert");
+	DsBulkListe.docs = Docs;
+	//Objektliste in DB speichern
+	$.ajax({
+		type: "POST",
+		url: "../../_bulk_docs",
+		contentType: "application/json", data: JSON.stringify(DsBulkListe),
+		success: function(data) {
+			//_rev in den Objekten in Objektliste aktualisieren
+			//für alle zurückgegebenen aktualisierten Zeilen
+			//offenbar muss data zuerst geparst werden ??!!
+			data = JSON.parse(data);
+			for (y in data) {
+				if (typeof y !== "function") {
+					//das zugehörige Objekt in der Objektliste suchen
+				    for (i in window[ObjektlistenName].rows) {
+				    	row = window[ObjektlistenName].rows[i].doc;
+						if (typeof i !== "function") {
+							//und dessen rev aktualisieren
+							if (row._id === data[y].id) {
+								row._rev = data[y].rev;
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 	});
+}
+
+//Neue Daten liegen in localStorage vor
+//sie werden in Objekt und in DB geschrieben
+//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+//FelderArray enthält eine Liste der Namen der zu aktualisierenden Felder
+//ObjektName ist der Name des zu aktualisierenden Objekts bzw. Datensatzes
+function speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, FormularAktualisieren) {
+	//Objekt aktualisieren
+	for (i in FelderArray) {
+		if (typeof i !== "function") {
+			if (localStorage[FelderArray[i]]) {
+				if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
+					window[ObjektName][FelderArray[i]] = parseInt(localStorage[FelderArray[i]]);
+				} else if (myTypeOf(localStorage[FelderArray[i]]) === "float") {
+					window[ObjektName][FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
+				} else {
+					window[ObjektName][FelderArray[i]] = localStorage[FelderArray[i]];
+				}
+			} else {
+				delete window[ObjektName][FelderArray[i]];
+			}
+		}
+	}
+	//in DB speichern
+	$db.saveDoc(window[ObjektName], {
+		success: function (data) {
+			window[ObjektName]._rev = data.rev;
+			if (FormularAktualisieren) {
+				aktualisiereKoordinatenfelderInFormular(ObjektName);
+			}
+		}
+	});
+}
+
+//übernimmt ein Objekt (via dessen Namen) und eine Liste von Feldern (FelderArray)
+//setzt in alle Felder mit den Namen gemäss FelderArray die Werte gemäss Objekt
+function aktualisiereKoordinatenfelderInFormular(ObjektName, FelderArray) {
+	for (i in FelderArray) {
+		if (typeof i !== "function") {
+			$("[name='" + FelderArray[i] + "']").val(window[ObjektName][FelderArray[i]] || null);
+		}
+	}
 }
 
 //dient der Unterscheidung von Int und Float
@@ -1499,12 +1594,12 @@ function myTypeOf(Wert) {
 	return Type;
 }
 
-//Übernimmt einen Feldnamen, einen Feldwert und seinen Typ (number?)
+//Übernimmt einen Feldnamen, einen Feldwert
 //und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
 //speichert das neue Feld in alle Datensätze der Liste in der DB
 //und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
 function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
-	var JsonBulkListe, DsBulkListe, Docs, row;
+	var DsBulkListe, Docs, row;
 	//nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
 	Docs = [];
@@ -1524,9 +1619,6 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
 		Docs.push(row);
 	}
 	DsBulkListe.docs = Docs;
-	JsonBulkListe = JSON.stringify(DsBulkListe);
-	//$db = $.couch.db("evab");
-	//$db.bulkSave(JsonBulkListe);
 	$.ajax({
 		type: "POST",
 		url: "../../_bulk_docs",
@@ -2540,8 +2632,6 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 					}
 					o[this.name].push(this.value);
 				} else {
-					//alert(this.value);
-					//alert(typeof this.value);
 					if (myTypeOf(this.value) === "integer") {
 						//typ ist Int
 						o[this.name] = parseInt(this.value);
@@ -3531,6 +3621,7 @@ function leereStorageRaumListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
+	delete window.RaeumeVonProjekt;
 }
 
 function leereStorageRaumEdit(mitLatLngListe, ohneId) {
@@ -3558,6 +3649,8 @@ function leereStorageOrtListe(mitLatLngListe) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
+	delete window.OrteVonProjekt;
+	delete window.OrteVonRaum;
 }
 
 function leereStorageOrtEdit(ohneId) {
@@ -3589,6 +3682,9 @@ function leereStorageOrtEdit(ohneId) {
 
 function leereStorageZeitListe() {
 	delete window.ZeitListe;
+	delete window.ZeitenVonProjekt;
+	delete window.ZeitenVonRaum;
+	delete window.ZeitenVonOrt;
 }
 
 function leereStorageZeitEdit(ohneId) {
@@ -3605,6 +3701,10 @@ function leereStorageZeitEdit(ohneId) {
 
 function leereStoragehBeobListe() {
 	delete window.hBeobListe;
+	delete window.ArtenVonProjekt;
+	delete window.ArtenVonRaum;
+	delete window.ArtenVonOrt;
+	delete window.ArtenVonZeit;
 }
 
 function leereStoragehBeobEdit(ohneId) {
