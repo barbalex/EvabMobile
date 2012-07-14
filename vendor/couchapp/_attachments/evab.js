@@ -1388,7 +1388,8 @@ function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderA
 		$.ajax({
 			type: "POST",
 			url: "../../_bulk_docs",
-			contentType: "application/json", data: JSON.stringify(DsBulkListe),
+			contentType: "application/json", 
+			data: JSON.stringify(DsBulkListe),
 			success: function(data) {
 				//_rev in den Objekten in Objektliste aktualisieren
 				//für alle zurückgegebenen aktualisierten Zeilen
@@ -1507,7 +1508,8 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
 	$.ajax({
 		type: "POST",
 		url: "../../_bulk_docs",
-		contentType: "application/json", data: JSON.stringify(DsBulkListe)
+		contentType: "application/json", 
+		data: JSON.stringify(DsBulkListe)
 	});
 }
 
@@ -1534,7 +1536,8 @@ function loescheIdIdRevListe(Datensatzobjekt) {
 	$.ajax({
 		type: "POST",
 		url: "../../_bulk_docs",
-		contentType: "application/json", data: JSON.stringify(ObjektMitDeleteListe)
+		contentType: "application/json", 
+		data: JSON.stringify(ObjektMitDeleteListe)
 	});
 }
 
@@ -2325,7 +2328,7 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
 	HtmlContainer += '" class="speichern"/>\n</div>';
-	return HtmlContainer;	
+	return HtmlContainer;
 }
 
 //generiert den html-Inhalt für Slider
@@ -3033,7 +3036,6 @@ function pruefeAnmeldung() {
 			dataType: 'json',
 			async: false,
 			success: function (session) {
-				//if (session.userCtx.name !== (undefined || null)) {
 				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
 					localStorage.Username = session.userCtx.name;
 				} else {
