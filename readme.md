@@ -51,7 +51,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 2. und zwar sofort und ohne nachträgliche Büroarbeit
 3. Mit den Daten zum Schutz seltener Arten beitragen
 
-Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobbyisten. Es ist besonders geeignet, um die Erfassung der Daten für ein aufwändiges Projekt zu optimieren. Um Hobby-ArtbeobachterInnen zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
+Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobbyisten. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Hobby-ArtbeobachterInnen zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
 
 
 #Was kann man momentan mit der App machen? 
