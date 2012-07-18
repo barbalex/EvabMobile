@@ -114,6 +114,8 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Macken reduzieren
 - Daten besser vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App entwickeln
+
+danach:
 - Funktionalität erweitern, z.B.:
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
