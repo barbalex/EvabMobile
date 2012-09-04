@@ -156,6 +156,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Android- und iOS-App entwickeln
 
 danach:
+
 - Funktionalität erweitern, z.B.:
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
@@ -180,7 +181,7 @@ Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Ler
 
 <a name="Hilfe"></a>
 #Hilfe erwünscht
-Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für [dieses Projekt](https://github.com/barbalex/EvabMobile) engagieren würde!
 
 <a href="#top">&#8593; top</a>
 
@@ -200,10 +201,10 @@ Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iris
 
 Das App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
 
-Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich.
+Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich (Version 10 konnte ich noch nicht testen).
 
-Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS. Android hat überraschende Schwächen, die auch die Leistung dieser Anwendung schmälern. Am zuverlässigsten funktioniert es mit Firefox mobile und Opera mobile. Mit dem Android-Browser auf ICS (Android Version 4) und Android Chrome (beta) klappts auch, bloss das Menü ist unbrauchbar. Android Chrome wäre am schönsten und schnellsten, wenn bloss das Menü funktionieren würde...
+Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS oder Google Chrome bzw. Firefox auf Android. Der Standardbrowser von Android hat überraschende Schwächen, welche die Leistung dieser Anwendung schmälern.
 
-Auf Mobilgeräten ist die Webseite etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Auf dem PC scheint sie mir mittlerweilen - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist die Anwendung richtig schnell.
+Auf Mobilgeräten ist die Webseite etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist die Anwendung richtig schnell.
 
 <a href="#top">&#8593; top</a>
