@@ -1,3 +1,4 @@
+<a name="top"></a>
 ## Inhalt ##
 * <a href="#Ausgangslage">Ausgangslage</a>
 * <a href="#Motivation">Motivation</a>
@@ -34,12 +35,16 @@ Gängige Probleme:
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
 
+<a href="#top">&#8593; top</a>
+
 
 <a name="Motivation"></a>
 #Motivation
 Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
+
+<a href="#top">&#8593; top</a>
 
 
 <a name="Projektidee"></a>
@@ -50,6 +55,8 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 - Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert Daten und Anwendung automatisch im Hintergrund
 - Da schemafrei und dokumentorientiert, können mit CouchDb projekteigene Datenfelder definiert sowie Bilder, Tonaufnahmen oder Projektberichte angehängt werden
 
+<a href="#top">&#8593; top</a>
+
 
 <a name="ZieleNsf"></a>
 #Ziele für Naturschutzfachstellen
@@ -59,12 +66,16 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 4. Der Gesamtaufwand für Felderfassung und Digitalisierung sinkt
 5. Die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
 
+<a href="#top">&#8593; top</a>
+
 
 <a name="ZieleProfis"></a>
 #Ziele für Naturschutzprofis
 1. Mühsame Nachbearbeitung reduzieren
 2. Projekte schneller abschliessen
 3. Anforderungen der Naturschutzfachstellen besser erfüllen
+
+<a href="#top">&#8593; top</a>
 
 
 <a name="ZieleHobby"></a>
@@ -74,6 +85,8 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 3. Mit den Daten zum Schutz seltener Arten beitragen
 
 Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobbyisten. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Hobby-ArtbeobachterInnen zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
+
+<a href="#top">&#8593; top</a>
 
 
 <a name="machen"></a>
@@ -133,6 +146,8 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet der Webservice, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation selber einzurichten kostet einen Profi aber bloss 20 Minuten
 - [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
+<a href="#top">&#8593; top</a>
+
 
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
@@ -160,10 +175,14 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
+<a href="#top">&#8593; top</a>
+
 
 <a name="Hilfe"></a>
 #Hilfe erwünscht
 Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
+
+<a href="#top">&#8593; top</a>
 
 
 <a name="GibtsSchon"></a>
@@ -171,6 +190,8 @@ Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchD
 Die App existiert eigentlich schon. Sie heisst EvAB (<span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher niemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. 
 
 Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
+
+<a href="#top">&#8593; top</a>
 
 
 <a name="ausprobieren"></a>
