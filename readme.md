@@ -1,3 +1,18 @@
+## Inhalt ##
+* <a href="#Ausgangslage">Ausgangslage</a>
+* <a href="#Motivation">Motivation</a>
+* <a href="#Projektidee">Projektidee</a>
+* <a href="#ZieleNsf">Ziele für Naturschutzfachstellen</a>
+* <a href="#ZieleProfis">Ziele für Naturschutzprofis</a>
+* <a href="#ZieleHobby">Ziele für Hobby-ArtbeobachterInnen</a>
+* <a href="#machen">Was kann man momentan mit der App machen?</a>
+* <a href="#roadmap">Wie geht es weiter?</a>
+* <a href="#Hilfe">Hilfe erwünscht</a>
+* <a href="#GibtsSchon">Gibt's das nicht schon?</a>
+* <a href="#ausprobieren">Das will ich ausprobieren</a>
+
+
+<a name="Ausgangslage"></a>
 #Ausgangslage
 Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Artbeobachtungsdaten digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](http://www.natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
@@ -19,11 +34,15 @@ Gängige Probleme:
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
 
+
+<a name="Motivation"></a>
 #Motivation
 Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
 
+
+<a name="Projektidee"></a>
 #Projektidee
 - Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com) und [Phonegap](http://phonegap.com) verwendet.<br>Damit kann die App prinzipiell auf jedes Betriebssystem portiert werden
@@ -32,6 +51,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 - Da schemafrei und dokumentorientiert, können mit CouchDb projekteigene Datenfelder definiert sowie Bilder, Tonaufnahmen oder Projektberichte angehängt werden
 
 
+<a name="ZieleNsf"></a>
 #Ziele für Naturschutzfachstellen
 1. Artbeobachtungen liegen vermehrt digital vor
 2. Sie stehen schneller zur Verfügung
@@ -40,12 +60,14 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 5. Die Vorteile motivieren FeldbeobachterInnen, Artbeobachtungen direkt digital zu erfassen
 
 
+<a name="ZieleProfis"></a>
 #Ziele für Naturschutzprofis
 1. Mühsame Nachbearbeitung reduzieren
 2. Projekte schneller abschliessen
 3. Anforderungen der Naturschutzfachstellen besser erfüllen
 
 
+<a name="ZieleHobby"></a>
 #Ziele für Hobby-ArtbeobachterInnen
 1. Beobachtungen übersichtlich dokumentieren
 2. und zwar sofort und ohne nachträgliche Büroarbeit
@@ -54,6 +76,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobbyisten. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Hobby-ArtbeobachterInnen zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
 
 
+<a name="machen"></a>
 #Was kann man momentan mit der App machen? 
 
 **Installieren:**
@@ -110,6 +133,8 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet der Webservice, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation selber einzurichten kostet einen Profi aber bloss 20 Minuten
 - [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
+
+<a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
 - Daten besser vor unauthorisiertem Zugriff schützen
@@ -135,14 +160,20 @@ Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären 
 
 Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Lernfähigkeit und Freizeit ab.
 
+
+<a name="Hilfe"></a>
 #Hilfe erwünscht
 Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für dieses Projekt engagieren würde!
 
+
+<a name="GibtsSchon"></a>
 #Gibt's das nicht schon?
 Die App existiert eigentlich schon. Sie heisst EvAB (<span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher niemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. 
 
 Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
 
+
+<a name="ausprobieren"></a>
 #Das will ich ausprobieren
 Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a>.
 
