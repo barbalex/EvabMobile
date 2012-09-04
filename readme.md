@@ -205,3 +205,5 @@ Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut au
 Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS. Android hat überraschende Schwächen, die auch die Leistung dieser Anwendung schmälern. Am zuverlässigsten funktioniert es mit Firefox mobile und Opera mobile. Mit dem Android-Browser auf ICS (Android Version 4) und Android Chrome (beta) klappts auch, bloss das Menü ist unbrauchbar. Android Chrome wäre am schönsten und schnellsten, wenn bloss das Menü funktionieren würde...
 
 Auf Mobilgeräten ist die Webseite etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Auf dem PC scheint sie mir mittlerweilen - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist die Anwendung richtig schnell.
+
+<a href="#top">&#8593; top</a>
