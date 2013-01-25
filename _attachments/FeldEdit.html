@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
-  	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
-  	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>EvAB</title>
-  	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-  	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-  	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
-	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
+  	<link rel="stylesheet" href="style/jquery.mobile.css">
+  	<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
+  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
+  	<link rel="stylesheet" href="style/evab.css">
+  	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<script src="vendor/couchapp/jquery.js"></script>
+	<script>			
 		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
@@ -20,16 +20,16 @@
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
 	</script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-  	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+	<script src="vendor/couchapp/jquery.couch.js"></script>
+	<script src="vendor/couchapp/jquery.form.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.js"></script>
+	<script src="vendor/couchapp/phonegap.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script src="vendor/couchapp/evab.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="vendor/couchapp/markerclusterer.js"></script>
+  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 </head>
 <body>
 	<div data-role="page" id="FeldEditPage">
@@ -57,7 +57,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
-					<input id="Standardwert" name="Standardwert" type="text" placeholder="wird bei neuen Beobachtungen in diesem Feld eingefügt"/>
+					<input id="Standardwert" name="Standardwert" type="text" placeholder="wird bei neuen Beobachtungen in diesem Feld eingefügt">
 				</div>
 			</form>
 				<hr>
@@ -66,25 +66,25 @@
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Hierarchiestufe (erforderlich):</legend>
-							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt">
 							<label for="Projekt">Projekt</label>
-							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Raum" value="Raum">
 							<label for="Raum">Raum</label>
-							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Ort" value="Ort"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Ort" value="Ort">
 							<label for="Ort">Ort</label>
-							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Zeit" value="Zeit"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Zeit" value="Zeit">
 							<label for="Zeit">Zeit</label>
-							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Art" value="Art"/>
+							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Art" value="Art">
 							<label for="Art">Art</label>
 					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
-					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="erforderlich">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="erforderlich">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
@@ -92,70 +92,70 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="erforderlich"/>
+					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="erforderlich">
 				</div>
 				<div id="FeldFolgtNachDiv"></div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
-					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Name beim ZDSF:</label>
-					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Name beim CSCF:</label>
-					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameNism">Name beim NISM:</label>
-					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text"/>
+					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Feldtyp:</legend>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput">
 							<label for="textinput">einfaches Feld (textinput)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea">
 							<label for="textarea">einfaches Feld, wächst mit Inhalt (textarea)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch">
 							<label for="toggleswitch">ja/nein (toggleswitch)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider">
 							<label for="slider">Schieber: Zahlen von min. Wert bis max. Wert (slider)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu">
 							<label for="selectmenu">Auswahlliste geschlossen, ein Wert möglich (selectmenu)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="multipleselect" value="multipleselect"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="multipleselect" value="multipleselect">
 							<label for="multipleselect">Auswahlliste geschlossen, mehrere Werte möglich (multipleselect)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio">
 							<label for="radio">Auswahlliste offen, ein Wert möglich (radio)</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="checkbox" value="checkbox"/>
+							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="checkbox" value="checkbox">
 							<label for="checkbox">Auswahlliste offen, mehrere Werte möglich (checkbox)</label>
 					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Datentyp eines einfachen Feldes:</legend>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text">
 							<label for="text">Text</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number">
 							<label for="number">Zahl</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="date" value="date"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="date" value="date">
 							<label for="date">Datum</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="time" value="time"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="time" value="time">
 							<label for="time">Zeit</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="datetime" value="datetime"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="datetime" value="datetime">
 							<label for="datetime">Datum und Zeit</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="email" value="email"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="email" value="email">
 							<label for="email">email</label>
-							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="url" value="url"/>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="url" value="url">
 							<label for="url">url</label>
 					</fieldset>
 				</div>
@@ -167,11 +167,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text"/>
+					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" />
+					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" >
 				</div>
 			</form>
 			<ul data-role="pagination">
@@ -187,7 +187,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
-		<script type="text/javascript">
+		<script>
 			//Sollte keine id vorliegen, zu FeldListe.html wechseln
 			//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 			//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde

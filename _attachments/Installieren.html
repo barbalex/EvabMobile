@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
   <head>
   		<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
-		<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>EvAB</title>
-		<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
-		<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-		<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
-		<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-		<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-		<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-		<script type="text/javascript">
+		<link rel="stylesheet" href="style/jquery.mobile.css">
+		<link rel="stylesheet" href="style/evab.css">
+		<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+		<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
+		<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
+		<script src="vendor/couchapp/jquery.js"></script>
+		<script>
 			$(document).on("mobileinit", function () {
 				$.mobile.page.prototype.options.degradeInputs.date = 'text';
 				$.mobile.page.prototype.options.degradeInputs.time = 'text';
@@ -20,16 +20,16 @@
 				$.mobile.buttonMarkup.hoverDelay = 0;
 			});
 		</script>
-		<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
-		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-		<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+		<script src="vendor/couchapp/jquery.couch.js"></script>
+		<script src="vendor/couchapp/jquery.form.js"></script>
+		<script src="vendor/couchapp/jquery.mobile.js"></script>
+		<script src="vendor/couchapp/phonegap.js"></script>
+		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+		<script src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+		<script src="vendor/couchapp/evab.js"></script>
+		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script src="vendor/couchapp/markerclusterer.js"></script>
+		<script src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
   	<div data-role="page" id="InstallierenPage">
@@ -38,7 +38,7 @@
   			<h2>lokal installieren</h2>
   		</div>
 		<div id="UserEditContent" data-role="content" style="padding:0em;">
-			<p>EvAB mobile kann auch auf Ihrem PC, Handy oder Tablett als "App" installiert werden (Windows, Mac, Android, iOS).<br /><br />
+			<p>EvAB mobile kann auch auf Ihrem PC, Handy oder Tablett als "App" installiert werden (Windows, Mac, Android, iOS).<br ><br >
 			Ihre Beobachtungen werden lokal gespeichert und bei aktiver Internetverbindung dauernd mit der Datenbank im Internet synchronisiert.</p>
 			<p><b>Vorteile einer lokalen Installation:</b></p>
 			<ul>
@@ -48,8 +48,8 @@
 				<li>Auf Mobilgeräten schonen Sie Ihren Akku</li>
 				<li>Die App läuft viel schneller und flüssiger</li>
 			</ul>
-			<hr />
-			<a href="../takeout/_show/takeout.jnlp/_design/takeout-settings.jnlp" target="_blank" data-role="button" data-inline="true">Auf PC installieren</a><br />Hinweise:
+			<hr >
+			<a href="../takeout/_show/takeout.jnlp/_design/takeout-settings.jnlp" target="_blank" data-role="button" data-inline="true">Auf PC installieren</a><br >Hinweise:
 			<ul>
 				<li>Funktioniert auf Windows XP, Vista, 7 und Mac OsX</li>
 				<li><a href="http://www.java.com/de/download/" target="_blank">Java</a> wird vorausgesetzt</li>
@@ -57,11 +57,11 @@
 				<li>Die App wird in Ihrem Homeverzeichnis unter .couchapptakeout installiert</li>
 				<li>Diese Funktion konnte ich nicht eingehend testen. Bitte <a href="mailto:alex.barbalex@gmail.com">teilen Sie mir Ihre Erfahrungen mit</a>.</li>
 			</ul>
-			<hr />
+			<hr >
 			<p>Die Apps für Android und iOS sind noch in Entwicklung.</p>
-			<hr />
+			<hr >
 		</div>
-		<script type="text/javascript">
+		<script>
 			$("#InstallierenPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
-	<meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>EvAB</title>
-	<link rel="stylesheet" href="style/jquery.mobile.css" type="text/css"/>
-	<link rel="stylesheet" href="style/jquery.mobile.datebox.css" type="text/css"/>
-	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css" type="text/css"/>
-	<link rel="stylesheet" href="style/evab.css" type="text/css"/>
-	<style type="text/css">.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
-	<script type="text/javascript" src="vendor/couchapp/jquery.js"></script>
-	<script type="text/javascript">			
+	<link rel="stylesheet" href="style/jquery.mobile.css">
+	<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
+	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
+	<link rel="stylesheet" href="style/evab.css">
+	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<script src="vendor/couchapp/jquery.js"></script>
+	<script>			
 		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
 			$.mobile.page.prototype.options.degradeInputs.time = 'text';
@@ -20,16 +20,16 @@
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
 	</script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.couch.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.form.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/phonegap.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/evab.js"></script>
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="vendor/couchapp/markerclusterer.js"></script>
-	<script type="text/javascript" src="vendor/couchapp/markerwithlabel.js"></script>
+	<script src="vendor/couchapp/jquery.couch.js"></script>
+	<script src="vendor/couchapp/jquery.form.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.js"></script>
+	<script src="vendor/couchapp/phonegap.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script src="vendor/couchapp/evab.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="vendor/couchapp/markerclusterer.js"></script>
+	<script src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
 
   <body>
@@ -51,41 +51,41 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="aAutorBE">Autor:</label>
-					<input id="aAutorBE" name="aAutor" class="speichern" type="text" required/>
+					<input id="aAutorBE" name="aAutor" class="speichern" type="text" required>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oXKoordBE">X-Koordinate:</label>
-					<input id="oXKoordBE" name="oXKoord" class="speichern" type="text" />
+					<input id="oXKoordBE" name="oXKoord" class="speichern" type="text" >
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oYKoordBE">Y-Koordinate:</label>
-					<input id="oYKoordBE" name="oYKoord" class="speichern" type="text" />
+					<input id="oYKoordBE" name="oYKoord" class="speichern" type="text" >
 				</div>
 				<div data-role="fieldcontain">
 					<label for="oLagegenauigkeitBE">Lage Genauigkeit:</label>
-					<input id="oLagegenauigkeitBE" name="oLagegenauigkeit" class="speichern" type="text" />
+					<input id="oLagegenauigkeitBE" name="oLagegenauigkeit" class="speichern" type="text" >
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatumBE">Datum:</label>
-					<input id="zDatumBE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required/>
+					<input id="zDatumBE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zUhrzeitBE">Zeit:</label>
-					<input id="zUhrzeitBE" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}'/>
+					<input id="zUhrzeitBE" name="zUhrzeit" class="speichern" type="date" data-role="datebox" data-options='{"mode": "timeflipbox"}'>
 				</div>
 				<div id="BeobEditFormHtml">
 					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
 				</div>
 			</form>
 			<form id="FormAnhängeBE" action="" method="post" >
-				<hr />
+				<hr >
 				<div style="display:inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
 				<div id="AnhängeBE">
 
 				</div>			
 				<div data-role="fieldcontain">
 					<label for="_attachmentsBE" class="ui-input-text">Dateien anfügen:</label>
-					<input type="file" id="_attachmentsBE" name="_attachments" multiple class="speichernAnhang ui-body-c"/>
+					<input type="file" id="_attachmentsBE" name="_attachments" multiple class="speichernAnhang ui-body-c">
 					<p>Tipp: Auf modernen Desktop-Browsern können Sie die Dateien auch mit Drag & Drop im Feld neben der Schaltfläche "droppen".</p>
 				</div>
 				<input type="hidden" id="_revBE" name="_rev">
@@ -107,7 +107,7 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		
-		<script type="text/javascript">
+		<script>
 			$("#BeobEditPage").on("pageshow", function () {
 				//Sollte keine id vorliegen, zu BeobListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
