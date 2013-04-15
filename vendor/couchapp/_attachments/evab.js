@@ -1466,18 +1466,18 @@ function isInt(n) {
 //Hilfsfunktion, die typeof ersetzt und ergänzt
 //typeof gibt bei input-Feldern immer String zurück!
 function myTypeOf(Wert) {
-	var Type;
-	if (parseInt(Wert) && parseFloat(Wert) && parseInt(Wert) != parseFloat(Wert)) {
+	if (typeof Wert === "boolean") {
+		return "boolean";
+	} else if (parseInt(Wert) && parseFloat(Wert) && parseInt(Wert) != parseFloat(Wert) && parseInt(Wert) == Wert) {
 		//es ist eine Float
-		Type = "float";
-	} else if (parseInt(Wert)) {
+		return "float";
+	} else if (parseInt(Wert) == Wert) {
 		//es ist eine Integer
-		Type = "integer";
+		return "integer";
 	} else {
 		//als String behandeln
-		Type = "string";
+		return "string";
 	}
-	return Type;
 }
 
 //Übernimmt einen Feldnamen, einen Feldwert
