@@ -51,7 +51,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 #Projektidee
 - Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com) und [Phonegap](http://phonegap.com) verwendet.<br>Damit kann die App prinzipiell auf jedes Betriebssystem portiert werden
-- Die App steht als [Web-Applikation](http://barbalex.iriscouch.com/evab/_design/evab/index.html) zur Verfügung
+- Die App steht als [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) zur Verfügung
 - Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert Daten und Anwendung automatisch im Hintergrund
 - Da schemafrei und dokumentorientiert, können mit CouchDb projekteigene Datenfelder definiert sowie Bilder, Tonaufnahmen oder Projektberichte angehängt werden
 
@@ -94,7 +94,7 @@ Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobb
 
 **Installieren:**
 
-- Direkt auf der [Web-Applikation](http://barbalex.iriscouch.com/evab/_design/evab/index.html) arbeiten
+- Direkt auf der [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) arbeiten
 - [Auf dem PC installieren](https://barbalex.cloudant.com/evab/_design/evab/Installieren.html) und lokal arbeiten (Windows, Mac OsX - wenig getestet). Vorteil: Viel schneller
 
 **Beobachtungen erfassen...**
@@ -197,7 +197,7 @@ Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_bl
 
 <a name="ausprobieren"></a>
 #Das will ich ausprobieren
-Die Webversion des Apps finden Sie <a target="_blank" href="http://barbalex.iriscouch.com/evab/_design/evab/index.html">hier</a>.
+Die Webversion des Apps finden Sie <a target="_blank" href="https://barbalex.cloudant.com/evab/_design/evab/index.html">hier</a>.
 
 Das App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
 
