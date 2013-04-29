@@ -270,27 +270,8 @@
 				});
 
 				$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
-					var Dateiname, that;
 					event.preventDefault();
-					Dateiname = this.id;
-					that = this;
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.RaumId, {
-						success: function (Raum) {
-							delete Raum._attachments[Dateiname];
-							$db.saveDoc(Raum, {
-								success: function () {
-									$(that).parent().parent().remove();
-								},
-								error: function () {
-									melde("Fehler: Anhänge werden nicht richtig angezeigt");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: Anhang wurde nicht entfernt");
-						}
-					});
+					loescheAnhang(this, window.hRaum, localStorage.RaumId);
 				});
 			
 				function löscheRaum(Arten, Zeiten, Orte) {

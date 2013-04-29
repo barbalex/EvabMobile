@@ -327,27 +327,8 @@
 				});
 
 				$("#FormAnhängeBE").on("click", "[name='LöscheAnhang']", function (event) {
-					var Dateiname, that;
 					event.preventDefault();
-					Dateiname = this.id;
-					that = this;
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.BeobId, {
-						success: function (Beob) {
-							delete Beob._attachments[Dateiname];
-							$db.saveDoc(Beob, {
-								success: function () {
-									$(that).parent().parent().remove();
-								},
-								error: function () {
-									melde("Fehler: Anhänge werden nicht richtig angezeigt");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: Anhang wurde nicht entfernt");
-						}
-					});
+					loescheAnhang(this, window.Beobachtung, localStorage.BeobId);
 				});
 
 

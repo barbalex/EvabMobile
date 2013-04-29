@@ -270,10 +270,8 @@
 				});
 
 				$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function (event) {
-					var that;
 					event.preventDefault();
-					that = this;
-					loescheAnhang(that, window.hProjekt, localStorage.ProjektId);
+					loescheAnhang(this, window.hProjekt, localStorage.ProjektId);
 				});
 
 				function löscheProjekt(Arten, Zeiten, Orte, Raeume) {
