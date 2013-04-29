@@ -569,6 +569,8 @@
 						$.mobile.changePage(zurueck);
 						delete localStorage.zurueck;
 					});
+
+					new FastClick(document.body);
 				});
 
 				$("#KartePage").on("pagehide", function () {

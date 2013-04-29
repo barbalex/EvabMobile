@@ -216,6 +216,8 @@
 					$.mobile.changePage("BeobListe.html");
 				}
 
+				new FastClick(document.body);
+
 				//jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
 					var AlterFeldWert;

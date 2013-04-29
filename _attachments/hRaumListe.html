@@ -87,6 +87,8 @@
 					return;
 				}
 
+				new FastClick(document.body);
+
 				//Link zu Projekt in Navbar und Titelleiste
 				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();

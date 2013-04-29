@@ -112,6 +112,8 @@
 					return;
 				}
 
+				new FastClick(document.body);
+
 				$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function (event) {
 					event.preventDefault();
 					leereStorageProjektEdit();

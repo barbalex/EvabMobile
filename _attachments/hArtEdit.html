@@ -120,6 +120,8 @@
 					return;
 				}
 
+				new FastClick(document.body);
+
 				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function (event) {
 					event.preventDefault();
 					leereStoragehBeobEdit();

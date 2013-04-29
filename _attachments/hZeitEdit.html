@@ -53,7 +53,7 @@
 			<form action="#" method="get" autocomplete="off" id="hZeitEditForm">
 				<div data-role="fieldcontain">
 					<label for="zDatumhZE">Datum:</label>
-					<input id="zDatumhZE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required>
+					<input id="zDatumhZE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox"}' required>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zUhrzeithZE">Zeit:</label>
@@ -112,6 +112,8 @@
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 				}
+
+				new FastClick(document.body);
 
 				$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
 					event.preventDefault();

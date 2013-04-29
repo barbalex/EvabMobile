@@ -69,7 +69,7 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zDatumBE">Datum:</label>
-					<input id="zDatumBE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox", "calStartDay": 1}' required>
+					<input id="zDatumBE" name="zDatum" class="speichern" type="date" data-role="datebox" data-options='{"mode": "calbox"}' required>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="zUhrzeitBE">Zeit:</label>
@@ -126,6 +126,8 @@
 				initiiereBeobEdit();
 			});
 
+
+
 			$("#BeobEditPage").on("pagehide", function () {
 				if (typeof watchID !== "undefined") {
 					stopGeolocation();
@@ -144,6 +146,8 @@
 					$.mobile.changePage("BeobListe.html");
 					return;
 				}
+
+				new FastClick(document.body);
 
 				$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", function() {
 					leereStorageBeobEdit();

@@ -21,7 +21,7 @@
 			$.event.special.swipe.horizontalDistanceThreshold = 250;
 			$.mobile.buttonMarkup.hoverDelay = 0;
 		});
-	</script>	
+	</script>
 	<script src="vendor/couchapp/jquery.couch.js"></script>
 	<script src="vendor/couchapp/jquery.form.js"></script>
 	<script src="vendor/couchapp/jquery.mobile.js"></script>
@@ -85,6 +85,8 @@
 					geheZurueckAE();
 					return;
 				}
+
+				new FastClick(document.body);
 
 				//zurück-Button steuern
 				$("#ArtEditHeader").on('click', '#zurueckArtEdit', function (event) {
