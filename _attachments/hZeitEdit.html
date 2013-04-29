@@ -274,13 +274,6 @@
 					loescheAnhang(this, window.hZeit, localStorage.ZeitId);
 				});
 
-				Monate = new Array("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-				jQuery.extend(jQuery.mobile.datebox.prototype.options, {
-					'dateFormat': 'YYYY-MM-DD',
-					'headerFormat': 'YYYY-MM-DD',
-					'monthsOfYear': Monate
-				});
-
 				function löscheZeit(Arten) {
 					//nur löschen, wo Datensätze vorkommen
 					if (Arten.rows.length > 0) {

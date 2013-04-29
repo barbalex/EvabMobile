@@ -3941,3 +3941,52 @@ function binb2b64(binarray)
   }
   return str;
 }
+
+/*
+ * jQuery Mobile Framework : plugin to provide a date and time picker.
+ * Copyright (c) JTSage
+ * CC 3.0 Attribution.  May be relicensed without permission/notifcation.
+ * https://github.com/jtsage/jquery-mobile-datebox
+ *
+ * Translation by: Chris P. Vigelius <me@cv.gd>, Pascal Hofmann <crowdin>
+ *
+ */
+
+jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
+	'de': {
+		setDateButtonLabel: "speichern",
+		setTimeButtonLabel: "speichern",
+		setDurationButtonLabel: "speichern",
+		calTodayButtonLabel: "heute",
+		titleDateDialogLabel: "Datum wählen",
+		titleTimeDialogLabel: "Zeit wählen",
+		daysOfWeek: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+		daysOfWeekShort: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+		monthsOfYear: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+		monthsOfYearShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dez"],
+		durationLabel: ["Tage", "Stunden", "Minuten", "Sekunden"],
+		durationDays: ["Tag", "Tage"],
+		tooltip: "Öffne Kalender",
+		nextMonth: "Nächster Monat",
+		prevMonth: "Vorheriger Monat",
+		timeFormat: 24,
+		//headerFormat: '%A, %B %-d, %Y',
+		headerFormat: '%Y-%m-%d',
+		dateFieldOrder: ['d','m','y'],
+		timeFieldOrder: ['h', 'i', 'a'],
+		slideFieldOrder: ['y', 'm', 'd'],
+		dateFormat: "%Y-%m-%d",
+		useArabicIndic: false,
+		isRTL: false,
+		calStartDay: 0,
+		clearButton: "löschen",
+		durationOrder: ['d', 'h', 'i', 's'],
+		meridiem: ["AM", "PM"],
+		timeOutput: "%k:%M",
+		durationFormat: "%Dd %DA, %Dl:%DM:%DS",
+		calDateListLabel: "Weitere Termine"
+	}
+});
+jQuery.extend(jQuery.mobile.datebox.prototype.options, {
+	useLang: 'de'
+});

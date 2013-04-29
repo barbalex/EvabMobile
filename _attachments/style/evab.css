@@ -428,10 +428,10 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
 }
 .ui-pagination .ui-pagination-prev {
   left: 0;
-  top: 160px;
+  top: 190px;
 }
 .ui-pagination .ui-pagination-next {
-  top: 160px;
+  top: 190px;
   right: 0;
 }
 .ui-pagination .ui-pagination-prev a {
