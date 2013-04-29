@@ -175,6 +175,15 @@ margin: 3px 3px 3px 4px;
   width: 40px;
 }
 
+/*verhindern, dass checkboxes die Seitwärtsnavigation überdecken*/
+.ui-checkbox, .ui-radio {
+	z-index: 0 !important;
+}
+/*verhindern, dass checkboxes die Seitwärtsnavigation überdecken*/
+ui-checkbox .ui-btn, .ui-radio .ui-btn {
+	z-index: 0 !important;
+}
+
 /* HD/"retina" sprite
 -----------------------------------------------------------------------------------------------------------*/
 
