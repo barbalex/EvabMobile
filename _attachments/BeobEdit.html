@@ -549,7 +549,8 @@
 								speichern_2(that);
 							},
 							error: function () {
-								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								console.log('fehler in function speichern_2(that)');
+							//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
@@ -585,9 +586,12 @@
 					window.Beobachtung.aArtId = localStorage.aArtId;
 					//alles speichern
 					$db.saveDoc(window.Beobachtung, {
-						error: function (data) {
+						success: function(data) {
 							window.Beobachtung._rev = data.rev;
-							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+						},
+						error: function (data) {
+							console.log('fehler in function speichern_2(that)');
+							//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 						}
 					});
 				}

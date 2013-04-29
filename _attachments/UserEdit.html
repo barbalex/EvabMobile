@@ -194,12 +194,14 @@
 									}
 								$db.saveDoc(doc, {
 									error: function () {
-										melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+										console.log('fehler in function speichern(that)');
+										//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 									}
 								});
 							},
 							error: function () {
-								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								console.log('fehler in function speichern(that)');
+								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}

@@ -487,7 +487,8 @@
 								speichern_2(that);
 							},
 							error: function () {
-								melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								console.log('fehler in function speichern(that)');
+								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
@@ -528,7 +529,8 @@
 							localStorage.hBeobId = data.id;
 						},
 						error: function () {
-							melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+							console.log('fehler in function speichern_2(that)');
+							//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 						}
 					});
 				}
