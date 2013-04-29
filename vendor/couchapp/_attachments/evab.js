@@ -411,7 +411,7 @@ function erstelleMenuFürFelder(thiz) {
 				theme: "c"
 			}
 		}
- 	});
+	});
 }
 
 function erstelleNeueZeit() {
@@ -2989,7 +2989,7 @@ function initiiereFelderWaehlen_2() {
 		}
 	}
 	$("#FelderWaehlenPageHeader .FelderWaehlenPageTitel").text(anzFelder + " Felder");
-	HtmlContainer += "\n\t</fieldset>\n</div>"
+	HtmlContainer += "\n\t</fieldset>\n</div>";
 	$("#FeldlisteFW").html(HtmlContainer).trigger("create");
 	$("input[name='Felder']").checkboxradio();
 	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
@@ -3025,7 +3025,7 @@ function neuesFeld() {
 	});
 }
 
-function pruefeAnmeldung() {		
+function pruefeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -3277,12 +3277,12 @@ function erstelleArtgruppenListe_2() {
 function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 	var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_L, ArtGruppen, AnzArten, viewname;
 	ListItemContainer = "";
-	viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"'; 
+	viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
 			ArtGruppen = data;
-			for (i in data.rows) {
+			for (var i in data.rows) {
 				if (typeof i !== "function") {
 					ArtGruppe = ArtGruppen.rows[i].key;
 					row = ArtGruppen.rows[i].value;
@@ -3290,7 +3290,7 @@ function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 					ArtGruppen_2_L = row.ArtGruppen_2_L;
 					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 					ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-					for (y in ArtGruppen_2_L) {
+					for (var y in ArtGruppen_2_L) {
 						if (typeof y !== "function") {
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_L[y].Artgruppe_2_L + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_L[y].Artgruppe_2_L + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_L[y].AnzArten + "</span><\/a><\/li>";
@@ -3312,12 +3312,12 @@ function erstelleArtgruppenListeFürNestedArtgruppeLat() {
 function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 	var i, y, ListItemContainer, ArtGruppe, row, ArtGruppen_2_D, ArtGruppen, AnzArten, viewname;
 	ListItemContainer = "";
-	viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"'; 
+	viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
 			ArtGruppen = data;
-			for (i in data.rows) {
+			for (var i in data.rows) {
 				if (typeof i !== "function") {
 					ArtGruppe = ArtGruppen.rows[i].key;
 					row = ArtGruppen.rows[i].value;
@@ -3325,7 +3325,7 @@ function erstelleArtgruppenListeFürNestedArtgruppeDeutsch() {
 					ArtGruppen_2_D = row.ArtGruppen_2_D;
 					ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 					ListItemContainer += "<a href=\"#\"><h3>A - Z<\/h3><p>Langsamer, kann Mobilgeräte überfordern</p><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-					for (y in ArtGruppen_2_D) {
+					for (var y in ArtGruppen_2_D) {
 						if (typeof y !== "function") {
 							ListItemContainer += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\" L=\"" + ArtGruppen_2_D[y].Artgruppe_2_D + "\">";
 							ListItemContainer += "<a href=\"#\"><h3>" + ArtGruppen_2_D[y].Artgruppe_2_D + "<\/h3><span class='ui-li-count'>" + ArtGruppen_2_D[y].AnzArten + "</span><\/a><\/li>";
@@ -3691,14 +3691,14 @@ function leereStorageFeldEdit(ohneId) {
 * Dual licensed under the MIT or GPL Version 2 licenses.
 */
 (function ($, undefined) {
-	
+
 	//auto-init on pagecreate
 	$(document).bind("pagecreate", function (e) {
 		$(":jqmData(role='pagination')", e.target).pagination();
 	});
-	
+
 	var pageTitle = "";
-	
+
 	//create widget
 	$.widget("mobile.pagination", $.mobile.widget, {
 		_create: function () {
@@ -3716,25 +3716,25 @@ function leereStorageFeldEdit(ohneId) {
 				dragClassOn	= false,
 				$nextPage,
 				$prevPage;
-			
+
 			$el.addClass(classNS);
-			
+
 			//set up next and prev buttons
-			
+
 			$links.each(function () {
 				var reverse = $(this).closest("." + prevLIClass).length;
-			
+
 				$(this)
 					.buttonMarkup({
 						"role"		: "button",
 						"theme"		: "d",
 						"iconpos"	: "notext",
 						"icon"		: "arrow-" + (reverse ? "l" : "r")
-					})
+					});
 			});
-		}		
+		}
 	});
-	
+
 }( jQuery ));
 
 
@@ -3769,16 +3769,14 @@ function str_hmac_sha1(key, data){ return binb2str(core_hmac_sha1(key, data));}
 /*
  * Perform a simple self-test to see if the VM is working
  */
-function sha1_vm_test()
-{
-  return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+function sha1_vm_test() {
+	return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
 }
 
 /*
  * Calculate the SHA-1 of an array of big-endian words, and a bit length
  */
-function core_sha1(x, len)
-{
+function core_sha1(x, len) {
   /* append padding */
   x[len >> 5] |= 0x80 << (24 - len % 32);
   x[((len + 64 >> 9) << 4) + 15] = len;
@@ -3792,30 +3790,30 @@ function core_sha1(x, len)
 
   for(var i = 0; i < x.length; i += 16)
   {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-    var olde = e;
+	var olda = a;
+	var oldb = b;
+	var oldc = c;
+	var oldd = d;
+	var olde = e;
 
-    for(var j = 0; j < 80; j++)
-    {
-      if(j < 16) w[j] = x[i + j];
-      else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
-      var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
-                       safe_add(safe_add(e, w[j]), sha1_kt(j)));
-      e = d;
-      d = c;
-      c = rol(b, 30);
-      b = a;
-      a = t;
-    }
+	for(var j = 0; j < 80; j++)
+	{
+	  if(j < 16) w[j] = x[i + j];
+	  else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
+	  var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
+					   safe_add(safe_add(e, w[j]), sha1_kt(j)));
+	  e = d;
+	  d = c;
+	  c = rol(b, 30);
+	  b = a;
+	  a = t;
+	}
 
-    a = safe_add(a, olda);
-    b = safe_add(b, oldb);
-    c = safe_add(c, oldc);
-    d = safe_add(d, oldd);
-    e = safe_add(e, olde);
+	a = safe_add(a, olda);
+	b = safe_add(b, oldb);
+	c = safe_add(c, oldc);
+	d = safe_add(d, oldd);
+	e = safe_add(e, olde);
   }
   return Array(a, b, c, d, e);
 
@@ -3839,7 +3837,7 @@ function sha1_ft(t, b, c, d)
 function sha1_kt(t)
 {
   return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
-         (t < 60) ? -1894007588 : -899497514;
+		 (t < 60) ? -1894007588 : -899497514;
 }
 
 /*
@@ -3853,8 +3851,8 @@ function core_hmac_sha1(key, data)
   var ipad = Array(16), opad = Array(16);
   for(var i = 0; i < 16; i++)
   {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+	ipad[i] = bkey[i] ^ 0x36363636;
+	opad[i] = bkey[i] ^ 0x5C5C5C5C;
   }
 
   var hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
@@ -3889,7 +3887,7 @@ function str2binb(str)
   var bin = Array();
   var mask = (1 << chrsz) - 1;
   for(var i = 0; i < str.length * chrsz; i += chrsz)
-    bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
+	bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
   return bin;
 }
 
@@ -3901,7 +3899,7 @@ function binb2str(bin)
   var str = "";
   var mask = (1 << chrsz) - 1;
   for(var i = 0; i < bin.length * 32; i += chrsz)
-    str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
+	str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
   return str;
 }
 
@@ -3914,8 +3912,8 @@ function binb2hex(binarray)
   var str = "";
   for(var i = 0; i < binarray.length * 4; i++)
   {
-    str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
-           hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+	str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+		   hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
   }
   return str;
 }
@@ -3929,14 +3927,14 @@ function binb2b64(binarray)
   var str = "";
   for(var i = 0; i < binarray.length * 4; i += 3)
   {
-    var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
-                | (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
-                |  ((binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
-    for(var j = 0; j < 4; j++)
-    {
-      if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
-      else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
-    }
+	var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
+				| (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
+				|  ((binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
+	for(var j = 0; j < 4; j++)
+	{
+	  if(i * 8 + j * 6 > binarray.length * 32) str += b64pad;
+	  else str += tab.charAt((triplet >> 6*(3-j)) & 0x3F);
+	}
   }
   return str;
 }
