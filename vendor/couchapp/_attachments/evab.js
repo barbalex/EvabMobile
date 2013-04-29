@@ -2955,11 +2955,11 @@ function initiiereFelderWaehlen_2() {
 				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
 					FeldBeschriftung += "<span style='font-weight:normal;'> (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")</span>";
 				}
-				ListItem = "\n\t\t\<label for='";
+				ListItem = "\n\t\t<label for='";
 				ListItem += FeldName;
 				ListItem += "'>";
 				ListItem += FeldBeschriftung;
-				ListItem += "</label>\n\t\t\<input type='checkbox' name='";
+				ListItem += "</label>\n\t\t<input type='checkbox' name='";
 				ListItem += "Felder";
 				ListItem += "' id='";
 				ListItem += FeldName;

@@ -222,13 +222,17 @@
 					}
 				});
 
-				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
-				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
+				//Eingabe im Zahlenfeld abfangen
 				$("#BeobEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				$("#BeobEditForm").on("mouseup", '.ui-slider-handle', function (event) {
+				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				$("#BeobEditForm").on("mouseup", '.ui-slider-input', function (event) {
+					speichern(this);
+				});
+				//Ende des Schiebens abfangen
+				$("#BeobEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 

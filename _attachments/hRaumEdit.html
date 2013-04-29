@@ -125,13 +125,17 @@
 					speichern(this);
 				});
 
-				//Slider-Felder erst bei mouseup speichern - change wird für jeden geswipten Wert ausgelöst!
-				//blur fängt die Eingabe als Zahl im Feld ab
 				//ungelöstes Problem: swipe reagiert!
+				//Eingabe im Zahlenfeld abfangen
 				$("#hRaumEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				$("#hRaumEditForm").on("mouseup", '.ui-slider-handle', function (event) {
+				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				$("#hRaumEditForm").on("mouseup", '.ui-slider-input', function (event) {
+					speichern(this);
+				});
+				//Ende des Schiebens abfangen
+				$("#hRaumEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
