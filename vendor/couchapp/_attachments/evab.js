@@ -393,9 +393,9 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 //Menü aufbauen. Wird aufgerufen von Feldliste.html und FeldEdit.html
 function erstelleMenuFürFelder(thiz) {
 	//Code um Menü aufzubauen
-	$(thiz).simpledialog({
-		'mode' : 'bool',
-		'prompt' : 'Menü',
+	$(thiz).simpledialog2({
+		'mode' : 'button',
+		'buttonPrompt' : '<b>Menü</b>',
 		'fullHTML': 'true',
 		'buttons' : {
 			'Datenfelder<br>exportieren': {

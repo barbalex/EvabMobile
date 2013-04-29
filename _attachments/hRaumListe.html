@@ -25,7 +25,7 @@
 	<script src="vendor/couchapp/jquery.mobile.js"></script>
 	<script src="vendor/couchapp/phonegap.js"></script>
 	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-	<script src="vendor/couchapp/jquery.mobile.simpledialog.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.simpledialog2.js"></script>
 	<script src="vendor/couchapp/evab.js"></script>
 	<script src="vendor/couchapp/sha1.js"></script>
 	<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
@@ -135,9 +135,9 @@
 				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenuRaumListe(thiz) {
 					//Code um Menü aufzubauen
-					$(thiz).simpledialog({
-						'mode' : 'bool',
-						'prompt' : 'Menü',
+					$(thiz).simpledialog2({
+						'mode' : 'button',
+						'buttonPrompt' : '<b>Menü</b>',
 						'fullHTML': 'true',
 						'buttons' : {
 							'einfacher Modus': {
