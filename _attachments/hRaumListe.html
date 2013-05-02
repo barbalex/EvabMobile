@@ -7,6 +7,9 @@
   	<link rel="stylesheet" href="style/jquery.mobile.css">
   	<link rel="stylesheet" href="style/evab.css">
   	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<style>.ui-icon-hierarchisch {background-image:url('Bilder/hierarchisch.png');}</style>
+	<style>.ui-icon-einfach {background-image:url('Bilder/einfach.png');}</style>
+	<style>.ui-icon-exportieren {background-image:url('Bilder/exportieren.png');}</style>
   	<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
   	<link rel="SHORTCUT ICON" href="Bilder/favicon.ico">
@@ -138,8 +141,9 @@
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
-						'buttonPrompt' : '<b>Menü</b>',
-						'fullHTML': 'true',
+						'headerClose': true,
+						'headerText' : '<b>Menü</b>',
+						'forceInput': false,
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
@@ -148,7 +152,7 @@
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
-								icon: "arrow-l"
+								icon: "einfach"
 							},
 							'Felder verwalten': {
 								click: function () {
@@ -156,14 +160,14 @@
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
-								icon: "edit"
+								icon: "info"
 							},
 							'Räume exportieren': {
 								click: function () {
 									window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&include_docs=true');
 								},
 								theme: "a",
-								icon: "arrow-r"
+								icon: "exportieren"
 							},
 							'Einstellungen': {
 								click: function () {
@@ -188,11 +192,6 @@
 								},
 								theme: "a",
 								icon: "person"
-							},
-							'schliessen': {
-								click: function () { return true; },
-								icon: "back",
-								theme: "c"
 							}
 						}
 					})

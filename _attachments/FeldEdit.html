@@ -10,6 +10,9 @@
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
   	<link rel="stylesheet" href="style/evab.css">
   	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<style>.ui-icon-hierarchisch {background-image:url('Bilder/hierarchisch.png');}</style>
+	<style>.ui-icon-einfach {background-image:url('Bilder/einfach.png');}</style>
+	<style>.ui-icon-exportieren {background-image:url('Bilder/exportieren.png');}</style>
 	<script src="vendor/couchapp/jquery.js"></script>
 	<script src="vendor/couchapp/jquery-migrate.js"></script>
 	<script>			
@@ -394,8 +397,9 @@
 					} else {
 						$(this).simpledialog2({
 							'mode' : 'button',
-							'buttonPrompt' : '<b>Dieses Feld löschen?</b>',
-							'forceInput': 'false',
+							'headerClose': true,
+							'headerText' : '<b>Dieses Feld löschen?</b>',
+							'forceInput': false,
 							'buttons' : {
 								'ja': {
 									click: function () {

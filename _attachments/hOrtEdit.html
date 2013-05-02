@@ -10,6 +10,9 @@
   	<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
   	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
   	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<style>.ui-icon-hierarchisch {background-image:url('Bilder/hierarchisch.png');}</style>
+	<style>.ui-icon-einfach {background-image:url('Bilder/einfach.png');}</style>
+	<style>.ui-icon-exportieren {background-image:url('Bilder/exportieren.png');}</style>
 	<script src="vendor/couchapp/jquery.js"></script>
 	<script src="vendor/couchapp/jquery-migrate.js"></script>
 	<script>
@@ -521,8 +524,9 @@
 					//Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
-						'buttonPrompt' : '<b>Menü</b>',
-						'fullHTML': 'true',
+						'headerClose': true,
+						'headerText' : '<b>Menü</b>',
+						'forceInput': false,
 						'buttons' : {
 							'einfacher Modus': {
 								click: function () {
@@ -534,7 +538,7 @@
 									$.mobile.changePage("BeobListe.html");
 								},
 								theme: "a",
-								icon: "arrow-l"
+								icon: "einfach"
 							},
 							'Felder verwalten': {
 								click: function () {
@@ -542,14 +546,14 @@
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
-								icon: "edit"
+								icon: "info"
 							},
 							'Orte exportieren': {
 								click: function () {
 									window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&include_docs=true');
 								},
 								theme: "a",
-								icon: "arrow-r"
+								icon: "exportieren"
 							},
 							'Einstellungen': {
 								click: function () {
@@ -574,11 +578,6 @@
 								},
 								theme: "a",
 								icon: "person"
-							},
-							'schliessen': {
-								click: function () { return true; },
-								icon: "back",
-								theme: "c"
 							}
 						}
 					})

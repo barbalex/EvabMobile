@@ -395,20 +395,16 @@ function erstelleMenuFürFelder(thiz) {
 	//Code um Menü aufzubauen
 	$(thiz).simpledialog2({
 		'mode' : 'button',
-		'buttonPrompt' : '<b>Menü</b>',
-		'fullHTML': 'true',
+		'headerClose': true,
+		'headerText' : '<b>Menü</b>',
+		'forceInput': false,
 		'buttons' : {
 			'Datenfelder<br>exportieren': {
 				click: function () {
 					window.open("_list/FeldExport/FeldListe");
 				},
 				theme: "a",
-				icon: "arrow-r"
-			},
-			'schliessen': {
-				click: function () { return true; },
-				icon: "back",
-				theme: "c"
+				icon: "exportieren"
 			}
 		}
 	});

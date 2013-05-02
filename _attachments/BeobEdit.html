@@ -10,6 +10,9 @@
 	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
 	<link rel="stylesheet" href="style/evab.css">
 	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
+	<style>.ui-icon-hierarchisch {background-image:url('Bilder/hierarchisch.png');}</style>
+	<style>.ui-icon-einfach {background-image:url('Bilder/einfach.png');}</style>
+	<style>.ui-icon-exportieren {background-image:url('Bilder/exportieren.png');}</style>
 	<script src="vendor/couchapp/jquery.js"></script>
 	<script src="vendor/couchapp/jquery-migrate.js"></script>
 	<script>			
@@ -402,8 +405,9 @@
 				function erstelleMenu(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',
-						'buttonPrompt' : '<b>Menü</b>',
-						'fullHTML': 'true',
+						'headerClose': true,
+						'headerText' : '<b>Menü</b>',
+						'forceInput': false,
 						'buttons' : {
 							'hierarchischer Modus': {
 								click: function () {
@@ -411,7 +415,7 @@
 									$.mobile.changePage("hProjektListe.html");
 								},
 								theme: "a",
-								icon: "arrow-l"
+								icon: "hierarchisch"
 							},
 							'Arteigenschaften': {
 								click: function () {
@@ -428,14 +432,14 @@
 									$.mobile.changePage("FeldListe.html");
 								},
 								theme: "a",
-								icon: "edit"
+								icon: "info"
 							},
 							'Beobachtungen<br>exportieren': {
 								click: function () {
 									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&&include_docs=true');
 								},
 								theme: "a",
-								icon: "arrow-r"
+								icon: "exportieren"
 							},
 							'Einstellungen': {
 								click: function () {
@@ -460,11 +464,6 @@
 								},
 								theme: "a",
 								icon: "person"
-							},
-							'schliessen': {
-								click: function () { return true; },
-								icon: "back",
-								theme: "c"
 							}
 						}
 					})
