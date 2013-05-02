@@ -106,7 +106,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.Status && !localStorage.OrtId) {
+				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;
@@ -127,7 +127,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.Status && !localStorage.OrtId) {
+				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;

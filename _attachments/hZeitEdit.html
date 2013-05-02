@@ -96,19 +96,20 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.Status && !localStorage.ZeitId) {
+				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 				}
 				initiiereZeitEdit();
 			});
+
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.Status && !localStorage.ZeitId) {
+				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 				}

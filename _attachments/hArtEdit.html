@@ -114,7 +114,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.Status && !localStorage.hBeobId) {
+				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.hBeobId || localStorage.hBeobId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;

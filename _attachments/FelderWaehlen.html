@@ -58,7 +58,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.AufrufendeSeiteFW) {
+				} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 					return;
@@ -81,7 +81,7 @@
 				if (localStorage.length === 0 || !localStorage.Username) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
-				} else if (!localStorage.AufrufendeSeiteFW) {
+				} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
 					//oh, kein zurück bekannt
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");

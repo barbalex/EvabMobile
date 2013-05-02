@@ -81,7 +81,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.aArtId) {
+				} else if (!localStorage.aArtId || localStorage.aArtId === "undefined") {
 					leereAlleVariabeln("ohneClear");
 					console.log('geheZurueckAE() on init ArtEdit');
 					geheZurueckAE();

@@ -67,7 +67,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.ProjektId) {
+				} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;
@@ -81,7 +81,7 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.ProjektId) {
+				} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("hProjektListe.html");
 					return;
