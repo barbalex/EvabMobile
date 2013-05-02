@@ -440,6 +440,7 @@ function erstelleNeueZeit() {
 		//das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
+		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
 	} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
 		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
 	} else {
@@ -3987,3 +3988,71 @@ jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
 jQuery.extend(jQuery.mobile.datebox.prototype.options, {
 	useLang: 'de'
 });
+
+
+/*
+* Versuch, damit taphold funktioniert, ohne dass tap ausgelöst wird
+* Quelle: http://stackoverflow.com/questions/11759049/tap-event-fired-after-taphold-jquery-mobile-1-1-1
+* ausgeschaltet, weil die Detailseite trotzdem kurz angezeibt wird
+*/
+/*$.event.special.tap = {
+	tapholdThreshold: 750,
+
+	setup: function() {
+		var thisObject = this,
+			$this = $( thisObject );
+
+		$this.bind( "vmousedown", function( event ) {
+
+			if ( event.which && event.which !== 1 ) {
+				return false;
+			}
+
+			var origTarget = event.target,
+				origEvent = event.originalEvent,
+				// Modified Here
+				tapfired = false,
+				timer;
+
+			function clearTapTimer() {
+				clearTimeout( timer );
+			}
+
+			function clearTapHandlers() {
+				clearTapTimer();
+
+				$this.unbind( "vclick", clickHandler )
+					.unbind( "vmouseup", clearTapTimer );
+				$( document ).unbind( "vmousecancel", clearTapHandlers );
+			}
+
+			function clickHandler( event ) {
+				clearTapHandlers();
+
+				// ONLY trigger a 'tap' event if the start target is
+				// the same as the stop target.
+				// Modified Here
+				//if ( origTarget === event.target) {
+				if ( origTarget === event.target && !tapfired) {
+					triggerCustomEvent( thisObject, "tap", event );
+				}
+			}
+
+			function triggerCustomEvent( obj, eventType, event ) {
+				var originalType = event.type;
+				event.type = eventType;
+				$.event.dispatch.call( obj, event );
+				event.type = originalType;
+			}
+
+			$this.bind( "vmouseup", clearTapTimer )
+				.bind( "vclick", clickHandler );
+			$( document ).bind( "vmousecancel", clearTapHandlers );
+
+			timer = setTimeout( function() {
+				tapfired = true;	// Modified Here
+				triggerCustomEvent( thisObject, "taphold", $.Event( "taphold", { target: origTarget } ) );
+			}, $.event.special.tap.tapholdThreshold );
+		});
+	}
+};*/

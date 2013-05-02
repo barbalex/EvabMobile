@@ -76,6 +76,11 @@
 					$.mobile.changePage("BeobEdit.html");
 				});
 
+				$("#BeoblisteBL").on("taphold", ".beob", function (event) {
+					//FUNKTIONIERT NICHT, WEIL JQUERY MOBILE NACH TAPHOLD IMMER EINEN TAP AUSFÜHRT!!!!!!!!!!!!!!!	
+					console.log('taphold');
+				});
+
 				$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function (event) {
 					event.preventDefault();
 					localStorage.zurueck = "BeobListe";
