@@ -703,6 +703,7 @@ function initiiereBeobEdit_3() {
 	localStorage.aArtGruppe = window.Beobachtung.aArtGruppe;
 	localStorage.aArtName = window.Beobachtung.aArtName;
 	localStorage.aArtId = window.Beobachtung.aArtId;
+	console.log('window.Beobachtung.aArtId = ' + window.Beobachtung.aArtId);
 	localStorage.oLongitudeDecDeg = window.Beobachtung.oLongitudeDecDeg || "";
 	localStorage.oLatitudeDecDeg = window.Beobachtung.oLatitudeDecDeg || "";
 	localStorage.oLagegenauigkeit = window.Beobachtung.oLagegenauigkeit || "";

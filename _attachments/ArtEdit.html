@@ -65,11 +65,13 @@
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
-				} else if (!localStorage.aArtId) {
+				} else if (!localStorage.aArtId || localStorage.aArtId === "undefined") {
 					leereAlleVariabeln("ohneClear");
 					geheZurueckAE();
+					return;
+				} else if (localStorage.aArtId) {
+					initiiereArtEdit();
 				}
-				initiiereArtEdit();
 			});
 
 			$("#ArtEditPage").on("pageinit", function () {
@@ -81,10 +83,11 @@
 					return;
 				} else if (!localStorage.aArtId) {
 					leereAlleVariabeln("ohneClear");
+					console.log('geheZurueckAE() on init ArtEdit');
 					geheZurueckAE();
 					return;
 				}
-
+				console.log('localStorage.aArtId on init ArtEdit = ' + localStorage.aArtId);
 				//zurück-Button steuern
 				$("#ArtEditHeader").on('click', '#zurueckArtEdit', function (event) {
 					event.preventDefault();
