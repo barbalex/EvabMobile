@@ -3960,7 +3960,7 @@ jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
 		monthsOfYearShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dez"],
 		durationLabel: ["Tage", "Stunden", "Minuten", "Sekunden"],
 		durationDays: ["Tag", "Tage"],
-		tooltip: "Öffne Kalender",
+		tooltip: "Kalender öffnen",
 		nextMonth: "Nächster Monat",
 		prevMonth: "Vorheriger Monat",
 		timeFormat: 24,

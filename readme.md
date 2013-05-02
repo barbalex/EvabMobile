@@ -3,14 +3,12 @@
 * <a href="#Ausgangslage">Ausgangslage</a>
 * <a href="#Motivation">Motivation</a>
 * <a href="#Projektidee">Projektidee</a>
-* <a href="#ZieleNsf">Ziele für Naturschutzfachstellen</a>
-* <a href="#ZieleProfis">Ziele für Naturschutzprofis</a>
-* <a href="#ZieleHobby">Ziele für Hobby-ArtbeobachterInnen</a>
+* <a href="#ZieleNsf">Ziele</a>
 * <a href="#machen">Was kann man momentan mit der App machen?</a>
 * <a href="#roadmap">Wie geht es weiter?</a>
 * <a href="#Hilfe">Hilfe erwünscht</a>
 * <a href="#GibtsSchon">Gibt's das nicht schon?</a>
-* <a href="#ausprobieren">Das will ich ausprobieren</a>
+* <a href="#ausprobieren">Kann ich's jetzt endlich ausprobieren?</a>
 
 
 <a name="Ausgangslage"></a>
@@ -40,7 +38,7 @@ Gängige Probleme:
 
 <a name="Motivation"></a>
 #Motivation
-Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Das Abenteuer mit den diversen unbekannten Technologien reizt (siehe unten, "Hilfe erwünscht"). Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, die Programmier-Profis ranzulassen.
+Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben, mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, um die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
 
@@ -196,15 +194,15 @@ Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_bl
 
 
 <a name="ausprobieren"></a>
-#Das will ich ausprobieren
+#Kann ich's jetzt endlich ausprobieren?
 Die Webversion des Apps finden Sie <a target="_blank" href="https://barbalex.cloudant.com/evab/_design/evab/index.html">hier</a>.
 
-Das App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
+Die App ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
 
-Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich (Version 10 konnte ich noch nicht testen).
+Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich. Internet Explorer 10 scheint i.O.
 
 Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS oder Google Chrome bzw. Firefox auf Android. Der Standardbrowser von Android hat überraschende Schwächen, welche die Leistung dieser Anwendung schmälern.
 
-Auf Mobilgeräten ist die Webseite etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist die Anwendung richtig schnell.
+Auf Mobilgeräten ist die Web-Applikation etwas langsam und daher nur auf aktuellen Geräten einigermassen brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist sie richtig schnell.
 
 <a href="#top">&#8593; top</a>
