@@ -41,6 +41,7 @@
 		<div data-role="header" id="al_Header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">zurück</a>
 			<h1>Art wählen</h1>
+			<button id="al_standardgruppe" data-mini="true">Gruppe wählen</button>
 		</div>
 		<div data-role="content">
 			<div id="al_filterzeile">
@@ -62,6 +63,11 @@
 
 			$("#al_Page").on("pageshow", function () {
 				initiiereArtenliste("");
+				if (window.gruppe_merken) {
+					$("#al_standardgruppe").button('enable');
+				} else {
+					$("#al_standardgruppe").button('disable');
+				}
 			});
 
 			$("#al_Page").on("pagehide", function () {
@@ -86,6 +92,11 @@
 				$("#al_Page").on("click", ".ui-icon-delete", function() {
 					filterwert = "";
 					initiiereArtenliste("");
+				});
+
+				$("#al_Page").on("click", "#al_standardgruppe", function() {
+					delete window.gruppe_merken;
+					$.mobile.changePage("Artgruppenliste.html");
 				});
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {

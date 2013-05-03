@@ -41,6 +41,7 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="agl_Header">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">zurück</a>
 			<h1>Artgruppe wählen</h1>
+			<button id="agl_standardgruppe" data-mini="true">nächste Gruppe merken</button>
 		</div>
 		<div data-role="content">
 			<ul id="agl_ArtgruppenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -51,6 +52,12 @@
 			
 			$("#agl_Page").on("pageshow", function () {
 				erstelleArtgruppenListe();
+				delete window.gruppe_merken;
+			});
+
+			$("#agl_Page").on("pagehide", function () {
+				$("#agl_standardgruppe").html("nächste Gruppe merken");
+				$("#agl_standardgruppe").button('refresh');
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -59,7 +66,22 @@
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");
+					//wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
+					if (window.gruppe_merken) {
+						window.gruppe_merken = $(this).attr("ArtGruppe");
+					}
 					$.mobile.changePage("Artenliste.html");
+				});
+
+				$("#agl_Page").on("click", "#agl_standardgruppe", function() {
+					if ($(this).html() === "nächste Gruppe merken") {
+						window.gruppe_merken = true;
+						$(this).html("nächste Gruppe wird gemerkt");
+					} else {
+						delete window.gruppe_merken;
+						$(this).html("nächste Gruppe merken");
+					}
+					$("#agl_standardgruppe").button('refresh');
 				});
 			});
 		</script>

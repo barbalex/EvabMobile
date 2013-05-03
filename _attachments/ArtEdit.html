@@ -110,7 +110,13 @@
 
 				function zuArtgruppenliste() {
 					localStorage.Von = "ArtEdit";
-					$.mobile.changePage("Artgruppenliste.html");
+					if (window.gruppe_merken) {
+						//Artgruppenliste auslassen
+						//localStorage.aArtGruppe ist schon gesetzt
+						$.mobile.changePage("Artenliste.html");
+					} else {
+						$.mobile.changePage("Artgruppenliste.html");
+					}
 				}
 
 				function zuArtliste() {

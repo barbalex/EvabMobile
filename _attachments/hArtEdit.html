@@ -306,7 +306,13 @@
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStoragehBeobListe();
 					localStorage.Von = "hArtEdit";
-					$.mobile.changePage("Artgruppenliste.html");
+					if (window.gruppe_merken) {
+						//Artgruppenliste auslassen
+						//localStorage.aArtGruppe ist schon gesetzt
+						$.mobile.changePage("Artenliste.html");
+					} else {
+						$.mobile.changePage("Artgruppenliste.html");
+					}
 				}
 
 				function zuArtliste() {

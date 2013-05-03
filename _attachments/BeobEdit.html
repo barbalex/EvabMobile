@@ -161,7 +161,13 @@
 					leereStorageBeobListe();
 					localStorage.Status = "neu";
 					localStorage.Von = "BeobEdit";
-					$.mobile.changePage("Artgruppenliste.html");
+					if (window.gruppe_merken) {
+						//Artgruppenliste auslassen
+						//localStorage.ArtGruppe ist schon gesetzt
+						$.mobile.changePage("Artenliste.html");
+					} else {
+						$.mobile.changePage("Artgruppenliste.html");
+					}
 				});
 
 				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
@@ -171,7 +177,13 @@
 					leereStorageBeobListe();
 					delete localStorage.Status;	//ja kein Status neu
 					localStorage.Von = "BeobEdit";
-					$.mobile.changePage("Artgruppenliste.html");
+					if (window.gruppe_merken) {
+						//Artgruppenliste auslassen
+						//localStorage.aArtGruppe ist schon gesetzt
+						$.mobile.changePage("Artenliste.html");
+					} else {
+						$.mobile.changePage("Artgruppenliste.html");
+					}
 				});
 
 				//sichtbare Felder wählen
