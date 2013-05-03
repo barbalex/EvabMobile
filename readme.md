@@ -6,7 +6,6 @@
 * <a href="#ZieleNsf">Ziele</a>
 * <a href="#machen">Was kann man momentan mit der App machen?</a>
 * <a href="#roadmap">Wie geht es weiter?</a>
-* <a href="#Hilfe">Hilfe erwünscht</a>
 * <a href="#GibtsSchon">Gibt's das nicht schon?</a>
 * <a href="#ausprobieren">Kann ich's jetzt endlich ausprobieren?</a>
 
