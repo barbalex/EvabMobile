@@ -3145,7 +3145,7 @@ function erstelleArtenliste(filterwert) {
 				html += html_temp;
 			} else {
 				//weniger als 200 Arten, kein Filter. Alle anzeigen
-				html += '<li class="artlistenhinweis">' + Artenliste.length + ' Arten gefiltert</li>';
+				html += '<li class="artlistenhinweis">' + Artenliste.length + ' Arten angezeigt</li>';
 				for (i=0; i<Artenliste.length; i++) {
 					ArtBezeichnung = Artenliste[i].key[2];
 					Art = Artenliste[i].value;
