@@ -358,6 +358,10 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
   padding-right: 1.45em;
 }
 
+.ui-li-heading, .ui-li-desc {
+	white-space: normal !important;
+}
+
 
 /*workaround against bad scrolling
   https://forum.jquery.com/topic/why-jqm-touchscreen-list-scrolling-performance-stinks-and-what-to-do-about-it*/
