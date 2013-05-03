@@ -930,7 +930,7 @@ function initiiereProjektEdit() {
 	//window.hProjekt existiert schon bei neuem Projekt
 	if (window.hProjekt) {
 		initiiereProjektEdit_2();
-	} else if (localStorage.Status === "neu") {
+	} else if (localStorage.Status === "neu" && localStorage.hProjekt) {
 		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hProjekt = JSON.parse(localStorage.hProjekt);
 		delete localStorage.hProjekt;
