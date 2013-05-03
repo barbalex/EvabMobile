@@ -101,8 +101,9 @@ Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobb
 - ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
-- ...wahlweise mit Lateinischen (Standard) oder Deutschen Namen
+- ...nach Lateinischen oder Deutschen Namen
 - ...mit artgruppenspezifischen Feldern (in der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
+- ...Artgruppen merken, um die Artauswahl zu beschleunigen
 
 **Datenfelder verwalten**
 
@@ -150,7 +151,6 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Daten besser vor unauthorisiertem Zugriff schützen
 - Android- und iOS-App entwickeln
 
 danach:
@@ -161,10 +161,9 @@ danach:
   - Anzahl Meldungen derselben Art im aktuellen 10*10km-Quadranten, Jahr der jüngsten Meldung<br>(wie wahrscheinlich bzw. sensationell ist meine Beobachtung?)
   - Eigene Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
-  - Artgruppe vorwählen (z.B. für Flora-Aufnahmen, beschleunigt die Arbeit)
 - Tempo erhöhen
 
-Wünschbar aber wohl mindestens teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
+Wünschbar aber wohl teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
 
 - Karten der Swisstopo verwenden
 - Nützliche Layer überlagern (z.B. Schutzgebiete)
