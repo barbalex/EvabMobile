@@ -44,7 +44,16 @@
 		</div>
 		<div data-role="content">
 			<div id="al_filterzeile">
-				<input type="search" name="al_filter" id="al_filter" value="" placeholder="Filter setzen...">
+				<table>
+					<tr>
+						<td width="100%">
+							<input type="search" id="al_filter" value="" placeholder="Filter setzen...">
+						</td>
+						<td>
+							<button id="al_filter_setzen" data-mini="true">filtern</button>
+						</td>
+					<tr>
+				</table>
 			</div>
 			<ul id="al_ArtenListe" data-role="listview">
 			</ul>
@@ -62,8 +71,15 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				var filterwert = "";
 
-				$("#al_filter").on("keyup", function () {
-					filterwert = $(this).val().toLowerCase();
+				$(document).on("keypress", function (e) {
+					if (e.which == 13) {
+						filterwert = $("#al_filter").val().toLowerCase();
+						initiiereArtenliste(filterwert);
+					}
+				});
+
+				$("#al_Page").on("click", "#al_filter_setzen", function () {
+					filterwert = $("#al_filter").val().toLowerCase();
 					initiiereArtenliste(filterwert);
 				});
 

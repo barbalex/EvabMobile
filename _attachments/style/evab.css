@@ -377,6 +377,5 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
 }
 
 #al_filterzeile {
-	margin-bottom: 23px;
-	margin-top: -15px;
+	margin: -20px -12px 8px -12px;
 }
