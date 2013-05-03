@@ -315,25 +315,7 @@
 					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStoragehBeobListe();
 					localStorage.Von = "hArtEdit";
-					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
-					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
-					//wenn nein: direkt die Artenliste aufrufen
-					viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							var ArtGruppen_2_L;
-							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
-							localStorage.Von = "hArtEdit";
-							if (ArtGruppen_2_L) {
-								localStorage.NestedList = true;
-								$.mobile.changePage("Artgruppenliste.html");
-							} else {
-								delete localStorage.NestedList;
-								$.mobile.changePage("Artenliste.html");
-							}
-						}
-					});
+					$.mobile.changePage("Artenliste.html");
 				}
 
 				//Menü aufbauen

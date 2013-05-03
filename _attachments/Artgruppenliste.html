@@ -40,7 +40,6 @@
 	<div data-role="page" data-dom-cache="true" id="agl_Page">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="agl_Header">
 			<h1>Artgruppe wählen</h1>
-			<a href="#" id="agl_ButtonSprache" class="ui-btn-right">Lat</a>
 		</div>
 		<div data-role="content">
 			<ul id="agl_ArtgruppenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -66,36 +65,6 @@
 						delete localStorage.L;
 					}
 					$.mobile.changePage("Artenliste.html");
-				});
-							
-
-				$("#agl_Header").on("click", "#agl_ButtonSprache", function (event) {
-					var ButtonText;
-					event.preventDefault();
-					ButtonText = this.text;
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.UserId, {
-						success: function (doc) {
-							if (ButtonText.slice(0, 3) === "Deu") {
-								doc.ArtenSprache = "Deutsch";
-								localStorage.ArtenSprache = "Deutsch";
-							} else {
-								doc.ArtenSprache = "Lateinisch";
-								localStorage.ArtenSprache = "Lateinisch";
-							}
-							$db.saveDoc(doc, {
-								success: function () {
-									erstelleArtgruppenListe();
-								},
-								error: function () {
-									melde("Fehler: Sprache nicht verändert");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: Sprache nicht verändert");
-						}
-					});
 				});
 			});
 		</script>

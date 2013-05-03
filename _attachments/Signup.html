@@ -183,7 +183,6 @@
 						doc.Typ = "User";
 						doc.UserName = $('#UserName').val();
 						doc.Datenverwendung = window.Datenverwendung;
-						doc.ArtenSprache = "Lateinisch";
 						doc.Email = $("#Email").val();
 						$db = $.couch.db("evab");
 						$db.saveDoc(doc, {
@@ -192,7 +191,6 @@
 								localStorage.Username = $('#UserName').val();
 								localStorage.UserId = data.id;
 								localStorage.Autor = $("#Autor").val();
-								localStorage.ArtenSprache = "Lateinisch";
 								//Autor speichern
 								$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 									success: function (Feld) {

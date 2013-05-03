@@ -114,25 +114,8 @@
 				}
 
 				function zuArtliste() {
-					//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
-					//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
-					//wenn nein: direkt die Artenliste aufrufen
-					var viewname, ArtGruppen_2_L;
-					viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
-					$db = $.couch.db("evab");
-					$db.view(viewname, {
-						success: function (data) {
-							ArtGruppen_2_L = data.rows[0].value.ArtGruppen_2_L;
-							localStorage.Von = "ArtEdit";
-							if (ArtGruppen_2_L) {
-								localStorage.NestedList = true;
-								$.mobile.changePage("Artgruppenliste.html");
-							} else {
-								delete localStorage.NestedList;
-								$.mobile.changePage("Artenliste.html");
-							}
-						}
-					});
+					localStorage.Von = "ArtEdit";
+					$.mobile.changePage("Artenliste.html");
 				}
 			});
 		</script>

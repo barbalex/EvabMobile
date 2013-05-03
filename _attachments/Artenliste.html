@@ -40,16 +40,15 @@
   	<div data-role="page" id="al_Page">
 		<div data-role="header" id="al_Header" data-position="fixed" data-tap-toggle="false">
 			<h1>Art wählen</h1>
-			<a href="#" id="al_ButtonSprache" class="ui-btn-right">Lat</a>
 		</div>
 		<div data-role="content">
-			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="suchen..."></ul>
-			<p id="al_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Artenliste wird aufgebaut...</p>
+			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="Filter setzen...">
+			</ul>
 		</div>
 		<script charset="utf-8">
 
 			$("#al_Page").on("pageshow", function () {
-				initiiereArtenliste();
+				initiiereArtenliste("");
 			});
 
 			$("#al_Page").on("pagehide", function () {
@@ -57,6 +56,17 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
+				var filterwert = "";
+
+				$(".ui-input-text").on("keyup", function () {
+					filterwert = $(this).val().toLowerCase();
+					initiiereArtenliste(filterwert);
+				});
+
+				$("#al_Page").on("click", ".ui-icon-delete", function() {
+					filterwert = "";
+					initiiereArtenliste("");
+				});
 
 				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
 					var ArtBezeichnung;
@@ -72,55 +82,6 @@
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung);
 					}
 					delete localStorage.L;	//sonst wird die nächste Liste auch gefiltert - selbst wenn sie nicht dreistufig ist
-				});
-
-				$("#al_Header").on("click", "#al_ButtonSprache", function (event) {
-					var ButtonText;
-					event.preventDefault();
-					ButtonText = this.text;
-					$db = $.couch.db("evab");
-					$db.openDoc(localStorage.UserId, {
-						success: function (doc) {
-							if (ButtonText.slice(0, 3) === "Deu") {
-								doc.ArtenSprache = "Deutsch";
-								localStorage.ArtenSprache = "Deutsch";
-							} else {
-								doc.ArtenSprache = "Lateinisch";
-								localStorage.ArtenSprache = "Lateinisch";
-							}
-							$db.saveDoc(doc, {
-								success: function () {
-								//prüfen, ob die Artgruppe ihre Arten in einer nested List anbietet
-								//wenn ja: Artgruppenliste aufrufen und Artgruppe übergeben, damit direkt die nested list angezeigt wird
-								//wenn nein: direkt die Artenliste aktualisieren
-									var viewname;
-									viewname = 'evab/Artgruppen?key="' + localStorage.aArtGruppe + '"';
-									$db.view(viewname, {
-										success: function (data) {
-										//separat für Deutsch und Lateinisch prüfen, ob eine nested list existiert
-											var ArtGruppen_2;
-											if (ButtonText.slice(0, 3) === "Deu") {
-												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_D;
-											} else {
-												ArtGruppen_2 = data.rows[0].value.ArtGruppen_2_L;
-											}
-											if (ArtGruppen_2) {
-												$.mobile.changePage("Artgruppenliste.html");
-											} else {
-												initiiereArtenliste();
-											}
-										}
-									});
-								},
-								error: function () {
-									melde("Fehler: Sprache nicht verändert");
-								}
-							});
-						},
-						error: function () {
-							melde("Fehler: Sprache nicht verändert");
-						}
-					});
 				});
 			});
 		</script>

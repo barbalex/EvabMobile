@@ -64,17 +64,6 @@
 					<hr >
 					<div data-role="fieldcontain">
 						<fieldset data-role="controlgroup">
-							<legend>Sprache für Artnamen:</legend>
-								<input type="radio" name="ArtenSprache" class="Feld" id="Lateinisch" value="Lateinisch"  >
-								<label for="Lateinisch">Lateinisch (Standard)</label>
-								<input type="radio" name="ArtenSprache" class="Feld" id="Deutsch" value="Deutsch"  >
-								<label for="Deutsch">Deutsch</label>
-						</fieldset>
-						<p>Wenn Sie Deutsch wählen, können Sie nur Beobachtungen von Arten erfassen, die einen Deutschen Namen haben. Das ist - je nach Artengruppe - nur ein kleiner Teil der Arten!</p>
-					</div>
-					<hr >
-					<div data-role="fieldcontain">
-						<fieldset data-role="controlgroup">
 							<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
 								<input type="radio" name="Datenverwendung" class="Feld" id="JaAber" value="JaAber">
 								<label for="JaAber">ja, für Naturschutzzwecke (Standard)*</label>
@@ -191,9 +180,6 @@
 										doc[Feldname] = Feldwert;
 									} else if (doc[Feldname]) {
 										delete doc[Feldname]
-									}
-									if (Feldname === "ArtenSprache") {
-										localStorage.ArtenSprache = Feldwert;
 									}
 								$db.saveDoc(doc, {
 									error: function () {
