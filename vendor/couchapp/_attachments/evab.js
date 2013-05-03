@@ -1593,7 +1593,7 @@ function initiiereRaumEdit() {
 	//$('#AnhängehRE').hide();
 	if (window.hRaum) {
 		initiiereRaumEdit_2();
-	} else if (localStorage.Status === "neu") {
+	} else if (localStorage.Status === "neu" && localStorage.hRaum) {
 		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hRaum = JSON.parse(localStorage.hRaum);
 		delete localStorage.hRaum;
@@ -1753,7 +1753,7 @@ function initiiereOrtEdit() {
 	//$('#AnhängehOE').hide();
 	if (window.hOrt) {
 		initiiereOrtEdit_2();
-	} else if (localStorage.Status === "neu") {
+	} else if (localStorage.Status === "neu" && localStorage.hOrt) {
 		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hOrt = JSON.parse(localStorage.hOrt);
 		delete localStorage.hOrt;
@@ -1929,7 +1929,7 @@ function initiiereZeitEdit() {
 	//alert("window.hZeit = " + JSON.stringify(window.hZeit));
 	if (window.hZeit) {
 		initiiereZeitEdit_2();
-	} else if (localStorage.Status === "neu") {
+	} else if (localStorage.Status === "neu" && localStorage.hZeit) {
 		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hZeit = JSON.parse(localStorage.hZeit);
 		delete localStorage.hZeit;
@@ -3068,35 +3068,19 @@ function initiiereArtenliste(filterwert) {
 	//aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
 	if (window.Artenliste) {
 		if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
-			if (localStorage.L && localStorage.LZuletzt && (localStorage.L === localStorage.LZuletzt)) {
-				erstelleArtenliste(filterwert);
-				return;
-			}
-			if (!localStorage.L && !localStorage.LZuletzt) {
-				erstelleArtenliste(filterwert);
-				return;
-			}
+			erstelleArtenliste(filterwert);
+			return;
 		}
 	}
 	//sonst aus der DB holen und die Variabeln aktualisieren
 	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
-	if (localStorage.L) {
-		localStorage.LZuletzt = localStorage.L;
-	} else {
-		delete localStorage.LZuletzt;
-	}
 	holeArtenliste(filterwert);
 }
 
 //wird benutzt in Artenliste.html
 //aufgerufen von initiiereArtenliste
 function holeArtenliste(filterwert) {
-	//prüfen, ob nur eine Unterauswahl von Arten der Artengruppe abgerufen werden soll
-	if (!localStorage.L) {
-		viewname = 'evab/Artliste?startkey=["' + localStorage.aArtGruppe + '"]&endkey=["' + localStorage.aArtGruppe + '",{},{}]';
-	} else {
-		viewname = 'evab/Artliste?startkey=["' + localStorage.aArtGruppe + '","' + localStorage.L + '"]&endkey=["' + localStorage.aArtGruppe + '","' + localStorage.L + '",{}]';
-	}
+	viewname = 'evab/Artliste?startkey=["' + localStorage.aArtGruppe + '"]&endkey=["' + localStorage.aArtGruppe + '",{},{}]';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {

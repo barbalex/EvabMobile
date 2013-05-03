@@ -54,17 +54,11 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				delete localStorage.L;
 				//Vorsicht: Genauer als body funktioniert hier nicht, weil die nested List im DOM
 				//jedes mal eine eigene Page aufbaut
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");
-					if ($(this).attr("L")) {
-						localStorage.L = $(this).attr("L");
-					} else {
-						delete localStorage.L;
-					}
 					$.mobile.changePage("Artenliste.html");
 				});
 			});
