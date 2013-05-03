@@ -43,7 +43,10 @@
 			<h1>Art wählen</h1>
 		</div>
 		<div data-role="content">
-			<ul id="al_ArtenListe" data-role="listview" data-filter="true" data-filter-placeholder="Filter setzen...">
+			<div id="al_filterzeile">
+				<input type="search" name="al_filter" id="al_filter" value="" placeholder="Filter setzen...">
+			</div>
+			<ul id="al_ArtenListe" data-role="listview">
 			</ul>
 		</div>
 		<script charset="utf-8">
@@ -59,7 +62,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				var filterwert = "";
 
-				$(".ui-input-text").on("keyup", function () {
+				$("#al_filter").on("keyup", function () {
 					filterwert = $(this).val().toLowerCase();
 					initiiereArtenliste(filterwert);
 				});

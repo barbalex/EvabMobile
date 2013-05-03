@@ -375,3 +375,8 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
 	font-size: 90%;
 	background: #F3F9EB;
 }
+
+#al_filterzeile {
+	margin-bottom: 23px;
+	margin-top: -15px;
+}
