@@ -45,15 +45,26 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 .PopupText {text-align:center; margin:6px 4px 4px 4px; font-weight:bold;}
 
 .MapLabel {
-     color: black;
-     background-color: white;
-     font-family: "Lucida Grande", "Arial", sans-serif;
-     font-size: 10px;
-     font-weight: bold;
-     text-align: center;
-     width: 150px;
-     border: 1px solid black;     
-   }
+	color: black;
+	background-color: white;
+	font-family: "Lucida Grande", "Arial", sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	width: 150px;
+	border: 1px solid black;
+}
+
+/*Titel in BeobListe.html nach rechts verschieben
+* sonst wird die Anzahl verdeckt von der Schaltfläche "hierarchisch"*/
+.BeobListePageTitel {
+	margin-left: -webkit-calc(30% + 20px) !important;
+	margin-left: -moz-calc(30% + 20px) !important;
+	margin-left: calc(30% + 20px) !important;
+	margin-right: -webkit-calc(30% - 20px) !important;
+	margin-right: -moz-calc(30% - 20px) !important;
+	margin-right: calc(30% - 20px) !important;
+}
 
 /*Hintergrundfarbe setzen*/
 .ui-content {
