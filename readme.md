@@ -12,6 +12,9 @@ Mit _evab mobile_ können Naturschutzprofis und ambitionierte Amateure Artbeobac
 * <a href="#ausprobieren">Kann ich's jetzt endlich ausprobieren?</a>
 
 
+#_E - was?_
+evab ist eine Abkürzung und steht für: (<span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen). 
+
 <a name="Ausgangslage"></a>
 #Ausgangslage
 Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Artbeobachtungsdaten digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](http://www.natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
@@ -143,7 +146,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - ...und man kann an derselben Stelle weiterarbeiten
 
 **Sich informieren**
-- Arteigenschaften in der [ArtenDb](https://github.com/barbalex/artendb) nachschauen
+- Arteigenschaften in [ArtenDb](https://github.com/barbalex/artendb) nachschauen
 
 **Über Daten und App verfügen**
 
@@ -170,6 +173,7 @@ danach:
   - Benutzeroberfläche präsentiert sich bei grossen Bildschirmen zweispaltig: links die Listen, rechts die Detailformulare
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Felder projektspezifisch konfigurieren
+  - Schnittstellen für externe Anwendungen bedürfnisgerecht anbieten und dokumentieren
 - Tempo erhöhen
 
 Wünschbar aber wohl teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
@@ -193,7 +197,7 @@ Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auc
 
 - Gute Ideen für die Weiterentwicklung
 - Fehler melden
-- Tipps und Tricks für den Umgang mit _evab mobile_ dokumentieren
+- Tipps und Tricks dokumentieren
 
 <a href="#top">&#8593; top</a>
 
