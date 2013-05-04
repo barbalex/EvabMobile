@@ -26,20 +26,24 @@ Die Digitalisierung erfolgt - wenn überhaupt - später im Büro. Im besten Fall
 Gängige Probleme:  
 
 - Die Daten werden gar nie digitalisiert
-- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders Artnamen).<br>Im besten Fall werden unklare Beobachtungen nicht digitalisiert
+- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders Artnamen).<br>Im besten Fall werden sie nicht digitalisiert
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
+
+Daher ist die Qualität von Beobachtungsdaten oft unbefriedigend, selbst wenn sie von Profis erfasst wurde. Und das schlimmste: Die erwähnten Fehlerquellen können - im Gegensatz zur fachlichen Eignung der Autoren - schlecht beurteilt werden. Manchmal werden sie aber allzu klar, wenn man selber analog vorliegende Daten digitalisieren muss. Wenn das bloss anders ginge!
 
 <a href="#top">&#8593; top</a>
 
 
 <a name="Motivation"></a>
 #Motivation
-Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert. Gleichzeitig knoble ich schon immer gerne mit Software. Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben, mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, um die Programmier-Profis ranzulassen.
+Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zürich](http://naturschutz.zh.ch) regelmässig konfrontiert, da hier immer wieder analoge Daten digitalisiert werden. Gleichzeitig knoble ich schon immer gerne mit Software. Erfahrungsgemäss haben Biologen Mühe, ein Pflichtenheft zu schreiben, mit dem Programmierer eine gute App erstellen können. Meist lohnt es sich, mit einer bescheidenen Lösung zu beginnen, damit die Bedürfnisse zu kitzeln und die Anwendung entsprechend weiter zu entwickeln. Wenn sich herausstellt, dass eine echte Nachfrage besteht und die App alle inhaltlichen Bedürfnisse abdeckt aber technisch besser umgesetzt werden sollte, ist der ideale Zeitpunkt gekommen, um die Programmier-Profis ranzulassen.
 
 **Darum soll dieses Projekt in erster Linie Ideen und Möglichkeiten aufzeigen und Anwenderwünsche abholen.**
+
+Um so besser, wenn (falls) es bereits praktischen Nutzen bringt.
 
 <a href="#top">&#8593; top</a>
 
@@ -49,7 +53,7 @@ Mit dieser Ausgangslage sind wir in der [Fachstelle Naturschutz des Kantons Zür
 - Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com) und [Phonegap](http://phonegap.com) verwendet.<br>Damit kann die App prinzipiell auf jedes Betriebssystem portiert werden
 - Die App steht als [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) zur Verfügung
-- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert Daten und Anwendung automatisch im Hintergrund
+- Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert die Daten automatisch im Hintergrund
 - Da schemafrei und dokumentorientiert, können mit CouchDb projekteigene Datenfelder definiert sowie Bilder, Tonaufnahmen oder Projektberichte angehängt werden
 
 <a href="#top">&#8593; top</a>
