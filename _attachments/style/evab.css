@@ -265,7 +265,8 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
 .ui-icon-grid { background-position: -432px -0; }
 .ui-icon-star { background-position: -468px -0; }
 .ui-icon-alert { background-position: -504px -0; }
-.ui-icon-info { background-position: -540px -0; }
+/*.ui-icon-info { background-position: -540px -0; }*/
+.ui-icon-info { background-position: -539px -0; }
 .ui-icon-home { background-position: -576px -0; }
 .ui-icon-search,.ui-icon-searchfield:after { background-position: -612px -0; }
 .ui-icon-checkbox-off { background-position: -684px -0; }
