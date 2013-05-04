@@ -116,14 +116,13 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 - Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen und eigene Auswahllisten definieren
 - Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden
 - Bestimmen, welche Felder sichtbar sind
-- Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 
 **Lokalisieren...**
 
 - ...dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert und in Schweizer Landeskoordinaten umgerechnet. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
-- ...manuell auf Luftbildern von Google. Das Luftbild wird auf die aktuelle Position zentriert
-- ...manuell durch Eingabe von Schweizer Landeskoordinaten. Sie werden - vom Benutzer unbemerkt - in decimal degrees umgewandelt, damit sie auf Luftbildern angezeigt werden können
-- Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung. Der Ausschnitt passt sich an die Beobachtungen an
+- ...manuell auf Luftbildern von Google
+- ...manuell durch Eingabe von Schweizer Landeskoordinaten
+- Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung
 
 **Dokumentieren**
 
@@ -165,6 +164,7 @@ danach:
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
   - Zusätzliche Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
+  - Felder projektspezifisch konfigurieren
 - Tempo erhöhen
 
 Wünschbar aber wohl teilweise ausserhalb meiner Fähigkeiten wären erweiterte Kartenfunktionen:
