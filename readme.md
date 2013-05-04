@@ -1,4 +1,4 @@
-Mit EvabMobile können Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld in einer projektspezifischen Datenstruktur auf Mobilgeräten erfassen. Die herausragende Eigenschaft von EvabMobile ist, dass die NutzerInnen extrem flexibel eigene Datenstrukturen definieren können.
+Mit _evab mobile_ können Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld in einer projektspezifischen Datenstruktur auf Mobilgeräten erfassen. Die Stärke von _evab mobile_ ist, dass die NutzerInnen flexibel eigene Datenstrukturen erstellen können.
 
 <a name="top"></a>
 ## Inhalt ##
@@ -163,8 +163,7 @@ danach:
 - Funktionalität erweitern, z.B.:
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
-  - Anzahl Meldungen derselben Art im aktuellen 10*10km-Quadranten, Jahr der jüngsten Meldung<br>(wie wahrscheinlich bzw. sensationell ist meine Beobachtung?)
-  - Eigene Darstellung für grosse Bildschirme
+  - Zusätzliche Darstellung für grosse Bildschirme
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
 - Tempo erhöhen
 
@@ -182,8 +181,13 @@ Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Ler
 
 
 <a name="Hilfe"></a>
-#Hilfe erwünscht
-Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für [dieses Projekt](https://github.com/barbalex/EvabMobile) engagieren würde!
+#Darf ich helfen?
+Ja gerne! Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für [dieses Projekt](https://github.com/barbalex/EvabMobile) engagieren würde!
+
+Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auch: 
+- Gute Ideen für die Weiterentwicklung
+- Fehler melden
+- Tipps und Tricks für den Umgang mit _evab mobile_ dokumentieren
 
 <a href="#top">&#8593; top</a>
 
