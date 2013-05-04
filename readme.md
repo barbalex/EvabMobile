@@ -1,4 +1,4 @@
-Mit EvabMobile können Naturschutzprofis Artbeobachtungen direkt im Feld in einer spezifisch für das aktuelle Projekt vorbereiteten Datenstruktur auf Mobilgeräten digital erfassen.
+Mit EvabMobile können Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld in einer projektspezifischen Datenstruktur auf Mobilgeräten erfassen. Die herausragende Eigenschaft von EvabMobile ist, dass die NutzerInnen extrem flexibel eigene Datenstrukturen definieren können.
 
 <a name="top"></a>
 ## Inhalt ##
