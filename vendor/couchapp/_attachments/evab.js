@@ -560,7 +560,7 @@ function initiiereBeobEdit() {
 	if (window.FeldlisteBeobEdit) {
 		initiiereBeobEdit_2();
 	} else {
-		//das dauert lnger - hinweisen
+		//das dauert länger - hinweisen
 		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
@@ -577,7 +577,8 @@ function initiiereBeobEdit() {
 //allfällige Beob übernehmen von speichereNeueBeob
 //um die DB-Abfrage zu sparen
 function initiiereBeobEdit_2() {
-	if (window.Beobachtung) {
+	//achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
+	if (window.Beobachtung && (!localStorage.Von || localStorage.Von !== "BeobEdit")) {
 		initiiereBeobEdit_3();
 	} else {
 		$db = $.couch.db("evab");
@@ -1986,7 +1987,8 @@ function generiereHtmlFuerZeitEditForm() {
 //erwartet die hBeobId
 //wird aufgerufen von hBeobEdit.html bei pageshow
 function initiierehBeobEdit() {
-	if (window.hArt) {
+	//achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
+	if (window.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		initiierehBeobEdit_2(window.hArt);
 	} else {
 		$db = $.couch.db("evab");
