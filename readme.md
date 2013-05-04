@@ -128,7 +128,7 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 
 Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert werden. Denkbar sind z.B.:
 
-- Bestimmungen mit Fotos oder Tonaufnahmen belegen
+- Die Artbestimmung mit Fotos oder Tonaufnahmen belegen
 - Orte mit Fotos oder (fotografierten) Skizzen beschreiben
 - Das Projekt mit einen Projektbericht versehen
 - Dem Projekt eine GIS-Datei anfügen, in der die Orte als Linien oder Flächen digitalisiert wurden
@@ -142,11 +142,14 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
 - ...und man kann an derselben Stelle weiterarbeiten
 
+**Sich informieren**
+- Arteigenschaften in der [ArtenDb](https://github.com/barbalex/artendb) nachschauen
+
 **Über Daten und App verfügen**
 
 - Beobachtungen und Datenfelder exportieren
 - Von einem anderen Programm (z.B. das GIS eines Ökobüros) auf die Daten zugreifen, schon während der Feldarbeit! Vorausgesetzt wird die Fähigkeit, über [http](http://de.wikipedia.org/wiki/Hypertext_Transfer_Protocol) [JSON-Daten](http://en.wikipedia.org/wiki/JSON) zu lesen (ist noch nicht verbreitet aber im Kommen)
-- Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet der Webservice, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation selber einzurichten kostet einen Profi aber bloss 20 Minuten
+- Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet die Web-Applikation, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation kann ein Profi aber rasch wieder herstellen
 - [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
 <a href="#top">&#8593; top</a>
@@ -155,14 +158,16 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
+- Stammdatenaktualisierung ausgehend von [ArtenDb](https://github.com/barbalex/artendb) implementieren (bisher erfolgte das ausgehend von der alten ArtenDb)
 - Android- und iOS-App entwickeln
+- Sobald allfällige Einflüsse der Android- und iOS-Apps bzw. ihrer Synchronisation auf die Datenstruktur geklärt sind: Die Web-Applikation öffentlich machen
 
 danach:
 
 - Funktionalität erweitern, z.B.:
   - spezifisch Neobiota erfassen
   - Datenbanken teilen (gemeinsam an Projekten arbeiten!)
-  - Zusätzliche Darstellung für grosse Bildschirme
+  - Benutzeroberfläche präsentiert sich bei grossen Bildschirmen zweispaltig: links die Listen, rechts die Detailformulare
   - Beobachtungen in Listenform bearbeiten (Beispiel Flora: zuerst Artenliste erheben, dann in Listenform die Deckungen)
   - Felder projektspezifisch konfigurieren
 - Tempo erhöhen
@@ -185,6 +190,7 @@ Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Ler
 Ja gerne! Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für [dieses Projekt](https://github.com/barbalex/EvabMobile) engagieren würde!
 
 Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auch: 
+
 - Gute Ideen für die Weiterentwicklung
 - Fehler melden
 - Tipps und Tricks für den Umgang mit _evab mobile_ dokumentieren
