@@ -87,7 +87,7 @@ Um so besser, wenn (falls) es bereits praktischen Nutzen bringt.
 2. und zwar sofort und ohne nachträgliche Büroarbeit
 3. Mit den Daten zum Schutz seltener Arten beitragen
 
-Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobbyisten. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Hobby-ArtbeobachterInnen zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
+_evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte Amateure. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Amateure zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
 
 <a href="#top">&#8593; top</a>
 
@@ -102,19 +102,19 @@ Dieses App richtet sich aber primär an Naturschutzprofis und ambitionierte Hobb
 
 **Beobachtungen erfassen...**
 
-- ...von rund 40'000 Arten aus diesen Gruppen: Flora, Fauna, Moose, Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- ...von rund 40'000 Arten aus den Gruppen Flora, Fauna, Moose und Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
 - ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
 - ...nach Lateinischen oder Deutschen Namen
-- ...mit artgruppenspezifischen Feldern (in der Hierarchiestufe "Art", in der Feldverwaltung konfigurierbar)
-- ...Artgruppen merken, um die Artauswahl zu beschleunigen
+- ...mit artgruppenspezifischen Feldern
+- Artgruppe vorwählen, um die Artauswahl zu beschleunigen
 
 **Datenfelder verwalten**
 
-- 162 Felder der öffentlichen Artdatenzentren benutzen. Sie sind geschützt und können nicht verändert werden
+- 162 Felder der öffentlichen Artdatenzentren benutzen
 - Eigene Felder erstellen. Dafür aus verschiedenen Feldtypen wählen und eigene Auswahllisten definieren
-- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden.<br>Bei Auswahllisten werden nur deren Elemente akzeptiert
+- Standardwerte bestimmen, die bei neuen Beobachtungen automatisch gesetzt werden
 - Bestimmen, welche Felder sichtbar sind
 - Eigene Felder sind geschützt, sobald sie verwendet wurden. Sie können (erst) gelöscht oder umbenannt werden, wenn sie in keinem Datensatz (mehr) vorkommen
 
