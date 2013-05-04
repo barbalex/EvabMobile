@@ -106,9 +106,6 @@
 					localStorage.aArtId = $(this).attr("artid");
 					if (localStorage.Status === "neu") {
 						speichereNeueBeob(ArtBezeichnung);
-					} else if (localStorage.Von === "ArtEdit") {
-						//Herkunft ist ArtEdit, dieses mit neuer Art öffnen
-						$.mobile.changePage("ArtEdit.html");
 					} else {
 						speichereBeobNeueArtgruppeArt(ArtBezeichnung);
 					}

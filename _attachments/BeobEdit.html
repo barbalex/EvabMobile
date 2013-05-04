@@ -413,9 +413,8 @@
 							},
 							'Arteigenschaften': {
 								click: function () {
-									//Variablen übergeben
-									localStorage.zurueck = "BeobEdit.html";
-									$.mobile.changePage("ArtEdit.html");
+									var url = "https://barbalex.cloudant.com/artendb/_design/artendb/index.html?id=" + window.Beobachtung.aArtId;
+									window.open(url, "_blank");
 								},
 								theme: "a",
 								icon: "question"
