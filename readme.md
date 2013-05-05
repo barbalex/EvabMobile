@@ -160,7 +160,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Stammdatenaktualisierung ausgehend von [ArtenDb](https://github.com/barbalex/artendb) implementieren (bisher erfolgte das ausgehend von der alten ArtenDb)
+- Stammdaten ausgehend von [ArtenDb](https://github.com/barbalex/artendb) aktualisieren (bisher ging das von der alten ArtenDb aus)
 - Android- und iOS-App entwickeln
 - Sobald allfällige Einflüsse der Android- und iOS-Apps bzw. ihrer Synchronisation auf die Datenstruktur geklärt sind: Die Web-Applikation öffentlich machen
 
@@ -194,8 +194,8 @@ Ja gerne! Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phoneg
 
 Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auch: 
 
-- Gute Ideen für die Weiterentwicklung
-- Fehler melden
+- [Gute Ideen für die Weiterentwicklung](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
+- [Fehler melden](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - Tipps und Tricks dokumentieren
 
 <a href="#top">&#8593; top</a>
