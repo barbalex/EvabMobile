@@ -1,6 +1,6 @@
 Mit _evab mobile_ können Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld in einer projektspezifischen Datenstruktur auf Mobilgeräten erfassen. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene Datenstrukturen.
 
-**_E-was?_** "evab" steht für: <span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
+E-was? "evab" steht für: <span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
 
 <a name="top"></a>
 ## Inhalt ##
@@ -120,7 +120,7 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 
 **Lokalisieren...**
 
-- ...dem Gerät überlassen. Das Gerät lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert und in Schweizer Landeskoordinaten umgerechnet. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
+- ...dem Gerät überlassen. Es lokalisiert mit allen verfügbaren Methoden. Koordinaten werden ab einer Genauigkeit von 100 m gespeichert und in Schweizer Landeskoordinaten umgerechnet. Bis 30 m wird auf die Ungenauigkeit hingewiesen und auf die nächste Möglichkeit hingewiesen:
 - ...manuell auf Luftbildern von Google
 - ...manuell durch Eingabe von Schweizer Landeskoordinaten
 - Alle Beobachtungen auf Luftbild darstellen. Pro Benutzer, Projekt, Raum oder Ort bzw. Beobachtung
@@ -137,7 +137,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 **Effizient arbeiten**
 
 - Im **einfachen Modus** Beobachtungen in einer simplen (aber konfigurierbaren) Liste erfassen
-- Im **hierarchischen Modus** umfassende Aufnahmen effizient erheben:<br>Informationen zu Projekt, Raum, Ort und Zeit müssen für alle zugehörigen Beobachtungen nur ein mal erfasst werden
+- Im **hierarchischen Modus** müssen Informationen zu Projekt, Raum, Ort und Zeit für alle zugehörigen Beobachtungen nur ein mal erfasst werden
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
