@@ -30,13 +30,13 @@ Digitalisiert wird - wenn überhaupt - später im Büro. Im besten Fall nach wen
 Gängige Probleme:  
 
 - Die Daten werden gar nie digitalisiert
-- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (besonders die laufend ändernden Artnamen von Pflanzen)
+- Nicht oder nicht eindeutig erfasste Informationen werden falsch interpretiert (z.B. die laufend ändernden Artnamen von Pflanzen)
 - Artbeobachtungen digitalisieren ist mühsam und monoton. 
   Es ist allzu menschlich, die Arbeit 
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
 
-Daher ist die Qualität von Beobachtungsdaten oft unbefriedigend, selbst wenn sie von Profis erfasst wurde. Und das schlimmste: Die erwähnten Fehlerquellen können - im Gegensatz zur fachlichen Eignung der Autoren - schlecht beurteilt werden. Manchmal werden sie aber allzu klar, wenn man selber analog vorliegende Daten digitalisieren muss. Wenn das bloss anders ginge!
+Daher ist die Qualität von Beobachtungsdaten oft unbefriedigend, selbst wenn sie von Profis stammen. Und das schlimmste: Die erwähnten Fehlerquellen können - im Gegensatz zur fachlichen Eignung der Autoren - schlecht beurteilt werden. Manchmal werden sie aber allzu klar, wenn man selber analog vorliegende Daten digitalisieren muss. Wenn das bloss anders ginge!
 
 <a href="#top">&#8593; top</a>
 
@@ -56,7 +56,7 @@ Um so besser, wenn (falls) es bereits praktischen Nutzen bringt.
 #Projektidee
 - Eine Mobil-App ermöglicht die Erfassung von Artbeobachtungen direkt im Feld, unabhängig vom Mobilfunknetz
 - Zur Programmierung werden [HTML5](http://de.wikipedia.org/wiki/HTML5), [JavaScript](http://de.wikipedia.org/wiki/JavaScript), [jQuery mobile](http://jquerymobile.com) und [Phonegap](http://phonegap.com) verwendet.<br>Damit kann die App prinzipiell auf jedes Betriebssystem portiert werden
-- Die App steht als [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) zur Verfügung
+- Die App steht als [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) allen Geräten zur Verfügung
 - Als Datenbank wird [CouchDb](http://couchdb.apache.org/) verwendet, in Form einer [CouchApp](http://couchapp.org). Die Datenbank ist somit ihr eigener Webserver, die App kann auf PC's lokal installiert werden und synchronisiert die Daten automatisch im Hintergrund
 - Da schemafrei und dokumentorientiert, können mit CouchDb projekteigene Datenfelder definiert sowie Bilder, Tonaufnahmen oder Projektberichte angehängt werden
 
@@ -85,8 +85,8 @@ Um so besser, wenn (falls) es bereits praktischen Nutzen bringt.
 
 <a name="ZieleHobby"></a>
 #Ziele für Hobby-ArtbeobachterInnen
-1. Beobachtungen übersichtlich dokumentieren
-2. und zwar sofort und ohne nachträgliche Büroarbeit
+1. Beobachtungen übersichtlich dokumentieren...
+2. ...sofort und ohne nachträgliche Büroarbeit
 3. Mit den Daten zum Schutz seltener Arten beitragen
 
 _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte Amateure. Es ist besonders geeignet, um die Erfassung der Daten für aufwändige Projekte zu optimieren. Um Amateure zum Melden ihrer Beobachtungen zu motivieren, muss ein App einfacher aufgebaut werden und wohl auch Bestimmungshilfen enthalten.
@@ -100,11 +100,11 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 **Installieren:**
 
 - Direkt auf der [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) arbeiten
-- [Auf dem PC installieren](https://barbalex.cloudant.com/evab/_design/evab/Installieren.html) und lokal arbeiten (Windows, Mac OsX - wenig getestet). Vorteil: Viel schneller
+- [Auf dem PC installieren](https://barbalex.cloudant.com/evab/_design/evab/Installieren.html) und lokal arbeiten (Windows, Mac OsX - wenig getestet). Vorteile: schneller, eigene Kontrolle über die Daten
 
 **Beobachtungen erfassen...**
 
-- ...von rund 40'000 Arten aus den Gruppen Flora, Fauna, Moose und Pilze. Die Artlisten stammen von den nationalen Artdatenzentren
+- ...von rund 40'000 Arten aus den Gruppen Flora, Fauna, Moose und Pilze. Die Artlisten stammen von den [nationalen Artdaten-Zentren](http://www.natportal.ch/
 - ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
