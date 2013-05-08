@@ -3349,6 +3349,20 @@ function leereStorageFeldEdit(ohneId) {
 }
 
 
+/*
+*validiert email-adressen
+*Quelle: http://stackoverflow.com/questions/2507030/email-validation-using-jquery
+*/
+function validateEmail(email) {
+	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	if( !emailReg.test(email) ) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+
 /*!
 * jQuery Mobile Framework : drag pagination plugin
 * Copyright (c) Filament Group, Inc

@@ -151,6 +151,12 @@
 								$("#Email").focus();
 							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 							return false;
+						}else if (!validateEmail(Email)) {
+							melde("Bitte gültige Email-Adresse eingeben");
+							setTimeout(function() {
+								$("#Email").focus();
+							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+							return false;
 						}
 						return true;
 					}
