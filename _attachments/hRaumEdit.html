@@ -91,7 +91,7 @@
 				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
@@ -106,7 +106,7 @@
 			$("#RaumEditPage").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
@@ -535,7 +535,7 @@
 							},
 							'Räume exportieren': {
 								click: function () {
-									window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&include_docs=true');
+									window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
 								},
 								theme: "a",
 								icon: "exportieren"
@@ -582,7 +582,7 @@
 						//keine Raumliste übergeben
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
+						$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]', {
 							success: function (data) {
 								//RaumListe bereitstellen
 								window.RaumListe = data;

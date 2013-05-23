@@ -45,8 +45,8 @@
 			<div data-role="content">
 				<form id="SignupForm" action="#" method="get" autocomplete="off">
 					<div data-role="fieldcontain">
-						<label for="UserName">Benutzername:</label>
-						<input id="UserName" name="UserName" type="text" placeholder="(erforderlich)" autofocus required>
+						<label for="Email">Email:</label>
+						<input id="Email" name="Email" type="text" placeholder="(erforderlich)" autofocus required>
 					</div>
 					<div data-role="fieldcontain">
 						<label for="Passwort">Passwort:</label>
@@ -66,10 +66,6 @@
 					</div>
 					<hr >
 					<div data-role="fieldcontain">
-						<label for="Email">email-Adresse:</label>
-						<input id="Email" name="Email" type="email" placeholder="(erforderlich)" required>
-						<hr >
-					<div data-role="fieldcontain">
 						<fieldset data-role="controlgroup">
 							<legend>Meine Beobachtungen dürfen verwendet werden:</legend>
 								<input type="radio" name="Datenverwendung" id="JaAber" value="JaAber" checked="checked">
@@ -81,7 +77,6 @@
 						</fieldset>
 					</div>
 					<p>* Bei dieser Option werden die <a href="http://www.crsf.ch/documents/download/d/Deontologie_2008_de.pdf" target="_blank">Datenschutzrichtlinien der Schweizerischen Nationalen Datenzentren für Fauna und Flora</a> eingehalten.<br >Die zuständigen Naturschutzstellen von Bund, Kanton und Gemeinden verwenden die Informationen nur für Naturschutzzwecke. Die Daten nicht besonders empfindlicher Arten können in grober räumlicher Auflösung publiziert werden.</p>
-					</div>
 				</form>
 			</div>
 			<div data-role="footer" id="SignupFooter" data-position="fixed" data-tap-toggle="false">
@@ -92,13 +87,16 @@
 				</div><!-- /navbar -->
 			</div><!-- /footer -->
 			<script charset="utf-8">
+
 				$("#SignupPage").on("pageshow", function () {
-					//Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
-					window.Datenverwendung = "JaAber";
 					//sicherstellen, dass nichts vom letzten User übrig bleibt
 					leereAlleVariabeln();
+					//Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
+					localStorage.Datenverwendung = "JaAber";
 				});
+
 				$(":jqmData(role='page')").on("pageinit", function () {
+
 					$("#SignupFooter").on("click", "#SubmitButton", function (event) {
 						event.preventDefault();
 						if (validiereUserSignup()) {
@@ -106,161 +104,74 @@
 						}
 					});
 
-					//kontrollierren, ob die erforderlichen Felder etwas enthalten
-					//wenn ja wird true retourniert, sonst false
-					function validiereUserSignup() {
-						var UserName, Passwort, Passwort2, Autor, Email;
-						UserName = $("#UserName").val();
-						Passwort = $("#Passwort").val();
-						Passwort2 = $("#Passwort2").val();
-						Autor = $("#Autor").val();
-						Email = $("#Email").val();
-						if (!UserName) {
-							melde("Bitte Benutzernamen eingeben");
-							setTimeout(function() {
-								$("#UserName").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						} else if (!Passwort) {
-							melde("Bitte Passwort eingeben");
-							setTimeout(function() {
-								$("#Passwort").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						} else if (!Passwort2) {
-							melde("Bitte Passwort bestätigen");
-							setTimeout(function() {
-								$("#Passwort2").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						} else if (Passwort !== Passwort2) {
-							melde("Passwort ist falsch bestätigt");
-							setTimeout(function() {
-								$("#Passwort2").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						} else if (!Autor) {
-							melde("Bitte Autor eingeben");
-							setTimeout(function() {
-								$("#Autor").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						} else if (!Email) {
-							melde("Bitte Email eingeben");
-							setTimeout(function() {
-								$("#Email").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						}else if (!validateEmail(Email)) {
-							melde("Bitte gültige Email-Adresse eingeben");
-							setTimeout(function() {
-								$("#Email").focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						}
-						return true;
-					}
-
 					$("#SignupForm").on("change", "[name='Datenverwendung']", function () {
-						window.Datenverwendung = $(this).attr("id");
+						localStorage.Datenverwendung = $(this).attr("id");
 					});
-
-					function erstelleKonto() {
-						//User in _user eintragen
-						$.couch.signup({
-								name: $('#UserName').val(), Autor: $("#Autor").val(), email: $("#Email").val()
-							}, $('#Passwort').val(), {
-							success : function (r) {
-								localStorage.Username = r["name"];
-								//Informationen zum User in doc vom typ User eintragen
-								speichereUserInEvab();
-							},
-							error : function () {
-								melde("Fehler: Das Konto wurde nicht erstellt");
-							}
-						});
-					}
-
-					//Schreibt die Informationen des users in ein doc vom Typ User
-					//erstellt die sichtbaren Felder
-					function speichereUserInEvab() {
-						var doc;
-						doc = {};
-						doc.Typ = "User";
-						doc.UserName = $('#UserName').val();
-						doc.Datenverwendung = window.Datenverwendung;
-						doc.Email = $("#Email").val();
-						$db = $.couch.db("evab");
-						$db.saveDoc(doc, {
-							success: function (data) {
-								//localStorage gründen
-								localStorage.Username = $('#UserName').val();
-								localStorage.UserId = data.id;
-								localStorage.Autor = $("#Autor").val();
-								//Autor speichern
-								$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
-									success: function (Feld) {
-										//Autor speichern
-										//Falls Standardwert noch nicht existiert, 
-										//muss zuerst das Objekt geschaffen werden
-										if (!Feld.Standardwert) {
-											Feld.Standardwert = {};
-										}
-										Feld.Standardwert[localStorage.Username] = $("#Autor").val();
-										$db.saveDoc(Feld, {
-											success: function () {
-												//Felder sictbar schalten
-												erstelleSichtbareFelder();
-												$.mobile.changePage("BeobListe.html");
-											},
-											error: function () {
-												erstelleSichtbareFelder();
-												melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
-											}
-										});
-									},
-									error: function () {
-										erstelleSichtbareFelder();
-										melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
-									}
-								});
-							},
-							error: function () {
-								melde("Oh je, Ihr User konnte nicht erstellt werden, der Name ist jetzt aber belegt\nVersuchen Sie es mit einem anderen Benutzernamen\noder bitten Sie alex@barbalex.ch, den Namen wieder freizugeben");
-							}
-						});
-					}
-
-					//setzt alle Felder im Modus Hierarchisch sichtbar
-					//Erwartet den UserNamen
-					//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
-					function erstelleSichtbareFelder() {
-						var viewname, Username;
-						Username = $('#UserName').val();
-						$db = $.couch.db("evab");
-						viewname = 'evab/FeldListeFeldName';
-						$db.view(viewname, {
-							success: function (data) {
-								var i, Feld;
-								for (i in data.rows) {
-									if (typeof i !== "function") {
-										Feld = data.rows[i].value;
-										//Nur ausgewählte offizielle Felder berücksichtigen
-										//if (Feld.User === "ZentrenBdKt") {
-										if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
-											$db.openDoc(Feld._id, {
-												success: function (Feld) {
-													Feld.SichtbarImModusHierarchisch.push(Username);
-													$db.saveDoc(Feld);
-												}
-											});
-										}
-									}
-								}
-							}
-						});
-					}
 				});
+
+				//kontrollierren, ob die erforderlichen Felder etwas enthalten
+				//wenn ja wird true retourniert, sonst false
+				function validiereUserSignup() {
+					var Email, Passwort, Passwort2, Autor;
+					Email = $("#Email").val();
+					Passwort = $("#Passwort").val();
+					Passwort2 = $("#Passwort2").val();
+					Autor = $("#Autor").val();
+					if (!Email) {
+						melde("Bitte Email eingeben");
+						setTimeout(function() {
+							$("#Email").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					} else if (!validateEmail(Email)) {
+						melde("Bitte gültige Email-Adresse eingeben");
+						setTimeout(function() {
+							$("#Email").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					} else if (!Passwort) {
+						melde("Bitte Passwort eingeben");
+						setTimeout(function() {
+							$("#Passwort").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					} else if (!Passwort2) {
+						melde("Bitte Passwort bestätigen");
+						setTimeout(function() {
+							$("#Passwort2").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					} else if (Passwort !== Passwort2) {
+						melde("Passwort ist falsch bestätigt");
+						setTimeout(function() {
+							$("#Passwort2").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					} else if (!Autor) {
+						melde("Bitte Autor eingeben");
+						setTimeout(function() {
+							$("#Autor").focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
+					}
+					return true;
+				}
+
+				function erstelleKonto() {
+					//User in _user eintragen
+					$.couch.signup({
+							name: $('#Email').val()
+						}, $('#Passwort').val(), {
+						success : function (r) {
+							localStorage.Email = r["name"];
+							//Informationen zum User in doc vom typ User eintragen
+							speichereUserInEvab();
+						},
+						error : function () {
+							melde("Fehler: Das Konto wurde nicht erstellt");
+						}
+					});
+				}
 			</script>
 		</div>
 	</body>

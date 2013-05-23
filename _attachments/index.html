@@ -45,8 +45,8 @@
 			<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
 			<form id="indexForm" action="#" method="get" autocomplete="on">
 				<div data-role="fieldcontain">
-					<label for="UserName">Name:</label>
-					<input id="UserName" name="UserName" type="text" autofocus required>
+					<label for="Email">Email:</label>
+					<input id="Email" name="Email" type="text" autofocus required>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Passwort">Passwort:</label>
@@ -54,7 +54,7 @@
 				</div>
 			</form>
 			<p style="text-align: center">Sie sehen nur Ihre eigenen Beobachtungen. Darum brauchen Sie ein Konto.</p>
-			<p style="text-align: center">Diese App ist in Entwicklung. Vorläufig können Sie gerne mit Name "z" und Passwort "z" anmelden und alles ausprobieren.<br>Ihre Daten werden aber ohne Warnung gelöscht!</p>
+			<p style="text-align: center">Diese App ist in Entwicklung. Vorläufig können Sie gerne mit Email "z@z.ch" und Passwort "z" anmelden und alles ausprobieren.<br>Ihre Daten werden aber ohne Warnung gelöscht!</p>
 			<p style="text-align: center">Ich freue mich über <a href="mailto:alex.barbalex@gmail.com">Rückmeldungen</a></p>
 			<p style="text-align: center"><a href="https://github.com/barbalex/EvabMobile">mehr Infos hier</a></p>
 		</div>
@@ -68,13 +68,13 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#indexPage").on("pageshow", function () {
-				//Wenn möglich localStorage.Username für die Anmeldung verwenden
+				//Wenn möglich localStorage.Email für die Anmeldung verwenden
 				//ausser User hat via Menü bewusst neu anmelden wollen
 				//localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
 				if (localStorage.length > 0) {
-					if (localStorage.Username) {
+					if (localStorage.Email) {
 						if (localStorage.UserStatus !== "neu") {
-							if (localStorage.UserId && localStorage.Autor) {
+							if (localStorage.Email && localStorage.Autor) {
 								oeffneZuletztBenutzteSeite();
 								return;
 							} else {
@@ -89,7 +89,7 @@
 				leereAlleVariabeln();
 					
 				if (!("autofocus" in document.createElement("input"))) {
-					$("#UserName").focus();
+					$("#Email").focus();
 				}
 			});
 
@@ -107,50 +107,59 @@
 						e.preventDefault();
 					}
 				});
-
-				function validiereUserIndex() {
-					var UserName, Passwort;
-					UserName = $('input[name=UserName]').val();
-					Passwort = $('input[name=Passwort]').val();
-					if (!UserName) {
-						setTimeout(function () { 
-							$('#UserName').focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						melde("Bitte Benutzernamen eingeben");
-						return false;
-					} else if (!Passwort) {
-						setTimeout(function () { 
-							$('#Passwort').focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-						melde("Bitte Passwort eingeben");
-						return false;
-					}
-					return true;
-				}
-	
-				function meldeUserAn() {
-					var UserName, Passwort;
-					//sicherstellen, dass die localStorage leer ist
-					leereAlleVariabeln();
-					UserName = $('input[name=UserName]').val();
-					Passwort = $('input[name=Passwort]').val();
-					if (validiereUserIndex) {
-						$.couch.login({
-							name : UserName,
-							password : Passwort,
-							success : function (r) {
-								localStorage.Username = r["name"];
-								//Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
-								stelleUserDatenBereit();
-								delete localStorage.UserStatus;
-							},
-							error: function () {
-								melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
-							}
-						});
-					}
-				}
 			});
+
+			function validiereUserIndex() {
+				var Email, Passwort;
+				Email = $('input[name=Email]').val();
+				Passwort = $('input[name=Passwort]').val();
+				if (!Email) {
+					setTimeout(function () { 
+						$('#Email').focus(); 
+					}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+					melde("Bitte Benutzernamen eingeben");
+					return false;
+				} else if (!Passwort) {
+					setTimeout(function () { 
+						$('#Passwort').focus(); 
+					}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+					melde("Bitte Passwort eingeben");
+					return false;
+				}
+				return true;
+			}
+
+			function meldeUserAn() {
+				var Email, Passwort;
+				//sicherstellen, dass die localStorage leer ist
+				leereAlleVariabeln();
+				Email = $('input[name=Email]').val();
+				Passwort = $('input[name=Passwort]').val();
+				if (validiereUserIndex) {
+					$.couch.login({
+						name : Email,
+						password : Passwort,
+						success : function (r) {
+							
+							//TODO: Abfangen, wenn Username leer ist. USER erstellen
+							if (r["name"]) {
+								localStorage.Email = r["name"];
+							} else {
+								//login erfolgreich, aber keine Informationen zum User
+								//Möglicher Grund: Das Konto wurde von ArtenDb erstellt
+								//also User anbieten
+								$.mobile.changePage("UserEdit.html");
+							}
+							//Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
+							stelleUserDatenBereit();
+							delete localStorage.UserStatus;
+						},
+						error: function () {
+							melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+						}
+					});
+				}
+			}
 	  </script>
 	</div>
   </body>

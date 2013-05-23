@@ -45,9 +45,9 @@
 			<div id="UserEditContent" data-role="content">
 				<form id="UserEditForm" action="#" method="get">
 					<div data-role="fieldcontain">
-						<label for="UserName">Benutzername:</label>
-						<input id="UserName" type="text" disabled="disabled">
-						<p>Der Benutzername kann nicht verändert werden.<br ><br >
+						<label for="ue_Email">Email:</label>
+						<input id="ue_Email" name="Email" type="text" disabled="disabled">
+						<p>Die Email kann nicht verändert werden.<br ><br >
 						EvAB mobile speichert nur die verschlüsselte Form Ihres Passworts. Es kann deshalb nicht verändert werden und wird nicht angezeigt.</p>
 					</div>
 					<hr >
@@ -55,11 +55,6 @@
 						<label for="Autor">Autor:</label>
 						<input id="Autor" name="Autor" type="text" placeholder="(erforderlich)" required>
 						<p>Eingabe empfohlen. Beschreiben Sie den Autor so, wie er in den Beobachtungen erscheinen soll. Beispiel: Fritz Muster, Zürich.</p>
-					</div>
-					<hr >
-					<div data-role="fieldcontain">
-						<label for="Email">email-Adresse:</label>
-						<input id="Email" name="Email" class="Feld" type="email" placeholder="(erforderlich)" required>
 					</div>
 					<hr >
 					<div data-role="fieldcontain">
@@ -79,7 +74,7 @@
 			<script>
 
 				$("#UserEditPage").on("pageshow", function () {
-					if (localStorage.length === 0 || !localStorage.Username) {
+					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
 						$.mobile.changePage("index.html");
 					}
@@ -89,7 +84,7 @@
 				$(":jqmData(role='page')").on("pageinit", function () {
 					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 					//muss auf index.html umgeleitet werden
-					if (localStorage.length === 0 || !localStorage.Username) {
+					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
 						$.mobile.changePage("index.html");
 					}
@@ -117,8 +112,13 @@
 						}
 					});
 
+					$("#UserEditForm").on("change", "[name='Datenverwendung']", function () {
+						localStorage.Datenverwendung = $(this).attr("id");
+					});
+
 					//Autor bei Änderung speichern
 					$("#UserEditForm").on("change", "#Autor", function () {
+						$db = $.couch.db("evab");
 						$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 							success: function (doc) {
 								if ($("#Autor").val()) {
@@ -128,11 +128,11 @@
 									if (!doc.Standardwert) {
 										doc.Standardwert = {};
 									}
-									doc.Standardwert[localStorage.Username] = $("#Autor").val();
+									doc.Standardwert[localStorage.Email] = $("#Autor").val();
 								} else {
 									//Wenn kein Autor erfasst ist, einen allfälligen löschen
 									if (doc.Standardwert) {
-										delete doc.Standardwert[localStorage.Username];
+										delete doc.Standardwert[localStorage.Email];
 									}
 								}
 								$db.saveDoc(doc, {
@@ -151,30 +151,25 @@
 							}
 						});
 					});
+				});
 
-					//kontrollierren, ob die erforderlichen Felder etwas enthalten
-					//wenn ja wird true retourniert, sonst false
-					function validiereUserUserEdit() {
-						if (!$("#Autor").val()) {
-							melde("Bitte Autor eingeben");
-							setTimeout(function() { 
-								$('#Autor').focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						}
-						if (!$("#Email").val()) {
-							melde("Bitte email-Adresse eingeben");
-							setTimeout(function() { 
-								$('#Email').focus();
-							}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
-							return false;
-						}
-						return true;
+				//kontrollierren, ob die erforderlichen Felder etwas enthalten
+				//wenn ja wird true retourniert, sonst false
+				function validiereUserUserEdit() {
+					if (!$("#Autor").val()) {
+						melde("Bitte Autor eingeben");
+						setTimeout(function() { 
+							$('#Autor').focus();
+						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						return false;
 					}
+					return true;
+				}
 
-					function speichern(Feldname, Feldwert) {
+				function speichern(Feldname, Feldwert) {
+					if (localStorage.Datenverwendung) {
 						$db = $.couch.db("evab");
-						$db.openDoc(localStorage.UserId, {
+						$db.openDoc(localStorage.Email, {
 							success: function (doc) {
 									if (Feldwert) {
 										doc[Feldname] = Feldwert;
@@ -193,8 +188,12 @@
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
+					} else {
+						//es gibt noch keine User-Doc
+						//vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
+						speichereUserInEvab();
 					}
-				});
+				}
 			</script>
 		</div>
 	</body>

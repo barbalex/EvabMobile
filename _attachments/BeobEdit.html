@@ -116,7 +116,7 @@
 				//Sollte keine id vorliegen, zu BeobListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
@@ -139,7 +139,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 					return;
@@ -349,7 +349,7 @@
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
+						$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true', {
 							success: function (data) {
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
@@ -429,7 +429,7 @@
 							},
 							'Beobachtungen<br>exportieren': {
 								click: function () {
-									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&&include_docs=true');
+									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&&include_docs=true');
 								},
 								theme: "a",
 								icon: "exportieren"

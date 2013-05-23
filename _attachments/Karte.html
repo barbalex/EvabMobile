@@ -63,19 +63,19 @@
 					//Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
 					switch(localStorage.zurueck) {
 						case "hProjektListe":
-							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Username + '"&include_docs=true';
+							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Email + '"&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
 						case "hProjektEdit":	//gleich wie hRaumListe
 						case "hRaumListe":
-							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true';
+							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
 						case "hRaumEdit":	//gleich wie hOrtListe
 						case "hOrtListe":
-							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true';
+							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH();
 							break;
@@ -281,7 +281,7 @@
 							erstelleKarteBeobListe_2();
 						} else {
 							$db = $.couch.db("evab");
-							$db.view('evab/BeobListeLatLng?key="' + localStorage.Username + '"&include_docs=true', {
+							$db.view('evab/BeobListeLatLng?key="' + localStorage.Email + '"&include_docs=true', {
 								success: function (data) {
 									window.BeobListeLatLng = data;
 									erstelleKarteBeobListe_2();

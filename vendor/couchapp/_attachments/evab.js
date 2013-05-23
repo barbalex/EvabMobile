@@ -217,7 +217,7 @@ function geheZurueckFE() {
 function speichereNeueBeob(aArtBezeichnung) {
 	var doc;
 	doc = {};
-	doc.User = localStorage.Username;
+	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
 	delete localStorage.aArtGruppe;
@@ -404,7 +404,7 @@ function erstelleNeueZeit() {
 	var doc;
 	doc = {};
 	doc.Typ = "hZeit";
-	doc.User = localStorage.Username;
+	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
 	doc.hOrtId = localStorage.OrtId;
@@ -438,7 +438,7 @@ function erstelleNeuenOrt() {
 	var doc;
 	doc = {};
 	doc.Typ = "hOrt";
-	doc.User = localStorage.Username;
+	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
 	//Felder aus den höheren Hierarchiestufen ergänzen und in hOrtEdit.html an hOrtEdit.html übergeben
@@ -465,7 +465,7 @@ function erstelleNeuenRaum() {
 	var doc;
 	doc = {};
 	doc.Typ = "hRaum";
-	doc.User = localStorage.Username;
+	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	//Felder aus den höheren Hierarchiestufen ergänzen und  in Objekt speichern, das an hRaumEdit.html übergeben wird
 	window.hRaum = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId});
@@ -493,7 +493,7 @@ function erstelleNeuesProjekt() {
 	var doc;
 	doc = {};
 	doc.Typ = "hProjekt";
-	doc.User = localStorage.Username;
+	doc.User = localStorage.Email;
 	//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
 	window.hProjekt = doc;
 	//ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
@@ -515,20 +515,7 @@ function erstelleNeuesProjekt() {
 }
 
 function öffneMeineEinstellungen() {
-	if (!localStorage.UserId) {
-		$db = $.couch.db("evab");
-		$db.view('evab/User?key="' + localStorage.Username + '"', {
-			success: function (data) {
-				var User;
-				User = data.rows[0].value;
-				//UserId = data.rows[0].value._id;
-				localStorage.UserId = UserId;
-				$.mobile.changePage("UserEdit.html");
-			}
-		});
-	} else {
-		$.mobile.changePage("UserEdit.html");
-	}
+	$.mobile.changePage("UserEdit.html");
 }
 
 function löscheDokument(DocId) {
@@ -664,12 +651,12 @@ function generiereHtmlFuerBeobEditForm () {
 			Feld = FeldlisteBeobEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 				//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
-					if (window.Beobachtung[FeldName] && Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-						FeldWert = Feld.Standardwert[localStorage.Username];
+					if (window.Beobachtung[FeldName] && Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+						FeldWert = Feld.Standardwert[localStorage.Email];
 						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
 						window.Beobachtung[FeldName] = FeldWert;
 					} else {
@@ -711,7 +698,7 @@ function initiiereBeobliste() {
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + localStorage.Username + '",{}]&endkey=["' + localStorage.Username + '"]&descending=true', {
+		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true', {
 			success: function (data) {
 				//BeobListe für BeobEdit bereitstellen
 				window.BeobListe = data;
@@ -801,18 +788,29 @@ function loescheAnhang_2(that, Objekt) {
 }
 
 //initiiert UserEdit.html
-//Mitgeben: localStorage.UserId
 function initiiereUserEdit() {
+	$("#ue_Email").val(localStorage.Email);
+	$("[name='Datenverwendung']").checkboxradio();
+	if (localStorage.Autor) {
+		$("#Autor").val(localStorage.Autor);
+	}
 	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.UserId, {
+	$db.openDoc(localStorage.Email, {
 		success: function (User) {
 			//fixe Felder aktualisieren
-			$("#UserName").val(User.UserName);
-			$("#Email").val(User.Email);
-			$("[name='Datenverwendung']").checkboxradio();
-			$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
-			$("#Autor").val(localStorage.Autor);
+			if (User.Datenverwendung) {
+				$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
+				localStorage.Datenverwendung = User.Datenverwendung;
+			} else {
+				//Standardwert setzen
+				$("#JaAber").prop("checked",true).checkboxradio("refresh");
+			}
 			speichereLetzteUrl();
+		},
+		error: function () {
+			console.log('User hat kein User-Dokument');
+			//Standardwert setzen
+			$("#JaAber").prop("checked",true).checkboxradio("refresh");
 		}
 	});
 }
@@ -900,9 +898,9 @@ function generiereHtmlFuerProjektEditForm () {
 			Feld = FeldlisteProjekt.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "pName") {
-				if (window.hProjekt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-					FeldWert = Feld.Standardwert[localStorage.Username];
+			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
+				if (window.hProjekt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+					FeldWert = Feld.Standardwert[localStorage.Email];
 					//window.hProjekt um den Standardwert ergänzen, um später zu speichern
 					window.hProjekt[FeldName] = FeldWert;
 				} else {
@@ -958,7 +956,7 @@ function initiiereFeldEdit_2() {
 	SichtbarImModusHierarchisch = window.Feld.SichtbarImModusHierarchisch;
 	SichtbarImModusEinfach = window.Feld.SichtbarImModusEinfach;
 	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusHierarchisch noch nicht
-	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
+	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
 	} else {
 		$("#SichtbarImModusHierarchisch").val("nein");
@@ -966,7 +964,7 @@ function initiiereFeldEdit_2() {
 	$("select#SichtbarImModusHierarchisch").slider();
 	$("select#SichtbarImModusHierarchisch").slider("refresh");
 	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusEinfach noch nicht
-	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
+	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
 		$("select#SichtbarImModusEinfach").val("ja");
 	} else {
 		$("select#SichtbarImModusEinfach").val("nein");
@@ -984,7 +982,7 @@ function initiiereFeldEdit_2() {
 	//Zuerst leeren Wert setzen, sonst bleibt letzter, wenn keiner existiert!
 	$("#Standardwert").val("");
 	if (window.Feld.Standardwert) {
-		Standardwert = window.Feld.Standardwert[localStorage.Username];
+		Standardwert = window.Feld.Standardwert[localStorage.Email];
 		if (Standardwert) {
 			$("#Standardwert").val(Standardwert);
 		}
@@ -1067,7 +1065,7 @@ function erstelleSelectFeldFolgtNach_2() {
 			TempFeld = Feldliste.rows[i].value;
 			//Liste aufbauen
 			//Nur eigene Felder und offizielle
-			if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 				Optionen.push(TempFeld.FeldName);
 			}
 		}
@@ -1154,7 +1152,7 @@ function initiiereFeldliste_2() {
 			TempFeld = Feldliste.rows[i].value;
 			//Liste aufbauen
 			//Nur eigene Felder und offizielle
-			if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 				Hierarchiestufe = TempFeld.Hierarchiestufe;
 				FeldBeschriftung = TempFeld.FeldBeschriftung;
 				FeldBeschreibung = "";
@@ -1445,7 +1443,7 @@ function initiiereProjektliste() {
 	} else {
 		//Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hProjListe?startkey=["' + localStorage.Username + '"]&endkey=["' + localStorage.Username + '",{}]', {
+		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]', {
 			success: function (data) {
 				//Projektliste für ProjektEdit bereitstellen
 				window.Projektliste = data;
@@ -1566,9 +1564,9 @@ function generiereHtmlFuerRaumEditForm () {
 			Feld = FeldlisteRaumEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1 && FeldName !== "rName") {
-				if (window.hRaum[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-					FeldWert = Feld.Standardwert[localStorage.Username];
+			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
+				if (window.hRaum[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+					FeldWert = Feld.Standardwert[localStorage.Email];
 					//Objekt window.hRaum um den Standardwert ergänzen, um später zu speichern
 					window.hRaum[FeldName] = FeldWert;
 				} else {
@@ -1608,7 +1606,7 @@ function initiiereRaumListe() {
 	} else {
 		//Raumliste aud DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hRaumListe?startkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ProjektId + '" ,{}]', {
+		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]', {
 			success: function (data) {
 				//RaumListe für haumEdit bereitstellen
 				window.RaumListe = data;
@@ -1738,9 +1736,9 @@ function generiereHtmlFuerOrtEditForm () {
 			Feld = FeldlisteOrtEdit.rows[i].value;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-				if (window.hOrt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Username]) {
-					FeldWert = Feld.Standardwert[localStorage.Username];
+			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+				if (window.hOrt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+					FeldWert = Feld.Standardwert[localStorage.Email];
 					//Objekt window.hOrt um den Standardwert ergänzen, um später zu speichern
 					window.hOrt[FeldName] = FeldWert;
 				} else {
@@ -1783,7 +1781,7 @@ function initiiereOrtListe() {
 	} else {
 		//Ortliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hOrtListe?startkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.RaumId + '" ,{}]', {
+		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]', {
 			success: function (data) {
 				//OrtListe für hOrtEdit bereitstellen
 				window.OrtListe = data;
@@ -1897,7 +1895,7 @@ function initiiereZeitListe() {
 	} else {
 		//Zeitliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
+		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				window.ZeitListe = data;
@@ -2123,7 +2121,7 @@ function initiierehBeobListe() {
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hArtListe?startkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.ZeitId + '" ,{}]', {
+		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]', {
 			success: function (data) {
 				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.hBeobListe = data;
@@ -2643,47 +2641,8 @@ function holeAutor() {
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
 			if (doc.Standardwert) {
-				if (doc.Standardwert[localStorage.Username]) {
-					localStorage.Autor = doc.Standardwert[localStorage.Username];
-				}
-			}
-		}
-	});
-}
-
-//PROBLEM: Dies verursacht Verzögerungen, viel DB-Datenverkehr, aufgeblähte DB
-//und vor allem Daten-Konflikte
-//darum auf localStorage gewechselt und dies hier ausgeschaltet
-//MOMENTAN NICHT IM GEBRAUCH
-function localStorageInUserSpeichern(UserId) {
-	$db = $.couch.db("evab");
-	$db.openDoc(UserId, {
-		success: function (User) {
-			//nur speichern, wann anders als zuletzt
-			//leider registriert das auch Änderungen der Feldliste etc.
-			//um das zu beheben, müsste immer eine Änderung der passenden id verfolgt werden
-			//damit könnte auch das parsen gespaart werden
-			if (JSON.stringify(User.localStorage) !== JSON.stringify(localStorage)) {
-				User.localStorage = localStorage;
-				$db.saveDoc(User);
-			}
-		}
-	});
-}
-
-//Wenn die localStorage mit localStorageInUserSpeichern() in de DB gespeichert wurde
-//kann sie mit dieser Funktion wieder geholt werden
-//MOMENTAN NICHT IM GEBRAUCH
-function holeLocalStorageAusDb() {
-	$db = $.couch.db("evab");
-	$db.openDoc(sessionStorage.UserId, {
-		success: function (data) {
-			var localStorageObjekt = {};
-			User = data.rows[0].value;
-			localStorageObjekt = User.localStorage;
-			for (var i in localStorageObjekt) {
-				if (typeof i !== "function") {
-					localStorage[i] = localStorageObjekt[i];
+				if (doc.Standardwert[localStorage.Email]) {
+					localStorage.Autor = doc.Standardwert[localStorage.Email];
 				}
 			}
 		}
@@ -2845,7 +2804,7 @@ function initiiereFelderWaehlen_2() {
 		Feld = window[localStorage.FeldlisteFwName].rows[i].value;
 		FeldName = Feld.FeldName;
 		//Nur eigene und offizielle Felder berücksichtigen
-		if (Feld.User === localStorage.Username || Feld.User === "ZentrenBdKt") {
+		if (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") {
 			//im Formular fix integrierte Felder nicht aufbauen
 			if (eval(localStorage.KriterienFürZuWählendeFelder)) {
 				anzFelder += 1;
@@ -2868,14 +2827,14 @@ function initiiereFelderWaehlen_2() {
 				ListItem += "' class='custom'";
 				if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 					if (Feld.SichtbarImModusEinfach) {
-						if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Username) !== -1) {
+						if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
 							//wenn sichtbar, anzeigen
 							ListItem += " checked='checked'";
 						}
 					}
 				} else {
 					if (Feld.SichtbarImModusHierarchisch) {
-						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username) !== -1) {
+						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 							//wenn sichtbar, anzeigen
 							ListItem += " checked='checked'";
 						}
@@ -2900,12 +2859,12 @@ function neuesFeld() {
 	var NeuesFeld;
 	NeuesFeld = {};
 	NeuesFeld.Typ = "Feld";
-	NeuesFeld.User = localStorage.Username;
+	NeuesFeld.User = localStorage.Email;
 	NeuesFeld.SichtbarImModusEinfach = [];
 	NeuesFeld.SichtbarImModusHierarchisch = [];
 	//gleich sichtbar stellen
-	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Username);
-	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Username);
+	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
+	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
 	$db = $.couch.db("evab");
 	$db.saveDoc(NeuesFeld, {
 		success: function (data) {
@@ -2927,14 +2886,14 @@ function pruefeAnmeldung() {
 	//Username Anmeldung überprüfen
 	//Wenn angemeldet, globale Variable Username aktualisieren
 	//Wenn nicht angemeldet, Anmeldedialog öffnen
-	if (!localStorage.Username) {
+	if (!localStorage.Email) {
 		$.ajax({
 			url: '/_session',
 			dataType: 'json',
 			async: false,
 			success: function (session) {
 				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
-					localStorage.Username = session.userCtx.name;
+					localStorage.Email = session.userCtx.name;
 				} else {
 					localStorage.UserStatus = "neu";
 					$.mobile.changePage("index.html");
@@ -3129,14 +3088,19 @@ function erstelleArtgruppenListe_2() {
 //braucht den Usernamen
 function stelleUserDatenBereit() {
 	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + localStorage.Username + '"', {
+	$db.view('evab/User?key="' + localStorage.Email + '"', {
 		success: function (data) {
-			var User;
-			User = data.rows[0].value;
-			//UserId als globale Variable setzen, damit die Abfrage nicht immer durchgeführt werden muss
-			localStorage.UserId = User._id;
 			//weitere anderswo benutzte Variabeln verfügbar machen
 			holeAutor();
+			//kontrollieren, ob User existiert
+			//wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
+			if (data.rows.length === 0) {
+				$.mobile.changePage("UserEdit.html");
+				return;
+			}
+			if (data.Datenverwendung) {
+				localStorage.Datenverwendung = data.Datenverwendung;
+			}
 			oeffneZuletztBenutzteSeite();
 		}
 	});
@@ -3164,6 +3128,7 @@ function leereAlleVariabeln(ohneClear) {
 	if (!ohneClear) {
 		localStorage.clear();
 	}
+	delete localStorage.Autor;
 	leereStorageProjektListe("mitLatLngListe");
 	leereStorageProjektEdit("mitLatLngListe");
 	leereStorageRaumListe("mitLatLngListe");
@@ -3346,6 +3311,86 @@ function leereStorageFeldEdit(ohneId) {
 		delete localStorage.FeldId;
 	}
 	delete window.Feld;
+}
+
+//setzt alle Felder im Modus Hierarchisch sichtbar
+//Erwartet die Email
+//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
+//wird verwendet in: Signup.html, UserEdit.html
+function erstelleSichtbareFelder() {
+	var viewname, Username;
+	Username = localStorage.Email;
+	$db = $.couch.db("evab");
+	viewname = 'evab/FeldListeFeldName';
+	$db.view(viewname, {
+		success: function (data) {
+			var i, Feld;
+			for (i in data.rows) {
+				if (typeof i !== "function") {
+					Feld = data.rows[i].value;
+					//Nur ausgewählte offizielle Felder berücksichtigen
+					//if (Feld.User === "ZentrenBdKt") {
+					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
+						$db.openDoc(Feld._id, {
+							success: function (Feld) {
+								Feld.SichtbarImModusHierarchisch.push(Username);
+								$db.saveDoc(Feld);
+							}
+						});
+					}
+				}
+			}
+		}
+	});
+}
+
+//Schreibt die Informationen des users in ein doc vom Typ User
+//erstellt die sichtbaren Felder
+//wird benutzt von: Signup.html, UserEdit.html
+function speichereUserInEvab() {
+	var doc;
+	doc = {};
+	doc._id = $('input[name=Email]').val();
+	doc.Typ = "User";
+	doc.Datenverwendung = localStorage.Datenverwendung || "JaAber";
+	$db = $.couch.db("evab");
+	$db.saveDoc(doc, {
+		success: function (data) {
+			//localStorage gründen
+			localStorage.Email = $('input[name=Email]').val();
+			localStorage.Autor = $("#Autor").val();
+			//Autor speichern
+			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+				success: function (Feld) {
+					//Autor speichern
+					//Falls Standardwert noch nicht existiert, 
+					//muss zuerst das Objekt geschaffen werden
+					if (!Feld.Standardwert) {
+						Feld.Standardwert = {};
+					}
+					Feld.Standardwert[localStorage.Email] = $("#Autor").val();
+					$db.saveDoc(Feld, {
+						success: function () {
+							//Felder sictbar schalten
+							erstelleSichtbareFelder();
+							$.mobile.changePage("BeobListe.html");
+						},
+						error: function () {
+							erstelleSichtbareFelder();
+							melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
+						}
+					});
+				},
+				error: function () {
+					erstelleSichtbareFelder();
+					melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
+				}
+			});
+		},
+		error: function () {
+			melde("Oh je, Ihr User konnte nicht erstellt werden, der Name ist jetzt aber belegt\nVersuchen Sie es mit einem anderen Benutzernamen\noder bitten Sie alex@barbalex.ch, den Namen wieder freizugeben");
+		}
+	});
 }
 
 

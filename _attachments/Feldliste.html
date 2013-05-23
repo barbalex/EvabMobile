@@ -56,7 +56,7 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#FeldListePage").on("pageshow", function () {
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				}
@@ -66,7 +66,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				}

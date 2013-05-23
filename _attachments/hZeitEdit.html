@@ -95,7 +95,7 @@
 				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
 				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
@@ -108,7 +108,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
@@ -488,7 +488,7 @@
 							},
 							'Zeiten exportieren': {
 								click: function () {
-									window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Username + '",{},{},{},{},{}]&endkey=["' + localStorage.Username + '"]&descending=true&include_docs=true');
+									window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
 								},
 								theme: "a",
 								icon: "exportieren"
@@ -532,7 +532,7 @@
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Username + '", "' + localStorage.OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]', {
 							success: function (data) {
 								window.ZeitListe = data;
 								nächsteVorigeZeit_2(NächsteOderVorige);

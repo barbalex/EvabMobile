@@ -197,7 +197,7 @@
 			//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 			//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 			$("#FeldEditPage").on("pageshow", function () {
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
@@ -211,7 +211,7 @@
 			$(":jqmData(role='page')").on("pageinit", function () {
 				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				//muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Username) {
+				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
@@ -251,7 +251,7 @@
 							//wenn ein alter Feldname existiert,
 							//zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
-							$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
+							$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 								success: function (data) {
 									var i, anzVorkommen, Datensatz, TempFeld, ds;
 									anzVorkommen = 0;
@@ -333,8 +333,8 @@
 						//es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 						LetzterFeldwert = [];
 						if (Feld.Standardwert) {
-							if (Feld.Standardwert[localStorage.Username]) {
-								LetzterFeldwert = Feld.Standardwert[localStorage.Username];
+							if (Feld.Standardwert[localStorage.Email]) {
+								LetzterFeldwert = Feld.Standardwert[localStorage.Email];
 							}
 						}
 						//Standardwert in Array verwandeln
@@ -410,7 +410,7 @@
 										} else {
 											$db = $.couch.db("evab");
 											//zählen, in wievielen Datensätzen das Feld verwendet wird
-											$db.view('evab/FeldSuche?key="' + localStorage.Username + '"&include_docs=true', {
+											$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 												success: function (data) {
 													var i, anzVorkommen, Datensatz, TempFeld, ds;
 													anzVorkommen = 0;
@@ -517,7 +517,7 @@
 										if (data.rows[i].value) {
 											TempFeld = data.rows[i].value;
 											//ist es ein eigenes oder ein offizielles?
-											if (TempFeld.User === localStorage.Username || TempFeld.User === "ZentrenBdKt") {
+											if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 												//ja > dieser Name ist nicht zulässig
 												AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
 											}
@@ -634,7 +634,7 @@
 							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 							AktFeld_i = Feldliste.rows[i].value;
 							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
+							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
@@ -646,7 +646,7 @@
 											//alle verbleibenden Felder durchlaufen, eigenes suchen
 											AktFeld_y = Feldliste.rows[y].value;
 											//Nur eigene Felder und offizielle berücksichtigen
-											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
+											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
 												localStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
 												leereStorageFeldEdit("ohneId");
@@ -697,7 +697,7 @@
 							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 							AktFeld_i = Feldliste.rows[i].value;
 							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-							if (AktFeld_i.User === localStorage.Username || AktFeld_i.User === "ZentrenBdKt") {
+							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = Feldliste.rows[i].value._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
@@ -709,7 +709,7 @@
 											//alle vorhergehenden Felder durchlaufen, eigenes suchen
 											AktFeld_y = Feldliste.rows[y].value;
 											//Nur eigene Felder und offizielle berücksichtigen
-											if (AktFeld_y.User === localStorage.Username || AktFeld_y.User === "ZentrenBdKt") {
+											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
 												localStorage.FeldId = FeldIdVoriges;
@@ -786,12 +786,12 @@
 						//Standardwert existierte
 						if (Feldwert) {
 							//neuen Standardwert setzen
-							window.Feld.Standardwert[localStorage.Username] = Feldwert;
+							window.Feld.Standardwert[localStorage.Email] = Feldwert;
 						} else {
 							//Standardwert ist leer
-							if (window.Feld.Standardwert[localStorage.Username]) {
+							if (window.Feld.Standardwert[localStorage.Email]) {
 								//bisherigen Standardwert löschen
-								delete window.Feld.Standardwert[localStorage.Username];
+								delete window.Feld.Standardwert[localStorage.Email];
 							}
 						}
 					} else {
@@ -799,7 +799,7 @@
 						if (Feldwert) {
 							//Objekt für Standardwert schaffen und neuen Wert setzen
 							window.Feld.Standardwert = {};
-							window.Feld.Standardwert[localStorage.Username] = Feldwert;
+							window.Feld.Standardwert[localStorage.Email] = Feldwert;
 						}
 					}
 					$db.saveDoc(window.Feld, {
@@ -875,11 +875,11 @@
 					//Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
 					//Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
 					//Soll das Feld im Modus einfach sichtbar sein?
-					idx1 = window.Feld.SichtbarImModusEinfach.indexOf(localStorage.Username);
+					idx1 = window.Feld.SichtbarImModusEinfach.indexOf(localStorage.Email);
 					if ($("#SichtbarImModusEinfach").val() === "ja") {
 						//User ergänzen, wenn noch nicht enthalten
 						if (idx1 === -1) {
-							window.Feld.SichtbarImModusEinfach.push(localStorage.Username);
+							window.Feld.SichtbarImModusEinfach.push(localStorage.Email);
 						}
 					} else {
 						//User entfernen, wenn enthalten
@@ -888,11 +888,11 @@
 						}
 					}
 					//Soll das Feld im Modus hierarchisch sichtbar sein?
-					idx2 = window.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Username);
+					idx2 = window.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email);
 					if ($("#SichtbarImModusHierarchisch").val() === "ja") {
 						//User ergänzen, wenn noch nicht enthalten
 						if (idx2 === -1) {
-							window.Feld.SichtbarImModusHierarchisch.push(localStorage.Username);
+							window.Feld.SichtbarImModusHierarchisch.push(localStorage.Email);
 						}
 					} else {
 						//User entfernen, wenn enthalten
