@@ -1,6 +1,7 @@
 function(doc) {
 	var User = doc.User;
 	if (doc.Typ === 'hRaum') {
-	    emit ([User, doc.hProjektId, doc._id, {}, {}, {}], null);
-    }
+		emit ([User, doc._id, 2], null);
+		emit ([User, doc._id, 1], {_id: doc.hProjektId});
+	}
 }

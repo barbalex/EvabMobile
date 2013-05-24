@@ -9,7 +9,7 @@ function(head, req) {
 	});
 
 	var row,
-		name, i, x, y, z,
+		name, i, q, x, y, z,
 		FeldName,
 		FeldNamen = [],
 		Titelzeile,
@@ -19,34 +19,29 @@ function(head, req) {
 		Datenzeile,
 		Datenzeilenlänge;
 
-	//Array mit allen Feldnamen erstellen
+	//vereinigtes doc erstellen, dass die Felder aller Hierarchieebenen enthält
 	while(row = getRow()) {
-		doc = row.doc;
-		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
-		switch (doc.Typ) {
-		case "hProjekt":
-			doc.hProjektId = doc._id;
-			break;
-		case "hRaum":
+		if (row.key[2] === 1) {
+			doc = row.doc;
+		} else {
+			//felder von row.doc in doc schreiben
+			//_id und _rev sind dann von row.doc;
+			//send('doc vor ergänzen = ' + JSON.stringify(doc) + '   /   ');
+			doc = ergaenzeFelderVonDoc(doc, row.doc);
+			//send('doc nach ergänzen = ' + JSON.stringify(doc) + '   /   ');
+			//Id-Felder kreieren - sonst haben Projekte keine hProjektId etc.
 			doc.hRaumId = doc._id;
-			break;
-		case "hOrt":
-			doc.hOrtId = doc._id;
-			break;
-		case "hZeit":
-			doc.hZeitId = doc._id;
-			break;
-		case "hArt":
-			doc.BeobId = doc._id;
-			break;
-		case "Beobachtung":
-			doc.BeobId = doc._id;
-			break;
+			//doc sammeln und weiter
+			docs.push(doc);
 		}
-		docs.push(doc);
+	}
+
+	//Array mit allen Feldnamen erstellen
+	for (q=0; q<docs.length; q++) {
+		doc = docs[q];
 		for (name in doc) {
 			if (typeof name !== "function") {
-				//war mal auch ausgeschlossen: name !== '_rev' && 
+				//war mal auch ausgeschlossen: '_rev'
 				if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 					//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 					if (FeldNamen.indexOf(name) == -1) {
@@ -56,6 +51,7 @@ function(head, req) {
 			}
 		}
 	}
+
 	FeldNamen.sort();
 
 	//Titelzeile erstellen
@@ -78,7 +74,7 @@ function(head, req) {
 	send(Titelzeile);
 
 	//durch docs loopen
-	for (y in docs) {
+	for (y=0; y<docs.length; y++) {
 		doc = docs[y];
 		//Durch FeldNamen loopen
 		//wenn FeldName des Datensatzes enthalten ist, dessen Wert anfügen
@@ -112,4 +108,11 @@ function(head, req) {
 		Datenzeile = Datenzeile.slice(0, Datenzeilenlänge) + '"\n';
 		send(Datenzeile);
 	}
+}
+
+function ergaenzeFelderVonDoc(doc1, doc2) {
+	for (var h in doc2) {
+		doc1[h] = doc2[h];
+	}
+	return doc1;
 }
