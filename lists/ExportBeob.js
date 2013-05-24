@@ -38,6 +38,8 @@ function(head, req) {
 				doc.BeobId = doc._id;
 				//doc sammeln und weiter
 				docs.push(doc);
+				//doc zurücksetzen, sonst übernimmt der nächste des Vorigen Eigenschaften, wenn zwei nicht hierarchische Beobachtungen aufeinander folgen
+				doc = null;
 			}
 		}
 	}

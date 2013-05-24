@@ -439,10 +439,6 @@
 						$db.saveDoc(window.hOrt, {
 							success: function (data) {
 								window.hOrt._rev = data.rev;
-								//tiefere Hierarchiestufen aktualisieren
-								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
-								//wenn sie selber Datensätze hat
-								speichereOrtfeldInZeiten(Feldname, Feldwert);
 								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								//Zuletzt gespeicherte OrtId NACH dem speichern setzen
@@ -463,58 +459,6 @@
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
-					}
-				}
-
-				function speichereOrtfeldInZeiten(Feldname, Feldwert) {
-					var viewname;
-					if (window.ZeitenVonOrt) {
-						//vorhandenes Objekt nutzen
-						speichereOrtfeldInZeiten_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ZeitenVonOrt = data;
-								speichereOrtfeldInZeiten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereOrtfeldInZeiten_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.ZeitenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "ZeitenVonOrt");
-						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereOrtfeldInArten(Feldname, Feldwert);
-					}
-				}
-
-				function speichereOrtfeldInArten(Feldname, Feldwert) {
-					var viewname;
-					if (window.ArtenVonOrt) {
-						//vorhandenes Objekt nutzen
-						speichereOrtfeldInArten_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonOrt = data;
-								speichereOrtfeldInArten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereOrtfeldInArten_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.ArtenVonOrt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "ArtenVonOrt");
 					}
 				}
 				

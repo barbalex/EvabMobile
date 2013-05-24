@@ -2954,7 +2954,6 @@ function holeArtenliste(filterwert) {
 
 //bekommt eine Artenliste und baut damit im Formular die Artenliste auf
 function erstelleArtenliste(filterwert) {
-	console.log('erstelleArtenliste, filterwert = ' + filterwert);
 	var Artenliste = window.Artenliste.rows,
 		i,
 		html_temp = "",

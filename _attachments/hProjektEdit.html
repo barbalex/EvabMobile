@@ -400,10 +400,6 @@
 						$db.saveDoc(window.hProjekt, {
 							success: function (data) {
 								window.hProjekt._rev = data.rev;
-								//tiefere Hierarchiestufen aktualisieren
-								//jede löst ihre eigene und die Aktualisierung der nächsten nur aus, 
-								//wenn sie selber Datensätze hat
-								speichereProjektfeldInRäumen(Feldname, Feldwert);
 								//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
 								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
@@ -425,112 +421,6 @@
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
-					}
-				}
-
-				function speichereProjektfeldInArten(Feldname, Feldwert) {
-					var viewname;
-					if (window.ArtenVonProjekt) {
-						//vorhandenes Objekt nutzen
-						speichereProjektfeldInArten_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ArtenVonProjekt = data;
-								speichereProjektfeldInArten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereProjektfeldInArten_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.ArtenVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "ArtenVonProjekt");
-					}
-				}
-
-				function speichereProjektfeldInZeiten(Feldname, Feldwert) {
-					var viewname
-					if (window.ZeitenVonProjekt) {
-						//vorhandenes Objekt benutzen
-						speichereProjektfeldInZeiten_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.ZeitenVonProjekt = data;
-								speichereProjektfeldInZeiten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereProjektfeldInZeiten_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.ZeitenVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "ZeitenVonProjekt");
-						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInArten(Feldname, Feldwert);
-					}
-				}
-
-				function speichereProjektfeldInOrten(Feldname, Feldwert) {
-					var viewname;
-					if (window.OrteVonProjekt) {
-						//vorhandenes Objekt nutzen
-						speichereProjektfeldInOrten_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.OrteVonProjekt = data;
-								speichereProjektfeldInOrten_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereProjektfeldInOrten_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.OrteVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "OrteVonProjekt");
-						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInZeiten(Feldname, Feldwert);
-					}
-				}
-
-				function speichereProjektfeldInRäumen(Feldname, Feldwert) {
-					var viewname;
-					if (window.RaeumeVonProjekt) {
-						//vorhandenes Objekt nutzen
-						speichereProjektfeldInRäumen_2(Feldname, Feldwert);
-					} else {
-						//Objekt aus DB holen
-						viewname = 'evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{}]&include_docs=true';
-						$db = $.couch.db("evab");
-						$db.view(viewname, {
-							success: function (data) {
-								window.RaeumeVonProjekt = data;
-								speichereProjektfeldInRäumen_2(Feldname, Feldwert);
-							}
-						});
-					}
-				}
-
-				function speichereProjektfeldInRäumen_2(Feldname, Feldwert) {
-					//nur machen, wenn Datensätze vorkommen
-					if (window.RaeumeVonProjekt.rows.length > 0) {
-						speichereFeldInDatensatzliste(Feldname, Feldwert, "RaeumeVonProjekt");
-						//nächste Hierarchiestufe nur updaten, wenn obere Datensätze hatte
-						speichereProjektfeldInOrten(Feldname, Feldwert);
 					}
 				}
 
