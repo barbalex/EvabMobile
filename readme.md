@@ -16,7 +16,7 @@ _evab_ steht für: **E**rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen.<br>
 
 <a name="Ausgangslage"></a>
 #Ausgangslage
-Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Artbeobachtungsdaten digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](http://www.natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Informationen über Artbeobachtungen digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](http://www.natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
@@ -36,7 +36,7 @@ Gängige Probleme:
   1. an eine andere Person auszulagern und 
   2. nach dem 80/20-Prinzip zu machen: Oft wird der Geschwindigkeit mehr Beachtung geschenkt als der Fehlervermeidung
 
-Daher ist die Qualität von Beobachtungsdaten oft unbefriedigend, selbst wenn sie von Profis stammen. Und das schlimmste: Die erwähnten Fehlerquellen können - im Gegensatz zur fachlichen Eignung der Autoren - schlecht beurteilt werden. Manchmal werden sie aber allzu klar, wenn man selber analog vorliegende Daten digitalisieren muss. Wenn das bloss anders ginge!
+Daher ist die Qualität von Beobachtungsdaten oft unbefriedigend, selbst wenn sie von Profis stammen. Und das schlimmste: Die erwähnten Fehlerquellen können - im Gegensatz zur fachlichen Eignung der Autoren - schlecht beurteilt werden. Manchmal werden sie aber allzu deutlich, wenn man selber analog vorliegende Daten digitalisieren muss. Wenn das bloss anders ginge!
 
 <a href="#top">&#8593; top</a>
 
@@ -84,7 +84,7 @@ Um so besser, wenn (falls) es bereits praktischen Nutzen bringt.
 
 
 <a name="ZieleHobby"></a>
-#Ziele für Hobby-ArtbeobachterInnen
+#Ziele für Amateure
 1. Beobachtungen übersichtlich dokumentieren...
 2. ...sofort und ohne nachträgliche Büroarbeit
 3. Mit den Daten zum Schutz seltener Arten beitragen
@@ -160,7 +160,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Stammdaten ausgehend von [ArtenDb](https://github.com/barbalex/artendb) aktualisieren (bisher ging das von der alten ArtenDb aus)
+- Artenlisten ausgehend von [ArtenDb](https://github.com/barbalex/artendb) aktualisieren (bisher ging das von der alten ArtenDb aus)
 - Android- und iOS-App entwickeln
 - Sobald allfällige Einflüsse der Android- und iOS-Apps bzw. ihrer Synchronisation auf die Datenstruktur geklärt sind: Die Web-Applikation öffentlich machen
 
@@ -192,11 +192,12 @@ Es gibt keinen Zeitplan. Die Weiterentwicklung hängt von meiner Motivation, Ler
 #Darf ich helfen?
 Ja gerne! Ich bin Biologe. HTML5, CSS, JavaScript, jQuery, jQuery mobile, Phonegap, CouchDb, CouchApp, Java/Android SDK und Cocoa/Objective-C waren soeben noch Fremdwörter. Wäre toll, wenn sich noch jemand für [dieses Projekt](https://github.com/barbalex/EvabMobile) engagieren würde!
 
-Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auch: 
+Um zu helfen, muss man nicht unbedingt programmieren können. Nützlich sind auch: 
 
 - [Gute Ideen für die Weiterentwicklung](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Fehler melden](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Tipps und Tricks dokumentieren](https://github.com/barbalex/EvabMobile/wiki)
+- [mir mitteilen](mailto:alexander.gabriel@bd.zh.ch), was Ihnen gerade auf der Zunge liegt
 
 <a href="#top">&#8593; top</a>
 
