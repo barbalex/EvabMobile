@@ -197,7 +197,7 @@ Um zu helfen, muss man nicht unbedingt programmieren können. Nützlich sind auc
 - [Gute Ideen für die Weiterentwicklung](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Fehler melden](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Tipps und Tricks dokumentieren](https://github.com/barbalex/EvabMobile/wiki)
-- [mir mitteilen](mailto:alexander.gabriel@bd.zh.ch), was Ihnen gerade auf der Zunge liegt
+- [Mir mitteilen](mailto:alexander.gabriel@bd.zh.ch), was Ihnen gerade auf der Zunge liegt
 
 <a href="#top">&#8593; top</a>
 
