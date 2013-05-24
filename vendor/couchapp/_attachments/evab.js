@@ -223,8 +223,6 @@ function speichereNeueBeob(aArtBezeichnung) {
 	delete localStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = localStorage.aArtId;
-	doc.zDatum = erstelleNeuesDatum();
-	doc.zUhrzeit = erstelleNeueUhrzeit();
 	if (localStorage.Von === "hArtListe" || localStorage.Von === "hArtEdit") {
 		doc.Typ = "hArt";
 		doc.hProjektId = localStorage.ProjektId;
@@ -237,75 +235,17 @@ function speichereNeueBeob(aArtBezeichnung) {
 	} else {
 		//localStorage.Von == "BeobListe" || localStorage.Von == "BeobEdit"
 		doc.Typ = "Beobachtung";
-		speichereNeueBeob_03(doc);
+		doc.zDatum = erstelleNeuesDatum();
+		doc.zUhrzeit = erstelleNeueUhrzeit();
+		speichereNeueBeob_02(doc);
 	}
-}
-
-//dies ist der zweite Schritt, nur für Typ = hArt:
-//Felder der höheren Hierarchieebenen anfügen
-function speichereNeueBeob_02(doc) {
-	var ObjektNamenArray;
-	//die zu ergänzenden Objekte (Hierarchiestufen) aufzählen und - falls sie aus der DB geholt werden müssen - die ID mitgeben
-	ObjektNamenArray = {"hZeit": localStorage.ZeitId, "hOrt": localStorage.OrtId, "hRaum": localStorage.RaumId, "hProjekt": localStorage.ProjektId};
-	speichereNeueBeob_03(ergaenzeFelderZuDoc(doc, ObjektNamenArray));
-}
-
-//übernimmt ein Objekt "doc", dem Felder aus anderen Objekten ergänzt werden sollen
-//übernimmt ein Objekt "ObjektNamenObjekt", der die Namen aller Objekte enthält,
-//inklusive ihrer ID's, falls sie aus der DB geholt werden müssen
-//mit deren Felder die doc aktualisiert werden soll
-//gibt das Objekt "doc" zurück
-function ergaenzeFelderZuDoc(doc, ObjektNamenObjekt) {
-	var ObjektName, Objekt, ObjektId;
-	//prüfen, ob (noch) Objekte im Objekt enthalten sind
-	for (var i in ObjektNamenObjekt) {
-		if (i) {
-			//das erste Objekt aus ObjektNamenObjekt entnehmen
-			ObjektId = ObjektNamenObjekt[i];
-			ObjektName = i;
-			//entnommenen Namen löschen
-			delete ObjektNamenObjekt[i];
-			if (window[ObjektName]) {
-				//Objekt schon vorhanden
-				ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName);
-			} else {
-				//Objekt aus DB holen
-				$db = $.couch.db("evab");
-				$db.openDoc(ObjektId, {
-					success: function (data) {
-						window[ObjektName] = data;
-						ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName);
-					}
-				});
-			}
-		}
-	}
-	return doc;
-}
-
-//übernimmt das Objekt als globale Variable, die doc und ein ObjektNamenObjekt
-//ergänzt die Felder aus dem Objekt im doc
-//gibt doc und ObjektNamenObjekt wieder an ergaenzeFelderZuDoc weiter
-function ergaenzeFelderZuDoc_2(doc, ObjektNamenObjekt, ObjektName) {
-	//mit allen Feldern des Objekts...
-	for (var i in window[ObjektName]) {
-		if (typeof i !== "function") {
-			//FeldName = i, Feldwert = window.hZeit[i]
-			//...ausser ein paar unerwünschten...
-			if (['_id', '_rev', '_conflict', 'Typ', 'User', '_attachments'].indexOf(i) === -1) {
-				//...die doc ergänzen
-				doc[i] = window[ObjektName][i];
-			}
-		}
-	}
-	ergaenzeFelderZuDoc(doc, ObjektNamenObjekt);
 }
 
 //Neue Beobachtungen werden gespeichert
 //ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 //dies ist der letzte Schritt:
 //Autor anfügen und weiter zum Edit-Formular
-function speichereNeueBeob_03(doc) {
+function speichereNeueBeob_02(doc) {
 	$db.saveDoc(doc, {
 		success: function (data) {
 			//doc um id und rev ergänzen
@@ -410,8 +350,8 @@ function erstelleNeueZeit() {
 	doc.hOrtId = localStorage.OrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	//Felder aus den höheren Hierarchiestufen ergänzen und speichern an hZeitEdit.html übergeben
-	window.hZeit = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId, "hOrt": localStorage.OrtId});
+	//an hZeitEdit.html übergeben
+	window.hZeit = doc;
 	//Variabeln verfügbar machen
 	delete localStorage.ZeitId;
 	localStorage.Status = "neu";
@@ -441,8 +381,8 @@ function erstelleNeuenOrt() {
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
-	//Felder aus den höheren Hierarchiestufen ergänzen und in hOrtEdit.html an hOrtEdit.html übergeben
-	window.hOrt = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId, "hRaum": localStorage.RaumId});
+	//an hOrtEdit.html übergeben
+	window.hOrt = doc;
 	//Variabeln verfügbar machen
 	delete localStorage.OrtId;
 	//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -467,8 +407,8 @@ function erstelleNeuenRaum() {
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
-	//Felder aus den höheren Hierarchiestufen ergänzen und  in Objekt speichern, das an hRaumEdit.html übergeben wird
-	window.hRaum = ergaenzeFelderZuDoc(doc, {"hProjekt": localStorage.ProjektId});
+	//in Objekt speichern, das an hRaumEdit.html übergeben wird
+	window.hRaum = doc;
 	//Variabeln verfügbar machen
 	delete localStorage.RaumId;
 	localStorage.Status = "neu";
