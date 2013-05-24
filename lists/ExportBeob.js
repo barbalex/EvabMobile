@@ -13,7 +13,6 @@ function(head, req) {
 		Feld,
 		FeldName,
 		FeldNamen = [],
-		FeldNamenEnthalten = [],
 		Titelzeile,
 		Titellänge,
 		doc,

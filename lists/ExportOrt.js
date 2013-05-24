@@ -12,7 +12,6 @@ function(head, req) {
 		name, i, x, y, z,
 		FeldName,
 		FeldNamen = [],
-		FeldNamenEnthalten = [],
 		Titelzeile,
 		Titellänge,
 		doc,
@@ -55,6 +54,7 @@ function(head, req) {
 			}
 		}
 	}
+
 	FeldNamen.sort();
 
 	//Titelzeile erstellen
@@ -74,26 +74,19 @@ function(head, req) {
 
 	send(Titelzeile);
 
-	//durch docs loopen. i = doc
+	//durch docs loopen
 	for (y in docs) {
 		doc = docs[y];
-		//für jeden doc die Liste der enthaltenen Felder erstellen
-		FeldNamenEnthalten = [];
-		for (name in doc) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
-				FeldNamenEnthalten.push(name);
-			}
-		}
 		//Durch FeldNamen loopen
 		//wenn FeldName des Datensatzes enthalten ist, dessen Wert anfügen
 		//sonst leeren Wert
 		Datenzeile = '"';
 		for (z in FeldNamen) {
-			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
+			if (typeof doc[FeldNamen[z]] !== "undefined") {
+				//dieses Feld ist in diesem Dokument enthalten
 				Feld = doc[FeldNamen[z]];
 				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
-				if (FeldNamen[z] == "_attachments") {
+				if (FeldNamen[z] === "_attachments") {
 					for (x in Feld) {
 						FeldLength = parseInt(Feld[x]['length'], 10);
 						FeldLengthLänge = parseInt(parseInt(FeldLength.length, 10) -3, 10);
@@ -107,6 +100,7 @@ function(head, req) {
 				}
 				Datenzeile += '"\t"';
 			} else {
+				//Dieses Feld ist im Doc nicht enthalten. Leerwert einsetzen, damit jede Zeile dieselbe Anzahl Spalten hat
 				Datenzeile += '"\t"';
 			}
 		}
