@@ -1,6 +1,6 @@
 Mit _evab mobile_ erfassen Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld auf Mobilgeräten. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene, projektspezifische Datenstrukturen.
 
-E-was? "evab" steht für: **E**rfassung <u><b>v</b></u>on <u><b>A</b></u>rt-<u><b>B</b></u>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
+E-was? "evab" steht für: <u>**E**</u>rfa<u>s</u>sung <u><b>v</b></u>on <u><b>A</b></u>rt-<u><b>B</b></u>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
 
 <a name="top"></a>
 ## Inhalt ##
