@@ -206,7 +206,7 @@ Um zu helfen, muss man nicht unbedingt programmieren können. Nützlich sind auc
 #Gibt's das nicht schon?
 Die App existiert eigentlich schon. Sie heisst EvAB (<b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher kaum jemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. Und: EvAB ist nicht selber konfigurierbar.
 
-Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
+Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist ein tolles App für Amateure. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
 
 <a href="#top">&#8593; top</a>
 
@@ -221,6 +221,6 @@ Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut au
 
 Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS oder Google Chrome bzw. Firefox auf Android. Der Standardbrowser von Android ist nicht geeignet.
 
-Auf Mobilgeräten ist die Web-Applikation etwas langsam und daher nur auf aktuellen Geräten brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - brauchbar schnell zu sein. Wenn die Datenbank lokal liegt, ist sie richtig schnell.
+Auf Mobilgeräten ist die Web-Applikation etwas langsam und daher nur auf aktuellen Geräten brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - recht schnell zu sein. Wenn die Datenbank lokal liegt, ist Tempo kein Thema.
 
 <a href="#top">&#8593; top</a>
