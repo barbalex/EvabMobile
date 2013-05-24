@@ -1,6 +1,6 @@
-Mit _evab mobile_ erfassen Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld in einer projektspezifischen Datenstruktur auf Mobilgeräten. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene, projektspezifische Datenstrukturen.
+Mit _evab mobile_ erfassen Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld auf Mobilgeräten. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene, projektspezifische Datenstrukturen.
 
-E-was? "evab" steht für: <u><b>E</b></u>rfassung <u><b>v</b></u>on <u><b>A</b></u>rt-<u><b>B</b></u>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
+E-was? "evab" steht für: __**E**__rfassung <u><b>v</b></u>on <u><b>A</b></u>rt-<u><b>B</b></u>eobachtungen. "mobile" wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
 
 <a name="top"></a>
 ## Inhalt ##
@@ -203,7 +203,7 @@ Um zu helfen, muss man nicht unbedingt Programmieren können. Nützlich sind auc
 
 <a name="GibtsSchon"></a>
 #Gibt's das nicht schon?
-Die App existiert eigentlich schon. Sie heisst EvAB (<span style="text-decoration: underline;"><strong>E</strong></span>rfassung <span style="text-decoration: underline;"><strong>v</strong></span>on <span style="text-decoration: underline;"><strong>A</strong></span>rt-<span style="text-decoration: underline;"><strong>B</strong></span>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher kaum jemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. Und: EvAB ist nicht selber konfigurierbar.
+Die App existiert eigentlich schon. Sie heisst EvAB (<b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher kaum jemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. Und: EvAB ist nicht selber konfigurierbar.
 
 Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist schon ziemlich gut. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Toll!
 
