@@ -1,53 +1,55 @@
-function(head, req) { 
-	
+function(head, req) {
+
 	start({
 		"headers": {
 			"Content-Type": "text/csv",
-			"Content-disposition": "attachment;filename=EvabMobile_AlleEbenen.csv",
+			"Content-disposition": "attachment;filename=EvabMobile_Beobachtungen.csv",
 			"Accept-Charset": "utf-8"
-	    }
+		}
 	});
 
-	var row;
-	var name, i, y, z;
-	var FeldName;
-	var FeldNamen = [];
-	var FeldNamenEnthalten = [];
-	var Titelzeile;
-	var Titellänge;
-	var Datensatz;
-	var Datensätze = [];
-	var Datenzeile;
-	var Datenzeilenlänge;
+	var row,
+		name, i, x, y, z,
+		FeldName,
+		FeldNamen = [],
+		FeldNamenEnthalten = [],
+		Titelzeile,
+		Titellänge,
+		doc,
+		docs = [],
+		Datenzeile,
+		Datenzeilenlänge;
 
 	//Array mit allen Feldnamen erstellen
-	while(row = getRow()) {
-		Datensatz = row.value;
+	while (row = getRow()) {
+		doc = row.doc;
 		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
-		switch (Datensatz.Typ) {
-			case "hProjekt":
-				Datensatz.hProjektId = Datensatz._id;
-				break;
-			case "hRaum":
-				Datensatz.hRaumId = Datensatz._id;
-				break;
-			case "hOrt":
-				Datensatz.hOrtId = Datensatz._id;
-				break;
-			case "hZeit":
-				Datensatz.hZeitId = Datensatz._id;
-				break;
-			case "hArt":
-				Datensatz.BeobId = Datensatz._id;
-				break;
-			case "Beobachtung":
-				Datensatz.BeobId = Datensatz._id;
-				break;
+		switch (doc.Typ) {
+		case "hProjekt":
+			doc.hProjektId = doc._id;
+			break;
+		case "hRaum":
+			doc.hRaumId = doc._id;
+			break;
+		case "hOrt":
+			doc.hOrtId = doc._id;
+			break;
+		case "hZeit":
+			doc.hZeitId = doc._id;
+			break;
+		case "hArt":
+			doc.BeobId = doc._id;
+			break;
+		case "Beobachtung":
+			doc.BeobId = doc._id;
+			break;
 		}
-		Datensätze.push(Datensatz);
-		for (name in Datensatz) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
+
+		docs.push(doc);
+
+		for (name in doc) {
+			//war mal auch ausgeschlossen: '_rev'
+			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
@@ -55,6 +57,7 @@ function(head, req) {
 			}
 		}
 	}
+
 	FeldNamen.sort();
 
 	//Titelzeile erstellen
@@ -74,14 +77,15 @@ function(head, req) {
 
 	send(Titelzeile);
 
-	//durch Datensätze loopen. i = Datensatz
-	for (y in Datensätze) {
-		Datensatz = Datensätze[y];
-		//für jeden Datensatz die Liste der enthaltenen Felder erstellen
+	//durch docs loopen. i = doc
+	var Feld;
+	for (y in docs) {
+		doc = docs[y];
+		//für jeden doc die Liste der enthaltenen Felder erstellen
 		FeldNamenEnthalten = [];
-		for (name in Datensatz) {
+		for (name in doc) {
 			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
+			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 				FeldNamenEnthalten.push(name);
 			}
 		}
@@ -91,12 +95,12 @@ function(head, req) {
 		Datenzeile = '"';
 		for (z in FeldNamen) {
 			if (FeldNamenEnthalten.indexOf(FeldNamen[z]) != -1) {
-				Feld = eval('Datensatz.' + FeldNamen[z]);
+				Feld = doc[FeldNamen[z]];
 				//Bei Anhängen deren Namen, Typ und Grösse in KB auflisten
-				if (FeldNamen[z] == "_attachments") {
+				if (FeldNamen[z] === "_attachments") {
 					for (x in Feld) {
-						FeldLength = parseInt(Feld[x]['length']);
-						FeldLengthLänge = parseInt(parseInt(FeldLength.length) -3);
+						FeldLength = parseInt(Feld[x]['length'], 10);
+						FeldLengthLänge = parseInt(parseInt(FeldLength.length, 10) -3, 10);
 						Datenzeile += x + " (" + Feld[x].content_type + ", " + Math.floor(Feld[x]['length']/1000) + " KB), ";
 					}
 					//letztes Komma und Leerzeichen abschneiden
