@@ -2900,15 +2900,14 @@ function erstelleArtenliste(filterwert) {
 		html = "",
 		ArtBezeichnung,
 		Art,
-		zähler = 0,
-		filterwert = filterwert;
+		zähler = 0;
 	//gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
 	if (Artenliste.length > 0) {
 		if (filterwert) {
 			artenliste_loop:
 			for (i=0; i<Artenliste.length; i++) {
 				if (zähler<200) {
-					ArtBezeichnung = Artenliste[i].key[2];
+					ArtBezeichnung = Artenliste[i].key[1];
 					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
 						zähler++;
 						Art = Artenliste[i].value;
@@ -2935,7 +2934,7 @@ function erstelleArtenliste(filterwert) {
 				artenliste_loop_2:
 				for (i=0; i<Artenliste.length; i++) {
 					if (i<200) {
-						ArtBezeichnung = Artenliste[i].key[2];
+						ArtBezeichnung = Artenliste[i].key[1];
 						Art = Artenliste[i].value;
 						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
@@ -2948,7 +2947,7 @@ function erstelleArtenliste(filterwert) {
 				//weniger als 200 Arten, kein Filter. Alle anzeigen
 				html += '<li class="artlistenhinweis">' + Artenliste.length + ' Arten angezeigt</li>';
 				for (i=0; i<Artenliste.length; i++) {
-					ArtBezeichnung = Artenliste[i].key[2];
+					ArtBezeichnung = Artenliste[i].key[1];
 					Art = Artenliste[i].value;
 					html += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 				}
