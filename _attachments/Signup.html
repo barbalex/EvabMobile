@@ -45,12 +45,12 @@
 			<div data-role="content">
 				<form id="SignupForm" action="#" method="get" autocomplete="off">
 					<div data-role="fieldcontain">
-						<label for="Email">Email:</label>
-						<input id="Email" name="Email" type="text" placeholder="(erforderlich)" autofocus required>
+						<label for="su_Email">Email:</label>
+						<input id="su_Email" name="Email" type="text" placeholder="(erforderlich)" autofocus required>
 					</div>
 					<div data-role="fieldcontain">
-						<label for="Passwort">Passwort:</label>
-						<input id="Passwort" name="Passwort" type="password" placeholder="(erforderlich)" required>
+						<label for="su_Passwort">Passwort:</label>
+						<input id="su_Passwort" name="Passwort" type="password" placeholder="(erforderlich)" required>
 					</div>
 					<div data-role="fieldcontain">
 						<label for="Passwort2">Passwort bestätigen:</label>
@@ -113,26 +113,26 @@
 				//wenn ja wird true retourniert, sonst false
 				function validiereUserSignup() {
 					var Email, Passwort, Passwort2, Autor;
-					Email = $("#Email").val();
-					Passwort = $("#Passwort").val();
+					Email = $("#su_Email").val();
+					Passwort = $("#su_Passwort").val();
 					Passwort2 = $("#Passwort2").val();
 					Autor = $("#Autor").val();
 					if (!Email) {
 						melde("Bitte Email eingeben");
 						setTimeout(function() {
-							$("#Email").focus();
+							$("#su_Email").focus();
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!validateEmail(Email)) {
 						melde("Bitte gültige Email-Adresse eingeben");
 						setTimeout(function() {
-							$("#Email").focus();
+							$("#su_Email").focus();
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!Passwort) {
 						melde("Bitte Passwort eingeben");
 						setTimeout(function() {
-							$("#Passwort").focus();
+							$("#su_Passwort").focus();
 						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!Passwort2) {
@@ -160,8 +160,8 @@
 				function erstelleKonto() {
 					//User in _user eintragen
 					$.couch.signup({
-							name: $('#Email').val()
-						}, $('#Passwort').val(), {
+							name: $('#su_Email').val()
+						}, $('#su_Passwort').val(), {
 						success : function (r) {
 							localStorage.Email = r["name"];
 							//Informationen zum User in doc vom typ User eintragen
