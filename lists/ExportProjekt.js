@@ -9,7 +9,7 @@ function(head, req) {
 	});
 
 	var row,
-		name, i, x, y, z,
+		name, i, q, x, y, z,
 		FeldName,
 		FeldNamen = [],
 		Titelzeile,
@@ -23,33 +23,21 @@ function(head, req) {
 	while(row = getRow()) {
 		doc = row.doc;
 		//Id-Felder kreieren - sonst haben ausgerechnet Projekte keine hProjektId etc.
-		switch (doc.Typ) {
-		case "hProjekt":
-			doc.hProjektId = doc._id;
-			break;
-		case "hRaum":
-			doc.hRaumId = doc._id;
-			break;
-		case "hOrt":
-			doc.hOrtId = doc._id;
-			break;
-		case "hZeit":
-			doc.hZeitId = doc._id;
-			break;
-		case "hArt":
-			doc.BeobId = doc._id;
-			break;
-		case "Beobachtung":
-			doc.BeobId = doc._id;
-			break;
-		}
+		doc.hProjektId = doc._id;
 		docs.push(doc);
+	}
+
+	//Array mit allen Feldnamen erstellen
+	for (q=0; q<docs.length; q++) {
+		doc = docs[q];
 		for (name in doc) {
-			//war mal auch ausgeschlossen: name !== '_rev' && 
-			if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
-				//alle noch nicht im Array enthaltenen Feldnamen ergänzen
-				if (FeldNamen.indexOf(name) == -1) {
-					FeldNamen.push(name);
+			if (typeof name !== "function") {
+				//ein paar Felder sollen nicht geliefert werden
+				if (['_id', '_rev', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
+					//alle noch nicht im Array enthaltenen Feldnamen ergänzen
+					if (FeldNamen.indexOf(name) == -1) {
+						FeldNamen.push(name);
+					}
 				}
 			}
 		}

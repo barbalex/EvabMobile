@@ -41,8 +41,8 @@ function(head, req) {
 		doc = docs[q];
 		for (name in doc) {
 			if (typeof name !== "function") {
-				//war mal auch ausgeschlossen: '_rev'
-				if (['_id', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
+				//ein paar Felder sollen nicht geliefert werden
+				if (['_id', '_rev', 'User', '_conflicts', 'committed_update_seq', 'compact_running', 'data_size', 'db_name', 'disk_format_version', 'disk_size', 'doc_count', 'doc_del_count', 'instance_start_time', 'purge_seq', 'update_seq'].indexOf(name) === -1) {
 					//alle noch nicht im Array enthaltenen Feldnamen ergänzen
 					if (FeldNamen.indexOf(name) == -1) {
 						FeldNamen.push(name);
