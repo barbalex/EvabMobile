@@ -505,7 +505,7 @@
 				//wenn nein: speichern
 				function pruefeFeldNamen() {
 					$db = $.couch.db("evab");
-					$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"', {
+					$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 						success: function (data) {
 							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
 							AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
@@ -514,8 +514,8 @@
 							if (data.rows) {
 								for (i in data.rows) {
 									if (typeof i !== "function") {
-										if (data.rows[i].value) {
-											TempFeld = data.rows[i].value;
+										if (data.rows[i].doc) {
+											TempFeld = data.rows[i].doc;
 											//ist es ein eigenes oder ein offizielles?
 											if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 												//ja > dieser Name ist nicht zulässig
@@ -744,11 +744,11 @@
 				function setzeReihenfolgeMitVorgaenger(FeldNameVorgaenger) {
 					var viewname;
 					$db = $.couch.db("evab");
-					viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"';
+					viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
 					$db.view(viewname, {
 						success: function (data) {
 							var ReihenfolgeVorgaenger;
-							ReihenfolgeVorgaenger = data.rows[0].value.Reihenfolge;
+							ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
 							$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
 							speichereFeldeigenschaften();
 						}
