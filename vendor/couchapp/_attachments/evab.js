@@ -638,7 +638,7 @@ function initiiereBeobliste() {
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true', {
+		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 			success: function (data) {
 				//BeobListe für BeobEdit bereitstellen
 				window.BeobListe = data;
@@ -665,7 +665,7 @@ function initiiereBeobliste_2() {
 	} else {
 		for (var i in window.BeobListe.rows) {
 			if (typeof i !== "function") {
-				beob = window.BeobListe.rows[i].value;
+				beob = window.BeobListe.rows[i].doc;
 				key = window.BeobListe.rows[i].key;
 				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
 				ListItemContainer += beob._id;

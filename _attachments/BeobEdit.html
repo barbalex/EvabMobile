@@ -349,7 +349,7 @@
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true', {
+						$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 							success: function (data) {
 								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
@@ -363,13 +363,13 @@
 				function nächsteVorigeBeob_2(NächsteOderVorige) {
 					var i, BeobIdAktuell, AnzBeob;
 					for (i in window.BeobListe.rows) {
-						BeobIdAktuell = window.BeobListe.rows[i].value._id;
+						BeobIdAktuell = window.BeobListe.rows[i].doc._id;
 						AnzBeob = window.BeobListe.rows.length -1;		//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (BeobIdAktuell === localStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzBeob) {
-									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].value._id;
+									localStorage.BeobId = BeobListe.rows[parseInt(i)+1].doc._id;
 									leereStorageBeobEdit("ohneId");
 									initiiereBeobEdit();
 									return;
@@ -380,7 +380,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].value._id;
+									localStorage.BeobId = BeobListe.rows[parseInt(i)-1].doc._id;
 									leereStorageBeobEdit("ohneId");
 									initiiereBeobEdit();
 									return;
@@ -488,7 +488,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.BeobListe) {
 								for (i in window.BeobListe.rows) {
-									if (window.BeobListe.rows[i].value._id === data.id) {
+									if (window.BeobListe.rows[i].doc._id === data.id) {
 										window.BeobListe.rows.splice(i, 1);
 										break;
 									}
