@@ -589,7 +589,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.Feldliste) {
 								for (i in window.Feldliste.rows) {
-									if (window.Feldliste.rows[i].value._id === data.id) {
+									if (window.Feldliste.rows[i].doc._id === data.id) {
 										window.Feldliste.rows.splice(i, 1);
 										break;
 									}
@@ -617,7 +617,7 @@
 						geheZumNächstenFeld_2();
 					} else {
 						$db = $.couch.db("evab");
-						$db.view('evab/FeldListe', {
+						$db.view('evab/FeldListe?include_docs=true', {
 							success: function (data) {
 								window.Feldliste = data;
 								geheZumNächstenFeld_2();
@@ -628,15 +628,15 @@
 
 				function geheZumNächstenFeld_2() {
 					var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
-					AnzFelder = Feldliste.rows.length -1;
-					for (i in Feldliste.rows) {
+					AnzFelder = window.Feldliste.rows.length -1;
+					for (i in window.Feldliste.rows) {
 						if (typeof i !== "function") {
 							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-							AktFeld_i = Feldliste.rows[i].value;
+							AktFeld_i = window.Feldliste.rows[i].doc;
 							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
-								FeldIdAktuell = Feldliste.rows[i].value._id;
+								FeldIdAktuell = window.Feldliste.rows[i].doc._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus vorwärts das nächste eigene oder offizielle suchen
@@ -644,11 +644,11 @@
 										//das aktuelle Feld ist nicht das letzte
 										for (y = parseInt(i)+1; y <= AnzFelder; y++) {
 											//alle verbleibenden Felder durchlaufen, eigenes suchen
-											AktFeld_y = Feldliste.rows[y].value;
+											AktFeld_y = window.Feldliste.rows[y].doc;
 											//Nur eigene Felder und offizielle berücksichtigen
 											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächste eigene Feld > öffnen
-												localStorage.FeldId = Feldliste.rows[parseInt(i)+1].value._id;
+												localStorage.FeldId = window.Feldliste.rows[parseInt(i)+1].doc._id;
 												leereStorageFeldEdit("ohneId");
 												initiiereFeldEdit();
 												return;
@@ -680,7 +680,7 @@
 						geheZumVorigenFeld_2();
 					} else {
 						$db = $.couch.db("evab");
-						$db.view('evab/FeldListe', {
+						$db.view('evab/FeldListe?include_docs=true', {
 							success: function (data) {
 								window.Feldliste = data;
 								geheZumVorigenFeld_2();
@@ -691,15 +691,15 @@
 
 				function geheZumVorigenFeld_2() {
 					var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder, AktFeld_i, AktFeld_y;
-					AnzFelder = Feldliste.rows.length -1;
-					for (i in Feldliste.rows) {
+					AnzFelder = window.Feldliste.rows.length -1;
+					for (i in window.Feldliste.rows) {
 						if (typeof i !== "function") {
 							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-							AktFeld_i = Feldliste.rows[i].value;
+							AktFeld_i = window.Feldliste.rows[i].doc;
 							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
 								//Nur eigene und offizielle Felder berücksichtigen
-								FeldIdAktuell = Feldliste.rows[i].value._id;
+								FeldIdAktuell = window.Feldliste.rows[i].doc._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
 									//das ist das aktuelle Feld
 									//von hier aus rückwärts das nächste eigene oder offizielle suchen
@@ -707,11 +707,11 @@
 										//das aktuelle Feld ist nicht das erste 
 										for (y = parseInt(i)-1; y >= 0; y--) {
 											//alle vorhergehenden Felder durchlaufen, eigenes suchen
-											AktFeld_y = Feldliste.rows[y].value;
+											AktFeld_y = window.Feldliste.rows[y].doc;
 											//Nur eigene Felder und offizielle berücksichtigen
 											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
 												//das ist das nächstvorherige eigene Feld > öffnen
-												FeldIdVoriges = Feldliste.rows[parseInt(i)-1].value._id;
+												FeldIdVoriges = window.Feldliste.rows[parseInt(i)-1].doc._id;
 												localStorage.FeldId = FeldIdVoriges;
 												leereStorageFeldEdit("ohneId");
 												initiiereFeldEdit();

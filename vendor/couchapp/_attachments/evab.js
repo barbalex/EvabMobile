@@ -986,7 +986,7 @@ function erstelleSelectFeldFolgtNach() {
 			erstelleSelectFeldFolgtNach_2();
 		} else {
 			$db = $.couch.db("evab");
-			$db.view("evab/FeldListe", {
+			$db.view("evab/FeldListe?include_docs=true", {
 				success: function (data) {
 					window.Feldliste = data;
 					erstelleSelectFeldFolgtNach_2();
@@ -1000,9 +1000,9 @@ function erstelleSelectFeldFolgtNach_2() {
 	var i, TempFeld, Optionen;
 	Optionen = [];
 	Optionen.push("");
-	for (i in Feldliste.rows) {
+	for (i in window.Feldliste.rows) {
 		if (typeof i !== "function") {
-			TempFeld = Feldliste.rows[i].value;
+			TempFeld = window.Feldliste.rows[i].doc;
 			//Liste aufbauen
 			//Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
@@ -1074,7 +1074,7 @@ function initiiereFeldliste() {
 	} else {
 		//FeldListe aus DB holen
 		$db = $.couch.db("evab");
-		$db.view("evab/FeldListe", {
+		$db.view("evab/FeldListe?include_docs=true", {
 			success: function (data) {
 				window.Feldliste = data;
 				initiiereFeldliste_2();
@@ -1087,9 +1087,9 @@ function initiiereFeldliste_2() {
 	var i, TempFeld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
 	ListItemContainer = "";
 	anzFelder = 0;
-	for (i in Feldliste.rows) {
+	for (i in window.Feldliste.rows) {
 		if (typeof i !== "function") {
-			TempFeld = Feldliste.rows[i].value;
+			TempFeld = window.Feldliste.rows[i].doc;
 			//Liste aufbauen
 			//Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
