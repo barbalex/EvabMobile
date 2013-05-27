@@ -518,7 +518,7 @@
 					} else {
 						//keine Ortliste vorhanden, neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]', {
+						$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 							success: function (data) {
 								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 								window.hBeobListe = data;
@@ -531,13 +531,13 @@
 				function nächsteVorigeArt_2(NächsteOderVorige) {
 					var i, ArtIdAktuell, AnzArt;
 					for (i in window.hBeobListe.rows) {
-						ArtIdAktuell = window.hBeobListe.rows[i].value._id;
+						ArtIdAktuell = window.hBeobListe.rows[i].doc._id;
 						AnzArt = window.hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ArtIdAktuell === localStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzArt) {
-									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].value._id;
+									localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].doc._id;
 									leereStoragehBeobEdit("ohneId");
 									initiierehBeobEdit();
 									return;
@@ -548,7 +548,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].value._id;
+									localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].doc._id;
 									leereStoragehBeobEdit("ohneId");
 									initiierehBeobEdit();
 									return;

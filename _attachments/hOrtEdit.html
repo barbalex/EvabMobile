@@ -540,7 +540,7 @@
 						//keine Ortliste vorhanden
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]', {
+						$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 							success: function (data) {
 								//OrtListe für hOrtListe.html bereitstellen
 								window.OrtListe = data;
@@ -553,13 +553,13 @@
 				function nächsterVorigerOrt_2(NächsterOderVoriger) {
 					var i, OrtIdAktuell, AnzOrt;
 					for (i in OrtListe.rows) {
-						OrtIdAktuell = OrtListe.rows[i].value._id;
+						OrtIdAktuell = OrtListe.rows[i].doc._id;
 						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (OrtIdAktuell === localStorage.OrtId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (parseInt(i) < AnzOrt) {
-									localStorage.OrtId = OrtListe.rows[parseInt(i)+1].value._id;
+									localStorage.OrtId = OrtListe.rows[parseInt(i)+1].doc._id;
 									leereStorageOrtEdit("ohneId");
 									initiiereOrtEdit();
 									return;
@@ -570,7 +570,7 @@
 								break;
 							case "voriger":
 								if (parseInt(i) > 0) {
-									localStorage.OrtId = OrtListe.rows[parseInt(i)-1].value._id;
+									localStorage.OrtId = OrtListe.rows[parseInt(i)-1].doc._id;
 									leereStorageOrtEdit("ohneId");
 									initiiereOrtEdit();
 									return;

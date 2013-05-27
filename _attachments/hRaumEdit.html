@@ -498,7 +498,7 @@
 						//keine Raumliste übergeben
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]', {
+						$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 							success: function (data) {
 								//RaumListe bereitstellen
 								window.RaumListe = data;
@@ -511,13 +511,13 @@
 				function nächsterVorigerRaum_2(NächsterOderVoriger) {
 					var i, RaumIdAktuell, AnzRaum;
 					for (i in RaumListe.rows) {
-						RaumIdAktuell = RaumListe.rows[i].value._id;
+						RaumIdAktuell = RaumListe.rows[i].doc._id;
 						AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (RaumIdAktuell === localStorage.RaumId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":
 								if (parseInt(i) < AnzRaum) {
-									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].value._id;
+									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].doc._id;
 									leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									initiiereRaumEdit();
 									return;
@@ -528,7 +528,7 @@
 								break;
 							case "voriger":
 								if (parseInt(i) > 0) {
-									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].value._id;
+									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].doc._id;
 									leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									initiiereRaumEdit();
 									return;

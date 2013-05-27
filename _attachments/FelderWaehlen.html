@@ -159,9 +159,9 @@
 
 			function öffneFeld(FeldName) {
 				$db = $.couch.db("evab");
-				$db.view('evab/FeldListeFeldName?key="' + FeldName + '"', {
+				$db.view('evab/FeldListeFeldName?key="' + FeldName + '"?include_docs=true', {
 					success: function (data) {
-						localStorage.FeldId = data.rows[0].value._id;
+						localStorage.FeldId = data.rows[0].doc._id;
 						localStorage.zurueck = "FelderWaehlen.html";
 						$.mobile.changePage("FeldEdit.html");
 					}

@@ -497,7 +497,7 @@
 						//keine Projektliste übergeben
 						//neu aus DB erstellen
 						$db = $.couch.db("evab");
-						$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]', {
+						$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 							success: function (data) {
 								//Projektliste bereitstellen
 								window.Projektliste = data;
@@ -510,13 +510,13 @@
 				function nächstesVorigesProjekt_2(NächstesOderVoriges) {
 					var i, ProjIdAktuell, AnzProj;
 					for (i in Projektliste.rows) {
-						ProjIdAktuell = Projektliste.rows[i].value._id;
+						ProjIdAktuell = Projektliste.rows[i].doc._id;
 						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ProjIdAktuell === localStorage.ProjektId) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":
 								if (parseInt(i) < AnzProj) {
-									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].value._id;
+									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
@@ -528,7 +528,7 @@
 								break;
 							case "voriges":
 								if (parseInt(i) > 0) {
-									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].value._id;
+									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
 									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();

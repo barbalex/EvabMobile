@@ -505,7 +505,7 @@
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
 						$db = $.couch.db("evab");
-						$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]', {
+						$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 							success: function (data) {
 								window.ZeitListe = data;
 								nächsteVorigeZeit_2(NächsteOderVorige);
@@ -517,13 +517,13 @@
 				function nächsteVorigeZeit_2(NächsteOderVorige) {
 					var i, ZeitIdAktuell, AnzZeit;
 					for (i in ZeitListe.rows) {
-						ZeitIdAktuell = ZeitListe.rows[i].value._id;
+						ZeitIdAktuell = ZeitListe.rows[i].doc._id;
 						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ZeitIdAktuell === localStorage.ZeitId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
 								if (parseInt(i) < AnzZeit) {
-									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].value._id;
+									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].doc._id;
 									leereStorageZeitEdit("ohneId");
 									initiiereZeitEdit();
 									return;
@@ -534,7 +534,7 @@
 								break;
 							case "vorige":
 								if (parseInt(i) > 0) {
-									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].value._id;
+									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].doc._id;
 									leereStorageZeitEdit("ohneId");
 									initiiereZeitEdit();
 									return;
