@@ -424,7 +424,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.hBeobListe) {
 								for (i in window.hBeobListe.rows) {
-									if (window.hBeobListe.rows[i].value._id === data.id) {
+									if (window.hBeobListe.rows[i].doc._id === data.id) {
 										window.hBeobListe.rows.splice(i, 1);
 										break;
 									}

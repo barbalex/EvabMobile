@@ -491,7 +491,7 @@ function initiiereBeobEdit() {
 		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeBeob', {
+		$db.view('evab/FeldListeBeob?include_docs=true', {
 			success: function (data) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.FeldlisteBeobEdit = data;
@@ -588,7 +588,7 @@ function generiereHtmlFuerBeobEditForm () {
 	ArtGruppe = window.Beobachtung.aArtGruppe;
 	for (i in FeldlisteBeobEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteBeobEdit.rows[i].value;
+			Feld = FeldlisteBeobEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
@@ -804,7 +804,7 @@ function initiiereProjektEdit_2() {
 		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//Feldliste aus der DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeProjekt', {
+		$db.view('evab/FeldListeProjekt?include_docs=true', {
 			success: function (Feldliste) {
 				window.FeldlisteProjekt = Feldliste;
 				initiiereProjektEdit_3();
@@ -835,7 +835,7 @@ function generiereHtmlFuerProjektEditForm () {
 	HtmlContainer = "";
 	for (var i in FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteProjekt.rows[i].value;
+			Feld = FeldlisteProjekt.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
@@ -1383,7 +1383,7 @@ function initiiereProjektliste() {
 	} else {
 		//Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]', {
+		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 			success: function (data) {
 				//Projektliste für ProjektEdit bereitstellen
 				window.Projektliste = data;
@@ -1410,7 +1410,7 @@ function initiiereProjektliste_2() {
 	} else {
 		for (i in Projektliste.rows) {			//Liste aufbauen
 			if (typeof i !== "function") {
-				Proj = Projektliste.rows[i].value;
+				Proj = Projektliste.rows[i].doc;
 				key = Projektliste.rows[i].key;
 				pName = key[1];
 				listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
@@ -1469,7 +1469,7 @@ function initiiereRaumEdit_2() {
 		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeRaum', {
+		$db.view('evab/FeldListeRaum?include_docs=true', {
 			success: function (Feldliste) {
 				//Variabeln bereitstellen
 				window.FeldlisteRaumEdit = Feldliste;
@@ -1501,7 +1501,7 @@ function generiereHtmlFuerRaumEditForm () {
 	HtmlContainer = "";
 	for (i in FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteRaumEdit.rows[i].value;
+			Feld = FeldlisteRaumEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
@@ -1546,7 +1546,7 @@ function initiiereRaumListe() {
 	} else {
 		//Raumliste aud DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]', {
+		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 			success: function (data) {
 				//RaumListe für haumEdit bereitstellen
 				window.RaumListe = data;
@@ -1573,7 +1573,7 @@ function initiiereRaumListe_2() {
 	} else {
 		for (i in RaumListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
-				Raum = RaumListe.rows[i].value;
+				Raum = RaumListe.rows[i].doc;
 				key = RaumListe.rows[i].key;
 				rName = Raum.rName;
 				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
@@ -1639,7 +1639,7 @@ function initiiereOrtEdit_2() {
 		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeOrt', {
+		$db.view('evab/FeldListeOrt?include_docs=true', {
 			success: function (Feldliste) {
 				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.FeldlisteOrtEdit = Feldliste;
@@ -1673,7 +1673,7 @@ function generiereHtmlFuerOrtEditForm () {
 	HtmlContainer = "";
 	for (var i in FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteOrtEdit.rows[i].value;
+			Feld = FeldlisteOrtEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
@@ -1721,7 +1721,7 @@ function initiiereOrtListe() {
 	} else {
 		//Ortliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]', {
+		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 			success: function (data) {
 				//OrtListe für hOrtEdit bereitstellen
 				window.OrtListe = data;
@@ -1748,7 +1748,7 @@ function initiiereOrtListe_2() {
 	} else {
 		for (i in OrtListe.rows) {	//Liste aufbauen
 			if (typeof i !== "function") {
-				Ort = OrtListe.rows[i].value;
+				Ort = OrtListe.rows[i].doc;
 				key = OrtListe.rows[i].key;
 				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
@@ -1806,7 +1806,7 @@ function initiiereZeitEdit_2() {
 		//das dauert länger - hinweisen
 		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeZeit', {
+		$db.view('evab/FeldListeZeit&include_docs=true', {
 			success: function (Feldliste) {
 				window.FeldlisteZeitEdit = Feldliste;
 				initiiereZeitEdit_3();
@@ -1835,7 +1835,7 @@ function initiiereZeitListe() {
 	} else {
 		//Zeitliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]', {
+		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 			success: function (data) {
 				//ZeitListe für hZeitEdit bereitstellen
 				window.ZeitListe = data;
@@ -1862,7 +1862,7 @@ function initiiereZeitListe_2() {
 	} else {
 		for (i in ZeitListe.rows) {
 			if (typeof i !== "function") {
-				Zeit = ZeitListe.rows[i].value;
+				Zeit = ZeitListe.rows[i].doc;
 				key = ZeitListe.rows[i].key;
 				zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 				listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
@@ -1885,7 +1885,7 @@ function generiereHtmlFuerZeitEditForm() {
 	HtmlContainer = "";
 	for (i in FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteZeitEdit.rows[i].value;
+			Feld = FeldlisteZeitEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === window.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
@@ -1981,7 +1981,7 @@ function initiierehBeobEdit_2() {
 		//das dauert länger - hinweisen
 		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeArt', {
+		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function (data) {
 				window.FeldlistehBeobEdit = data;
 				erstelleDynamischeFelderhArtEdit();
@@ -2015,7 +2015,7 @@ function generiereHtmlFuerhArtEditForm () {
 	ArtGruppe = window.hArt.aArtGruppe;
 	for (i in window.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = window.FeldlistehBeobEdit.rows[i].value;
+			Feld = window.FeldlistehBeobEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
@@ -2061,7 +2061,7 @@ function initiierehBeobListe() {
 	} else {
 		//Beobliste aus DB holen
 		$db = $.couch.db("evab");
-		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]', {
+		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function (data) {
 				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.hBeobListe = data;
@@ -2088,7 +2088,7 @@ function initiierehBeobListe_2() {
 	} else {
 		for (var i in hBeobListe.rows) {
 			if (typeof i !== "function") {
-				hBeobTemp = hBeobListe.rows[i].value;
+				hBeobTemp = hBeobListe.rows[i].doc;
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png\" />" +
@@ -2727,7 +2727,7 @@ function initiiereFelderWaehlen() {
 	} else {
 		//holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
-		$db.view('evab/' + FeldlisteViewname, {
+		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
 			success: function (data) {
 				window[localStorage.FeldlisteFwName] = data;
 				initiiereFelderWaehlen_2();
@@ -2741,7 +2741,7 @@ function initiiereFelderWaehlen_2() {
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
 	anzFelder = 0;
 	for (var i in window[localStorage.FeldlisteFwName].rows) {
-		Feld = window[localStorage.FeldlisteFwName].rows[i].value;
+		Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
 		FeldName = Feld.FeldName;
 		//Nur eigene und offizielle Felder berücksichtigen
 		if (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") {
@@ -2887,7 +2887,6 @@ function holeArtenliste(filterwert) {
 	$db.view(viewname, {
 		success: function (data) {
 			window.Artenliste = data.rows;
-			console.log('Artenliste rows = ' + JSON.stringify(window.Artenliste));
 			erstelleArtenliste(filterwert);
 		}
 	});
@@ -2991,7 +2990,7 @@ function erstelleArtgruppenListe() {
 		erstelleArtgruppenListe_2();
 	} else {
 		$db = $.couch.db("evab");
-		$db.view('evab/Artgruppen', {
+		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function (data) {
 				//Artgruppenliste bereitstellen
 				window.Artgruppenliste = data;
@@ -3010,7 +3009,7 @@ function erstelleArtgruppenListe_2() {
 	for (i in window.Artgruppenliste.rows) {
 		if (typeof i !== "function") {
 			ArtGruppe = window.Artgruppenliste.rows[i].key;
-			row = window.Artgruppenliste.rows[i].value;
+			row = window.Artgruppenliste.rows[i].doc;
 			AnzArten = row.AnzArten;
 			html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 			html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
@@ -3260,13 +3259,13 @@ function erstelleSichtbareFelder() {
 	var viewname, Username;
 	Username = localStorage.Email;
 	$db = $.couch.db("evab");
-	viewname = 'evab/FeldListeFeldName';
+	viewname = 'evab/FeldListeFeldName?include_docs=true';
 	$db.view(viewname, {
 		success: function (data) {
 			var i, Feld;
 			for (i in data.rows) {
 				if (typeof i !== "function") {
-					Feld = data.rows[i].value;
+					Feld = data.rows[i].doc;
 					//Nur ausgewählte offizielle Felder berücksichtigen
 					//if (Feld.User === "ZentrenBdKt") {
 					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {

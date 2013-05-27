@@ -102,8 +102,8 @@
 					FeldId = $(this).attr("feldid");
 					for (i in window[localStorage.FeldlisteFwName].rows) {
 						if (typeof window[localStorage.FeldlisteFwName] !== "function") {
-							if (window[localStorage.FeldlisteFwName].rows[i].value._id === FeldId) {
-								Feld = window[localStorage.FeldlisteFwName].rows[i].value;
+							if (window[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
+								Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
 								FeldPosition = parseInt(i);
 								break;
 							}
@@ -132,7 +132,7 @@
 							//neue rev holen
 							Feld._rev = data.rev;
 							//Änderung in Feldliste-Objekt speichern
-							window[localStorage.FeldlisteFwName].rows[FeldPosition].value = Feld;
+							window[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
 						},
 						error: function () {
 							melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");

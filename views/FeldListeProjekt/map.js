@@ -1,5 +1,5 @@
 function(doc) {
 	if(doc.Typ && doc.Typ == 'Feld' && doc.Hierarchiestufe && doc.Hierarchiestufe == 'Projekt'){
-		emit (doc.Reihenfolge, doc);
+		emit (doc.Reihenfolge, null);
 	}
 }

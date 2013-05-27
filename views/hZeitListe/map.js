@@ -3,6 +3,6 @@ function(doc) {
 	var Datum = doc.zDatum;
 	var Uhrzeit = doc.zUhrzeit;
 	if(doc.Typ == 'hZeit' && doc.hOrtId && doc.User && doc.zDatum && doc.zUhrzeit){
-		emit ([User, doc.hOrtId, Datum, Uhrzeit], doc);
+		emit ([User, doc.hOrtId, Datum, Uhrzeit], null);
 	}
 }

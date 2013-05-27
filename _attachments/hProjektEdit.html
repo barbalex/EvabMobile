@@ -320,7 +320,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.Projektliste) {
 								for (i in window.Projektliste.rows) {
-									if (window.Projektliste.rows[i].value._id === data.id) {
+									if (window.Projektliste.rows[i].doc._id === data.id) {
 										window.Projektliste.rows.splice(i, 1);
 										break;
 									}

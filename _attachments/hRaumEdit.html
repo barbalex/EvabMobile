@@ -316,7 +316,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.RaumListe) {
 								for (i in window.RaumListe.rows) {
-									if (window.RaumListe.rows[i].value._id === data.id) {
+									if (window.RaumListe.rows[i].doc._id === data.id) {
 										window.RaumListe.rows.splice(i, 1);
 										break;
 									}

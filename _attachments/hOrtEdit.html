@@ -355,7 +355,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.OrtListe) {
 								for (i in window.OrtListe.rows) {
-									if (window.OrtListe.rows[i].value._id === data.id) {
+									if (window.OrtListe.rows[i].doc._id === data.id) {
 										window.OrtListe.rows.splice(i, 1);
 										break;
 									}

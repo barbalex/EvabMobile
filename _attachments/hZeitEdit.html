@@ -312,7 +312,7 @@
 							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.ZeitListe) {
 								for (i in window.ZeitListe.rows) {
-									if (window.ZeitListe.rows[i].value._id === data.id) {
+									if (window.ZeitListe.rows[i].doc._id === data.id) {
 										window.ZeitListe.rows.splice(i, 1);
 										break;
 									}
