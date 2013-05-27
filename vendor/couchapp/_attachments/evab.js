@@ -670,7 +670,7 @@ function initiiereBeobliste_2() {
 				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
 				ListItemContainer += beob._id;
 				ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
-				ListItemContainer += "Artgruppenbilder/" + beob.aArtGruppe + ".png";
+				ListItemContainer += "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 				ListItemContainer += "\" /><h3 class=\"aArtName\">";
 				ListItemContainer += beob.aArtName;
 				ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
@@ -2091,7 +2091,7 @@ function initiierehBeobListe_2() {
 				hBeobTemp = hBeobListe.rows[i].value;
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + hBeobTemp.aArtGruppe + ".png\" />" +
+					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png\" />" +
 					"<h3>" + hBeobTemp.aArtName + "<\/h3>" +
 					"<\/a> <\/li>";
 				ListItemContainer += listItem;
@@ -2882,11 +2882,12 @@ function initiiereArtenliste(filterwert) {
 //wird benutzt in Artenliste.html
 //aufgerufen von initiiereArtenliste
 function holeArtenliste(filterwert) {
-	viewname = 'evab/Artliste?startkey=["' + localStorage.aArtGruppe + '"]&endkey=["' + localStorage.aArtGruppe + '",{},{}]';
+	viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
-			window.Artenliste = data;
+			window.Artenliste = data.rows;
+			console.log('Artenliste rows = ' + JSON.stringify(window.Artenliste));
 			erstelleArtenliste(filterwert);
 		}
 	});
@@ -2894,23 +2895,22 @@ function holeArtenliste(filterwert) {
 
 //bekommt eine Artenliste und baut damit im Formular die Artenliste auf
 function erstelleArtenliste(filterwert) {
-	var Artenliste = window.Artenliste.rows,
-		i,
+	var i,
 		html_temp = "",
 		html = "",
 		ArtBezeichnung,
 		Art,
 		zähler = 0;
 	//gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
-	if (Artenliste.length > 0) {
+	if (window.Artenliste.length > 0) {
 		if (filterwert) {
 			artenliste_loop:
-			for (i=0; i<Artenliste.length; i++) {
+			for (i=0; i<window.Artenliste.length; i++) {
 				if (zähler<200) {
-					ArtBezeichnung = Artenliste[i].key[1];
+					ArtBezeichnung = window.Artenliste[i].key[1];
 					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
 						zähler++;
-						Art = Artenliste[i].value;
+						Art = window.Artenliste[i].doc;
 						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					}
 				} else if (zähler === 200) {
@@ -2929,26 +2929,27 @@ function erstelleArtenliste(filterwert) {
 			}
 		} else {
 			//kein Filter gesetzt
-			if (Artenliste.length > 200) {
+			if (window.Artenliste.length > 200) {
 				//die ersten 200 anzeigen
 				artenliste_loop_2:
-				for (i=0; i<Artenliste.length; i++) {
+				for (i=0; i<window.Artenliste.length; i++) {
 					if (i<200) {
-						ArtBezeichnung = Artenliste[i].key[1];
-						Art = Artenliste[i].value;
+						ArtBezeichnung = window.Artenliste[i].key[1];
+						console.log(JSON.stringify(window.Artenliste[i]));
+						Art = window.Artenliste[i].doc;
 						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
-						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
+						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + window.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
 						break artenliste_loop_2;
 					}
 				}
 				html += html_temp;
 			} else {
 				//weniger als 200 Arten, kein Filter. Alle anzeigen
-				html += '<li class="artlistenhinweis">' + Artenliste.length + ' Arten angezeigt</li>';
-				for (i=0; i<Artenliste.length; i++) {
-					ArtBezeichnung = Artenliste[i].key[1];
-					Art = Artenliste[i].value;
+				html += '<li class="artlistenhinweis">' + window.Artenliste.length + ' Arten angezeigt</li>';
+				for (i=0; i<window.Artenliste.length; i++) {
+					ArtBezeichnung = window.Artenliste[i].key[1];
+					Art = window.Artenliste[i].doc;
 					html += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 				}
 			}
@@ -2986,14 +2987,14 @@ function erstelleArtgruppenListe() {
 	if (window.Artgruppenliste) {
 		erstelleArtgruppenListe_2();
 	} else if (localStorage.Artgruppenliste) {
-		Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
+		window.Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
 		erstelleArtgruppenListe_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen', {
 			success: function (data) {
 				//Artgruppenliste bereitstellen
-				Artgruppenliste = data;
+				window.Artgruppenliste = data;
 				localStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
 				erstelleArtgruppenListe_2();
 			}
@@ -3006,10 +3007,10 @@ function erstelleArtgruppenListe() {
 function erstelleArtgruppenListe_2() {
 	var i, y, html, ArtGruppe, row, AnzArten;
 	html = "";
-	for (i in Artgruppenliste.rows) {
+	for (i in window.Artgruppenliste.rows) {
 		if (typeof i !== "function") {
-			ArtGruppe = Artgruppenliste.rows[i].key;
-			row = Artgruppenliste.rows[i].value;
+			ArtGruppe = window.Artgruppenliste.rows[i].key;
+			row = window.Artgruppenliste.rows[i].value;
 			AnzArten = row.AnzArten;
 			html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 			html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";

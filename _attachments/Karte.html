@@ -317,7 +317,7 @@
 							markers = [];
 							for (i in BeobListeLatLng.rows) {
 								beob = BeobListeLatLng.rows[i].doc;
-								image = "Artgruppenbilder/" + beob.aArtGruppe + ".png";
+								image = "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 								latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 								if (anzBeob === 1) {
 									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -399,7 +399,7 @@
 						mapcanvas = $('#MapCanvas');
 						map = new google.maps.Map(mapcanvas[0],options);
 						//google.maps.event.trigger(map,'resize');
-						image = "Artgruppenbilder/" + localStorage.aArtGruppe + ".png";
+						image = "Artgruppenbilder/" + encodeURIComponent(localStorage.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 						if (verorted === true) {
 							marker = new google.maps.Marker({
 								position: latlng, 
