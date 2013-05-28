@@ -193,7 +193,7 @@ function CHtoWGSlng(y, x) {
 
 function melde(Meldung) {
 	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'>"+Meldung+"</div>")
-		.css({"line-height": "95%"})
+		.css({"line-height": "95%", "font-weight": "bold"})
 		.appendTo($.mobile.pageContainer);
 	$("#meldung").popup();
 	$("#meldung").popup("open");
