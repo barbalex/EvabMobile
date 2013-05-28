@@ -1806,7 +1806,7 @@ function initiiereZeitEdit_2() {
 		//das dauert länger - hinweisen
 		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeZeit&include_docs=true', {
+		$db.view('evab/FeldListeZeit?include_docs=true', {
 			success: function (Feldliste) {
 				window.FeldlisteZeitEdit = Feldliste;
 				initiiereZeitEdit_3();
@@ -3058,7 +3058,7 @@ function oeffneZuletztBenutzteSeite() {
 
 //die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
 //sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
-//mitLatLngListe gibt an, ob die Liste für die Karte auf entfernt werden soll
+//mitLatLngListe gibt an, ob die Liste für die Karte auch entfernt werden soll
 
 function leereAlleVariabeln(ohneClear) {
 	//ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
