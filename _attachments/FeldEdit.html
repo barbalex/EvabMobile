@@ -48,14 +48,14 @@
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select class="Feldeigenschaften" id="SichtbarImModusEinfach" name="SichtbarImModusEinfach" data-role="slider">
+					<select class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach" name="SichtbarImModusEinfach" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="Feldeigenschaften" id="SichtbarImModusHierarchisch" name="SichtbarImModusHierarchisch" data-role="slider">
+					<select class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch" name="SichtbarImModusHierarchisch" data-role="slider">
 						<option value="nein">nein</option>
 						<option value="ja">ja</option>
 					</select> 
@@ -232,7 +232,7 @@
 					}
 					//Felder der Datenzentren dürfen nicht verändert werden
 					//ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
-					if (Feld.User === "ZentrenBdKt") {
+					if (Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen')) {
 						//Feldwert zurücksetzen	
 						if (localStorage.AlterFeldWert) {
 							$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
