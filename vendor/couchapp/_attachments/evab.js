@@ -181,7 +181,7 @@ function CHtoWGSlng(y, x) {
 	return lng;
 }
 
-function melde(Meldung) {
+/*function melde(Meldung) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>&nbsp;" + Meldung +"&nbsp;</h4></div>")
 		.css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
 		.appendTo($.mobile.pageContainer)
@@ -189,6 +189,14 @@ function melde(Meldung) {
 		.fadeOut(700, function () {
 			$(this).remove();
 		});
+}*/
+
+function melde(Meldung) {
+	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'>"+Meldung+"</div>")
+		.css({"line-height": "95%"})
+		.appendTo($.mobile.pageContainer);
+	$("#meldung").popup();
+	$("#meldung").popup("open");
 }
 
 //wird in FeldEdit.html verwendet
