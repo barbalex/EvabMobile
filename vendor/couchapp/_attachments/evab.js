@@ -2942,7 +2942,6 @@ function erstelleArtenliste(filterwert) {
 				for (i=0; i<window.Artenliste.length; i++) {
 					if (i<200) {
 						ArtBezeichnung = window.Artenliste[i].key[1];
-						console.log(JSON.stringify(window.Artenliste[i]));
 						Art = window.Artenliste[i].doc;
 						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
