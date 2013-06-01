@@ -160,7 +160,6 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 <a name="roadmap"></a>
 #Wie geht es weiter? (roadmap)
 - Macken reduzieren
-- Artenlisten ausgehend von [ArtenDb](https://github.com/barbalex/artendb) aktualisieren (bisher ging das von der alten ArtenDb aus)
 - Android- und iOS-App entwickeln
 - Sobald allfällige Einflüsse der Android- und iOS-Apps bzw. ihrer Synchronisation auf die Datenstruktur geklärt sind: Die Web-Applikation öffentlich machen
 
