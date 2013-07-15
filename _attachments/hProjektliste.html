@@ -42,6 +42,15 @@
 				<a href="#" id="OeffneBeobListeProjektListe" data-role="button" data-icon="einfach">einfach</a>
 				<h2 class="hProjektListePageTitel">Projekte</h2>
 				<a href='#' id='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+				<div data-role="navbar">
+				<ul>
+					<li><a href="#" id="OeffneProjektListeProjektListe" class="ui-btn-active">Projekte</a></li>
+					<li><a href="#" class="tab_inaktiv">Räume</a></li>
+					<li><a href="#" class="tab_inaktiv">Orte</a></li>
+					<li><a href="#" class="tab_inaktiv">Zeiten</a></li>
+					<li><a href="#" class="tab_inaktiv">Arten</a></li>
+				</ul>
+			</div><!-- /navbar -->
 			</div>
 			<div data-role="content">
 				<ul id="ProjektlistehPL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." >
@@ -77,6 +86,18 @@
 					$("#hProjektListePageHeader").on('click', '#MenuProjektListe', function (event) {
 						event.preventDefault();
 						erstelleMenuProjektliste(this);
+					});
+
+					$("#hProjektListePageHeader").on('click', '#OeffneProjektListeProjektListe', function (event) {
+						event.preventDefault();
+						event.stopPropagation();
+					});
+
+					//inaktive tabs inaktivieren
+					//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+					$(document).on("click", ".tab_inaktiv", function (event) {
+						event.preventDefault();
+						event.stopPropagation();
 					});
 
 					//neues Projekt erstellen
