@@ -47,7 +47,8 @@
 					<li><a href="#" id="OeffneProjektZeitListe">Projekt</a></li>
 					<li><a href="#" id="OeffneRaumZeitListe">Raum</a></li>
 					<li><a href="#" name="OeffneOrtZeitListe">Ort</a></li>
-					<li><a href="hZeitListe.html" class="ui-btn-active">Zeiten</a></li>
+					<li><a href="hZeitListe.html" id="OeffneZeitZeitListe" class="ui-btn-active">Zeiten</a></li>
+					<li><a href="#" class="tab_inaktiv">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -90,6 +91,14 @@
 					$.mobile.changePage("hProjektListe.html");
 					return;
 				}
+
+				//inaktive tabs inaktivieren
+				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+				$(document).on("click", ".tab_inaktiv", function (event) {
+					console.log("tab_inaktiv geklickt aha");
+					event.preventDefault();
+					event.stopPropagation();
+				});
 
 				//Link zu Raum in Navbar und Titelleiste
 				$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
