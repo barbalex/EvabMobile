@@ -46,7 +46,8 @@
 				<ul>
 					<li><a href="#" id="ProjektOeffnenRaumEdit">Projekt</a></li>
 					<li><a href="#" name="OeffneRaumListeRaumEdit" class="ui-btn-active">Räume</a></li>
-					<li><a href="hOrtListe.html">Orte</a></li>
+					<li><a href="#" id="OrtListeOeffnenRaumEdit">Orte</a></li>
+					<!--li><a href="hOrtListe.html">Orte</a></li-->
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -210,6 +211,12 @@
 					event.preventDefault();
 					leereStorageRaumListe("mitLatLngListe");
 					$.mobile.changePage("hProjektEdit.html");
+				});
+
+				//Link zu Ortliste in Navbar
+				$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function (event) {
+					event.preventDefault();
+					$.mobile.changePage("hOrtListe.html");
 				});
 
 				//neuen Raum erstellen
