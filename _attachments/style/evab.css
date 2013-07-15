@@ -19,6 +19,8 @@
 
 /*jetzt folgen eigene*/
 
+/*es werden immer alle tabs angezeigt
+* aber einige sind inaktiv*/
 .ui-header .ui-navbar .tab_inaktiv {
 	background-image: none;
 	background-color: #F3F9EB;
