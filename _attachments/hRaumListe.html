@@ -46,6 +46,9 @@
 				<ul>
 					<li><a href="#" name="ProjektEditOeffnenRaumListe">Projekt</a></li>
 					<li><a href="hRaumListe.html" class="ui-btn-active">Räume</a></li>
+					<li><a href="#" class="tab_inaktiv">Orte</a></li>
+					<li><a href="#" class="tab_inaktiv">Zeiten</a></li>
+					<li><a href="#" class="tab_inaktiv">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
   		</div>
@@ -89,6 +92,13 @@
 					$.mobile.changePage("hProjektListe.html");
 					return;
 				}
+
+				//inaktive tabs inaktivieren
+				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+				$(document).on("click", ".tab_inaktiv", function (event) {
+					event.preventDefault();
+					event.stopPropagation();
+				});
 
 				//Link zu Projekt in Navbar und Titelleiste
 				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
