@@ -45,7 +45,8 @@
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" name="OeffneProjektListeProjektEdit" class="ui-btn-active">Projekte</a></li>
-					<li><a href="hRaumListe.html">Räume</a></li>
+					<li><a href="#" id="OeffneRaumListeProjektEdit">Räume</a></li>
+					<!--li><a href="hRaumListe.html">Räume</a></li-->
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -118,6 +119,11 @@
 					event.preventDefault();
 					leereStorageProjektEdit();
 					$.mobile.changePage("hProjektListe.html");
+				});
+
+				$("#hProjektEditHeader").on("click", "#OeffneRaumListeProjektEdit", function (event) {
+					event.preventDefault();
+					$.mobile.changePage("hRaumListe.html");
 				});
 
 				//Für jedes Feld bei Änderung speichern
