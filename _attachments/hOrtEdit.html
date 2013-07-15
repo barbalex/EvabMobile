@@ -47,7 +47,8 @@
 					<li><a href="#" id="OeffneProjektOrtEdit">Projekt</a></li>
 					<li><a href="#" id="OeffneRaumOrtEdit">Raum</a></li>
 					<li><a href="#" name="OeffneOrtListeOrtEdit" class="ui-btn-active">Orte</a></li>
-					<li><a href="hZeitListe.html">Zeiten</a></li>
+					<li><a href="#" id="OeffneZeitListeOrtEdit">Zeiten</a></li>
+					<!--li><a href="hZeitListe.html">Zeiten</a></li-->
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -146,6 +147,11 @@
 					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
+				});
+
+				$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", function (event) {
+					event.preventDefault();
+					$.mobile.changePage("hZeitListe.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
