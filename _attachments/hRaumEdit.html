@@ -47,7 +47,8 @@
 					<li><a href="#" id="ProjektOeffnenRaumEdit">Projekt</a></li>
 					<li><a href="#" name="OeffneRaumListeRaumEdit" class="ui-btn-active">Räume</a></li>
 					<li><a href="#" id="OrtListeOeffnenRaumEdit">Orte</a></li>
-					<!--li><a href="hOrtListe.html">Orte</a></li-->
+					<li><a href="#" class="tab_inaktiv">Zeiten</a></li>
+					<li><a href="#" class="tab_inaktiv">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
@@ -211,6 +212,13 @@
 					event.preventDefault();
 					leereStorageRaumListe("mitLatLngListe");
 					$.mobile.changePage("hProjektEdit.html");
+				});
+
+				//inaktive tabs inaktivieren
+				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+				$(document).on("click", ".tab_inaktiv", function (event) {
+					event.preventDefault();
+					event.stopPropagation();
 				});
 
 				//Link zu Ortliste in Navbar
