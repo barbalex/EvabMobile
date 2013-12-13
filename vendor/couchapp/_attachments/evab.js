@@ -336,7 +336,7 @@ function erstelleMenuFürFelder(thiz) {
 		'buttons' : {
 			'Datenfelder<br>exportieren': {
 				click: function () {
-					window.open("_list/FeldExport/FeldListe");
+					window.open("_list/FeldExport/FeldListe?include_docs=true");
 				},
 				theme: "a",
 				icon: "exportieren"
