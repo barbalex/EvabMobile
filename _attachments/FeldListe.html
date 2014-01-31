@@ -64,19 +64,19 @@
 			});
 			
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				}
 
-				//sicherstellen, dass zurueck nie leer ist
+				// sicherstellen, dass zurueck nie leer ist
 				if (!localStorage.zurueck) {
 					localStorage.zurueck = "BeobListe.html";
 				}
 
-				//Feld öffnen
+				// Feld öffnen
 				$("#FeldListeFL").on('click', '.Feld', function (event) {
 					event.preventDefault();
 					localStorage.FeldId = $(this).attr('FeldId');
@@ -88,13 +88,13 @@
 					neuesFeld();
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
 					event.preventDefault();
 					erstelleMenuFürFelder(this);
 				});
 
-				//BackButton steuern
+				// BackButton steuern
 				$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
 					event.preventDefault();
 					$.mobile.changePage(localStorage.zurueck);

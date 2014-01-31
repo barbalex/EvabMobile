@@ -65,9 +65,9 @@
 		</div>
 		<script charset="utf-8">
 			$("#hArtListePage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -80,8 +80,8 @@
 				initiierehBeobListe();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -92,7 +92,7 @@
 					return;
 				}
 
-				//Link zu Raum in Navbar und Titelleiste
+				// Link zu Raum in Navbar und Titelleiste
 				$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
 					leereStoragehBeobListe();
@@ -129,13 +129,13 @@
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
 					event.preventDefault();
 					erstelleMenu_hal(this);
 				});
 
-				//Neue Beobachtung managen
+				// Neue Beobachtung managen
 				$("#hArtListePage").on("click", ".NeueBeobhArtListe", function (event) {
 					event.preventDefault();
 					öffneArtgruppenliste_hal();
@@ -146,11 +146,11 @@
 				});
 
 				function öffneArtgruppenliste_hal() {
-					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStoragehBeobListe();
 					localStorage.Status = "neu";
 					localStorage.Von = "hArtListe";
-					delete localStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
+					delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
@@ -163,7 +163,7 @@
 					$.mobile.changePage("hZeitListe.html");
 				});
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenu_hal(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',

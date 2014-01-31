@@ -54,9 +54,9 @@
 		</div>
 		<script>
 			$("#FelderWaehlenPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu BeobListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu BeobListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -70,22 +70,22 @@
 			});
 
 			$("#FelderWaehlenPage").on("pagehide", function () {
-				//globale Variabeln aufräumen
+				// globale Variabeln aufräumen
 				delete localStorage.FeldlisteFwName;
 				delete localStorage.KriterienFürZuWählendeFelder;
 				delete localStorage.AufrufendeSeiteFW;
-				//verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
+				// verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
 				$("#FeldlisteFW").empty();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
 				} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
-					//oh, kein zurück bekannt
+					// oh, kein zurück bekannt
 					leereAlleVariabeln("ohneClear");
 					$.mobile.changePage("BeobListe.html");
 				}
@@ -95,7 +95,7 @@
 					$.mobile.changePage(localStorage.AufrufendeSeiteFW + ".html");
 				});
 				
-				//Felder speichern (checkbox)
+				// Felder speichern (checkbox)
 				$("#FeldlisteFW").on("change", "input[name='Felder']", function () {
 					var FeldName, FeldId, Feld, FeldPosition;
 					FeldName = $(this).prop("id");
@@ -110,7 +110,7 @@
 						}
 					}
 					var SichtbarImModusX, idx;
-					//Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
+					// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
 					if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 						SichtbarImModusX = "SichtbarImModusEinfach";
 					} else {
@@ -126,12 +126,12 @@
 						}
 					}
 					Feld[SichtbarImModusX] = SichtbarImModusX;
-					//Änderung in DB speichern
+					// Änderung in DB speichern
 					$db.saveDoc(Feld, {
 						success: function (data) {
-							//neue rev holen
+							// neue rev holen
 							Feld._rev = data.rev;
-							//Änderung in Feldliste-Objekt speichern
+							// Änderung in Feldliste-Objekt speichern
 							window[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
 						},
 						error: function () {
@@ -140,18 +140,18 @@
 					});
 				});
 
-				//JETZT FOLGT VERSUCH, TAPHOLD ZU IMPLEMENTIEREN
-				//NOCH NICHT IMPLEMENTIERT
+				// JETZT FOLGT VERSUCH, TAPHOLD ZU IMPLEMENTIEREN
+				// NOCH NICHT IMPLEMENTIERT
 
 				$("#FeldlisteFW").on("taphold", "[name='Felder']", function (event) {
-					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					// Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					event.preventDefault();
 					alert("taphold");
 					öffneFeld(this.id);
 				});
 
 				/*$("#FeldlisteFW").on("contextmenu", "[name='Felder']", function (event) {
-					//Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+					// Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
 					event.preventDefault();
 					öffneFeld(this.id);
 				});*/

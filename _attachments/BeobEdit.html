@@ -113,9 +113,9 @@
 		
 		<script>
 			$("#BeobEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu BeobListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu BeobListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -137,8 +137,8 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -154,86 +154,86 @@
 					$.mobile.changePage("BeobListe.html");
 				});
 
-				//Neue Beobachtung erfassen
+				// Neue Beobachtung erfassen
 				$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function (event) {
 					event.preventDefault();
-					//Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					// Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
 					localStorage.Status = "neu";
 					localStorage.Von = "BeobEdit";
 					if (window.gruppe_merken) {
-						//Artgruppenliste auslassen
-						//localStorage.ArtGruppe ist schon gesetzt
+						// Artgruppenliste auslassen
+						// localStorage.ArtGruppe ist schon gesetzt
 						$.mobile.changePage("Artenliste.html");
 					} else {
 						$.mobile.changePage("Artgruppenliste.html");
 					}
 				});
 
-				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
+				// Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#BeobEditForm").on("click", "[name='aArtGruppe']", function (event) {
 					event.preventDefault();
-					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
-					delete localStorage.Status;	//ja kein Status neu
+					delete localStorage.Status;	// ja kein Status neu
 					localStorage.Von = "BeobEdit";
 					if (window.gruppe_merken) {
-						//Artgruppenliste auslassen
-						//localStorage.aArtGruppe ist schon gesetzt
+						// Artgruppenliste auslassen
+						// localStorage.aArtGruppe ist schon gesetzt
 						$.mobile.changePage("Artenliste.html");
 					} else {
 						$.mobile.changePage("Artgruppenliste.html");
 					}
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "BeobEdit";
 					$.mobile.changePage("FelderWaehlen.html");
 				});
 
-				//Editieren von Beobachtungen managen, ausgehend von ArtName
+				// Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#BeobEditForm").on('click', '[name="aArtName"]', function (event) {
 					event.preventDefault();
-					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
 					localStorage.Von = "BeobEdit";
 					$.mobile.changePage("Artenliste.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#BeobEditForm").on("change", ".speichern", function () {
 					if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
-						//Wenn Koordinaten und beide erfasst
+						// Wenn Koordinaten und beide erfasst
 						localStorage.oXKoord = $("[name='oXKoord']").val();
 						localStorage.oYKoord = $("[name='oYKoord']").val();
-						//Längen- und Breitengrade berechnen
+						// Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
-						//und Koordinaten speichern
+						// und Koordinaten speichern
 						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					} else {
 						speichern(this);
 					}
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#BeobEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#BeobEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#BeobEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängeBE").on("change", ".speichernAnhang", function (event) {
 					var _attachments;
 					_attachments = $("#_attachmentsBE").val();
@@ -254,7 +254,7 @@
 					GetGeolocation(localStorage.BeobId, "Beob");
 				});
 
-				//Code für den Beobachtung-Löschen-Dialog
+				// Code für den Beobachtung-Löschen-Dialog
 				$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog2({
@@ -280,7 +280,7 @@
 					})
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#BeobEditHeader").on('click', "#MenuBeobEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu(this);
@@ -288,33 +288,33 @@
 
 				$("#BeobEditPage").on("swipeleft", "#BeobEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeBeob("nächste");
 					}
 				});
 
 				$("#BeobEditPage").on("swiperight", "#BeobEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeBeob("vorige");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob('vorige');
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#BeobEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsteVorigeBeob('nächste');
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#BeobEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -335,24 +335,24 @@
 				});
 
 
-				//Öffnet die vorige oder nächste Beobachtung
-				//vorige der ersten => BeobListe
-				//nächste der letzten => melden
-				//erwartet ob nächster oder voriger gesucht wird
+				// Öffnet die vorige oder nächste Beobachtung
+				// vorige der ersten => BeobListe
+				// nächste der letzten => melden
+				// erwartet ob nächster oder voriger gesucht wird
 				function nächsteVorigeBeob(NächsteOderVorige) {
-					//prüfen, ob BeobListe schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob BeobListe schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.BeobListe) {
-						//globale Variable BeobListe existiert noch
+						// globale Variable BeobListe existiert noch
 						nächsteVorigeBeob_2(NächsteOderVorige);
 					} else {
-						//keine Projektliste übergeben
-						//neu aus DB erstellen
+						// keine Projektliste übergeben
+						// neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 							success: function (data) {
-								//Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
-								//bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
+								// Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
+								// bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 								window.BeobListe = data;
 								nächsteVorigeBeob_2(NächsteOderVorige);
 							}
@@ -364,7 +364,7 @@
 					var i, BeobIdAktuell, AnzBeob;
 					for (i in window.BeobListe.rows) {
 						BeobIdAktuell = window.BeobListe.rows[i].doc._id;
-						AnzBeob = window.BeobListe.rows.length -1;		//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzBeob = window.BeobListe.rows.length -1;		// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (BeobIdAktuell === localStorage.BeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":
@@ -395,7 +395,7 @@
 					}
 				}
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenu(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',
@@ -464,10 +464,10 @@
 				
 				function löscheBeobachtung() {
 					if (window.Beobachtung) {
-						//vorhandenes Objekt nutzen
+						// vorhandenes Objekt nutzen
 						löscheBeobachtung_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.BeobId, {
 							success: function (data) {
@@ -485,7 +485,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.Beobachtung, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.BeobListe) {
 								for (i in window.BeobListe.rows) {
 									if (window.BeobListe.rows[i].doc._id === data.id) {
@@ -494,7 +494,7 @@
 									}
 								}
 							} else {
-								//Keine BeobListe mehr. Storage löschen
+								// Keine BeobListe mehr. Storage löschen
 								leereStorageBeobListe;
 							}
 							leereStorageBeobEdit();
@@ -506,14 +506,14 @@
 					});
 				}
 
-				//Speichert alle Daten
+				// Speichert alle Daten
 				function speichern(that) {
-					//prüfen, ob Beob als Objekt vorliegt
+					// prüfen, ob Beob als Objekt vorliegt
 					if (window.Beobachtung) {
-						//Objekt verwenden
+						// Objekt verwenden
 						speichern_2(that);
 					} else {
-						//Beob aus DB holen
+						// Beob aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.BeobId, {
 							success: function (data) {
@@ -530,17 +530,17 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
-					//Werte aus dem Formular aktualisieren
+					// Werte aus dem Formular aktualisieren
 					if (Feldwert) {
 						if (myTypeOf(Feldwert) === "float") {
 							window.Beobachtung[Feldname] = parseFloat(Feldwert);
@@ -555,7 +555,7 @@
 					window.Beobachtung.aArtGruppe = localStorage.aArtGruppe;
 					window.Beobachtung.aArtName = localStorage.aArtName;
 					window.Beobachtung.aArtId = localStorage.aArtId;
-					//alles speichern
+					// alles speichern
 					$db.saveDoc(window.Beobachtung, {
 						success: function(data) {
 							window.Beobachtung._rev = data.rev;

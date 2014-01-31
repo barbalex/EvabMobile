@@ -48,32 +48,32 @@
 			<script charset="utf-8">
 				
 				$("#KartePage").on("pageshow", function () {
-					//Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
+					// Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
 					var viewname, KeinOrtMeldung;
-					//In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
-					//wird benutzt von: hOrtEdit.html, BeobEdit.html
+					// In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
+					// wird benutzt von: hOrtEdit.html, BeobEdit.html
 					var markersArray = [];
 					var InfoWindowArray = [];
 
-					//sicherstellen, dass localStorage.zurueck existiert (gibt sonst später Fehler)
+					// sicherstellen, dass localStorage.zurueck existiert (gibt sonst später Fehler)
 					if (!localStorage.zurueck) {
 						$.mobile.changePage("BeobListe.html");
 					}
 
-					//Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
+					// Je nachdem, welche Seite die Karte aufruft, muss unterschiedlich vorgegangen werden
 					switch(localStorage.zurueck) {
 						case "hProjektListe":
 							viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Email + '"&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH(viewname);
 							break;
-						case "hProjektEdit":	//gleich wie hRaumListe
+						case "hProjektEdit":	// gleich wie hRaumListe
 						case "hRaumListe":
 							viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 							erstelleKarteH(viewname);
 							break;
-						case "hRaumEdit":	//gleich wie hOrtListe
+						case "hRaumEdit":	// gleich wie hOrtListe
 						case "hOrtListe":
 							viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true';
 							KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
@@ -91,28 +91,28 @@
 							break;
 					}
 
-					//erstellt Karten für hProjektListe bis hOrtListe
-					//im ersten Teil wird die Liste aller Orte erstellt und an den zweiten Teil übergeben
+					// erstellt Karten für hProjektListe bis hOrtListe
+					// im ersten Teil wird die Liste aller Orte erstellt und an den zweiten Teil übergeben
 					function erstelleKarteH(viewname) {
 						var contentHeight, hOrtLatLngListe;
-						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						//zuständige hOrtLatLngListe ermitteln
+						// zuständige hOrtLatLngListe ermitteln
 						switch (localStorage.zurueck) {
 							case "hProjektListe":
 							hOrtLatLngListe = "hOrteLatLngProjektliste";
 							break;
-						case "hProjektEdit":	//gleich wie hRaumListe
+						case "hProjektEdit":	// gleich wie hRaumListe
 						case "hRaumListe":
 							hOrtLatLngListe = "hOrteLatLngProjekt";
 							break;
-						case "hRaumEdit":	//gleich wie hOrtListe
+						case "hRaumEdit":	// gleich wie hOrtListe
 						case "hOrtListe":
 							hOrtLatLngListe = "hOrteLatLngRaum";
 							break;
 						}
-						//Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
+						// Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
 						if (window[hOrtLatLngListe]) {
 							erstelleKarteH_2(window[hOrtLatLngListe]);
 						} else {
@@ -129,16 +129,16 @@
 					function erstelleKarteH_2(hOrteLatLng) {
 						var anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, latlng2, marker, contentString, mcOptions, markerCluster;
 						infowindow = new google.maps.InfoWindow();
-						//Orte zählen
+						// Orte zählen
 						anzOrt = hOrteLatLng.rows.length;
-						//Keine Orte: Hinweis und zurück
+						// Keine Orte: Hinweis und zurück
 						if (anzOrt === 0) {
 							melde(KeinOrtMeldung);
 							history.back();
-						//Orte vorhanden: Karte aufbauen
+						// Orte vorhanden: Karte aufbauen
 						} else {
-							//Karte mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
-							//auf die die Karte ausgerichtet werden kann
+							// Karte mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
+							// auf die die Karte ausgerichtet werden kann
 							lat = 47.383333;
 							lng = 8.533333;
 							latlng = new google.maps.LatLng(lat, lng);
@@ -151,23 +151,23 @@
 							map = new google.maps.Map(document.getElementById("MapCanvas"),options);
 							//google.maps.event.trigger(map,'resize');
 							bounds = new google.maps.LatLngBounds();
-							//für alle Orte Marker erstellen
+							// für alle Orte Marker erstellen
 							markers = [];
 							for (i in hOrteLatLng.rows) {
 								Ort = hOrteLatLng.rows[i].doc;
 								hOrtId = Ort._id;
 								latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
 								if (anzOrt === 1) {
-									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 									latlng = latlng2;
 								} else {
-									//Kartenausschnitt um diese Koordinate erweitern
+									// Kartenausschnitt um diese Koordinate erweitern
 									bounds.extend(latlng2);
 								}
 								marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,
-									//title muss String sein
+									// title muss String sein
 									title: Ort.oName.toString() || "",
 									labelContent: Ort.oName,
 									labelAnchor: new google.maps.Point(22, 0),
@@ -191,16 +191,16 @@
 							mcOptions = {maxZoom: 17};
 							markerCluster = new MarkerClusterer(map, markers, mcOptions);
 							if (anzOrt === 1) {
-								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+								// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 								map.setCenter(latlng);
 								map.setZoom(18);
 							} else {
-								//Karte auf Ausschnitt anpassen
+								// Karte auf Ausschnitt anpassen
 								map.fitBounds(bounds);
 							}
 						}
 
-						//diese Funktion muss hier sein, damit infowindow bekannt ist
+						// diese Funktion muss hier sein, damit infowindow bekannt ist
 						function makeListener(map, marker, contentString) {
 							google.maps.event.addListener(marker, 'click', function () {
 								infowindow.setContent(contentString);
@@ -209,10 +209,10 @@
 						}
 					}
 
-					//wird benutzt in hOrtEdit.html
+					// wird benutzt in hOrtEdit.html
 					function erstelleKartehOrtEdit() {
 						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, marker, contentString, infowindow;
-						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						var contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
 						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
@@ -238,11 +238,11 @@
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map,
-								//title muss String sein
+								// title muss String sein
 								title: window.hOrt.oName.toString() || "",
 								draggable: true
 							});
-							//Marker in Array speichern, damit er gelöscht werden kann
+							// Marker in Array speichern, damit er gelöscht werden kann
 							markersArray.push(marker);
 							contentString = '<div id="content">'+
 									'<div id="siteNotice">'+
@@ -270,13 +270,13 @@
 						});
 					}
 
-					//wird benutzt in BeobListe.html
+					// wird benutzt in BeobListe.html
 					function erstelleKarteBeobListe() {
 						var contentHeight;
-						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
-						//Beobachtungen holen. Prüfen, ob die Liste noch da ist
+						// Beobachtungen holen. Prüfen, ob die Liste noch da ist
 						if (window.BeobListeLatLng) {
 							erstelleKarteBeobListe_2();
 						} else {
@@ -293,14 +293,14 @@
 					function erstelleKarteBeobListe_2() {
 						var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, latlng2, options, map, bounds, marker, markers, contentString, mcOptions, markerCluster;
 						infowindow = new google.maps.InfoWindow();
-						//Anzahl Beobachtungen zählen
+						// Anzahl Beobachtungen zählen
 						anzBeob = BeobListeLatLng.rows.length;
 						if (anzBeob === 0) {
-							//Keine Beobachtungen: Hinweis und zurück
+							// Keine Beobachtungen: Hinweis und zurück
 							melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
 							$.mobile.changePage("BeobListe.html");
 						} else {
-							//Beobachtungen vorhanden: Karte aufbauen
+							// Beobachtungen vorhanden: Karte aufbauen
 							lat = 47.383333;
 							lng = 8.533333;
 							latlng = new google.maps.LatLng(lat, lng);
@@ -313,23 +313,23 @@
 							map = new google.maps.Map(document.getElementById("MapCanvas"),options);
 							//google.maps.event.trigger(map,'resize');
 							bounds = new google.maps.LatLngBounds();
-							//für alle Beobachtungen Marker erstellen
+							// für alle Beobachtungen Marker erstellen
 							markers = [];
 							for (i in BeobListeLatLng.rows) {
 								beob = BeobListeLatLng.rows[i].doc;
 								image = "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 								latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 								if (anzBeob === 1) {
-									//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+									// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 									latlng = latlng2;
 								} else {
-									//Kartenausschnitt um diese Koordinate erweitern
+									// Kartenausschnitt um diese Koordinate erweitern
 									bounds.extend(latlng2);
 								}
 								marker = new MarkerWithLabel({ 
 									map: map,
 									position: latlng2,
-									//title muss String sein
+									// title muss String sein
 									title: beob.aArtName.toString() || "",
 									icon: image,
 									labelContent: beob.aArtName,
@@ -356,15 +356,15 @@
 							mcOptions = {maxZoom: 17};
 							markerCluster = new MarkerClusterer(map, markers, mcOptions);
 							if (anzBeob === 1) {
-								//map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
+								// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
 								map.setCenter(latlng);
 								map.setZoom(18);
 							} else {
-								//Karte auf Ausschnitt anpassen
+								// Karte auf Ausschnitt anpassen
 								map.fitBounds(bounds);
 							}
 						}
-						//listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
+						// listener schaffen, der bei Klick auf Marker dessen Fenster öffnet
 						function makeListener(map, marker, contentString) {
 							google.maps.event.addListener(marker, 'click', function () {
 								infowindow.setContent(contentString);
@@ -375,7 +375,7 @@
 
 					function erstelleKarteBeobEdit() {
 						var map, verorted, lat, lng, ZoomLevel, latlng, options, mapcanvas, map, image, marker, contentString, infowindow;
-						//Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						var contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
 						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
@@ -404,12 +404,12 @@
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map,
-								//title muss String sein
+								// title muss String sein
 								title: localStorage.aArtName.toString() || "",
 								icon: image,
 								draggable: true
 							});
-							//Marker in Array speichern, damit er gelöscht werden kann
+							// Marker in Array speichern, damit er gelöscht werden kann
 							markersArray.push(marker); 
 							contentString = '<div id="content">'+
 								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
@@ -437,19 +437,19 @@
 						});
 					}
 
-					//wird benutzt in hOrtEdit.html
+					// wird benutzt in hOrtEdit.html
 					function placeMarkerhOrtEdit(location, map, marker) {
 						var marker;
-						//zuerst bisherige Marker löschen
+						// zuerst bisherige Marker löschen
 						clearMarkers();
 						marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							//title muss String sein
+							// title muss String sein
 							title: window.hOrt.oName.toString() || "",
 							draggable: true
 						});
-						//Marker in Array speichern, damit er gelöscht werden kann
+						// Marker in Array speichern, damit er gelöscht werden kann
 						markersArray.push(marker);
 						google.maps.event.addListener(marker, "dragend", function (event) {
 							SetLocationhOrtEdit(event.latLng, map, marker);
@@ -458,17 +458,17 @@
 					}
 
 					function placeMarkerBeobEdit(location, map, marker, image) {
-						//zuerst bisherigen Marker löschen
+						// zuerst bisherigen Marker löschen
 						clearMarkers();
 						var marker = new google.maps.Marker({
 							position: location, 
 							map: map,
-							//title muss String sein
+							// title muss String sein
 							title: localStorage.aArtName.toString() || "",
 							icon: image,
 							draggable: true
 						});
-						//Marker in Array speichern, damit er gelöscht werden kann
+						// Marker in Array speichern, damit er gelöscht werden kann
 						markersArray.push(marker);
 						google.maps.event.addListener(marker, "dragend", function (event) {
 							SetLocationBeobEdit(event.latLng, map, marker);
@@ -476,7 +476,7 @@
 						SetLocationBeobEdit(location, map, marker);
 					}
 
-					//wird benutzt in hOrtEdit.html
+					// wird benutzt in hOrtEdit.html
 					function SetLocationhOrtEdit(LatLng, map, marker) {
 						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
@@ -507,7 +507,7 @@
 						speichereKoordinaten(localStorage.OrtId, "hOrt");
 					}
 
-					//wird benutzt in BeobEdit.html
+					// wird benutzt in BeobEdit.html
 					function SetLocationBeobEdit(LatLng, map, marker) {
 						var lat, lng, contentString, infowindow;
 						lat = LatLng.lat();
@@ -538,8 +538,8 @@
 						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					}
 
-					//GoogleMap: alle Marker löschen
-					//benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
+					// GoogleMap: alle Marker löschen
+					// benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
 					function clearMarkers() {
 						if (markersArray) {
 							for (i in markersArray) {
@@ -548,8 +548,8 @@
 						}
 					}
 
-					//GoogleMap: alle InfoWindows löschen
-					//benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
+					// GoogleMap: alle InfoWindows löschen
+					// benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
 					function clearInfoWindows() {
 						if (InfoWindowArray) {
 							for (i in InfoWindowArray) {
@@ -560,7 +560,7 @@
 				});
 
 				$("#KartePage").on("pageinit", function () {
-					//zurück-Button steuern
+					// zurück-Button steuern
 					$("#KarteHeader").on('click', '#ZurueckKarte', function (event) {
 						var zurueck;
 						event.preventDefault();
@@ -575,7 +575,7 @@
 				});
 
 				$("#KartePage").on("pagehide", function () {
-					//leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
+					// leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 					$("#MapCanvas").html("");
 				});
 			</script>

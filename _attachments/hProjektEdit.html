@@ -89,9 +89,9 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -105,8 +105,8 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -117,8 +117,8 @@
 					return;
 				}
 
-				//inaktive tabs inaktivieren
-				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+				// inaktive tabs inaktivieren
+				// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
 				$(document).on("click", ".tab_inaktiv", function (event) {
 					event.preventDefault();
 					event.stopPropagation();
@@ -135,26 +135,26 @@
 					$.mobile.changePage("hRaumListe.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#hProjektEditForm").on("change", ".speichern", function () {
 					speichern(this);
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#hProjektEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#hProjektEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#hProjektEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehPE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachmentshPE").val();
@@ -163,29 +163,29 @@
 					}
 				});
 				
-				//Code für den Projekt-Löschen-Dialog
+				// Code für den Projekt-Löschen-Dialog
 				$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', function (event) {
 					var that;
 					event.preventDefault();
 					that = this;
-					//Anzahl Räume des Projekts zählen
-					//die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
+					// Anzahl Räume des Projekts zählen
+					// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 					$db = $.couch.db("evab");
 					$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 						success: function (Raeume) {
 							var anzRaeume;
 							anzRaeume = Raeume.rows.length;
-							//Anzahl Orte des Projekts zählen
+							// Anzahl Orte des Projekts zählen
 							$db.view('evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 								success: function (Orte) {
 									var anzOrte;
 									anzOrte = Orte.rows.length;
-									//Anzahl Zeiten des Projekts zählen
+									// Anzahl Zeiten des Projekts zählen
 									$db.view('evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 										success: function (Zeiten) {
 											var anzZeiten;
 											anzZeiten = Zeiten.rows.length;
-											//Anzahl Arten des Projekts zählen
+											// Anzahl Arten des Projekts zählen
 											$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 												success: function (Arten) {
 													var anzArten;
@@ -198,7 +198,7 @@
 															'ja': {
 																click: function () {
 																	$('#dialogoutput').text('ja');
-																	//die Listen übergeben, damit ohne DB-Abfrage gelöscht werden kann
+																	// die Listen übergeben, damit ohne DB-Abfrage gelöscht werden kann
 																	löscheProjekt(Arten, Zeiten, Orte, Raeume);
 																},
 																icon: "delete",
@@ -221,19 +221,19 @@
 					});
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$('#hProjektEditHeader').on('click', '#MenuProjektEdit', function (event) {
 					event.preventDefault();
 					erstelleMenuProjektEdit(this);
 				});
 
-				//neues Projekt erstellen
+				// neues Projekt erstellen
 				$("#hProjektEditFooter").on("click", "#NeuesProjektProjektEdit", function (event) {
 					event.preventDefault();
 					erstelleNeuesProjekt();
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hProjektEdit";
@@ -242,33 +242,33 @@
 
 				$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächstesVorigesProjekt("nächstes");
 					}
 				});
 
 				$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächstesVorigesProjekt("voriges");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#ProjektEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächstesVorigesProjekt("voriges");
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#ProjektEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächstesVorigesProjekt("nächstes");
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#ProjektEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -296,7 +296,7 @@
 				});
 
 				function löscheProjekt(Arten, Zeiten, Orte, Raeume) {
-					//nur löschen, wo Datensätze vorkommen
+					// nur löschen, wo Datensätze vorkommen
 					if (Raeume.rows.length > 0) {
 						loescheIdIdRevListe(Raeume);
 					}
@@ -309,12 +309,12 @@
 					if (Arten.rows.length > 0) {
 						loescheIdIdRevListe(Arten);
 					}
-					//zuletzt das Projekt
+					// zuletzt das Projekt
 					if (window.hProjekt) {
-						//Objekt verwenden
+						// Objekt verwenden
 						löscheProjekt_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ProjektId, {
 							success: function (data) {
@@ -332,7 +332,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hProjekt, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.Projektliste) {
 								for (i in window.Projektliste.rows) {
 									if (window.Projektliste.rows[i].doc._id === data.id) {
@@ -341,10 +341,10 @@
 									}
 								}
 							} else {
-								//Keine Projektliste mehr. Storage löschen
+								// Keine Projektliste mehr. Storage löschen
 								leereStorageProjektListe("mitLatLngListe");
 							}
-							//Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							// Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageProjektEdit("mitLatLngListe");
 							$.mobile.changePage('hProjektListe.html');
 						},
@@ -359,7 +359,7 @@
 						melde("Bitte Projektnamen eingeben");
 						setTimeout(function() { 
 							$("[name='pName']").focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					return true;
@@ -385,19 +385,19 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
 					if (validierehProjektEdit()) {
 						if (Feldname === "pName") {
-							//Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							// Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageProjektListe("mitLatLngListe");
 						}
 						if (Feldwert) {
@@ -411,19 +411,19 @@
 						} else if (window.hProjekt[Feldname]) {
 							delete window.hProjekt[Feldname]
 						}
-						//alles speichern
+						// alles speichern
 						$db.saveDoc(window.hProjekt, {
 							success: function (data) {
 								window.hProjekt._rev = data.rev;
-								//window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
-								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-								//Zuletzt gespeicherte ProjektId NACH dem speichern setzen
-								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-								//darum zwischenspeichern
+								// window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								// Zuletzt gespeicherte ProjektId NACH dem speichern setzen
+								// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								// darum zwischenspeichern
 								window.hProjektIdZwischenspeicher = localStorage.ProjektId;
 								setTimeout("window.ZuletztGespeicherteProjektId = window.hProjektIdZwischenspeicher", 1000);
 								setTimeout("delete window.hProjektIdZwischenspeicher", 1500);
-								//nicht aktualisierte hierarchisch tiefere Listen löschen
+								// nicht aktualisierte hierarchisch tiefere Listen löschen
 								delete window.OrteVonRaum;
 								delete window.ZeitenVonRaum;
 								delete window.ZeitenVonOrt;
@@ -439,7 +439,7 @@
 					}
 				}
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenuProjektEdit(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',
@@ -498,23 +498,23 @@
 					})
 				}
 
-				//Öffnet das vorige oder nächste Projekt
-				//voriges des ersten => ProjektListe.html
-				//nächstes des letzten => melden
-				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				// Öffnet das vorige oder nächste Projekt
+				// voriges des ersten => ProjektListe.html
+				// nächstes des letzten => melden
+				// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächstesVorigesProjekt(NächstesOderVoriges) {
-					//prüfen, ob Projektliste schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob Projektliste schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.Projektliste) {
-						//globale Variable Projektliste existiert noch
+						// globale Variable Projektliste existiert noch
 						nächstesVorigesProjekt_2(NächstesOderVoriges);
 					} else {
-						//keine Projektliste übergeben
-						//neu aus DB erstellen
+						// keine Projektliste übergeben
+						// neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 							success: function (data) {
-								//Projektliste bereitstellen
+								// Projektliste bereitstellen
 								window.Projektliste = data;
 								nächstesVorigesProjekt_2(NächstesOderVoriges);
 							}
@@ -526,7 +526,7 @@
 					var i, ProjIdAktuell, AnzProj;
 					for (i in Projektliste.rows) {
 						ProjIdAktuell = Projektliste.rows[i].doc._id;
-						AnzProj = Projektliste.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzProj = Projektliste.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ProjIdAktuell === localStorage.ProjektId) {
 							switch (NächstesOderVoriges) {
 							case "nächstes":

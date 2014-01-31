@@ -102,9 +102,9 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#OrtEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -124,8 +124,8 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -136,8 +136,8 @@
 					return;
 				}
 
-				//inaktive tabs inaktivieren
-				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+				// inaktive tabs inaktivieren
+				// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
 				$(document).on("click", ".tab_inaktiv", function (event) {
 					event.preventDefault();
 					event.stopPropagation();
@@ -151,7 +151,7 @@
 
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
-					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					leereStorageOrtListe();
 					$.mobile.changePage("hRaumEdit.html");
 				});
@@ -163,25 +163,25 @@
 
 				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
 					event.preventDefault();
-					//sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					leereStorageOrtListe();
 					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#hOrtEditForm").on("change", ".speichern", function (event) {
 					var Feldname, FelderArray;
 					Feldname = this.name;
 					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
-						//Wenn Koordinaten und beide erfasst
+						// Wenn Koordinaten und beide erfasst
 						localStorage.oXKoord = $("[name='oXKoord']").val();
 						localStorage.oYKoord = $("[name='oYKoord']").val();
-						//Längen- und Breitengrade berechnen
+						// Längen- und Breitengrade berechnen
 						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 						localStorage.oLagegenauigkeit = null;
-						//oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
+						// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
 						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
 					} else {
@@ -190,21 +190,21 @@
 					}
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#hOrtEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#hOrtEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#hOrtEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehOE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachmentshOE").val();
@@ -213,25 +213,25 @@
 					}
 				});
 
-				//neuen Ort erstellen
+				// neuen Ort erstellen
 				$("#OrtEditFooter").on('click', '#NeuerOrtOrtEdit', function (event) {
 					event.preventDefault();
 					erstelleNeuenOrt();
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hOrtEdit";
 					$.mobile.changePage("FelderWaehlen.html");
 				});
 
-				//Code für den Ort-Löschen-Dialog
+				// Code für den Ort-Löschen-Dialog
 				$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', function (event) {
 					var that;
 					event.preventDefault();
 					that = this;
-					//Anzahl Zeiten von Ort zählen
+					// Anzahl Zeiten von Ort zählen
 					$db = $.couch.db("evab");
 					$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
 						success: function (Zeiten) {
@@ -267,13 +267,13 @@
 					});				
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#OrtEditHeader").on('click', "#MenuOrtEdit", function (event) {
 					event.preventDefault();
 					erstelleMenuOrtEdit(this);
 				});
 
-				//Karte managen
+				// Karte managen
 				$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
 					var contentHeight;
 					event.preventDefault();
@@ -288,33 +288,33 @@
 				
 				$("#OrtEditPage").on("swipeleft", "#OrtEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsterVorigerOrt("nächster");
 					}
 				});
 
 				$("#OrtEditPage").on("swiperight", "#OrtEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsterVorigerOrt("voriger");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#OrtEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsterVorigerOrt("voriger");
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#OrtEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsterVorigerOrt("nächster");
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#OrtEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -335,19 +335,19 @@
 				});
 
 				function löscheOrt(Arten, Zeiten) {
-					//nur löschen, wo Datensätze vorkommen
+					// nur löschen, wo Datensätze vorkommen
 					if (Zeiten.rows.length > 0) {
 						loescheIdIdRevListe(Zeiten);
 					}
 					if (Arten.rows.length > 0) {
 						loescheIdIdRevListe(Arten);
 					}
-					//zuletzt den Ort löschen
+					// zuletzt den Ort löschen
 					if (window.hOrt) {
-						//Objekt nutzen
+						// Objekt nutzen
 						löscheOrt_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.OrtId, {
 							success: function (data) {
@@ -365,7 +365,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hOrt, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.OrtListe) {
 								for (i in window.OrtListe.rows) {
 									if (window.OrtListe.rows[i].doc._id === data.id) {
@@ -374,7 +374,7 @@
 									}
 								}
 							} else {
-								//Keine Ortliste mehr. Storage löschen
+								// Keine Ortliste mehr. Storage löschen
 								leereStorageOrtListe("mitLatLngListe");
 							}
 							leereStorageOrtEdit("mitLatLngListe");
@@ -391,19 +391,19 @@
 						melde("Bitte Ortnamen eingeben");
 						setTimeout(function() { 
 							$("[name='oName']").focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					return true;
 				}
 
 				function speichern(that) {
-					//prüfen, ob Ort existiert
+					// prüfen, ob Ort existiert
 					if (window.hOrt) {
-						//bestehedes Objekt verwenden
+						// bestehedes Objekt verwenden
 						speichern_2(that);
 					} else {
-						//kein Ort > aus DB holen
+						// kein Ort > aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.OrtId, {
 							success: function (data) {
@@ -421,22 +421,22 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
 					if (validatehOrtEdit()) {
 						if (Feldname === "oName") {
-							//Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							// Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereStorageOrtListe("mitLatLngListe");
 						}
-						//Werte aus dem Formular aktualisieren
+						// Werte aus dem Formular aktualisieren
 						if (Feldwert) {
 							if (myTypeOf(Feldwert) === "float") {
 								window.hOrt[Feldname] = parseFloat(Feldwert);
@@ -448,19 +448,19 @@
 						} else if (window.hOrt[Feldname]) {
 							delete window.hOrt[Feldname]
 						}
-						//alles speichern
+						// alles speichern
 						$db.saveDoc(window.hOrt, {
 							success: function (data) {
 								window.hOrt._rev = data.rev;
-								//window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
-								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-								//Zuletzt gespeicherte OrtId NACH dem speichern setzen
-								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-								//darum zwischenspeichern
+								// window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								// Zuletzt gespeicherte OrtId NACH dem speichern setzen
+								// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								// darum zwischenspeichern
 								window.OrtIdZwischenspeicher = localStorage.OrtId;
 								setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
 								setTimeout("delete window.OrtIdZwischenspeicher", 1500);
-								//nicht aktualisierte hierarchisch tiefere Listen löschen
+								// nicht aktualisierte hierarchisch tiefere Listen löschen
 								delete window.ZeitenVonProjekt;
 								delete window.ZeitenVonRaum;
 								delete window.ArtenVonProjekt;
@@ -475,9 +475,9 @@
 					}
 				}
 				
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenuOrtEdit(thiz) {
-					//Code um Menü aufzubauen
+					// Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
 						'headerClose': true,
@@ -539,23 +539,23 @@
 					})
 				}
 
-				//Öffnet den vorigen oder nächsten Ort
-				//voriger des ersten => OrtListe
-				//nächster des letzten => melden
-				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				// Öffnet den vorigen oder nächsten Ort
+				// voriger des ersten => OrtListe
+				// nächster des letzten => melden
+				// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerOrt(NächsterOderVoriger) {
-					//prüfen, ob OrtListe schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob OrtListe schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.OrtListe) {
-						//Ortliste liegt als Variable vor
+						// Ortliste liegt als Variable vor
 						nächsterVorigerOrt_2(NächsterOderVoriger);
 					} else {
-						//keine Ortliste vorhanden
-						//neu aus DB erstellen
+						// keine Ortliste vorhanden
+						// neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 							success: function (data) {
-								//OrtListe für hOrtListe.html bereitstellen
+								// OrtListe für hOrtListe.html bereitstellen
 								window.OrtListe = data;
 								nächsterVorigerOrt_2(NächsterOderVoriger);
 							}
@@ -567,7 +567,7 @@
 					var i, OrtIdAktuell, AnzOrt;
 					for (i in OrtListe.rows) {
 						OrtIdAktuell = OrtListe.rows[i].doc._id;
-						AnzOrt = OrtListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzOrt = OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (OrtIdAktuell === localStorage.OrtId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":

@@ -90,9 +90,9 @@
 
 		<script charset="utf-8">
 			$("#RaumEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -106,8 +106,8 @@
 			});
 
 			$("#RaumEditPage").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -124,26 +124,26 @@
 					$.mobile.changePage("hRaumListe.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#hRaumEditForm").on("change", ".speichern", function () {
 					speichern(this);
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#hRaumEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#hRaumEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#hRaumEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehRE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachmentshRE").val();
@@ -152,23 +152,23 @@
 					}
 				});
 
-				//Code für den Raum-Löschen-Dialog
+				// Code für den Raum-Löschen-Dialog
 				$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function (event) {
 					var that;
 					event.preventDefault();
 					that = this;
-					//Anzahl Orte des Raums zählen
+					// Anzahl Orte des Raums zählen
 					$db = $.couch.db("evab");
 					$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 						success: function (Orte) {
 							var anzOrte;
 							anzOrte = Orte.rows.length;
-							//Anzahl Zeiten des Raums zählen
+							// Anzahl Zeiten des Raums zählen
 							$db.view('evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 								success: function (Zeiten) {
 									var anzZeiten;
 									anzZeiten = Zeiten.rows.length;
-									//Anzahl Arten des Raums zählen
+									// Anzahl Arten des Raums zählen
 									$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 										success: function (Arten) {
 											var anzArten;
@@ -201,39 +201,39 @@
 					});
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#RaumEditHeader").on('click', "#MenuRaumEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu(this);
 				});
 
-				//Link zu Projekt in Navbar und Titelleiste
+				// Link zu Projekt in Navbar und Titelleiste
 				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
 					leereStorageRaumListe("mitLatLngListe");
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//inaktive tabs inaktivieren
-				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+				// inaktive tabs inaktivieren
+				// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
 				$(document).on("click", ".tab_inaktiv", function (event) {
 					event.preventDefault();
 					event.stopPropagation();
 				});
 
-				//Link zu Ortliste in Navbar
+				// Link zu Ortliste in Navbar
 				$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("hOrtListe.html");
 				});
 
-				//neuen Raum erstellen
+				// neuen Raum erstellen
 				$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function (event) {
 					event.preventDefault();
 					erstelleNeuenRaum();
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hRaumEdit";
@@ -242,33 +242,33 @@
 
 				$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsterVorigerRaum("nächster");
 					}
 				});
 
 				$("#RaumEditPage").on("swiperight", "#hRaumEditContent", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsterVorigerRaum("voriger");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsterVorigerRaum("voriger");
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#RaumEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsterVorigerRaum("nächster");
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#RaumEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -296,7 +296,7 @@
 				});
 			
 				function löscheRaum(Arten, Zeiten, Orte) {
-					//nur löschen, wo Datensätze vorkommen
+					// nur löschen, wo Datensätze vorkommen
 					if (Orte.rows.length > 0) {
 						loescheIdIdRevListe(Orte);
 					}
@@ -307,10 +307,10 @@
 						loescheIdIdRevListe(Arten);
 					}
 					if (window.hRaum) {
-						//Objekt benutzen
+						// Objekt benutzen
 						löscheRaum_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.RaumId, {
 							success: function (data) {
@@ -328,7 +328,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hRaum, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.RaumListe) {
 								for (i in window.RaumListe.rows) {
 									if (window.RaumListe.rows[i].doc._id === data.id) {
@@ -337,10 +337,10 @@
 									}
 								}
 							} else {
-								//Keine Raumliste mehr. Storage löschen
+								// Keine Raumliste mehr. Storage löschen
 								leereStorageRaumListe("mitLatLngListe");
 							}
-							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageRaumEdit("mitLatLngListe");
 							$.mobile.changePage('hRaumListe.html');
 						},
@@ -355,19 +355,19 @@
 						melde("Bitte Raumnamen eingeben");
 						setTimeout(function() { 
 							$('#rName').focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					return true;
 				}
 
 				function speichern(that) {
-					//prüfen, ob Objekt Raum existiert
-					//fehlt z.B. nach refresh
+					// prüfen, ob Objekt Raum existiert
+					// fehlt z.B. nach refresh
 					if (window.hRaum) {
 						speichern_2(that);
 					} else {
-						//kein Raum > aus DB holen
+						// kein Raum > aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.RaumId, {
 							success: function (data) {
@@ -385,19 +385,19 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
-							//RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+							// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageRaumListe("mitLatLngListe");
 						}
 						if (Feldwert) {
@@ -411,19 +411,19 @@
 						} else if (window.hRaum[Feldname]) {
 							delete window.hRaum[Feldname]
 						}
-						//alles speichern
+						// alles speichern
 						$db.saveDoc(window.hRaum, {
 							success: function (data) {
 								window.hRaum._rev = data.rev;
-								//window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
-								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-								//Zuletzt gespeicherte RaumId NACH dem speichern setzen
-								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-								//darum zwischenspeichern
+								// window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								// Zuletzt gespeicherte RaumId NACH dem speichern setzen
+								// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								// darum zwischenspeichern
 								window.RaumIdZwischenspeicher = localStorage.RaumId;
 								setTimeout("window.ZuletztGespeicherteRaumId = window.RaumIdZwischenspeicher", 1000);
 								setTimeout("delete window.RaumIdZwischenspeicher", 1500);
-								//nicht aktualisierte hierarchisch tiefere Listen löschen
+								// nicht aktualisierte hierarchisch tiefere Listen löschen
 								delete window.OrteVonProjekt;
 								delete window.ZeitenVonProjekt;
 								delete window.ZeitenVonOrt;
@@ -438,7 +438,7 @@
 					}
 				}
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenu(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',
@@ -499,23 +499,23 @@
 					})
 				}
 
-				//Öffnet den vorigen oder nächsten Raum
-				//voriger des ersten => RaumListe
-				//nächster des letzten => melden
-				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				// Öffnet den vorigen oder nächsten Raum
+				// voriger des ersten => RaumListe
+				// nächster des letzten => melden
+				// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsterVorigerRaum(NächsterOderVoriger) {
-					//prüfen, ob RaumListe schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob RaumListe schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.RaumListe) {
-						//globale Variable RaumListe existiert noch
+						// globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
-						//keine Raumliste übergeben
-						//neu aus DB erstellen
+						// keine Raumliste übergeben
+						// neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 							success: function (data) {
-								//RaumListe bereitstellen
+								// RaumListe bereitstellen
 								window.RaumListe = data;
 								nächsterVorigerRaum_2(NächsterOderVoriger);
 							}
@@ -527,7 +527,7 @@
 					var i, RaumIdAktuell, AnzRaum;
 					for (i in RaumListe.rows) {
 						RaumIdAktuell = RaumListe.rows[i].doc._id;
-						AnzRaum = RaumListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzRaum = RaumListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (RaumIdAktuell === localStorage.RaumId) {
 							switch (NächsterOderVoriger) {
 							case "nächster":

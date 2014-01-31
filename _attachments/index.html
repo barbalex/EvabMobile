@@ -68,9 +68,9 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#indexPage").on("pageshow", function () {
-				//Wenn möglich localStorage.Email für die Anmeldung verwenden
-				//ausser User hat via Menü bewusst neu anmelden wollen
-				//localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+				// Wenn möglich localStorage.Email für die Anmeldung verwenden
+				// ausser User hat via Menü bewusst neu anmelden wollen
+				// localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
 				if (localStorage.length > 0) {
 					if (localStorage.Email) {
 						if (localStorage.UserStatus !== "neu") {
@@ -78,14 +78,14 @@
 								oeffneZuletztBenutzteSeite();
 								return;
 							} else {
-								//Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
+								// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
 								stelleUserDatenBereit();
 								return;
 							}
 						}
 					}
 				}
-				//Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
+				// Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
 				leereAlleVariabeln();
 					
 				if (!("autofocus" in document.createElement("input"))) {
@@ -100,7 +100,7 @@
 					meldeUserAn();
 				});
 
-				//Reaktion auf Enter-Taste
+				// Reaktion auf Enter-Taste
 				$("#indexForm").on("keydown", "#Passwort", function (e) {
 					if (e.keyCode === 13) {
 						meldeUserAn();
@@ -116,13 +116,13 @@
 				if (!Email) {
 					setTimeout(function () { 
 						$('#Email').focus(); 
-					}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 					melde("Bitte Benutzernamen eingeben");
 					return false;
 				} else if (!Passwort) {
 					setTimeout(function () { 
 						$('#Passwort').focus(); 
-					}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 					melde("Bitte Passwort eingeben");
 					return false;
 				}
@@ -131,7 +131,7 @@
 
 			function meldeUserAn() {
 				var Email, Passwort;
-				//sicherstellen, dass die localStorage leer ist
+				// sicherstellen, dass die localStorage leer ist
 				leereAlleVariabeln();
 				Email = $('input[name=Email]').val();
 				Passwort = $('input[name=Passwort]').val();
@@ -141,16 +141,16 @@
 						password : Passwort,
 						success : function (r) {
 							
-							//TODO: Abfangen, wenn Username leer ist. USER erstellen
+							// TODO: Abfangen, wenn Username leer ist. USER erstellen
 							if (r["name"]) {
 								localStorage.Email = r["name"];
 							} else {
-								//login erfolgreich, aber keine Informationen zum User
-								//Möglicher Grund: Das Konto wurde von ArtenDb erstellt
-								//also User anbieten
+								// login erfolgreich, aber keine Informationen zum User
+								// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
+								// also User anbieten
 								$.mobile.changePage("UserEdit.html");
 							}
-							//Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
+							// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
 							stelleUserDatenBereit();
 							delete localStorage.UserStatus;
 						},

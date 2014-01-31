@@ -94,9 +94,9 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#hArtEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -110,8 +110,8 @@
 			});
 
 			$("#hArtEditPage").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -169,26 +169,26 @@
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#hArtEditForm").on("change", ".speichern", function (event) {
 					speichern(this);
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#hArtEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#hArtEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#hArtEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehAE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachmentshAE").val();
@@ -197,33 +197,33 @@
 					}
 				});
 
-				//Neue Beobachtung managen
+				// Neue Beobachtung managen
 				$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function (event) {
 					event.preventDefault();
 					localStorage.Status = "neu";
 					zuArtgruppenliste();
 				});
 
-				//Editieren von Beobachtungen managen, ausgehend von Artgruppe
+				// Editieren von Beobachtungen managen, ausgehend von Artgruppe
 				$("#hArtEditForm").on("click", "[name='aArtGruppe']", function (event) {
 					event.preventDefault();
 					zuArtgruppenliste();
 				});
 
-				//Editieren von Beobachtungen managen, ausgehend von ArtName
+				// Editieren von Beobachtungen managen, ausgehend von ArtName
 				$("#hArtEditForm").on("click", "[name='aArtName']", function (event) {
 					event.preventDefault();
 					zuArtliste();
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hArtEdit";
 					$.mobile.changePage("FelderWaehlen.html");
 				});
 
-				//Code für den Art-Löschen-Dialog
+				// Code für den Art-Löschen-Dialog
 				$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', function (event) {
 					event.preventDefault();
 					$(this).simpledialog2({
@@ -248,7 +248,7 @@
 					})
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$('#hArtEditPageHeader').on('click', "#MenuhBeobEdit", function (event) {
 					event.preventDefault();
 					erstelleMenu_hae(this);
@@ -256,33 +256,33 @@
 
 				$("#hArtEditPage").on("swipeleft", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeArt("nächste");
 					}
 				});
 
 				$("#hArtEditPage").on("swiperight", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeArt("vorige");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#hArtEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsteVorigeArt("vorige");
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#hArtEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsteVorigeArt("nächste");
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#hArtEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -303,12 +303,12 @@
 				});
 
 				function zuArtgruppenliste() {
-					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStoragehBeobListe();
 					localStorage.Von = "hArtEdit";
 					if (window.gruppe_merken) {
-						//Artgruppenliste auslassen
-						//localStorage.aArtGruppe ist schon gesetzt
+						// Artgruppenliste auslassen
+						// localStorage.aArtGruppe ist schon gesetzt
 						$.mobile.changePage("Artenliste.html");
 					} else {
 						$.mobile.changePage("Artgruppenliste.html");
@@ -317,13 +317,13 @@
 
 				function zuArtliste() {
 					var viewname;
-					//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+					// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 					leereStoragehBeobListe();
 					localStorage.Von = "hArtEdit";
 					$.mobile.changePage("Artenliste.html");
 				}
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenu_hae(thiz) {
 					$(thiz).simpledialog2({
 						'mode' : 'button',
@@ -400,10 +400,10 @@
 
 				function löscheBeobachtung() {
 					if (window.hArt) {
-						//vorhandenes Objekt nutzen
+						// vorhandenes Objekt nutzen
 						löscheBeobachtung_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.hBeobId, {
 							success: function (data) {
@@ -421,7 +421,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hArt, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.hBeobListe) {
 								for (i in window.hBeobListe.rows) {
 									if (window.hBeobListe.rows[i].doc._id === data.id) {
@@ -430,7 +430,7 @@
 									}
 								}
 							} else {
-								//Keine Ortliste mehr. Storage löschen
+								// Keine Ortliste mehr. Storage löschen
 								leereStoragehBeobListe();
 							}
 							leereStoragehBeobEdit();
@@ -442,14 +442,14 @@
 					});
 				}
 
-				//Speichert alle Daten
+				// Speichert alle Daten
 				function speichern(that) {
-					//prüfen, ob hBeob als Objekt vorliegt
+					// prüfen, ob hBeob als Objekt vorliegt
 					if (window.hArt) {
-						//dieses verwenden
+						// dieses verwenden
 						speichern_2(that);
 					} else {
-						//Objekt aud DB holen
+						// Objekt aud DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.hBeobId, {
 							success: function (data) {
@@ -468,17 +468,17 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
-					//Werte aus dem Formular aktualisieren
+					// Werte aus dem Formular aktualisieren
 					if (Feldwert) {
 						if (myTypeOf(Feldwert) === "float") {
 							window.hArt[Feldname] = parseFloat(Feldwert);
@@ -505,22 +505,22 @@
 					});
 				}
 
-				//Öffnet die vorige oder nächste Art
-				//vorige der ersten => ArtListe
-				//nächste der letzten => melden
-				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				// Öffnet die vorige oder nächste Art
+				// vorige der ersten => ArtListe
+				// nächste der letzten => melden
+				// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeArt(NächsteOderVorige) {
-					//prüfen, ob hBeobListe schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob hBeobListe schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.hBeobListe) {
-						//hBeobListe liegt als Variable vor
+						// hBeobListe liegt als Variable vor
 						nächsteVorigeArt_2(NächsteOderVorige);
 					} else {
-						//keine Ortliste vorhanden, neu aus DB erstellen
+						// keine Ortliste vorhanden, neu aus DB erstellen
 						$db = $.couch.db("evab");
 						$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 							success: function (data) {
-								//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+								// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 								window.hBeobListe = data;
 								nächsteVorigeArt_2(NächsteOderVorige);
 							}
@@ -532,7 +532,7 @@
 					var i, ArtIdAktuell, AnzArt;
 					for (i in window.hBeobListe.rows) {
 						ArtIdAktuell = window.hBeobListe.rows[i].doc._id;
-						AnzArt = window.hBeobListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzArt = window.hBeobListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ArtIdAktuell === localStorage.hBeobId) {
 							switch (NächsteOderVorige) {
 							case "nächste":

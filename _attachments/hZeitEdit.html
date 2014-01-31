@@ -92,9 +92,9 @@
 		</div><!-- /footer -->
 		<script charset="utf-8">
 			$("#ZeitEditPage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -106,8 +106,8 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -155,26 +155,26 @@
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//Für jedes Feld bei Änderung speichern
+				// Für jedes Feld bei Änderung speichern
 				$("#hZeitEditForm").on("change", ".speichern", function (event) {
 					speichern(this);
 				});
 
-				//ungelöstes Problem: swipe reagiert!
-				//Eingabe im Zahlenfeld abfangen
+				// ungelöstes Problem: swipe reagiert!
+				// Eingabe im Zahlenfeld abfangen
 				$("#hZeitEditForm").on("blur", '.speichernSlider', function (event) {
 					speichern(this);
 				});
-				//Klicken auf den Pfeilen im Zahlenfeld abfangen
+				// Klicken auf den Pfeilen im Zahlenfeld abfangen
 				$("#hZeitEditForm").on("mouseup", '.ui-slider-input', function (event) {
 					speichern(this);
 				});
-				//Ende des Schiebens abfangen
+				// Ende des Schiebens abfangen
 				$("#hZeitEditForm").on("slidestop", '.speichernSlider', function (event) {
 					speichern(this);
 				});
 
-				//Änderungen im Formular für Anhänge speichern
+				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehZE").on("change", ".speichernAnhang", function () {
 					var _attachments;
 					_attachments = $("#_attachmentshZE").val();
@@ -183,27 +183,27 @@
 					}
 				});
 
-				//Neue Zeit erstellen
+				// Neue Zeit erstellen
 				$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
 					event.preventDefault();
-					//Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+					// Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageZeitListe();
 					erstelleNeueZeit(); 
 				});
 
-				//sichtbare Felder wählen
+				// sichtbare Felder wählen
 				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hZeitEdit";
 					$.mobile.changePage("FelderWaehlen.html");
 				});
 
-				//Code für den Zeit-Löschen-Dialog
+				// Code für den Zeit-Löschen-Dialog
 				$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function (event) {
 					var that;
 					event.preventDefault();
 					that = this;
-					//Anzahl Zeiten von Ort zählen
+					// Anzahl Zeiten von Ort zählen
 					$db = $.couch.db("evab");
 					$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
 						success: function (Arten) {
@@ -233,7 +233,7 @@
 					});
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#ZeitEditPageHeader").on('click', '#MenuZeitEdit', function (event) {
 					event.preventDefault();
 					erstelleMenuZeitEdit(this);
@@ -241,33 +241,33 @@
 
 				$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeZeit("nächste");
 					}
 				});
 
 				$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
-						//kein slider
+						// kein slider
 						nächsteVorigeZeit("vorige");
 					}
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit("vorige");
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					nächsteVorigeZeit("nächste");
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#ZeitEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -288,16 +288,16 @@
 				});
 
 				function löscheZeit(Arten) {
-					//nur löschen, wo Datensätze vorkommen
+					// nur löschen, wo Datensätze vorkommen
 					if (Arten.rows.length > 0) {
 						loescheIdIdRevListe(Arten);
 					}
-					//dann die Zeit
+					// dann die Zeit
 					if (window.hZeit) {
-						//Objekt nutzen
+						// Objekt nutzen
 						löscheZeit_2();
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ZeitId, {
 							success: function (data) {
@@ -315,7 +315,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hZeit, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.ZeitListe) {
 								for (i in window.ZeitListe.rows) {
 									if (window.ZeitListe.rows[i].doc._id === data.id) {
@@ -324,7 +324,7 @@
 									}
 								}
 							} else {
-								//Keine ZeitListe mehr. Storage löschen
+								// Keine ZeitListe mehr. Storage löschen
 								leereStorageZeitListe;
 							}
 							leereStorageZeitEdit();
@@ -341,29 +341,29 @@
 						melde("Bitte Datum erfassen");
 						setTimeout(function() { 
 							$("[name='zDatum']").focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					if (!$("[name='zUhrzeit']").val()) {
 						melde("Bitte Zeit erfassen");
 						setTimeout(function() { 
 							$("[name='zUhrzeit']").focus(); 
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					return true;
 				}
 
-				//speichert nach jedem change event in einem Feld mit Class speichern
-				//den Wert in die DB
-				//erwartet das Feld als Objekt
+				// speichert nach jedem change event in einem Feld mit Class speichern
+				// den Wert in die DB
+				// erwartet das Feld als Objekt
 				function speichern(that) {
-					//prüfen, ob die Zeit als Objekt vorliegt
+					// prüfen, ob die Zeit als Objekt vorliegt
 					if (window.hZeit) {
-						//dieses verwenden
+						// dieses verwenden
 						speichern_2(that);
 					} else {
-						//Objekt aus DB holen
+						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ZeitId, {
 							success: function (data) {
@@ -382,22 +382,22 @@
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-						//slider
+						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
 					} else {
-						//alle anderen Feldtypen
+						// alle anderen Feldtypen
 						Feldname = that.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 					}
 					if (validierehZeitEdit()) {
 						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
-							//Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+							// Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 							leereStorageZeitListe();
 						}
-						//Werte aus dem Formular aktualisieren
+						// Werte aus dem Formular aktualisieren
 						if (Feldwert) {
 							if (myTypeOf(Feldwert) === "float") {
 								window.hZeit[Feldname] = parseFloat(Feldwert);
@@ -409,19 +409,19 @@
 						} else if (window.hZeit[Feldname]) {
 							delete window.hZeit[Feldname]
 						}
-						//alles speichern
+						// alles speichern
 						$db.saveDoc(window.hZeit, {
 							success: function (data) {
 								window.hZeit._rev = data.rev;
-								//window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
-								//Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
-								//Zuletzt gespeicherte ZeitId NACH dem speichern setzen
-								//sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
-								//darum zwischenspeichern
+								// window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
+								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+								// Zuletzt gespeicherte ZeitId NACH dem speichern setzen
+								// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+								// darum zwischenspeichern
 								window.ZeitIdZwischenspeicher = localStorage.ZeitId;
 								setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
 								setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
-								//nicht aktualisierte hierarchisch tiefere Listen löschen
+								// nicht aktualisierte hierarchisch tiefere Listen löschen
 								delete window.ArtenVonProjekt;
 								delete window.ArtenVonRaum;
 								delete window.ArtenVonOrt;
@@ -434,9 +434,9 @@
 					}
 				}
 
-				//Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
+				// Menü aufbauen. Wird aufgerufen von allen Formularen in evab/templates
 				function erstelleMenuZeitEdit(thiz) {
-					//Code um Menü aufzubauen
+					// Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
 						'headerClose': true,
@@ -500,13 +500,13 @@
 					})
 				}
 
-				//Öffnet die vorige oder nächste Zeit
-				//vorige der ersten => ZeitListe
-				//nächste der letzten => melden
-				//erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+				// Öffnet die vorige oder nächste Zeit
+				// vorige der ersten => ZeitListe
+				// nächste der letzten => melden
+				// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 				function nächsteVorigeZeit(NächsteOderVorige) {
-					//prüfen, ob ZeitListe schon existiert
-					//nur abfragen, wenn sie noch nicht existiert
+					// prüfen, ob ZeitListe schon existiert
+					// nur abfragen, wenn sie noch nicht existiert
 					if (window.ZeitListe) {
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
@@ -524,7 +524,7 @@
 					var i, ZeitIdAktuell, AnzZeit;
 					for (i in ZeitListe.rows) {
 						ZeitIdAktuell = ZeitListe.rows[i].doc._id;
-						AnzZeit = ZeitListe.rows.length -1;  //vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+						AnzZeit = ZeitListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 						if (ZeitIdAktuell === localStorage.ZeitId) {
 							switch (NächsteOderVorige) {
 							case "nächste":

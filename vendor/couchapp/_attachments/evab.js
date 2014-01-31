@@ -28,7 +28,7 @@ function erstelleNeueUhrzeit() {
 }
 
 
-//wandelt decimal degrees (vom GPS) in WGS84 um
+// wandelt decimal degrees (vom GPS) in WGS84 um
 function DdInWgs84BreiteGrad(Breite) {
 	var BreiteGrad;
 	BreiteGrad = Math.floor(Breite);
@@ -92,7 +92,7 @@ function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 	return x;
 }
 
-//Wandelt WGS84 in CH-Landeskoordinaten um
+// Wandelt WGS84 in CH-Landeskoordinaten um
 function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
 	var lat_aux, lng_aux;
 	// Converts degrees dec to sex
@@ -113,7 +113,7 @@ function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 	return y;
 }
 
-//wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
+// wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
 function DdInChX(Breite, Laenge) {
 	var BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec, x;
 	BreiteGrad = DdInWgs84BreiteGrad(Breite);
@@ -138,7 +138,7 @@ function DdInChY(Breite, Laenge) {
 	return y;
 }
 
-//von CH-Landeskoord zu DecDeg
+// von CH-Landeskoord zu DecDeg
 
 // Convert CH y/x to WGS lat
 function CHtoWGSlat(y, x) {
@@ -199,29 +199,29 @@ function melde(Meldung) {
 	$("#meldung").popup("open");
 }
 
-//wird in FeldEdit.html verwendet
+// wird in FeldEdit.html verwendet
 function geheZurueckFE() {
 	leereStorageFeldEdit();
 	if (localStorage.zurueck && localStorage.zurueck !== "FelderWaehlen.html") {
-		//via die Feldliste zurück
+		// via die Feldliste zurück
 		leereStorageFeldEdit();
 		$.mobile.changePage("FeldListe.html");
 	} else if (localStorage.zurueck && localStorage.zurueck === "FelderWaehlen.html") {
-		//direkt zurück, Feldliste auslassen
+		// direkt zurück, Feldliste auslassen
 		leereStorageFeldEdit();
 		leereStorageFeldListe();
 		$.mobile.changePage(localStorage.zurueck);
 		delete localStorage.zurueck;
 	} else {
-		//uups, kein zurück vorhanden
+		// uups, kein zurück vorhanden
 		leereAlleVariabeln();
 		$.mobile.changePage("BeobListe.html");
 	}
 }
 
-//Neue Beobachtungen werden gespeichert
-//ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
-//aufgerufen bloss von Artenliste.html
+// Neue Beobachtungen werden gespeichert
+// ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
+// aufgerufen bloss von Artenliste.html
 function speichereNeueBeob(aArtBezeichnung) {
 	var doc;
 	doc = {};
@@ -238,7 +238,7 @@ function speichereNeueBeob(aArtBezeichnung) {
 		doc.hOrtId = localStorage.OrtId;
 		doc.hZeitId = localStorage.ZeitId;
 		doc.aArtId = localStorage.aArtId;
-		//Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
+		// Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
 		speichereNeueBeob_02(doc);
 	} else {
 		//localStorage.Von == "BeobListe" || localStorage.Von == "BeobEdit"
@@ -249,30 +249,30 @@ function speichereNeueBeob(aArtBezeichnung) {
 	}
 }
 
-//Neue Beobachtungen werden gespeichert
-//ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
-//dies ist der letzte Schritt:
-//Autor anfügen und weiter zum Edit-Formular
+// Neue Beobachtungen werden gespeichert
+// ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
+// dies ist der letzte Schritt:
+// Autor anfügen und weiter zum Edit-Formular
 function speichereNeueBeob_02(doc) {
 	$db.saveDoc(doc, {
 		success: function (data) {
-			//doc um id und rev ergänzen
+			// doc um id und rev ergänzen
 			doc._id = data.id;
 			doc._rev = data.rev;
 			if (doc.Typ === 'hArt') {
-				//Variabeln verfügbar machen
+				// Variabeln verfügbar machen
 				localStorage.hBeobId = data.id;
-				//damit hArtEdit.html die hBeob nicht aus der DB holen muss
+				// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 				window.hArt = doc;
-				//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+				// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStoragehBeobListe();
 				$.mobile.changePage("hArtEdit.html");
 			} else {
-				//Variabeln verfügbar machen
+				// Variabeln verfügbar machen
 				localStorage.BeobId = data.id;
-				//damit BeobEdit.html die Beob nicht aus der DB holen muss
+				// damit BeobEdit.html die Beob nicht aus der DB holen muss
 				window.Beobachtung = doc;
-				//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+				// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStorageBeobListe();
 				$.mobile.changePage("BeobEdit.html");
 			}
@@ -283,8 +283,8 @@ function speichereNeueBeob_02(doc) {
 	});
 }
 
-//Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
-//erwartet localStorage.Von = von welchem Formular aufgerufen wurde
+// Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
+// erwartet localStorage.Von = von welchem Formular aufgerufen wurde
 function speichereBeobNeueArtgruppeArt(aArtName) {
 	var docId;
 	if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
@@ -304,15 +304,15 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 			$db.saveDoc(doc, {
 				success: function (data) {
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
-						//Variabeln verfügbar machen
+						// Variabeln verfügbar machen
 						localStorage.BeobId = data.id;
-						//Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
 						$.mobile.changePage("BeobEdit.html");
 					} else {
-						//Variabeln verfügbar machen
+						// Variabeln verfügbar machen
 						localStorage.hBeobId = data.id;
-						//Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+						// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStoragehBeobListe();
 						$.mobile.changePage("hArtEdit.html");
 					}
@@ -325,9 +325,9 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 	});
 }
 
-//Menü aufbauen. Wird aufgerufen von Feldliste.html und FeldEdit.html
+// Menü aufbauen. Wird aufgerufen von Feldliste.html und FeldEdit.html
 function erstelleMenuFürFelder(thiz) {
-	//Code um Menü aufzubauen
+	// Code um Menü aufzubauen
 	$(thiz).simpledialog2({
 		'mode' : 'button',
 		'headerClose': true,
@@ -346,9 +346,9 @@ function erstelleMenuFürFelder(thiz) {
 }
 
 function erstelleNeueZeit() {
-//Neue Zeiten werden erstellt
-//ausgelöst durch hZeitListe.html oder hZeitEdit.html
-//dies ist der erste Schritt: doc bilden
+// Neue Zeiten werden erstellt
+// ausgelöst durch hZeitListe.html oder hZeitEdit.html
+// dies ist der erste Schritt: doc bilden
 	var doc;
 	doc = {};
 	doc.Typ = "hZeit";
@@ -358,17 +358,17 @@ function erstelleNeueZeit() {
 	doc.hOrtId = localStorage.OrtId;
 	doc.zDatum = erstelleNeuesDatum();
 	doc.zUhrzeit = erstelleNeueUhrzeit();
-	//an hZeitEdit.html übergeben
+	// an hZeitEdit.html übergeben
 	window.hZeit = doc;
-	//Variabeln verfügbar machen
+	// Variabeln verfügbar machen
 	delete localStorage.ZeitId;
 	localStorage.Status = "neu";
-	//Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	// Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	delete window.ZeitListe;
-	//Vorsicht: Von hZeitEdit.html aus samepage transition!
+	// Vorsicht: Von hZeitEdit.html aus samepage transition!
 	if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
-		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-		//das Objekt muss über die localStorage übermittelt werden
+		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
 		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
@@ -379,9 +379,9 @@ function erstelleNeueZeit() {
 	}
 }
 
-//erstellt einen neuen Ort
-//wird aufgerufen von: hOrtEdit.html, hOrtListe.html
-//erwartet Username, hProjektId, hRaumId
+// erstellt einen neuen Ort
+// wird aufgerufen von: hOrtEdit.html, hOrtListe.html
+// erwartet Username, hProjektId, hRaumId
 function erstelleNeuenOrt() {
 	var doc;
 	doc = {};
@@ -389,17 +389,17 @@ function erstelleNeuenOrt() {
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
-	//an hOrtEdit.html übergeben
+	// an hOrtEdit.html übergeben
 	window.hOrt = doc;
-	//Variabeln verfügbar machen
+	// Variabeln verfügbar machen
 	delete localStorage.OrtId;
-	//Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	// Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	leereStorageOrtListe("mitLatLngListe");
-	localStorage.Status = "neu";	//das löst bei initiiereOrtEdit die Verortung aus
-	//Vorsicht: Von hOrtEdit.html aus samepage transition!
+	localStorage.Status = "neu";	// das löst bei initiiereOrtEdit die Verortung aus
+	// Vorsicht: Von hOrtEdit.html aus samepage transition!
 	if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
-		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-		//das Objekt muss über die localStorage übermittelt werden
+		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hOrt = JSON.stringify(window.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
 	} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
@@ -415,17 +415,17 @@ function erstelleNeuenRaum() {
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
-	//in Objekt speichern, das an hRaumEdit.html übergeben wird
+	// in Objekt speichern, das an hRaumEdit.html übergeben wird
 	window.hRaum = doc;
-	//Variabeln verfügbar machen
+	// Variabeln verfügbar machen
 	delete localStorage.RaumId;
 	localStorage.Status = "neu";
-	//Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	// Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	leereStorageRaumListe("mitLatLngListe");
-	//Vorsicht: Von hRaumEdit.html aus same page transition!
+	// Vorsicht: Von hRaumEdit.html aus same page transition!
 	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
-		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-		//das Objekt muss über die localStorage übermittelt werden
+		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hRaum = JSON.stringify(window.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
@@ -435,24 +435,24 @@ function erstelleNeuenRaum() {
 	}
 }
 
-//erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
-//das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
+// erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
+// das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
 function erstelleNeuesProjekt() {
 	var doc;
 	doc = {};
 	doc.Typ = "hProjekt";
 	doc.User = localStorage.Email;
-	//damit hProjektEdit.html die hBeob nicht aus der DB holen muss
+	// damit hProjektEdit.html die hBeob nicht aus der DB holen muss
 	window.hProjekt = doc;
-	//ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
+	// ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
 	delete localStorage.ProjektId;
 	localStorage.Status = "neu";
-	//Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	// Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	leereStorageProjektListe("mitLatLngListe");
-	//Vorsicht: Von hProjektEdit.html aus same page transition!
+	// Vorsicht: Von hProjektEdit.html aus same page transition!
 	if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
-		//Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
-		//das Objekt muss über die localStorage übermittelt werden
+		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
+		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hProjekt = JSON.stringify(window.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
 	} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
@@ -485,23 +485,23 @@ function löscheDokument(DocId) {
 	});
 }
 
-//initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
-//wird aufgerufen von BeobEdit.html und Felder_Beob.html
+// initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
+// wird aufgerufen von BeobEdit.html und Felder_Beob.html
 function initiiereBeobEdit() {
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängeBE').hide();
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteBeobEdit) {
 		initiiereBeobEdit_2();
 	} else {
-		//das dauert länger - hinweisen
+		// das dauert länger - hinweisen
 		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		//holt die Feldliste aus der DB
+		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob?include_docs=true', {
 			success: function (data) {
-				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
+				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.FeldlisteBeobEdit = data;
 				initiiereBeobEdit_2();
 			}
@@ -509,10 +509,10 @@ function initiiereBeobEdit() {
 	}
 }
 
-//allfällige Beob übernehmen von speichereNeueBeob
-//um die DB-Abfrage zu sparen
+// allfällige Beob übernehmen von speichereNeueBeob
+// um die DB-Abfrage zu sparen
 function initiiereBeobEdit_2() {
-	//achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
+	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.Beobachtung && (!localStorage.Von || localStorage.Von !== "BeobEdit")) {
 		initiiereBeobEdit_3();
 	} else {
@@ -527,8 +527,8 @@ function initiiereBeobEdit_2() {
 }
 
 function initiiereBeobEdit_3() {
-	//diese (globalen) Variabeln werden in BeobEdit.html gebraucht
-	//bei neuen Beob hat das Objekt noch keine ID
+	// diese (globalen) Variabeln werden in BeobEdit.html gebraucht
+	// bei neuen Beob hat das Objekt noch keine ID
 	if (window.Beobachtung._id) {
 		localStorage.BeobId = window.Beobachtung._id;
 	} else {
@@ -544,29 +544,29 @@ function initiiereBeobEdit_3() {
 	localStorage.oYKoord = window.Beobachtung.oYKoord;
 	setzeFixeFelderInBeobEdit(window.Beobachtung);
 	erstelleDynamischeFelderBeobEdit();
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//und aktualisiert die Links für pagination
-//Mitgeben: id der Beobachtung, Username
+// generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+// und aktualisiert die Links für pagination
+// Mitgeben: id der Beobachtung, Username
 function erstelleDynamischeFelderBeobEdit() {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerBeobEditForm();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	} else {
 		HtmlContainer = "";
 	}
-	//nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
+	// nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	$("#BeobEditPage").trigger("create").trigger("refresh");
 }
 
-//setzt die Values in die hart codierten Felder im Formular BeobEdit.html
-//erwartet das Objekt Beob, welches die Werte enthält
+// setzt die Values in die hart codierten Felder im Formular BeobEdit.html
+// erwartet das Objekt Beob, welches die Werte enthält
 function setzeFixeFelderInBeobEdit() {
 	$("[name='aArtGruppe']").selectmenu();
 	$("[name='aArtGruppe']").html("<option value='" + window.Beobachtung.aArtGruppe + "'>" + window.Beobachtung.aArtGruppe + "</option>");
@@ -584,9 +584,9 @@ function setzeFixeFelderInBeobEdit() {
 	$("[name='zUhrzeit']").val(window.Beobachtung.zUhrzeit);
 }
 
-//generiert das Html für das Formular in BeobEdit.html
-//erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für das Formular in BeobEdit.html
+// erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerBeobEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe;
 	Feld = {};
@@ -598,17 +598,17 @@ function generiereHtmlFuerBeobEditForm () {
 		if (typeof i !== "function") {
 			Feld = FeldlisteBeobEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
-				//In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-				//vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+				// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+				// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
 					if (window.Beobachtung[FeldName] && Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 						FeldWert = Feld.Standardwert[localStorage.Email];
-						//Objekt Beob um den Standardwert ergänzen, um später zu speichern
+						// Objekt Beob um den Standardwert ergänzen, um später zu speichern
 						window.Beobachtung[FeldName] = FeldWert;
 					} else {
-						//"" verhindert die Anzeige von undefined im Feld
+						// "" verhindert die Anzeige von undefined im Feld
 						FeldWert = window.Beobachtung[FeldName] || "";
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -619,7 +619,7 @@ function generiereHtmlFuerBeobEditForm () {
 		}
 	}
 	if (localStorage.Status === "neu") {
-		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.Beobachtung, {
 			success: function (data) {
@@ -631,24 +631,24 @@ function generiereHtmlFuerBeobEditForm () {
 		});
 		delete localStorage.Status;
 	} else {
-		//Neue Datensätze haben keine Attachments
+		// Neue Datensätze haben keine Attachments
 		zeigeAttachments(window.Beobachtung, "BE");
 	}
 	return HtmlContainer;
 }
 
-//BeobListe in BeobList.html vollständig neu aufbauen
+// BeobListe in BeobList.html vollständig neu aufbauen
 function initiiereBeobliste() {
-	//hat BeobEdit.html eine BeobListe übergeben?
+	// hat BeobEdit.html eine BeobListe übergeben?
 	if (window.BeobListe) {
-		//Beobliste aus globaler Variable holen - muss nicht geparst werden
+		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereBeobliste_2();
 	} else {
-		//Beobliste aus DB holen
+		// Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 			success: function (data) {
-				//BeobListe für BeobEdit bereitstellen
+				// BeobListe für BeobEdit bereitstellen
 				window.BeobListe = data;
 				initiiereBeobliste_2();
 			}
@@ -661,7 +661,7 @@ function initiiereBeobliste_2() {
 	anzBeob = BeobListe.rows.length;
 	ListItemContainer = "";
 
-	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	Titel2 = " Beobachtungen";
 	if (anzBeob === 1) {
 		Titel2 = " Beobachtung";
@@ -694,14 +694,14 @@ function initiiereBeobliste_2() {
 	speichereLetzteUrl();
 }
 
-//löscht Anhänge
-//erwartet den Datensatz als Objekt und das Objekt, dass geklickt wurde
+// löscht Anhänge
+// erwartet den Datensatz als Objekt und das Objekt, dass geklickt wurde
 function loescheAnhang(that, Objekt, id) {
 	if (Objekt) {
-		//Es wurde ein Objekt übergeben, keine DB-Abfrage nötig
+		// Es wurde ein Objekt übergeben, keine DB-Abfrage nötig
 		loescheAnhang_2(that, Objekt);
 	} else {
-		//Objekt aus der DB holen
+		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
@@ -718,15 +718,15 @@ function loescheAnhang(that, Objekt, id) {
 function loescheAnhang_2(that, Objekt) {
 	var Dateiname;
 	Dateiname = that.id;
-	//Anhang aus Objekt entfernen
+	// Anhang aus Objekt entfernen
 	delete window[Objekt.Typ]._attachments[Dateiname];
-	//Objekt in DB speichern
+	// Objekt in DB speichern
 	$db.saveDoc(window[Objekt.Typ], {
 		success: function (data) {
-			//rev im Objekt ergänzen
-			//die globale Variable heisst gleich, wie der Typ im Objekt
+			// rev im Objekt ergänzen
+			// die globale Variable heisst gleich, wie der Typ im Objekt
 			window[Objekt.Typ]._rev = data.rev;
-			//im Formular den Anhang und die Lösch-Schaltfläche entfernen
+			// im Formular den Anhang und die Lösch-Schaltfläche entfernen
 			$(that).parent().parent().remove();
 		},
 		error: function () {
@@ -735,7 +735,7 @@ function loescheAnhang_2(that, Objekt) {
 	});
 }
 
-//initiiert UserEdit.html
+// initiiert UserEdit.html
 function initiiereUserEdit() {
 	$("#ue_Email").val(localStorage.Email);
 	$("[name='Datenverwendung']").checkboxradio();
@@ -745,41 +745,41 @@ function initiiereUserEdit() {
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.Email, {
 		success: function (User) {
-			//fixe Felder aktualisieren
+			// fixe Felder aktualisieren
 			if (User.Datenverwendung) {
 				$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
 				localStorage.Datenverwendung = User.Datenverwendung;
 			} else {
-				//Standardwert setzen
+				// Standardwert setzen
 				$("#JaAber").prop("checked",true).checkboxradio("refresh");
 			}
 			speichereLetzteUrl();
 		},
 		error: function () {
 			console.log('User hat kein User-Dokument');
-			//Standardwert setzen
+			// Standardwert setzen
 			$("#JaAber").prop("checked",true).checkboxradio("refresh");
 		}
 	});
 }
 
-//initiiert Installieren.html
-//kurz, da keine Daten benötigt werden
+// initiiert Installieren.html
+// kurz, da keine Daten benötigt werden
 function initiiereInstallieren() {
 	speichereLetzteUrl();
 }
 
-//generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Projekts, Username
-//bei neuen Projekten wird das zuvor erzeugte Projekt übernommen, um die DB-Anfrage zu sparen
+// generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+// Mitgeben: id des Projekts, Username
+// bei neuen Projekten wird das zuvor erzeugte Projekt übernommen, um die DB-Anfrage zu sparen
 function initiiereProjektEdit() {
-	//Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
+	// Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	//$('#AnhängehPE').hide().trigger('updatelayout');
-	//window.hProjekt existiert schon bei neuem Projekt
+	// window.hProjekt existiert schon bei neuem Projekt
 	if (window.hProjekt) {
 		initiiereProjektEdit_2();
 	} else if (localStorage.Status === "neu" && localStorage.hProjekt) {
-		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		// wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hProjekt = JSON.parse(localStorage.hProjekt);
 		delete localStorage.hProjekt;
 		initiiereProjektEdit_2();
@@ -795,22 +795,22 @@ function initiiereProjektEdit() {
 }
 
 function initiiereProjektEdit_2() {
-	//fixe Felder aktualisieren
+	// fixe Felder aktualisieren
 	$("#pName").val(window.hProjekt.pName);
-	//Variabeln bereitstellen (bei neuen Projekten wird ProjektId später nachgeschoben)
+	// Variabeln bereitstellen (bei neuen Projekten wird ProjektId später nachgeschoben)
 	if (window.hProjekt._id) {
 		localStorage.ProjektId = window.hProjekt._id;
 	} else {
 		localStorage.ProjektId = "neu";
 	}
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteProjekt) {
 		initiiereProjektEdit_3();
 	} else {
-		//das dauert länger - Hinweis einblenden
+		// das dauert länger - Hinweis einblenden
 		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		//Feldliste aus der DB holen
+		// Feldliste aus der DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeProjekt?include_docs=true', {
 			success: function (Feldliste) {
@@ -824,18 +824,18 @@ function initiiereProjektEdit_2() {
 function initiiereProjektEdit_3() {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerProjektEditForm();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//generiert das Html für das Formular in hProjektEdit.html
-//erwartet Feldliste als Objekt; Projekt als Objekt
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für das Formular in hProjektEdit.html
+// erwartet Feldliste als Objekt; Projekt als Objekt
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerProjektEditForm () {
 	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
@@ -845,11 +845,11 @@ function generiereHtmlFuerProjektEditForm () {
 		if (typeof i !== "function") {
 			Feld = FeldlisteProjekt.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
 				if (window.hProjekt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
-					//window.hProjekt um den Standardwert ergänzen, um später zu speichern
+					// window.hProjekt um den Standardwert ergänzen, um später zu speichern
 					window.hProjekt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
@@ -863,7 +863,7 @@ function generiereHtmlFuerProjektEditForm () {
 	}
 	if (localStorage.Status === "neu") {
 		$("#pName").focus();
-		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hProjekt, {
 			success: function (data) {
@@ -875,22 +875,22 @@ function generiereHtmlFuerProjektEditForm () {
 		});
 		delete localStorage.Status;
 	} else {
-		//neue Datensätze haben keine Attachments
+		// neue Datensätze haben keine Attachments
 		zeigeAttachments(window.hProjekt, "hPE");
 	}
 	return HtmlContainer;
 }
 
-//initiiert FeldEdit.html
+// initiiert FeldEdit.html
 function initiiereFeldEdit() {
-	//Bei neuem Feld gibt es Feld schon
+	// Bei neuem Feld gibt es Feld schon
 	if (window.Feld) {
 		initiiereFeldEdit_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function (doc) {
-				//Feld bereitstellen
+				// Feld bereitstellen
 				window.Feld = doc;
 				initiiereFeldEdit_2();
 			}
@@ -900,10 +900,10 @@ function initiiereFeldEdit() {
 
 function initiiereFeldEdit_2() {
 	var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
-	//korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
+	// korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
 	SichtbarImModusHierarchisch = window.Feld.SichtbarImModusHierarchisch;
 	SichtbarImModusEinfach = window.Feld.SichtbarImModusEinfach;
-	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusHierarchisch noch nicht
+	// Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusHierarchisch noch nicht
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
 	} else {
@@ -911,7 +911,7 @@ function initiiereFeldEdit_2() {
 	}
 	$("select#SichtbarImModusHierarchisch").slider();
 	$("select#SichtbarImModusHierarchisch").slider("refresh");
-	//Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusEinfach noch nicht
+	// Vorsicht: Bei neuen Feldern gibt es window.Feld.SichtbarImModusEinfach noch nicht
 	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
 		$("select#SichtbarImModusEinfach").val("ja");
 	} else {
@@ -919,15 +919,15 @@ function initiiereFeldEdit_2() {
 	}
 	$("select#SichtbarImModusEinfach").slider();
 	$("select#SichtbarImModusEinfach").slider("refresh");
-	//Artgruppe Aufbauen, wenn Hierarchiestufe == Art
+	// Artgruppe Aufbauen, wenn Hierarchiestufe == Art
 	if (window.Feld.Hierarchiestufe === "Art") {
 		ArtGruppeAufbauenFeldEdit(window.Feld.ArtGruppe);
 	}
 
-	//allfälligen Standardwert anzeigen
-	//Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
-	//darum hier auslesen und setzen
-	//Zuerst leeren Wert setzen, sonst bleibt letzter, wenn keiner existiert!
+	// allfälligen Standardwert anzeigen
+	// Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
+	// darum hier auslesen und setzen
+	// Zuerst leeren Wert setzen, sonst bleibt letzter, wenn keiner existiert!
 	$("#Standardwert").val("");
 	if (window.Feld.Standardwert) {
 		Standardwert = window.Feld.Standardwert[localStorage.Email];
@@ -937,11 +937,11 @@ function initiiereFeldEdit_2() {
 	}
 
 	if (window.Feld.FeldName) {
-		//fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
+		// fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
 		if (["aArtGruppe", "aArtName"].indexOf(window.Feld.FeldName) > -1) {
 			$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
 			$("#Standardwert").attr("disabled", true);
-		//ausschalten, soll jetzt im Feld verwaltet werden
+		// ausschalten, soll jetzt im Feld verwaltet werden
 		/*} else if (window.Feld.FeldName === "aAutor") {
 			$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
 			$("#Standardwert").attr("disabled", true);*/
@@ -955,7 +955,7 @@ function initiiereFeldEdit_2() {
 	}
 	$(".FeldEditHeaderTitel").text(window.Feld.Hierarchiestufe + ": " + window.Feld.FeldBeschriftung);
 
-	//Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
+	// Radio Felder initiieren (ausser ArtGruppe, das wird dynamisch erzeugt)
 	$("input[name='Hierarchiestufe']").checkboxradio();
 	$("#" + window.Feld.Hierarchiestufe).prop("checked",true).checkboxradio("refresh");
 	$("input[name='Formularelement']").checkboxradio();
@@ -963,10 +963,10 @@ function initiiereFeldEdit_2() {
 	$("input[name='InputTyp']").checkboxradio();
 	$("#" + window.Feld.InputTyp).prop("checked",true).checkboxradio("refresh");
 
-	//Werte in übrige Felder einfügen
+	// Werte in übrige Felder einfügen
 	$("#FeldName").val(window.Feld.FeldName);
 	$("#FeldBeschriftung").val(window.Feld.FeldBeschriftung);
-	$("#FeldBeschreibung").val(window.Feld.FeldBeschreibung);	//Textarea - anders refreshen?
+	$("#FeldBeschreibung").val(window.Feld.FeldBeschreibung);	// Textarea - anders refreshen?
 	$("#Reihenfolge").val(window.Feld.Reihenfolge);
 	$("#FeldNameEvab").val(window.Feld.FeldNameEvab);
 	$("#FeldNameZdsf").val(window.Feld.FeldNameZdsf);
@@ -974,23 +974,23 @@ function initiiereFeldEdit_2() {
 	$("#FeldNameNism").val(window.Feld.FeldNameNism);
 	$("#FeldNameWslFlechten").val(window.Feld.FeldNameWslFlechten);
 	$("#FeldNameWslPilze").val(window.Feld.FeldNameWslPilze);
-	$("#Optionen").val(window.Feld.Optionen);	//Textarea - anders refreshen?
+	$("#Optionen").val(window.Feld.Optionen);	// Textarea - anders refreshen?
 	$("#SliderMinimum").val(window.Feld.SliderMinimum);
 	$("#SliderMaximum").val(window.Feld.SliderMaximum);
 
-	erstelleSelectFeldFolgtNach();	//BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
+	erstelleSelectFeldFolgtNach();	// BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
 	speichereLetzteUrl();
-	//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
+	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 }
 
-//wird von FeldEdit.html aufgerufen
-//erstellt das Selectmenu, um die Reihenfolge-Position des Felds zu bestimmen
+// wird von FeldEdit.html aufgerufen
+// erstellt das Selectmenu, um die Reihenfolge-Position des Felds zu bestimmen
 function erstelleSelectFeldFolgtNach() {
-	//Nur bei eigenen Feldern anzeigen
+	// Nur bei eigenen Feldern anzeigen
 	if (Feld.User !== "ZentrenBdKt") {
 		if (window.Feldliste) {
-			//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
+			// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 			erstelleSelectFeldFolgtNach_2();
 		} else {
 			$db = $.couch.db("evab");
@@ -1011,8 +1011,8 @@ function erstelleSelectFeldFolgtNach_2() {
 	for (i in window.Feldliste.rows) {
 		if (typeof i !== "function") {
 			TempFeld = window.Feldliste.rows[i].doc;
-			//Liste aufbauen
-			//Nur eigene Felder und offizielle
+			// Liste aufbauen
+			// Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 				Optionen.push(TempFeld.FeldName);
 			}
@@ -1022,19 +1022,19 @@ function erstelleSelectFeldFolgtNach_2() {
 	$("#FeldFolgtNachDiv").html(HtmlContainer).trigger("create").trigger("refresh");
 }
 
-//wird benutzt in FeldEdit.html
-//von je einer Funktion in FeldEdit.html und evab.js
-//Funktion ist zweigeteilt, um wenn möglich Datenbankabfragen zu sparen
+// wird benutzt in FeldEdit.html
+// von je einer Funktion in FeldEdit.html und evab.js
+// Funktion ist zweigeteilt, um wenn möglich Datenbankabfragen zu sparen
 function ArtGruppeAufbauenFeldEdit(ArtGruppenArrayIn) {
 	if (window.Artgruppen) {
-		//Artgruppen von globaler Variable holen
+		// Artgruppen von globaler Variable holen
 		ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
 	} else if (localStorage.Artgruppen) {
-		//Artgruppen aus localStorage holen und parsen
+		// Artgruppen aus localStorage holen und parsen
 		window.Artgruppen = JSON.parse(localStorage.Artgruppen);
 		ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
 	} else {
-		//Artgruppen aus DB holen
+		// Artgruppen aus DB holen
 		$db = $.couch.db("evab");
 		$("select#ArtGruppe").empty();
 		$db.view("evab/Artgruppen", {
@@ -1073,14 +1073,14 @@ function ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn) {
 	$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
 }
 
-//initiiert FeldListe.html
+// initiiert FeldListe.html
 function initiiereFeldliste() {
-	//hat FeldEdit.html eine Feldliste übergeben?
+	// hat FeldEdit.html eine Feldliste übergeben?
 	if (window.Feldliste) {
-		//Feldliste aus globaler Variable holen - muss nicht geparst werden
+		// Feldliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereFeldliste_2();
 	} else {
-		//FeldListe aus DB holen
+		// FeldListe aus DB holen
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe?include_docs=true", {
 			success: function (data) {
@@ -1098,8 +1098,8 @@ function initiiereFeldliste_2() {
 	for (i in window.Feldliste.rows) {
 		if (typeof i !== "function") {
 			TempFeld = window.Feldliste.rows[i].doc;
-			//Liste aufbauen
-			//Nur eigene Felder und offizielle
+			// Liste aufbauen
+			// Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 				Hierarchiestufe = TempFeld.Hierarchiestufe;
 				FeldBeschriftung = TempFeld.FeldBeschriftung;
@@ -1118,32 +1118,32 @@ function initiiereFeldliste_2() {
 				ListItemContainer += "<\/h2><p>";
 				ListItemContainer += FeldBeschreibung;
 				ListItemContainer += "</p><\/a><\/li>";
-				//Felder zählen
+				// Felder zählen
 				anzFelder += 1;
 			}
 		}
 	}
-	//Im Titel der Seite die Anzahl Beobachtungen anzeigen
+	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 	$("#FeldListeFL").html(ListItemContainer);
 	$("#FeldListeFL").listview("refresh");
 	speichereLetzteUrl();
 }
 
-//wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
-//die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array FelderArray überbeben
-//die Felder werden in der DB und im übergebenen Objekt "DatensatzObjekt" gespeichert
-//und anschliessend in Formularfeldern aktualisiert
-//function speichereKoordinaten übernimmt id und den ObjektNamen
-//kontrolliert, ob das Objekt existiert
-//wenn nein wird es aus der DB geholt
+// wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
+// die Felder werden aus localStorage übernommen, die Liste ihrer Namen wird als Array FelderArray überbeben
+// die Felder werden in der DB und im übergebenen Objekt "DatensatzObjekt" gespeichert
+// und anschliessend in Formularfeldern aktualisiert
+// function speichereKoordinaten übernimmt id und den ObjektNamen
+// kontrolliert, ob das Objekt existiert
+// wenn nein wird es aus der DB geholt
 function speichereKoordinaten(id, ObjektName) {
-	//kontrollieren, ob Ort oder Beob als Objekt vorliegt
+	// kontrollieren, ob Ort oder Beob als Objekt vorliegt
 	if (window[ObjektName]) {
-		//ja: Objekt verwenden
+		// ja: Objekt verwenden
 		speichereKoordinaten_2(id, ObjektName);
 	} else {
-		//nein: Objekt aus DB holen
+		// nein: Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
@@ -1157,30 +1157,30 @@ function speichereKoordinaten(id, ObjektName) {
 	}
 }
 
-//setzt das DatensatzObjekt voraus
-//aktualisiert darin die Felder, welche in FelderArray aufgelistet sind
-//Variablen müssen in Objekt und localStorage denselben Namen verwenden
+// setzt das DatensatzObjekt voraus
+// aktualisiert darin die Felder, welche in FelderArray aufgelistet sind
+// Variablen müssen in Objekt und localStorage denselben Namen verwenden
 function speichereKoordinaten_2(id, ObjektName) {
 	var FelderArray;
 	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 	speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, "FormularAktualisieren");
-	//nun die Koordinaten in den Zeiten und Arten dieses Objekts aktualisieren
+	// nun die Koordinaten in den Zeiten und Arten dieses Objekts aktualisieren
 	speichereFelderAusLocalStorageInObjektliste("ZeitenVonOrt", FelderArray, "hOrtId", id, "hZeitIdVonOrt");
 	speichereFelderAusLocalStorageInObjektliste("ArtenVonOrt", FelderArray, "hOrtId", id, "hArtIdVonOrt");
 }
 
-//übernimmt eine Liste von Feldern und eine Objektliste (via Name)
-//sucht in der Objektliste nach den Objekten mit der BezugsId
-//aktualisiert diese Objekte
-//wird verwendet, um die Koordinaten von Orten in Zeiten und Arten zu schreiben
-//im ersten Schritt prüfen, ob die Objektliste vorhanden ist. Wenn nicht, aus DB holen
+// übernimmt eine Liste von Feldern und eine Objektliste (via Name)
+// sucht in der Objektliste nach den Objekten mit der BezugsId
+// aktualisiert diese Objekte
+// wird verwendet, um die Koordinaten von Orten in Zeiten und Arten zu schreiben
+// im ersten Schritt prüfen, ob die Objektliste vorhanden ist. Wenn nicht, aus DB holen
 function speichereFelderAusLocalStorageInObjektliste(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert, Querystring) {
 	var viewname;
 	if (window[ObjektlistenName]) {
-		//vorhandene Objektliste nutzen
+		// vorhandene Objektliste nutzen
 		speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
 	} else {
-		//Objektliste aus DB holen
+		// Objektliste aus DB holen
 		viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
 		$db = $.couch.db("evab");
 		$db.view(viewname, {
@@ -1193,21 +1193,21 @@ function speichereFelderAusLocalStorageInObjektliste(ObjektlistenName, FelderArr
 }
 
 function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
-	//in allen Objekten in der Objektliste
+	// in allen Objekten in der Objektliste
 	var DsBulkListe, Docs, row;
-	//nur machen, wenn rows vorhanden!
+	// nur machen, wenn rows vorhanden!
 	if (window[ObjektlistenName].rows.length > 0) {
 		DsBulkListe = {};
 		Docs = [];
 		for (var i in window[ObjektlistenName].rows) {
 			row = window[ObjektlistenName].rows[i].doc;
 			if (typeof i !== "function") {
-				//Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
+				// Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
 				if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
-					//im Objekt alle in FelderArray aufgelisteten Felder suchen
+					// im Objekt alle in FelderArray aufgelisteten Felder suchen
 					for (i in FelderArray) {
 						if (typeof i !== "function") {
-							//und ihre Werte aktualisieren
+							// und ihre Werte aktualisieren
 							if (localStorage[FelderArray[i]]) {
 								if (myTypeOf(localStorage[FelderArray[i]]) === "integer") {
 									row[FelderArray[i]] = parseInt(localStorage[FelderArray[i]], 10);
@@ -1226,24 +1226,24 @@ function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderA
 			}
 		}
 		DsBulkListe.docs = Docs;
-		//Objektliste in DB speichern
+		// Objektliste in DB speichern
 		$.ajax({
 			type: "POST",
 			url: "../../_bulk_docs",
 			contentType: "application/json",
 			data: JSON.stringify(DsBulkListe),
 			success: function(data) {
-				//_rev in den Objekten in Objektliste aktualisieren
-				//für alle zurückgegebenen aktualisierten Zeilen
-				//offenbar muss data zuerst geparst werden ??!!
+				// _rev in den Objekten in Objektliste aktualisieren
+				// für alle zurückgegebenen aktualisierten Zeilen
+				// offenbar muss data zuerst geparst werden ??!!
 				data = JSON.parse(data);
 				for (var y in data) {
 					if (typeof y !== "function") {
-						//das zugehörige Objekt in der Objektliste suchen
+						// das zugehörige Objekt in der Objektliste suchen
 						for (var i in window[ObjektlistenName].rows) {
 							row = window[ObjektlistenName].rows[i].doc;
 							if (typeof i !== "function") {
-								//und dessen rev aktualisieren
+								// und dessen rev aktualisieren
 								if (row._id === data[y].id) {
 									row._rev = data[y].rev;
 									break;
@@ -1257,13 +1257,13 @@ function speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderA
 	}
 }
 
-//Neue Daten liegen in localStorage vor
-//sie werden in Objekt und in DB geschrieben
-//Variablen müssen in Objekt und localStorage denselben Namen verwenden
-//FelderArray enthält eine Liste der Namen der zu aktualisierenden Felder
-//ObjektName ist der Name des zu aktualisierenden Objekts bzw. Datensatzes
+// Neue Daten liegen in localStorage vor
+// sie werden in Objekt und in DB geschrieben
+// Variablen müssen in Objekt und localStorage denselben Namen verwenden
+// FelderArray enthält eine Liste der Namen der zu aktualisierenden Felder
+// ObjektName ist der Name des zu aktualisierenden Objekts bzw. Datensatzes
 function speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, FormularAktualisieren) {
-	//Objekt aktualisieren
+	// Objekt aktualisieren
 	for (var i in FelderArray) {
 		if (typeof i !== "function") {
 			if (localStorage[FelderArray[i]]) {
@@ -1279,7 +1279,7 @@ function speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, Formula
 			}
 		}
 	}
-	//in DB speichern
+	// in DB speichern
 	$db.saveDoc(window[ObjektName], {
 		success: function (data) {
 			window[ObjektName]._rev = data.rev;
@@ -1290,8 +1290,8 @@ function speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, Formula
 	});
 }
 
-//übernimmt ein Objekt (via dessen Namen) und eine Liste von Feldern (FelderArray)
-//setzt in alle Felder mit den Namen gemäss FelderArray die Werte gemäss Objekt
+// übernimmt ein Objekt (via dessen Namen) und eine Liste von Feldern (FelderArray)
+// setzt in alle Felder mit den Namen gemäss FelderArray die Werte gemäss Objekt
 function aktualisiereKoordinatenfelderInFormular(ObjektName, FelderArray) {
 	for (var i in FelderArray) {
 		if (typeof i !== "function") {
@@ -1300,35 +1300,35 @@ function aktualisiereKoordinatenfelderInFormular(ObjektName, FelderArray) {
 	}
 }
 
-//dient der Unterscheidung von Int und Float
+// dient der Unterscheidung von Int und Float
 function isInt(n) {
 	return typeof n === 'number' && parseFloat(n) == parseInt(n, 10) && !isNaN(n);
 }
 
-//Hilfsfunktion, die typeof ersetzt und ergänzt
-//typeof gibt bei input-Feldern immer String zurück!
+// Hilfsfunktion, die typeof ersetzt und ergänzt
+// typeof gibt bei input-Feldern immer String zurück!
 function myTypeOf(Wert) {
 	if (typeof Wert === "boolean") {
 		return "boolean";
 	} else if (parseInt(Wert, 10) && parseFloat(Wert) && parseInt(Wert, 10) != parseFloat(Wert) && parseInt(Wert, 10) == Wert) {
-		//es ist eine Float
+		// es ist eine Float
 		return "float";
 	} else if (parseInt(Wert, 10) == Wert) {
-		//es ist eine Integer
+		// es ist eine Integer
 		return "integer";
 	} else {
-		//als String behandeln
+		// als String behandeln
 		return "string";
 	}
 }
 
-//Übernimmt einen Feldnamen, einen Feldwert
-//und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
-//speichert das neue Feld in alle Datensätze der Liste in der DB
-//und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
+// Übernimmt einen Feldnamen, einen Feldwert
+// und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
+// speichert das neue Feld in alle Datensätze der Liste in der DB
+// und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
 function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
 	var DsBulkListe, Docs, row;
-	//nur machen, wenn Datensätze da sind
+	// nur machen, wenn Datensätze da sind
 	DsBulkListe = {};
 	Docs = [];
 	for (var i in window[DatensatzlisteName].rows) {
@@ -1355,17 +1355,17 @@ function speichereFeldInDatensatzliste(Feldname, Feldwert, DatensatzlisteName) {
 	});
 }
 
-//löscht Datensätze in Massen
-//nimmt das Ergebnis einer Abfrage entgegen, welche im key einen Array hat
-//Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
-//Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
+// löscht Datensätze in Massen
+// nimmt das Ergebnis einer Abfrage entgegen, welche im key einen Array hat
+// Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
+// Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
 function loescheIdIdRevListe(Datensatzobjekt) {
 	var ObjektMitDeleteListe, Docs, Datensatz, rowkey;
 	ObjektMitDeleteListe = {};
 	Docs = [];
 	for (var i in Datensatzobjekt.rows) {
 		if (typeof i !== "function") {
-			//unsere Daten sind im key
+			// unsere Daten sind im key
 			rowkey = Datensatzobjekt.rows[i].key;
 			Datensatz = {};
 			Datensatz._id = rowkey[1];
@@ -1385,15 +1385,15 @@ function loescheIdIdRevListe(Datensatzobjekt) {
 
 
 function initiiereProjektliste() {
-	//hat ProjektEdit.html eine Projektliste übergeben?
+	// hat ProjektEdit.html eine Projektliste übergeben?
 	if (window.Projektliste) {
 		initiiereProjektliste_2();
 	} else {
-		//Daten für die Projektliste aus DB holen
+		// Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 			success: function (data) {
-				//Projektliste für ProjektEdit bereitstellen
+				// Projektliste für ProjektEdit bereitstellen
 				window.Projektliste = data;
 				initiiereProjektliste_2();
 			}
@@ -1406,7 +1406,7 @@ function initiiereProjektliste_2() {
 	ListItemContainer = "";
 	anzProj = Projektliste.rows.length;
 
-	//Im Titel der Seite die Anzahl Projekte anzeigen
+	// Im Titel der Seite die Anzahl Projekte anzeigen
 	Titel2 = " Projekte";
 	if (anzProj === 1) {
 		Titel2 = " Projekt";
@@ -1416,7 +1416,7 @@ function initiiereProjektliste_2() {
 	if (anzProj === 0) {
 		ListItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
-		for (i in Projektliste.rows) {			//Liste aufbauen
+		for (i in Projektliste.rows) {			// Liste aufbauen
 			if (typeof i !== "function") {
 				Proj = Projektliste.rows[i].doc;
 				key = Projektliste.rows[i].key;
@@ -1433,16 +1433,16 @@ function initiiereProjektliste_2() {
 	speichereLetzteUrl();
 }
 
-//generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Raums, Username
-//Bei neuen Räumen wird der Raum übernommen um eine DB-Abfrage zu sparen
+// generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+// Mitgeben: id des Raums, Username
+// Bei neuen Räumen wird der Raum übernommen um eine DB-Abfrage zu sparen
 function initiiereRaumEdit() {
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehRE').hide();
 	if (window.hRaum) {
 		initiiereRaumEdit_2();
 	} else if (localStorage.Status === "neu" && localStorage.hRaum) {
-		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		// wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hRaum = JSON.parse(localStorage.hRaum);
 		delete localStorage.hRaum;
 		initiiereRaumEdit_2();
@@ -1458,28 +1458,28 @@ function initiiereRaumEdit() {
 }
 
 function initiiereRaumEdit_2() {
-	//fixes Feld setzen
+	// fixes Feld setzen
 	$("#rName").val(window.hRaum.rName);
-	//Variabeln bereitstellen
+	// Variabeln bereitstellen
 	localStorage.ProjektId = window.hRaum.hProjektId;
-	//bei neuen Räumen hat das Objekt noch keine ID
+	// bei neuen Räumen hat das Objekt noch keine ID
 	if (window.hRaum._id) {
 		localStorage.RaumId = window.hRaum._id;
 	} else {
 		localStorage.RaumId = "neu";
 	}
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteRaumEdit) {
 		initiiereRaumEdit_3();
 	} else {
-		//das dauert länger - hinweisen
+		// das dauert länger - hinweisen
 		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		//holt die Feldliste aus der DB
+		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeRaum?include_docs=true', {
 			success: function (Feldliste) {
-				//Variabeln bereitstellen
+				// Variabeln bereitstellen
 				window.FeldlisteRaumEdit = Feldliste;
 				initiiereRaumEdit_3();
 			}
@@ -1490,18 +1490,18 @@ function initiiereRaumEdit_2() {
 function initiiereRaumEdit_3() {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerRaumEditForm ();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//generiert das Html für das Formular in hRaumEdit.html
-//erwartet Feldliste als Objekt; window.hRaum als Objekt
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für das Formular in hRaumEdit.html
+// erwartet Feldliste als Objekt; window.hRaum als Objekt
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerRaumEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
@@ -1511,11 +1511,11 @@ function generiereHtmlFuerRaumEditForm () {
 		if (typeof i !== "function") {
 			Feld = FeldlisteRaumEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
 				if (window.hRaum[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
-					//Objekt window.hRaum um den Standardwert ergänzen, um später zu speichern
+					// Objekt window.hRaum um den Standardwert ergänzen, um später zu speichern
 					window.hRaum[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
@@ -1527,7 +1527,7 @@ function generiereHtmlFuerRaumEditForm () {
 			}
 		}
 	}
-	//In neuen Datensätzen allfällige Standardwerte speichern
+	// In neuen Datensätzen allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
 		$("#rName").focus();
 		$db = $.couch.db("evab");
@@ -1540,23 +1540,23 @@ function generiereHtmlFuerRaumEditForm () {
 		});
 		delete localStorage.Status;
 	} else {
-		//Attachments gibt's bei neuen Datensätzen nicht
+		// Attachments gibt's bei neuen Datensätzen nicht
 		zeigeAttachments(window.hRaum, "hRE");
 	}
 	return HtmlContainer;
 }
 
 function initiiereRaumListe() {
-	//hat hRaumEdit.html eine RaumListe übergeben?
+	// hat hRaumEdit.html eine RaumListe übergeben?
 	if (window.RaumListe) {
-		//Raumliste aus globaler Variable holen - muss nicht geparst werden
+		// Raumliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereRaumListe_2();
 	} else {
-		//Raumliste aud DB holen
+		// Raumliste aud DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 			success: function (data) {
-				//RaumListe für haumEdit bereitstellen
+				// RaumListe für haumEdit bereitstellen
 				window.RaumListe = data;
 				initiiereRaumListe_2();
 			}
@@ -1569,7 +1569,7 @@ function initiiereRaumListe_2() {
 	anzRaum = RaumListe.rows.length;
 	ListItemContainer = "";
 
-	//Im Titel der Seite die Anzahl Räume anzeigen
+	// Im Titel der Seite die Anzahl Räume anzeigen
 	Titel2 = " Räume";
 	if (anzRaum === 1) {
 		Titel2 = " Raum";
@@ -1579,7 +1579,7 @@ function initiiereRaumListe_2() {
 	if (anzRaum === 0) {
 		ListItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
-		for (i in RaumListe.rows) {	//Liste aufbauen
+		for (i in RaumListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
 				Raum = RaumListe.rows[i].doc;
 				key = RaumListe.rows[i].key;
@@ -1594,15 +1594,15 @@ function initiiereRaumListe_2() {
 	speichereLetzteUrl();
 }
 
-//generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id des Orts
+// generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+// Mitgeben: id des Orts
 function initiiereOrtEdit() {
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehOE').hide();
 	if (window.hOrt) {
 		initiiereOrtEdit_2();
 	} else if (localStorage.Status === "neu" && localStorage.hOrt) {
-		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		// wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hOrt = JSON.parse(localStorage.hOrt);
 		delete localStorage.hOrt;
 		initiiereOrtEdit_2();
@@ -1618,38 +1618,38 @@ function initiiereOrtEdit() {
 }
 
 function initiiereOrtEdit_2() {
-	//fixe Felder aktualisieren
+	// fixe Felder aktualisieren
 	$("[name='oName']").val(window.hOrt.oName);
 	$("[name='oXKoord']").val(window.hOrt.oXKoord);
 	$("[name='oYKoord']").val(window.hOrt.oYKoord);
 	$("[name='oLagegenauigkeit']").val(window.hOrt.oLagegenauigkeit);
-	//Variabeln bereitstellen
+	// Variabeln bereitstellen
 	localStorage.ProjektId = window.hOrt.hProjektId;
 	localStorage.RaumId = window.hOrt.hRaumId;
-	//bei neuen Orten hat das Objekt noch keine ID
+	// bei neuen Orten hat das Objekt noch keine ID
 	if (window.hOrt._id) {
 		localStorage.OrtId = window.hOrt._id;
 	} else {
 		localStorage.OrtId = "neu";
 	}
-	//Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
+	// Lat Lng werden geholt. Existieren sie nicht, erhalten Sie den Wert ""
 	localStorage.oLongitudeDecDeg = window.hOrt.oLongitudeDecDeg;
 	localStorage.oLatitudeDecDeg = window.hOrt.oLatitudeDecDeg;
 	localStorage.oLagegenauigkeit = window.hOrt.oLagegenauigkeit;
 	localStorage.oXKoord = window.hOrt.oXKoord;
 	localStorage.oYKoord = window.hOrt.oYKoord;
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteOrtEdit) {
 		initiiereOrtEdit_3();
 	} else {
-		//das dauert länger - hinweisen
+		// das dauert länger - hinweisen
 		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		//holt die Feldliste aus der DB
+		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeOrt?include_docs=true', {
 			success: function (Feldliste) {
-				//Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
+				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.FeldlisteOrtEdit = Feldliste;
 				initiiereOrtEdit_3();
 			}
@@ -1660,20 +1660,20 @@ function initiiereOrtEdit_2() {
 function initiiereOrtEdit_3() {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerOrtEditForm();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 
 }
 
-//generiert das Html für das Formular in hOrtEdit.html
-//erwartet Feldliste als Objekt (aus der globalen Variable); window.hOrt als Objekt
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für das Formular in hOrtEdit.html
+// erwartet Feldliste als Objekt (aus der globalen Variable); window.hOrt als Objekt
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerOrtEditForm () {
 	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
@@ -1683,11 +1683,11 @@ function generiereHtmlFuerOrtEditForm () {
 		if (typeof i !== "function") {
 			Feld = FeldlisteOrtEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
 				if (window.hOrt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
-					//Objekt window.hOrt um den Standardwert ergänzen, um später zu speichern
+					// Objekt window.hOrt um den Standardwert ergänzen, um später zu speichern
 					window.hOrt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert die Anzeige von undefined im Feld
@@ -1699,7 +1699,7 @@ function generiereHtmlFuerOrtEditForm () {
 			}
 		}
 	}
-	//Allfällige Standardwerte speichern
+	// Allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
 		$("[name='oName']").focus();
 		$db = $.couch.db("evab");
@@ -1711,27 +1711,27 @@ function generiereHtmlFuerOrtEditForm () {
 				GetGeolocation(data.id, "hOrt");
 			}
 		});
-		//Status zurücksetzen - es soll nur ein mal verortet werden
+		// Status zurücksetzen - es soll nur ein mal verortet werden
 		delete localStorage.Status;
 	} else {
-		//Attachments gibt es bei neuen Orten nicht
+		// Attachments gibt es bei neuen Orten nicht
 		zeigeAttachments(window.hOrt, "hOE");
 	}
 	return HtmlContainer;
 }
 
-//erstellt die Ortliste in hOrtListe.html
+// erstellt die Ortliste in hOrtListe.html
 function initiiereOrtListe() {
-	//hat hOrtEdit.html eine OrtListe übergeben?
+	// hat hOrtEdit.html eine OrtListe übergeben?
 	if (window.OrtListe) {
-		//Ortliste aus globaler Variable holen - muss nicht geparst werden
+		// Ortliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereOrtListe_2();
 	} else {
-		//Ortliste aus DB holen
+		// Ortliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 			success: function (data) {
-				//OrtListe für hOrtEdit bereitstellen
+				// OrtListe für hOrtEdit bereitstellen
 				window.OrtListe = data;
 				initiiereOrtListe_2();
 			}
@@ -1744,7 +1744,7 @@ function initiiereOrtListe_2() {
 	anzOrt = OrtListe.rows.length;
 	ListItemContainer = "";
 
-	//Im Titel der Seite die Anzahl Orte anzeigen
+	// Im Titel der Seite die Anzahl Orte anzeigen
 	Titel2 = " Orte";
 	if (anzOrt === 1) {
 		Titel2 = " Ort";
@@ -1754,7 +1754,7 @@ function initiiereOrtListe_2() {
 	if (anzOrt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
 	} else {
-		for (i in OrtListe.rows) {	//Liste aufbauen
+		for (i in OrtListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
 				Ort = OrtListe.rows[i].doc;
 				key = OrtListe.rows[i].key;
@@ -1768,17 +1768,17 @@ function initiiereOrtListe_2() {
 	speichereLetzteUrl();
 }
 
-//generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
-//Mitgeben: id der Zeit
+// generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
+// Mitgeben: id der Zeit
 function initiiereZeitEdit() {
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
-	//hZeit existiert schon bei neuer Zeit
+	// hZeit existiert schon bei neuer Zeit
 	//alert("window.hZeit = " + JSON.stringify(window.hZeit));
 	if (window.hZeit) {
 		initiiereZeitEdit_2();
 	} else if (localStorage.Status === "neu" && localStorage.hZeit) {
-		//wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
+		// wenn mit window.open von neu gekommen, existiert die globale Variable nicht mehr
 		window.hZeit = JSON.parse(localStorage.hZeit);
 		delete localStorage.hZeit;
 		initiiereZeitEdit_2();
@@ -1794,24 +1794,24 @@ function initiiereZeitEdit() {
 }
 
 function initiiereZeitEdit_2() {
-	//fixe Felder aktualisieren
+	// fixe Felder aktualisieren
 	$("[name='zDatum']").val(window.hZeit.zDatum);
 	$("[name='zUhrzeit']").val(window.hZeit.zUhrzeit);
-	//Variabeln bereitstellen
+	// Variabeln bereitstellen
 	localStorage.ProjektId = window.hZeit.hProjektId;
 	localStorage.RaumId = window.hZeit.hRaumId;
 	localStorage.OrtId = window.hZeit.hOrtId;
-	//bei neuen Zeiten hat das Objekt noch keine ID
+	// bei neuen Zeiten hat das Objekt noch keine ID
 	if (window.hZeit._id) {
 		localStorage.ZeitId = window.hZeit._id;
 	}
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlisteZeitEdit) {
 		initiiereZeitEdit_3();
 	} else {
-		//Feldliste aus der DB holen
-		//das dauert länger - hinweisen
+		// Feldliste aus der DB holen
+		// das dauert länger - hinweisen
 		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeZeit?include_docs=true', {
@@ -1825,27 +1825,27 @@ function initiiereZeitEdit_2() {
 
 function initiiereZeitEdit_3() {
 	var HtmlContainer = generiereHtmlFuerZeitEditForm();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//erstellt die Liste der Zeiten in Formular hZeitListe.html
+// erstellt die Liste der Zeiten in Formular hZeitListe.html
 function initiiereZeitListe() {
-	//hat hZeitEdit.html eine ZeitListe übergeben?
+	// hat hZeitEdit.html eine ZeitListe übergeben?
 	if (window.ZeitListe) {
-		//Zeitliste aus globaler Variable holen - muss nicht geparst werden
+		// Zeitliste aus globaler Variable holen - muss nicht geparst werden
 		initiiereZeitListe_2();
 	} else {
-		//Zeitliste aus DB holen
+		// Zeitliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 			success: function (data) {
-				//ZeitListe für hZeitEdit bereitstellen
+				// ZeitListe für hZeitEdit bereitstellen
 				window.ZeitListe = data;
 				initiiereZeitListe_2();
 			}
@@ -1858,7 +1858,7 @@ function initiiereZeitListe_2() {
 	anzZeit = ZeitListe.rows.length;
 	ListItemContainer = "";
 
-	//Im Titel der Seite die Anzahl Zeiten anzeigen
+	// Im Titel der Seite die Anzahl Zeiten anzeigen
 	Titel2 = " Zeiten";
 	if (anzZeit === 1) {
 		Titel2 = " Zeit";
@@ -1883,9 +1883,9 @@ function initiiereZeitListe_2() {
 	speichereLetzteUrl();
 }
 
-//generiert das Html für das Formular in hZeitEdit.html
-//erwartet Feldliste als Objekt; Zeit als Objekt
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für das Formular in hZeitEdit.html
+// erwartet Feldliste als Objekt; Zeit als Objekt
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerZeitEditForm() {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
 	Feld = {};
@@ -1895,11 +1895,11 @@ function generiereHtmlFuerZeitEditForm() {
 		if (typeof i !== "function") {
 			Feld = FeldlisteZeitEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === window.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
 				if (window.hZeit[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && window.hZeit[FeldName]) {
 					FeldWert = Feld.Standardwert[window.hZeit.User] || "";
-					//Objekt window.hZeit um den Standardwert ergänzen, um später zu speichern
+					// Objekt window.hZeit um den Standardwert ergänzen, um später zu speichern
 					window.hZeit[FeldName] = FeldWert;
 				} else {
 					FeldWert = window.hZeit[FeldName] || "";
@@ -1908,11 +1908,11 @@ function generiereHtmlFuerZeitEditForm() {
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 				HtmlContainer += generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
 			}
-			//localStorage.Status wird schon im aufrufenden function gelöscht!
+			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
 	}
 	if (localStorage.Status === "neu") {
-		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hZeit, {
 			success: function (data) {
@@ -1923,17 +1923,17 @@ function generiereHtmlFuerZeitEditForm() {
 		});
 		delete localStorage.Status;
 	} else {
-		//Neue Datensätze haben keine Attachments
+		// Neue Datensätze haben keine Attachments
 		zeigeAttachments(window.hZeit, "hZE");
 	}
 	return HtmlContainer;
 }
 
-//managt den Aufbau aller Daten und Felder für hBeobEdit.html
-//erwartet die hBeobId
-//wird aufgerufen von hBeobEdit.html bei pageshow
+// managt den Aufbau aller Daten und Felder für hBeobEdit.html
+// erwartet die hBeobId
+// wird aufgerufen von hBeobEdit.html bei pageshow
 function initiierehBeobEdit() {
-	//achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
+	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		initiierehBeobEdit_2(window.hArt);
 	} else {
@@ -1948,21 +1948,21 @@ function initiierehBeobEdit() {
 }
 
 function initiierehBeobEdit_2() {
-	//hier werden Variablen gesetzt,
-	//in die fixen Felder Werte eingesetzt,
-	//die dynamischen Felder aufgebaut
-	//und die Nav-Links gesetzt
+	// hier werden Variablen gesetzt,
+	// in die fixen Felder Werte eingesetzt,
+	// die dynamischen Felder aufgebaut
+	// und die Nav-Links gesetzt
 
-	//Anhänge ausblenden, weil sie sonst beim Wechsel stören
+	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehAE').hide();
 
-	//diese (globalen) Variabeln werden in hArtEdit.html gebraucht
-	//Variabeln bereitstellen
+	// diese (globalen) Variabeln werden in hArtEdit.html gebraucht
+	// Variabeln bereitstellen
 	localStorage.ProjektId = window.hArt.hProjektId;
 	localStorage.RaumId = window.hArt.hRaumId;
 	localStorage.OrtId = window.hArt.hOrtId;
 	localStorage.ZeitId = window.hArt.hZeitId;
-	//bei neuen hBeob hat das Objekt noch keine ID
+	// bei neuen hBeob hat das Objekt noch keine ID
 	if (window.hArt._id) {
 		localStorage.hBeobId = window.hArt._id;
 	} else {
@@ -1971,7 +1971,7 @@ function initiierehBeobEdit_2() {
 	localStorage.aArtGruppe = window.hArt.aArtGruppe;
 	localStorage.aArtName = window.hArt.aArtName;
 	localStorage.aArtId = window.hArt.aArtId;
-	//fixe Felder aktualisieren
+	// fixe Felder aktualisieren
 	$("[name='aArtGruppe']").selectmenu();
 	$("[name='aArtGruppe']").val(window.hArt.aArtGruppe);
 	$("[name='aArtGruppe']").html("<option value='" + window.hArt.aArtGruppe + "'>" + window.hArt.aArtGruppe + "</option>");
@@ -1980,13 +1980,13 @@ function initiierehBeobEdit_2() {
 	$("[name='aArtName']").val(window.hArt.aArtName);
 	$("[name='aArtName']").html("<option value='" + window.hArt.aArtName + "'>" + window.hArt.aArtName + "</option>");
 	$("[name='aArtName']").selectmenu("refresh");
-	//prüfen, ob die Feldliste schon geholt wurde
-	//wenn ja: deren globale Variable verwenden
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
 	if (window.FeldlistehBeobEdit) {
 		erstelleDynamischeFelderhArtEdit();
 	} else {
-		//Feldliste aus der DB holen
-		//das dauert länger - hinweisen
+		// Feldliste aus der DB holen
+		// das dauert länger - hinweisen
 		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
@@ -1998,23 +1998,23 @@ function initiierehBeobEdit_2() {
 	}
 }
 
-//generiert dynamisch die Artgruppen-abhängigen Felder
-//Mitgeben: Feldliste, Beobachtung
+// generiert dynamisch die Artgruppen-abhängigen Felder
+// Mitgeben: Feldliste, Beobachtung
 function erstelleDynamischeFelderhArtEdit() {
 	var HtmlContainer, Formularwerte;
 	HtmlContainer = generiereHtmlFuerhArtEditForm();
-	//Linie nur anfügen, wenn Felder erstellt wurden
+	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//generiert das Html für Formular in hArtEdit.html
-//erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für Formular in hArtEdit.html
+// erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerhArtEditForm () {
 	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, ArtGruppe;
 	Feld = {};
@@ -2025,12 +2025,12 @@ function generiereHtmlFuerhArtEditForm () {
 		if (typeof i !== "function") {
 			Feld = window.FeldlistehBeobEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
-			//nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			//Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 			if ((Feld.User === window.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 				if (window.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.hArt.User]) {
 					FeldWert = Feld.Standardwert[window.hArt.User];
-					//Objekt window.hArt um den Standardwert ergänzen, um später zu speichern
+					// Objekt window.hArt um den Standardwert ergänzen, um später zu speichern
 					window.hArt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert, dass im Feld undefined erscheint
@@ -2043,7 +2043,7 @@ function generiereHtmlFuerhArtEditForm () {
 		}
 	}
 	if (localStorage.Status === "neu") {
-		//in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.hArt, {
 			success: function (data) {
@@ -2054,24 +2054,24 @@ function generiereHtmlFuerhArtEditForm () {
 		});
 		delete localStorage.Status;
 	} else {
-		//Neue Datensätze haben keine Anhänge
+		// Neue Datensätze haben keine Anhänge
 		zeigeAttachments(window.hArt, "hAE");
 	}
 	return HtmlContainer;
 }
 
-//initiiert BeobListe.html
+// initiiert BeobListe.html
 function initiierehBeobListe() {
-	//hat hArtEdit.html eine hBeobListe übergeben?
+	// hat hArtEdit.html eine hBeobListe übergeben?
 	if (window.hBeobListe) {
-		//Beobliste aus globaler Variable holen - muss nicht geparst werden
+		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		initiierehBeobListe_2();
 	} else {
-		//Beobliste aus DB holen
+		// Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function (data) {
-				//Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.hBeobListe = data;
 				initiierehBeobListe_2();
 			}
@@ -2084,7 +2084,7 @@ function initiierehBeobListe_2() {
 	anzArt = hBeobListe.rows.length;
 	ListItemContainer = "";
 
-	//Im Titel der Seite die Anzahl Arten anzeigen
+	// Im Titel der Seite die Anzahl Arten anzeigen
 	Titel2 = " Arten";
 	if (anzArt === 1) {
 		Titel2 = " Art";
@@ -2112,12 +2112,12 @@ function initiierehBeobListe_2() {
 }
 
 
-//generiert das Html für ein Formularelement
-//erwartet diverse Übergabewerte
-//der HtmlContainer wird zurück gegeben
+// generiert das Html für ein Formularelement
+// erwartet diverse Übergabewerte
+// der HtmlContainer wird zurück gegeben
 function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum) {
 	var HtmlContainer = "";
-	//abfangen, wenn Inputtyp vergessen wurde
+	// abfangen, wenn Inputtyp vergessen wurde
 	InputTyp = InputTyp || "text";
 	switch(Feld.Formularelement) {
 	case "textinput":
@@ -2147,15 +2147,15 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 		HtmlContainer = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
 		break;
 	case null:
-		//Abfangen, wenn das Formularelement nicht gewählt wurde
+		// Abfangen, wenn das Formularelement nicht gewählt wurde
 		HtmlContainer = generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
 		break;
 	}
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Textinputs
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Textinputs
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
 	var HtmlContainer;
 	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
@@ -2174,8 +2174,8 @@ function generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputT
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Slider
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Slider
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
 	var HtmlContainer;
 	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
@@ -2196,8 +2196,8 @@ function generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMin
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Textarea
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Textarea
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer;
 	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
@@ -2214,8 +2214,8 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Toggleswitch
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Toggleswitch
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
@@ -2232,8 +2232,8 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Checkbox
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Checkbox
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
@@ -2244,8 +2244,8 @@ function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optione
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Optionen von Checkbox
-//wird von generiereHtmlFuerCheckbox aufgerufen
+// generiert den html-Inhalt für Optionen von Checkbox
+// wird von generiereHtmlFuerCheckbox aufgerufen
 function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
@@ -2273,8 +2273,8 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Radio
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Radio
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
@@ -2285,8 +2285,8 @@ function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) 
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Optionen von Radio
-//wird von generiereHtmlFuerRadio aufgerufen
+// generiert den html-Inhalt für Optionen von Radio
+// wird von generiereHtmlFuerRadio aufgerufen
 function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
@@ -2313,8 +2313,8 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Selectmenus
-//wird von erstellehBeobEdit aufgerufen
+// generiert den html-Inhalt für Selectmenus
+// wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
@@ -2341,8 +2341,8 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Optionen von Selectmenu
-//wird von generiereHtmlFuerSelectmenu aufgerufen
+// generiert den html-Inhalt für Optionen von Selectmenu
+// wird von generiereHtmlFuerSelectmenu aufgerufen
 function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
@@ -2364,9 +2364,9 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 	return HtmlContainer;
 }
 
-//generiert den html-Inhalt für Optionen von MultipleSelect
-//wird von generiereHtmlFuerSelectmenu aufgerufen
-//FeldWert ist ein Array
+// generiert den html-Inhalt für Optionen von MultipleSelect
+// wird von generiereHtmlFuerSelectmenu aufgerufen
+// FeldWert ist ein Array
 function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
@@ -2390,9 +2390,9 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 
 (function ($) {
 	// friendly helper http://tinyurl.com/6aow6yn
-	//Läuft durch alle Felder im Formular
-	//Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
-	//nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+	// Läuft durch alle Felder im Formular
+	// Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
+	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
 	$.fn.serializeObject = function () {
 		var o, a;
 		o = {};
@@ -2406,13 +2406,13 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 					o[this.name].push(this.value);
 				} else {
 					if (myTypeOf(this.value) === "integer") {
-						//typ ist Int
+						// typ ist Int
 						o[this.name] = parseInt(this.value, 10);
 					} else if (myTypeOf(this.value) === "float") {
-						//typ ist Float
+						// typ ist Float
 						o[this.name] = parseFloat(this.value);
 					} else {
-						//anderer Typ, als String behandeln
+						// anderer Typ, als String behandeln
 						o[this.name] = this.value;
 					}
 				}
@@ -2420,12 +2420,12 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 		});
 		return o;
 	};
-	//friendly helper http://tinyurl.com/6aow6yn
-	//Läuft durch alle Felder im Formular
-	//Feldname und Wert aller Felder werden ins Objekt geschrieben
-	//so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
-	//siehe Beispiel in FeldEdit.html
-	//nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
+	// friendly helper http://tinyurl.com/6aow6yn
+	// Läuft durch alle Felder im Formular
+	// Feldname und Wert aller Felder werden ins Objekt geschrieben
+	// so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
+	// siehe Beispiel in FeldEdit.html
+	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
 	$.fn.serializeObjectNull = function () {
 		var o, a;
 		o = {};
@@ -2438,13 +2438,13 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 				o[this.name].push(this.value);
 			} else {
 				if (myTypeOf(this.value) === "integer") {
-					//typ ist Int
+					// typ ist Int
 					o[this.name] = parseInt(this.value, 10);
 				} else if (myTypeOf(this.value) === "float") {
-					//typ ist Float
+					// typ ist Float
 					o[this.name] = parseFloat(this.value);
 				} else {
-					//anderer Typ, als String behandeln
+					// anderer Typ, als String behandeln
 					o[this.name] = this.value;
 				}
 			}
@@ -2453,27 +2453,27 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	};
 })(jQuery);
 
-//Codeausführung für Anzahl Millisekunden unterbrechen
-//Quelle: http://www.sean.co.uk/a/webdesign/javascriptdelay.shtm
-//grauenhafte Methode - blockiert die CPU!!
+// Codeausführung für Anzahl Millisekunden unterbrechen
+// Quelle: http://www.sean.co.uk/a/webdesign/javascriptdelay.shtm
+// grauenhafte Methode - blockiert die CPU!!
 function warte(ms) {
 	ms += new Date().getTime();
 	while (new Date() < ms) {}
 }
 
-//verorted mit Hilfe aller Methoden
-//wird benutzt von BeobEdit.html und hOrtEdit.html
-//erwartet die docId, um am Ende der Verortung die neuen Koordinaten zu speichern
+// verorted mit Hilfe aller Methoden
+// wird benutzt von BeobEdit.html und hOrtEdit.html
+// erwartet die docId, um am Ende der Verortung die neuen Koordinaten zu speichern
 function GetGeolocation(docId, OrtOderBeob) {
-	//benötigte Variabeln setzen
+	// benötigte Variabeln setzen
 	localStorage.docId = docId;
-	//Zweck: Genau solange animieren, wie verortet wird
+	// Zweck: Genau solange animieren, wie verortet wird
 	localStorage.NavbarVerortungAnimieren = "true";
-	//übergebene Herkunft (Ort oder Beob) für die listeners bereitstellen
+	// übergebene Herkunft (Ort oder Beob) für die listeners bereitstellen
 	localStorage.OrtOderBeob = OrtOderBeob;
-	//dem Benutzer zeigen, dass verortet wird
+	// dem Benutzer zeigen, dass verortet wird
 	NavbarVerortungAnimieren();
-	//Koordinaten zurücksetzen
+	// Koordinaten zurücksetzen
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
 	delete localStorage.oLongitudeDecDeg;
@@ -2481,16 +2481,16 @@ function GetGeolocation(docId, OrtOderBeob) {
 	delete localStorage.oLagegenauigkeit;
 	delete localStorage.oHöhe;
 	delete localStorage.oHöheGenauigkeit;
-	//Mit der Verortung beginnen
+	// Mit der Verortung beginnen
 	watchID = null;
 	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
-	//nach spätestens 20 Sekunden aufhören
+	// nach spätestens 20 Sekunden aufhören
 	window.stop = setTimeout("stopGeolocation()", 20000);
 	return watchID;
 }
 
-//solange verortet wird, 
-//wird die Verortung in der Navbar jede Sekunde ein- und ausgeblendet
+// solange verortet wird, 
+// wird die Verortung in der Navbar jede Sekunde ein- und ausgeblendet
 function NavbarVerortungAnimieren() {
 	if (localStorage.NavbarVerortungAnimieren && localStorage.NavbarVerortungAnimieren === "true") {
 		$(".neu").removeClass("ui-btn-active");
@@ -2522,9 +2522,9 @@ function GeolocationAuslesen(position) {
 	speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
 }
 
-//Position ermitteln war erfolgreich
+// Position ermitteln war erfolgreich
 function onGeolocationSuccess(position) {
-	//nur erste Position akzeptieren oder solche, die genauer sind als vorige
+	// nur erste Position akzeptieren oder solche, die genauer sind als vorige
 	if (!localStorage.oLagegenauigkeit || position.coords.accuracy < localStorage.oLagegenauigkeit) {
 		if (position.coords.accuracy < 100) {
 			GeolocationAuslesen(position);
@@ -2535,33 +2535,33 @@ function onGeolocationSuccess(position) {
 	}
 }
 
-//Position ermitteln war nicht erfolgreich
-//onError Callback receives a PositionError object
+// Position ermitteln war nicht erfolgreich
+// onError Callback receives a PositionError object
 function onGeolocationError(error) {
 	melde("Keine Position erhalten\n" + error.message);
 	stopGeolocation();
 }
 
-//Beendet Ermittlung der Position
+// Beendet Ermittlung der Position
 function stopGeolocation() {
-	//Positionssuche beenden
-	//wenn keine watchID mehr, wurde sie schon beendet
-	//stop timeout stoppen
+	// Positionssuche beenden
+	// wenn keine watchID mehr, wurde sie schon beendet
+	// stop timeout stoppen
 	clearTimeout(stop);
 	delete window.stop;
 	delete localStorage.VerortungAbgeschlossen;
-	//Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
+	// Vorsicht: In BeobEdit.html und hOrtEdit.html ist watchID nicht defined
 	if (typeof watchID !== "undefined") {
 		navigator.geolocation.clearWatch(watchID);
 		delete window.watchID;
 	}
-	//Animation beenden
+	// Animation beenden
 	delete localStorage.NavbarVerortungAnimieren;
-	//auf den Erfolg reagieren
+	// auf den Erfolg reagieren
 	if (localStorage.oLagegenauigkeit > 30) {
 		melde("Koordinaten nicht sehr genau\nAuf Karte verorten?");
 	} else if (!localStorage.oLagegenauigkeit) {
-		//Felder leeren
+		// Felder leeren
 		$("[name='oXKoord']").val("");
 		$("[name='oYKoord']").val("");
 		$("[name='oLongitudeDecDeg']").val("");
@@ -2569,23 +2569,23 @@ function stopGeolocation() {
 		$("[name='oLagegenauigkeit']").val("");
 		$("[name='oHöhe']").val("");
 		$("[name='oHöheGenauigkeit']").val("");
-		//Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
+		// Diesen neuen Stand speichern (allfällige alte Koordinaten werden verworfen)
 		speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
 		melde("Keine genaue Position erhalten");
 	}
-	//Variablen aufräumen
+	// Variablen aufräumen
 	delete localStorage.docId;
 	delete localStorage.OrtOderBeob;
 }
 
-//damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
-//host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
+// damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
+// host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 function speichereLetzteUrl() {
 	localStorage.LetzteUrl = window.location.pathname + window.location.search;
 }
 
 function holeAutor() {
-	//aAutor holen
+	// aAutor holen
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
 			if (doc.Standardwert) {
@@ -2597,17 +2597,17 @@ function holeAutor() {
 	});
 }
 
-//speichert Anhänge
-//setzt ein passendes Formular mit den feldern _rev und _attachments voraus
-//nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
-//wird benutzt von allen Formularen mit Anhängen
+// speichert Anhänge
+// setzt ein passendes Formular mit den feldern _rev und _attachments voraus
+// nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
+// wird benutzt von allen Formularen mit Anhängen
 function speichereAnhänge(id, Objekt, Page) {
-	//prüfen, ob der Datensatz als Objekt übergeben wurde
+	// prüfen, ob der Datensatz als Objekt übergeben wurde
 	if (Objekt) {
-		//das Objekt verwenden
+		// das Objekt verwenden
 		speichereAnhänge_2(id, Objekt, Page);
 	} else {
-		//Objekt aus der DB holen
+		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
@@ -2626,11 +2626,11 @@ function speichereAnhänge_2(id, Objekt, Page) {
 	$("#FormAnhänge" + Page).ajaxSubmit({
 		url: "/evab/" + id,
 		success: function () {
-			//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			// doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			$db.openDoc(id, {
 				success: function (data2) {
 					window[Objekt.Typ] = data2;
-					//show attachments in form
+					// show attachments in form
 					zeigeAttachments(data2, Page);
 				},
 				error: function () {
@@ -2638,9 +2638,9 @@ function speichereAnhänge_2(id, Objekt, Page) {
 				}
 			});
 		},
-		//form.jquery.js meldet einen Fehler, obwohl der Vorgang funktioniert!
+		// form.jquery.js meldet einen Fehler, obwohl der Vorgang funktioniert!
 		error: function () {
-			//doc nochmals holen, damit der Anhang mit Dateiname dabei ist
+			// doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			$db.openDoc(id, {
 				success: function (data3) {
 					window[Objekt.Typ] = data3;
@@ -2654,11 +2654,11 @@ function speichereAnhänge_2(id, Objekt, Page) {
 	});
 }
 
-//zeigt Anhänge im Formular an
-//setzt ein passendes Formular mit dem Feld _attachments + Page voraus
-//und eine div namens Anhänge + Page, in der die Anhänge angezeigt werden
-//wird benutzt von allen (h)Beobachtungs-Edit-Formularen
-//erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
+// zeigt Anhänge im Formular an
+// setzt ein passendes Formular mit dem Feld _attachments + Page voraus
+// und eine div namens Anhänge + Page, in der die Anhänge angezeigt werden
+// wird benutzt von allen (h)Beobachtungs-Edit-Formularen
+// erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
 function zeigeAttachments(doc, Page) {
 	var HtmlContainer, url, url_zumLöschen;
 	HtmlContainer = "";
@@ -2666,7 +2666,7 @@ function zeigeAttachments(doc, Page) {
 	if (doc._attachments) {
 		$.each(doc._attachments, function (Dateiname, val) {
 			url = "/evab/" + doc._id + "/" + Dateiname;
-			//url_zumLöschen = url + "?" + doc._rev;	//theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
+			//url_zumLöschen = url + "?" + doc._rev;	// theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<div><a href='";
 			HtmlContainer += url;
 			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
@@ -2677,16 +2677,16 @@ function zeigeAttachments(doc, Page) {
 		});
 	}
 	$("#Anhänge" + Page).html(HtmlContainer).trigger("create");
-	//Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
+	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 }
 
-//initiiert FelderWaehlen.html
-//generiert dynamisch die Felder im Checkbox Felder
-//checked diejenigen, die der User anzeigen will
+// initiiert FelderWaehlen.html
+// generiert dynamisch die Felder im Checkbox Felder
+// checked diejenigen, die der User anzeigen will
 function initiiereFelderWaehlen() {
 	var TextUeberListe_FW, FeldlisteViewname;
-	//Je nach aufrufender Seite Variabeln setzen
+	// Je nach aufrufender Seite Variabeln setzen
 	switch(localStorage.AufrufendeSeiteFW) {
 	case "hProjektEdit":
 		TextUeberListe_FW = "<h3>Felder für Projekte wählen:</h3>";
@@ -2726,14 +2726,14 @@ function initiiereFelderWaehlen() {
 		break;
 	}
 	$("#TextUeberListe_FW").html(TextUeberListe_FW);
-	//Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
-	//Für FelderWaehlen.html könnte an sich immer die vollständige Liste verwendet werden
-	//besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
-	//darum wird hier für jede Seite eine eigene verwendet
+	// Feldliste nur abfragen, wenn sie nicht schon als globale Variable existiert
+	// Für FelderWaehlen.html könnte an sich immer die vollständige Liste verwendet werden
+	// besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
+	// darum wird hier für jede Seite eine eigene verwendet
 	if (window[localStorage.FeldlisteFwName]) {
 		initiiereFelderWaehlen_2();
 	} else {
-		//holt die Feldliste aus der DB
+		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
 			success: function (data) {
@@ -2751,9 +2751,9 @@ function initiiereFelderWaehlen_2() {
 	for (var i in window[localStorage.FeldlisteFwName].rows) {
 		Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
 		FeldName = Feld.FeldName;
-		//Nur eigene und offizielle Felder berücksichtigen
+		// Nur eigene und offizielle Felder berücksichtigen
 		if (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") {
-			//im Formular fix integrierte Felder nicht aufbauen
+			// im Formular fix integrierte Felder nicht aufbauen
 			if (eval(localStorage.KriterienFürZuWählendeFelder)) {
 				anzFelder += 1;
 				FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
@@ -2776,14 +2776,14 @@ function initiiereFelderWaehlen_2() {
 				if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 					if (Feld.SichtbarImModusEinfach) {
 						if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
-							//wenn sichtbar, anzeigen
+							// wenn sichtbar, anzeigen
 							ListItem += " checked='checked'";
 						}
 					}
 				} else {
 					if (Feld.SichtbarImModusHierarchisch) {
 						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
-							//wenn sichtbar, anzeigen
+							// wenn sichtbar, anzeigen
 							ListItem += " checked='checked'";
 						}
 					}
@@ -2797,12 +2797,12 @@ function initiiereFelderWaehlen_2() {
 	HtmlContainer += "\n\t</fieldset>\n</div>";
 	$("#FeldlisteFW").html(HtmlContainer).trigger("create");
 	$("input[name='Felder']").checkboxradio();
-	//letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	speichereLetzteUrl();
 }
 
-//kreiert ein neues Feld
-//wird benutzt von FeldListe.html und FeldEdit.html
+// kreiert ein neues Feld
+// wird benutzt von FeldListe.html und FeldEdit.html
 function neuesFeld() {
 	var NeuesFeld;
 	NeuesFeld = {};
@@ -2810,7 +2810,7 @@ function neuesFeld() {
 	NeuesFeld.User = localStorage.Email;
 	NeuesFeld.SichtbarImModusEinfach = [];
 	NeuesFeld.SichtbarImModusHierarchisch = [];
-	//gleich sichtbar stellen
+	// gleich sichtbar stellen
 	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
 	$db = $.couch.db("evab");
@@ -2820,7 +2820,7 @@ function neuesFeld() {
 			NeuesFeld._id = data.id;
 			NeuesFeld._rev = data.rev;
 			window.Feld = NeuesFeld;
-			//Feldliste soll neu aufgebaut werden
+			// Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
 			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
 		},
@@ -2831,9 +2831,9 @@ function neuesFeld() {
 }
 
 function pruefeAnmeldung() {
-	//Username Anmeldung überprüfen
-	//Wenn angemeldet, globale Variable Username aktualisieren
-	//Wenn nicht angemeldet, Anmeldedialog öffnen
+	// Username Anmeldung überprüfen
+	// Wenn angemeldet, globale Variable Username aktualisieren
+	// Wenn nicht angemeldet, Anmeldedialog öffnen
 	if (!localStorage.Email) {
 		$.ajax({
 			url: '/_session',
@@ -2851,44 +2851,44 @@ function pruefeAnmeldung() {
 	}
 }
 
-//setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet
-//und ruft dann hOrtEdit.html auf
-//wird von den Links in der Karte benutzt
+// setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet
+// und ruft dann hOrtEdit.html auf
+// wird von den Links in der Karte benutzt
 function oeffneOrt(OrtId) {
 	localStorage.OrtId = OrtId;
 	$.mobile.changePage("hOrtEdit.html");
 }
 
-//setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
-//und ruft dann BeobEdit.html auf
-//wird von den Links in der Karte auf BeobListe.html benutzt
+// setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
+// und ruft dann BeobEdit.html auf
+// wird von den Links in der Karte auf BeobListe.html benutzt
 function oeffneBeob(BeobId) {
 	localStorage.BeobId = BeobId;
 	$.mobile.changePage("BeobEdit.html");
 }
 
-//wird benutzt in Artenliste.html
-//wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
-//erwartet einen filterwert
-//Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
-//möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfälliger Unterauswahl
+// wird benutzt in Artenliste.html
+// wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
+// erwartet einen filterwert
+// Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
+// möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfälliger Unterauswahl
 function initiiereArtenliste(filterwert) {
-	//wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
-	//nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
-	//aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
+	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
+	// nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
+	// aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
 	if (window.Artenliste) {
 		if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
 			erstelleArtenliste(filterwert);
 			return;
 		}
 	}
-	//sonst aus der DB holen und die Variabeln aktualisieren
+	// sonst aus der DB holen und die Variabeln aktualisieren
 	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
 	holeArtenliste(filterwert);
 }
 
-//wird benutzt in Artenliste.html
-//aufgerufen von initiiereArtenliste
+// wird benutzt in Artenliste.html
+// aufgerufen von initiiereArtenliste
 function holeArtenliste(filterwert) {
 	viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
 	$db = $.couch.db("evab");
@@ -2900,7 +2900,7 @@ function holeArtenliste(filterwert) {
 	});
 }
 
-//bekommt eine Artenliste und baut damit im Formular die Artenliste auf
+// bekommt eine Artenliste und baut damit im Formular die Artenliste auf
 function erstelleArtenliste(filterwert) {
 	var i,
 		html_temp = "",
@@ -2908,7 +2908,7 @@ function erstelleArtenliste(filterwert) {
 		ArtBezeichnung,
 		Art,
 		zähler = 0;
-	//gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
+	// gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
 	if (window.Artenliste.length > 0) {
 		if (filterwert) {
 			artenliste_loop:
@@ -2935,9 +2935,9 @@ function erstelleArtenliste(filterwert) {
 				html += html_temp;
 			}
 		} else {
-			//kein Filter gesetzt
+			// kein Filter gesetzt
 			if (window.Artenliste.length > 200) {
-				//die ersten 200 anzeigen
+				// die ersten 200 anzeigen
 				artenliste_loop_2:
 				for (i=0; i<window.Artenliste.length; i++) {
 					if (i<200) {
@@ -2951,7 +2951,7 @@ function erstelleArtenliste(filterwert) {
 				}
 				html += html_temp;
 			} else {
-				//weniger als 200 Arten, kein Filter. Alle anzeigen
+				// weniger als 200 Arten, kein Filter. Alle anzeigen
 				html += '<li class="artlistenhinweis">' + window.Artenliste.length + ' Arten angezeigt</li>';
 				for (i=0; i<window.Artenliste.length; i++) {
 					ArtBezeichnung = window.Artenliste[i].key[1];
@@ -2986,10 +2986,10 @@ function holeHtmlFürArtInArtenliste(Art, ArtBezeichnung) {
 	return html;
 }
 
-//wird benutzt in Artgruppenliste.html
-//aufgerufen von erstelleArtgruppenListe
+// wird benutzt in Artgruppenliste.html
+// aufgerufen von erstelleArtgruppenListe
 function erstelleArtgruppenListe() {
-	//Artgruppenliste verfügbar machen
+	// Artgruppenliste verfügbar machen
 	if (window.Artgruppenliste) {
 		erstelleArtgruppenListe_2();
 	} else if (localStorage.Artgruppenliste) {
@@ -2999,7 +2999,7 @@ function erstelleArtgruppenListe() {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function (data) {
-				//Artgruppenliste bereitstellen
+				// Artgruppenliste bereitstellen
 				window.Artgruppenliste = data;
 				localStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
 				erstelleArtgruppenListe_2();
@@ -3008,8 +3008,8 @@ function erstelleArtgruppenListe() {
 	}
 }
 
-//wird benutzt in Artgruppenliste.html
-//aufgerufen von erstelleArtgruppenListe
+// wird benutzt in Artgruppenliste.html
+// aufgerufen von erstelleArtgruppenListe
 function erstelleArtgruppenListe_2() {
 	var i, y, html, ArtGruppe, row, AnzArten;
 	html = "";
@@ -3027,18 +3027,18 @@ function erstelleArtgruppenListe_2() {
 	$("#agl_Hinweistext").empty().remove();
 }
 
-//Stellt die Daten des Users bereit
-//In der Regel nach gelungener Anmeldung
-//Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
-//braucht den Usernamen
+// Stellt die Daten des Users bereit
+// In der Regel nach gelungener Anmeldung
+// Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
+// braucht den Usernamen
 function stelleUserDatenBereit() {
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + localStorage.Email + '"', {
 		success: function (data) {
-			//weitere anderswo benutzte Variabeln verfügbar machen
+			// weitere anderswo benutzte Variabeln verfügbar machen
 			holeAutor();
-			//kontrollieren, ob User existiert
-			//wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
+			// kontrollieren, ob User existiert
+			// wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
 			if (data.rows.length === 0) {
 				$.mobile.changePage("UserEdit.html");
 				return;
@@ -3051,10 +3051,10 @@ function stelleUserDatenBereit() {
 	});
 }
 
-//wird benutzt von stelleUserDatenBereit()
-//öffnet die zuletzt benutzte Seite oder BeobListe.html
+// wird benutzt von stelleUserDatenBereit()
+// öffnet die zuletzt benutzte Seite oder BeobListe.html
 function oeffneZuletztBenutzteSeite() {
-	//unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
+	// unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
 		LetzteUrl = localStorage.LetzteUrl;
 	} else {
@@ -3063,13 +3063,13 @@ function oeffneZuletztBenutzteSeite() {
 	$.mobile.changePage(LetzteUrl);
 }
 
-//die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
-//sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
-//mitLatLngListe gibt an, ob die Liste für die Karte auch entfernt werden soll
+// die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
+// sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
+// mitLatLngListe gibt an, ob die Liste für die Karte auch entfernt werden soll
 
 function leereAlleVariabeln(ohneClear) {
-	//ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
-	//Username soll erhalten bleiben
+	// ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
+	// Username soll erhalten bleiben
 	if (!ohneClear) {
 		localStorage.clear();
 	}
@@ -3097,7 +3097,7 @@ function leereStorageProjektListe(mitLatLngListe) {
 	}
 }
 
-//ohneId wird beim paginaten benutzt, da die ID übermittelt werden muss
+// ohneId wird beim paginaten benutzt, da die ID übermittelt werden muss
 function leereStorageProjektEdit(mitLatLngListe, ohneId) {
 	if (!ohneId) {
 		delete localStorage.ProjektId;
@@ -3106,7 +3106,7 @@ function leereStorageProjektEdit(mitLatLngListe, ohneId) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
-	//hierarchisch tiefere Listen löschen
+	// hierarchisch tiefere Listen löschen
 	delete window.RaeumeVonProjekt;
 	delete window.OrteVonProjekt;
 	delete window.OrteVonRaum;
@@ -3135,7 +3135,7 @@ function leereStorageRaumEdit(mitLatLngListe, ohneId) {
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
-	//hierarchisch tiefere Listen löschen
+	// hierarchisch tiefere Listen löschen
 	delete window.OrteVonProjekt;
 	delete window.OrteVonRaum;
 	delete window.ZeitenVonProjekt;
@@ -3169,7 +3169,7 @@ function leereStorageOrtEdit(ohneId) {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	//hierarchisch tiefere Listen löschen
+	// hierarchisch tiefere Listen löschen
 	delete window.ZeitenVonProjekt;
 	delete window.ZeitenVonRaum;
 	delete window.ZeitenVonOrt;
@@ -3177,7 +3177,7 @@ function leereStorageOrtEdit(ohneId) {
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
 	delete window.ArtenVonZeit;
-	//allfällige Lokalisierung abbrechen
+	// allfällige Lokalisierung abbrechen
 	if (typeof watchID !== "undefined") {
 		stopGeolocation();
 	}
@@ -3195,7 +3195,7 @@ function leereStorageZeitEdit(ohneId) {
 		delete localStorage.ZeitId;
 	}
 	delete window.hZeit;
-	//hierarchisch tiefere Listen löschen
+	// hierarchisch tiefere Listen löschen
 	delete window.ArtenVonProjekt;
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
@@ -3235,7 +3235,7 @@ function leereStorageBeobEdit(ohneId) {
 	delete localStorage.aArtId;
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
-	//allfällige Lokalisierung abbrechen
+	// allfällige Lokalisierung abbrechen
 	if (typeof watchID !== "undefined") {
 		stopGeolocation();
 	}
@@ -3258,10 +3258,10 @@ function leereStorageFeldEdit(ohneId) {
 	delete window.Feld;
 }
 
-//setzt alle Felder im Modus Hierarchisch sichtbar
-//Erwartet die Email
-//Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
-//wird verwendet in: Signup.html, UserEdit.html
+// setzt alle Felder im Modus Hierarchisch sichtbar
+// Erwartet die Email
+// Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
+// wird verwendet in: Signup.html, UserEdit.html
 function erstelleSichtbareFelder() {
 	var viewname, Username;
 	Username = localStorage.Email;
@@ -3273,8 +3273,8 @@ function erstelleSichtbareFelder() {
 			for (i in data.rows) {
 				if (typeof i !== "function") {
 					Feld = data.rows[i].doc;
-					//Nur ausgewählte offizielle Felder berücksichtigen
-					//if (Feld.User === "ZentrenBdKt") {
+					// Nur ausgewählte offizielle Felder berücksichtigen
+					// if (Feld.User === "ZentrenBdKt") {
 					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
 						$db.openDoc(Feld._id, {
 							success: function (Feld) {
@@ -3289,9 +3289,9 @@ function erstelleSichtbareFelder() {
 	});
 }
 
-//Schreibt die Informationen des users in ein doc vom Typ User
-//erstellt die sichtbaren Felder
-//wird benutzt von: Signup.html, UserEdit.html
+// Schreibt die Informationen des users in ein doc vom Typ User
+// erstellt die sichtbaren Felder
+// wird benutzt von: Signup.html, UserEdit.html
 function speichereUserInEvab() {
 	var doc;
 	doc = {};
@@ -3301,22 +3301,22 @@ function speichereUserInEvab() {
 	$db = $.couch.db("evab");
 	$db.saveDoc(doc, {
 		success: function (data) {
-			//localStorage gründen
+			// localStorage gründen
 			localStorage.Email = $('input[name=Email]').val();
 			localStorage.Autor = $("#Autor").val();
-			//Autor speichern
+			// Autor speichern
 			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 				success: function (Feld) {
-					//Autor speichern
-					//Falls Standardwert noch nicht existiert, 
-					//muss zuerst das Objekt geschaffen werden
+					// Autor speichern
+					// Falls Standardwert noch nicht existiert, 
+					// muss zuerst das Objekt geschaffen werden
 					if (!Feld.Standardwert) {
 						Feld.Standardwert = {};
 					}
 					Feld.Standardwert[localStorage.Email] = $("#Autor").val();
 					$db.saveDoc(Feld, {
 						success: function () {
-							//Felder sictbar schalten
+							// Felder sictbar schalten
 							erstelleSichtbareFelder();
 							$.mobile.changePage("BeobListe.html");
 						},
@@ -3361,14 +3361,14 @@ function validateEmail(email) {
 */
 (function ($, undefined) {
 
-	//auto-init on pagecreate
+	// auto-init on pagecreate
 	$(document).bind("pagecreate", function (e) {
 		$(":jqmData(role='pagination')", e.target).pagination();
 	});
 
 	var pageTitle = "";
 
-	//create widget
+	// create widget
 	$.widget("mobile.pagination", $.mobile.widget, {
 		_create: function () {
 			var $el			= this.element,
@@ -3388,7 +3388,7 @@ function validateEmail(email) {
 
 			$el.addClass(classNS);
 
-			//set up next and prev buttons
+			// set up next and prev buttons
 
 			$links.each(function () {
 				var reverse = $(this).closest("." + prevLIClass).length;

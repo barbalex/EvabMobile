@@ -66,9 +66,9 @@
 		</div>
 		<script charset="utf-8">
 			$("#RaumListePage").on("pageshow", function () {
-				//Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -81,8 +81,8 @@
 				initiiereRaumListe();
 			});
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -93,27 +93,27 @@
 					return;
 				}
 
-				//inaktive tabs inaktivieren
-				//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+				// inaktive tabs inaktivieren
+				// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
 				$(document).on("click", ".tab_inaktiv", function (event) {
 					event.preventDefault();
 					event.stopPropagation();
 				});
 
-				//Link zu Projekt in Navbar und Titelleiste
+				// Link zu Projekt in Navbar und Titelleiste
 				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();
 					leereStorageRaumListe();
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				//neuen Raum erstellen
+				// neuen Raum erstellen
 				$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function (event) {
 					event.preventDefault();
 					erstelleNeuenRaum();
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$('#hRaumListePageHeader').on('click','#MenuRaumListe', function (event) {
 					event.preventDefault();
 					erstelleMenuRaumListe(this);
@@ -146,9 +146,9 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				//Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
+				// Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
 				function erstelleMenuRaumListe(thiz) {
-					//Code um Menü aufzubauen
+					// Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
 						'headerClose': true,

@@ -61,12 +61,12 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Vorsicht: Genauer als body funktioniert hier nicht, weil die nested List im DOM
-				//jedes mal eine eigene Page aufbaut
+				// Vorsicht: Genauer als body funktioniert hier nicht, weil die nested List im DOM
+				// jedes mal eine eigene Page aufbaut
 				$("body").on("click", "[name='ArtgruppenListItem']", function (event) {
 					event.preventDefault();
 					localStorage.aArtGruppe = $(this).attr("ArtGruppe");
-					//wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
+					// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
 					if (window.gruppe_merken) {
 						window.gruppe_merken = $(this).attr("ArtGruppe");
 					}

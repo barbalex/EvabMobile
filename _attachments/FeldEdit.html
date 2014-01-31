@@ -193,9 +193,9 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 		<script>
-			//Sollte keine id vorliegen, zu FeldListe.html wechseln
-			//das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-			//oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+			// Sollte keine id vorliegen, zu FeldListe.html wechseln
+			// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+			// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 			$("#FeldEditPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
@@ -207,10 +207,10 @@
 				initiiereFeldEdit();
 			});
 
-			//Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
+			// Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -219,7 +219,7 @@
 					$.mobile.changePage("BeobListe.html");
 				}
 
-				//jedes Feld aus Feldeigenschaften bei Änderung speichern
+				// jedes Feld aus Feldeigenschaften bei Änderung speichern
 				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
 					var AlterFeldWert;
 					localStorage.FeldWert = this.value;
@@ -230,10 +230,10 @@
 						localStorage.FeldName = this.id;
 						localStorage.AlterFeldWert = Feld[this.id];
 					}
-					//Felder der Datenzentren dürfen nicht verändert werden
-					//ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
+					// Felder der Datenzentren dürfen nicht verändert werden
+					// ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 					if (Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen')) {
-						//Feldwert zurücksetzen	
+						// Feldwert zurücksetzen	
 						if (localStorage.AlterFeldWert) {
 							$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
 						} else {
@@ -244,18 +244,18 @@
 						delete localStorage.AlterFeldWert;
 						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein eigenes Feld erstellen");
 					} else if (localStorage.FeldName === "FeldName") {
-						//Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
-						//ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
-						//undefined als o.k.!!!!
+						// Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
+						// ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
+						// undefined als o.k.!!!!
 						if (localStorage.AlterFeldWert !== "undefined" && localStorage.AlterFeldWert) {
-							//wenn ein alter Feldname existiert,
-							//zählen, in wievielen Datensätzen das Feld verwendet wird
+							// wenn ein alter Feldname existiert,
+							// zählen, in wievielen Datensätzen das Feld verwendet wird
 							$db = $.couch.db("evab");
 							$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 								success: function (data) {
 									var i, anzVorkommen, Datensatz, TempFeld, ds;
 									anzVorkommen = 0;
-									//zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
+									// zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
 									for (i in data.rows) {
 										if (typeof i !== "function") {
 											Datensatz = data.rows[i].doc; 
@@ -266,13 +266,13 @@
 										}
 									}
 									if (anzVorkommen === 0) {
-										//alter Feldname wurde noch in keinem Datensatz verwendet
-										//prüfen, ob der neue Feldname schon existiert
-										//wenn ja: melden, zurückstellen
-										//wenn nein: speichern
+										// alter Feldname wurde noch in keinem Datensatz verwendet
+										// prüfen, ob der neue Feldname schon existiert
+										// wenn ja: melden, zurückstellen
+										// wenn nein: speichern
 										pruefeFeldNamen();
 									} else {
-										//Feldname wird schon verwendet > melden, zurückstellen
+										// Feldname wird schon verwendet > melden, zurückstellen
 										ds = "Datensätzen";
 										if (anzVorkommen === 1) {
 											ds = "Datensatz";
@@ -286,22 +286,22 @@
 								}
 							});
 						} else {
-							//Vorher gab es keinen Feldnamen
-							//prüfen, ob der neue Feldname schon existiert
-							//wenn ja: melden, zurückstellen
-							//wenn nein: speichern
+							// Vorher gab es keinen Feldnamen
+							// prüfen, ob der neue Feldname schon existiert
+							// wenn ja: melden, zurückstellen
+							// wenn nein: speichern
 							pruefeFeldNamen();
 						}
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
 						leereStorageFeldListe();
 						speichereFeldeigenschaften();
-						//Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
+						// Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 						ArtGruppeAufbauenFeldEdit();
 					} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
 						$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
 						if (window.Feld.Hierarchiestufe === "Art") {
-							//Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
+							// Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 							$("#Artgruppenliste").empty();
 						}
 						leereStorageFeldListe();
@@ -316,7 +316,7 @@
 
 				$("#FeldEditForm").on("change", "#FeldFolgtNach", function () {
 					setzeReihenfolgeMitVorgaenger(this.value);
-					//Feldliste soll neu aufgebaut werden
+					// Feldliste soll neu aufgebaut werden
 					delete window.Feldliste;
 				});
 
@@ -327,69 +327,69 @@
 
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
 					var Optionen, Feldwert, LetzterFeldwert, Formularelement, StandardwertOptionen;
-					Optionen = $("#Optionen").val() || [];	//undefined verhindern
-					Feldwert = this.value || [];	//undefined verhindern
+					Optionen = $("#Optionen").val() || [];	// undefined verhindern
+					Feldwert = this.value || [];	// undefined verhindern
 					if (Optionen.length > 0) {
-						//es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
+						// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 						LetzterFeldwert = [];
 						if (Feld.Standardwert) {
 							if (Feld.Standardwert[localStorage.Email]) {
 								LetzterFeldwert = Feld.Standardwert[localStorage.Email];
 							}
 						}
-						//Standardwert in Array verwandeln
+						// Standardwert in Array verwandeln
 						StandardwertOptionen = [];
 						if (Feldwert.length > 0) {
-							//Fehler verhindern, falls Feldwert undefined ist
+							// Fehler verhindern, falls Feldwert undefined ist
 							StandardwertOptionen = Feldwert.split(",");
 						}
 						if (["multipleselect", "checkbox"].indexOf(Feld.Formularelement) > -1) {
-							//alle StandardwertOptionen müssen Optionen sein
+							// alle StandardwertOptionen müssen Optionen sein
 							for (i in StandardwertOptionen) {
 								if (typeof i !== "function") {
 									if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
-										//ein Wert ist keine Option, abbrechen
+										// ein Wert ist keine Option, abbrechen
 										$("#Standardwert").val(LetzterFeldwert);
 										melde("Bitte wählen Sie eine oder mehrere der Optionen");
 										return;
 									}
 								}
 							}
-							//alle Werte sind Optionen
+							// alle Werte sind Optionen
 							speichereStandardwert();
 						} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Feld.Formularelement) > -1) {
-							//Array darf nur ein Element enthalten
+							// Array darf nur ein Element enthalten
 							if (StandardwertOptionen.length > 1) {
-								//Array enthält mehrere Optionen, nicht zulässig
+								// Array enthält mehrere Optionen, nicht zulässig
 								$("#Standardwert").val(LetzterFeldwert);
 								melde("Bitte wählen Sie nur EINE der Optionen");
 							} else {
-								//Array enthält eine einzige Option
+								// Array enthält eine einzige Option
 								for (i in StandardwertOptionen) {
 									if (typeof i !== "function") {
 										if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
-											//der Wert ist keine Option, abbrechen
+											// der Wert ist keine Option, abbrechen
 											$("#Standardwert").val(LetzterFeldwert);
 											melde("Bitte wählen Sie eine der Optionen");
 											return;
 										}
 									}
 								}
-								//alle Werte sind Optionen
+								// alle Werte sind Optionen
 								speichereStandardwert();
 								return;
 							}
 						} else {
-							//Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
+							// Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
 							speichereStandardwert();
 						}
 					} else {
-						//Es gibt keine Optionen. Alle Standardwerte akzeptieren
+						// Es gibt keine Optionen. Alle Standardwerte akzeptieren
 						speichereStandardwert();
 					}
 				});
 
-				//Code für den Feld-Löschen-Dialog
+				// Code für den Feld-Löschen-Dialog
 				$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function (event) {
 					event.preventDefault();
 					if (Feld.User === "ZentrenBdKt") {
@@ -405,11 +405,11 @@
 									click: function () {
 										$('#dialogoutput').text('ja');
 										if (!Feld.FeldName) {
-											//Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
+											// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 											loescheFeld();
 										} else {
 											$db = $.couch.db("evab");
-											//zählen, in wievielen Datensätzen das Feld verwendet wird
+											// zählen, in wievielen Datensätzen das Feld verwendet wird
 											$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 												success: function (data) {
 													var i, anzVorkommen, Datensatz, TempFeld, ds;
@@ -449,19 +449,19 @@
 					}
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#FeldEditHeader").on('click', "#MenuFeldEdit", function (event) {
 					event.preventDefault();
 					erstelleMenuFürFelder(this);
 				});
 
-				//BackButton steuern
+				// BackButton steuern
 				$("#FeldEditHeader").on('click', '#zurueckFeldEdit', function (event) {
 					event.preventDefault();
 					geheZurueckFE();
 				});
 
-				//swipen steuern
+				// swipen steuern
 				$("#FeldEditPage").on("swipeleft", "#FeldEditContent", function () {
 					geheZumNächstenFeld();
 				});
@@ -470,21 +470,21 @@
 					geheZumVorigenFeld();
 				});
 
-				//Pagination Pfeil voriger initialisieren
+				// Pagination Pfeil voriger initialisieren
 				$("#FeldEditPage").on("vclick", ".ui-pagination-prev", function (event) {
 					event.preventDefault();
 					geheZumVorigenFeld();
 				});
 
-				//Pagination Pfeil nächster initialisieren
+				// Pagination Pfeil nächster initialisieren
 				$("#FeldEditPage").on("vclick", ".ui-pagination-next", function (event) {
 					event.preventDefault();
 					geheZumNächstenFeld();
 				});
 
-				//Pagination Pfeiltasten initialisieren
+				// Pagination Pfeiltasten initialisieren
 				$("#FeldEditPage").on("keyup", function (e) {
-					//nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 					if (!$(e.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
 						// Left arrow
 						if (e.keyCode === $.mobile.keyCode.LEFT) {
@@ -499,26 +499,26 @@
 					}
 				});
 
-				//prüft neue oder umbenannte Feldnamen
-				//prüft, ob der neue Feldname schon existiert
-				//wenn ja: melden, zurückstellen
-				//wenn nein: speichern
+				// prüft neue oder umbenannte Feldnamen
+				// prüft, ob der neue Feldname schon existiert
+				// wenn ja: melden, zurückstellen
+				// wenn nein: speichern
 				function pruefeFeldNamen() {
 					$db = $.couch.db("evab");
 					$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 						success: function (data) {
 							var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
 							AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
-							//durch alle Felder mit demselben Artnamen laufen
-							//prüfen, ob sie eigene oder offielle sind
+							// durch alle Felder mit demselben Artnamen laufen
+							// prüfen, ob sie eigene oder offielle sind
 							if (data.rows) {
 								for (i in data.rows) {
 									if (typeof i !== "function") {
 										if (data.rows[i].doc) {
 											TempFeld = data.rows[i].doc;
-											//ist es ein eigenes oder ein offizielles?
+											// ist es ein eigenes oder ein offizielles?
 											if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
-												//ja > dieser Name ist nicht zulässig
+												// ja > dieser Name ist nicht zulässig
 												AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
 											}
 										}
@@ -526,14 +526,14 @@
 								}
 							}
 							if (AnzEigeneOderOffizielleFelderMitSelbemNamen === 0) {
-								//Feldname ist neu, somit zulässig > speichern
-								//und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
+								// Feldname ist neu, somit zulässig > speichern
+								// und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 								$("#SichtbarImModusHierarchisch").val("ja");
 								$("select#SichtbarImModusHierarchisch").slider("refresh");
 								speichereFeldeigenschaften();
 							} else {
-								//Feldname kommt bei diesem User schon vor
-								//Wert im Feld zurücksetzen
+								// Feldname kommt bei diesem User schon vor
+								// Wert im Feld zurücksetzen
 								if (localStorage.AlterFeldWert) {
 									$("#FeldName").val(localStorage.AlterFeldWert);
 								} else {
@@ -541,7 +541,7 @@
 								}
 								setTimeout(function () { 
 									$('#FeldName').focus(); 
-								}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+								}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 								melde("Feldname " + localStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
 								delete localStorage.FeldName;
 								delete localStorage.FeldWert;
@@ -549,7 +549,7 @@
 							}
 						},
 						error: function () {
-							//Wert im Feld zurücksetzen
+							// Wert im Feld zurücksetzen
 							if (localStorage.AlterFeldWert) {
 								$("#FeldName").val(localStorage.AlterFeldWert);
 							} else {
@@ -565,10 +565,10 @@
 
 				function loescheFeld() {
 					if (window.Feld) {
-						//Objekt nutzen
+						// Objekt nutzen
 						loescheFeld_2();
 					} else {
-						//Feld aus DB holen
+						// Feld aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(Feld._id, {
 							success: function (data) {
@@ -586,7 +586,7 @@
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.Feld, {
 						success: function (data) {
-							//Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 							if (window.Feldliste) {
 								for (i in window.Feldliste.rows) {
 									if (window.Feldliste.rows[i].doc._id === data.id) {
@@ -595,7 +595,7 @@
 									}
 								}
 							} else {
-								//Keine Feldliste mehr. Storage löschen
+								// Keine Feldliste mehr. Storage löschen
 								leereStorageFeldListe();
 							}
 							leereStorageFeldEdit();
@@ -608,12 +608,12 @@
 				}
 
 
-				//Öffnet das nächste Feld
-				//nächstes des letzten => melden
-				//erwartet die ID des aktuellen Datensatzes
+				// Öffnet das nächste Feld
+				// nächstes des letzten => melden
+				// erwartet die ID des aktuellen Datensatzes
 				function geheZumNächstenFeld() {
 					if (window.Feldliste) {
-						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
+						// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 						geheZumNächstenFeld_2();
 					} else {
 						$db = $.couch.db("evab");
@@ -631,37 +631,37 @@
 					AnzFelder = window.Feldliste.rows.length -1;
 					for (i in window.Feldliste.rows) {
 						if (typeof i !== "function") {
-							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+							// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 							AktFeld_i = window.Feldliste.rows[i].doc;
-							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+							// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
-								//Nur eigene und offizielle Felder berücksichtigen
+								// Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = window.Feldliste.rows[i].doc._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
-									//das ist das aktuelle Feld
-									//von hier aus vorwärts das nächste eigene oder offizielle suchen
+									// das ist das aktuelle Feld
+									// von hier aus vorwärts das nächste eigene oder offizielle suchen
 									if (parseInt(i) < AnzFelder) {
-										//das aktuelle Feld ist nicht das letzte
+										// das aktuelle Feld ist nicht das letzte
 										for (y = parseInt(i)+1; y <= AnzFelder; y++) {
-											//alle verbleibenden Felder durchlaufen, eigenes suchen
+											// alle verbleibenden Felder durchlaufen, eigenes suchen
 											AktFeld_y = window.Feldliste.rows[y].doc;
-											//Nur eigene Felder und offizielle berücksichtigen
+											// Nur eigene Felder und offizielle berücksichtigen
 											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
-												//das ist das nächste eigene Feld > öffnen
+												// das ist das nächste eigene Feld > öffnen
 												localStorage.FeldId = window.Feldliste.rows[parseInt(i)+1].doc._id;
 												leereStorageFeldEdit("ohneId");
 												initiiereFeldEdit();
 												return;
 											} else {
 												if (y === AnzFelder) {
-													//am letzten Feld angelangt und es ist kein eigenes
+													// am letzten Feld angelangt und es ist kein eigenes
 													melde("Das ist das letzte Feld");
 													return;
 												}
 											}
 										}
 									} else {
-										//das aktuelle Feld ist das letzte
+										// das aktuelle Feld ist das letzte
 										melde("Das ist das letzte Feld");
 										return;
 									}
@@ -671,12 +671,12 @@
 					}
 				}
 
-				//Öffnet das vorige Feld
-				//voriges des ersten => FeldListe
-				//erwartet die ID des aktuellen Datensatzes
+				// Öffnet das vorige Feld
+				// voriges des ersten => FeldListe
+				// erwartet die ID des aktuellen Datensatzes
 				function geheZumVorigenFeld() {
 					if (window.Feldliste) {
-						//Feldliste aus globaler Variable verwenden - muss nicht geparst werden
+						// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 						geheZumVorigenFeld_2();
 					} else {
 						$db = $.couch.db("evab");
@@ -694,23 +694,23 @@
 					AnzFelder = window.Feldliste.rows.length -1;
 					for (i in window.Feldliste.rows) {
 						if (typeof i !== "function") {
-							//alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+							// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
 							AktFeld_i = window.Feldliste.rows[i].doc;
-							//vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+							// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 							if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
-								//Nur eigene und offizielle Felder berücksichtigen
+								// Nur eigene und offizielle Felder berücksichtigen
 								FeldIdAktuell = window.Feldliste.rows[i].doc._id;
 								if (FeldIdAktuell === localStorage.FeldId) {
-									//das ist das aktuelle Feld
-									//von hier aus rückwärts das nächste eigene oder offizielle suchen
+									// das ist das aktuelle Feld
+									// von hier aus rückwärts das nächste eigene oder offizielle suchen
 									if (parseInt(i) > 0) {
-										//das aktuelle Feld ist nicht das erste 
+										// das aktuelle Feld ist nicht das erste 
 										for (y = parseInt(i)-1; y >= 0; y--) {
-											//alle vorhergehenden Felder durchlaufen, eigenes suchen
+											// alle vorhergehenden Felder durchlaufen, eigenes suchen
 											AktFeld_y = window.Feldliste.rows[y].doc;
-											//Nur eigene Felder und offizielle berücksichtigen
+											// Nur eigene Felder und offizielle berücksichtigen
 											if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
-												//das ist das nächstvorherige eigene Feld > öffnen
+												// das ist das nächstvorherige eigene Feld > öffnen
 												FeldIdVoriges = window.Feldliste.rows[parseInt(i)-1].doc._id;
 												localStorage.FeldId = FeldIdVoriges;
 												leereStorageFeldEdit("ohneId");
@@ -718,16 +718,16 @@
 												return;
 											} else {
 												if (y === 1) {
-													//am ersten Feld angelangt und es ist kein eigenes
-													//wir gehen zur Feldliste
+													// am ersten Feld angelangt und es ist kein eigenes
+													// wir gehen zur Feldliste
 													geheZurueckFE();
 													return;
 												}
 											}
 										}
 									} else {
-										//das aktuelle Feld ist das erste
-										//wir gehen zur Feldliste
+										// das aktuelle Feld ist das erste
+										// wir gehen zur Feldliste
 										geheZurueckFE();
 										return;
 									}
@@ -737,10 +737,10 @@
 					}
 				}
 
-				//empfängt den Feldnamen des gewählten Vorgängers
-				//ermittelt dessen Reihenfolge
-				//sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
-				//Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
+				// empfängt den Feldnamen des gewählten Vorgängers
+				// ermittelt dessen Reihenfolge
+				// sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
+				// Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
 				function setzeReihenfolgeMitVorgaenger(FeldNameVorgaenger) {
 					var viewname;
 					$db = $.couch.db("evab");
@@ -756,12 +756,12 @@
 				}
 
 				function speichereStandardwert() {
-					//Prüfen, ob Feld als Objekt vorliegt
+					// Prüfen, ob Feld als Objekt vorliegt
 					if (window.Feld) {
-						//dieses verwenden
+						// dieses verwenden
 						speichereStandardwert_2();
 					} else {
-						//aus DB holen
+						// aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.FeldId, {
 							success: function (doc) {
@@ -779,25 +779,25 @@
 				function speichereStandardwert_2() {
 					var Feldwert;
 					Feldwert = $("#Standardwert").val();
-					//Standardwert managen
-					//Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
-					//darum manuell für diesen User updaten
+					// Standardwert managen
+					// Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
+					// darum manuell für diesen User updaten
 					if (window.Feld.Standardwert) {
-						//Standardwert existierte
+						// Standardwert existierte
 						if (Feldwert) {
-							//neuen Standardwert setzen
+							// neuen Standardwert setzen
 							window.Feld.Standardwert[localStorage.Email] = Feldwert;
 						} else {
-							//Standardwert ist leer
+							// Standardwert ist leer
 							if (window.Feld.Standardwert[localStorage.Email]) {
-								//bisherigen Standardwert löschen
+								// bisherigen Standardwert löschen
 								delete window.Feld.Standardwert[localStorage.Email];
 							}
 						}
 					} else {
-						//Bisher gab es noch keinen Standardwert
+						// Bisher gab es noch keinen Standardwert
 						if (Feldwert) {
-							//Objekt für Standardwert schaffen und neuen Wert setzen
+							// Objekt für Standardwert schaffen und neuen Wert setzen
 							window.Feld.Standardwert = {};
 							window.Feld.Standardwert[localStorage.Email] = Feldwert;
 						}
@@ -806,7 +806,7 @@
 						success: function (data) {
 							window.Feld._rev = data.rev;
 							localStorage.FeldId = data.id;
-							//Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
+							// Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
 							leereStorageFeldListe();
 						},
 						error: function () {
@@ -815,14 +815,14 @@
 					});
 				}
 
-				//speichert
+				// speichert
 				function speichereFeldeigenschaften() {
-					//prüfen, ob das Feld als Objekt vorliegt
+					// prüfen, ob das Feld als Objekt vorliegt
 					if (window.Feld) {
-						//bestehendes Objekt verwenden
+						// bestehendes Objekt verwenden
 						speichereFeldeigenschaften_2();
 					} else {
-						//Objekt aus der DB holen
+						// Objekt aus der DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.FeldId, {
 							success: function (data) {
@@ -839,90 +839,90 @@
 				function speichereFeldeigenschaften_2() {
 					var Formularfelder, idx1, idx2;
 					Formularfelder = $("#FeldEditForm").serializeObjectNull();
-					//Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+					// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 					if (Formularfelder.Optionen) {
 						Formularfelder.Optionen = Formularfelder.Optionen.split(",");
 					}
 					/*if (window.Feld.ArtGruppe) {
 						window.Feld.ArtGruppe = window.Feld.ArtGruppe.split(", ");
 					}*/
-					//Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
+					// Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
 					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 						Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
-						//Feldliste soll neu aufgebaut werden
+						// Feldliste soll neu aufgebaut werden
 						leereStorageFeldListe();
 					}
-					//Es braucht eine Reihenfolge
+					// Es braucht eine Reihenfolge
 					if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 						Formularfelder.Reihenfolge = 1;
-						//Feldliste soll neu aufgebaut werden
+						// Feldliste soll neu aufgebaut werden
 						leereStorageFeldListe();
 					}
-					//Es braucht einen Feldtyp
+					// Es braucht einen Feldtyp
 					if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 						Formularfelder.Formularelement = "textinput";
 						Formularfelder.InputTyp = "text";
 					}
-					//Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
+					// Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
 					if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
 						delete Formularfelder.InputTyp;
 						$("#" + Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
 					}
-					//Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+					// Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
 					if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
 						Formularfelder.InputTyp = "text";
 					}
-					//Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
-					//Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
-					//Soll das Feld im Modus einfach sichtbar sein?
+					// Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
+					// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
+					// Soll das Feld im Modus einfach sichtbar sein?
 					idx1 = window.Feld.SichtbarImModusEinfach.indexOf(localStorage.Email);
 					if ($("#SichtbarImModusEinfach").val() === "ja") {
-						//User ergänzen, wenn noch nicht enthalten
+						// User ergänzen, wenn noch nicht enthalten
 						if (idx1 === -1) {
 							window.Feld.SichtbarImModusEinfach.push(localStorage.Email);
 						}
 					} else {
-						//User entfernen, wenn enthalten
+						// User entfernen, wenn enthalten
 						if (idx1 !== -1) {
 							window.Feld.SichtbarImModusEinfach.splice(idx1, 1);
 						}
 					}
-					//Soll das Feld im Modus hierarchisch sichtbar sein?
+					// Soll das Feld im Modus hierarchisch sichtbar sein?
 					idx2 = window.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email);
 					if ($("#SichtbarImModusHierarchisch").val() === "ja") {
-						//User ergänzen, wenn noch nicht enthalten
+						// User ergänzen, wenn noch nicht enthalten
 						if (idx2 === -1) {
 							window.Feld.SichtbarImModusHierarchisch.push(localStorage.Email);
 						}
 					} else {
-						//User entfernen, wenn enthalten
+						// User entfernen, wenn enthalten
 						if (idx2 !== -1) {
 							window.Feld.SichtbarImModusHierarchisch.splice(idx2, 1);
 						}
 					}
-					//Formularfelder in Dokument schreiben
-					//setzt Vorhandensein von Feldnamen voraus!
+					// Formularfelder in Dokument schreiben
+					// setzt Vorhandensein von Feldnamen voraus!
 					for (i in Formularfelder) {
 						if (typeof i !== "function") {
 							if (Formularfelder[i]) {
 								if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
-									//Zahl wird sonst in Text verwandelt und falsch sortiert
+									// Zahl wird sonst in Text verwandelt und falsch sortiert
 									window.Feld[i] = parseInt(Formularfelder[i]);
 								} else {
 									window.Feld[i] = Formularfelder[i];
 								}
 							} else {
-								//leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
+								// leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
 								delete window.Feld[i];
 							}
 						}
 					}
 					$db.saveDoc(window.Feld, {
 						success: function (data) {
-							//rev aktualisieren
+							// rev aktualisieren
 							window.Feld._rev = data.rev;
 							localStorage.FeldId = data.id;
-							//Feldliste soll neu aufbauen
+							// Feldliste soll neu aufbauen
 							leereStorageFeldListe();
 						},
 						error: function () {

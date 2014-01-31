@@ -66,8 +66,8 @@
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
-				//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				//muss auf index.html umgeleitet werden
+				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
 					$.mobile.changePage("index.html");
@@ -80,7 +80,7 @@
 				});
 
 				$("#BeoblisteBL").on("taphold", ".beob", function (event) {
-					//FUNKTIONIERT NICHT, WEIL JQUERY MOBILE NACH TAPHOLD IMMER EINEN TAP AUSFÜHRT!!!!!!!!!!!!!!!	
+					// FUNKTIONIERT NICHT, WEIL JQUERY MOBILE NACH TAPHOLD IMMER EINEN TAP AUSFÜHRT!!!!!!!!!!!!!!!	
 					console.log('taphold');
 				});
 
@@ -90,7 +90,7 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				//Menu aufbauen
+				// Menu aufbauen
 				$("#BeobListePageHeader").on('click', "#MenuBeobListe", function (event) {
 					event.preventDefault();
 					erstelleMenuBeobListe(this);
@@ -101,13 +101,13 @@
 					$.mobile.changePage("hProjektListe.html");
 				});
 
-				//Neue Beobachtung managen
+				// Neue Beobachtung managen
 				$("#BeobListePage").on("click", ".NeueBeobBeobListe", function (event) {
 					event.preventDefault();
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
 
-				//Neue Beobachtung managen
+				// Neue Beobachtung managen
 				$("#BeoblisteBL").on("swipeleft", ".erste", function () {
 					erstelleNeueBeob_1_Artgruppenliste();
 				});
@@ -116,19 +116,19 @@
 					$.mobile.changePage("hProjektListe.html");
 				});
 
-				//eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
+				// eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 				function erstelleNeueBeob_1_Artgruppenliste() {
-					//Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+					// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
 					localStorage.Status = "neu";
 					localStorage.Von = "BeobListe";
-					delete localStorage.aArtGruppe;	//verhindern, dass eine Artgruppe übergeben wird
+					delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
-				//Menü aufbauen
+				// Menü aufbauen
 				function erstelleMenuBeobListe(thiz) {
-					//Code um Menü aufzubauen
+					// Code um Menü aufzubauen
 					$(thiz).simpledialog2({
 						'mode' : 'button',
 						'headerClose': true,

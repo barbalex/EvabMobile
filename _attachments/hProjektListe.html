@@ -74,15 +74,15 @@
 					initiiereProjektliste();
 				});
 				$(":jqmData(role='page')").on("pageinit", function () {
-					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-					//muss auf index.html umgeleitet werden
+					// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+					// muss auf index.html umgeleitet werden
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
 						$.mobile.changePage("index.html");
 						return;
 					}
 
-					//Menu aufbauen
+					// Menu aufbauen
 					$("#hProjektListePageHeader").on('click', '#MenuProjektListe', function (event) {
 						event.preventDefault();
 						erstelleMenuProjektliste(this);
@@ -93,14 +93,14 @@
 						event.stopPropagation();
 					});
 
-					//inaktive tabs inaktivieren
-					//BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+					// inaktive tabs inaktivieren
+					// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
 					$(document).on("click", ".tab_inaktiv", function (event) {
 						event.preventDefault();
 						event.stopPropagation();
 					});
 
-					//neues Projekt erstellen
+					// neues Projekt erstellen
 					$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function (event) {
 						event.preventDefault();
 						erstelleNeuesProjekt();
@@ -136,9 +136,9 @@
 						$.mobile.changePage("Karte.html");
 					});
 
-					//Menü aufbauen
+					// Menü aufbauen
 					function erstelleMenuProjektliste(thiz) {
-						//Code um Menü aufzubauen
+						// Code um Menü aufzubauen
 						$(thiz).simpledialog2({
 							'mode' : 'button',
 							'headerClose': true,

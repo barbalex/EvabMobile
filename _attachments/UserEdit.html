@@ -82,17 +82,17 @@
 				});
 
 				$(":jqmData(role='page')").on("pageinit", function () {
-					//Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-					//muss auf index.html umgeleitet werden
+					// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+					// muss auf index.html umgeleitet werden
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
 						$.mobile.changePage("index.html");
 					}
 
-					//zurück-Button steuern
+					// zurück-Button steuern
 					$("#UserEditHeader").on('click', '#zurückUserEdit', function (event) {
 						event.preventDefault();
-						//sicherstellen, dass er immer ein zurück kennt
+						// sicherstellen, dass er immer ein zurück kennt
 						if (!localStorage.zurueck) {
 							localStorage.zurueck = "BeobListe.html";
 						}
@@ -100,11 +100,11 @@
 						delete localStorage.zurueck;
 					});
 
-					//jedes Feld bei Änderung speichern
+					// jedes Feld bei Änderung speichern
 					$("#UserEditForm").on("change", ".Feld", function () {
 						var Feldname, Feldjson, Feldwert;
 						Feldname = this.name;
-						//nötig, damit Arrays richtig kommen
+						// nötig, damit Arrays richtig kommen
 						Feldjson = $("[name='" + Feldname + "']").serializeObject();
 						Feldwert = Feldjson[Feldname];
 						if (validiereUserUserEdit()) {
@@ -116,28 +116,28 @@
 						localStorage.Datenverwendung = $(this).attr("id");
 					});
 
-					//Autor bei Änderung speichern
+					// Autor bei Änderung speichern
 					$("#UserEditForm").on("change", "#Autor", function () {
 						$db = $.couch.db("evab");
 						$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 							success: function (doc) {
 								if ($("#Autor").val()) {
-									//Wenn Autor erfasst ist, speichern
-									//Falls Standardwert noch nicht existiert, 
-									//uss zuerst das Objekt geschaffen werden
+									// Wenn Autor erfasst ist, speichern
+									// Falls Standardwert noch nicht existiert, 
+									// uss zuerst das Objekt geschaffen werden
 									if (!doc.Standardwert) {
 										doc.Standardwert = {};
 									}
 									doc.Standardwert[localStorage.Email] = $("#Autor").val();
 								} else {
-									//Wenn kein Autor erfasst ist, einen allfälligen löschen
+									// Wenn kein Autor erfasst ist, einen allfälligen löschen
 									if (doc.Standardwert) {
 										delete doc.Standardwert[localStorage.Email];
 									}
 								}
 								$db.saveDoc(doc, {
 									success: function () {
-										//Feldliste soll neu aufgebaut werden
+										// Feldliste soll neu aufgebaut werden
 										leereStorageFeldListe();
 										localStorage.Autor = $("#Autor").val();
 									},
@@ -153,14 +153,14 @@
 					});
 				});
 
-				//kontrollierren, ob die erforderlichen Felder etwas enthalten
-				//wenn ja wird true retourniert, sonst false
+				// kontrollierren, ob die erforderlichen Felder etwas enthalten
+				// wenn ja wird true retourniert, sonst false
 				function validiereUserUserEdit() {
 					if (!$("#Autor").val()) {
 						melde("Bitte Autor eingeben");
 						setTimeout(function() { 
 							$('#Autor').focus();
-						}, 50);  //need to use a timer so that .blur() can finish before you do .focus()
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					return true;
@@ -189,8 +189,8 @@
 							}
 						});
 					} else {
-						//es gibt noch keine User-Doc
-						//vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
+						// es gibt noch keine User-Doc
+						// vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
 						speichereUserInEvab();
 					}
 				}
