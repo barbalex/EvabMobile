@@ -39,9 +39,20 @@
 	<body>
 		<div data-role="page" id="ProjektListePage">
 			<div id="hProjektListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
-				<a href="#" id="OeffneBeobListeProjektListe" data-role="button" data-icon="einfach">einfach</a>
+				<a href="#" id="OeffneBeobListeProjektListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-bars">einfach</a>
 				<h2 class="hProjektListePageTitel">Projekte</h2>
-				<a href='#' id='MenuProjektListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+				<a href="#MenuProjektListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+				<div data-role="popup" id="MenuProjektListe" data-theme="a">
+				        <ul data-role="listview" data-inset="true" style="min-width:210px;">
+				            <li data-role="list-divider">Menü:</li>
+				            <li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+				            <li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+				            <li><a class="menu_projekte_exportieren" href="#">Projekte exportieren</a></li>
+				            <li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+				            <li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+				            <li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				        </ul>
+				</div>
 				<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjektListeProjektListe" class="ui-btn-active">Projekte</a></li>
@@ -81,12 +92,6 @@
 						$.mobile.changePage("index.html");
 						return;
 					}
-
-					// Menu aufbauen
-					$("#hProjektListePageHeader").on('click', '#MenuProjektListe', function (event) {
-						event.preventDefault();
-						erstelleMenuProjektliste(this);
-					});
 
 					$("#hProjektListePageHeader").on('click', '#OeffneProjektListeProjektListe', function (event) {
 						event.preventDefault();
@@ -136,64 +141,33 @@
 						$.mobile.changePage("Karte.html");
 					});
 
-					// Menü aufbauen
-					function erstelleMenuProjektliste(thiz) {
-						// Code um Menü aufzubauen
-						$(thiz).simpledialog2({
-							'mode' : 'button',
-							'headerClose': true,
-							'headerText' : '<b>Menü</b>',
-							'forceInput': false,
-							'buttons' : {
-								'einfacher Modus': {
-									click: function () {
-										$.mobile.changePage("BeobListe.html");
-									},
-									theme: "a",
-									icon: "einfach"
-								},
-								'Felder verwalten': {
-									click: function () {
-										localStorage.zurueck = "hProjektListe.html";
-										$.mobile.changePage("FeldListe.html");
-									},
-									theme: "a",
-									icon: "info"
-								},
-								'Projekte exportieren': {
-									click: function () {
-										window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
-									},
-									theme: "a",
-									icon: "exportieren"
-								},
-								'Einstellungen': {
-									click: function () {
-										localStorage.zurueck = "hProjektListe.html";
-										öffneMeineEinstellungen();
-									},
-									theme: "a",
-									icon: "wrench"
-								},
-								'lokal installieren': {
-									click: function () {
-										localStorage.zurueck = "hProjektListe.html";
-										$.mobile.changePage("Installieren.html");
-									},
-									theme: "a",
-									icon: "lightning"
-								},
-								'neu anmelden': {
-									click: function () {
-										localStorage.UserStatus = "neu";
-										$.mobile.changePage("index.html");
-									},
-									theme: "a",
-									icon: "person"
-								}
-							}
-						})
-					}
+					$('#MenuProjektListe').on('click', '.menu_einfacher_modus', function() {
+						$.mobile.changePage("BeobListe.html");
+					});
+
+					$('#MenuProjektListe').on('click', '.menu_felder_verwalten', function() {
+						localStorage.zurueck = "hProjektListe.html";
+						$.mobile.changePage("FeldListe.html");
+					});
+
+					$('#MenuProjektListe').on('click', '.menu_projekte_exportieren', function() {
+						window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
+					});
+
+					$('#MenuProjektListe').on('click', '.menu_einstellungen', function() {
+						localStorage.zurueck = "hProjektListe.html";
+						öffneMeineEinstellungen();
+					});
+
+					$('#MenuProjektListe').on('click', '.menu_lokal_installieren', function() {
+						localStorage.zurueck = "hProjektListe.html";
+						$.mobile.changePage("Installieren.html");
+					});
+
+					$('#MenuProjektListe').on('click', '.menu_neu_anmelden', function() {
+						localStorage.UserStatus = "neu";
+						$.mobile.changePage("index.html");
+					});
 				});
 			</script>
 		</div>
