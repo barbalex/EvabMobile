@@ -7,12 +7,7 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="style/jquery.mobile.css">
   	<link rel="stylesheet" href="style/evab.css">
-  	<style>.ui-icon-evab-location {background-image:url('Bilder/evab-location.png');}</style>
-	<style>.ui-icon-hierarchisch {background-image:url('Bilder/hierarchisch.png');}</style>
-	<style>.ui-icon-einfach {background-image:url('Bilder/einfach.png');}</style>
-	<style>.ui-icon-exportieren {background-image:url('Bilder/exportieren.png');}</style>
   	<link rel="stylesheet" href="style/jquery.mobile.datebox.css">
-  	<link rel="stylesheet" href="style/jquery.mobile.simpledialog.css">
 	<script src="vendor/couchapp/jquery.js"></script>
 	<script src="vendor/couchapp/jquery-migrate.js"></script>
 	<script>			
@@ -29,7 +24,6 @@
 	<script src="vendor/couchapp/jquery.mobile.js"></script>
 	<script src="vendor/couchapp/phonegap.js"></script>
 	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-	<script src="vendor/couchapp/jquery.mobile.simpledialog2.js"></script>
 	<script src="vendor/couchapp/evab.js"></script>
 	<script src="vendor/couchapp/sha1.js"></script>
 	<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
@@ -38,10 +32,21 @@
   </head>
   <body>
 	<div data-role="page" id="ProjektEditPage">
-		<div data-role="header" id="hProjektEditHeader" data-position="fixed" data-tap-toggle="false">
-			<a href="#" name="OeffneProjektListeProjektEdit" data-role="button" data-icon="arrow-l" data-iconpos="notext">zur Projekt-Liste</a>
+		<div data-role="header" id="hProjektEditHeader"  data-position="fixed" data-tap-toggle="false">
+			<a href="#" name="OeffneProjektListeProjektEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Projekt-Liste</a>
 			<h1>Projekt</h1>
-			<a href='#' id='MenuProjektEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href="#MenuProjektEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuProjektEdit" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_projekte_exportieren" href="#">Projekte exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" name="OeffneProjektListeProjektEdit" class="ui-btn-active">Projekte</a></li>
@@ -67,7 +72,7 @@
 				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Projektberichte)</div>
 				<div id="AnhängehPE"></div>			
 				<div data-role="fieldcontain">
-					<label for="_attachmentshPE" class="ui-input-text">Dateien anfügen:</label>
+					<label for="_attachmentshPE">Dateien anfügen:</label>
 					<input type="file" id="_attachmentshPE" name="_attachments" multiple class="speichernAnhang ui-body-c">
 				</div>
 				<input type="hidden" id="_revhPE" name="_rev">
@@ -219,12 +224,6 @@
 							});
 						}
 					});
-				});
-
-				// Menu aufbauen
-				$('#hProjektEditHeader').on('click', '#MenuProjektEdit', function (event) {
-					event.preventDefault();
-					erstelleMenuProjektEdit(this);
 				});
 
 				// neues Projekt erstellen
@@ -439,64 +438,34 @@
 					}
 				}
 
-				// Menü aufbauen
-				function erstelleMenuProjektEdit(thiz) {
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hProjektEdit.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Projekte exportieren': {
-								click: function () {
-									window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "ProjektEdit.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "ProjektEdit.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuProjektEdit').on('click', '.menu_einfacher_modus', function() {
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuProjektEdit').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hProjektEdit.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuProjektEdit').on('click', '.menu_projekte_exportieren', function() {
+					window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
+				});
+
+				$('#MenuProjektEdit').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hProjektEdit.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuProjektEdit').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hProjektEdit.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 
 				// Öffnet das vorige oder nächste Projekt
 				// voriges des ersten => ProjektListe.html
