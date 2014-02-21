@@ -65,9 +65,9 @@
 			$("#al_Page").on("pageshow", function () {
 				initiiereArtenliste("");
 				if (window.gruppe_merken) {
-					$("#al_standardgruppe").button('enable');
+					$("#al_standardgruppe").removeClass('ui-disabled');
 				} else {
-					$("#al_standardgruppe").button('disable');
+					$("#al_standardgruppe").addClass('ui-disabled');
 				}
 			});
 

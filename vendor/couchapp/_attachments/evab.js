@@ -2871,7 +2871,7 @@ function oeffneBeob(BeobId) {
 // wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
 // erwartet einen filterwert
 // Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
-// möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfälliger Unterauswahl
+// möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfällige Unterauswahl
 function initiiereArtenliste(filterwert) {
 	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
 	// nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
