@@ -195,9 +195,28 @@
 											// Anzahl Arten des Projekts zählen
 											$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 												success: function (Arten) {
-													var anzArten;
+													var anzArten, meldung, div;
 													anzArten = Arten.rows.length;
-													$(that).simpledialog2({
+													meldung = 'Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?'
+													$("<div data-role='popup' id='löschen_meldung' data-overlay-theme='a' data-theme='a' data-dismissible='false' style='max-width:400px;'><div data-role='header' data-theme='a'><h1>Projekt löschen?</h1></div><div role='main' class='ui-content'><h3 class='ui-title'>"+meldung+"</h3><a href='#' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b nein_behalten' data-rel='back'>Nein, behalten</a><a href='#' id='ja_loeschen' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' data-rel='back' data-transition='flow'>Ja, löschen</a></div></div>")
+														.appendTo($.mobile.pageContainer);
+													// Listen anhängen, damti ohne DB-Abfrage gelöscht werden kann
+													div = $("#löschen_meldung");
+													jQuery.data(div, 'Arten', Arten);
+													jQuery.data(div, 'Zeiten', Zeiten);
+													jQuery.data(div, 'Orte', Orte);
+													jQuery.data(div, 'Raeume', Raeume);
+													// popup initiieren
+													$("#löschen_meldung").popup({
+														afterclose: function (event, ui) {
+															// Meldung wieder aus pageContainer entfernen
+															//$("#löschen_meldung").remove();
+														}
+													});
+													// popup öffnen
+													$("#löschen_meldung").popup("open");
+
+													/*$(that).simpledialog2({
 														'mode' : 'button',
 														'buttonPrompt' : '<b>Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?</b>',
 														'forceInput': 'false',
@@ -217,7 +236,7 @@
 																}
 															}
 														}
-													})
+													})*/
 												}
 											});
 										}
@@ -226,6 +245,12 @@
 							});
 						}
 					});
+				});
+
+				$("body").on("click", "#ja_loeschen", function (event) {
+					var div = $("#löschen_meldung");
+					löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
+					console.log("lösche projekt");
 				});
 
 				// neues Projekt erstellen
