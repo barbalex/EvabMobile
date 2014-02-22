@@ -34,6 +34,12 @@
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}
 
+/*jqm setzt linien nach fieldcontain
+  ist unschön, entfernen*/
+.ui-field-contain {
+  border-bottom-width: 0px !important;
+}
+
 /*datebox setzt seine Symbole in zu schmale Felder*/
 .ui-input-datebox {
 	width: 100% !important;
