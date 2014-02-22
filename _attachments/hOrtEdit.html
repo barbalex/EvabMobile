@@ -35,7 +35,18 @@
 		<div data-role="header" id="OrtEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneOrtListeOrtEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Ort-Liste</a>
 			<h1>Ort</h1>
-			<a href='#' id='MenuOrtEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href="#MenuOrtEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuOrtEdit" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_orte_exportieren" href="#">Orte exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjektOrtEdit">Projekt</a></li>
@@ -261,12 +272,6 @@
 					});				
 				});
 
-				// Menu aufbauen
-				$("#OrtEditHeader").on('click', "#MenuOrtEdit", function (event) {
-					event.preventDefault();
-					erstelleMenuOrtEdit(this);
-				});
-
 				// Karte managen
 				$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function (event) {
 					var contentHeight;
@@ -468,70 +473,39 @@
 						});
 					}
 				}
-				
-				// Menü aufbauen
-				function erstelleMenuOrtEdit(thiz) {
-					// Code um Menü aufzubauen
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStorageOrtEdit();
-									leereStorageOrtListe();
-									leereStorageRaumEdit();
-									leereStorageRaumListe();
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hOrtEdit.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Orte exportieren': {
-								click: function () {
-									window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "hOrtEdit.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "hOrtEdit.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+
+				$('#MenuOrtEdit').on('click', '.menu_einfacher_modus', function() {
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuOrtEdit').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hOrtEdit.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuOrtEdit').on('click', '.menu_orte_exportieren', function() {
+					window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuOrtEdit').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hOrtEdit.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuOrtEdit').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hOrtEdit.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 
 				// Öffnet den vorigen oder nächsten Ort
 				// voriger des ersten => OrtListe

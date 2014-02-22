@@ -36,7 +36,18 @@
   		<div data-role="header" id="hOrtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#"name="OeffneRaumOrtListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zum Raum</a>
   			<h2 class="hOrtListePageTitel">Orte</h2>
-  			<a href='#' id='MenuOrtListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href="#MenuOrtListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuOrtListe" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_orte_exportieren" href="#">Orte exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjektOrtListe">Projekt</a></li>
@@ -116,12 +127,6 @@
 					erstelleNeuenOrt();
 				});
 
-				// Menu aufbauen
-				$("#hOrtListePageHeader").on('click', "#MenuOrtListe", function (event) {
-					event.preventDefault();
-					erstelleMenuOrtListe(this);
-				});
-
 				$("#OrtlistehOL").on("swipeleft", ".Ort", function () {
 					localStorage.OrtId = $(this).attr('OrtId');
 					$.mobile.changePage("hZeitListe.html");
@@ -150,67 +155,37 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				// Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenuOrtListe(thiz) {
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStorageOrtListe();
-									leereStorageRaumEdit();
-									leereStorageRaumListe();
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hOrtListe.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Orte exportieren': {
-								click: function () {
-									window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "hOrtListe.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "hOrtListe.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuOrtListe').on('click', '.menu_einfacher_modus', function() {
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuOrtListe').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hOrtListe.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuOrtListe').on('click', '.menu_orte_exportieren', function() {
+					window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuOrtListe').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hOrtListe.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuOrtListe').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hOrtListe.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuOrtListe').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 			});
 		</script>
 	</div>
