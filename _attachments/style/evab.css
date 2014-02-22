@@ -30,6 +30,11 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}
 
+/*datebox setzt seine Symbole in zu schmale Felder*/
+.ui-field-contain .ui-input-datebox {
+	width: 100%;
+}
+
 /*in FeldRead.html Felder darstellen*/
 .Feld {font-weight:bold;}
 
