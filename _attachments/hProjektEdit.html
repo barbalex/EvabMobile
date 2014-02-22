@@ -86,7 +86,15 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="NeuesProjektProjektEdit" data-icon="plus">neu</a></li>
-					<li><a href="#" id="LöscheProjektProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
+					<li><a href="#" id="LöscheProjektProjektEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a>
+					<a href="#MenuProjektEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+					<div data-role="popup" id="MenuProjektEdit" data-theme="a">
+						<ul data-role="listview" data-inset="true" style="min-width:210px;">
+							<li data-role="list-divider">Menü:</li>
+							<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+						</ul>
+					</div>
+					</li>
 					<li><a href="#" id="KarteOeffnenProjektEdit" data-icon="location">Karte</a></li>
 					<li><a href="#" id="waehleFelderProjektEdit" data-icon="info">Felder</a></li>
 				</ul>

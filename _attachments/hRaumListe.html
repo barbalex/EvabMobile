@@ -35,7 +35,18 @@
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" name="ProjektEditOeffnenRaumListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
-  			<a href='#' id='MenuRaumListe' data-role='button' data-icon='wrench' data-iconpos='notext' class='r ui-btn-right'>Menu</a>
+  			<a href="#MenuRaumListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuRaumListe" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_raeume_exportieren" href="#">Räume exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" name="ProjektEditOeffnenRaumListe">Projekt</a></li>
@@ -107,12 +118,6 @@
 					erstelleNeuenRaum();
 				});
 
-				// Menu aufbauen
-				$('#hRaumListePageHeader').on('click','#MenuRaumListe', function (event) {
-					event.preventDefault();
-					erstelleMenuRaumListe(this);
-				});
-
 				$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
 					localStorage.RaumId = $(this).attr('RaumId');
 					$.mobile.changePage("hOrtListe.html");
@@ -140,66 +145,35 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				// Menü aufbauen. Wird aufgerufen von allen hListen in evab/templates
-				function erstelleMenuRaumListe(thiz) {
-					// Code um Menü aufzubauen
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStorageRaumListe();
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hRaumListe.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Räume exportieren': {
-								click: function () {
-									window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "hRaumListe.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "hRaumListe.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuRaumListe').on('click', '.menu_einfacher_modus', function() {
+					leereStorageRaumListe();
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuRaumListe').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hRaumListe.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuRaumListe').on('click', '.menu_raeume_exportieren', function() {
+					window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuRaumListe').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hRaumListe.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuRaumListe').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hRaumListe.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuRaumListe').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 			});
 		</script>
 	</div>
