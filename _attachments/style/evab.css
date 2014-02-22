@@ -8,17 +8,21 @@
 * aber einige sind inaktiv*/
 .ui-header .ui-navbar .tab_inaktiv {
 	background-image: none;
-	background-color: #F3F9EB;
+	/*background-color: #F3F9EB;*/
 	color: #adadad;
 }
 
 /*Hintergrundfarbe beim Viewwechsel setzen*/
-body {background: #f3f9eb; background-color: #f3f9eb;}
-.ui-overlay-a{background: #f3f9eb;}
+/*body {
+	background: #f3f9eb; 
+	background-color: #f3f9eb;
+}*/
+
+/*.ui-overlay-a{background: #f3f9eb;}
 .ui-overlay-b{background: #f3f9eb;}
 .ui-overlay-c{background: #f3f9eb;}
 .ui-overlay-d{background: #f3f9eb;}
-.ui-overlay-e{background: #f3f9eb;}
+.ui-overlay-e{background: #f3f9eb;}*/
 
 /*verhindern, dass der Text in der Titelzeile abgeschnitten wird*/
 .ui-header .ui-title {
@@ -31,8 +35,8 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 .titel {margin:0.12cm; text-align:center}
 
 /*datebox setzt seine Symbole in zu schmale Felder*/
-.ui-field-contain .ui-input-datebox {
-	width: 100%;
+.ui-input-datebox {
+	width: 100% !important;
 }
 
 /*in FeldRead.html Felder darstellen*/
@@ -65,7 +69,7 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 }
 
 /*Hintergrundfarbe setzen*/
-.ui-content {
+/*.ui-content {
   background-color: #f3f9eb; 
 }
 
@@ -79,7 +83,7 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 
 .ui-bar-c {
   background-color: #f3f9eb;
-}
+}*/
 
 .HinweisDynamischerFeldaufbau {
   width: 100%;
@@ -95,9 +99,9 @@ body {background: #f3f9eb; background-color: #f3f9eb;}
 }
 
 /*Feldhintergrund färben*/
-input.ui-input-text, textarea.ui-input-text {
+/*input.ui-input-text, textarea.ui-input-text {
   background: #F0F6E8;
-}
+}*/
 
 /*Diese hier für validate.js*/
 label.error {
@@ -387,7 +391,7 @@ ui-checkbox .ui-btn, .ui-radio .ui-btn {
 	background-image: none;
 	font-weight: normal;
 	font-size: 90%;
-	background: #F3F9EB;
+	/*background: #F3F9EB;*/
 }
 
 #al_filterzeile {
