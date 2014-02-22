@@ -235,7 +235,7 @@ html body .ui-group-theme-a .ui-bar-inherit {
 .ui-page-theme-a,
 .ui-page-theme-a .ui-panel-wrapper {
 	background: #f3f9eb /*{a-page-background-color}*/;
-	border-color: #f3f9eb /*{a-page-border}*/;
+	border-color: #b5b5b5 /*{a-page-border}*/;
 	color: #333 /*{a-page-color}*/;
 	text-shadow: 0 /*{a-page-shadow-x}*/ 1px /*{a-page-shadow-y}*/ 0 /*{a-page-shadow-radius}*/ #eeeeee /*{a-page-shadow-color}*/;
 }
@@ -247,7 +247,7 @@ html .ui-body-a .ui-body-inherit,
 html body .ui-group-theme-a .ui-body-inherit,
 html .ui-panel-page-container-a {
 	background: #f3f9eb /*{a-body-background-color}*/;
-	border-color: #dddddd /*{a-body-border}*/;
+	border-color: #b5b5b5 /*{a-body-border}*/;
 	color: #333 /*{a-body-color}*/;
 	text-shadow: 0 /*{a-body-shadow-x}*/ 1px /*{a-body-shadow-y}*/ 0 /*{a-body-shadow-radius}*/ #eeeeee /*{a-body-shadow-color}*/;
 }
@@ -294,7 +294,7 @@ html .ui-body-a .ui-btn:visited,
 html body .ui-group-theme-a .ui-btn:visited,
 html head + body .ui-btn.ui-btn-a:visited {
 	background: #DCE6D1 /*{a-bup-background-color}*/;
-	border-color: #d4d4d4 /*{a-bup-border}*/;
+	border-color: #b5b5b5 /*{a-bup-border}*/;
 	color: #333 /*{a-bup-color}*/;
 	text-shadow: 0 /*{a-bup-shadow-x}*/ 1px /*{a-bup-shadow-y}*/ 0 /*{a-bup-shadow-radius}*/ #eeeeee /*{a-bup-shadow-color}*/;
 }
@@ -305,7 +305,7 @@ html .ui-body-a .ui-btn:hover,
 html body .ui-group-theme-a .ui-btn:hover,
 html head + body .ui-btn.ui-btn-a:hover {
 	background: #e6eedd /*{a-bhover-background-color}*/;
-	border-color: #d4d4d4 /*{a-bhover-border}*/;
+	border-color: #b5b5b5 /*{a-bhover-border}*/;
 	color: #333 /*{a-bhover-color}*/;
 	text-shadow: 0 /*{a-bhover-shadow-x}*/ 1px /*{a-bhover-shadow-y}*/ 0 /*{a-bhover-shadow-radius}*/ #eeeeee /*{a-bhover-shadow-color}*/;
 }
@@ -316,7 +316,7 @@ html .ui-body-a .ui-btn:active,
 html body .ui-group-theme-a .ui-btn:active,
 html head + body .ui-btn.ui-btn-a:active {
 	background: #3E5A1A /*{a-bdown-background-color}*/;
-	border-color: #d4d4d4 /*{a-bdown-border}*/;
+	border-color: #b5b5b5 /*{a-bdown-border}*/;
 	color: #ffffff /*{a-bdown-color}*/;
 	text-shadow: 0 /*{a-bdown-shadow-x}*/ 1px /*{a-bdown-shadow-y}*/ 0 /*{a-bdown-shadow-radius}*/ #444444 /*{a-bdown-shadow-color}*/;
 }
