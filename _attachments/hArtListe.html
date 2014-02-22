@@ -35,7 +35,18 @@
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" name="OeffneZeithArtListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
-  			<a href='#' id='MenuhBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href="#MenuhBeobListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuhBeobListe" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_beob_exportieren" href="#">Beobachtungen exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjekthArtListe">Projekt</a></li>
@@ -123,12 +134,6 @@
 					$.mobile.changePage("hProjektEdit.html");
 				});
 
-				// Menu aufbauen
-				$("#hArtListePageHeader").on('click', '#MenuhBeobListe', function (event) {
-					event.preventDefault();
-					erstelleMenu_hal(this);
-				});
-
 				// Neue Beobachtung managen
 				$("#hArtListePage").on("click", ".NeueBeobhArtListe", function (event) {
 					event.preventDefault();
@@ -157,71 +162,41 @@
 					$.mobile.changePage("hZeitListe.html");
 				});
 
-				// Menü aufbauen
-				function erstelleMenu_hal(thiz) {
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStoragehBeobListe();
-									leereStorageZeitEdit();
-									leereStorageZeitListe();
-									leereStorageOrtEdit();
-									leereStorageOrtListe();
-									leereStorageRaumEdit();
-									leereStorageRaumListe();
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hArtListe.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Beobachtungen<br>exportieren': {
-								click: function () {
-									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "hArtListe.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "hArtListe.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuhBeobListe').on('click', '.menu_einfacher_modus', function() {
+					leereStoragehBeobListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuhBeobListe').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hArtListe.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuhBeobListe').on('click', '.menu_beob_exportieren', function() {
+					window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuhBeobListe').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hArtListe.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuhBeobListe').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hArtListe.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 			});
 		</script>
 	</div>

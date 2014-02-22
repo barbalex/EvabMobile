@@ -35,7 +35,19 @@
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneArtListehArtEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Art-Liste</a>
 			<h1>Art</h1>
-			<a href='#' id='MenuhBeobEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href="#MenuhBeobEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuhBeobEdit" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_arteigenschaften" href="#">Arteigenschaften</a></li>
+					<li><a class="menu_einfacher_modus" href="#">einfacher Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_beob_exportieren" href="#">Beobachtungen exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="OeffneProjekthArtEdit">Projekt</a></li>
@@ -242,12 +254,6 @@
 					})
 				});
 
-				// Menu aufbauen
-				$('#hArtEditPageHeader').on('click', "#MenuhBeobEdit", function (event) {
-					event.preventDefault();
-					erstelleMenu_hae(this);
-				});
-
 				$("#hArtEditPage").on("swipeleft", function () {
 					if (!$("*:focus").attr("aria-valuenow")) {
 						// kein slider
@@ -317,80 +323,47 @@
 					$.mobile.changePage("Artenliste.html");
 				}
 
-				// Menü aufbauen
-				function erstelleMenu_hae(thiz) {
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'einfacher Modus': {
-								click: function () {
-									leereStoragehBeobEdit();
-									leereStoragehBeobListe();
-									leereStorageZeitEdit();
-									leereStorageZeitListe();
-									leereStorageOrtEdit();
-									leereStorageOrtListe();
-									leereStorageRaumEdit();
-									leereStorageRaumListe();
-									leereStorageProjektEdit();
-									$.mobile.changePage("BeobListe.html");
-								},
-								theme: "a",
-								icon: "einfach"
-							},
-							'Arteigenschaften': {
-								click: function () {
-									var url = "http://arteigenschaften.ch/artendb/_design/artendb/index.html?id=" + window.hArt.aArtId;
-									window.open(url, "_blank");
-								},
-								theme: "a",
-								icon: "question"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "hArtEdit.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Beobachtungen<br>exportieren': {
-								click: function () {
-									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "hArtEdit.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "hArtEdit.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', function() {
+					var url = "http://arteigenschaften.ch/artendb/_design/artendb/index.html?id=" + window.hArt.aArtId;
+					window.open(url, "_blank");
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', function() {
+					leereStoragehBeobEdit();
+					leereStoragehBeobListe();
+					leereStorageZeitEdit();
+					leereStorageZeitListe();
+					leereStorageOrtEdit();
+					leereStorageOrtListe();
+					leereStorageRaumEdit();
+					leereStorageRaumListe();
+					leereStorageProjektEdit();
+					$.mobile.changePage("BeobListe.html");
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "hArtEdit.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', function() {
+					window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "hArtEdit.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "hArtEdit.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 
 				function löscheBeobachtung() {
 					if (window.hArt) {
