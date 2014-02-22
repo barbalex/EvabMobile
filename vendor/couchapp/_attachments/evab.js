@@ -181,21 +181,16 @@ function CHtoWGSlng(y, x) {
 	return lng;
 }
 
-/*function melde(Meldung) {
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h4>&nbsp;" + Meldung +"&nbsp;</h4></div>")
-		.css({ "display": "block", "opacity": 0.9, "top": $(window).scrollTop() + 150 })
-		.appendTo($.mobile.pageContainer)
-		.delay(2500)
-		.fadeOut(700, function () {
-			$(this).remove();
-		});
-}*/
-
 function melde(Meldung) {
 	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'><a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>"+Meldung+"</div>")
 		.css({"line-height": "95%", "font-weight": "bold"})
 		.appendTo($.mobile.pageContainer);
-	$("#meldung").popup();
+	$("#meldung").popup({
+		afterclose: function (event, ui) {
+			// Meldung wieder aus pageContainer entfernen
+			$("#meldung").remove();
+		}
+	});
 	$("#meldung").popup("open");
 }
 
