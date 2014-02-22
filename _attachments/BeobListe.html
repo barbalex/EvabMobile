@@ -35,7 +35,18 @@
   		<div id="BeobListePageHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="OeffneProjektListeBeobListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-grid">hierarchisch</a>
   			<h2 class="BeobListePageTitel">Beobachtungen</h2>
-  			<a href='#' id='MenuBeobListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href="#MenuBeobListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuBeobListe" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_hierarchischer_modus" href="#">hierarchischer Modus</a></li>
+					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
+					<li><a class="menu_beob_exportieren" href="#">Beobachtungen exportieren</a></li>
+					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
+					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
+					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
+				</ul>
+			</div>
   		</div>
 		<div data-role="content" id="BeobListePageContent">
 			<ul id="BeoblisteBL" data-role="listview" data-filter="true" data-filter-placeholder="suchen...">
@@ -84,12 +95,6 @@
 					$.mobile.changePage("Karte.html");
 				});
 
-				// Menu aufbauen
-				$("#BeobListePageHeader").on('click', "#MenuBeobListe", function (event) {
-					event.preventDefault();
-					erstelleMenuBeobListe(this);
-				});
-
 				$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function (event) {
 					event.preventDefault();
 					$.mobile.changePage("hProjektListe.html");
@@ -120,64 +125,33 @@
 					$.mobile.changePage("Artgruppenliste.html");
 				}
 
-				// Menü aufbauen
-				function erstelleMenuBeobListe(thiz) {
-					// Code um Menü aufzubauen
-					$(thiz).simpledialog2({
-						'mode' : 'button',
-						'headerClose': true,
-						'headerText' : '<b>Menü</b>',
-						'forceInput': false,
-						'buttons' : {
-							'hierarchischer Modus': {
-								click: function () {
-									$.mobile.changePage("hProjektListe.html");
-								},
-								theme: "a",
-								icon: "hierarchisch"
-							},
-							'Felder verwalten': {
-								click: function () {
-									localStorage.zurueck = "BeobListe.html";
-									$.mobile.changePage("FeldListe.html");
-								},
-								theme: "a",
-								icon: "info"
-							},
-							'Beobachtungen<br>exportieren': {
-								click: function () {
-									window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-								},
-								theme: "a",
-								icon: "exportieren"
-							},
-							'Einstellungen': {
-								click: function () {
-									localStorage.zurueck = "BeobListe.html";
-									öffneMeineEinstellungen();
-								},
-								theme: "a",
-								icon: "wrench"
-							},
-							'lokal installieren': {
-								click: function () {
-									localStorage.zurueck = "BeobListe.html";
-									$.mobile.changePage("Installieren.html");
-								},
-								theme: "a",
-								icon: "lightning"
-							},
-							'neu anmelden': {
-								click: function () {
-									localStorage.UserStatus = "neu";
-									$.mobile.changePage("index.html");
-								},
-								theme: "a",
-								icon: "person"
-							}
-						}
-					})
-				}
+				$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', function() {
+					$.mobile.changePage("hProjektListe.html");
+				});
+
+				$('#MenuBeobListe').on('click', '.menu_felder_verwalten', function() {
+					localStorage.zurueck = "BeobListe.html";
+					$.mobile.changePage("FeldListe.html");
+				});
+
+				$('#MenuBeobListe').on('click', '.menu_beob_exportieren', function() {
+					window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+				});
+
+				$('#MenuBeobListe').on('click', '.menu_einstellungen', function() {
+					localStorage.zurueck = "BeobListe.html";
+					öffneMeineEinstellungen();
+				});
+
+				$('#MenuBeobListe').on('click', '.menu_lokal_installieren', function() {
+					localStorage.zurueck = "BeobListe.html";
+					$.mobile.changePage("Installieren.html");
+				});
+
+				$('#MenuBeobListe').on('click', '.menu_neu_anmelden', function() {
+					localStorage.UserStatus = "neu";
+					$.mobile.changePage("index.html");
+				});
 			});
 		</script>
 	</div>
