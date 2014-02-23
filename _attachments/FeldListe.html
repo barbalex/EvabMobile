@@ -36,7 +36,13 @@
   		<div id="FeldListeHeader" data-role="header" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="FeldListeBackButton" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
   			<h2 class="FeldListeTitel">Felder</h2>
-  			<a href='#' id='MenuFeldListe' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+  			<a href="#MenuFeldListe" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuFeldListe" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_datenfelder_exportieren" href="#">Datenfelder exportieren</a></li>
+				</ul>
+			</div>
   		</div>
 		<div data-role="content" id="FeldListeContent">
 			<ul id="FeldListeFL" data-role="listview" data-filter="true" data-filter-placeholder="suchen..." >
@@ -83,10 +89,8 @@
 					neuesFeld();
 				});
 
-				// Menu aufbauen
-				$("#FeldListeHeader").on('click', '#MenuFeldListe', function (event) {
-					event.preventDefault();
-					erstelleMenuFürFelder(this);
+				$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', function() {
+					window.open("_list/FeldExport/FeldListe?include_docs=true");
 				});
 
 				// BackButton steuern
