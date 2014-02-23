@@ -96,6 +96,18 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+
+		<div data-role="popup" id="hze_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
+			<div data-role="header" data-theme="a">
+			<h1>Zeit löschen?</h1>
+			</div>
+			<div role="main" class="ui-content">
+				<h3 id="hze_löschen_meldung_meldung" class="ui-title">meldung</h3>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
+				<a href="#" id="hze_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
+			</div>
+		</div>
+
 		<script charset="utf-8">
 			$("#ZeitEditPage").on("pageshow", function () {
 				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -213,30 +225,24 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
 						success: function (Arten) {
-							var anzArten;
-							anzArten = Arten.rows.length;
-							$(that).simpledialog2({
-								'mode' : 'button',
-								'buttonPrompt' : '<b>Zeit sammt ' + anzArten + ' Arten löschen?</b>',
-								'forceInput': 'false',
-								'buttons' : {
-									'ja': {
-										click: function () {
-											$('#dialogoutput').text('ja');
-											löscheZeit(Arten);
-										},
-										icon: "delete",
-										theme: "c"
-									},
-									'nein': {
-										click: function () {
-											$('#dialogoutput').text('nein');
-										}
-									}
-								}
-							})
+							var anzArten = Arten.rows.length, 
+								meldung, 
+								div,
+								arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+							meldung = 'Zeit inklusive ' + anzArten + arten_text + ' löschen?';
+							$("#hze_löschen_meldung_meldung").html(meldung);
+							// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+							div = $("#hze_löschen_meldung");
+							div.data('Arten', Arten);
+							// popup öffnen
+							$("#hze_löschen_meldung").popup("open");
 						}
 					});
+				});
+
+				$("#hze_löschen_meldung").on("click", "#hze_löschen_meldung_ja_loeschen", function (event) {
+					var div = $("#hze_löschen_meldung")[0];
+					löscheZeit(jQuery.data(div, 'Arten'));
 				});
 
 				$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', function () {
