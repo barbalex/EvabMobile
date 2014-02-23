@@ -187,6 +187,15 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+
+		<div data-role="popup" id="fe_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
+			<div role="main" class="ui-content">
+				<h3 id="fe_löschen_meldung_meldung" class="ui-title">Wollen Sie dieses Feld löschen?</h3>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
+				<a href="#" id="fe_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
+			</div>
+		</div>
+
 		<script>
 			// Sollte keine id vorliegen, zu FeldListe.html wechseln
 			// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
@@ -390,57 +399,42 @@
 					if (Feld.User === "ZentrenBdKt") {
 						melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 					} else {
-						$(this).simpledialog2({
-							'mode' : 'button',
-							'headerClose': true,
-							'headerText' : '<b>Dieses Feld löschen?</b>',
-							'forceInput': false,
-							'buttons' : {
-								'ja': {
-									click: function () {
-										$('#dialogoutput').text('ja');
-										if (!Feld.FeldName) {
-											// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-											loescheFeld();
-										} else {
-											$db = $.couch.db("evab");
-											// zählen, in wievielen Datensätzen das Feld verwendet wird
-											$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
-												success: function (data) {
-													var i, anzVorkommen, Datensatz, TempFeld, ds;
-													anzVorkommen = 0;
-													for (i in data.rows) {
-														if (typeof i !== "function") {
-															Datensatz = data.rows[i].doc;
-															TempFeld = Datensatz[Feld.FeldName];
-															if (TempFeld) {
-																anzVorkommen += 1;
-															}
-														}
-													}
-													if (anzVorkommen === 0) {
-														loescheFeld();
-													} else {
-														ds = "Datensätzen";
-														if (anzVorkommen === 1) {
-															ds = "Datensatz";
-														}
-														melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
-													}
-												}
-											});
+						// popup öffnen
+						$("#fe_löschen_meldung").popup("open");
+					}
+				});
+
+				$("#fe_löschen_meldung").on("click", "#fe_löschen_meldung_ja_loeschen", function (event) {
+					if (!Feld.FeldName) {
+						// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
+						loescheFeld();
+					} else {
+						$db = $.couch.db("evab");
+						// zählen, in wievielen Datensätzen das Feld verwendet wird
+						$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
+							success: function (data) {
+								var i, anzVorkommen, Datensatz, TempFeld, ds;
+								anzVorkommen = 0;
+								for (i in data.rows) {
+									if (typeof i !== "function") {
+										Datensatz = data.rows[i].doc;
+										TempFeld = Datensatz[Feld.FeldName];
+										if (TempFeld) {
+											anzVorkommen += 1;
 										}
-									},
-									icon: "delete",
-									theme: "c"
-								},
-								'nein': {
-									click: function () {
-										$('#dialogoutput').text('nein');
 									}
 								}
+								if (anzVorkommen === 0) {
+									loescheFeld();
+								} else {
+									ds = "Datensätzen";
+									if (anzVorkommen === 1) {
+										ds = "Datensatz";
+									}
+									melde("Löschen abgebrochen:<br>Dieses Feld wird in " + anzVorkommen + " " + ds + " verwendet<br>Bereinigen Sie zuerst die Daten");
+								}
 							}
-						})
+						});
 					}
 				});
 
