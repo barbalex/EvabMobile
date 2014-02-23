@@ -94,6 +94,7 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+
 		<div data-role="popup" id="hpe_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
 			<div data-role="header" data-theme="a">
 			<h1>Projekt löschen?</h1>
@@ -104,6 +105,7 @@
 				<a href="#" id="hpe_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
 			</div>
 		</div>
+		
 		<script charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
 				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -190,18 +192,15 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 						success: function (Raeume) {
-							var anzRaeume;
-							anzRaeume = Raeume.rows.length;
+							var anzRaeume = Raeume.rows.length;
 							// Anzahl Orte des Projekts zählen
 							$db.view('evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 								success: function (Orte) {
-									var anzOrte;
-									anzOrte = Orte.rows.length;
+									var anzOrte = Orte.rows.length;
 									// Anzahl Zeiten des Projekts zählen
 									$db.view('evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 										success: function (Zeiten) {
-											var anzZeiten;
-											anzZeiten = Zeiten.rows.length;
+											var anzZeiten = Zeiten.rows.length;
 											// Anzahl Arten des Projekts zählen
 											$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 												success: function (Arten) {
@@ -232,7 +231,7 @@
 					});
 				});
 
-				$("body").on("click", "#hpe_löschen_meldung_ja_loeschen", function (event) {
+				$("#hpe_löschen_meldung").on("click", "#hpe_löschen_meldung_ja_loeschen", function (event) {
 					var div = $("#hpe_löschen_meldung")[0];
 					löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
 				});

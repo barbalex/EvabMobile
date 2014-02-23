@@ -94,6 +94,17 @@
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 
+		<div data-role="popup" id="hre_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
+			<div data-role="header" data-theme="a">
+			<h1>Raum löschen?</h1>
+			</div>
+			<div role="main" class="ui-content">
+				<h3 id="hre_löschen_meldung_meldung" class="ui-title">meldung</h3>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
+				<a href="#" id="hre_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
+			</div>
+		</div>
+
 		<script charset="utf-8">
 			$("#RaumEditPage").on("pageshow", function () {
 				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -167,44 +178,40 @@
 					$db = $.couch.db("evab");
 					$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 						success: function (Orte) {
-							var anzOrte;
-							anzOrte = Orte.rows.length;
+							var anzOrte = Orte.rows.length;
 							// Anzahl Zeiten des Raums zählen
 							$db.view('evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 								success: function (Zeiten) {
-									var anzZeiten;
-									anzZeiten = Zeiten.rows.length;
+									var anzZeiten = Zeiten.rows.length;
 									// Anzahl Arten des Raums zählen
 									$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 										success: function (Arten) {
-											var anzArten;
-											anzArten = Arten.rows.length;
-											$(that).simpledialog2({
-												'mode' : 'button',
-												'buttonPrompt' : '<b>Raum sammt ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?</b>',
-												'forceInput': 'false',
-												'buttons' : {
-													'ja': {
-														click: function () {
-															$('#dialogoutput').text('ja');
-															löscheRaum(Arten, Zeiten, Orte);
-														},
-														icon: "delete",
-														theme: "c"
-													},
-													'nein': {
-														click: function () {
-															$('#dialogoutput').text('nein');
-														}
-													}
-												}
-											})
+											var anzArten = Arten.rows.length, 
+												meldung, 
+												div,
+												orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
+												zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
+												arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+											meldung = 'Raum inklusive ' + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+											$("#hre_löschen_meldung_meldung").html(meldung);
+											// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+											div = $("#hre_löschen_meldung");
+											div.data('Arten', Arten);
+											div.data('Zeiten', Zeiten);
+											div.data('Orte', Orte);
+											// popup öffnen
+											$("#hre_löschen_meldung").popup("open");
 										}
 									});
 								}
 							});
 						}
 					});
+				});
+
+				$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function (event) {
+					var div = $("#hre_löschen_meldung")[0];
+					löscheRaum(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'));
 				});
 
 				// Link zu Projekt in Navbar und Titelleiste
