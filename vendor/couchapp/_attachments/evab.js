@@ -2075,9 +2075,13 @@ function initiierehBeobListe() {
 }
 
 function initiierehBeobListe_2() {
-	var anzArt, Art, externalPage, listItem, ListItemContainer, Titel2, hBeobTemp;
-	anzArt = hBeobListe.rows.length;
-	ListItemContainer = "";
+	var anzArt = window.hBeobListe.rows.length, 
+		Art, 
+		externalPage, 
+		listItem, 
+		ListItemContainer = "", 
+		Titel2, 
+		hBeobTemp;
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
 	Titel2 = " Arten";
@@ -2089,9 +2093,9 @@ function initiierehBeobListe_2() {
 	if (anzArt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (var i in hBeobListe.rows) {
+		for (var i in window.hBeobListe.rows) {
 			if (typeof i !== "function") {
-				hBeobTemp = hBeobListe.rows[i].doc;
+				hBeobTemp = window.hBeobListe.rows[i].doc;
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
 					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png\" />" +
