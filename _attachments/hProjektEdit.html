@@ -94,6 +94,16 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+		<div data-role="popup" id="hpe_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
+			<div data-role="header" data-theme="a">
+			<h1>Projekt löschen?</h1>
+			</div>
+			<div role="main" class="ui-content">
+				<h3 id="hpe_löschen_meldung_meldung" class="ui-title">meldung</h3>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
+				<a href="#" id="hpe_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
+			</div>
+		</div>
 		<script charset="utf-8">
 			$("#ProjektEditPage").on("pageshow", function () {
 				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -195,48 +205,23 @@
 											// Anzahl Arten des Projekts zählen
 											$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 												success: function (Arten) {
-													var anzArten, meldung, div;
-													anzArten = Arten.rows.length;
-													meldung = 'Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?'
-													$("<div data-role='popup' id='löschen_meldung' data-overlay-theme='a' data-theme='a' data-dismissible='false' style='max-width:400px;'><div data-role='header' data-theme='a'><h1>Projekt löschen?</h1></div><div role='main' class='ui-content'><h3 class='ui-title'>"+meldung+"</h3><a href='#' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b nein_behalten' data-rel='back'>Nein, behalten</a><a href='#' id='ja_loeschen' class='ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b' data-rel='back' data-transition='flow'>Ja, löschen</a></div></div>")
-														.appendTo($.mobile.pageContainer);
-													// Listen anhängen, damti ohne DB-Abfrage gelöscht werden kann
-													div = $("#löschen_meldung");
-													jQuery.data(div, 'Arten', Arten);
-													jQuery.data(div, 'Zeiten', Zeiten);
-													jQuery.data(div, 'Orte', Orte);
-													jQuery.data(div, 'Raeume', Raeume);
-													// popup initiieren
-													$("#löschen_meldung").popup({
-														afterclose: function (event, ui) {
-															// Meldung wieder aus pageContainer entfernen
-															//$("#löschen_meldung").remove();
-														}
-													});
+													var anzArten = Arten.rows.length, 
+														meldung, 
+														div,
+														räume_text = (anzRaeume === 1 ? ' Raum, ' : ' Räume, '),
+														orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
+														zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
+														arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+													meldung = 'Projekt inklusive ' + anzRaeume + räume_text + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+													$("#hpe_löschen_meldung_meldung").html(meldung);
+													// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+													div = $("#hpe_löschen_meldung");
+													div.data('Arten', Arten);
+													div.data('Zeiten', Zeiten);
+													div.data('Orte', Orte);
+													div.data('Raeume', Raeume);
 													// popup öffnen
-													$("#löschen_meldung").popup("open");
-
-													/*$(that).simpledialog2({
-														'mode' : 'button',
-														'buttonPrompt' : '<b>Projekt sammt ' + anzRaeume + ' Räumen, ' + anzOrte + ' Orten, ' + anzZeiten + ' Zeiten und ' + anzArten + ' Arten löschen?</b>',
-														'forceInput': 'false',
-														'buttons' : {
-															'ja': {
-																click: function () {
-																	$('#dialogoutput').text('ja');
-																	// die Listen übergeben, damit ohne DB-Abfrage gelöscht werden kann
-																	löscheProjekt(Arten, Zeiten, Orte, Raeume);
-																},
-																icon: "delete",
-																theme: "c"
-															},
-															'nein': {
-																click: function () {
-																	$('#dialogoutput').text('nein');
-																}
-															}
-														}
-													})*/
+													$("#hpe_löschen_meldung").popup("open");
 												}
 											});
 										}
@@ -247,10 +232,9 @@
 					});
 				});
 
-				$("body").on("click", "#ja_loeschen", function (event) {
-					var div = $("#löschen_meldung");
+				$("body").on("click", "#hpe_löschen_meldung_ja_loeschen", function (event) {
+					var div = $("#hpe_löschen_meldung")[0];
 					löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
-					console.log("lösche projekt");
 				});
 
 				// neues Projekt erstellen
