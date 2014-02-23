@@ -32,6 +32,12 @@
   border-bottom-width: 0px !important;
 }
 
+/*jqm in popups eine Schaltfläche rechts ausrichten*/
+.rechts5px {
+  position: absolute;
+  right: 5px;
+}
+
 /*datebox setzt seine Symbole in zu schmale Felder*/
 .ui-input-datebox {
 	width: 100% !important;

@@ -117,6 +117,14 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+
+		<div data-role="popup" id="beob_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
+			<div role="main" class="ui-content">
+				<h3 id="beob_löschen_meldung_meldung" class="ui-title">Wollen Sie diese Beobachtung löschen?</h3>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
+				<a href="#" id="beob_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b rechts5px" data-rel="back" data-transition="flow">Ja, löschen</a>
+			</div>
+		</div>
 		
 		<script>
 			$("#BeobEditPage").on("pageshow", function () {
@@ -134,8 +142,6 @@
 				}
 				initiiereBeobEdit();
 			});
-
-
 
 			$("#BeobEditPage").on("pagehide", function () {
 				if (typeof watchID !== "undefined") {
@@ -264,27 +270,12 @@
 				// Code für den Beobachtung-Löschen-Dialog
 				$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', function (event) {
 					event.preventDefault();
-					$(this).simpledialog2({
-						//'mode' : 'button',
-						'mode' : 'button',
-						'buttonPrompt' : '<b>Beobachtung löschen?</b>',
-						'forceInput': 'false',
-						'buttons' : {
-							'ja': {
-								click: function () {
-									$('#dialogoutput').text('ja');
-									löscheBeobachtung();
-								},
-								icon: "delete",
-								theme: "c"
-							},
-							'nein': {
-								click: function () {
-									$('#dialogoutput').text('nein');
-								}
-							}
-						}
-					})
+					// popup öffnen
+					$("#beob_löschen_meldung").popup("open");
+				});
+
+				$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", function (event) {
+					löscheBeobachtung();
 				});
 
 				$("#BeobEditPage").on("swipeleft", "#BeobEditContent", function () {

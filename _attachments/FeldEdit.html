@@ -36,7 +36,13 @@
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
 			<a href="#" id="zurueckFeldEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">abbrechen</a>
 			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
-			<a href='#' id='MenuFeldEdit' data-role='button' data-icon="wrench" data-iconpos="notext" class="r ui-btn-right">Menu</a>
+			<a href="#MenuFeldEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
+			<div data-role="popup" id="MenuFeldEdit" data-theme="a">
+				<ul data-role="listview" data-inset="true" style="min-width:210px;">
+					<li data-role="list-divider">Menü:</li>
+					<li><a class="menu_datenfelder_exportieren" href="#">Datenfelder exportieren</a></li>
+				</ul>
+			</div>
 		</div>
 		<div id="FeldEditContent" data-role="content">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
@@ -192,7 +198,7 @@
 			<div role="main" class="ui-content">
 				<h3 id="fe_löschen_meldung_meldung" class="ui-title">Wollen Sie dieses Feld löschen?</h3>
 				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
-				<a href="#" id="fe_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Ja, löschen</a>
+				<a href="#" id="fe_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b rechts5px" data-rel="back" data-transition="flow">Ja, löschen</a>
 			</div>
 		</div>
 
@@ -438,10 +444,8 @@
 					}
 				});
 
-				// Menu aufbauen
-				$("#FeldEditHeader").on('click', "#MenuFeldEdit", function (event) {
-					event.preventDefault();
-					erstelleMenuFürFelder(this);
+				$('#MenuFeldEdit').on('click', '.menu_datenfelder_exportieren', function() {
+					window.open("_list/FeldExport/FeldListe?include_docs=true");
 				});
 
 				// BackButton steuern
