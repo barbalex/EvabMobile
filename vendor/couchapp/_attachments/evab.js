@@ -320,26 +320,6 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 	});
 }
 
-// Menü aufbauen. Wird aufgerufen von Feldliste.html und FeldEdit.html
-function erstelleMenuFürFelder(thiz) {
-	// Code um Menü aufzubauen
-	$(thiz).simpledialog2({
-		'mode' : 'button',
-		'headerClose': true,
-		'headerText' : '<b>Menü</b>',
-		'forceInput': false,
-		'buttons' : {
-			'Datenfelder<br>exportieren': {
-				click: function () {
-					window.open("_list/FeldExport/FeldListe?include_docs=true");
-				},
-				theme: "a",
-				icon: "exportieren"
-			}
-		}
-	});
-}
-
 function erstelleNeueZeit() {
 // Neue Zeiten werden erstellt
 // ausgelöst durch hZeitListe.html oder hZeitEdit.html
