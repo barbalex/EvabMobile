@@ -217,6 +217,7 @@
 
 			// Code, der bei Verwendung von ajax nur beim ersten Aufruf der Seite laufen soll
 			$(":jqmData(role='page')").on("pageinit", function () {
+
 				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
@@ -250,7 +251,7 @@
 						delete localStorage.FeldName;
 						delete localStorage.FeldWert;
 						delete localStorage.AlterFeldWert;
-						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Sie können ein eigenes Feld erstellen");
+						melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Statt dieses zu ändern können Sie ein eigenes Feld erstellen");
 					} else if (localStorage.FeldName === "FeldName") {
 						// Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
 						// ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
@@ -821,7 +822,7 @@
 								speichereFeldeigenschaften_2();
 							},
 							error: function () {
-								melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
+								melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 							}
 						});
 					}
@@ -837,6 +838,13 @@
 					/*if (window.Feld.ArtGruppe) {
 						window.Feld.ArtGruppe = window.Feld.ArtGruppe.split(", ");
 					}*/
+
+					// Es braucht eine Hierrarchiestufe
+					if (!Formularfelder.Hierarchiestufe && Formularfelder.Hierarchiestufe !== "undefined") {
+						// keine vorhanden > Art setzen
+						Formularfelder.Hierarchiestufe = "Art";
+						$("#Art").prop("checked",true).checkboxradio("refresh");
+					}
 					// Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
 					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 						Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
@@ -917,7 +925,10 @@
 							leereStorageFeldListe();
 						},
 						error: function () {
-							melde("Fehler: Änderung in " + localStorage.FeldName + " nicht gespeichert");
+							// Fehlermeldung ausgeschaltet
+							// wenn Listen geändert wurden, kam sie immer
+							// dabei wird das Feld korrekt gespeichert, bloss: ZWEIMAL
+							//melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 						}
 					});
 					delete localStorage.FeldName;
