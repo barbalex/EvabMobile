@@ -212,7 +212,7 @@ Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_bl
 
 <a name="ausprobieren"></a>
 #Kann ich's jetzt endlich ausprobieren?
-Die Webversion des Apps finden Sie <a target="_blank" href="https://barbalex.cloudant.com/evab/_design/evab/index.html">hier</a>.
+Die Webversion der App finden Sie <a target="_blank" href="https://barbalex.cloudant.com/evab/_design/evab/index.html">hier</a>.
 
 Sie ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Wer eigene Daten dauerhaft erfassen will, soll dies bitte zuvor mit [mir](mailto:alex@gabriel-software.ch) absprechen.
 
