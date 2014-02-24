@@ -229,8 +229,9 @@
 				}
 
 				// jedes Feld aus Feldeigenschaften bei Änderung speichern
-				$("#FeldEditContent").on("change", ".Feldeigenschaften", function () {
+				$("#FeldEditContent").on("change", ".Feldeigenschaften", function (event) {
 					var AlterFeldWert;
+
 					localStorage.FeldWert = this.value;
 					if (this.name) {
 						localStorage.FeldName = this.name;
@@ -844,6 +845,8 @@
 						// keine vorhanden > Art setzen
 						Formularfelder.Hierarchiestufe = "Art";
 						$("#Art").prop("checked",true).checkboxradio("refresh");
+						// und Artgruppenliste aufbauen
+						ArtGruppeAufbauenFeldEdit();
 					}
 					// Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
 					if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
