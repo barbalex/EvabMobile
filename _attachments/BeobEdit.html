@@ -401,6 +401,10 @@
 
 				$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', function() {
 					window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+					// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+					$("#MenuBeobEdit").popup();
+					// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+					$("#MenuBeobEdit").popup("close");
 				});
 
 				$('#MenuBeobEdit').on('click', '.menu_einstellungen', function() {

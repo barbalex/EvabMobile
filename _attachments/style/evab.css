@@ -149,47 +149,6 @@ height: 26px;
 margin: 3px 3px 3px 4px;
 }
 
-
-/*
-  jQuery Mobile Icon Pack
-  andy matthews
-  @commadelimited
-*/
-
-/* Icons
------------------------------------------------------------------------------------------------------------*/
-
-.ui-icon,
-.ui-icon-searchfield:after {
-  background: #666666;
-  background:  rgba(0,0,0,.4);
-  background-image: url('images/icons-18-white-pack.png');
-  background-repeat: no-repeat;
-  -moz-border-radius: 9px;
-  -webkit-border-radius: 9px;
-  border-radius: 9px;
-}
-
-
-/* Alt icon color
------------------------------------------------------------------------------------------------------------*/
-
-.ui-icon-alt {
-  background: #ffffff;
-  background: rgba(255,255,255,.3);
-  background-image: url('images/icons-18-black-pack.png');
-  background-repeat: no-repeat;
-}
-
-/* restore default loading image */
-.ui-icon-loading {
-  background-image: url("images/ajax-loader.png");
-  background-size: 35px 35px;
-  border-radius: 20px 20px 20px 20px;
-  height: 40px;
-  width: 40px;
-}
-
 /*verhindern, dass checkboxes die Seitwärtsnavigation überdecken*/
 .ui-pagination {
   z-index: 2;

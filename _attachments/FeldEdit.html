@@ -446,6 +446,10 @@
 
 				$('#MenuFeldEdit').on('click', '.menu_datenfelder_exportieren', function() {
 					window.open("_list/FeldExport/FeldListe?include_docs=true");
+					// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+					$("#MenuFeldEdit").popup();
+					// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+					$("#MenuFeldEdit").popup("close");
 				});
 
 				// BackButton steuern

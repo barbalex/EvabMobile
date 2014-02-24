@@ -496,6 +496,10 @@
 
 				$('#MenuOrtEdit').on('click', '.menu_orte_exportieren', function() {
 					window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+					// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+					$("#MenuOrtEdit").popup();
+					// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+					$("#MenuOrtEdit").popup("close");
 				});
 
 				$('#MenuOrtEdit').on('click', '.menu_einstellungen', function() {

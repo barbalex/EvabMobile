@@ -456,6 +456,10 @@
 
 				$('#MenuZeitEdit').on('click', '.menu_zeiten_exportieren', function() {
 					window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+					// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+					$("#MenuZeitEdit").popup();
+					// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+					$("#MenuZeitEdit").popup("close");
 				});
 
 				$('#MenuZeitEdit').on('click', '.menu_einstellungen', function() {
