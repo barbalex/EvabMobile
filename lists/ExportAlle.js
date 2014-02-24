@@ -47,7 +47,7 @@ function(head, req) {
 		Datensätze.push(Datensatz);
 		for (name in Datensatz) {
 			// war mal auch ausgeschlossen: name !== '_rev' && 
-			if (name !== '_id' && name !== 'User' && name !== '_conflicts') {
+			if (name !== '_id' && name !== '_rev' && name !== 'User' && name !== '_conflicts') {
 				// alle noch nicht im Array enthaltenen Feldnamen ergänzen
 				if (FeldNamen.indexOf(name) == -1) {
 					FeldNamen.push(name);
