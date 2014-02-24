@@ -113,10 +113,10 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 				}
 				initiiereZeitEdit();
 			});
@@ -126,29 +126,29 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 				}
 
 				$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
 					event.preventDefault();
 					leereStorageZeitEdit();
-					$.mobile.changePage("hZeitListe.html");
+					$.mobile.navigate("hZeitListe.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function (event) {
 					event.preventDefault();
 					leereStorageZeitEdit();
 					leereStorageZeitListe();
-					$.mobile.changePage("hOrtEdit.html");
+					$.mobile.navigate("hOrtEdit.html");
 				});
 
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneArtListeZeitEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("hArtListe.html");
+					$.mobile.navigate("hArtListe.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
@@ -157,7 +157,7 @@
 					leereStorageZeitListe();
 					leereStorageOrtEdit();
 					leereStorageOrtListe();
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
@@ -168,7 +168,7 @@
 					leereStorageOrtListe();
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// Für jedes Feld bei Änderung speichern
@@ -211,7 +211,7 @@
 				$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hZeitEdit";
-					$.mobile.changePage("FelderWaehlen.html");
+					$.mobile.navigate("FelderWaehlen.html");
 				});
 
 				// Code für den Zeit-Löschen-Dialog
@@ -332,7 +332,7 @@
 								leereStorageZeitListe;
 							}
 							leereStorageZeitEdit();
-							$.mobile.changePage('hZeitListe.html');
+							$.mobile.navigate('hZeitListe.html');
 						},
 						error: function () {
 							melde("Fehler: Zeit nicht gelöscht");
@@ -446,12 +446,12 @@
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuZeitEdit').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hZeitEdit.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuZeitEdit').on('click', '.menu_zeiten_exportieren', function() {
@@ -465,12 +465,12 @@
 
 				$('#MenuZeitEdit').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hZeitEdit.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 
 				// Öffnet die vorige oder nächste Zeit
@@ -519,7 +519,7 @@
 									return;
 								} else {
 									leereStorageZeitEdit();
-									$.mobile.changePage("hZeitListe.html");
+									$.mobile.navigate("hZeitListe.html");
 									return;
 								}
 								break;

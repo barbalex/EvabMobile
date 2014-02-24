@@ -74,11 +74,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiierehBeobListe();
@@ -88,11 +88,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -100,7 +100,7 @@
 				$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", function (event) {
 					event.preventDefault();
 					leereStoragehBeobListe();
-					$.mobile.changePage("hZeitEdit.html");
+					$.mobile.navigate("hZeitEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", function (event) {
@@ -108,7 +108,7 @@
 					leereStoragehBeobListe();
 					leereStorageZeitEdit();
 					leereStorageZeitListe();
-					$.mobile.changePage("hOrtEdit.html");
+					$.mobile.navigate("hOrtEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", function (event) {
@@ -118,7 +118,7 @@
 					leereStorageZeitListe();
 					leereStorageOrtEdit();
 					leereStorageOrtListe();
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", function (event) {
@@ -130,7 +130,7 @@
 					leereStorageOrtListe();
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// Neue Beobachtung managen
@@ -149,16 +149,16 @@
 					localStorage.Status = "neu";
 					localStorage.Von = "hArtListe";
 					delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
-					$.mobile.changePage("Artgruppenliste.html");
+					$.mobile.navigate("Artgruppenliste.html");
 				}
 
 				$("#ArtlistehAL").on("swipeleft click", ".beob", function () {
 					localStorage.hBeobId = $(this).attr('hBeobId');
-					$.mobile.changePage("hArtEdit.html");
+					$.mobile.navigate("hArtEdit.html");
 				});
 
 				$("#hArtListePage").on("swiperight", function () {
-					$.mobile.changePage("hZeitListe.html");
+					$.mobile.navigate("hZeitListe.html");
 				});
 
 				$('#MenuhBeobListe').on('click', '.menu_einfacher_modus', function() {
@@ -170,12 +170,12 @@
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuhBeobListe').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hArtListe.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuhBeobListe').on('click', '.menu_beob_exportieren', function() {
@@ -189,12 +189,12 @@
 
 				$('#MenuhBeobListe').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hArtListe.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 			});
 		</script>

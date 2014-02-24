@@ -52,11 +52,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 					return;
 				}
 				initiiereFelderWaehlen();
@@ -76,16 +76,16 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
 					// oh, kein zurück bekannt
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				}
 
 				$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", function (event) {
 					event.preventDefault();
-					$.mobile.changePage(localStorage.AufrufendeSeiteFW + ".html");
+					$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
 				});
 				
 				// Felder speichern (checkbox)
@@ -156,7 +156,7 @@
 					success: function (data) {
 						localStorage.FeldId = data.rows[0].doc._id;
 						localStorage.zurueck = "FelderWaehlen.html";
-						$.mobile.changePage("FeldEdit.html");
+						$.mobile.navigate("FeldEdit.html");
 					}
 				});
 			}

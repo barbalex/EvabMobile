@@ -111,11 +111,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereProjektEdit();
@@ -126,11 +126,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -144,12 +144,12 @@
 				$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function (event) {
 					event.preventDefault();
 					leereStorageProjektEdit();
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 				});
 
 				$("#hProjektEditHeader").on("click", "#OeffneRaumListeProjektEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("hRaumListe.html");
+					$.mobile.navigate("hRaumListe.html");
 				});
 
 				// Für jedes Feld bei Änderung speichern
@@ -244,7 +244,7 @@
 				$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hProjektEdit";
-					$.mobile.changePage("FelderWaehlen.html");
+					$.mobile.navigate("FelderWaehlen.html");
 				});
 
 				$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", function () {
@@ -294,7 +294,7 @@
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hProjektEdit";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function (event) {
@@ -353,7 +353,10 @@
 							}
 							// Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageProjektEdit("mitLatLngListe");
-							$.mobile.changePage('hProjektListe.html');
+							//$.mobile.navigate('hProjektListe.html');
+							$.mobile.navigate("hProjektListe.html");
+							//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
+							//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html", {reload: true});
 						},
 						error: function () {
 							melde("Fehler: Projekt nicht gelöscht");
@@ -448,12 +451,12 @@
 
 				$('#MenuProjektEdit').on('click', '.menu_einfacher_modus', function() {
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuProjektEdit').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hProjektEdit.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuProjektEdit').on('click', '.menu_projekte_exportieren', function() {
@@ -467,12 +470,12 @@
 
 				$('#MenuProjektEdit').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hProjektEdit.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 
 				// Öffnet das vorige oder nächste Projekt
@@ -509,7 +512,7 @@
 							case "nächstes":
 								if (parseInt(i) < AnzProj) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
-									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
+									//$.mobile.navigate("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;
@@ -521,13 +524,13 @@
 							case "voriges":
 								if (parseInt(i) > 0) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
-									//$.mobile.changePage("#ProjektEditPage", {allowSamePageTransition: true});
+									//$.mobile.navigate("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;
 								} else {
 									leereStorageProjektEdit();
-									$.mobile.changePage("hProjektListe.html");
+									$.mobile.navigate("hProjektListe.html");
 									return;
 								}
 								break;

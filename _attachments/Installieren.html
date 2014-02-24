@@ -63,7 +63,7 @@
 			$("#InstallierenPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				}
 				initiiereInstallieren();
 			});
@@ -72,7 +72,7 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				}
 
 				// zurück-Button steuern
@@ -81,7 +81,7 @@
 					if (!localStorage.zurueck) {
 						localStorage.zurueck = "BeobListe.html";
 					}
-					$.mobile.changePage(localStorage.zurueck);
+					$.mobile.navigate(localStorage.zurueck);
 					delete localStorage.zurueck;
 				});
 			});

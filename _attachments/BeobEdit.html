@@ -131,11 +131,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.BeobId || localStorage.BeobId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 					return;
 				}
 				initiiereBeobEdit();
@@ -152,17 +152,17 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.BeobId || localStorage.BeobId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 					return;
 				}
 
 				$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", function() {
 					leereStorageBeobEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				// Neue Beobachtung erfassen
@@ -175,9 +175,9 @@
 					if (window.gruppe_merken) {
 						// Artgruppenliste auslassen
 						// localStorage.ArtGruppe ist schon gesetzt
-						$.mobile.changePage("Artenliste.html");
+						$.mobile.navigate("Artenliste.html");
 					} else {
-						$.mobile.changePage("Artgruppenliste.html");
+						$.mobile.navigate("Artgruppenliste.html");
 					}
 				});
 
@@ -191,9 +191,9 @@
 					if (window.gruppe_merken) {
 						// Artgruppenliste auslassen
 						// localStorage.aArtGruppe ist schon gesetzt
-						$.mobile.changePage("Artenliste.html");
+						$.mobile.navigate("Artenliste.html");
 					} else {
-						$.mobile.changePage("Artgruppenliste.html");
+						$.mobile.navigate("Artgruppenliste.html");
 					}
 				});
 
@@ -201,7 +201,7 @@
 				$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "BeobEdit";
-					$.mobile.changePage("FelderWaehlen.html");
+					$.mobile.navigate("FelderWaehlen.html");
 				});
 
 				// Editieren von Beobachtungen managen, ausgehend von ArtName
@@ -210,7 +210,7 @@
 					// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageBeobListe();
 					localStorage.Von = "BeobEdit";
-					$.mobile.changePage("Artenliste.html");
+					$.mobile.navigate("Artenliste.html");
 				});
 
 				// Für jedes Feld bei Änderung speichern
@@ -257,7 +257,7 @@
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "BeobEdit";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
@@ -376,7 +376,7 @@
 									return;
 								} else {
 									leereStorageBeobEdit();
-									$.mobile.changePage("BeobListe.html");
+									$.mobile.navigate("BeobListe.html");
 									return;
 								}
 								break;
@@ -391,12 +391,12 @@
 
 				$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', function() {
 					leereStorageBeobEdit();
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 				});
 
 				$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "BeobEdit.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', function() {
@@ -410,12 +410,12 @@
 
 				$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "BeobEdit.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 				
 				function löscheBeobachtung() {
@@ -454,7 +454,7 @@
 								leereStorageBeobListe;
 							}
 							leereStorageBeobEdit();
-							$.mobile.changePage("BeobListe.html");
+							$.mobile.navigate("BeobListe.html");
 						},
 						error: function () {
 							melde("Fehler: Beobachtung nicht gelöscht");

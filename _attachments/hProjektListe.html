@@ -72,7 +72,7 @@
 				$("#ProjektListePage").on("pageshow", function () {
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 						return;
 					}
 					initiiereProjektliste();
@@ -82,7 +82,7 @@
 					// muss auf index.html umgeleitet werden
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 						return;
 					}
 
@@ -106,13 +106,13 @@
 
 					$("#ProjektlistehPL").on("swipeleft", ".Projekt", function () {
 						localStorage.ProjektId = $(this).attr('ProjektId');
-						$.mobile.changePage("hRaumListe.html");
+						$.mobile.navigate("hRaumListe.html");
 					});
 
 					$("#ProjektlistehPL").on("click", ".Projekt", function (event) {
 						event.preventDefault();
 						localStorage.ProjektId = $(this).attr('ProjektId');
-						$.mobile.changePage("hProjektEdit.html");
+						$.mobile.navigate("hProjektEdit.html");
 					});
 
 					$("#ProjektlistehPL").on("swipeleft", ".erste", function () {
@@ -121,26 +121,26 @@
 
 					$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
 						event.preventDefault();
-						$.mobile.changePage("BeobListe.html");
+						$.mobile.navigate("BeobListe.html");
 					});
 
 					$("#ProjektListePage").on("swiperight", function () {
-						$.mobile.changePage("BeobListe.html");
+						$.mobile.navigate("BeobListe.html");
 					});
 
 					$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
 						event.preventDefault();
 						localStorage.zurueck = "hProjektListe";
-						$.mobile.changePage("Karte.html");
+						$.mobile.navigate("Karte.html");
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_einfacher_modus', function() {
-						$.mobile.changePage("BeobListe.html");
+						$.mobile.navigate("BeobListe.html");
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_felder_verwalten', function() {
 						localStorage.zurueck = "hProjektListe.html";
-						$.mobile.changePage("FeldListe.html");
+						$.mobile.navigate("FeldListe.html");
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_projekte_exportieren', function() {
@@ -154,12 +154,12 @@
 
 					$('#MenuProjektListe').on('click', '.menu_lokal_installieren', function() {
 						localStorage.zurueck = "hProjektListe.html";
-						$.mobile.changePage("Installieren.html");
+						$.mobile.navigate("Installieren.html");
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_neu_anmelden', function() {
 						localStorage.UserStatus = "neu";
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 					});
 				});
 			</script>

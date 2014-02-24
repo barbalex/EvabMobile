@@ -74,11 +74,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.OrtId || localStorage.OrtId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereZeitListe();
@@ -88,11 +88,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.OrtId || localStorage.OrtId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -107,7 +107,7 @@
 				$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
 					leereStorageZeitListe();
-					$.mobile.changePage("hOrtEdit.html");
+					$.mobile.navigate("hOrtEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
@@ -115,7 +115,7 @@
 					leereStorageZeitListe();
 					leereStorageOrtEdit();
 					leereStorageOrtListe();
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
@@ -125,7 +125,7 @@
 					leereStorageOrtListe();
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// Neue Zeit erstellen, erste Zeit und fixer button
@@ -136,13 +136,13 @@
 
 				$("#ZeitlistehZL").on("swipeleft", ".Zeit", function () {
 					localStorage.ZeitId = $(this).attr('ZeitId');
-					$.mobile.changePage("hArtListe.html");
+					$.mobile.navigate("hArtListe.html");
 				});
 
 				$("#ZeitlistehZL").on("click", ".Zeit", function (event) {
 					event.preventDefault();
 					localStorage.ZeitId = $(this).attr('ZeitId');
-					$.mobile.changePage("hZeitEdit.html");
+					$.mobile.navigate("hZeitEdit.html");
 				});
 
 				$("#ZeitlistehZL").on("swipeleft", ".erste", function () {
@@ -150,7 +150,7 @@
 				});
 
 				$("#hZeitListePage").on("swiperight", function () {
-					$.mobile.changePage("hOrtListe.html");
+					$.mobile.navigate("hOrtListe.html");
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_einfacher_modus', function() {
@@ -161,12 +161,12 @@
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
 					leereStorageOrtListe();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hZeitListe.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_zeiten_exportieren', function() {
@@ -180,12 +180,12 @@
 
 				$('#MenuZeitListe').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hZeitListe.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 			});
 		</script>

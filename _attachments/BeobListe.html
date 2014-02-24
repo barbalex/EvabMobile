@@ -63,7 +63,7 @@
 				$("#BeobListePage").on("pageshow", function () {
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 						return;
 					}
 					initiiereBeobliste();
@@ -74,13 +74,13 @@
 					// muss auf index.html umgeleitet werden
 					if (localStorage.length === 0 || !localStorage.Email) {
 						leereAlleVariabeln();
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 						return;
 					}
 
 					$("#BeoblisteBL").on("swipeleft click", ".beob", function () {
 						localStorage.BeobId = $(this).attr('id');
-						$.mobile.changePage("BeobEdit.html");
+						$.mobile.navigate("BeobEdit.html");
 					});
 
 					$("#BeoblisteBL").on("taphold", ".beob", function (event) {
@@ -91,12 +91,12 @@
 					$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function (event) {
 						event.preventDefault();
 						localStorage.zurueck = "BeobListe";
-						$.mobile.changePage("Karte.html");
+						$.mobile.navigate("Karte.html");
 					});
 
 					$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function (event) {
 						event.preventDefault();
-						$.mobile.changePage("hProjektListe.html");
+						$.mobile.navigate("hProjektListe.html");
 					});
 
 					// Neue Beobachtung managen
@@ -111,7 +111,7 @@
 					});
 
 					$("#BeobListePage").on("swiperight", "#BeobListePageContent", function () {
-						$.mobile.changePage("hProjektListe.html");
+						$.mobile.navigate("hProjektListe.html");
 					});
 
 					// eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
@@ -121,16 +121,16 @@
 						localStorage.Status = "neu";
 						localStorage.Von = "BeobListe";
 						delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
-						$.mobile.changePage("Artgruppenliste.html");
+						$.mobile.navigate("Artgruppenliste.html");
 					}
 
 					$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', function() {
-						$.mobile.changePage("hProjektListe.html");
+						$.mobile.navigate("hProjektListe.html");
 					});
 
 					$('#MenuBeobListe').on('click', '.menu_felder_verwalten', function() {
 						localStorage.zurueck = "BeobListe.html";
-						$.mobile.changePage("FeldListe.html");
+						$.mobile.navigate("FeldListe.html");
 					});
 
 					$('#MenuBeobListe').on('click', '.menu_beob_exportieren', function() {
@@ -144,12 +144,12 @@
 
 					$('#MenuBeobListe').on('click', '.menu_lokal_installieren', function() {
 						localStorage.zurueck = "BeobListe.html";
-						$.mobile.changePage("Installieren.html");
+						$.mobile.navigate("Installieren.html");
 					});
 
 					$('#MenuBeobListe').on('click', '.menu_neu_anmelden', function() {
 						localStorage.UserStatus = "neu";
-						$.mobile.changePage("index.html");
+						$.mobile.navigate("index.html");
 					});
 				});
 			</script>

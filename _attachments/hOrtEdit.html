@@ -123,11 +123,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereOrtEdit();
@@ -144,11 +144,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -162,19 +162,19 @@
 				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function (event) {
 					event.preventDefault();
 					leereStorageOrtEdit();
-					$.mobile.changePage("hOrtListe.html");
+					$.mobile.navigate("hOrtListe.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
 					event.preventDefault();
 					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					leereStorageOrtListe();
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("hZeitListe.html");
+					$.mobile.navigate("hZeitListe.html");
 				});
 
 				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
@@ -182,7 +182,7 @@
 					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 					leereStorageOrtListe();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// Für jedes Feld bei Änderung speichern
@@ -239,7 +239,7 @@
 				$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hOrtEdit";
-					$.mobile.changePage("FelderWaehlen.html");
+					$.mobile.navigate("FelderWaehlen.html");
 				});
 
 				// Code für den Ort-Löschen-Dialog
@@ -283,7 +283,7 @@
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hOrtEdit";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$('#OrtEditFooter').on('click', '#VerortungOrtEdit', function (event) {
@@ -383,7 +383,7 @@
 								leereStorageOrtListe("mitLatLngListe");
 							}
 							leereStorageOrtEdit("mitLatLngListe");
-							$.mobile.changePage('hOrtListe.html');
+							$.mobile.navigate('hOrtListe.html');
 						},
 						error: function () {
 							melde("Fehler: Der Ort wurde nicht gelöscht");
@@ -486,12 +486,12 @@
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuOrtEdit').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hOrtEdit.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuOrtEdit').on('click', '.menu_orte_exportieren', function() {
@@ -505,12 +505,12 @@
 
 				$('#MenuOrtEdit').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hOrtEdit.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 
 				// Öffnet den vorigen oder nächsten Ort
@@ -563,7 +563,7 @@
 									return;
 								} else {
 									leereStorageOrtEdit();
-									$.mobile.changePage("hOrtListe.html");
+									$.mobile.navigate("hOrtListe.html");
 									return;
 								}
 								break;

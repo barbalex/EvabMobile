@@ -76,11 +76,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereOrtListe();
@@ -90,11 +90,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -109,7 +109,7 @@
 				$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", function (event) {
 					event.preventDefault();
 					leereStorageOrtListe();
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", function (event) {
@@ -117,7 +117,7 @@
 					leereStorageOrtListe();
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// neuen Ort erstellen
@@ -128,13 +128,13 @@
 
 				$("#OrtlistehOL").on("swipeleft", ".Ort", function () {
 					localStorage.OrtId = $(this).attr('OrtId');
-					$.mobile.changePage("hZeitListe.html");
+					$.mobile.navigate("hZeitListe.html");
 				});
 
 				$("#OrtlistehOL").on("click", ".Ort", function (event) {
 					event.preventDefault();
 					localStorage.OrtId = $(this).attr('OrtId');
-					$.mobile.changePage("hOrtEdit.html");
+					$.mobile.navigate("hOrtEdit.html");
 				});
 
 				$("#OrtlistehOL").on("swipeleft", ".erste", function () {
@@ -144,14 +144,14 @@
 				$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", function () {
 					leereStorageOrtListe();
 					leereStorageRaumEdit();
-					$.mobile.changePage("hRaumListe.html");
+					$.mobile.navigate("hRaumListe.html");
 				});
 
 				$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', function (event) {
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hOrtListe";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$('#MenuOrtListe').on('click', '.menu_einfacher_modus', function() {
@@ -159,12 +159,12 @@
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuOrtListe').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hOrtListe.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuOrtListe').on('click', '.menu_orte_exportieren', function() {
@@ -178,12 +178,12 @@
 
 				$('#MenuOrtListe').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hOrtListe.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuOrtListe').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 			});
 		</script>

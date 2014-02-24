@@ -57,7 +57,7 @@
 			$("#FeldListePage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				}
 				initiiereFeldliste();
 			});
@@ -67,7 +67,7 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				}
 
 				// sicherstellen, dass zurueck nie leer ist
@@ -79,7 +79,7 @@
 				$("#FeldListeFL").on('click', '.Feld', function (event) {
 					event.preventDefault();
 					localStorage.FeldId = $(this).attr('FeldId');
-					$.mobile.changePage("FeldEdit.html");
+					$.mobile.navigate("FeldEdit.html");
 				});
 
 				$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function (event) {
@@ -94,7 +94,7 @@
 				// BackButton steuern
 				$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
 					event.preventDefault();
-					$.mobile.changePage(localStorage.zurueck);
+					$.mobile.navigate(localStorage.zurueck);
 					delete localStorage.zurueck;
 				});
 			});

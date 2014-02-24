@@ -75,11 +75,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereRaumListe();
@@ -89,11 +89,11 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
@@ -108,7 +108,7 @@
 				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// neuen Raum erstellen
@@ -119,13 +119,13 @@
 
 				$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
 					localStorage.RaumId = $(this).attr('RaumId');
-					$.mobile.changePage("hOrtListe.html");
+					$.mobile.navigate("hOrtListe.html");
 				});
 
 				$("#RaumlistehRL").on("click", ".Raum", function (event) {
 					event.preventDefault();
 					localStorage.RaumId = $(this).attr('RaumId');
-					$.mobile.changePage("hRaumEdit.html");
+					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#RaumlistehRL").on("swipeleft", ".erste", function () {
@@ -134,25 +134,25 @@
 
 				$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
 					leereStorageRaumListe();
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 				});
 
 				$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function (event) {
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hRaumListe";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_einfacher_modus', function() {
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hRaumListe.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_raeume_exportieren', function() {
@@ -166,12 +166,12 @@
 
 				$('#MenuRaumListe').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hRaumListe.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 			});
 		</script>

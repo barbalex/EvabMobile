@@ -200,17 +200,17 @@ function geheZurueckFE() {
 	if (localStorage.zurueck && localStorage.zurueck !== "FelderWaehlen.html") {
 		// via die Feldliste zurück
 		leereStorageFeldEdit();
-		$.mobile.changePage("FeldListe.html");
+		$.mobile.navigate("FeldListe.html");
 	} else if (localStorage.zurueck && localStorage.zurueck === "FelderWaehlen.html") {
 		// direkt zurück, Feldliste auslassen
 		leereStorageFeldEdit();
 		leereStorageFeldListe();
-		$.mobile.changePage(localStorage.zurueck);
+		$.mobile.navigate(localStorage.zurueck);
 		delete localStorage.zurueck;
 	} else {
 		// uups, kein zurück vorhanden
 		leereAlleVariabeln();
-		$.mobile.changePage("BeobListe.html");
+		$.mobile.navigate("BeobListe.html");
 	}
 }
 
@@ -261,7 +261,7 @@ function speichereNeueBeob_02(doc) {
 				window.hArt = doc;
 				// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStoragehBeobListe();
-				$.mobile.changePage("hArtEdit.html");
+				$.mobile.navigate("hArtEdit.html");
 			} else {
 				// Variabeln verfügbar machen
 				localStorage.BeobId = data.id;
@@ -269,7 +269,7 @@ function speichereNeueBeob_02(doc) {
 				window.Beobachtung = doc;
 				// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 				leereStorageBeobListe();
-				$.mobile.changePage("BeobEdit.html");
+				$.mobile.navigate("BeobEdit.html");
 			}
 		},
 		error: function () {
@@ -303,13 +303,13 @@ function speichereBeobNeueArtgruppeArt(aArtName) {
 						localStorage.BeobId = data.id;
 						// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStorageBeobListe();
-						$.mobile.changePage("BeobEdit.html");
+						$.mobile.navigate("BeobEdit.html");
 					} else {
 						// Variabeln verfügbar machen
 						localStorage.hBeobId = data.id;
 						// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						leereStoragehBeobListe();
-						$.mobile.changePage("hArtEdit.html");
+						$.mobile.navigate("hArtEdit.html");
 					}
 				},
 				error: function () {
@@ -346,11 +346,11 @@ function erstelleNeueZeit() {
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
-		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
+		$.mobile.navigate($("#ZeitEditPage"), {allowSamePageTransition: true});
 	} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
-		$.mobile.changePage($("#ZeitEditPage"), {allowSamePageTransition: true});
+		$.mobile.navigate($("#ZeitEditPage"), {allowSamePageTransition: true});
 	} else {
-		$.mobile.changePage("hZeitEdit.html");
+		$.mobile.navigate("hZeitEdit.html");
 	}
 }
 
@@ -378,9 +378,9 @@ function erstelleNeuenOrt() {
 		localStorage.hOrt = JSON.stringify(window.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
 	} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
-		$.mobile.changePage($("#OrtEditPage"), {allowSamePageTransition: true});
+		$.mobile.navigate($("#OrtEditPage"), {allowSamePageTransition: true});
 	} else {
-		$.mobile.changePage("hOrtEdit.html");
+		$.mobile.navigate("hOrtEdit.html");
 	}
 }
 
@@ -404,9 +404,9 @@ function erstelleNeuenRaum() {
 		localStorage.hRaum = JSON.stringify(window.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-		$.mobile.changePage($("#RaumEditPage"), {allowSamePageTransition: true});
+		$.mobile.navigate($("#RaumEditPage"), {allowSamePageTransition: true});
 	} else {
-		$.mobile.changePage("hRaumEdit.html");
+		$.mobile.navigate("hRaumEdit.html");
 	}
 }
 
@@ -431,14 +431,14 @@ function erstelleNeuesProjekt() {
 		localStorage.hProjekt = JSON.stringify(window.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
 	} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
-		$.mobile.changePage($("#ProjektEditPage"), {allowSamePageTransition: true});
+		$.mobile.navigate($("#ProjektEditPage"), {allowSamePageTransition: true});
 	} else {
-		$.mobile.changePage("hProjektEdit.html");
+		$.mobile.navigate("hProjektEdit.html");
 	}
 }
 
 function öffneMeineEinstellungen() {
-	$.mobile.changePage("UserEdit.html");
+	$.mobile.navigate("UserEdit.html");
 }
 
 function löscheDokument(DocId) {
@@ -2801,7 +2801,7 @@ function neuesFeld() {
 			window.Feld = NeuesFeld;
 			// Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
-			$.mobile.changePage("FeldEdit.html", {allowSamePageTransition: true});
+			$.mobile.navigate("FeldEdit.html", {allowSamePageTransition: true});
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
@@ -2823,7 +2823,7 @@ function pruefeAnmeldung() {
 					localStorage.Email = session.userCtx.name;
 				} else {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				}
 			}
 		});
@@ -2835,7 +2835,7 @@ function pruefeAnmeldung() {
 // wird von den Links in der Karte benutzt
 function oeffneOrt(OrtId) {
 	localStorage.OrtId = OrtId;
-	$.mobile.changePage("hOrtEdit.html");
+	$.mobile.navigate("hOrtEdit.html");
 }
 
 // setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
@@ -2843,7 +2843,7 @@ function oeffneOrt(OrtId) {
 // wird von den Links in der Karte auf BeobListe.html benutzt
 function oeffneBeob(BeobId) {
 	localStorage.BeobId = BeobId;
-	$.mobile.changePage("BeobEdit.html");
+	$.mobile.navigate("BeobEdit.html");
 }
 
 // wird benutzt in Artenliste.html
@@ -3019,7 +3019,7 @@ function stelleUserDatenBereit() {
 			// kontrollieren, ob User existiert
 			// wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
 			if (data.rows.length === 0) {
-				$.mobile.changePage("UserEdit.html");
+				$.mobile.navigate("UserEdit.html");
 				return;
 			}
 			if (data.Datenverwendung) {
@@ -3039,7 +3039,7 @@ function oeffneZuletztBenutzteSeite() {
 	} else {
 		LetzteUrl = "BeobListe.html";
 	}
-	$.mobile.changePage(LetzteUrl);
+	$.mobile.navigate(LetzteUrl);
 }
 
 // die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
@@ -3297,7 +3297,7 @@ function speichereUserInEvab() {
 						success: function () {
 							// Felder sictbar schalten
 							erstelleSichtbareFelder();
-							$.mobile.changePage("BeobListe.html");
+							$.mobile.navigate("BeobListe.html");
 						},
 						error: function () {
 							erstelleSichtbareFelder();

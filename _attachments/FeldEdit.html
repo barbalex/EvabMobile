@@ -207,7 +207,7 @@
 			$("#FeldEditPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
 					geheZurueckFE();
@@ -222,10 +222,10 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				}
 
 				// jedes Feld aus Feldeigenschaften bei Änderung speichern
@@ -592,7 +592,7 @@
 								leereStorageFeldListe();
 							}
 							leereStorageFeldEdit();
-							$.mobile.changePage("FeldListe.html");
+							$.mobile.navigate("FeldListe.html");
 						},
 						error: function () {
 							melde("Fehler: nicht gelöscht");

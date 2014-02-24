@@ -110,11 +110,11 @@
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.RaumId || localStorage.RaumId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 				initiiereRaumEdit();
@@ -125,18 +125,18 @@
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
 					leereAlleVariabeln();
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 					return;
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.RaumId || localStorage.RaumId === "undefined")) {
 					leereAlleVariabeln("ohneClear");
-					$.mobile.changePage("hProjektListe.html");
+					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
 
 				$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
 					event.preventDefault();
 					leereStorageRaumEdit();
-					$.mobile.changePage("hRaumListe.html");
+					$.mobile.navigate("hRaumListe.html");
 				});
 
 				// Für jedes Feld bei Änderung speichern
@@ -216,7 +216,7 @@
 				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
 					leereStorageRaumListe("mitLatLngListe");
-					$.mobile.changePage("hProjektEdit.html");
+					$.mobile.navigate("hProjektEdit.html");
 				});
 
 				// inaktive tabs inaktivieren
@@ -229,7 +229,7 @@
 				// Link zu Ortliste in Navbar
 				$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function (event) {
 					event.preventDefault();
-					$.mobile.changePage("hOrtListe.html");
+					$.mobile.navigate("hOrtListe.html");
 				});
 
 				// neuen Raum erstellen
@@ -242,7 +242,7 @@
 				$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
 					event.preventDefault();
 					localStorage.AufrufendeSeiteFW = "hRaumEdit";
-					$.mobile.changePage("FelderWaehlen.html");
+					$.mobile.navigate("FelderWaehlen.html");
 				});
 
 				$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {
@@ -292,7 +292,7 @@
 					var contentHeight;
 					event.preventDefault();
 					localStorage.zurueck = "hRaumEdit";
-					$.mobile.changePage("Karte.html");
+					$.mobile.navigate("Karte.html");
 				});
 
 				$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
@@ -347,7 +347,7 @@
 							}
 							// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 							leereStorageRaumEdit("mitLatLngListe");
-							$.mobile.changePage('hRaumListe.html');
+							$.mobile.navigate('hRaumListe.html');
 						},
 						error: function () {
 							melde("Fehler: Raum nicht gelöscht");
@@ -447,12 +447,12 @@
 					leereStorageRaumEdit();
 					leereStorageRaumListe();
 					leereStorageProjektEdit();
-					$.mobile.changePage("BeobListe.html");
+					$.mobile.navigate("BeobListe.html");
 				});
 
 				$('#MenuRaumEdit').on('click', '.menu_felder_verwalten', function() {
 					localStorage.zurueck = "hRaumEdit.html";
-					$.mobile.changePage("FeldListe.html");
+					$.mobile.navigate("FeldListe.html");
 				});
 
 				$('#MenuRaumEdit').on('click', '.menu_raeume_exportieren', function() {
@@ -466,12 +466,12 @@
 
 				$('#MenuRaumEdit').on('click', '.menu_lokal_installieren', function() {
 					localStorage.zurueck = "hRaumEdit.html";
-					$.mobile.changePage("Installieren.html");
+					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', function() {
 					localStorage.UserStatus = "neu";
-					$.mobile.changePage("index.html");
+					$.mobile.navigate("index.html");
 				});
 
 				// Öffnet den vorigen oder nächsten Raum
@@ -524,7 +524,7 @@
 									return;
 								} else {
 									leereStorageRaumEdit();
-									$.mobile.changePage("hRaumListe.html");
+									$.mobile.navigate("hRaumListe.html");
 									return;
 								}
 								break;
