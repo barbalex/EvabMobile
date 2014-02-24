@@ -100,7 +100,7 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 **Installieren:**
 
 - Direkt auf der [Web-Applikation](https://barbalex.cloudant.com/evab/_design/evab/index.html) arbeiten
-- [Auf dem PC installieren](https://barbalex.cloudant.com/evab/_design/evab/Installieren.html) und lokal arbeiten (Windows, Mac OsX - wenig getestet).<br>Vorteile: schneller, eigene Kontrolle über die Daten
+- [Auf dem PC installieren](https://barbalex.cloudant.com/evab/_design/evab/Installieren.html) und lokal arbeiten (Windows, Mac OsX, Linux).<br>Vorteile: schneller, eigene Kontrolle über die Daten
 
 **Beobachtungen erfassen...**
 
@@ -141,7 +141,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Eingaben werden automatisch gespeichert
 - Durch Listen und Formulare "swipen"
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
-- ...und man kann an derselben Stelle weiterarbeiten
+- ...und kann an derselben Stelle weiterarbeiten
 - Artgruppe vorwählen, um die Artauswahl zu beschleunigen
 
 **Sich informieren**
@@ -196,7 +196,7 @@ Um zu helfen, muss man nicht unbedingt programmieren können. Nützlich sind auc
 - [Gute Ideen für die Weiterentwicklung](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Fehler melden](https://github.com/barbalex/EvabMobile/issues?direction=asc&sort=created&state=open)
 - [Tipps und Tricks dokumentieren](https://github.com/barbalex/EvabMobile/wiki)
-- [Mir mitteilen](mailto:alexander.gabriel@bd.zh.ch), was Ihnen gerade auf der Zunge liegt
+- [Mir mitteilen](mailto:alex@gabriel-software.ch), was Ihnen gerade auf der Zunge liegt
 
 <a href="#top">&#8593; top</a>
 
@@ -214,12 +214,12 @@ Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_bl
 #Kann ich's jetzt endlich ausprobieren?
 Die Webversion des Apps finden Sie <a target="_blank" href="https://barbalex.cloudant.com/evab/_design/evab/index.html">hier</a>.
 
-Sie ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Die Datenbank wird regelmässig neu aufgesetzt, womit sich die erfassten Beobachtungen in Luft auflösen!
+Sie ist in Entwicklung. Fehler sind sicht- und spürbar und können zeitweise das Arbeiten verhindern. Wer eigene Daten dauerhaft erfassen will, soll dies bitte zuvor mit [mir](mailto:alex@gabriel-software.ch) absprechen.
 
-Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich. Internet Explorer 10 scheint i.O.
+Am schönsten und schnellsten funktioniert die App in Google Chrome. Sehr gut auch in Firefox (getestet in den aktuellsten Versionen). Im Internet Explorer funktioniert sie erst ab Version 9 und das bloss leidlich. Internet Explorer 10 und 11 scheinen i.O.
 
 Auf Mobilgeräten funktioniert momentan am besten Safari auf iOS oder Google Chrome bzw. Firefox auf Android. Der Standardbrowser von Android ist nicht geeignet.
 
-Auf Mobilgeräten ist die Web-Applikation etwas langsam und daher nur auf aktuellen Geräten brauchbar. Auf dem PC scheint sie mir mittlerweile - nach diversen Optimierungen - recht schnell zu sein. Wenn die Datenbank lokal liegt, ist Tempo kein Thema.
+Auf älteren Mobilgeräten ist die Web-Applikation etwas langsam. Auf aktuellen Mobilgeräten scheint sie mir mittlerweile - nach diversen Optimierungen - recht schnell zu sein. Auf dem PC ist Tempo kein Thema - erst recht nicht, wenn die Datenbank lokal liegt.
 
 <a href="#top">&#8593; top</a>
