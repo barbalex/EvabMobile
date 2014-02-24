@@ -928,10 +928,7 @@
 							leereStorageFeldListe();
 						},
 						error: function () {
-							// Fehlermeldung ausgeschaltet
-							// wenn Listen geändert wurden, kam sie immer
-							// dabei wird das Feld korrekt gespeichert, bloss: ZWEIMAL
-							//melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
+							melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 						}
 					});
 					delete localStorage.FeldName;

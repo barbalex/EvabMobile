@@ -249,12 +249,13 @@ margin: 3px 3px 3px 4px;
 
 /*workaround against bad scrolling
   https://forum.jquery.com/topic/why-jqm-touchscreen-list-scrolling-performance-stinks-and-what-to-do-about-it*/
+  /*
 *.ui-listview *.ui-btn-up-c,
 *.ui-listview *.ui-btn-down-c,
 *.ui-listview *.ui-btn-hover-c
   {
   border:1px solid  #ccc  ;background:#e6edde ;font-weight:bold;color: #2F3E46  ;text-shadow: 0    1px    1px    #f6f6f6  ;background-image:-webkit-gradient(linear,left top,left bottom,from( #dce6d1 ),to( #c1d3b1 )); background-image:-webkit-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:   -moz-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:    -ms-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:     -o-linear-gradient(top,#dce6d1,#c1d3b1 ); background-image:        linear-gradient(top,#dce6d1,#c1d3b1 );
-  }
+  }*/
 
 
 .ui-listview .artlistenhinweis {
