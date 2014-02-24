@@ -50,8 +50,6 @@
 
 			$("#agl_Page").on("pagehide", function () {
 				$("#agl_standardgruppe").html("nächste Gruppe merken");
-				// ausgeschaltet, weil mit jqm 1.4 nicht kompatibel
-				//$("#agl_standardgruppe").button('refresh');
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -75,8 +73,6 @@
 						delete window.gruppe_merken;
 						$(this).html("nächste Gruppe merken");
 					}
-					// ausgeschaltet, weil mit jqm 1.4 nicht kompatibel
-					//$("#agl_standardgruppe").button('refresh');
 				});
 			});
 		</script>
