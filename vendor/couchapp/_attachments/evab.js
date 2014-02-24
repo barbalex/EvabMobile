@@ -3332,6 +3332,33 @@ function validateEmail(email) {
 }
 
 
+// testet, ob die lokale Version erreichbar ist
+// wenn ja, wird diese geöffnet, sonst arteigenschaften.ch
+function oeffneArteigenschaftenVonArt(id) {
+	var url,
+		// neues Fenster jetzt schon gründen
+		// wenn man window.open nach dem callback ausführt, öffnet das Fenster als popup
+		win = window.open("", "_blank");
+
+	$.ajax({
+		type: 'HEAD',
+		url: 'http://127.0.0.1:5984/artendb/_design/artendb/index.html'
+	})
+	.done(function() {
+		// lokale db ist erreichbar, diese verwenden
+		url = "http://127.0.0.1:5984/artendb/_design/artendb/index.html?id=" + id;
+		// url des im neuen tab geöffneten Fensters anpassen
+		win.location.href = url;
+	})
+	.fail(function() {
+		// lokale db ist nicht erreichbar
+		url = "http://arteigenschaften.ch/artendb/_design/artendb/index.html?id=" + id;
+		// url des im neuen tab geöffneten Fensters anpassen
+		win.location.href = url;
+	});
+}
+
+
 /*!
 * jQuery Mobile Framework : drag pagination plugin
 * Copyright (c) Filament Group, Inc

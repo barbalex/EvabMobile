@@ -386,8 +386,7 @@
 				}
 
 				$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', function() {
-					var url = "http://arteigenschaften.ch/artendb/_design/artendb/index.html?id=" + window.Beobachtung.aArtId;
-					window.open(url, "_blank");
+					oeffneArteigenschaftenVonArt(window.Beobachtung.aArtId);
 				});
 
 				$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', function() {
