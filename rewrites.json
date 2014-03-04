@@ -104,10 +104,6 @@
 		"to": "Artgruppenbilder/*"
 	},
 	{
-		"from": "Bilder/*",
-		"to": "Bilder/*"
-	},
-	{
 		"from": "Hierarchiebilder/*",
 		"to": "Hierarchiebilder/*"
 	},
