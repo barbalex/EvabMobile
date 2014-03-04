@@ -4,6 +4,10 @@
 		"to": "index.html"
 	},
 	{
+		"from": "favicon.ico",
+		"to": "favicon.ico"
+	},
+	{
 		"from": "Artenliste.html",
 		"to": "Artenliste.html"
 	},
@@ -122,6 +126,14 @@
 	{
 		"from": "_update/*",
 		"to": "_update/*"
+	},
+	{
+		"from": "_users/*",
+		"to": "_users/*"
+	},
+	{
+		"from": "_session/*",
+		"to": "_session/*"
 	},
 	{
 		"from" : "evab/*",
