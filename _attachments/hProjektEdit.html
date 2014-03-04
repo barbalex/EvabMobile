@@ -516,7 +516,6 @@
 							case "nächstes":
 								if (parseInt(i) < AnzProj) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
-									//$.mobile.navigate("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;
@@ -528,7 +527,6 @@
 							case "voriges":
 								if (parseInt(i) > 0) {
 									localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
-									//$.mobile.navigate("#ProjektEditPage", {allowSamePageTransition: true});
 									leereStorageProjektEdit("mitLatLngListe", "ohneId");
 									initiiereProjektEdit();
 									return;

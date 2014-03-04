@@ -346,9 +346,10 @@ function erstelleNeueZeit() {
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
-		$.mobile.navigate($("#ZeitEditPage"), {allowSamePageTransition: true});
 	} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
-		$.mobile.navigate($("#ZeitEditPage"), {allowSamePageTransition: true});
+		//$(":mobile-pagecontainer").pagecontainer("change", "#ZeitEditPage.html", { allowSamePageTransition : true });    FUNKTIONIERT NICHT
+		localStorage.hZeit = JSON.stringify(window.hZeit);
+		window.open("hZeitEdit.html", target = "_self");
 	} else {
 		$.mobile.navigate("hZeitEdit.html");
 	}
@@ -378,7 +379,9 @@ function erstelleNeuenOrt() {
 		localStorage.hOrt = JSON.stringify(window.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
 	} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
-		$.mobile.navigate($("#OrtEditPage"), {allowSamePageTransition: true});
+		//$(":mobile-pagecontainer").pagecontainer("change", "#OrtEditPage.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
+		localStorage.hOrt = JSON.stringify(window.hOrt);
+		window.open("hOrtEdit.html", target = "_self");
 	} else {
 		$.mobile.navigate("hOrtEdit.html");
 	}
@@ -401,11 +404,16 @@ function erstelleNeuenRaum() {
 	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
+		console.log("var 1");
 		localStorage.hRaum = JSON.stringify(window.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-		$.mobile.navigate($("#RaumEditPage"), {allowSamePageTransition: true});
+		console.log("var 2");
+		//$(":mobile-pagecontainer").pagecontainer("change", "#RaumEditPage.html", {allowSamePageTransition : "true"});   FUNKTIONIERT NICHT
+		localStorage.hRaum = JSON.stringify(window.hRaum);
+		window.open("hRaumEdit.html", target = "_self");
 	} else {
+		console.log("var 3");
 		$.mobile.navigate("hRaumEdit.html");
 	}
 }
@@ -431,7 +439,9 @@ function erstelleNeuesProjekt() {
 		localStorage.hProjekt = JSON.stringify(window.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
 	} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
-		$.mobile.navigate($("#ProjektEditPage"), {allowSamePageTransition: true});
+		//$.mobile.navigate($("#ProjektEditPage"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
+		localStorage.hProjekt = JSON.stringify(window.hProjekt);
+		window.open("hProjektEdit.html", target = "_self");
 	} else {
 		$.mobile.navigate("hProjektEdit.html");
 	}
@@ -2801,7 +2811,6 @@ function neuesFeld() {
 			window.Feld = NeuesFeld;
 			// Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
-			//$.mobile.navigate("FeldEdit.html", {allowSamePageTransition: true});
 			$(":mobile-pagecontainer").pagecontainer("change", "FeldEdit.html", { allowSamePageTransition : true });
 		},
 		error: function () {
