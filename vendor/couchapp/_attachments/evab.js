@@ -2801,7 +2801,8 @@ function neuesFeld() {
 			window.Feld = NeuesFeld;
 			// Feldliste soll neu aufgebaut werden
 			leereStorageFeldListe();
-			$.mobile.navigate("FeldEdit.html", {allowSamePageTransition: true});
+			//$.mobile.navigate("FeldEdit.html", {allowSamePageTransition: true});
+			$(":mobile-pagecontainer").pagecontainer("change", "FeldEdit.html", { allowSamePageTransition : true });
 		},
 		error: function () {
 			melde("Fehler: Feld nicht erzeugt");
