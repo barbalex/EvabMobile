@@ -336,9 +336,11 @@
 				});
 
 				$("#UserFeldForm").on("change", "#Standardwert", function () {
-					var Optionen, Feldwert, LetzterFeldwert, Formularelement, StandardwertOptionen;
-					Optionen = $("#Optionen").val() || [];	// undefined verhindern
-					Feldwert = this.value || [];	// undefined verhindern
+					var Optionen = $("#Optionen").val() || [],	// undefined verhindern
+						Feldwert = this.value || [],	// undefined verhindern
+						LetzterFeldwert, 
+						Formularelement, 
+						StandardwertOptionen;
 					if (Optionen.length > 0) {
 						// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 						LetzterFeldwert = [];
