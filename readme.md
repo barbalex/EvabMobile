@@ -145,7 +145,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Artgruppe vorwählen, um die Artauswahl zu beschleunigen
 
 **Sich informieren**
-- Arteigenschaften in [ArtenDb](https://github.com/barbalex/artendb) nachschauen
+- Arteigenschaften auf [arteigenschaften.ch](http://arteigenschaften.ch) nachschauen
 
 **Über Daten und App verfügen**
 
