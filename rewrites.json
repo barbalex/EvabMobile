@@ -4,139 +4,16 @@
 		"to": "index.html"
 	},
 	{
-		"from": "favicon.ico",
-		"to": "favicon.ico"
-	},
-	{
-		"from": "Artenliste.html",
-		"to": "Artenliste.html"
-	},
-	{
-		"from": "Artgruppenliste.html",
-		"to": "Artgruppenliste.html"
-	},
-	{
-		"from": "BeobEdit.html",
-		"to": "BeobEdit.html"
-	},
-	{
-		"from": "BeobListe.html",
-		"to": "BeobListe.html"
-	},
-	{
-		"from": "FeldEdit.html",
-		"to": "FeldEdit.html"
-	},
-	{
-		"from": "FelderWaehlen.html",
-		"to": "FelderWaehlen.html"
-	},
-	{
-		"from": "FeldListe.html",
-		"to": "FeldListe.html"
-	},
-	{
-		"from": "hArtEdit.html",
-		"to": "hArtEdit.html"
-	},
-	{
-		"from": "hArtListe.html",
-		"to": "hArtListe.html"
-	},
-	{
-		"from": "hOrtEdit.html",
-		"to": "hOrtEdit.html"
-	},
-	{
-		"from": "hOrtListe.html",
-		"to": "hOrtListe.html"
-	},
-	{
-		"from": "hProjektEdit.html",
-		"to": "hProjektEdit.html"
-	},
-	{
-		"from": "hProjektListe.html",
-		"to": "hProjektListe.html"
-	},
-	{
-		"from": "hRaumEdit.html",
-		"to": "hRaumEdit.html"
-	},
-	{
-		"from": "hRaumListe.html",
-		"to": "hRaumListe.html"
-	},
-	{
-		"from": "hZeitEdit.html",
-		"to": "hZeitEdit.html"
-	},
-	{
-		"from": "hZeitListe.html",
-		"to": "hZeitListe.html"
-	},
-	{
-		"from": "index.html",
-		"to": "index.html"
-	},
-	{
-		"from": "Installieren.html",
-		"to": "Installieren.html"
-	},
-	{
-		"from": "Karte.html",
-		"to": "Karte.html"
-	},
-	{
-		"from": "Signup.html",
-		"to": "Signup.html"
-	},
-	{
-		"from": "UserEdit.html",
-		"to": "UserEdit.html"
-	},
-	{
-		"from": "style/*",
-		"to": "style/*"
-	},
-	{
-		"from": "Artgruppenbilder/*",
-		"to": "Artgruppenbilder/*"
-	},
-	{
-		"from": "Hierarchiebilder/*",
-		"to": "Hierarchiebilder/*"
-	},
-	{
-		"from": "vendor/*",
-		"to": "vendor/*"
-	},
-	{
-		"from": "_view/*",
-		"to": "_view/*"
-	},
-	{
-		"from": "_list/*",
-		"to": "_list/*"
-	},
-	{
-		"from": "_update/*",
-		"to": "_update/*"
-	},
-	{
-		"from": "_users/*",
-		"to": "_users/*"
-	},
-	{
-		"from": "_session/*",
-		"to": "_session/*"
-	},
-	{
+		"description": "Zugang zur Datenbank",
 		"from" : "evab/*",
 		"to" : "../../*"
 	},
 	{
 		"from" : "evab/",
 		"to" : "../../"
+	},
+	{
+		"from": "/*",
+		"to": "*"
 	}
 ]
