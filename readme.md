@@ -1,6 +1,6 @@
 Mit _evab mobile_ erfassen Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld auf Mobilgeräten. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene, projektspezifische Datenstrukturen.
 
-_evab_ steht für: **E**rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen.<br>_mobile_ wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
+_evab_ steht für: **E**rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen.<br>_mobile_ wurde angefügt, weil es heute schon eine ähnliche Windows-Anwendung namens <a target="_blank" href="//aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">EvAB</a>&nbsp;gibt.
 
 <a name="top"></a>
 ## Inhalt ##
@@ -16,7 +16,7 @@ _evab_ steht für: **E**rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen.<br>
 
 <a name="Ausgangslage"></a>
 #Ausgangslage
-Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Informationen über Artbeobachtungen digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](http://www.natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
+Im Naturschutz sind anspruchsvolle Auswertungen und Erfolgskontrollen nur möglich, wenn Informationen über Artbeobachtungen digital vorliegen. Werden diese den [nationalen Artdaten-Zentren der Schweiz](//natportal.ch/) geliefert, können sie über das ursprüngliche Projekt hinaus weiteren Nutzen bringen.
 
 Meist werden Artbeobachtungen im Feld auf Papier notiert. Im besten Fall auf vorbereiteten Formularen. 
 Gängige Fehlerquellen:  
@@ -104,7 +104,7 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 
 **Beobachtungen erfassen...**
 
-- ...von rund 40'000 Arten aus den Gruppen Flora, Fauna, Moose und Pilze. Die Artlisten stammen von den [nationalen Artdaten-Zentren](http://www.natportal.ch/)
+- ...von rund 40'000 Arten aus den Gruppen Flora, Fauna, Moose und Pilze. Die Artlisten stammen von den [nationalen Artdaten-Zentren](//natportal.ch/)
 - ...von offiziellen Arten. Bei Artengruppen mit entsprechenden Informationen (Flora, Moose) sind Synonyme und nicht anerkannte Unterarten als solche erkenntlich und es wird auf die offizielle Art hingewiesen (ohne die Verwendung der offiziellen Art zu erzwingen)
 - ...von unbekannten Arten, z.B. um sie später zu bestimmen
 - ...von "eigenen" Arten, die nicht im offiziellen Index enthalten sind (Spezialfälle für Artspezialisten und frische Neobiota)
@@ -203,7 +203,7 @@ Um zu helfen, muss man nicht unbedingt programmieren können. Nützlich sind auc
 
 <a name="GibtsSchon"></a>
 #Gibt's das nicht schon?
-Die App existiert eigentlich schon. Sie heisst EvAB (<b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen) und kann <a target="_blank" href="http://www.aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher kaum jemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. Und: EvAB ist nicht selber konfigurierbar.
+Die App existiert eigentlich schon. Sie heisst EvAB (<b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen) und kann <a target="_blank" href="//aln.zh.ch/internet/baudirektion/aln/de/naturschutz/naturschutzdaten/tools/evab.html">hier</a>&nbsp;heruntergeladen werden. Bloss trägt bisher kaum jemand einen Windows-PC im Feld herum. Ausserdem sollte die App für den Feldgebrauch noch benutzerfreundlicher werden. Und: EvAB ist nicht selber konfigurierbar.
 
 Ein eigentliches Mobil-App habe ich erst eines gefunden: Der&nbsp;<a target="_blank" href="http://itunes.apple.com/us/app/artenfinder/id411688829?mt=8">Artenfinder</a>&nbsp;ist ein tolles App für Amateure. Unsere Deutschen Kollegen legen sich da ins Zeug. Und sie kümmern sich um ihre freiwilligen ArtbeobachterInnen. Vorbildlich!
 

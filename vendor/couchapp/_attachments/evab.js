@@ -2443,7 +2443,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 })(jQuery);
 
 // Codeausführung für Anzahl Millisekunden unterbrechen
-// Quelle: http://www.sean.co.uk/a/webdesign/javascriptdelay.shtm
+// Quelle: //sean.co.uk/a/webdesign/javascriptdelay.shtm
 // grauenhafte Methode - blockiert die CPU!!
 function warte(ms) {
 	ms += new Date().getTime();
