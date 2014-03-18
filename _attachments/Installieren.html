@@ -20,15 +20,7 @@
 				$.mobile.buttonMarkup.hoverDelay = 0;
 			});
 		</script>
-		<script src="vendor/couchapp/jquery.couch.js"></script>
-		<script src="vendor/couchapp/jquery.form.js"></script>
 		<script src="vendor/couchapp/jquery.mobile.js"></script>
-		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-		<script src="vendor/couchapp/evab.js"></script>
-		<script src="vendor/couchapp/sha1.js"></script>
-		<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-		<script src="vendor/couchapp/markerclusterer.js"></script>
-		<script src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
   	<div data-role="page" id="InstallierenPage">
@@ -60,6 +52,16 @@
 			<p>Die Apps für Android und iOS sind noch in Entwicklung.</p>
 			<hr >
 		</div>
+
+		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+		<script src="vendor/couchapp/jquery.couch.js"></script>
+		<script src="vendor/couchapp/jquery.form.js"></script>
+		<script src="vendor/couchapp/evab.js"></script>
+		<script src="vendor/couchapp/sha1.js"></script>
+		<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+		<script src="vendor/couchapp/markerclusterer.js"></script>
+		<script src="vendor/couchapp/markerwithlabel.js"></script>
+
 		<script>
 			$("#InstallierenPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
