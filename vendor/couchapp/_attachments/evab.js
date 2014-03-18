@@ -3,77 +3,70 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 */
 
 function erstelleNeuesDatum() {
-	var jetzt, Jahr, Mnt, MntAusgabe, Tag, TagAusgabe, Datum;
-	jetzt = new Date();
-	Jahr = jetzt.getFullYear();
-	Mnt = jetzt.getMonth()+1;
-	MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt);
-	Tag = jetzt.getDate();
-	TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag);
-	Datum = Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
+	var jetzt = new Date(),
+		Jahr = jetzt.getFullYear(),
+		Mnt = jetzt.getMonth()+1,
+		MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt),
+		Tag = jetzt.getDate(),
+		TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag),
+		Datum = Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
 	return Datum;
 }
 
 function erstelleNeueUhrzeit() {
-	var jetzt, Std, StdAusgabe, Min, MinAusgabe, Sek, SekAusgabe, Zeit;
-	jetzt = new Date();
-	Std = jetzt.getHours();
-	StdAusgabe = ((Std < 10) ? "0" + Std : Std);
-	Min = jetzt.getMinutes();
-	MinAusgabe = ((Min < 10) ? "0" + Min : Min);
-	Sek = jetzt.getSeconds();
-	SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek);
-	Zeit = StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
+	var jetzt = new Date(),
+		Std = jetzt.getHours(),
+		StdAusgabe = ((Std < 10) ? "0" + Std : Std),
+		Min = jetzt.getMinutes(),
+		MinAusgabe = ((Min < 10) ? "0" + Min : Min),
+		Sek = jetzt.getSeconds(),
+		SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek),
+		Zeit = StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
 	return Zeit;
 }
 
-
 // wandelt decimal degrees (vom GPS) in WGS84 um
 function DdInWgs84BreiteGrad(Breite) {
-	var BreiteGrad;
-	BreiteGrad = Math.floor(Breite);
-	return BreiteGrad;
+	return Math.floor(Breite);
 }
 
 function DdInWgs84BreiteMin(Breite) {
-	var BreiteGrad, BreiteMin;
-	BreiteGrad = Math.floor(Breite);
-	BreiteMin = Math.floor((Breite-BreiteGrad)*60);
+	var BreiteGrad = Math.floor(Breite),
+		BreiteMin = Math.floor((Breite-BreiteGrad)*60);
 	return BreiteMin;
 }
 
 function DdInWgs84BreiteSec(Breite) {
-	var BreiteGrad, BreiteMin, BreiteSec;
-	BreiteGrad = Math.floor(Breite);
-	BreiteMin = Math.floor((Breite-BreiteGrad)*60);
-	BreiteSec =  (Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100);
+	var BreiteGrad = Math.floor(Breite),
+		BreiteMin = Math.floor((Breite-BreiteGrad)*60),
+		BreiteSec = Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100;
 	return BreiteSec;
 }
 
 function DdInWgs84LaengeGrad(Laenge) {
-	var LaengeGrad;
-	LaengeGrad = Math.floor(Laenge);
-	return LaengeGrad;
+	return Math.floor(Laenge);
 }
 
 function DdInWgs84LaengeMin(Laenge) {
-	var LaengeGrad, LaengeMin;
-	LaengeGrad = Math.floor(Laenge);
-	LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
+	var LaengeGrad = Math.floor(Laenge),
+		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
 	return LaengeMin;
 }
 
 function DdInWgs84LaengeSec(Laenge) {
-	var LaengeGrad, LaengeMin, LaengeSec;
-	LaengeGrad = Math.floor(Laenge);
-	LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
-	LaengeSec = (Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100);
+	var LaengeGrad = Math.floor(Laenge),
+		LaengeMin = Math.floor((Laenge-LaengeGrad)*60),
+		LaengeSec = Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100;
 	return LaengeSec;
 }
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
 function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-	var lat_aux, lng_aux;
+	var lat,
+		lng,
+		lat_aux,
+		lng_aux;
+
 	// Converts degrees dec to sex
 	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
 	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
@@ -94,7 +87,9 @@ function Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 
 // Wandelt WGS84 in CH-Landeskoordinaten um
 function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-	var lat_aux, lng_aux;
+	var lat_aux,
+		lng_aux;
+
 	// Converts degrees dec to sex
 	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
 	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
@@ -115,26 +110,24 @@ function Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, Lae
 
 // wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
 function DdInChX(Breite, Laenge) {
-	var BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec, x;
-	BreiteGrad = DdInWgs84BreiteGrad(Breite);
-	BreiteMin = DdInWgs84BreiteMin(Breite);
-	BreiteSec = DdInWgs84BreiteSec(Breite);
-	LaengeGrad = DdInWgs84LaengeGrad(Laenge);
-	LaengeMin = DdInWgs84LaengeMin(Laenge);
-	LaengeSec = DdInWgs84LaengeSec(Laenge);
-	x = Math.floor(Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
+	var BreiteGrad = DdInWgs84BreiteGrad(Breite),
+		BreiteMin = DdInWgs84BreiteMin(Breite),
+		BreiteSec = DdInWgs84BreiteSec(Breite),
+		LaengeGrad = DdInWgs84LaengeGrad(Laenge),
+		LaengeMin = DdInWgs84LaengeMin(Laenge),
+		LaengeSec = DdInWgs84LaengeSec(Laenge),
+		x = Math.floor(Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 	return x;
 }
 
 function DdInChY(Breite, Laenge) {
-	var BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec, y;
-	BreiteGrad = DdInWgs84BreiteGrad(Breite);
-	BreiteMin = DdInWgs84BreiteMin(Breite);
-	BreiteSec = DdInWgs84BreiteSec(Breite);
-	LaengeGrad = DdInWgs84LaengeGrad(Laenge);
-	LaengeMin = DdInWgs84LaengeMin(Laenge);
-	LaengeSec = DdInWgs84LaengeSec(Laenge);
-	y = Math.floor(Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
+	var BreiteGrad = DdInWgs84BreiteGrad(Breite),
+		BreiteMin = DdInWgs84BreiteMin(Breite),
+		BreiteSec = DdInWgs84BreiteSec(Breite),
+		LaengeGrad = DdInWgs84LaengeGrad(Laenge),
+		LaengeMin = DdInWgs84LaengeMin(Laenge),
+		LaengeSec = DdInWgs84LaengeSec(Laenge),
+		y = Math.floor(Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 	return y;
 }
 
@@ -143,7 +136,10 @@ function DdInChY(Breite, Laenge) {
 // Convert CH y/x to WGS lat
 function CHtoWGSlat(y, x) {
 	// Converts militar to civil and to unit = 1000km
-	var y_aux, x_aux;
+	var lat,
+		y_aux,
+		x_aux;
+
 	// Axiliary values (% Bern)
 	y_aux = (y - 600000)/1000000;
 	x_aux = (x - 200000)/1000000;
@@ -158,13 +154,17 @@ function CHtoWGSlat(y, x) {
 
 	// Unit 10000" to 1 " and converts seconds to degrees (dec)
 	lat = lat * 100/36;
+
 	return lat;
 }
 
 // Convert CH y/x to WGS long
 function CHtoWGSlng(y, x) {
 	// Converts militar to civil and to unit = 1000km
-	var y_aux, x_aux;
+	var lng,
+		y_aux,
+		x_aux;
+
 	// Axiliary values (% Bern)
 	y_aux = (y - 600000)/1000000;
 	x_aux = (x - 200000)/1000000;
@@ -178,6 +178,7 @@ function CHtoWGSlng(y, x) {
 
 	// Unit 10000" to 1 " and converts seconds to degrees (dec)
 	lng = lng * 100/36;
+	
 	return lng;
 }
 
