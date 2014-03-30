@@ -247,7 +247,7 @@
 				});
 
 				$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", function (event) {
-					löscheBeobachtung();
+					löscheHBeob();
 				});
 
 				$("#hArtEditPage").on("swipeleft", function () {
@@ -364,17 +364,19 @@
 					$.mobile.navigate("index.html");
 				});
 
-				function löscheBeobachtung() {
+				// wird in hArtEdit.html benutzt
+				// löscht eine Beobachtung
+				function löscheHBeob() {
 					if (window.hArt) {
 						// vorhandenes Objekt nutzen
-						löscheBeobachtung_2();
+						löscheHBeob_2();
 					} else {
 						// Objekt aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.hBeobId, {
 							success: function (data) {
 								window.hArt = data;
-								löscheBeobachtung_2();
+								löscheHBeob_2();
 							},
 							error: function () {
 								melde("Fehler: Art nicht gelöscht");
@@ -383,7 +385,7 @@
 					}
 				}
 
-				function löscheBeobachtung_2() {
+				function löscheHBeob_2() {
 					$db = $.couch.db("evab");
 					$db.removeDoc(window.hArt, {
 						success: function (data) {
