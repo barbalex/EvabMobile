@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
   <head>
@@ -57,57 +58,11 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script charset="utf-8">
+			$("#al_Page").on("pageshow", handleAlPageshow);
 
-			$("#al_Page").on("pageshow", function () {
-				initiiereArtenliste("");
-				if (window.gruppe_merken) {
-					$("#al_standardgruppe").removeClass('ui-disabled');
-				} else {
-					$("#al_standardgruppe").addClass('ui-disabled');
-				}
-			});
+			$("#al_Page").on("pagehide", handleAlPagehide);
 
-			$("#al_Page").on("pagehide", function () {
-				$("#al_ArtenListe").hide();
-			});
-
-			$(":jqmData(role='page')").on("pageinit", function () {
-				var filterwert = "";
-
-				$(document).on("keypress", function (e) {
-					if (e.which == 13) {
-						filterwert = $("#al_filter").val().toLowerCase();
-						initiiereArtenliste(filterwert);
-					}
-				});
-
-				$("#al_Page").on("click", "#al_filter_setzen", function () {
-					filterwert = $("#al_filter").val().toLowerCase();
-					initiiereArtenliste(filterwert);
-				});
-
-				$("#al_Page").on("click", ".ui-icon-delete", function() {
-					filterwert = "";
-					initiiereArtenliste("");
-				});
-
-				$("#al_Page").on("click", "#al_standardgruppe", function() {
-					delete window.gruppe_merken;
-					$.mobile.navigate("Artgruppenliste.html");
-				});
-
-				$("#al_ArtenListe").on("click", "[name='ArtListItem']", function (event) {
-					var ArtBezeichnung;
-					event.preventDefault();
-					ArtBezeichnung = $(this).attr("ArtBezeichnung");
-					localStorage.aArtId = $(this).attr("artid");
-					if (localStorage.Status === "neu") {
-						speichereNeueBeob(ArtBezeichnung);
-					} else {
-						speichereBeobNeueArtgruppeArt(ArtBezeichnung);
-					}
-				});
-			});
+			$(":jqmData(role='page')").on("pageinit", handleAlPageinit);
 		</script>
 	</div>
   </body>

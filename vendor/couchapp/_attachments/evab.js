@@ -3369,6 +3369,71 @@ function oeffneArteigenschaftenVonArt(id) {
 	});
 }
 
+// wenn Artenliste.html initiiert wird
+function handleAlPageinit() {
+	$(document).on("keypress", handleAlKeypress);
+
+	$("#al_Page").on("click", "#al_filter_setzen", handleAlAlFilterClick);
+
+	$("#al_Page").on("click", ".ui-icon-delete", handleAlUiIconDeleteClick);
+
+	$("#al_Page").on("click", "#al_standardgruppe", handleAlAlStandardgruppeClick);
+
+	$("#al_ArtenListe").on("click", "[name='ArtListItem']", handleAlArtListItemClick);
+}
+
+// wenn Artenliste.html gezeigt wird
+function handleAlPageshow() {
+	initiiereArtenliste("");
+	if (window.gruppe_merken) {
+		$("#al_standardgruppe").removeClass('ui-disabled');
+	} else {
+		$("#al_standardgruppe").addClass('ui-disabled');
+	}
+}
+
+// wenn Artenliste.html verschwindet
+function handleAlPagehide() {
+	$("#al_ArtenListe").hide();
+}
+
+// wenn in Artenliste.html eine Taste gedrückt wird
+function handleAlKeypress() {
+	if (event.which == 13) {
+		var filterwert = $("#al_filter").val().toLowerCase();
+		initiiereArtenliste(filterwert);
+	}
+}
+
+// wenn in Artenliste.html #al_filter_setzen geklickt wird
+function handleAlAlFilterClick() {
+	var filterwert = $("#al_filter").val().toLowerCase();
+	initiiereArtenliste(filterwert);
+}
+
+// wenn in Artenliste.html .ui-icon-delete geklickt wird
+function handleAlUiIconDeleteClick() {
+	var filterwert = "";
+	initiiereArtenliste(filterwert);
+}
+
+// wenn in Artenliste.html #al_standardgruppe geklickt wird
+function handleAlAlStandardgruppeClick() {
+	delete window.gruppe_merken;
+	$.mobile.navigate("Artgruppenliste.html");
+}
+
+// wenn in Artenliste.html [name='ArtListItem'] geklickt wird
+function handleAlArtListItemClick() {
+	event.preventDefault();
+	var ArtBezeichnung = $(this).attr("ArtBezeichnung");
+	localStorage.aArtId = $(this).attr("artid");
+	if (localStorage.Status === "neu") {
+		speichereNeueBeob(ArtBezeichnung);
+	} else {
+		speichereBeobNeueArtgruppeArt(ArtBezeichnung);
+	}
+}
 
 /*!
 * jQuery Mobile Framework : drag pagination plugin
