@@ -3435,6 +3435,52 @@ function handleAlArtListItemClick() {
 	}
 }
 
+// wenn Artgruppenliste.html erscheint
+function handleAglPageshow() {
+	erstelleArtgruppenListe();
+	delete window.gruppe_merken;
+}
+
+// wenn Artgruppenliste.html verschwindet
+function handleAglPagehide() {
+	$("#agl_standardgruppe").html("nächste Gruppe merken");
+}
+
+// wenn Artgruppenliste.html initiiert wird
+function handleAglPageinit() {
+	// Vorsicht: Genauer als body funktioniert hier nicht,
+	// weil die nested List im DOM jedes mal eine eigene Page aufbaut
+	$("body").on("click", "[name='ArtgruppenListItem']", handleAglArtgruppenListItemClick);
+
+	$("#agl_Page").on("click", "#agl_standardgruppe", handleAglAglStandardgruppeClick);
+}
+
+// wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
+function handleAglArtgruppenListItemClick() {
+	event.preventDefault();
+	localStorage.aArtGruppe = $(this).attr("ArtGruppe");
+	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
+	if (window.gruppe_merken) {
+		window.gruppe_merken = $(this).attr("ArtGruppe");
+	}
+	$.mobile.navigate("Artenliste.html");
+}
+
+// wenn in Artgruppenliste.html #agl_standardgruppe geklickt wird
+function handleAglAglStandardgruppeClick() {
+	if ($(this).html() === "nächste Gruppe merken") {
+		window.gruppe_merken = true;
+		$(this).html("nächste Gruppe wird gemerkt");
+	} else {
+		delete window.gruppe_merken;
+		$(this).html("nächste Gruppe merken");
+	}
+}
+
+
+
+
+
 /*!
 * jQuery Mobile Framework : drag pagination plugin
 * Copyright (c) Filament Group, Inc

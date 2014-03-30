@@ -276,18 +276,18 @@
 				});
 
 				// Pagination Pfeiltasten initialisieren
-				$("#ProjektEditPage").on("keyup", function (e) {
+				$("#ProjektEditPage").on("keyup", function (event) {
 					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if (!$(e.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
+					if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
 						// Left arrow
-						if (e.keyCode === $.mobile.keyCode.LEFT) {
+						if (event.keyCode === $.mobile.keyCode.LEFT) {
 							nächstesVorigesProjekt("voriges");
-							e.preventDefault();
+							event.preventDefault();
 						}
 						// Right arrow
-						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
+						else if (event.keyCode === $.mobile.keyCode.RIGHT) {
 							nächstesVorigesProjekt("nächstes");
-							e.preventDefault();
+							event.preventDefault();
 						}
 					}
 				});

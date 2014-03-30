@@ -274,18 +274,18 @@
 				});
 
 				// Pagination Pfeiltasten initialisieren
-				$("#RaumEditPage").on("keyup", function (e) {
+				$("#RaumEditPage").on("keyup", function (event) {
 					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if (!$(e.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
+					if (!$(event.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
 						// Left arrow
-						if (e.keyCode === $.mobile.keyCode.LEFT) {
+						if (event.keyCode === $.mobile.keyCode.LEFT) {
 							nächsterVorigerRaum("voriger");
-							e.preventDefault();
+							event.preventDefault();
 						}
 						// Right arrow
-						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
+						else if (event.keyCode === $.mobile.keyCode.RIGHT) {
 							nächsterVorigerRaum("nächster");
-							e.preventDefault();
+							event.preventDefault();
 						}
 					}
 				});

@@ -97,10 +97,10 @@
 				});
 
 				// Reaktion auf Enter-Taste
-				$("#indexForm").on("keydown", "#Passwort", function (e) {
-					if (e.keyCode === 13) {
+				$("#indexForm").on("keydown", "#Passwort", function (event) {
+					if (event.keyCode === 13) {
 						meldeUserAn();
-						e.preventDefault();
+						event.preventDefault();
 					}
 				});
 			});

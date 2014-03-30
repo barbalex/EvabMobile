@@ -484,18 +484,18 @@
 				});
 
 				// Pagination Pfeiltasten initialisieren
-				$("#FeldEditPage").on("keyup", function (e) {
+				$("#FeldEditPage").on("keyup", function (event) {
 					// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-					if (!$(e.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
+					if (!$(event.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
 						// Left arrow
-						if (e.keyCode === $.mobile.keyCode.LEFT) {
+						if (event.keyCode === $.mobile.keyCode.LEFT) {
 							geheZumVorigenFeld();
-							e.preventDefault();
+							event.preventDefault();
 						}
 						// Right arrow
-						else if (e.keyCode === $.mobile.keyCode.RIGHT) {
+						else if (event.keyCode === $.mobile.keyCode.RIGHT) {
 							geheZumNächstenFeld();
-							e.preventDefault();
+							event.preventDefault();
 						}
 					}
 				});
