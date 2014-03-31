@@ -3802,25 +3802,138 @@ function handleBeobEditMenuNeuAnmeldenClick() {
 	$.mobile.navigate("index.html");
 }
 
-// wenn in BeobEdit.html 
+// wenn BeobListe.html erscheint
+function handleBeobListePageshow() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	}
+	initiiereBeobliste();
+}
 
-// wenn in BeobEdit.html 
+// Wenn BeobListe.html initiiert wird
+function handleBeobListePageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	}
 
-// wenn in BeobEdit.html 
+	$("#BeoblisteBL").on("swipeleft click", ".beob", handleBeobListeBeobSwipeleftClick);
 
-// wenn in BeobEdit.html 
+	$("#BeoblisteBL").on("taphold", ".beob", handleBeobListeBeobTaphold);
 
-// wenn in BeobEdit.html 
+	$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', handleBeobListeOeffneKarteBeobListeClick);
 
-// wenn in BeobEdit.html 
+	$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", handleBeobListeOeffneProjektListeBeobListeClick);
 
-// wenn in BeobEdit.html 
+	$("#BeobListePage").on("click", ".NeueBeobBeobListe", handleBeobListeNeueBeobBeobListeClick);
 
-// wenn in BeobEdit.html 
+	$("#BeoblisteBL").on("swipeleft", ".erste", erstelleNeueBeob_1_Artgruppenliste);
 
-// wenn in BeobEdit.html 
+	$("#BeobListePage").on("swiperight", "#BeobListePageContent", handleBeobListeBeobListePageContentSwiperight);
 
+	$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', handleBeobListeMenuHierarchischerModusClick);
 
+	$('#MenuBeobListe').on('click', '.menu_felder_verwalten', handleBeobListeMenuFelderVerwaltenClick);
+
+	$('#MenuBeobListe').on('click', '.menu_beob_exportieren', handleBeobListeMenuBeobExportierenClick);
+
+	$('#MenuBeobListe').on('click', '.menu_einstellungen', handleBeobListeMenuEinstellungenClick);
+
+	$('#MenuBeobListe').on('click', '.menu_lokal_installieren', handleBeobListeMenuLokalInstallierenClick);
+
+	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', handleBeobListeMenuNeuAnmeldenClick);
+}
+
+// wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
+function handleBeobListeBeobSwipeleftClick() {
+	localStorage.BeobId = $(this).attr('id');
+	$.mobile.navigate("BeobEdit.html");
+}
+
+// wenn in BeobListe.html .beob taphold
+function handleBeobListeBeobTaphold() {
+	// FUNKTIONIERT NICHT, WEIL JQUERY MOBILE NACH TAPHOLD IMMER EINEN TAP AUSFÜHRT!!!!!!!!!!!!!!!	
+	console.log('taphold');
+}
+
+// wenn in BeobListe.html #OeffneKarteBeobListe geklickt wird
+function handleBeobListeOeffneKarteBeobListeClick() {
+	event.preventDefault();
+	localStorage.zurueck = "BeobListe";
+	$.mobile.navigate("Karte.html");
+}
+
+// wenn in BeobListe.html #OeffneProjektListeBeobListe geklickt wird
+function handleBeobListeOeffneProjektListeBeobListeClick() {
+	event.preventDefault();
+	$.mobile.navigate("hProjektListe.html");
+}
+
+// wenn in BeobListe.html .NeueBeobBeobListe geklickt wird
+// Neue Beobachtung managen
+function handleBeobListeNeueBeobBeobListeClick() {
+	event.preventDefault();
+	erstelleNeueBeob_1_Artgruppenliste();
+}
+
+// wenn in BeobListe.html #BeobListePageContent nach rechts gewischt wird
+function handleBeobListeBeobListePageContentSwiperight() {
+	$.mobile.navigate("hProjektListe.html");
+}
+
+// wenn in BeobListe.html .menu_hierarchischer_modus geklickt wird
+function handleBeobListeMenuHierarchischerModusClick() {
+	$.mobile.navigate("hProjektListe.html");
+}
+
+// wenn in BeobListe.html .menu_felder_verwalten geklickt wird
+function handleBeobListeMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "BeobListe.html";
+	$.mobile.navigate("FeldListe.html");
+}
+
+// wenn in BeobListe.html .menu_beob_exportieren geklickt wird
+function handleBeobListeMenuBeobExportierenClick() {
+	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuBeobListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuBeobListe").popup("close");
+}
+
+// wenn in BeobListe.html .menu_einstellungen geklickt wird
+function handleBeobListeMenuEinstellungenClick() {
+	localStorage.zurueck = "BeobListe.html";
+	öffneMeineEinstellungen();
+}
+
+// wenn in BeobListe.html .menu_lokal_installieren geklickt wird
+function handleBeobListeMenuLokalInstallierenClick() {
+	localStorage.zurueck = "BeobListe.html";
+	$.mobile.navigate("Installieren.html");
+}
+
+// wenn in BeobListe.html .menu_neu_anmelden geklickt wird
+function handleBeobListeMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
+
+// wird in BeobListe.html verwendet
+// eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
+function erstelleNeueBeob_1_Artgruppenliste() {
+	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+	leereStorageBeobListe();
+	localStorage.Status = "neu";
+	localStorage.Von = "BeobListe";
+	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
+	$.mobile.navigate("Artgruppenliste.html");
+}
 
 
 // wird in BeobEdit.html benutzt
