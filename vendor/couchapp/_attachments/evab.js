@@ -2117,6 +2117,7 @@ function generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, Feld
 		HtmlContainer = generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
 		break;
 	case "toggleswitch":
+		console.log("generiere Html für toggleswitch für Feld " + FeldName + " mit Inhalt " + FeldWert);
 		HtmlContainer = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
 		break;
 	case "checkbox":
@@ -2208,6 +2209,22 @@ function generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert) {
 // wird von erstellehBeobEdit aufgerufen
 function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer;
+	HtmlContainer = "<div data-role='fieldcontain'><label for='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "'>";
+	HtmlContainer += FeldBeschriftung;
+	HtmlContainer += "</label><select name='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' id='";
+	HtmlContainer += FeldName;
+	HtmlContainer += "' data-role='flipswitch' value='";
+	HtmlContainer += FeldWert;
+	HtmlContainer += "' class='speichern'><option value='nein'>nein</option><option value='ja'>ja</option></select></div>";
+	return HtmlContainer;
+}
+
+/*function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
+	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "'>";
@@ -2220,7 +2237,7 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldWert;
 	HtmlContainer += "' class='speichern'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
 	return HtmlContainer;
-}
+}*/
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehBeobEdit aufgerufen
@@ -3516,166 +3533,56 @@ function handleBeobEditPageinit() {
 	}
 
 	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", handleOeffneBeobListeBeobEditClick);
+
 	$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", handleNeueBeobBeobEditClick);
+
 	$("#BeobEditForm").on("click", "[name='aArtGruppe']", handleBeobEditAArtGruppeClick);
+
 	$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", handleWaehleFelderBeobEditClick);
 
-	// Editieren von Beobachtungen managen, ausgehend von ArtName
-	$("#BeobEditForm").on('click', '[name="aArtName"]', function (event) {
-		event.preventDefault();
-		// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-		leereStorageBeobListe();
-		localStorage.Von = "BeobEdit";
-		$.mobile.navigate("Artenliste.html");
-	});
+	$("#BeobEditForm").on('click', '[name="aArtName"]', handleBeobEditAArtnameClick);
 
-	// Für jedes Feld bei Änderung speichern
-	$("#BeobEditForm").on("change", ".speichern", function () {
-		if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
-			// Wenn Koordinaten und beide erfasst
-			localStorage.oXKoord = $("[name='oXKoord']").val();
-			localStorage.oYKoord = $("[name='oYKoord']").val();
-			// Längen- und Breitengrade berechnen
-			localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
-			localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
-			localStorage.oLagegenauigkeit = null;
-			// und Koordinaten speichern
-			speichereKoordinaten(localStorage.BeobId, "Beobachtung");
-		} else {
-			speichereBeob(this);
-		}
-	});
+	$("#BeobEditForm").on("change", ".speichern", handleBeobEditSpeichernChange);
 
-	// ungelöstes Problem: swipe reagiert!
-	// Eingabe im Zahlenfeld abfangen
-	$("#BeobEditForm").on("blur", '.speichernSlider', function (event) {
-		speichereBeob(this);
-	});
-	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#BeobEditForm").on("mouseup", '.ui-slider-input', function (event) {
-		speichereBeob(this);
-	});
-	// Ende des Schiebens abfangen
-	$("#BeobEditForm").on("slidestop", '.speichernSlider', function (event) {
-		speichereBeob(this);
-	});
+	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', handleBeobEditSpeichernSliderBlurSlidestop);
 
-	// Änderungen im Formular für Anhänge speichern
-	$("#FormAnhängeBE").on("change", ".speichernAnhang", function (event) {
-		var _attachments;
-		_attachments = $("#_attachmentsBE").val();
-		if (_attachments && _attachments.length !== 0) {
-			speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
-		}
-	});
-	
-	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function (event) {
-		var contentHeight;
-		event.preventDefault();
-		localStorage.zurueck = "BeobEdit";
-		$.mobile.navigate("Karte.html");
-	});
+	$("#BeobEditForm").on("mouseup", '.ui-slider-input', handleBeobEditUiSliderInputMouseup);
 
-	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function (event) {
-		event.preventDefault();
-		GetGeolocation(localStorage.BeobId, "Beob");
-	});
+	$("#FormAnhängeBE").on("change", ".speichernAnhang", handleBeobEditSpeichernAnhangChange);
 
-	// Code für den Beobachtung-Löschen-Dialog
-	$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', function (event) {
-		event.preventDefault();
-		// popup öffnen
-		$("#beob_löschen_meldung").popup("open");
-	});
+	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", handleBeobEditOeffneKarteClick);
 
-	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", function (event) {
-		löscheBeob();
-	});
+	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", handleBeobEditVerorteBeobClick);
 
-	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", function () {
-		if (!$("*:focus").attr("aria-valuenow")) {
-			// kein slider
-			nächsteVorigeBeob("nächste");
-		}
-	});
+	$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', handleBeobEditLoescheBeobClick);
 
-	$("#BeobEditPage").on("swiperight", "#BeobEditContent", function () {
-		if (!$("*:focus").attr("aria-valuenow")) {
-			// kein slider
-			nächsteVorigeBeob("vorige");
-		}
-	});
+	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", löscheBeob);
 
-	// Pagination Pfeil voriger initialisieren
-	$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function (event) {
-		event.preventDefault();
-		nächsteVorigeBeob('vorige');
-	});
+	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", handleBeobEditContentSwipeleft);
 
-	// Pagination Pfeil nächster initialisieren
-	$("#BeobEditPage").on("vclick", ".ui-pagination-next", function (event) {
-		event.preventDefault();
-		nächsteVorigeBeob('nächste');
-	});
+	$("#BeobEditPage").on("swiperight", "#BeobEditContent", handleBeobEditContentSwiperight);
 
-	// Pagination Pfeiltasten initialisieren
-	$("#BeobEditPage").on("keyup", function (event) {
-		// nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				nächsteVorigeBeob('vorige');
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				nächsteVorigeBeob('nächste');
-				event.preventDefault();
-			}
-		}
-	});
+	$("#BeobEditPage").on("vclick", ".ui-pagination-prev", handleBeobEditUiPaginationPrevVclick);
 
-	$("#FormAnhängeBE").on("click", "[name='LöscheAnhang']", function (event) {
-		event.preventDefault();
-		loescheAnhang(this, window.Beobachtung, localStorage.BeobId);
-	});
+	$("#BeobEditPage").on("vclick", ".ui-pagination-next", handleBeobEditUiPaginationNextVclick);
 
-	$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', function() {
-		oeffneArteigenschaftenVonArt(window.Beobachtung.aArtId);
-	});
+	$("#BeobEditPage").on("keyup", handleBeobEditKeyup);
 
-	$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', function() {
-		leereStorageBeobEdit();
-		$.mobile.navigate("hProjektListe.html");
-	});
+	$("#FormAnhängeBE").on("click", "[name='LöscheAnhang']", handleBeobEditLoescheAnhangClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', function() {
-		localStorage.zurueck = "BeobEdit.html";
-		$.mobile.navigate("FeldListe.html");
-	});
+	$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', handleBeobEditMenuArteigenschaftenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', function() {
-		window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-		// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-		$("#MenuBeobEdit").popup();
-		// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-		$("#MenuBeobEdit").popup("close");
-	});
+	$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', handleBeobEditMenuHierarchischerModusClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_einstellungen', function() {
-		localStorage.zurueck = "BeobEdit.html";
-		öffneMeineEinstellungen();
-	});
+	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', handleBeobEditMenuFelderVerwaltenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', function() {
-		localStorage.zurueck = "BeobEdit.html";
-		$.mobile.navigate("Installieren.html");
-	});
+	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', handleBeobEditMenuBeobExportierenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', function() {
-		localStorage.UserStatus = "neu";
-		$.mobile.navigate("index.html");
-	});
+	$('#MenuBeobEdit').on('click', '.menu_einstellungen', handleBeobEditMenuEinstellungenClick);
+
+	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', handleBeobEditMenuLokalInstallierenClick);
+
+	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', handleBeobEditMenuNeuAnmeldenClick);
 }
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -3726,6 +3633,192 @@ function handleWaehleFelderBeobEditClick() {
 	$.mobile.navigate("FelderWaehlen.html");
 }
 
+// wenn in BeobEdit.html [name="aArtName"] geklickt wird
+// Editieren von Beobachtungen managen, ausgehend von ArtName
+function handleBeobEditAArtnameClick() {
+	event.preventDefault();
+	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
+	leereStorageBeobListe();
+	localStorage.Von = "BeobEdit";
+	$.mobile.navigate("Artenliste.html");
+}
+
+// wenn in BeobEdit.html .speichern geändert wird
+// Für jedes Feld bei Änderung speichern
+function handleBeobEditSpeichernChange() {
+	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
+		// Wenn Koordinaten und beide erfasst
+		localStorage.oXKoord = $("[name='oXKoord']").val();
+		localStorage.oYKoord = $("[name='oYKoord']").val();
+		// Längen- und Breitengrade berechnen
+		localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLagegenauigkeit = null;
+		// und Koordinaten speichern
+		speichereKoordinaten(localStorage.BeobId, "Beobachtung");
+	} else {
+		speichereBeob(this);
+	}
+}
+
+// wenn in BeobEdit.html .speichernSlider blurt
+// ungelöstes Problem: swipe reagiert!
+// Eingabe im Zahlenfeld abfangen (blur)
+// Ende des Schiebens abfangen (slidestop)
+function handleBeobEditSpeichernSliderBlurSlidestop() {
+	speichereBeob(this);
+}
+
+// wenn in BeobEdit.html .ui-slider-input mouseup geschieht
+// Klicken auf den Pfeilen im Zahlenfeld abfangen
+function handleBeobEditUiSliderInputMouseup() {
+	speichereBeob(this);
+}
+
+// wenn in BeobEdit.html .speichernAnhang geändert wird
+// Änderungen im Formular für Anhänge speichern
+function handleBeobEditSpeichernAnhangChange() {
+	var _attachments = $("#_attachmentsBE").val();
+	if (_attachments && _attachments.length !== 0) {
+		speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
+	}
+}
+
+// wenn in BeobEdit.html #OeffneKarteBeobEdit geklickt wird
+function handleBeobEditOeffneKarteClick() {
+	event.preventDefault();
+	localStorage.zurueck = "BeobEdit";
+	$.mobile.navigate("Karte.html");
+}
+
+// wenn in BeobEdit.html #verorteBeobBeobEdit geklickt wird
+function handleBeobEditVerorteBeobClick() {
+	event.preventDefault();
+	GetGeolocation(localStorage.BeobId, "Beob");
+}
+
+// wenn in BeobEdit.html #LoescheBeobBeobEdit geklickt wird
+// Löschen-Dialog öffnen
+function handleBeobEditLoescheBeobClick() {
+	event.preventDefault();
+	$("#beob_löschen_meldung").popup("open");
+}
+
+// wenn in BeobEdit.html auf #BeobEditContent nach links gewischt wird
+function handleBeobEditContentSwipeleft() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächsteVorigeBeob("nächste");
+	}
+}
+
+// wenn in BeobEdit.html auf #BeobEditContent nach rechts gewischt wird
+function handleBeobEditContentSwiperight() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächsteVorigeBeob("vorige");
+	}
+}
+
+// wenn in BeobEdit.html .ui-pagination-prev geklickt wird
+// zum vorigen Datensatz wechseln
+function handleBeobEditUiPaginationPrevVclick() {
+	event.preventDefault();
+	nächsteVorigeBeob('vorige');
+}
+
+// wenn in BeobEdit.html .ui-pagination-next geklickt wird
+// zum nächsten Datensatz wechseln
+function handleBeobEditUiPaginationNextVclick() {
+	event.preventDefault();
+	nächsteVorigeBeob('nächste');
+}
+
+// wenn in BeobEdit.html keyup erfolgt
+// Wechsel zwischen Datensätzen via Pfeiltasten steuern
+function handleBeobEditKeyup() {
+	// nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
+	if (!$(event.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
+		// Left arrow
+		if (event.keyCode === $.mobile.keyCode.LEFT) {
+			nächsteVorigeBeob('vorige');
+			event.preventDefault();
+		}
+		// Right arrow
+		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+			nächsteVorigeBeob('nächste');
+			event.preventDefault();
+		}
+	}
+}
+
+// wenn in BeobEdit.html [name='LöscheAnhang'] geklickt wird
+function handleBeobEditLoescheAnhangClick() {
+	event.preventDefault();
+	loescheAnhang(this, window.Beobachtung, localStorage.BeobId);
+}
+
+// wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
+function handleBeobEditMenuArteigenschaftenClick() {
+	oeffneArteigenschaftenVonArt(window.Beobachtung.aArtId);
+}
+
+// wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
+function handleBeobEditMenuHierarchischerModusClick() {
+	leereStorageBeobEdit();
+	$.mobile.navigate("hProjektListe.html");
+}
+
+// wenn in BeobEdit.html .menu_felder_verwalten geklickt wird
+function handleBeobEditMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "BeobEdit.html";
+	$.mobile.navigate("FeldListe.html");
+}
+
+// wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
+function handleBeobEditMenuBeobExportierenClick() {
+	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuBeobEdit").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuBeobEdit").popup("close");
+}
+
+// wenn in BeobEdit.html .menu_einstellungen geklickt wird
+function handleBeobEditMenuEinstellungenClick() {
+	localStorage.zurueck = "BeobEdit.html";
+	öffneMeineEinstellungen();
+}
+
+// wenn in BeobEdit.html .menu_lokal_installieren geklickt wird
+function handleBeobEditMenuLokalInstallierenClick() {
+	localStorage.zurueck = "BeobEdit.html";
+	$.mobile.navigate("Installieren.html");
+}
+
+// wenn in BeobEdit.html .menu_neu_anmelden geklickt wird
+function handleBeobEditMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
+
+// wenn in BeobEdit.html 
 
 
 
