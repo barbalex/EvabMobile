@@ -4251,44 +4251,128 @@ function handleFeldEditKeyup() {
 	}
 }
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn FelderWaehlen.html erscheint
+function handleFelderWaehlenPageshow() {
+	// Sollte keine id vorliegen, zu BeobListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("BeobListe.html");
+		return;
+	}
+	initiiereFelderWaehlen();
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn FelderWaehlen.html verschwindet
+function handleFelderWaehlenPagehide() {
+	// globale Variabeln aufräumen
+	delete localStorage.FeldlisteFwName;
+	delete localStorage.KriterienFürZuWählendeFelder;
+	delete localStorage.AufrufendeSeiteFW;
+	// verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
+	$("#FeldlisteFW").empty();
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn FelderWaehlen.html initiiert wird
+function handleFelderWaehlenPageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
+		// oh, kein zurück bekannt
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("BeobListe.html");
+	}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+	$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", handleFelderWaehlenBackClick);
+	
+	
+	$("#FeldlisteFW").on("change", "input[name='Felder']", handleFelderWaehlenInputFelderChange);
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+	
+	$("#FeldlisteFW").on("taphold", "[name='Felder']", handleFelderWaehlenFelderTaphold);
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn in FelderWaehlen.html #FelderWaehlenPage_back geklickt wird
+function handleFelderWaehlenBackClick() {
+	event.preventDefault();
+	$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn in FelderWaehlen.html input[name='Felder'] geändert wird
+// Felder speichern (checkbox)
+function handleFelderWaehlenInputFelderChange() {
+	var FeldName = $(this).prop("id"),
+		FeldId = $(this).attr("feldid"),
+		Feld,
+		FeldPosition;
+	for (i in window[localStorage.FeldlisteFwName].rows) {
+		if (typeof window[localStorage.FeldlisteFwName] !== "function") {
+			if (window[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
+				Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
+				FeldPosition = parseInt(i);
+				break;
+			}
+		}
+	}
+	var SichtbarImModusX, idx;
+	// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
+	if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
+		SichtbarImModusX = "SichtbarImModusEinfach";
+	} else {
+		SichtbarImModusX = "SichtbarImModusHierarchisch";
+	}
+	SichtbarImModusX = Feld[SichtbarImModusX] || [];
+	if ($("#" + FeldName).prop("checked") === true) {
+		SichtbarImModusX.push(localStorage.Email);
+	} else {
+		idx = SichtbarImModusX.indexOf(localStorage.Email);
+		if (idx !== -1) {
+			SichtbarImModusX.splice(idx, 1);
+		}
+	}
+	Feld[SichtbarImModusX] = SichtbarImModusX;
+	// Änderung in DB speichern
+	$db.saveDoc(Feld, {
+		success: function (data) {
+			// neue rev holen
+			Feld._rev = data.rev;
+			// Änderung in Feldliste-Objekt speichern
+			window[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
+		},
+		error: function () {
+			melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
+		}
+	});
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+// wenn in FelderWaehlen.html taphold erfolgt
+// JETZT FOLGT VERSUCH, TAPHOLD ZU IMPLEMENTIEREN
+// NOCH NICHT IMPLEMENTIERT
+function handleFelderWaehlenFelderTaphold() {
+	// Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
+	event.preventDefault();
+	alert("taphold");
+	öffneFeld(this.id);
+}
 
-// wenn in FeldEdit.htm 
-function handleFeldEdit
-
-// wenn in FeldEdit.htm 
-function handleFeldEdit
-
-// wenn in FeldEdit.htm 
-function handleFeldEdit
-
-// wenn in FeldEdit.htm 
-function handleFeldEdit
-
-// wenn in FeldEdit.htm 
-function handleFeldEdit
+function öffneFeld(FeldName) {
+	$db = $.couch.db("evab");
+	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"?include_docs=true', {
+		success: function (data) {
+			localStorage.FeldId = data.rows[0].doc._id;
+			localStorage.zurueck = "FelderWaehlen.html";
+			$.mobile.navigate("FeldEdit.html");
+		}
+	});
+}
 
 // prüft neue oder umbenannte Feldnamen
 // prüft, ob der neue Feldname schon existiert
