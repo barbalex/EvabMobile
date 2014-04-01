@@ -4705,6 +4705,172 @@ function handleHArtListeMenuNeuAnmeldenClick() {
 	$.mobile.navigate("index.html");
 }
 
+// wenn hOrtEdit.html erscheint
+function handleHOrtEditPageshow() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	initiiereOrtEdit();
+}
+
+// wenn hOrtEdit.html verschwindet
+function handleHOrtEditPagehide() {
+	if (typeof watchID !== "undefined") {
+		stopGeolocation();
+	}
+}
+
+// wenn hOrtEdit.html initiiert wird
+function handleHOrtEditPageinit() {
+
+}
+
+// wenn in hOrtEdit.html .tab_inaktiv geklickt wird
+function handleHOrtEditTabInaktivClick() {
+	event.preventDefault();
+	event.stopPropagation();
+}
+
+// wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
+function handleHOrtEditOeffneOrtListeClick() {
+	event.preventDefault();
+	leereStorageOrtEdit();
+	$.mobile.navigate("hOrtListe.html");
+}
+
+// wenn in hOrtEdit.html #OeffneRaumOrtEdit geklickt wurde
+function handleHOrtEditOeffneRaumClick() {
+	event.preventDefault();
+	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+	leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+}
+
+// wenn in hOrtEdit.html #OeffneZeitListeOrtEdit geklickt wird
+function handleHOrtEditOeffneZeitListeClick() {
+	event.preventDefault();
+	$.mobile.navigate("hZeitListe.html");
+}
+
+// wenn in hOrtEdit.html #OeffneProjektOrtEdit geklickt wird
+function handleHOrtEditOeffneProjektClick() {
+	event.preventDefault();
+	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
+	leereStorageOrtListe();
+	leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+}
+
+// wenn in hOrtEdit.html .speichern geändert wird
+function handleHOrtEditSpeichernChange() {
+	var Feldname = this.name,
+		FelderArray;
+	if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
+		// Wenn Koordinaten und beide erfasst
+		localStorage.oXKoord = $("[name='oXKoord']").val();
+		localStorage.oYKoord = $("[name='oYKoord']").val();
+		// Längen- und Breitengrade berechnen
+		localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLagegenauigkeit = null;
+		// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
+		FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
+	} else {
+		speichereHOrtEdit(this);
+	}
+}
+
+/*// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit
+
+// wenn in hOrtEdit.html 
+function handleHOrtEdit*/
+
+
+
+
 
 
 

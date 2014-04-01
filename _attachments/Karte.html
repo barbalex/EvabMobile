@@ -207,9 +207,22 @@
 
 					// wird benutzt in hOrtEdit.html
 					function erstelleKartehOrtEdit() {
-						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, marker, contentString, infowindow;
+						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, title, pName, rName, oName, marker, contentString, infowindow;
 						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 						var contentHeight = $(window).height() - 44;
+						// title muss String sein
+						title = "";
+						// Fehlermeldung verhindern, falls kein window.hOrt existiert
+						if (window.hOrt) {
+							if (window.hOrt.oName) {
+								title = window.hOrt.oName.toString();
+							}
+							//TODO: window.hOrt.pName, window.hOrt.rName, window.hOrt.oName: 
+							// pName, rName, oName setzen ohne Fehler, wenn window.hOrt nicht existiert
+
+
+							
+						}
 						$("#MapCanvas").css("height", contentHeight + "px");
 						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
 							lat = localStorage.oLatitudeDecDeg;
@@ -234,8 +247,7 @@
 							marker = new google.maps.Marker({
 								position: latlng, 
 								map: map,
-								// title muss String sein
-								title: window.hOrt.oName.toString() || "",
+								title: title,
 								draggable: true
 							});
 							// Marker in Array speichern, damit er gelöscht werden kann

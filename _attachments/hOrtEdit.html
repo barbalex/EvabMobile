@@ -119,27 +119,9 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 
 		<script charset="utf-8">
-			$("#OrtEditPage").on("pageshow", function () {
-				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
-					$.mobile.navigate("index.html");
-					return;
-				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
-					leereAlleVariabeln("ohneClear");
-					$.mobile.navigate("hProjektListe.html");
-					return;
-				}
-				initiiereOrtEdit();
-			});
+			$("#OrtEditPage").on("pageshow", handleHOrtEditPageshow);
 
-			$("#OrtEditPage").on("pagehide", function () {
-				if (typeof watchID !== "undefined") {
-					stopGeolocation();
-				}
-			});
+			$("#OrtEditPage").on("pagehide", handleHOrtEditPagehide);
 
 			$(":jqmData(role='page')").on("pageinit", function () {
 				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
@@ -156,71 +138,28 @@
 
 				// inaktive tabs inaktivieren
 				// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
-				$(document).on("click", ".tab_inaktiv", function (event) {
-					event.preventDefault();
-					event.stopPropagation();
-				});
+				$(document).on("click", ".tab_inaktiv", handleHOrtEditTabInaktivClick);
 
-				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function (event) {
-					event.preventDefault();
-					leereStorageOrtEdit();
-					$.mobile.navigate("hOrtListe.html");
-				});
+				$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", handleHOrtEditOeffneOrtListeClick);
 
-				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function (event) {
-					event.preventDefault();
-					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					leereStorageOrtListe();
-					$.mobile.navigate("hRaumEdit.html");
-				});
+				$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", handleHOrtEditOeffneRaumClick);
 
-				$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", function (event) {
-					event.preventDefault();
-					$.mobile.navigate("hZeitListe.html");
-				});
+				$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", handleHOrtEditOeffneZeitListeClick);
 
-				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function (event) {
-					event.preventDefault();
-					// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-					leereStorageOrtListe();
-					leereStorageRaumListe();
-					$.mobile.navigate("hProjektEdit.html");
-				});
+				$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", handleHOrtEditOeffneProjektClick);
 
 				// Für jedes Feld bei Änderung speichern
-				$("#hOrtEditForm").on("change", ".speichern", function (event) {
-					var Feldname, FelderArray;
-					Feldname = this.name;
-					if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
-						// Wenn Koordinaten und beide erfasst
-						localStorage.oXKoord = $("[name='oXKoord']").val();
-						localStorage.oYKoord = $("[name='oYKoord']").val();
-						// Längen- und Breitengrade berechnen
-						localStorage.oLongitudeDecDeg = CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
-						localStorage.oLatitudeDecDeg = CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
-						localStorage.oLagegenauigkeit = null;
-						// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
-						FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-						speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
-					} else {
-						//alert("value = " + this.value + "\nparseInt = " + parseInt(this.value) + "\nparseFloat = " + parseFloat(this.value));
-						speichern(this);
-					}
-				});
+				$("#hOrtEditForm").on("change", ".speichern", handleHOrtEditSpeichernChange);
 
 				// ungelöstes Problem: swipe reagiert!
 				// Eingabe im Zahlenfeld abfangen
-				$("#hOrtEditForm").on("blur", '.speichernSlider', function (event) {
-					speichern(this);
-				});
+				$("#hOrtEditForm").on("blur", '.speichernSlider', speichereHOrtEdit);
+
 				// Klicken auf den Pfeilen im Zahlenfeld abfangen
-				$("#hOrtEditForm").on("mouseup", '.ui-slider-input', function (event) {
-					speichern(this);
-				});
+				$("#hOrtEditForm").on("mouseup", '.ui-slider-input', speichereHOrtEdit);
+				
 				// Ende des Schiebens abfangen
-				$("#hOrtEditForm").on("slidestop", '.speichernSlider', function (event) {
-					speichern(this);
-				});
+				$("#hOrtEditForm").on("slidestop", '.speichernSlider', speichereHOrtEdit);
 
 				// Änderungen im Formular für Anhänge speichern
 				$("#FormAnhängehOE").on("change", ".speichernAnhang", function () {
@@ -404,28 +343,29 @@
 					return true;
 				}
 
-				function speichern(that) {
+				function speichereHOrtEdit() {
+					var that = this;
 					// prüfen, ob Ort existiert
 					if (window.hOrt) {
 						// bestehedes Objekt verwenden
-						speichern_2(that);
+						speichereHOrtEdit_2(that);
 					} else {
 						// kein Ort > aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.OrtId, {
 							success: function (data) {
 								window.hOrt = data;
-								speichern_2(that);
+								speichereHOrtEdit_2(that);
 							},
 							error: function () {
-								console.log('fehler in function speichern(that)');
+								console.log('fehler in function speichereHOrtEdit');
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
 				}
 
-				function speichern_2(that) {
+				function speichereHOrtEdit_2(that) {
 					var Feldname, Feldjson, Feldwert;
 					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 						// slider
@@ -475,7 +415,7 @@
 								delete window.ArtenVonZeit;
 							},
 							error: function () {
-								console.log('fehler in function speichern_2(that)');
+								console.log('fehler in function speichereHOrtEdit_2(that)');
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
