@@ -4436,7 +4436,143 @@ function handleFeldListeBackButtonClick() {
 	delete localStorage.zurueck;
 }
 
+// wenn hArtEdit.html erscheint
+function handleHArtEditPageshow() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.Status && !localStorage.hBeobId) {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	initiierehBeobEdit();
+}
 
+// wenn hArtEdit.html initiiert wird
+function handleHArtEditPageinit() {
+
+}
+
+// wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
+function handleHArtEditOeffneArtListehArtEditClick() {
+	event.preventDefault();
+	leereStoragehBeobEdit();
+	$.mobile.navigate("hArtListe.html");
+}
+
+// wenn in hArtEdit.html auf #OeffneZeithArtEdit geklickt wird
+function handleHArtEditOeffneZeithArtEditClick() {
+	event.preventDefault();
+	leereStoragehBeobEdit();
+	leereStoragehBeobListe();
+	$.mobile.navigate("hZeitEdit.html");
+}
+
+// wenn in hArtEdit.html #OeffneOrthArtEdit geklickt wird
+function handleHArtEditOeffneOrthArtEditClick() {
+	event.preventDefault();
+	leereStoragehBeobEdit();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	$.mobile.navigate("hOrtEdit.html");
+}
+
+// wenn in hArtEdit.html #OeffneRaumhArtEdit geklickt wird
+function handleHArtEditOeffneRaumhArtEditClick() {
+	event.preventDefault();
+	leereStoragehBeobEdit();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+}
+
+// wenn in hArtEdit.html #OeffneProjekthArtEdit geklickt wird
+function handleHArtEditOeffneProjekthArtEditClick() {
+	event.preventDefault();
+	leereStoragehBeobEdit();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+}
+
+// wenn in hArtEdit.html .speichernAnhang geändert wird
+function handleHArtEditSpeichernAnhangChange() {
+	var _attachments = $("#_attachmentshAE").val();
+	if (_attachments && _attachments.length !== 0) {
+		speichereAnhänge(localStorage.hBeobId, window.hArt, "hAE");
+	}
+}
+
+// wenn in hArtEdit.html #NeueBeobhArtEdit geklickt wird
+function handleHArtEditNeueBeobhArtEditClick() {
+	event.preventDefault();
+	localStorage.Status = "neu";
+	zuArtgruppenliste();
+}
+
+// wenn in hArtEdit.html [name='aArtGruppe'] geklickt wird
+function handleHArtEditAArtGruppeClick() {
+	event.preventDefault();
+	zuArtgruppenliste();
+}
+
+// wenn in hArtEdit.html [name='aArtName'] geklickt wird
+function handleHArtEditAArtNameClick() {
+	event.preventDefault();
+	zuArtliste();
+}
+
+/*// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit
+
+// wenn in hArtEdit.html 
+function handleHArtEdit*/
 
 
 

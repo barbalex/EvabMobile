@@ -109,21 +109,7 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 
 		<script charset="utf-8">
-			$("#hArtEditPage").on("pageshow", function () {
-				// Sollte keine id vorliegen, zu hProjektListe.html wechseln
-				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
-				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
-					$.mobile.navigate("index.html");
-					return;
-				} else if (!localStorage.Status && !localStorage.hBeobId) {
-					leereAlleVariabeln("ohneClear");
-					$.mobile.navigate("hProjektListe.html");
-					return;
-				}
-				initiierehBeobEdit();
-			});
+			$("#hArtEditPage").on("pageshow", handleHArtEditPageshow);
 
 			$("#hArtEditPage").on("pageinit", function () {
 				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
@@ -138,99 +124,40 @@
 					return;
 				}
 
-				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function (event) {
-					event.preventDefault();
-					leereStoragehBeobEdit();
-					$.mobile.navigate("hArtListe.html");
-				});
+				$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", handleHArtEditOeffneArtListehArtEditClick);
 
+				$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", handleHArtEditOeffneZeithArtEditClick);
 
-				$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function (event) {
-					event.preventDefault();
-					leereStoragehBeobEdit();
-					leereStoragehBeobListe();
-					$.mobile.navigate("hZeitEdit.html");
-				});
+				$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", handleHArtEditOeffneOrthArtEditClick);
 
-				$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function (event) {
-					event.preventDefault();
-					leereStoragehBeobEdit();
-					leereStoragehBeobListe();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					$.mobile.navigate("hOrtEdit.html");
-				});
+				$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", handleHArtEditOeffneRaumhArtEditClick);
 
-				$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function (event) {
-					event.preventDefault();
-					leereStoragehBeobEdit();
-					leereStoragehBeobListe();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					$.mobile.navigate("hRaumEdit.html");
-				});
-
-				$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function (event) {
-					event.preventDefault();
-					leereStoragehBeobEdit();
-					leereStoragehBeobListe();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
-					$.mobile.navigate("hProjektEdit.html");
-				});
+				$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", handleHArtEditOeffneProjekthArtEditClick);
 
 				// Für jedes Feld bei Änderung speichern
-				$("#hArtEditForm").on("change", ".speichern", function (event) {
-					speichern(this);
-				});
+				$("#hArtEditForm").on("change", ".speichern", speichereHArt);
 
 				// ungelöstes Problem: swipe reagiert!
 				// Eingabe im Zahlenfeld abfangen
-				$("#hArtEditForm").on("blur", '.speichernSlider', function (event) {
-					speichern(this);
-				});
+				$("#hArtEditForm").on("blur", '.speichernSlider', speichereHArt);
+
 				// Klicken auf den Pfeilen im Zahlenfeld abfangen
-				$("#hArtEditForm").on("mouseup", '.ui-slider-input', function (event) {
-					speichern(this);
-				});
+				$("#hArtEditForm").on("mouseup", '.ui-slider-input', speichereHArt);
+
 				// Ende des Schiebens abfangen
-				$("#hArtEditForm").on("slidestop", '.speichernSlider', function (event) {
-					speichern(this);
-				});
+				$("#hArtEditForm").on("slidestop", '.speichernSlider', speichereHArt);
 
 				// Änderungen im Formular für Anhänge speichern
-				$("#FormAnhängehAE").on("change", ".speichernAnhang", function () {
-					var _attachments;
-					_attachments = $("#_attachmentshAE").val();
-					if (_attachments && _attachments.length !== 0) {
-						speichereAnhänge(localStorage.hBeobId, window.hArt, "hAE");
-					}
-				});
+				$("#FormAnhängehAE").on("change", ".speichernAnhang", handleHArtEditSpeichernAnhangChange);
 
 				// Neue Beobachtung managen
-				$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function (event) {
-					event.preventDefault();
-					localStorage.Status = "neu";
-					zuArtgruppenliste();
-				});
+				$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", handleHArtEditNeueBeobhArtEditClick);
 
 				// Editieren von Beobachtungen managen, ausgehend von Artgruppe
-				$("#hArtEditForm").on("click", "[name='aArtGruppe']", function (event) {
-					event.preventDefault();
-					zuArtgruppenliste();
-				});
+				$("#hArtEditForm").on("click", "[name='aArtGruppe']", handleHArtEditAArtGruppeClick);
 
 				// Editieren von Beobachtungen managen, ausgehend von ArtName
-				$("#hArtEditForm").on("click", "[name='aArtName']", function (event) {
-					event.preventDefault();
-					zuArtliste();
-				});
+				$("#hArtEditForm").on("click", "[name='aArtName']", handleHArtEditAArtNameClick);
 
 				// sichtbare Felder wählen
 				$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function (event) {
@@ -411,11 +338,11 @@
 				}
 
 				// Speichert alle Daten
-				function speichern(that) {
+				function speichereHArt() {
 					// prüfen, ob hBeob als Objekt vorliegt
 					if (window.hArt) {
 						// dieses verwenden
-						speichern_2(that);
+						speichern_2(this);
 					} else {
 						// Objekt aud DB holen
 						$db = $.couch.db("evab");
@@ -425,7 +352,7 @@
 								speichern_2(that);
 							},
 							error: function () {
-								console.log('fehler in function speichern(that)');
+								console.log('fehler in function speichereHArt');
 								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
