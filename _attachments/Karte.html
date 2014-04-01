@@ -99,11 +99,11 @@
 							case "hProjektListe":
 							hOrtLatLngListe = "hOrteLatLngProjektliste";
 							break;
-						case "hProjektEdit":	// gleich wie hRaumListe
+						case "hProjektEdit":
 						case "hRaumListe":
 							hOrtLatLngListe = "hOrteLatLngProjekt";
 							break;
-						case "hRaumEdit":	// gleich wie hOrtListe
+						case "hRaumEdit":
 						case "hOrtListe":
 							hOrtLatLngListe = "hOrteLatLngRaum";
 							break;
@@ -123,17 +123,37 @@
 					}
 
 					function erstelleKarteH_2(hOrteLatLng) {
-						var anzOrt, infowindow, Ort, lat, lng, latlng, options, map, bounds, markers, hOrtId, latlng2, marker, contentString, mcOptions, markerCluster;
-						infowindow = new google.maps.InfoWindow();
+						var anzOrt = 0,
+							infowindow = new google.maps.InfoWindow(),
+							Ort,
+							lat,
+							lng,
+							latlng,
+							options,
+							map,
+							pName,
+							rName,
+							bounds,
+							markers,
+							hOrtId,
+							latlng2,
+							marker,
+							contentString,
+							mcOptions,
+							markerCluster;
+
 						// Orte zählen
-						anzOrt = hOrteLatLng.rows.length;
-						// Keine Orte: Hinweis und zurück
+						if (hOrteLatLng.rows) {
+							anzOrt = hOrteLatLng.rows.length;
+						}
+
 						if (anzOrt === 0) {
+							// Keine Orte: Hinweis und zurück
 							melde(KeinOrtMeldung);
 							history.back();
-						// Orte vorhanden: Karte aufbauen
 						} else {
-							// Karte mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
+							// Orte vorhanden: Karte aufbauen
+							// mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
 							// auf die die Karte ausgerichtet werden kann
 							lat = 47.383333;
 							lng = 8.533333;
@@ -152,6 +172,17 @@
 							for (i in hOrteLatLng.rows) {
 								Ort = hOrteLatLng.rows[i].doc;
 								hOrtId = Ort._id;
+
+								// Infos für Infowindow holen
+								pName = "";
+								rName = "";
+								if (window.hProjekt && window.hProjekt.pName) {
+									pName = window.hProjekt.pName;
+								}
+								if (window.hRaum && window.hRaum.rName) {
+									rName = window.hRaum.rName;
+								}
+
 								latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
 								if (anzOrt === 1) {
 									// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -175,8 +206,8 @@
 									'<div id="siteNotice">'+
 									'</div>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Projekt: ' + Ort.pName + '</p>'+
-									'<p>Raum: ' + Ort.rName + '</p>'+
+									'<p>Projekt: ' + pName + '</p>'+
+									'<p>Raum: ' + rName + '</p>'+
 									'<p>Ort: ' + Ort.oName + '</p>'+
 									'<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>'+
 									"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
@@ -207,21 +238,34 @@
 
 					// wird benutzt in hOrtEdit.html
 					function erstelleKartehOrtEdit() {
-						var map, verorted, lat, lng, ZoomLevel, latlng, options, map, title, pName, rName, oName, marker, contentString, infowindow;
-						// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-						var contentHeight = $(window).height() - 44;
-						// title muss String sein
-						title = "";
+						var map,
+							verorted,
+							lat,
+							lng,
+							ZoomLevel,
+							latlng,
+							options,
+							map,
+							// title muss String sein
+							title = "",
+							pName = "",
+							rName = "",
+							oName = "",
+							marker,
+							contentString,
+							infowindow,
+							// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+							contentHeight = $(window).height() - 44;
 						// Fehlermeldung verhindern, falls kein window.hOrt existiert
-						if (window.hOrt) {
-							if (window.hOrt.oName) {
-								title = window.hOrt.oName.toString();
-							}
-							//TODO: window.hOrt.pName, window.hOrt.rName, window.hOrt.oName: 
-							// pName, rName, oName setzen ohne Fehler, wenn window.hOrt nicht existiert
-
-
-							
+						if (window.hOrt && window.hOrt.oName) {
+							title = window.hOrt.oName.toString();
+							oName = window.hOrt.oName;
+						}
+						if (window.hProjekt && window.hProjekt.pName) {
+							pName = window.hProjekt.pName;
+						}
+						if (window.hRaum && window.hRaum.rName) {
+							rName = window.hRaum.rName;
 						}
 						$("#MapCanvas").css("height", contentHeight + "px");
 						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
@@ -256,9 +300,9 @@
 									'<div id="siteNotice">'+
 									'</div>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Projekt: ' + window.hOrt.pName + '</p>'+
-									'<p>Raum: ' + window.hOrt.rName + '</p>'+
-									'<p>Ort: ' + window.hOrt.oName + '</p>'+
+									'<p>Projekt: ' + pName + '</p>'+
+									'<p>Raum: ' + rName + '</p>'+
+									'<p>Ort: ' + oName + '</p>'+
 									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
 									'</div>'+
 									'</div>';
