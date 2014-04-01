@@ -4731,7 +4731,88 @@ function handleHOrtEditPagehide() {
 
 // wenn hOrtEdit.html initiiert wird
 function handleHOrtEditPageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
 
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", handleHOrtEditTabInaktivClick);
+
+	$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", handleHOrtEditOeffneOrtListeClick);
+
+	$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", handleHOrtEditOeffneRaumClick);
+
+	$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", handleHOrtEditOeffneZeitListeClick);
+
+	$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", handleHOrtEditOeffneProjektClick);
+
+	// Für jedes Feld bei Änderung speichern
+	$("#hOrtEditForm").on("change", ".speichern", handleHOrtEditSpeichernChange);
+
+	// ungelöstes Problem: swipe reagiert!
+	// Eingabe im Zahlenfeld abfangen
+	$("#hOrtEditForm").on("blur", '.speichernSlider', speichereHOrtEdit);
+
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#hOrtEditForm").on("mouseup", '.ui-slider-input', speichereHOrtEdit);
+
+	// Ende des Schiebens abfangen
+	$("#hOrtEditForm").on("slidestop", '.speichernSlider', speichereHOrtEdit);
+
+	// Änderungen im Formular für Anhänge speichern
+	$("#FormAnhängehOE").on("change", ".speichernAnhang", handleHOrtEditSpeichernAnhangChange);
+
+	// neuen Ort erstellen
+	$("#OrtEditFooter").on('click', '#NeuerOrtOrtEdit', handleHOrtEditNeuerOrtClick);
+
+	// sichtbare Felder wählen
+	$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", handleHOrtEditWaehleFelderClick);
+
+	// Code für den Ort-Löschen-Dialog
+	$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', handleHOrtEditLoescheOrtClick);
+
+	$("#hoe_löschen_meldung").on("click", "#hoe_löschen_meldung_ja_loeschen", handleHOrtEditLoeschenMeldungJaClick);
+
+	// Karte managen
+	$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', handleHOrtEditKarteOeffnenClick);
+
+	$('#OrtEditFooter').on('click', '#VerortungOrtEdit', handleHOrtEditVerortungClick);
+	
+	$("#OrtEditPage").on("swipeleft", "#OrtEditContent", handleHOrtEditContentSwipeleft);
+
+	$("#OrtEditPage").on("swiperight", "#OrtEditContent", handleHOrtEditContentSwiperight);
+
+	// Pagination Pfeil voriger initialisieren
+	$("#OrtEditPage").on("vclick", ".ui-pagination-prev", handleHOrtEditUiPaginationPrevClick);
+
+	// Pagination Pfeil nächster initialisieren
+	$("#OrtEditPage").on("vclick", ".ui-pagination-next", handleHOrtEditUiPaginationNextClick);
+
+	// Pagination Pfeiltasten initialisieren
+	$("#OrtEditPage").on("keyup", handleHOrtEditKeyup);
+
+	$("#FormAnhängehOE").on("click", "[name='LöscheAnhang']", handleHOrtEditLoescheAnhangClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_einfacher_modus', handleHOrtEditMenuEinfacherModusClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_felder_verwalten', handleHOrtEditMenuFelderVerwaltenClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_orte_exportieren', handleHOrtEditMenuOrteExportierenClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_einstellungen', handleHOrtEditMenuEinstellungenClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_lokal_installieren', handleHOrtEditMenuLokalInstallierenClick);
+
+	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', handleHOrtEditMenuNeuAnmeldenClick);
 }
 
 // wenn in hOrtEdit.html .tab_inaktiv geklickt wird
@@ -4790,89 +4871,544 @@ function handleHOrtEditSpeichernChange() {
 	}
 }
 
-/*// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .speichernAnhang ändert
+function handleHOrtEditSpeichernAnhangChange() {
+	var _attachments = $("#_attachmentshOE").val();
+	if (_attachments && _attachments.length !== 0) {
+		speichereAnhänge(localStorage.OrtId, window.hOrt, "hOE");
+	}
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #NeuerOrtOrtEdit geklickt wird
+function handleHOrtEditNeuerOrtClick() {
+	event.preventDefault();
+	erstelleNeuenOrt();
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #waehleFelderOrtEdit geklickt wird
+function handleHOrtEditWaehleFelderClick() {
+	event.preventDefault();
+	localStorage.AufrufendeSeiteFW = "hOrtEdit";
+	$.mobile.navigate("FelderWaehlen.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #LoescheOrtOrtEdit geklickt wird
+function handleHOrtEditLoescheOrtClick() {
+	var that = this;
+	event.preventDefault();
+	// Anzahl Zeiten von Ort zählen
+	$db = $.couch.db("evab");
+	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
+		success: function (Zeiten) {
+			var anzZeiten = Zeiten.rows.length;
+			$db.view('evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
+				success: function (Arten) {
+					var anzArten = Arten.rows.length, 
+						meldung, 
+						div,
+						zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
+						arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+					meldung = 'Ort inklusive ' + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+					$("#hoe_löschen_meldung_meldung").html(meldung);
+					// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+					div = $("#hoe_löschen_meldung");
+					div.data('Arten', Arten);
+					div.data('Zeiten', Zeiten);
+					// popup öffnen
+					$("#hoe_löschen_meldung").popup("open");
+				}
+			});
+		}
+	});
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #hoe_löschen_meldung_ja_loeschen geklickt wird
+function handleHOrtEditLoeschenMeldungJaClick() {
+	var div = $("#hoe_löschen_meldung")[0];
+	löscheOrt($.data(div, 'Arten'), $.data(div, 'Zeiten'));
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #KarteOeffnenOrtEdit geklickt wird
+function handleHOrtEditKarteOeffnenClick() {
+	event.preventDefault();
+	localStorage.zurueck = "hOrtEdit";
+	$.mobile.navigate("Karte.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #VerortungOrtEdit geklickt wird
+function handleHOrtEditVerortungClick() {
+	event.preventDefault();
+	GetGeolocation(localStorage.OrtId, "Ort");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #OrtEditContent nach links gewischt wird
+function handleHOrtEditContentSwipeleft() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächsterVorigerOrt("nächster");
+	}
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html #OrtEditContent nach rechts gewischt wird
+function handleHOrtEditContentSwiperight() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächsterVorigerOrt("voriger");
+	}
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .ui-pagination-prev geklickt wird
+function handleHOrtEditUiPaginationPrevClick() {
+	event.preventDefault();
+	nächsterVorigerOrt("voriger");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .ui-pagination-next geklickt wird
+function handleHOrtEditUiPaginationNextClick() {
+	event.preventDefault();
+	nächsterVorigerOrt("nächster");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html keyup geschieht
+// Navigation mit Pfeiltasten ermöglichen
+function handleHOrtEditKeyup() {
+	// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+	if (!$(event.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
+		// Left arrow
+		if (event.keyCode === $.mobile.keyCode.LEFT) {
+			nächsterVorigerOrt("voriger");
+			event.preventDefault();
+		}
+		// Right arrow
+		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+			nächsterVorigerOrt("nächster");
+			event.preventDefault();
+		}
+	}
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html [name='LöscheAnhang'] geklickt wird
+function handleHOrtEditLoescheAnhangClick() {
+	event.preventDefault();
+	loescheAnhang(this, window.hOrt, localStorage.OrtId);
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_einfacher_modus geklickt wird
+function handleHOrtEditMenuEinfacherModusClick() {
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_felder_verwalten geklickt wird
+function handleHOrtEditMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "hOrtEdit.html";
+	$.mobile.navigate("FeldListe.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_orte_exportieren geklickt wird
+function handleHOrtEditMenuOrteExportierenClick() {
+	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuOrtEdit").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuOrtEdit").popup("close");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_einstellungen geklickt wird
+function handleHOrtEditMenuEinstellungenClick() {
+	localStorage.zurueck = "hOrtEdit.html";
+	öffneMeineEinstellungen();
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_lokal_installieren geklickt wird
+function handleHOrtEditMenuLokalInstallierenClick() {
+	localStorage.zurueck = "hOrtEdit.html";
+	$.mobile.navigate("Installieren.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn in hOrtEdit.html .menu_neu_anmelden geklickt wird
+function handleHOrtEditMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn hOrtListe.html erscheint
+function handleHOrtListePageshow() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	initiiereOrtListe();
+}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+// wenn hOrtListe.html initiiert wird
+function handleHOrtListePageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", handleHOrtListeTabInaktivClick);
+	
+	// Link zu Raum in Navbar und Titelleiste
+	$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", handleHOrtListeOeffneRaumClick);
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+	$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", handleHOrtListeOeffneProjektClick);
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+	// neuen Ort erstellen
+	$("#hOrtListePage").on("click", ".NeuerOrtOrtListe", handleHOrtListeNeuerOrtClick);
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit
+	$("#OrtlistehOL").on("swipeleft", ".Ort", handleHOrtListeSwipeleft);
 
-// wenn in hOrtEdit.html 
-function handleHOrtEdit*/
+	$("#OrtlistehOL").on("click", ".Ort", handleHOrtListeOrtClick);
+
+	$("#OrtlistehOL").on("swipeleft", ".erste", erstelleNeuenOrt);
+
+	$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", handleHOrtListePageContentSwiperight);
+
+	$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', handleHOrtListeOeffneKarteClick);
+
+	$('#MenuOrtListe').on('click', '.menu_einfacher_modus', handleHOrtListeMenuEinfacherModusClick);
+
+	$('#MenuOrtListe').on('click', '.menu_felder_verwalten', handleHOrtListeMenuFelderVerwaltenClick);
+
+	$('#MenuOrtListe').on('click', '.menu_orte_exportieren', handleHOrtListeMenuOrteExportierenClick);
+
+	$('#MenuOrtListe').on('click', '.menu_einstellungen', handleHOrtListeMenuEinstellungenClick);
+
+	$('#MenuOrtListe').on('click', '.menu_lokal_installieren', handleHOrtListeMenuLokalInstallierenClick);
+
+	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', handleHOrtListeMenuNeuAnmeldenClick);
+}
+
+// wenn in hOrtListe.html .tab_inaktiv geklickt wird
+function handleHOrtListeTabInaktivClick() {
+	event.preventDefault();
+	event.stopPropagation();
+}
+
+// wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
+function handleHOrtListeOeffneRaumClick() {
+	event.preventDefault();
+	leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+}
+
+// wenn in hOrtListe.html #OeffneProjektOrtListe geklickt wird
+function handleHOrtListeOeffneProjektClick() {
+	event.preventDefault();
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+}
+
+// wenn in hOrtListe.html .NeuerOrtOrtListe geklickt wird
+function handleHOrtListeNeuerOrtClick() {
+	event.preventDefault();
+	erstelleNeuenOrt();
+}
+
+// wenn in hOrtListe.html nach links gewischt wird
+function handleHOrtListeSwipeleft() {
+	localStorage.OrtId = $(this).attr('OrtId');
+	$.mobile.navigate("hZeitListe.html");
+}
+
+// wenn in hOrtListe.html .Ort geklickt wird
+function handleHOrtListeOrtClick() {
+	event.preventDefault();
+	localStorage.OrtId = $(this).attr('OrtId');
+	$.mobile.navigate("hOrtEdit.html");
+}
+
+// wenn in hOrtListe.html #hOrtListePageContent nach rechts gewischt wird
+function handleHOrtListePageContentSwiperight() {
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	$.mobile.navigate("hRaumListe.html");
+}
+
+// wenn in hOrtListe.html #OeffneKarteOrtListe geklickt wird
+function handleHOrtListeOeffneKarteClick() {
+	event.preventDefault();
+	localStorage.zurueck = "hOrtListe";
+	$.mobile.navigate("Karte.html");
+}
+
+// wenn in hOrtListe.html .menu_einfacher_modus geklickt wird
+function handleHOrtListeMenuEinfacherModusClick() {
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+}
+
+// wenn in hOrtListe.html .menu_felder_verwalten geklickt wird
+function handleHOrtListeMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "hOrtListe.html";
+	$.mobile.navigate("FeldListe.html");
+}
+
+// wenn in hOrtListe.html .menu_orte_exportieren geklickt wird
+function handleHOrtListeMenuOrteExportierenClick() {
+	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuOrtListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuOrtListe").popup("close");
+}
+
+// wenn in hOrtListe.html .menu_einstellungen geklickt wird
+function handleHOrtListeMenuEinstellungenClick() {
+	localStorage.zurueck = "hOrtListe.html";
+	öffneMeineEinstellungen();
+}
+
+// wenn in hOrtListe.html .menu_lokal_installieren geklickt wird
+function handleHOrtListeMenuLokalInstallierenClick() {
+	localStorage.zurueck = "hOrtListe.html";
+	$.mobile.navigate("Installieren.html");
+}
+
+// wenn in hOrtListe.html .menu_neu_anmelden geklickt wird
+function handleHOrtListeMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
 
 
 
 
 
 
+
+// Öffnet den vorigen oder nächsten Ort
+// voriger des ersten => OrtListe
+// nächster des letzten => melden
+// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+// wird benutzt in hOrtEdit.html
+function nächsterVorigerOrt(NächsterOderVoriger) {
+	// prüfen, ob OrtListe schon existiert
+	// nur abfragen, wenn sie noch nicht existiert
+	if (window.OrtListe) {
+		// Ortliste liegt als Variable vor
+		nächsterVorigerOrt_2(NächsterOderVoriger);
+	} else {
+		// keine Ortliste vorhanden
+		// neu aus DB erstellen
+		$db = $.couch.db("evab");
+		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
+			success: function (data) {
+				// OrtListe für hOrtListe.html bereitstellen
+				window.OrtListe = data;
+				nächsterVorigerOrt_2(NächsterOderVoriger);
+			}
+		});
+	}
+}
+
+function nächsterVorigerOrt_2(NächsterOderVoriger) {
+	var i, OrtIdAktuell, AnzOrt;
+	for (i in OrtListe.rows) {
+		OrtIdAktuell = OrtListe.rows[i].doc._id;
+		AnzOrt = OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (OrtIdAktuell === localStorage.OrtId) {
+			switch (NächsterOderVoriger) {
+			case "nächster":
+				if (parseInt(i) < AnzOrt) {
+					localStorage.OrtId = OrtListe.rows[parseInt(i)+1].doc._id;
+					leereStorageOrtEdit("ohneId");
+					initiiereOrtEdit();
+					return;
+				} else {
+					melde("Das ist der letzte Ort");
+					return;
+				}
+				break;
+			case "voriger":
+				if (parseInt(i) > 0) {
+					localStorage.OrtId = OrtListe.rows[parseInt(i)-1].doc._id;
+					leereStorageOrtEdit("ohneId");
+					initiiereOrtEdit();
+					return;
+				} else {
+					leereStorageOrtEdit();
+					$.mobile.navigate("hOrtListe.html");
+					return;
+				}
+				break;
+			}
+		}
+	}
+}
+
+// wird benutzt in hOrtEdit.html
+function validatehOrtEdit() {
+	if (!$("[name='oName']").val()) {
+		melde("Bitte Ortnamen eingeben");
+		setTimeout(function() { 
+			$("[name='oName']").focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+}
+
+// wird benutzt in hOrtEdit.html
+function speichereHOrtEdit() {
+	var that = this;
+	// prüfen, ob Ort existiert
+	if (window.hOrt) {
+		// bestehedes Objekt verwenden
+		speichereHOrtEdit_2(that);
+	} else {
+		// kein Ort > aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.OrtId, {
+			success: function (data) {
+				window.hOrt = data;
+				speichereHOrtEdit_2(that);
+			},
+			error: function () {
+				console.log('fehler in function speichereHOrtEdit');
+				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	}
+}
+
+function speichereHOrtEdit_2(that) {
+	var Feldname, Feldjson, Feldwert;
+	if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+		// slider
+		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+		Feldwert = $(that).attr("aria-valuenow");
+	} else {
+		// alle anderen Feldtypen
+		Feldname = that.name;
+		// nötig, damit Arrays richtig kommen
+		Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		Feldwert = Feldjson[Feldname];
+	}
+	if (validatehOrtEdit()) {
+		if (Feldname === "oName") {
+			// Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			leereStorageOrtListe("mitLatLngListe");
+		}
+		// Werte aus dem Formular aktualisieren
+		if (Feldwert) {
+			if (myTypeOf(Feldwert) === "float") {
+				window.hOrt[Feldname] = parseFloat(Feldwert);
+			} else if (myTypeOf(Feldwert) === "integer") {
+				window.hOrt[Feldname] = parseInt(Feldwert);
+			} else {
+				window.hOrt[Feldname] = Feldwert;
+			}
+		} else if (window.hOrt[Feldname]) {
+			delete window.hOrt[Feldname]
+		}
+		// alles speichern
+		$db.saveDoc(window.hOrt, {
+			success: function (data) {
+				window.hOrt._rev = data.rev;
+				// window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
+				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+				// Zuletzt gespeicherte OrtId NACH dem speichern setzen
+				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+				// darum zwischenspeichern
+				window.OrtIdZwischenspeicher = localStorage.OrtId;
+				setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
+				setTimeout("delete window.OrtIdZwischenspeicher", 1500);
+				// nicht aktualisierte hierarchisch tiefere Listen löschen
+				delete window.ZeitenVonProjekt;
+				delete window.ZeitenVonRaum;
+				delete window.ArtenVonProjekt;
+				delete window.ArtenVonRaum;
+				delete window.ArtenVonZeit;
+			},
+			error: function () {
+				console.log('fehler in function speichereHOrtEdit_2(that)');
+				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	}
+}
+
+// wird benutzt in hOrtEdit.html
+function löscheOrt(Arten, Zeiten) {
+	// nur löschen, wo Datensätze vorkommen
+	if (Zeiten.rows.length > 0) {
+		loescheIdIdRevListe(Zeiten);
+	}
+	if (Arten.rows.length > 0) {
+		loescheIdIdRevListe(Arten);
+	}
+	// zuletzt den Ort löschen
+	if (window.hOrt) {
+		// Objekt nutzen
+		löscheOrt_2();
+	} else {
+		// Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.OrtId, {
+			success: function (data) {
+				window.hOrt = data;
+				löscheOrt_2();
+			},
+			error: function () {
+				melde("Fehler: Der Ort wurde nicht gelöscht");
+			}
+		});
+	}
+}
+
+function löscheOrt_2() {
+	$db = $.couch.db("evab");
+	$db.removeDoc(window.hOrt, {
+		success: function (data) {
+			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+			if (window.OrtListe) {
+				for (i in window.OrtListe.rows) {
+					if (window.OrtListe.rows[i].doc._id === data.id) {
+						window.OrtListe.rows.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				// Keine Ortliste mehr. Storage löschen
+				leereStorageOrtListe("mitLatLngListe");
+			}
+			leereStorageOrtEdit("mitLatLngListe");
+			$.mobile.navigate('hOrtListe.html');
+		},
+		error: function () {
+			melde("Fehler: Der Ort wurde nicht gelöscht");
+		}
+	});
+}
 
 // wird verwendet in hArtListe.html
 function öffneArtgruppenliste_hal() {
