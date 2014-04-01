@@ -4540,6 +4540,184 @@ function handleHArtEditPageinit() {
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', handleHArtEditMenuNeuAnmeldenClick);
 }
 
+// wenn hArtListe.html erscheint
+function handleHArtListePageshow() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	initiierehBeobListe();
+}
+
+// wenn hArtListe.html initiiert wird
+function handleHArtListePageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+
+	// Link zu Raum in Navbar und Titelleiste
+	$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", handleHArtListeOeffneZeitClick);
+
+	$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", handleHArtListeOeffneOrtClick);
+
+	$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", handleHArtListeOeffneRaumClick);
+
+	$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", handleHArtListeOeffneProjektClick);
+
+	// Neue Beobachtung managen
+	$("#hArtListePage").on("click", ".NeueBeobhArtListe", handleHArtListeNeueBeobClick);
+
+	$("#ArtlistehAL").on("swipeleft", ".erste", öffneArtgruppenliste_hal);
+
+	$("#ArtlistehAL").on("swipeleft click", ".beob", handleHArtListeBeobClick);
+
+	$("#hArtListePage").on("swiperight", handleHArtListeSwiperight);
+
+	$('#MenuhBeobListe').on('click', '.menu_einfacher_modus', handleHArtListeMenuEinfacherModusClick);
+
+	$('#MenuhBeobListe').on('click', '.menu_felder_verwalten', handleHArtListeMenuFelderVerwaltenClick);
+
+	$('#MenuhBeobListe').on('click', '.menu_beob_exportieren', handleHArtListeMenuBeobExportierenClick);
+
+	$('#MenuhBeobListe').on('click', '.menu_einstellungen', handleHArtListeMenuEinstellungenClick);
+
+	$('#MenuhBeobListe').on('click', '.menu_lokal_installieren', handleHArtListeMenuLokalInstallierenClick);
+
+	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', handleHArtListeMenuNeuAnmeldenClick);
+}
+
+// wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
+function handleHArtListeOeffneZeitClick() {
+	event.preventDefault();
+	leereStoragehBeobListe();
+	$.mobile.navigate("hZeitEdit.html");
+}
+
+// wenn in hArtListe.html #OeffneOrthArtListe geklickt wird
+function handleHArtListeOeffneOrtClick() {
+	event.preventDefault();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	$.mobile.navigate("hOrtEdit.html");
+}
+
+// wenn in hArtListe.html #OeffneRaumhArtListe geklickt wird
+function handleHArtListeOeffneRaumClick() {
+	event.preventDefault();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+}
+
+// wenn in hArtListe.html #OeffneProjekthArtListe geklickt wird
+function handleHArtListeOeffneProjektClick() {
+	event.preventDefault();
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+}
+
+// wenn in hArtListe.html .NeueBeobhArtListe geklickt wird
+function handleHArtListeNeueBeobClick() {
+	event.preventDefault();
+	öffneArtgruppenliste_hal();
+}
+
+// wenn in hArtListe.html .beob geklickt wird
+function handleHArtListeBeobClick() {
+	localStorage.hBeobId = $(this).attr('hBeobId');
+	$.mobile.navigate("hArtEdit.html");
+}
+
+// wenn in hArtListe.html nach rechts gewischt wird
+function handleHArtListeSwiperight() {
+	$.mobile.navigate("hZeitListe.html");
+}
+
+// wenn in hArtListe.html .menu_einfacher_modus geklickt wird
+function handleHArtListeMenuEinfacherModusClick() {
+	leereStoragehBeobListe();
+	leereStorageZeitEdit();
+	leereStorageZeitListe();
+	leereStorageOrtEdit();
+	leereStorageOrtListe();
+	leereStorageRaumEdit();
+	leereStorageRaumListe();
+	leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+}
+
+// wenn in hArtListe.html .menu_felder_verwalten geklickt wird
+function handleHArtListeMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "hArtListe.html";
+	$.mobile.navigate("FeldListe.html");
+}
+
+// wenn in hArtListe.html .menu_beob_exportieren geklickt wird
+function handleHArtListeMenuBeobExportierenClick() {
+	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuhBeobListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuhBeobListe").popup("close");
+}
+
+// wenn in hArtListe.html .menu_einstellungen geklickt wird
+function handleHArtListeMenuEinstellungenClick() {
+	localStorage.zurueck = "hArtListe.html";
+	öffneMeineEinstellungen();
+}
+
+// wenn in hArtListe.html .menu_lokal_installieren geklickt wird
+function handleHArtListeMenuLokalInstallierenClick() {
+	localStorage.zurueck = "hArtListe.html";
+	$.mobile.navigate("Installieren.html");
+}
+
+// wenn in hArtListe.html .menu_neu_anmelden geklickt wird
+function handleHArtListeMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
+
+
+
+
+// wird verwendet in hArtListe.html
+function öffneArtgruppenliste_hal() {
+	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	leereStoragehBeobListe();
+	localStorage.Status = "neu";
+	localStorage.Von = "hArtListe";
+	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
+	$.mobile.navigate("Artgruppenliste.html");
+}
+
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
 function handleHArtEditOeffneArtListehArtEditClick() {
 	event.preventDefault();
