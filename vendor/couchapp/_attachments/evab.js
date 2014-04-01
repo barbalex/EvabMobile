@@ -4374,6 +4374,72 @@ function öffneFeld(FeldName) {
 	});
 }
 
+// wenn FeldListe.html erscheint
+function handleFeldListePageshow() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+	initiiereFeldliste();
+}
+
+// wenn FeldListe.html initiiert wird
+function handleFeldListePageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+
+	// sicherstellen, dass zurueck nie leer ist
+	if (!localStorage.zurueck) {
+		localStorage.zurueck = "BeobListe.html";
+	}
+
+	$("#FeldListeFL").on('click', '.Feld', handleFeldListeFeldClick);
+
+	$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", handleFeldListeNeuesFeldFeldListeClick);
+
+	$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', handleFeldListeMenuDatenfelderExportierenClick);
+
+	$("#FeldListeHeader").on('click', '#FeldListeBackButton', handleFeldListeBackButtonClick);
+}
+
+// wenn in FeldListe.html .Feld geklickt wird
+// Feld öffnen
+function handleFeldListeFeldClick() {
+	event.preventDefault();
+	localStorage.FeldId = $(this).attr('FeldId');
+	$.mobile.navigate("FeldEdit.html");
+}
+
+// wenn in FeldListe.html #NeuesFeldFeldListe geklickt wird
+function handleFeldListeNeuesFeldFeldListeClick() {
+	event.preventDefault();
+	neuesFeld();
+}
+
+// wenn in FeldListe.html .menu_datenfelder_exportieren geklickt wird
+function handleFeldListeMenuDatenfelderExportierenClick() {
+	window.open("_list/FeldExport/FeldListe?include_docs=true");
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuFeldListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuFeldListe").popup("close");
+}
+
+// wenn in FeldListe.html #FeldListeBackButton geklickt wird
+function handleFeldListeBackButtonClick() {
+	event.preventDefault();
+	$.mobile.navigate(localStorage.zurueck);
+	delete localStorage.zurueck;
+}
+
+
+
+
+
 // prüft neue oder umbenannte Feldnamen
 // prüft, ob der neue Feldname schon existiert
 // wenn ja: melden, zurückstellen

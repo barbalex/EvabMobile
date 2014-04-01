@@ -57,54 +57,8 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script charset="utf-8">
-			$("#FeldListePage").on("pageshow", function () {
-				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
-					$.mobile.navigate("index.html");
-				}
-				initiiereFeldliste();
-			});
-			
-			$(":jqmData(role='page')").on("pageinit", function () {
-				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
-				// muss auf index.html umgeleitet werden
-				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
-					$.mobile.navigate("index.html");
-				}
-
-				// sicherstellen, dass zurueck nie leer ist
-				if (!localStorage.zurueck) {
-					localStorage.zurueck = "BeobListe.html";
-				}
-
-				// Feld öffnen
-				$("#FeldListeFL").on('click', '.Feld', function (event) {
-					event.preventDefault();
-					localStorage.FeldId = $(this).attr('FeldId');
-					$.mobile.navigate("FeldEdit.html");
-				});
-
-				$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function (event) {
-					event.preventDefault();
-					neuesFeld();
-				});
-
-				$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', function() {
-					window.open("_list/FeldExport/FeldListe?include_docs=true");
-					// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-					$("#MenuFeldListe").popup();
-					// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-					$("#MenuFeldListe").popup("close");
-				});
-
-				// BackButton steuern
-				$("#FeldListeHeader").on('click', '#FeldListeBackButton', function (event) {
-					event.preventDefault();
-					$.mobile.navigate(localStorage.zurueck);
-					delete localStorage.zurueck;
-				});
-			});
+			$("#FeldListePage").on("pageshow", handleFeldListePageshow);
+			$(":jqmData(role='page')").on("pageinit", handleFeldListePageinit);
 		</script>
 	</div>
   </body>
