@@ -4745,7 +4745,7 @@ function handleHOrtEditPageinit() {
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", handleHOrtEditTabInaktivClick);
+	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
 
 	$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", handleHOrtEditOeffneOrtListeClick);
 
@@ -4815,8 +4815,8 @@ function handleHOrtEditPageinit() {
 	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', handleHOrtEditMenuNeuAnmeldenClick);
 }
 
-// wenn in hOrtEdit.html .tab_inaktiv geklickt wird
-function handleHOrtEditTabInaktivClick() {
+// wenn in allen Formularen .tab_inaktiv geklickt wird
+function handleTabInaktivClick() {
 	event.preventDefault();
 	event.stopPropagation();
 }
@@ -5069,7 +5069,7 @@ function handleHOrtListePageinit() {
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", handleHOrtListeTabInaktivClick);
+	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
 	
 	// Link zu Raum in Navbar und Titelleiste
 	$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", handleHOrtListeOeffneRaumClick);
@@ -5100,12 +5100,6 @@ function handleHOrtListePageinit() {
 	$('#MenuOrtListe').on('click', '.menu_lokal_installieren', handleHOrtListeMenuLokalInstallierenClick);
 
 	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', handleHOrtListeMenuNeuAnmeldenClick);
-}
-
-// wenn in hOrtListe.html .tab_inaktiv geklickt wird
-function handleHOrtListeTabInaktivClick() {
-	event.preventDefault();
-	event.stopPropagation();
 }
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
@@ -5199,11 +5193,501 @@ function handleHOrtListeMenuNeuAnmeldenClick() {
 	$.mobile.navigate("index.html");
 }
 
+// wenn hProjektEdit.html angezeigt wird
+function handleHProjektEditPageshow() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	initiiereProjektEdit();
+}
+
+// wenn hProjektEdit.html initiiert wird
+function handleHProjektEditPageinit() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
+		leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
+
+	$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", handleHProjektEditOeffneProjektListeClick);
+
+	$("#hProjektEditHeader").on("click", "#OeffneRaumListeProjektEdit", handleHProjektEditOeffneRaumListeClick);
+
+	// Für jedes Feld bei Änderung speichern
+	$("#hProjektEditForm").on("change", ".speichern", speichereHProjektEdit);
+
+	// Eingabe im Zahlenfeld abfangen
+	// Ende des Schiebens abfangen
+	$("#hProjektEditForm").on("blur slidestop", '.speichernSlider', speichereHProjektEdit);
+
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#hProjektEditForm").on("mouseup", '.ui-slider-input', speichereHProjektEdit);
+
+	// Änderungen im Formular für Anhänge speichern
+	$("#FormAnhängehPE").on("change", ".speichernAnhang", handleHProjektEditSpeichernAnhangChange);
+	
+	// Code für den Projekt-Löschen-Dialog
+	$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', handleHProjektEditLöscheProjektClick);
+
+	$("#hpe_löschen_meldung").on("click", "#hpe_löschen_meldung_ja_loeschen", handleHProjektEditLoeschenMeldungJaClick);
+
+	// neues Projekt erstellen
+	$("#hProjektEditFooter").on("click", "#NeuesProjektProjektEdit", handleHProjektEditNeuesProjektClick);
+
+	// sichtbare Felder wählen
+	$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", handleHProjektEditWaehleFelderClick);
+
+	$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", handleHProjektEditContentSwipeleft);
+
+	$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", handleHProjektEditContentSwiperight);
+
+	// Pagination Pfeil voriger initialisieren
+	$("#ProjektEditPage").on("vclick", ".ui-pagination-prev", handleHProjektEditUiPaginationPrevClick);
+
+	// Pagination Pfeil nächster initialisieren
+	$("#ProjektEditPage").on("vclick", ".ui-pagination-next", handleHProjektEditUiPaginationNextClick);
+
+	// Pagination Pfeiltasten initialisieren
+	$("#ProjektEditPage").on("keyup", handleHProjektEditKeyup);
+
+	$('#hProjektEditFooter').on('click', '#KarteOeffnenProjektEdit', handleHProjektEditKarteOeffnenClick);
+
+	$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", handleHProjektEditLoescheAnhangClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_einfacher_modus', handleHProjektEditMenuEinfacherModusClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_felder_verwalten', handleHProjektEditMenuFelderVerwaltenClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_projekte_exportieren', handleHProjektEditMenuProjekteExportierenClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_einstellungen', handleHProjektEditMenuEinstellungenClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_lokal_installieren', handleHProjektEditMenuLokalInstallierenClick);
+
+	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', handleHProjektEditMenuNeuAnmeldenClick);
+}
+
+// wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
+function handleHProjektEditOeffneProjektListeClick() {
+	event.preventDefault();
+	leereStorageProjektEdit();
+	$.mobile.navigate("hProjektListe.html");
+}
+
+// wenn in hProjektEdit.html #OeffneRaumListeProjektEdit geklickt wird
+function handleHProjektEditOeffneRaumListeClick() {
+	event.preventDefault();
+	$.mobile.navigate("hRaumListe.html");
+}
+
+// wenn in hProjektEdit.html .speichernAnhang geändert wird
+function handleHProjektEditSpeichernAnhangChange() {
+	var _attachments = $("#_attachmentshPE").val();
+	if (_attachments && _attachments.length > 0) {
+		speichereAnhänge(localStorage.ProjektId, window.hProjekt, "hPE");
+	}
+}
+
+// wenn in hProjektEdit.html #LöscheProjektProjektEdit geklickt wird
+function handleHProjektEditLöscheProjektClick() {
+	event.preventDefault();
+	var that = this;
+	// Anzahl Räume des Projekts zählen
+	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
+	$db = $.couch.db("evab");
+	$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+		success: function (Raeume) {
+			var anzRaeume = Raeume.rows.length;
+			// Anzahl Orte des Projekts zählen
+			$db.view('evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+				success: function (Orte) {
+					var anzOrte = Orte.rows.length;
+					// Anzahl Zeiten des Projekts zählen
+					$db.view('evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+						success: function (Zeiten) {
+							var anzZeiten = Zeiten.rows.length;
+							// Anzahl Arten des Projekts zählen
+							$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
+								success: function (Arten) {
+									var anzArten = Arten.rows.length, 
+										meldung, 
+										div,
+										räume_text = (anzRaeume === 1 ? ' Raum, ' : ' Räume, '),
+										orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
+										zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
+										arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+									meldung = 'Projekt inklusive ' + anzRaeume + räume_text + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+									$("#hpe_löschen_meldung_meldung").html(meldung);
+									// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+									div = $("#hpe_löschen_meldung");
+									div.data('Arten', Arten);
+									div.data('Zeiten', Zeiten);
+									div.data('Orte', Orte);
+									div.data('Raeume', Raeume);
+									// popup öffnen
+									$("#hpe_löschen_meldung").popup("open");
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	});
+}
+
+// wenn in hProjektEdit.html #hpe_löschen_meldung_ja_loeschen geklickt wird
+function handleHProjektEditLoeschenMeldungJaClick() {
+	var div = $("#hpe_löschen_meldung")[0];
+	löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
+}
+
+// wenn in hProjektEdit.html #NeuesProjektProjektEdit geklickt wird
+function handleHProjektEditNeuesProjektClick() {
+	event.preventDefault();
+	erstelleNeuesProjekt();
+}
+
+// wenn in hProjektEdit.html #waehleFelderProjektEdit geklickt wird
+function handleHProjektEditWaehleFelderClick() {
+	event.preventDefault();
+	localStorage.AufrufendeSeiteFW = "hProjektEdit";
+	$.mobile.navigate("FelderWaehlen.html");
+}
+
+// wenn in hProjektEdit.html #hProjektEditContent nach links gewischt wird
+function handleHProjektEditContentSwipeleft() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächstesVorigesProjekt("nächstes");
+	}
+}
+
+// wenn in hProjektEdit.html #hProjektEditContent nach rechts gewischt wird
+function handleHProjektEditContentSwiperight() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		nächstesVorigesProjekt("voriges");
+	}
+}
+
+// wenn in hProjektEdit.html .ui-pagination-prev geklickt wird
+function handleHProjektEditUiPaginationPrevClick() {
+	event.preventDefault();
+	nächstesVorigesProjekt("voriges");
+}
+
+// wenn in hProjektEdit.html .ui-pagination-next geklickt wird
+function handleHProjektEditUiPaginationNextClick() {
+	event.preventDefault();
+	nächstesVorigesProjekt("nächstes");
+}
+
+// wenn in hProjektEdit.html keyup passiert
+// Navigatin mit Pfeiltasten ermöglichen
+function handleHProjektEditKeyup() {
+	// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+	if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
+		// Left arrow
+		if (event.keyCode === $.mobile.keyCode.LEFT) {
+			nächstesVorigesProjekt("voriges");
+			event.preventDefault();
+		}
+		// Right arrow
+		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+			nächstesVorigesProjekt("nächstes");
+			event.preventDefault();
+		}
+	}
+}
+
+// wenn in hProjektEdit.html #KarteOeffnenProjektEdit geklickt wird
+function handleHProjektEditKarteOeffnenClick() {
+	event.preventDefault();
+	localStorage.zurueck = "hProjektEdit";
+	$.mobile.navigate("Karte.html");
+}
+
+// wenn in hProjektEdit.html [name='LöscheAnhang'] geklickt wird
+function handleHProjektEditLoescheAnhangClick() {
+	event.preventDefault();
+	loescheAnhang(this, window.hProjekt, localStorage.ProjektId);
+}
+
+// wenn in hProjektEdit.html .menu_einfacher_modus geklickt wird
+function handleHProjektEditMenuEinfacherModusClick() {
+	leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+}
+
+// wenn in hProjektEdit.html .menu_felder_verwalten geklickt wird
+function handleHProjektEditMenuFelderVerwaltenClick() {
+	localStorage.zurueck = "hProjektEdit.html";
+	$.mobile.navigate("FeldListe.html");
+}
+
+// wenn in hProjektEdit.html .menu_projekte_exportieren geklickt wird
+function handleHProjektEditMenuProjekteExportierenClick() {
+	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuProjektEdit").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuProjektEdit").popup("close");
+}
+
+// wenn in hProjektEdit.html .menu_einstellungen geklickt wird
+function handleHProjektEditMenuEinstellungenClick() {
+	localStorage.zurueck = "hProjektEdit.html";
+	öffneMeineEinstellungen();
+}
+
+// wenn in hProjektEdit.html .menu_lokal_installieren geklickt wird
+function handleHProjektEditMenuLokalInstallierenClick() {
+	localStorage.zurueck = "hProjektEdit.html";
+	$.mobile.navigate("Installieren.html");
+}
+
+// wenn in hProjektEdit.html .menu_neu_anmelden geklickt wird
+function handleHProjektEditMenuNeuAnmeldenClick() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
 
 
 
 
 
+// Öffnet das vorige oder nächste Projekt
+// voriges des ersten => ProjektListe.html
+// nächstes des letzten => melden
+// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+// wird benutzt in hProjektEdit.html
+function nächstesVorigesProjekt(NächstesOderVoriges) {
+	// prüfen, ob Projektliste schon existiert
+	// nur abfragen, wenn sie noch nicht existiert
+	if (window.Projektliste) {
+		// globale Variable Projektliste existiert noch
+		nächstesVorigesProjekt_2(NächstesOderVoriges);
+	} else {
+		// keine Projektliste übergeben
+		// neu aus DB erstellen
+		$db = $.couch.db("evab");
+		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
+			success: function (data) {
+				// Projektliste bereitstellen
+				window.Projektliste = data;
+				nächstesVorigesProjekt_2(NächstesOderVoriges);
+			}
+		});
+	}
+}
+
+function nächstesVorigesProjekt_2(NächstesOderVoriges) {
+	var i,
+		ProjIdAktuell,
+		AnzProj;
+	for (i in Projektliste.rows) {
+		ProjIdAktuell = Projektliste.rows[i].doc._id;
+		AnzProj = Projektliste.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (ProjIdAktuell === localStorage.ProjektId) {
+			switch (NächstesOderVoriges) {
+			case "nächstes":
+				if (parseInt(i) < AnzProj) {
+					localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
+					leereStorageProjektEdit("mitLatLngListe", "ohneId");
+					initiiereProjektEdit();
+					return;
+				} else {
+					melde("Das ist das letzte Projekt");
+					return;
+				}
+				break;
+			case "voriges":
+				if (parseInt(i) > 0) {
+					localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
+					leereStorageProjektEdit("mitLatLngListe", "ohneId");
+					initiiereProjektEdit();
+					return;
+				} else {
+					leereStorageProjektEdit();
+					$.mobile.navigate("hProjektListe.html");
+					return;
+				}
+				break;
+			}
+		}
+	}
+}
+
+// wird benutzt in hProjektEdit.html
+function löscheProjekt(Arten, Zeiten, Orte, Raeume) {
+	// nur löschen, wo Datensätze vorkommen
+	if (Raeume.rows.length > 0) {
+		loescheIdIdRevListe(Raeume);
+	}
+	if (Orte.rows.length > 0) {
+		loescheIdIdRevListe(Orte);
+	}
+	if (Zeiten.rows.length > 0) {
+		loescheIdIdRevListe(Zeiten);
+	}
+	if (Arten.rows.length > 0) {
+		loescheIdIdRevListe(Arten);
+	}
+	// zuletzt das Projekt
+	if (window.hProjekt) {
+		// Objekt verwenden
+		löscheProjekt_2();
+	} else {
+		// Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ProjektId, {
+			success: function (data) {
+				window.hProjekt = data;
+				löscheProjekt_2();
+			},
+			error: function () {
+				melde("Fehler: Projekt nicht gelöscht");
+			}
+		});
+	}
+}
+
+function löscheProjekt_2() {
+	$db = $.couch.db("evab");
+	$db.removeDoc(window.hProjekt, {
+		success: function (data) {
+			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+			if (window.Projektliste) {
+				for (i in window.Projektliste.rows) {
+					if (window.Projektliste.rows[i].doc._id === data.id) {
+						window.Projektliste.rows.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				// Keine Projektliste mehr. Storage löschen
+				leereStorageProjektListe("mitLatLngListe");
+			}
+			// Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+			leereStorageProjektEdit("mitLatLngListe");
+			//$.mobile.navigate('hProjektListe.html');
+			$.mobile.navigate("hProjektListe.html");
+			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
+			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html", {reload: true});
+		},
+		error: function () {
+			melde("Fehler: Projekt nicht gelöscht");
+		}
+	});
+}
+
+// wird benutzt in hProjektEdit.html
+function validierehProjektEdit() {
+	if (!$("[name='pName']").val()) {
+		melde("Bitte Projektnamen eingeben");
+		setTimeout(function() { 
+			$("[name='pName']").focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+}
+
+// wird benutzt in hProjektEdit.html
+function speichereHProjektEdit() {
+	var that = this;
+	if (window.hProjekt) {
+		speichereHProjektEdit_2(that);
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ProjektId, {
+			success: function (data) {
+				window.hProjekt = data;
+				speichereHProjektEdit_2(that);
+			},
+			error: function () {
+				melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
+			}
+		});
+	}
+}
+
+function speichereHProjektEdit_2(that) {
+	var Feldname, Feldjson, Feldwert;
+	if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+		// slider
+		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+		Feldwert = $(that).attr("aria-valuenow");
+	} else {
+		// alle anderen Feldtypen
+		Feldname = that.name;
+		// nötig, damit Arrays richtig kommen
+		Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		Feldwert = Feldjson[Feldname];
+	}
+	if (validierehProjektEdit()) {
+		if (Feldname === "pName") {
+			// Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+			leereStorageProjektListe("mitLatLngListe");
+		}
+		if (Feldwert) {
+			if (myTypeOf(Feldwert) === "float") {
+				window.hProjekt[Feldname] = parseFloat(Feldwert);
+			} else if (myTypeOf(Feldwert) === "integer") {
+				window.hProjekt[Feldname] = parseInt(Feldwert);
+			} else {
+				window.hProjekt[Feldname] = Feldwert;
+			}
+		} else if (window.hProjekt[Feldname]) {
+			delete window.hProjekt[Feldname]
+		}
+		// alles speichern
+		$db.saveDoc(window.hProjekt, {
+			success: function (data) {
+				window.hProjekt._rev = data.rev;
+				// window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
+				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+				// Zuletzt gespeicherte ProjektId NACH dem speichern setzen
+				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+				// darum zwischenspeichern
+				window.hProjektIdZwischenspeicher = localStorage.ProjektId;
+				setTimeout("window.ZuletztGespeicherteProjektId = window.hProjektIdZwischenspeicher", 1000);
+				setTimeout("delete window.hProjektIdZwischenspeicher", 1500);
+				// nicht aktualisierte hierarchisch tiefere Listen löschen
+				delete window.OrteVonRaum;
+				delete window.ZeitenVonRaum;
+				delete window.ZeitenVonOrt;
+				delete window.ArtenVonRaum;
+				delete window.ArtenVonOrt;
+				delete window.ArtenVonZeit;
+			},
+			error: function () {
+				console.log('fehler in function speichereHProjektEdit_2(that)');
+				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	}
+}
 
 // Öffnet den vorigen oder nächsten Ort
 // voriger des ersten => OrtListe
