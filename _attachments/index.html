@@ -113,13 +113,13 @@
 					setTimeout(function () { 
 						$('#Email').focus(); 
 					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
-					melde("Bitte Benutzernamen eingeben");
+					window.em.melde("Bitte Benutzernamen eingeben");
 					return false;
 				} else if (!Passwort) {
 					setTimeout(function () { 
 						$('#Passwort').focus(); 
 					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
-					melde("Bitte Passwort eingeben");
+					window.em.melde("Bitte Passwort eingeben");
 					return false;
 				}
 				return true;
@@ -151,7 +151,7 @@
 							delete localStorage.UserStatus;
 						},
 						error: function () {
-							melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+							window.em.melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
 						}
 					});
 				}

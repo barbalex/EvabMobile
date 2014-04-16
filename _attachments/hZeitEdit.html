@@ -206,7 +206,7 @@
 					event.preventDefault();
 					// Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 					leereStorageZeitListe();
-					erstelleNeueZeit(); 
+					window.em.erstelleNeueZeit(); 
 				});
 
 				// sichtbare Felder wählen
@@ -290,7 +290,7 @@
 
 				$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
-					loescheAnhang(this, window.hZeit, localStorage.ZeitId);
+					window.em.loescheAnhang(this, window.hZeit, localStorage.ZeitId);
 				});
 
 				function löscheZeit(Arten) {
@@ -311,7 +311,7 @@
 								löscheZeit_2();
 							},
 							error: function () {
-								melde("Fehler: Zeit nicht gelöscht");
+								window.em.melde("Fehler: Zeit nicht gelöscht");
 							}
 						});
 					}
@@ -338,21 +338,21 @@
 							$.mobile.navigate('hZeitListe.html');
 						},
 						error: function () {
-							melde("Fehler: Zeit nicht gelöscht");
+							window.em.melde("Fehler: Zeit nicht gelöscht");
 						}
 					});
 				}
 
 				function validierehZeitEdit() {
 					if (!$("[name='zDatum']").val()) {
-						melde("Bitte Datum erfassen");
+						window.em.melde("Bitte Datum erfassen");
 						setTimeout(function() { 
 							$("[name='zDatum']").focus(); 
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					}
 					if (!$("[name='zUhrzeit']").val()) {
-						melde("Bitte Zeit erfassen");
+						window.em.melde("Bitte Zeit erfassen");
 						setTimeout(function() { 
 							$("[name='zUhrzeit']").focus(); 
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
@@ -379,7 +379,7 @@
 							},
 							error: function () {
 								console.log('fehler in function speichern(that)');
-								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
@@ -435,7 +435,7 @@
 							},
 							error: function () {
 								console.log('fehler in function speichern_2(that)');
-								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					}
@@ -467,7 +467,7 @@
 
 				$('#MenuZeitEdit').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hZeitEdit.html";
-					öffneMeineEinstellungen();
+					window.em.öffneMeineEinstellungen();
 				});
 
 				$('#MenuZeitEdit').on('click', '.menu_lokal_installieren', function() {
@@ -514,7 +514,7 @@
 									initiiereZeitEdit();
 									return;
 								} else {
-									melde("Das ist die letzte Zeit");
+									window.em.melde("Das ist die letzte Zeit");
 									return;
 								}
 								break;

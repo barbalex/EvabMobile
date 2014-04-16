@@ -150,7 +150,7 @@
 
 						if (anzOrt === 0) {
 							// Keine Orte: Hinweis und zurück
-							melde(KeinOrtMeldung);
+							window.em.melde(KeinOrtMeldung);
 							history.back();
 						} else {
 							// Orte vorhanden: Karte aufbauen
@@ -349,7 +349,7 @@
 						anzBeob = BeobListeLatLng.rows.length;
 						if (anzBeob === 0) {
 							// Keine Beobachtungen: Hinweis und zurück
-							melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
+							window.em.melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
 							$.mobile.navigate("BeobListe.html");
 						} else {
 							// Beobachtungen vorhanden: Karte aufbauen
@@ -534,8 +534,8 @@
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
 						localStorage.oLongitudeDecDeg = lng;
-						localStorage.oXKoord = DdInChX(lat, lng);
-						localStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oXKoord = window.em.DdInChX(lat, lng);
+						localStorage.oYKoord = window.em.DdInChY(lat, lng);
 						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
 						contentString = '<div id="content">'+
@@ -565,8 +565,8 @@
 						lng = LatLng.lng();
 						localStorage.oLatitudeDecDeg = lat;
 						localStorage.oLongitudeDecDeg = lng;
-						localStorage.oXKoord = DdInChX(lat, lng);
-						localStorage.oYKoord = DdInChY(lat, lng);
+						localStorage.oXKoord = window.em.DdInChX(lat, lng);
+						localStorage.oYKoord = window.em.DdInChY(lat, lng);
 						localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 						clearInfoWindows();
 						contentString = '<div id="content">'+

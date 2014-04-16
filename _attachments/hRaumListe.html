@@ -117,7 +117,7 @@
 				// neuen Raum erstellen
 				$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function (event) {
 					event.preventDefault();
-					erstelleNeuenRaum();
+					window.em.erstelleNeuenRaum();
 				});
 
 				$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
@@ -132,7 +132,7 @@
 				});
 
 				$("#RaumlistehRL").on("swipeleft", ".erste", function () {
-					erstelleNeuenRaum();
+					window.em.erstelleNeuenRaum();
 				});
 
 				$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
@@ -168,7 +168,7 @@
 
 				$('#MenuRaumListe').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hRaumListe.html";
-					öffneMeineEinstellungen();
+					window.em.öffneMeineEinstellungen();
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_lokal_installieren', function() {

@@ -237,7 +237,7 @@
 				// neuen Raum erstellen
 				$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function (event) {
 					event.preventDefault();
-					erstelleNeuenRaum();
+					window.em.erstelleNeuenRaum();
 				});
 
 				// sichtbare Felder wählen
@@ -299,7 +299,7 @@
 
 				$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
-					loescheAnhang(this, window.hRaum, localStorage.RaumId);
+					window.em.loescheAnhang(this, window.hRaum, localStorage.RaumId);
 				});
 			
 				function löscheRaum(Arten, Zeiten, Orte) {
@@ -325,7 +325,7 @@
 								löscheRaum_2();
 							},
 							error: function () {
-								melde("Fehler: Raum nicht gelöscht");
+								window.em.melde("Fehler: Raum nicht gelöscht");
 							}
 						});
 					}
@@ -353,14 +353,14 @@
 							$.mobile.navigate('hRaumListe.html');
 						},
 						error: function () {
-							melde("Fehler: Raum nicht gelöscht");
+							window.em.melde("Fehler: Raum nicht gelöscht");
 						}
 					});
 				}
 
 				function validierehRaumEdit() {
 					if (!$("#rName").val()) {
-						melde("Bitte Raumnamen eingeben");
+						window.em.melde("Bitte Raumnamen eingeben");
 						setTimeout(function() { 
 							$('#rName').focus(); 
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
@@ -383,7 +383,7 @@
 								speichern_2(that);
 							},
 							error: function () {
-								melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
+								window.em.melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
 							}
 						});
 					}
@@ -468,7 +468,7 @@
 
 				$('#MenuRaumEdit').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hRaumEdit.html";
-					öffneMeineEinstellungen();
+					window.em.öffneMeineEinstellungen();
 				});
 
 				$('#MenuRaumEdit').on('click', '.menu_lokal_installieren', function() {
@@ -519,7 +519,7 @@
 									initiiereRaumEdit();
 									return;
 								} else {
-									melde("Das ist der letzte Raum");
+									window.em.melde("Das ist der letzte Raum");
 									return;
 								}
 								break;

@@ -104,7 +104,7 @@
 					// neues Projekt erstellen
 					$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function (event) {
 						event.preventDefault();
-						erstelleNeuesProjekt();
+						window.em.erstelleNeuesProjekt();
 					});
 
 					$("#ProjektlistehPL").on("swipeleft", ".Projekt", function () {
@@ -119,7 +119,7 @@
 					});
 
 					$("#ProjektlistehPL").on("swipeleft", ".erste", function () {
-						erstelleNeuesProjekt();
+						window.em.erstelleNeuesProjekt();
 					});
 
 					$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
@@ -156,7 +156,7 @@
 
 					$('#MenuProjektListe').on('click', '.menu_einstellungen', function() {
 						localStorage.zurueck = "hProjektListe.html";
-						öffneMeineEinstellungen();
+						window.em.öffneMeineEinstellungen();
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_lokal_installieren', function() {

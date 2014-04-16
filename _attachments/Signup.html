@@ -114,37 +114,37 @@
 					Passwort2 = $("#Passwort2").val();
 					Autor = $("#Autor").val();
 					if (!Email) {
-						melde("Bitte Email eingeben");
+						window.em.melde("Bitte Email eingeben");
 						setTimeout(function() {
 							$("#su_Email").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!validateEmail(Email)) {
-						melde("Bitte gültige Email-Adresse eingeben");
+						window.em.melde("Bitte gültige Email-Adresse eingeben");
 						setTimeout(function() {
 							$("#su_Email").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!Passwort) {
-						melde("Bitte Passwort eingeben");
+						window.em.melde("Bitte Passwort eingeben");
 						setTimeout(function() {
 							$("#su_Passwort").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!Passwort2) {
-						melde("Bitte Passwort bestätigen");
+						window.em.melde("Bitte Passwort bestätigen");
 						setTimeout(function() {
 							$("#Passwort2").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (Passwort !== Passwort2) {
-						melde("Passwort ist falsch bestätigt");
+						window.em.melde("Passwort ist falsch bestätigt");
 						setTimeout(function() {
 							$("#Passwort2").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
 					} else if (!Autor) {
-						melde("Bitte Autor eingeben");
+						window.em.melde("Bitte Autor eingeben");
 						setTimeout(function() {
 							$("#Autor").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
@@ -164,7 +164,7 @@
 							speichereUserInEvab();
 						},
 						error : function () {
-							melde("Fehler: Das Konto wurde nicht erstellt");
+							window.em.melde("Fehler: Das Konto wurde nicht erstellt");
 						}
 					});
 				}

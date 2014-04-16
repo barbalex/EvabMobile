@@ -74,7 +74,7 @@
 						leereAlleVariabeln();
 						$.mobile.navigate("index.html");
 					}
-					initiiereUserEdit();
+					window.em.initiiereUserEdit();
 				});
 
 				$(":jqmData(role='page')").on("pageinit", function () {
@@ -138,12 +138,12 @@
 										localStorage.Autor = $("#Autor").val();
 									},
 									error: function () {
-										melde("Fehler: Änderung am Autor nicht gespeichert");
+										window.em.melde("Fehler: Änderung am Autor nicht gespeichert");
 									}
 								});
 							},
 							error: function () {
-								melde("Fehler: Änderung am Autor nicht gespeichert");
+								window.em.melde("Fehler: Änderung am Autor nicht gespeichert");
 							}
 						});
 					});
@@ -153,7 +153,7 @@
 				// wenn ja wird true retourniert, sonst false
 				function validiereUserUserEdit() {
 					if (!$("#Autor").val()) {
-						melde("Bitte Autor eingeben");
+						window.em.melde("Bitte Autor eingeben");
 						setTimeout(function() { 
 							$('#Autor').focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
@@ -175,13 +175,13 @@
 								$db.saveDoc(doc, {
 									error: function () {
 										console.log('fehler in function speichern(that)');
-										//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+										//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 									}
 								});
 							},
 							error: function () {
 								console.log('fehler in function speichern(that)');
-								//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+								//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 							}
 						});
 					} else {

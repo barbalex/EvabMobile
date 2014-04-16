@@ -134,7 +134,7 @@
 				// Neue Zeit erstellen, erste Zeit und fixer button
 				$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function (event) {
 					event.preventDefault();
-					erstelleNeueZeit(); 
+					window.em.erstelleNeueZeit(); 
 				});
 
 				$("#ZeitlistehZL").on("swipeleft", ".Zeit", function () {
@@ -149,7 +149,7 @@
 				});
 
 				$("#ZeitlistehZL").on("swipeleft", ".erste", function () {
-					erstelleNeueZeit();
+					window.em.erstelleNeueZeit();
 				});
 
 				$("#hZeitListePage").on("swiperight", function () {
@@ -182,7 +182,7 @@
 
 				$('#MenuZeitListe').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hZeitListe.html";
-					öffneMeineEinstellungen();
+					window.em.öffneMeineEinstellungen();
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_lokal_installieren', function() {
