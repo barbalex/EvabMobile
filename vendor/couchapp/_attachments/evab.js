@@ -3410,7 +3410,10 @@ function handleAlPageinit() {
 
 	$("#al_Page").on("click", "#al_standardgruppe", handleAlAlStandardgruppeClick);
 
-	$("#al_ArtenListe").on("click", "[name='ArtListItem']", handleAlArtListItemClick);
+	$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
+		event.preventDefault();
+		handleAlArtListItemClick;
+	});
 }
 
 // wenn Artenliste.html gezeigt wird
@@ -3456,7 +3459,6 @@ function handleAlAlStandardgruppeClick() {
 
 // wenn in Artenliste.html [name='ArtListItem'] geklickt wird
 function handleAlArtListItemClick() {
-	event.preventDefault();
 	var ArtBezeichnung = $(this).attr("ArtBezeichnung");
 	localStorage.aArtId = $(this).attr("artid");
 	if (localStorage.Status === "neu") {
@@ -3481,14 +3483,16 @@ function handleAglPagehide() {
 function handleAglPageinit() {
 	// Vorsicht: Genauer als body funktioniert hier nicht,
 	// weil die nested List im DOM jedes mal eine eigene Page aufbaut
-	$("body").on("click", "[name='ArtgruppenListItem']", handleAglArtgruppenListItemClick);
+	$("body").on("click", "[name='ArtgruppenListItem']", function(event) {
+		event.preventDefault();
+		handleAglArtgruppenListItemClick;
+	});
 
 	$("#agl_Page").on("click", "#agl_standardgruppe", handleAglAglStandardgruppeClick);
 }
 
 // wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
 function handleAglArtgruppenListItemClick() {
-	event.preventDefault();
 	localStorage.aArtGruppe = $(this).attr("ArtGruppe");
 	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
 	if (window.gruppe_merken) {
@@ -3548,13 +3552,25 @@ function handleBeobEditPageinit() {
 
 	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", handleOeffneBeobListeBeobEditClick);
 
-	$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", handleNeueBeobBeobEditClick);
+	$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function(event) {
+		event.preventDefault();
+		handleNeueBeobBeobEditClick;
+	});
 
-	$("#BeobEditForm").on("click", "[name='aArtGruppe']", handleBeobEditAArtGruppeClick);
+	$("#BeobEditForm").on("click", "[name='aArtGruppe']", function(event) {
+		event.preventDefault();
+		handleBeobEditAArtGruppeClick;
+	});
 
-	$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", handleWaehleFelderBeobEditClick);
+	$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function(event) {
+		event.preventDefault();
+		handleWaehleFelderBeobEditClick;
+	});
 
-	$("#BeobEditForm").on('click', '[name="aArtName"]', handleBeobEditAArtnameClick);
+	$("#BeobEditForm").on('click', '[name="aArtName"]', function(event) {
+		event.preventDefault();
+		handleBeobEditAArtnameClick;
+	});
 
 	$("#BeobEditForm").on("change", ".speichern", handleBeobEditSpeichernChange);
 
@@ -3564,9 +3580,15 @@ function handleBeobEditPageinit() {
 
 	$("#FormAnhängeBE").on("change", ".speichernAnhang", handleBeobEditSpeichernAnhangChange);
 
-	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", handleBeobEditOeffneKarteClick);
+	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function(event) {
+		event.preventDefault();
+		handleBeobEditOeffneKarteClick;
+	});
 
-	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", handleBeobEditVerorteBeobClick);
+	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function(event) {
+		event.preventDefault();
+		window.em.GetGeolocation(localStorage.BeobId, "Beob");
+	});
 
 	$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', handleBeobEditLoescheBeobClick);
 
@@ -3608,7 +3630,6 @@ function handleOeffneBeobListeBeobEditClick() {
 // wenn in BeobEdit.html #NeueBeobBeobEdit geklickt wird
 // neue Beobachtung erfassen
 function handleNeueBeobBeobEditClick() {
-	event.preventDefault();
 	// Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
@@ -3625,7 +3646,6 @@ function handleNeueBeobBeobEditClick() {
 // wenn in BeobEdit.html [name='aArtGruppe'] geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von Artgruppe
 function handleBeobEditAArtGruppeClick() {
-	event.preventDefault();
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	delete localStorage.Status;	// ja kein Status neu
@@ -3642,7 +3662,6 @@ function handleBeobEditAArtGruppeClick() {
 // wenn in BeobEdit.html #waehleFelderBeobEdit geklickt wird
 // sichtbare Felder wählen
 function handleWaehleFelderBeobEditClick() {
-	event.preventDefault();
 	localStorage.AufrufendeSeiteFW = "BeobEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 }
@@ -3650,7 +3669,6 @@ function handleWaehleFelderBeobEditClick() {
 // wenn in BeobEdit.html [name="aArtName"] geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von ArtName
 function handleBeobEditAArtnameClick() {
-	event.preventDefault();
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Von = "BeobEdit";
@@ -3700,15 +3718,8 @@ function handleBeobEditSpeichernAnhangChange() {
 
 // wenn in BeobEdit.html #OeffneKarteBeobEdit geklickt wird
 function handleBeobEditOeffneKarteClick() {
-	event.preventDefault();
 	localStorage.zurueck = "BeobEdit";
 	$.mobile.navigate("Karte.html");
-}
-
-// wenn in BeobEdit.html #verorteBeobBeobEdit geklickt wird
-function handleBeobEditVerorteBeobClick() {
-	event.preventDefault();
-	window.em.GetGeolocation(localStorage.BeobId, "Beob");
 }
 
 // wenn in BeobEdit.html #LoescheBeobBeobEdit geklickt wird
