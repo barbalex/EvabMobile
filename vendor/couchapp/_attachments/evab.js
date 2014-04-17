@@ -533,7 +533,7 @@ window.em.initiiereBeobEdit_3 = function() {
 	window.em.setzeFixeFelderInBeobEdit(window.Beobachtung);
 	window.em.erstelleDynamischeFelderBeobEdit();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert in BeobEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -614,13 +614,13 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 				window.Beobachtung._id = data.id;
 				window.Beobachtung._rev = data.rev;
 				localStorage.BeobId = data.id;
-				GetGeolocation(data.id, "Beobachtung");
+				window.em.GetGeolocation(data.id, "Beobachtung");
 			}
 		});
 		delete localStorage.Status;
 	} else {
 		// Neue Datensätze haben keine Attachments
-		zeigeAttachments(window.Beobachtung, "BE");
+		window.em.zeigeAttachments(window.Beobachtung, "BE");
 	}
 	return HtmlContainer;
 };
@@ -679,7 +679,7 @@ window.em.initiiereBeobliste_2 = function() {
 	}
 	$("#BeoblisteBL").html(ListItemContainer);
 	$("#BeoblisteBL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // löscht Anhänge
@@ -741,7 +741,7 @@ window.em.initiiereUserEdit = function() {
 				// Standardwert setzen
 				$("#JaAber").prop("checked",true).checkboxradio("refresh");
 			}
-			speichereLetzteUrl();
+			window.em.speichereLetzteUrl();
 		},
 		error: function () {
 			console.log('User hat kein User-Dokument');
@@ -754,7 +754,7 @@ window.em.initiiereUserEdit = function() {
 // initiiert Installieren.html
 // kurz, da keine Daten benötigt werden
 window.em.initiiereInstallieren = function() {
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert in hProjektEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -818,7 +818,7 @@ window.em.initiiereProjektEdit_3 = function() {
 	}
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert das Html für das Formular in hProjektEdit.html
@@ -864,7 +864,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 		delete localStorage.Status;
 	} else {
 		// neue Datensätze haben keine Attachments
-		zeigeAttachments(window.hProjekt, "hPE");
+		window.em.zeigeAttachments(window.hProjekt, "hPE");
 	}
 	return HtmlContainer;
 };
@@ -967,7 +967,7 @@ window.em.initiiereFeldEdit_2 = function() {
 	$("#SliderMaximum").val(window.Feld.SliderMaximum);
 
 	window.em.erstelleSelectFeldFolgtNach();	// BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 };
@@ -1006,7 +1006,7 @@ window.em.erstelleSelectFeldFolgtNach_2 = function() {
 			}
 		}
 	}
-	HtmlContainer = generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
+	HtmlContainer = window.em.generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
 	$("#FeldFolgtNachDiv").html(HtmlContainer).trigger("create").trigger("refresh");
 };
 
@@ -1115,7 +1115,7 @@ window.em.initiiereFeldliste_2 = function() {
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 	$("#FeldListeFL").html(ListItemContainer);
 	$("#FeldListeFL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // wird benutzt von hOrtEdit.html, BeobEdit.html und Karte.html
@@ -1420,7 +1420,7 @@ window.em.initiiereProjektliste_2 = function() {
 	}
 	$("#ProjektlistehPL").html(ListItemContainer);
 	$("#ProjektlistehPL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert in hRaumEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1486,7 +1486,7 @@ window.em.initiiereRaumEdit_3 = function() {
 	}
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert das Html für das Formular in hRaumEdit.html
@@ -1531,7 +1531,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 		delete localStorage.Status;
 	} else {
 		// Attachments gibt's bei neuen Datensätzen nicht
-		zeigeAttachments(window.hRaum, "hRE");
+		window.em.zeigeAttachments(window.hRaum, "hRE");
 	}
 	return HtmlContainer;
 };
@@ -1581,7 +1581,7 @@ window.em.initiiereRaumListe_2 = function() {
 	}
 	$("#RaumlistehRL").html(ListItemContainer);
 	$("#RaumlistehRL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1657,7 +1657,7 @@ window.em.initiiereOrtEdit_3 = function() {
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 
 };
 
@@ -1698,14 +1698,14 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 				window.hOrt._id = data.id;
 				window.hOrt._rev = data.rev;
 				localStorage.OrtId = data.id;
-				GetGeolocation(data.id, "hOrt");
+				window.em.GetGeolocation(data.id, "hOrt");
 			}
 		});
 		// Status zurücksetzen - es soll nur ein mal verortet werden
 		delete localStorage.Status;
 	} else {
 		// Attachments gibt es bei neuen Orten nicht
-		zeigeAttachments(window.hOrt, "hOE");
+		window.em.zeigeAttachments(window.hOrt, "hOE");
 	}
 	return HtmlContainer;
 };
@@ -1755,7 +1755,7 @@ window.em.initiiereOrtListe_2 = function() {
 	}
 	$("#OrtlistehOL").html(ListItemContainer);
 	$("#OrtlistehOL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
@@ -1821,7 +1821,7 @@ window.em.initiiereZeitEdit_3 = function() {
 	}
 	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // erstellt die Liste der Zeiten in Formular hZeitListe.html
@@ -1870,7 +1870,7 @@ window.em.initiiereZeitListe_2 = function() {
 	}
 	$("#ZeitlistehZL").html(ListItemContainer);
 	$("#ZeitlistehZL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert das Html für das Formular in hZeitEdit.html
@@ -1914,7 +1914,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 		delete localStorage.Status;
 	} else {
 		// Neue Datensätze haben keine Attachments
-		zeigeAttachments(window.hZeit, "hZE");
+		window.em.zeigeAttachments(window.hZeit, "hZE");
 	}
 	return HtmlContainer;
 };
@@ -1999,7 +1999,7 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 // generiert das Html für Formular in hArtEdit.html
@@ -2045,7 +2045,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		delete localStorage.Status;
 	} else {
 		// Neue Datensätze haben keine Anhänge
-		zeigeAttachments(window.hArt, "hAE");
+		window.em.zeigeAttachments(window.hArt, "hAE");
 	}
 	return HtmlContainer;
 };
@@ -2102,7 +2102,7 @@ window.em.initiierehBeobListe_2 = function() {
 	}
 	$("#ArtlistehAL").html(ListItemContainer);
 	$("#ArtlistehAL").listview("refresh");
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 };
 
 
@@ -2122,16 +2122,16 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 		break;
 	case "toggleswitch":
 		console.log("generiere Html für toggleswitch für Feld " + FeldName + " mit Inhalt " + FeldWert);
-		HtmlContainer = generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+		HtmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
 		break;
 	case "checkbox":
-		HtmlContainer = generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+		HtmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
 		break;
 	case "selectmenu":
-		HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect");
+		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect");
 		break;
 	case "multipleselect":
-		HtmlContainer = generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect");
+		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect");
 		break;
 	case "slider":
 		SliderMinimum = Feld.SliderMinimum || 0;
@@ -2139,7 +2139,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 		HtmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
 		break;
 	case "radio":
-		HtmlContainer = generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+		HtmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
 		break;
 	case null:
 		// Abfangen, wenn das Formularelement nicht gewählt wurde
@@ -2211,7 +2211,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 
 // generiert den html-Inhalt für Toggleswitch
 // wird von erstellehBeobEdit aufgerufen
-function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
+window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'><label for='";
 	HtmlContainer += FeldName;
@@ -2225,9 +2225,9 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldWert;
 	HtmlContainer += "' class='speichern'><option value='nein'>nein</option><option value='ja'>ja</option></select></div>";
 	return HtmlContainer;
-}
+};
 
-/*function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
+/*window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
@@ -2241,23 +2241,23 @@ function generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert) {
 	HtmlContainer += FeldWert;
 	HtmlContainer += "' class='speichern'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
 	return HtmlContainer;
-}*/
+};*/
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehBeobEdit aufgerufen
-function generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
-	HtmlContainer += generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
 	HtmlContainer += "\n\t</fieldset>\n</div>";
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Optionen von Checkbox
 // wird von generiereHtmlFuerCheckbox aufgerufen
-function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
 	for (i in Optionen) {
@@ -2282,23 +2282,23 @@ function generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen) {
 		}
 	}
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Radio
 // wird von erstellehBeobEdit aufgerufen
-function generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen) {
+window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
-	HtmlContainer += generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
+	HtmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
 	HtmlContainer += "\n\t</fieldset>\n</div>";
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Optionen von Radio
 // wird von generiereHtmlFuerRadio aufgerufen
-function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "";
 	for (i in Optionen) {
@@ -2322,11 +2322,11 @@ function generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen) {
 		}
 	}
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehBeobEdit aufgerufen
-function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
+window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
 	var HtmlContainer;
 	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
@@ -2344,17 +2344,17 @@ function generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optio
 	}
 	HtmlContainer += " class='speichern'>";
 	if (MultipleSingleSelect === "MultipleSelect") {
-		HtmlContainer += generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen);
+		HtmlContainer += window.em.generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen);
 	} else {
-		HtmlContainer += generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
+		HtmlContainer += window.em.generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
 	}
 	HtmlContainer += "\n\t</select>\n</div>";
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Optionen von Selectmenu
 // wird von generiereHtmlFuerSelectmenu aufgerufen
-function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerSelectmenuOptionen = function(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
@@ -2373,12 +2373,12 @@ function generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen) {
 		}
 	}
 	return HtmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Optionen von MultipleSelect
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 // FeldWert ist ein Array
-function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert, Optionen) {
 	var i, HtmlContainer, Optionn, ListItem;
 	HtmlContainer = "\n\t\t<option value=''></option>";
 	for (i in Optionen) {
@@ -2397,7 +2397,7 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 		}
 	}
 	return HtmlContainer;
-}
+};
 
 (function ($) {
 	// friendly helper http://tinyurl.com/6aow6yn
@@ -2464,18 +2464,10 @@ function generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen) {
 	};
 })(jQuery);
 
-// Codeausführung für Anzahl Millisekunden unterbrechen
-// Quelle: //sean.co.uk/a/webdesign/javascriptdelay.shtm
-// grauenhafte Methode - blockiert die CPU!!
-function warte(ms) {
-	ms += new Date().getTime();
-	while (new Date() < ms) {}
-}
-
 // verorted mit Hilfe aller Methoden
 // wird benutzt von BeobEdit.html und hOrtEdit.html
 // erwartet die docId, um am Ende der Verortung die neuen Koordinaten zu speichern
-function GetGeolocation(docId, OrtOderBeob) {
+window.em.GetGeolocation = function(docId, OrtOderBeob) {
 	// benötigte Variabeln setzen
 	localStorage.docId = docId;
 	// Zweck: Genau solange animieren, wie verortet wird
@@ -2483,7 +2475,7 @@ function GetGeolocation(docId, OrtOderBeob) {
 	// übergebene Herkunft (Ort oder Beob) für die listeners bereitstellen
 	localStorage.OrtOderBeob = OrtOderBeob;
 	// dem Benutzer zeigen, dass verortet wird
-	NavbarVerortungAnimieren();
+	window.em.NavbarVerortungAnimieren();
 	// Koordinaten zurücksetzen
 	delete localStorage.oXKoord;
 	delete localStorage.oYKoord;
@@ -2494,26 +2486,26 @@ function GetGeolocation(docId, OrtOderBeob) {
 	delete localStorage.oHöheGenauigkeit;
 	// Mit der Verortung beginnen
 	watchID = null;
-	watchID = navigator.geolocation.watchPosition(onGeolocationSuccess, onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
+	watchID = navigator.geolocation.watchPosition(window.em.onGeolocationSuccess, window.em.onGeolocationError, { frequency: 3000, enableHighAccuracy: true });
 	// nach spätestens 20 Sekunden aufhören
-	window.stop = setTimeout("stopGeolocation()", 20000);
+	window.stop = setTimeout("window.em.stopGeolocation()", 20000);
 	return watchID;
-}
+};
 
 // solange verortet wird, 
 // wird die Verortung in der Navbar jede Sekunde ein- und ausgeblendet
-function NavbarVerortungAnimieren() {
+window.em.NavbarVerortungAnimieren = function() {
 	if (localStorage.NavbarVerortungAnimieren && localStorage.NavbarVerortungAnimieren === "true") {
 		$(".neu").removeClass("ui-btn-active");
 		$(".verorten").addClass("ui-btn-active").fadeToggle("slow");
-		setTimeout("NavbarVerortungAnimieren()", 1000);
+		setTimeout("window.em.NavbarVerortungAnimieren()", 1000);
 	} else {
 		$(".verorten").removeClass("ui-btn-active").fadeIn("slow");
 		//$(".neu").addClass("ui-btn-active");
 	}
-}
+};
 
-function GeolocationAuslesen(position) {
+window.em.GeolocationAuslesen = function(position) {
 	localStorage.oLagegenauigkeit = Math.floor(position.coords.accuracy);
 	localStorage.oLongitudeDecDeg = position.coords.longitude;
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
@@ -2531,30 +2523,30 @@ function GeolocationAuslesen(position) {
 		localStorage.oHöheGenauigkeit = position.coords.altitudeAccuracy;
 	}
 	window.em.speichereKoordinaten(localStorage.docId, localStorage.OrtOderBeob);
-}
+};
 
 // Position ermitteln war erfolgreich
-function onGeolocationSuccess(position) {
+window.em.onGeolocationSuccess = function(position) {
 	// nur erste Position akzeptieren oder solche, die genauer sind als vorige
 	if (!localStorage.oLagegenauigkeit || position.coords.accuracy < localStorage.oLagegenauigkeit) {
 		if (position.coords.accuracy < 100) {
-			GeolocationAuslesen(position);
+			window.em.GeolocationAuslesen(position);
 			if (position.coords.accuracy <= 5) {
-				stopGeolocation();
+				window.em.stopGeolocation();
 			}
 		}
 	}
-}
+};
 
 // Position ermitteln war nicht erfolgreich
 // onError Callback receives a PositionError object
-function onGeolocationError(error) {
+window.em.onGeolocationError = function(error) {
 	window.em.melde("Keine Position erhalten\n" + error.message);
-	stopGeolocation();
-}
+	window.em.stopGeolocation();
+};
 
 // Beendet Ermittlung der Position
-function stopGeolocation() {
+window.em.stopGeolocation = function() {
 	// Positionssuche beenden
 	// wenn keine watchID mehr, wurde sie schon beendet
 	// stop timeout stoppen
@@ -2587,15 +2579,15 @@ function stopGeolocation() {
 	// Variablen aufräumen
 	delete localStorage.docId;
 	delete localStorage.OrtOderBeob;
-}
+};
 
 // damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
 // host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
-function speichereLetzteUrl() {
+window.em.speichereLetzteUrl = function() {
 	localStorage.LetzteUrl = window.location.pathname + window.location.search;
-}
+};
 
-function holeAutor() {
+window.em.holeAutor = function() {
 	// aAutor holen
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
@@ -2606,33 +2598,33 @@ function holeAutor() {
 			}
 		}
 	});
-}
+};
 
 // speichert Anhänge
 // setzt ein passendes Formular mit den feldern _rev und _attachments voraus
 // nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
 // wird benutzt von allen Formularen mit Anhängen
-function speichereAnhänge(id, Objekt, Page) {
+window.em.speichereAnhänge = function(id, Objekt, Page) {
 	// prüfen, ob der Datensatz als Objekt übergeben wurde
 	if (Objekt) {
 		// das Objekt verwenden
-		speichereAnhänge_2(id, Objekt, Page);
+		window.em.speichereAnhänge_2(id, Objekt, Page);
 	} else {
 		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function (data) {
 				window[Objekt.Typ] = data;
-				speichereAnhänge_2(id, data, Page);
+				window.em.speichereAnhänge_2(id, data, Page);
 			},
 			error: function () {
 				window.em.melde("Fehler: Anhang nicht gespeichert");
 			}
 		});
 	}
-}
+};
 
-function speichereAnhänge_2(id, Objekt, Page) {
+window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
 	$("#_rev" + Page).val(window[Objekt.Typ]._rev);
 	$("#FormAnhänge" + Page).ajaxSubmit({
 		url: "/evab/" + id,
@@ -2642,7 +2634,7 @@ function speichereAnhänge_2(id, Objekt, Page) {
 				success: function (data2) {
 					window[Objekt.Typ] = data2;
 					// show attachments in form
-					zeigeAttachments(data2, Page);
+					window.em.zeigeAttachments(data2, Page);
 				},
 				error: function () {
 					window.em.melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
@@ -2655,7 +2647,7 @@ function speichereAnhänge_2(id, Objekt, Page) {
 			$db.openDoc(id, {
 				success: function (data3) {
 					window[Objekt.Typ] = data3;
-					zeigeAttachments(data3, Page);
+					window.em.zeigeAttachments(data3, Page);
 				},
 				error: function () {
 					window.em.melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
@@ -2663,16 +2655,17 @@ function speichereAnhänge_2(id, Objekt, Page) {
 			});
 		}
 	});
-}
+};
 
 // zeigt Anhänge im Formular an
 // setzt ein passendes Formular mit dem Feld _attachments + Page voraus
 // und eine div namens Anhänge + Page, in der die Anhänge angezeigt werden
 // wird benutzt von allen (h)Beobachtungs-Edit-Formularen
 // erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
-function zeigeAttachments(doc, Page) {
-	var HtmlContainer, url, url_zumLöschen;
-	HtmlContainer = "";
+window.em.zeigeAttachments = function(doc, Page) {
+	var HtmlContainer = "",
+		url,
+		url_zumLöschen;
 	$("#_attachments" + Page).val("");
 	if (doc._attachments) {
 		$.each(doc._attachments, function (Dateiname, val) {
@@ -2690,7 +2683,7 @@ function zeigeAttachments(doc, Page) {
 	$("#Anhänge" + Page).html(HtmlContainer).trigger("create");
 	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
-}
+};
 
 // initiiert FelderWaehlen.html
 // generiert dynamisch die Felder im Checkbox Felder
@@ -2809,7 +2802,7 @@ function initiiereFelderWaehlen_2() {
 	$("#FeldlisteFW").html(HtmlContainer).trigger("create");
 	$("input[name='Felder']").checkboxradio();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
-	speichereLetzteUrl();
+	window.em.speichereLetzteUrl();
 }
 
 // kreiert ein neues Feld
@@ -3047,7 +3040,7 @@ function stelleUserDatenBereit() {
 	$db.view('evab/User?key="' + localStorage.Email + '"', {
 		success: function (data) {
 			// weitere anderswo benutzte Variabeln verfügbar machen
-			holeAutor();
+			window.em.holeAutor();
 			// kontrollieren, ob User existiert
 			// wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
 			if (data.rows.length === 0) {
@@ -3190,7 +3183,7 @@ function leereStorageOrtEdit(ohneId) {
 	delete window.ArtenVonZeit;
 	// allfällige Lokalisierung abbrechen
 	if (typeof watchID !== "undefined") {
-		stopGeolocation();
+		window.em.stopGeolocation();
 	}
 }
 
@@ -3248,7 +3241,7 @@ function leereStorageBeobEdit(ohneId) {
 	delete localStorage.aArtGruppe;
 	// allfällige Lokalisierung abbrechen
 	if (typeof watchID !== "undefined") {
-		stopGeolocation();
+		window.em.stopGeolocation();
 	}
 }
 
@@ -3518,7 +3511,7 @@ function handleBeobEditPageshow() {
 // wenn BeobEdit.html verschwindet
 function handleBeobEditPagehide() {
 	if (typeof watchID !== "undefined") {
-		stopGeolocation();
+		window.em.stopGeolocation();
 	}
 }
 
@@ -3684,7 +3677,7 @@ function handleBeobEditUiSliderInputMouseup() {
 function handleBeobEditSpeichernAnhangChange() {
 	var _attachments = $("#_attachmentsBE").val();
 	if (_attachments && _attachments.length !== 0) {
-		speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
+		window.em.speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
 	}
 }
 
@@ -3698,7 +3691,7 @@ function handleBeobEditOeffneKarteClick() {
 // wenn in BeobEdit.html #verorteBeobBeobEdit geklickt wird
 function handleBeobEditVerorteBeobClick() {
 	event.preventDefault();
-	GetGeolocation(localStorage.BeobId, "Beob");
+	window.em.GetGeolocation(localStorage.BeobId, "Beob");
 }
 
 // wenn in BeobEdit.html #LoescheBeobBeobEdit geklickt wird
@@ -4729,7 +4722,7 @@ function handleHOrtEditPageshow() {
 // wenn hOrtEdit.html verschwindet
 function handleHOrtEditPagehide() {
 	if (typeof watchID !== "undefined") {
-		stopGeolocation();
+		window.em.stopGeolocation();
 	}
 }
 
@@ -4879,7 +4872,7 @@ function handleHOrtEditSpeichernChange() {
 function handleHOrtEditSpeichernAnhangChange() {
 	var _attachments = $("#_attachmentshOE").val();
 	if (_attachments && _attachments.length !== 0) {
-		speichereAnhänge(localStorage.OrtId, window.hOrt, "hOE");
+		window.em.speichereAnhänge(localStorage.OrtId, window.hOrt, "hOE");
 	}
 }
 
@@ -4942,7 +4935,7 @@ function handleHOrtEditKarteOeffnenClick() {
 // wenn in hOrtEdit.html #VerortungOrtEdit geklickt wird
 function handleHOrtEditVerortungClick() {
 	event.preventDefault();
-	GetGeolocation(localStorage.OrtId, "Ort");
+	window.em.GetGeolocation(localStorage.OrtId, "Ort");
 }
 
 // wenn in hOrtEdit.html #OrtEditContent nach links gewischt wird
@@ -5307,7 +5300,7 @@ function handleHProjektEditOeffneRaumListeClick() {
 function handleHProjektEditSpeichernAnhangChange() {
 	var _attachments = $("#_attachmentshPE").val();
 	if (_attachments && _attachments.length > 0) {
-		speichereAnhänge(localStorage.ProjektId, window.hProjekt, "hPE");
+		window.em.speichereAnhänge(localStorage.ProjektId, window.hProjekt, "hPE");
 	}
 }
 
@@ -5963,7 +5956,7 @@ function handleHArtEditOeffneProjekthArtEditClick() {
 function handleHArtEditSpeichernAnhangChange() {
 	var _attachments = $("#_attachmentshAE").val();
 	if (_attachments && _attachments.length !== 0) {
-		speichereAnhänge(localStorage.hBeobId, window.hArt, "hAE");
+		window.em.speichereAnhänge(localStorage.hBeobId, window.hArt, "hAE");
 	}
 }
 
