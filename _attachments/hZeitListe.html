@@ -109,25 +109,25 @@
 				// Link zu Raum in Navbar und Titelleiste
 				$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
 					event.preventDefault();
-					leereStorageZeitListe();
+					window.em.leereStorageZeitListe();
 					$.mobile.navigate("hOrtEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
 					event.preventDefault();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
 					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
 					event.preventDefault();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
+					window.em.leereStorageRaumEdit();
+					window.em.leereStorageRaumListe();
 					$.mobile.navigate("hProjektEdit.html");
 				});
 
@@ -157,13 +157,13 @@
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_einfacher_modus', function() {
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
-					leereStorageProjektEdit();
-					leereStorageOrtListe();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
+					window.em.leereStorageRaumEdit();
+					window.em.leereStorageRaumListe();
+					window.em.leereStorageProjektEdit();
+					window.em.leereStorageOrtListe();
 					$.mobile.navigate("BeobListe.html");
 				});
 

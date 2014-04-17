@@ -137,7 +137,7 @@
 
 				$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
 					event.preventDefault();
-					leereStorageRaumEdit();
+					window.em.leereStorageRaumEdit();
 					$.mobile.navigate("hRaumListe.html");
 				});
 
@@ -217,7 +217,7 @@
 				// Link zu Projekt in Navbar und Titelleiste
 				$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 					event.preventDefault();
-					leereStorageRaumListe("mitLatLngListe");
+					window.em.leereStorageRaumListe("mitLatLngListe");
 					$.mobile.navigate("hProjektEdit.html");
 				});
 
@@ -346,10 +346,10 @@
 								}
 							} else {
 								// Keine Raumliste mehr. Storage löschen
-								leereStorageRaumListe("mitLatLngListe");
+								window.em.leereStorageRaumListe("mitLatLngListe");
 							}
 							// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereStorageRaumEdit("mitLatLngListe");
+							window.em.leereStorageRaumEdit("mitLatLngListe");
 							$.mobile.navigate('hRaumListe.html');
 						},
 						error: function () {
@@ -406,7 +406,7 @@
 					if (validierehRaumEdit()) {
 						if (Feldname === "rName") {
 							// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-							leereStorageRaumListe("mitLatLngListe");
+							window.em.leereStorageRaumListe("mitLatLngListe");
 						}
 						if (Feldwert) {
 							if (window.em.myTypeOf(Feldwert) === "float") {
@@ -447,9 +447,9 @@
 				}
 
 				$('#MenuRaumEdit').on('click', '.menu_einfacher_modus', function() {
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
-					leereStorageProjektEdit();
+					window.em.leereStorageRaumEdit();
+					window.em.leereStorageRaumListe();
+					window.em.leereStorageProjektEdit();
 					$.mobile.navigate("BeobListe.html");
 				});
 
@@ -515,7 +515,7 @@
 							case "nächster":
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].doc._id;
-									leereStorageRaumEdit("mitLatLngListe", "ohneId");
+									window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									window.em.initiiereRaumEdit();
 									return;
 								} else {
@@ -526,11 +526,11 @@
 							case "voriger":
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].doc._id;
-									leereStorageRaumEdit("mitLatLngListe", "ohneId");
+									window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
 									window.em.initiiereRaumEdit();
 									return;
 								} else {
-									leereStorageRaumEdit();
+									window.em.leereStorageRaumEdit();
 									$.mobile.navigate("hRaumListe.html");
 									return;
 								}

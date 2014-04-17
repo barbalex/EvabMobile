@@ -136,14 +136,14 @@
 
 				$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
 					event.preventDefault();
-					leereStorageZeitEdit();
+					window.em.leereStorageZeitEdit();
 					$.mobile.navigate("hZeitListe.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function (event) {
 					event.preventDefault();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
+					window.em.leereStorageZeitEdit();
+					window.em.leereStorageZeitListe();
 					$.mobile.navigate("hOrtEdit.html");
 				});
 
@@ -155,21 +155,21 @@
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
 					event.preventDefault();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
+					window.em.leereStorageZeitEdit();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
 					$.mobile.navigate("hRaumEdit.html");
 				});
 
 				$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
 					event.preventDefault();
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
+					window.em.leereStorageZeitEdit();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
+					window.em.leereStorageRaumEdit();
+					window.em.leereStorageRaumListe();
 					$.mobile.navigate("hProjektEdit.html");
 				});
 
@@ -205,7 +205,7 @@
 				$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
 					event.preventDefault();
 					// Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
-					leereStorageZeitListe();
+					window.em.leereStorageZeitListe();
 					window.em.erstelleNeueZeit(); 
 				});
 
@@ -332,9 +332,9 @@
 								}
 							} else {
 								// Keine ZeitListe mehr. Storage löschen
-								leereStorageZeitListe();
+								window.em.leereStorageZeitListe();
 							}
-							leereStorageZeitEdit();
+							window.em.leereStorageZeitEdit();
 							$.mobile.navigate('hZeitListe.html');
 						},
 						error: function () {
@@ -402,7 +402,7 @@
 					if (validierehZeitEdit()) {
 						if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
 							// Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-							leereStorageZeitListe();
+							window.em.leereStorageZeitListe();
 						}
 						// Werte aus dem Formular aktualisieren
 						if (Feldwert) {
@@ -442,13 +442,13 @@
 				}
 
 				$('#MenuZeitEdit').on('click', '.menu_einfacher_modus', function() {
-					leereStorageZeitEdit();
-					leereStorageZeitListe();
-					leereStorageOrtEdit();
-					leereStorageOrtListe();
-					leereStorageRaumEdit();
-					leereStorageRaumListe();
-					leereStorageProjektEdit();
+					window.em.leereStorageZeitEdit();
+					window.em.leereStorageZeitListe();
+					window.em.leereStorageOrtEdit();
+					window.em.leereStorageOrtListe();
+					window.em.leereStorageRaumEdit();
+					window.em.leereStorageRaumListe();
+					window.em.leereStorageProjektEdit();
 					$.mobile.navigate("BeobListe.html");
 				});
 
@@ -510,7 +510,7 @@
 							case "nächste":
 								if (parseInt(i) < AnzZeit) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].doc._id;
-									leereStorageZeitEdit("ohneId");
+									window.em.leereStorageZeitEdit("ohneId");
 									window.em.initiiereZeitEdit();
 									return;
 								} else {
@@ -521,11 +521,11 @@
 							case "vorige":
 								if (parseInt(i) > 0) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].doc._id;
-									leereStorageZeitEdit("ohneId");
+									window.em.leereStorageZeitEdit("ohneId");
 									window.em.initiiereZeitEdit();
 									return;
 								} else {
-									leereStorageZeitEdit();
+									window.em.leereStorageZeitEdit();
 									$.mobile.navigate("hZeitListe.html");
 									return;
 								}

@@ -110,7 +110,7 @@
 				// Link zu Projekt in Navbar und Titelleiste
 				$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 					event.preventDefault();
-					leereStorageRaumListe();
+					window.em.leereStorageRaumListe();
 					$.mobile.navigate("hProjektEdit.html");
 				});
 
@@ -136,7 +136,7 @@
 				});
 
 				$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
-					leereStorageRaumListe();
+					window.em.leereStorageRaumListe();
 					$.mobile.navigate("hProjektListe.html");
 				});
 
@@ -148,8 +148,8 @@
 				});
 
 				$('#MenuRaumListe').on('click', '.menu_einfacher_modus', function() {
-					leereStorageRaumListe();
-					leereStorageProjektEdit();
+					window.em.leereStorageRaumListe();
+					window.em.leereStorageProjektEdit();
 					$.mobile.navigate("BeobListe.html");
 				});
 
