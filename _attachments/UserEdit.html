@@ -134,7 +134,7 @@
 								$db.saveDoc(doc, {
 									success: function () {
 										// Feldliste soll neu aufgebaut werden
-										leereStorageFeldListe();
+										window.em.leereStorageFeldListe();
 										localStorage.Autor = $("#Autor").val();
 									},
 									error: function () {
@@ -187,7 +187,7 @@
 					} else {
 						// es gibt noch keine User-Doc
 						// vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
-						speichereUserInEvab();
+						window.em.speichereUserInEvab();
 					}
 				}
 			</script>

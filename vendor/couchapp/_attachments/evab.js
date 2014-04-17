@@ -199,15 +199,15 @@ window.em.melde = function(Meldung) {
 
 // wird in FeldEdit.html verwendet
 window.em.geheZurueckFE = function() {
-	leereStorageFeldEdit();
+	window.em.leereStorageFeldEdit();
 	if (localStorage.zurueck && localStorage.zurueck !== "FelderWaehlen.html") {
 		// via die Feldliste zurück
-		leereStorageFeldEdit();
+		window.em.leereStorageFeldEdit();
 		$.mobile.navigate("FeldListe.html");
 	} else if (localStorage.zurueck && localStorage.zurueck === "FelderWaehlen.html") {
 		// direkt zurück, Feldliste auslassen
-		leereStorageFeldEdit();
-		leereStorageFeldListe();
+		window.em.leereStorageFeldEdit();
+		window.em.leereStorageFeldListe();
 		$.mobile.navigate(localStorage.zurueck);
 		delete localStorage.zurueck;
 	} else {
@@ -263,7 +263,7 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 				window.hArt = doc;
 				// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-				leereStoragehBeobListe();
+				window.em.leereStoragehBeobListe();
 				$.mobile.navigate("hArtEdit.html");
 			} else {
 				// Variabeln verfügbar machen
@@ -271,7 +271,7 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				// damit BeobEdit.html die Beob nicht aus der DB holen muss
 				window.Beobachtung = doc;
 				// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-				leereStorageBeobListe();
+				window.em.leereStorageBeobListe();
 				$.mobile.navigate("BeobEdit.html");
 			}
 		},
@@ -305,13 +305,13 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						// Variabeln verfügbar machen
 						localStorage.BeobId = data.id;
 						// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						leereStorageBeobListe();
+						window.em.leereStorageBeobListe();
 						$.mobile.navigate("BeobEdit.html");
 					} else {
 						// Variabeln verfügbar machen
 						localStorage.hBeobId = data.id;
 						// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						leereStoragehBeobListe();
+						window.em.leereStoragehBeobListe();
 						$.mobile.navigate("hArtEdit.html");
 					}
 				},
@@ -373,7 +373,7 @@ window.em.erstelleNeuenOrt = function() {
 	// Variabeln verfügbar machen
 	delete localStorage.OrtId;
 	// Globale Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStorageOrtListe("mitLatLngListe");
+	window.em.leereStorageOrtListe("mitLatLngListe");
 	localStorage.Status = "neu";	// das löst bei initiiereOrtEdit die Verortung aus
 	// Vorsicht: Von hOrtEdit.html aus samepage transition!
 	if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
@@ -402,7 +402,7 @@ window.em.erstelleNeuenRaum = function() {
 	delete localStorage.RaumId;
 	localStorage.Status = "neu";
 	// Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStorageRaumListe("mitLatLngListe");
+	window.em.leereStorageRaumListe("mitLatLngListe");
 	// Vorsicht: Von hRaumEdit.html aus same page transition!
 	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
@@ -434,7 +434,7 @@ window.em.erstelleNeuesProjekt = function() {
 	delete localStorage.ProjektId;
 	localStorage.Status = "neu";
 	// Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStorageProjektListe("mitLatLngListe");
+	window.em.leereStorageProjektListe("mitLatLngListe");
 	// Vorsicht: Von hProjektEdit.html aus same page transition!
 	if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
@@ -2832,7 +2832,7 @@ window.em.neuesFeld = function() {
 			NeuesFeld._rev = data.rev;
 			window.Feld = NeuesFeld;
 			// Feldliste soll neu aufgebaut werden
-			leereStorageFeldListe();
+			window.em.leereStorageFeldListe();
 			$(":mobile-pagecontainer").pagecontainer("change", "FeldEdit.html", { allowSamePageTransition : true });
 		},
 		error: function () {
@@ -3085,31 +3085,31 @@ window.em.leereAlleVariabeln = function(ohneClear) {
 		localStorage.clear();
 	}
 	delete localStorage.Autor;
-	leereStorageProjektListe("mitLatLngListe");
-	leereStorageProjektEdit("mitLatLngListe");
-	leereStorageRaumListe("mitLatLngListe");
-	leereStorageRaumEdit("mitLatLngListe");
-	leereStorageOrtListe("mitLatLngListe");
-	leereStorageOrtEdit();
-	leereStorageZeitListe();
-	leereStorageZeitEdit();
-	leereStoragehBeobListe();
-	leereStoragehBeobEdit();
-	leereStorageBeobListe();
-	leereStorageBeobEdit();
-	leereStorageFeldListe();
-	leereStorageFeldEdit();
+	window.em.leereStorageProjektListe("mitLatLngListe");
+	window.em.leereStorageProjektEdit("mitLatLngListe");
+	window.em.leereStorageRaumListe("mitLatLngListe");
+	window.em.leereStorageRaumEdit("mitLatLngListe");
+	window.em.leereStorageOrtListe("mitLatLngListe");
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStorageBeobListe();
+	window.em.leereStorageBeobEdit();
+	window.em.leereStorageFeldListe();
+	window.em.leereStorageFeldEdit();
 };
 
-function leereStorageProjektListe(mitLatLngListe) {
+window.em.leereStorageProjektListe = function(mitLatLngListe) {
 	delete window.Projektliste;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjektliste;
 	}
-}
+};
 
 // ohneId wird beim paginaten benutzt, da die ID übermittelt werden muss
-function leereStorageProjektEdit(mitLatLngListe, ohneId) {
+window.em.leereStorageProjektEdit = function(mitLatLngListe, ohneId) {
 	if (!ohneId) {
 		delete localStorage.ProjektId;
 	}
@@ -3128,17 +3128,17 @@ function leereStorageProjektEdit(mitLatLngListe, ohneId) {
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
 	delete window.ArtenVonZeit;
-}
+};
 
-function leereStorageRaumListe(mitLatLngListe) {
+window.em.leereStorageRaumListe = function(mitLatLngListe) {
 	delete window.RaumListe;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngProjekt;
 	}
 	delete window.RaeumeVonProjekt;
-}
+};
 
-function leereStorageRaumEdit(mitLatLngListe, ohneId) {
+window.em.leereStorageRaumEdit = function(mitLatLngListe, ohneId) {
 	if (!ohneId) {
 		delete localStorage.RaumId;
 	}
@@ -3156,18 +3156,18 @@ function leereStorageRaumEdit(mitLatLngListe, ohneId) {
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
 	delete window.ArtenVonZeit;
-}
+};
 
-function leereStorageOrtListe(mitLatLngListe) {
+window.em.leereStorageOrtListe = function(mitLatLngListe) {
 	delete window.OrtListe;
 	if (mitLatLngListe) {
 		delete window.hOrteLatLngRaum;
 	}
 	delete window.OrteVonProjekt;
 	delete window.OrteVonRaum;
-}
+};
 
-function leereStorageOrtEdit(ohneId) {
+window.em.leereStorageOrtEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.OrtId;
 	}
@@ -3192,16 +3192,16 @@ function leereStorageOrtEdit(ohneId) {
 	if (typeof watchID !== "undefined") {
 		window.em.stopGeolocation();
 	}
-}
+};
 
-function leereStorageZeitListe() {
+window.em.leereStorageZeitListe = function() {
 	delete window.ZeitListe;
 	delete window.ZeitenVonProjekt;
 	delete window.ZeitenVonRaum;
 	delete window.ZeitenVonOrt;
-}
+};
 
-function leereStorageZeitEdit(ohneId) {
+window.em.leereStorageZeitEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.ZeitId;
 	}
@@ -3211,29 +3211,29 @@ function leereStorageZeitEdit(ohneId) {
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
 	delete window.ArtenVonZeit;
-}
+};
 
-function leereStoragehBeobListe() {
+window.em.leereStoragehBeobListe = function() {
 	delete window.hBeobListe;
 	delete window.ArtenVonProjekt;
 	delete window.ArtenVonRaum;
 	delete window.ArtenVonOrt;
 	delete window.ArtenVonZeit;
-}
+};
 
-function leereStoragehBeobEdit(ohneId) {
+window.em.leereStoragehBeobEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.hBeobId;
 	}
 	delete window.hArt;
-}
+};
 
-function leereStorageBeobListe() {
+window.em.leereStorageBeobListe = function() {
 	delete window.BeobListe;
 	delete window.BeobListeLatLng;
-}
+};
 
-function leereStorageBeobEdit(ohneId) {
+window.em.leereStorageBeobEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.BeobId;
 	}
@@ -3250,9 +3250,9 @@ function leereStorageBeobEdit(ohneId) {
 	if (typeof watchID !== "undefined") {
 		window.em.stopGeolocation();
 	}
-}
+};
 
-function leereStorageFeldListe() {
+window.em.leereStorageFeldListe = function() {
 	delete window.Feldliste;
 	delete window.FeldlisteBeobEdit;
 	delete window.FeldlistehBeobEdit;
@@ -3260,22 +3260,22 @@ function leereStorageFeldListe() {
 	delete window.FeldlisteOrtEdit;
 	delete window.FeldlisteRaumEdit;
 	delete window.FeldlisteProjekt;
-}
+};
 
-function leereStorageFeldEdit(ohneId) {
+window.em.leereStorageFeldEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.FeldId;
 	}
 	delete window.Feld;
-}
+};
 
 // setzt alle Felder im Modus Hierarchisch sichtbar
 // Erwartet die Email
 // Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
 // wird verwendet in: Signup.html, UserEdit.html
-function erstelleSichtbareFelder() {
-	var viewname, Username;
-	Username = localStorage.Email;
+window.em.erstelleSichtbareFelder = function() {
+	var viewname,
+		Username = localStorage.Email;
 	$db = $.couch.db("evab");
 	viewname = 'evab/FeldListeFeldName?include_docs=true';
 	$db.view(viewname, {
@@ -3298,12 +3298,12 @@ function erstelleSichtbareFelder() {
 			}
 		}
 	});
-}
+};
 
 // Schreibt die Informationen des users in ein doc vom Typ User
 // erstellt die sichtbaren Felder
 // wird benutzt von: Signup.html, UserEdit.html
-function speichereUserInEvab() {
+window.em.speichereUserInEvab = function() {
 	var doc;
 	doc = {};
 	doc._id = $('input[name=Email]').val();
@@ -3328,17 +3328,17 @@ function speichereUserInEvab() {
 					$db.saveDoc(Feld, {
 						success: function () {
 							// Felder sictbar schalten
-							erstelleSichtbareFelder();
+							window.em.erstelleSichtbareFelder();
 							$.mobile.navigate("BeobListe.html");
 						},
 						error: function () {
-							erstelleSichtbareFelder();
+							window.em.erstelleSichtbareFelder();
 							window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
 						}
 					});
 				},
 				error: function () {
-					erstelleSichtbareFelder();
+					window.em.erstelleSichtbareFelder();
 					window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
 				}
 			});
@@ -3347,26 +3347,26 @@ function speichereUserInEvab() {
 			window.em.melde("Oh je, Ihr User konnte nicht erstellt werden, der Name ist jetzt aber belegt\nVersuchen Sie es mit einem anderen Benutzernamen\noder bitten Sie alex@gabriel-software.ch, den Namen wieder freizugeben");
 		}
 	});
-}
+};
 
 
 /*
 *validiert email-adressen
 *Quelle: http://stackoverflow.com/questions/2507030/email-validation-using-jquery
 */
-function validateEmail(email) {
+window.em.validateEmail = function(email) {
 	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 	if( !emailReg.test(email) ) {
 		return false;
 	} else {
 		return true;
 	}
-}
+};
 
 
 // testet, ob die lokale Version erreichbar ist
 // wenn ja, wird diese geöffnet, sonst arteigenschaften.ch
-function oeffneEigenschaftenVonArt(id) {
+window.em.oeffneEigenschaftenVonArt = function(id) {
 	var url,
 		// neues Fenster jetzt schon gründen
 		// wenn man window.open nach dem callback ausführt, öffnet das Fenster als popup
@@ -3388,7 +3388,17 @@ function oeffneEigenschaftenVonArt(id) {
 		// url des im neuen tab geöffneten Fensters anpassen
 		win.location.href = url;
 	});
-}
+};
+
+
+
+
+
+// HIER WEITER MIT NAMESPACE
+// VORHER: preventDefault weg
+
+
+
 
 // wenn Artenliste.html initiiert wird
 function handleAlPageinit() {
@@ -3591,7 +3601,7 @@ function handleBeobEditPageinit() {
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
 function handleOeffneBeobListeBeobEditClick() {
-	leereStorageBeobEdit();
+	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -3600,7 +3610,7 @@ function handleOeffneBeobListeBeobEditClick() {
 function handleNeueBeobBeobEditClick() {
 	event.preventDefault();
 	// Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-	leereStorageBeobListe();
+	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "BeobEdit";
 	if (window.gruppe_merken) {
@@ -3617,7 +3627,7 @@ function handleNeueBeobBeobEditClick() {
 function handleBeobEditAArtGruppeClick() {
 	event.preventDefault();
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-	leereStorageBeobListe();
+	window.em.leereStorageBeobListe();
 	delete localStorage.Status;	// ja kein Status neu
 	localStorage.Von = "BeobEdit";
 	if (window.gruppe_merken) {
@@ -3642,7 +3652,7 @@ function handleWaehleFelderBeobEditClick() {
 function handleBeobEditAArtnameClick() {
 	event.preventDefault();
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-	leereStorageBeobListe();
+	window.em.leereStorageBeobListe();
 	localStorage.Von = "BeobEdit";
 	$.mobile.navigate("Artenliste.html");
 }
@@ -3764,12 +3774,12 @@ function handleBeobEditLoescheAnhangClick() {
 
 // wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
 function handleBeobEditMenuArteigenschaftenClick() {
-	oeffneEigenschaftenVonArt(window.Beobachtung.aArtId);
+	window.em.oeffneEigenschaftenVonArt(window.Beobachtung.aArtId);
 }
 
 // wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
 function handleBeobEditMenuHierarchischerModusClick() {
-	leereStorageBeobEdit();
+	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("hProjektListe.html");
 }
 
@@ -4060,7 +4070,7 @@ function handleFeldEditFeldeigenschaftenChange() {
 		}
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
-		leereStorageFeldListe();
+		window.em.leereStorageFeldListe();
 		speichereFeldeigenschaften();
 		// Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 		window.em.ArtGruppeAufbauenFeldEdit();
@@ -4070,7 +4080,7 @@ function handleFeldEditFeldeigenschaftenChange() {
 			// Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 			$("#Artgruppenliste").empty();
 		}
-		leereStorageFeldListe();
+		window.em.leereStorageFeldListe();
 		speichereFeldeigenschaften();
 	} else {
 		if (localStorage.FeldName === "FeldBeschriftung") {
@@ -4609,40 +4619,40 @@ function handleHArtListePageinit() {
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
 function handleHArtListeOeffneZeitClick() {
 	event.preventDefault();
-	leereStoragehBeobListe();
+	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
 }
 
 // wenn in hArtListe.html #OeffneOrthArtListe geklickt wird
 function handleHArtListeOeffneOrtClick() {
 	event.preventDefault();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
 }
 
 // wenn in hArtListe.html #OeffneRaumhArtListe geklickt wird
 function handleHArtListeOeffneRaumClick() {
 	event.preventDefault();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
 // wenn in hArtListe.html #OeffneProjekthArtListe geklickt wird
 function handleHArtListeOeffneProjektClick() {
 	event.preventDefault();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
 }
 
@@ -4665,14 +4675,14 @@ function handleHArtListeSwiperight() {
 
 // wenn in hArtListe.html .menu_einfacher_modus geklickt wird
 function handleHArtListeMenuEinfacherModusClick() {
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
-	leereStorageProjektEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -4828,7 +4838,7 @@ function handleTabInaktivClick() {
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
 function handleHOrtEditOeffneOrtListeClick() {
 	event.preventDefault();
-	leereStorageOrtEdit();
+	window.em.leereStorageOrtEdit();
 	$.mobile.navigate("hOrtListe.html");
 }
 
@@ -4836,7 +4846,7 @@ function handleHOrtEditOeffneOrtListeClick() {
 function handleHOrtEditOeffneRaumClick() {
 	event.preventDefault();
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-	leereStorageOrtListe();
+	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
@@ -4850,8 +4860,8 @@ function handleHOrtEditOeffneZeitListeClick() {
 function handleHOrtEditOeffneProjektClick() {
 	event.preventDefault();
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
-	leereStorageOrtListe();
-	leereStorageRaumListe();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
 }
 
@@ -4999,11 +5009,11 @@ function handleHOrtEditLoescheAnhangClick() {
 
 // wenn in hOrtEdit.html .menu_einfacher_modus geklickt wird
 function handleHOrtEditMenuEinfacherModusClick() {
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
-	leereStorageProjektEdit();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -5109,16 +5119,16 @@ function handleHOrtListePageinit() {
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
 function handleHOrtListeOeffneRaumClick() {
 	event.preventDefault();
-	leereStorageOrtListe();
+	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
 // wenn in hOrtListe.html #OeffneProjektOrtListe geklickt wird
 function handleHOrtListeOeffneProjektClick() {
 	event.preventDefault();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
 }
 
@@ -5143,8 +5153,8 @@ function handleHOrtListeOrtClick() {
 
 // wenn in hOrtListe.html #hOrtListePageContent nach rechts gewischt wird
 function handleHOrtListePageContentSwiperight() {
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
 	$.mobile.navigate("hRaumListe.html");
 }
 
@@ -5157,10 +5167,10 @@ function handleHOrtListeOeffneKarteClick() {
 
 // wenn in hOrtListe.html .menu_einfacher_modus geklickt wird
 function handleHOrtListeMenuEinfacherModusClick() {
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
-	leereStorageProjektEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -5293,7 +5303,7 @@ function handleHProjektEditPageinit() {
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
 function handleHProjektEditOeffneProjektListeClick() {
 	event.preventDefault();
-	leereStorageProjektEdit();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("hProjektListe.html");
 }
 
@@ -5439,7 +5449,7 @@ function handleHProjektEditLoescheAnhangClick() {
 
 // wenn in hProjektEdit.html .menu_einfacher_modus geklickt wird
 function handleHProjektEditMenuEinfacherModusClick() {
-	leereStorageProjektEdit();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -5517,7 +5527,7 @@ function nächstesVorigesProjekt_2(NächstesOderVoriges) {
 			case "nächstes":
 				if (parseInt(i) < AnzProj) {
 					localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
-					leereStorageProjektEdit("mitLatLngListe", "ohneId");
+					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
 				} else {
@@ -5528,11 +5538,11 @@ function nächstesVorigesProjekt_2(NächstesOderVoriges) {
 			case "voriges":
 				if (parseInt(i) > 0) {
 					localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
-					leereStorageProjektEdit("mitLatLngListe", "ohneId");
+					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
 				} else {
-					leereStorageProjektEdit();
+					window.em.leereStorageProjektEdit();
 					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
@@ -5590,10 +5600,10 @@ function löscheProjekt_2() {
 				}
 			} else {
 				// Keine Projektliste mehr. Storage löschen
-				leereStorageProjektListe("mitLatLngListe");
+				window.em.leereStorageProjektListe("mitLatLngListe");
 			}
 			// Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-			leereStorageProjektEdit("mitLatLngListe");
+			window.em.leereStorageProjektEdit("mitLatLngListe");
 			//$.mobile.navigate('hProjektListe.html');
 			$.mobile.navigate("hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
@@ -5652,7 +5662,7 @@ function speichereHProjektEdit_2(that) {
 	if (validierehProjektEdit()) {
 		if (Feldname === "pName") {
 			// Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
-			leereStorageProjektListe("mitLatLngListe");
+			window.em.leereStorageProjektListe("mitLatLngListe");
 		}
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
@@ -5728,7 +5738,7 @@ function nächsterVorigerOrt_2(NächsterOderVoriger) {
 			case "nächster":
 				if (parseInt(i) < AnzOrt) {
 					localStorage.OrtId = OrtListe.rows[parseInt(i)+1].doc._id;
-					leereStorageOrtEdit("ohneId");
+					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
 				} else {
@@ -5739,11 +5749,11 @@ function nächsterVorigerOrt_2(NächsterOderVoriger) {
 			case "voriger":
 				if (parseInt(i) > 0) {
 					localStorage.OrtId = OrtListe.rows[parseInt(i)-1].doc._id;
-					leereStorageOrtEdit("ohneId");
+					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
 				} else {
-					leereStorageOrtEdit();
+					window.em.leereStorageOrtEdit();
 					$.mobile.navigate("hOrtListe.html");
 					return;
 				}
@@ -5804,7 +5814,7 @@ function speichereHOrtEdit_2(that) {
 	if (validatehOrtEdit()) {
 		if (Feldname === "oName") {
 			// Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-			leereStorageOrtListe("mitLatLngListe");
+			window.em.leereStorageOrtListe("mitLatLngListe");
 		}
 		// Werte aus dem Formular aktualisieren
 		if (Feldwert) {
@@ -5887,9 +5897,9 @@ function löscheOrt_2() {
 				}
 			} else {
 				// Keine Ortliste mehr. Storage löschen
-				leereStorageOrtListe("mitLatLngListe");
+				window.em.leereStorageOrtListe("mitLatLngListe");
 			}
-			leereStorageOrtEdit("mitLatLngListe");
+			window.em.leereStorageOrtEdit("mitLatLngListe");
 			$.mobile.navigate('hOrtListe.html');
 		},
 		error: function () {
@@ -5901,7 +5911,7 @@ function löscheOrt_2() {
 // wird verwendet in hArtListe.html
 function öffneArtgruppenliste_hal() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStoragehBeobListe();
+	window.em.leereStoragehBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "hArtListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
@@ -5911,51 +5921,51 @@ function öffneArtgruppenliste_hal() {
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
 function handleHArtEditOeffneArtListehArtEditClick() {
 	event.preventDefault();
-	leereStoragehBeobEdit();
+	window.em.leereStoragehBeobEdit();
 	$.mobile.navigate("hArtListe.html");
 }
 
 // wenn in hArtEdit.html auf #OeffneZeithArtEdit geklickt wird
 function handleHArtEditOeffneZeithArtEditClick() {
 	event.preventDefault();
-	leereStoragehBeobEdit();
-	leereStoragehBeobListe();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
 }
 
 // wenn in hArtEdit.html #OeffneOrthArtEdit geklickt wird
 function handleHArtEditOeffneOrthArtEditClick() {
 	event.preventDefault();
-	leereStoragehBeobEdit();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
 }
 
 // wenn in hArtEdit.html #OeffneRaumhArtEdit geklickt wird
 function handleHArtEditOeffneRaumhArtEditClick() {
 	event.preventDefault();
-	leereStoragehBeobEdit();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
 // wenn in hArtEdit.html #OeffneProjekthArtEdit geklickt wird
 function handleHArtEditOeffneProjekthArtEditClick() {
 	event.preventDefault();
-	leereStoragehBeobEdit();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
 }
 
@@ -6053,20 +6063,20 @@ function handleHArtEditLoescheAnhangClick() {
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
 function handleHArtEditMenuArteigenschaftenClick() {
-	oeffneEigenschaftenVonArt(window.hArt.aArtId);
+	window.em.oeffneEigenschaftenVonArt(window.hArt.aArtId);
 }
 
 // wenn in hArtEdit.html .menu_einfacher_modus geklickt wird
 function handleHArtEditMenuEinfacherModusClick() {
-	leereStoragehBeobEdit();
-	leereStoragehBeobListe();
-	leereStorageZeitEdit();
-	leereStorageZeitListe();
-	leereStorageOrtEdit();
-	leereStorageOrtListe();
-	leereStorageRaumEdit();
-	leereStorageRaumListe();
-	leereStorageProjektEdit();
+	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehBeobListe();
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 }
 
@@ -6106,7 +6116,7 @@ function handleHArtEditMenuNeuAnmeldenClick() {
 // wird in hArtEdit.html verwendet
 function zuArtgruppenliste() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStoragehBeobListe();
+	window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
 	if (window.gruppe_merken) {
 		// Artgruppenliste auslassen
@@ -6120,7 +6130,7 @@ function zuArtgruppenliste() {
 // wird in hArtEdit.html verwendet
 function zuArtliste() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	leereStoragehBeobListe();
+	window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
 }
@@ -6223,7 +6233,7 @@ function nächsteVorigeArt_2(NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzArt) {
 					localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].doc._id;
-					leereStoragehBeobEdit("ohneId");
+					window.em.leereStoragehBeobEdit("ohneId");
 					window.em.initiierehBeobEdit();
 					return;
 				} else {
@@ -6234,11 +6244,11 @@ function nächsteVorigeArt_2(NächsteOderVorige) {
 			case "vorige":
 				if (parseInt(i) > 0) {
 					localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].doc._id;
-					leereStoragehBeobEdit("ohneId");
+					window.em.leereStoragehBeobEdit("ohneId");
 					window.em.initiierehBeobEdit();
 					return;
 				} else {
-					leereStoragehBeobEdit();
+					window.em.leereStoragehBeobEdit();
 					$.mobile.navigate("hArtListe.html");
 					return;
 				}
@@ -6283,9 +6293,9 @@ function löscheHBeob_2() {
 				}
 			} else {
 				// Keine Beobliste mehr. Storage löschen
-				leereStoragehBeobListe();
+				window.em.leereStoragehBeobListe();
 			}
-			leereStoragehBeobEdit();
+			window.em.leereStoragehBeobEdit();
 			$.mobile.navigate("hArtListe.html");
 		},
 		error: function () {
@@ -6394,9 +6404,9 @@ function loescheFeld_2() {
 				}
 			} else {
 				// Keine Feldliste mehr. Storage löschen
-				leereStorageFeldListe();
+				window.em.leereStorageFeldListe();
 			}
-			leereStorageFeldEdit();
+			window.em.leereStorageFeldEdit();
 			$.mobile.navigate("FeldListe.html");
 		},
 		error: function () {
@@ -6447,7 +6457,7 @@ function geheZumNächstenFeld_2() {
 							if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
 								// das ist das nächste eigene Feld > öffnen
 								localStorage.FeldId = window.Feldliste.rows[parseInt(i)+1].doc._id;
-								leereStorageFeldEdit("ohneId");
+								window.em.leereStorageFeldEdit("ohneId");
 								window.em.initiiereFeldEdit();
 								return;
 							} else {
@@ -6512,7 +6522,7 @@ function geheZumVorigenFeld_2() {
 								// das ist das nächstvorherige eigene Feld > öffnen
 								FeldIdVoriges = window.Feldliste.rows[parseInt(i)-1].doc._id;
 								localStorage.FeldId = FeldIdVoriges;
-								leereStorageFeldEdit("ohneId");
+								window.em.leereStorageFeldEdit("ohneId");
 								window.em.initiiereFeldEdit();
 								return;
 							} else {
@@ -6609,7 +6619,7 @@ function speichereStandardwert_2() {
 			window.Feld._rev = data.rev;
 			localStorage.FeldId = data.id;
 			// Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
-			leereStorageFeldListe();
+			window.em.leereStorageFeldListe();
 		},
 		error: function () {
 			window.em.melde("Fehler: Feld nicht gespeichert");
@@ -6662,13 +6672,13 @@ function speichereFeldeigenschaften_2() {
 	if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 		Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
 		// Feldliste soll neu aufgebaut werden
-		leereStorageFeldListe();
+		window.em.leereStorageFeldListe();
 	}
 	// Es braucht eine Reihenfolge
 	if (!Formularfelder.Reihenfolge && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 		Formularfelder.Reihenfolge = 1;
 		// Feldliste soll neu aufgebaut werden
-		leereStorageFeldListe();
+		window.em.leereStorageFeldListe();
 	}
 	// Es braucht einen Feldtyp
 	if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
@@ -6735,7 +6745,7 @@ function speichereFeldeigenschaften_2() {
 			window.Feld._rev = data.rev;
 			localStorage.FeldId = data.id;
 			// Feldliste soll neu aufbauen
-			leereStorageFeldListe();
+			window.em.leereStorageFeldListe();
 		},
 		error: function () {
 			window.em.melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
@@ -6750,7 +6760,7 @@ function speichereFeldeigenschaften_2() {
 // eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 function erstelleNeueBeob_1_Artgruppenliste() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
-	leereStorageBeobListe();
+	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "BeobListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
@@ -6796,7 +6806,7 @@ function nächsteVorigeBeob_2(NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzBeob) {
 					localStorage.BeobId = BeobListe.rows[parseInt(i)+1].doc._id;
-					leereStorageBeobEdit("ohneId");
+					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
 				} else {
@@ -6807,11 +6817,11 @@ function nächsteVorigeBeob_2(NächsteOderVorige) {
 			case "vorige":
 				if (parseInt(i) > 0) {
 					localStorage.BeobId = BeobListe.rows[parseInt(i)-1].doc._id;
-					leereStorageBeobEdit("ohneId");
+					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
 				} else {
-					leereStorageBeobEdit();
+					window.em.leereStorageBeobEdit();
 					$.mobile.navigate("BeobListe.html");
 					return;
 				}
@@ -6858,7 +6868,7 @@ function löscheBeob_2() {
 				// Keine BeobListe mehr. Storage löschen
 				leereStorageBeobListe;
 			}
-			leereStorageBeobEdit();
+			window.em.leereStorageBeobEdit();
 			$.mobile.navigate("BeobListe.html");
 		},
 		error: function () {

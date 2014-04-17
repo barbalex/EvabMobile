@@ -119,7 +119,7 @@
 							$("#su_Email").focus();
 						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 						return false;
-					} else if (!validateEmail(Email)) {
+					} else if (!window.em.validateEmail(Email)) {
 						window.em.melde("Bitte gültige Email-Adresse eingeben");
 						setTimeout(function() {
 							$("#su_Email").focus();
@@ -161,7 +161,7 @@
 						success : function (r) {
 							localStorage.Email = r.name;
 							// Informationen zum User in doc vom typ User eintragen
-							speichereUserInEvab();
+							window.em.speichereUserInEvab();
 						},
 						error : function () {
 							window.em.melde("Fehler: Das Konto wurde nicht erstellt");
