@@ -86,7 +86,7 @@
 
 				$("#SignupPage").on("pageshow", function () {
 					// sicherstellen, dass nichts vom letzten User übrig bleibt
-					leereAlleVariabeln();
+					window.em.leereAlleVariabeln();
 					// Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
 					localStorage.Datenverwendung = "JaAber";
 				});

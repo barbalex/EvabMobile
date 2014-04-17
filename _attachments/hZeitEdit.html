@@ -114,10 +114,10 @@
 				// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 				// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
+					window.em.leereAlleVariabeln();
 					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
-					leereAlleVariabeln("ohneClear");
+					window.em.leereAlleVariabeln("ohneClear");
 					$.mobile.navigate("hProjektListe.html");
 				}
 				window.em.initiiereZeitEdit();
@@ -127,10 +127,10 @@
 				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
+					window.em.leereAlleVariabeln();
 					$.mobile.navigate("index.html");
 				} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
-					leereAlleVariabeln("ohneClear");
+					window.em.leereAlleVariabeln("ohneClear");
 					$.mobile.navigate("hProjektListe.html");
 				}
 
@@ -197,7 +197,7 @@
 					var _attachments;
 					_attachments = $("#_attachmentshZE").val();
 					if (_attachments && _attachments.length > 0) {
-						speichereAnhänge(localStorage.ZeitId, window.hZeit, "hZE");
+						window.em.speichereAnhänge(localStorage.ZeitId, window.hZeit, "hZE");
 					}
 				});
 

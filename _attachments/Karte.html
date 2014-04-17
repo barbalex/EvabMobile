@@ -211,7 +211,7 @@
 									'<p>Raum: ' + rName + '</p>'+
 									'<p>Ort: ' + Ort.oName + '</p>'+
 									'<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>'+
-									"<p><a href=\"#\" onclick=\"oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
+									"<p><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
 									'</div>'+
 									'</div>';
 								makeListener(map, marker, contentString);
@@ -400,7 +400,7 @@
 									'<p>Datum: ' + beob.zDatum + '</p>'+
 									'<p>Zeit: ' + beob.zUhrzeit + '</p>'+
 									'<p>Koordinaten: ' + beob.oXKoord + " / " + beob.oYKoord + '</p>' +
-									"<p><a <a href=\"#\" onclick=\"oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>"+
+									"<p><a <a href=\"#\" onclick=\"window.em.oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>"+
 									'</div>'+
 									'</div>';
 								makeListener(map, marker, contentString);

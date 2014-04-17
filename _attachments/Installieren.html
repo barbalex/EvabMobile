@@ -65,7 +65,7 @@
 		<script>
 			$("#InstallierenPage").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
+					window.em.leereAlleVariabeln();
 					$.mobile.navigate("index.html");
 				}
 				window.em.initiiereInstallieren();
@@ -74,7 +74,7 @@
 				// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 				// muss auf index.html umgeleitet werden
 				if (localStorage.length === 0 || !localStorage.Email) {
-					leereAlleVariabeln();
+					window.em.leereAlleVariabeln();
 					$.mobile.navigate("index.html");
 				}
 

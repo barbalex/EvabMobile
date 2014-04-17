@@ -212,7 +212,7 @@ window.em.geheZurueckFE = function() {
 		delete localStorage.zurueck;
 	} else {
 		// uups, kein zurück vorhanden
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("BeobListe.html");
 	}
 };
@@ -2581,7 +2581,7 @@ window.em.stopGeolocation = function() {
 	delete localStorage.OrtOderBeob;
 };
 
-// damit kann bei erneuter Anmeldung oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
+// damit kann bei erneuter Anmeldung window.em.oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
 // host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 window.em.speichereLetzteUrl = function() {
 	localStorage.LetzteUrl = window.location.pathname + window.location.search;
@@ -2685,11 +2685,14 @@ window.em.zeigeAttachments = function(doc, Page) {
 	$(":jqmData(role='page')").focus();
 };
 
+// AB HIER WEITER NAMESPACEN
+
 // initiiert FelderWaehlen.html
 // generiert dynamisch die Felder im Checkbox Felder
 // checked diejenigen, die der User anzeigen will
-function initiiereFelderWaehlen() {
-	var TextUeberListe_FW, FeldlisteViewname;
+window.em.initiiereFelderWaehlen = function() {
+	var TextUeberListe_FW,
+		FeldlisteViewname;
 	// Je nach aufrufender Seite Variabeln setzen
 	switch(localStorage.AufrufendeSeiteFW) {
 	case "hProjektEdit":
@@ -2735,24 +2738,28 @@ function initiiereFelderWaehlen() {
 	// besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
 	// darum wird hier für jede Seite eine eigene verwendet
 	if (window[localStorage.FeldlisteFwName]) {
-		initiiereFelderWaehlen_2();
+		window.em.initiiereFelderWaehlen_2();
 	} else {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
 			success: function (data) {
 				window[localStorage.FeldlisteFwName] = data;
-				initiiereFelderWaehlen_2();
+				window.em.initiiereFelderWaehlen_2();
 			}
 		});
 	}
-}
+};
 
-function initiiereFelderWaehlen_2() {
-	var HtmlContainer, anzFelder, Feld, FeldName, FeldBeschriftung, ListItem;
-	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>";
-	anzFelder = 0;
-	for (var i in window[localStorage.FeldlisteFwName].rows) {
+window.em.initiiereFelderWaehlen_2 = function() {
+	var i,
+		HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>",
+		anzFelder = 0,
+		Feld,
+		FeldName,
+		FeldBeschriftung,
+		ListItem;
+	for (i in window[localStorage.FeldlisteFwName].rows) {
 		Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
 		FeldName = Feld.FeldName;
 		// Nur eigene und offizielle Felder berücksichtigen
@@ -2803,11 +2810,11 @@ function initiiereFelderWaehlen_2() {
 	$("input[name='Felder']").checkboxradio();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
-}
+};
 
 // kreiert ein neues Feld
 // wird benutzt von FeldListe.html und FeldEdit.html
-function neuesFeld() {
+window.em.neuesFeld = function() {
 	var NeuesFeld;
 	NeuesFeld = {};
 	NeuesFeld.Typ = "Feld";
@@ -2832,9 +2839,10 @@ function neuesFeld() {
 			window.em.melde("Fehler: Feld nicht erzeugt");
 		}
 	});
-}
+};
 
-function pruefeAnmeldung() {
+// MOMENTAN NICHT BENUTZT
+window.em.pruefeAnmeldung = function() {
 	// Username Anmeldung überprüfen
 	// Wenn angemeldet, globale Variable Username aktualisieren
 	// Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -2853,59 +2861,59 @@ function pruefeAnmeldung() {
 			}
 		});
 	}
-}
+};
 
 // setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet
 // und ruft dann hOrtEdit.html auf
 // wird von den Links in der Karte benutzt
-function oeffneOrt(OrtId) {
+window.em.oeffneOrt = function(OrtId) {
 	localStorage.OrtId = OrtId;
 	$.mobile.navigate("hOrtEdit.html");
-}
+};
 
 // setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
 // und ruft dann BeobEdit.html auf
 // wird von den Links in der Karte auf BeobListe.html benutzt
-function oeffneBeob(BeobId) {
+window.em.oeffneBeob = function(BeobId) {
 	localStorage.BeobId = BeobId;
 	$.mobile.navigate("BeobEdit.html");
-}
+};
 
 // wird benutzt in Artenliste.html
 // wird dort aufgerufen aus pageshow und pageinit, darum hierhin verlagert
 // erwartet einen filterwert
 // Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
 // möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfällige Unterauswahl
-function initiiereArtenliste(filterwert) {
+window.em.initiiereArtenliste = function(filterwert) {
 	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
 	// nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
 	// aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
 	if (window.Artenliste) {
 		if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
-			erstelleArtenliste(filterwert);
+			window.em.erstelleArtenliste(filterwert);
 			return;
 		}
 	}
 	// sonst aus der DB holen und die Variabeln aktualisieren
 	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
-	holeArtenliste(filterwert);
-}
+	window.em.holeArtenliste(filterwert);
+};
 
 // wird benutzt in Artenliste.html
 // aufgerufen von initiiereArtenliste
-function holeArtenliste(filterwert) {
-	viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
+window.em.holeArtenliste = function(filterwert) {
+	var viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
 			window.Artenliste = data.rows;
-			erstelleArtenliste(filterwert);
+			window.em.erstelleArtenliste(filterwert);
 		}
 	});
-}
+};
 
 // bekommt eine Artenliste und baut damit im Formular die Artenliste auf
-function erstelleArtenliste(filterwert) {
+window.em.erstelleArtenliste = function(filterwert) {
 	var i,
 		html_temp = "",
 		html = "",
@@ -2922,7 +2930,7 @@ function erstelleArtenliste(filterwert) {
 					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
 						zähler++;
 						Art = window.Artenliste[i].doc;
-						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
+						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					}
 				} else if (zähler === 200) {
 					zähler++;
@@ -2947,7 +2955,7 @@ function erstelleArtenliste(filterwert) {
 					if (i<200) {
 						ArtBezeichnung = window.Artenliste[i].key[1];
 						Art = window.Artenliste[i].doc;
-						html_temp += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
+						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
 						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + window.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
 						break artenliste_loop_2;
@@ -2960,7 +2968,7 @@ function erstelleArtenliste(filterwert) {
 				for (i=0; i<window.Artenliste.length; i++) {
 					ArtBezeichnung = window.Artenliste[i].key[1];
 					Art = window.Artenliste[i].doc;
-					html += holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
+					html += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 				}
 			}
 		}
@@ -2971,11 +2979,10 @@ function erstelleArtenliste(filterwert) {
 	$("#al_ArtenListe").html(html);
 	$("#al_ArtenListe").show();
 	$("#al_ArtenListe").listview("refresh");
-}
+};
 
-function holeHtmlFürArtInArtenliste(Art, ArtBezeichnung) {
-	var html;
-	html = "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
+	var html = "<li name=\"ArtListItem\" ArtBezeichnung=\"";
 	html += ArtBezeichnung;
 	html += "\" ArtId=\"";
 	html += Art._id;
@@ -2988,17 +2995,17 @@ function holeHtmlFürArtInArtenliste(Art, ArtBezeichnung) {
 	}
 	html += "<\/a><\/li>";
 	return html;
-}
+};
 
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
-function erstelleArtgruppenListe() {
+window.em.erstelleArtgruppenListe = function() {
 	// Artgruppenliste verfügbar machen
 	if (window.Artgruppenliste) {
-		erstelleArtgruppenListe_2();
+		window.em.erstelleArtgruppenListe_2();
 	} else if (localStorage.Artgruppenliste) {
 		window.Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
-		erstelleArtgruppenListe_2();
+		window.em.erstelleArtgruppenListe_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
@@ -3006,15 +3013,15 @@ function erstelleArtgruppenListe() {
 				// Artgruppenliste bereitstellen
 				window.Artgruppenliste = data;
 				localStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
-				erstelleArtgruppenListe_2();
+				window.em.erstelleArtgruppenListe_2();
 			}
 		});
 	}
-}
+};
 
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
-function erstelleArtgruppenListe_2() {
+window.em.erstelleArtgruppenListe_2 = function() {
 	var i, y, html, ArtGruppe, row, AnzArten;
 	html = "";
 	for (i in window.Artgruppenliste.rows) {
@@ -3029,13 +3036,13 @@ function erstelleArtgruppenListe_2() {
 	$("#agl_ArtgruppenListe").html(html);
 	$("#agl_ArtgruppenListe").listview("refresh");
 	$("#agl_Hinweistext").empty().remove();
-}
+};
 
 // Stellt die Daten des Users bereit
 // In der Regel nach gelungener Anmeldung
 // Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
 // braucht den Usernamen
-function stelleUserDatenBereit() {
+window.em.stelleUserDatenBereit = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + localStorage.Email + '"', {
 		success: function (data) {
@@ -3050,14 +3057,14 @@ function stelleUserDatenBereit() {
 			if (data.Datenverwendung) {
 				localStorage.Datenverwendung = data.Datenverwendung;
 			}
-			oeffneZuletztBenutzteSeite();
+			window.em.oeffneZuletztBenutzteSeite();
 		}
 	});
-}
+};
 
-// wird benutzt von stelleUserDatenBereit()
+// wird benutzt von window.em.stelleUserDatenBereit()
 // öffnet die zuletzt benutzte Seite oder BeobListe.html
-function oeffneZuletztBenutzteSeite() {
+window.em.oeffneZuletztBenutzteSeite = function() {
 	// unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
 		LetzteUrl = localStorage.LetzteUrl;
@@ -3065,13 +3072,13 @@ function oeffneZuletztBenutzteSeite() {
 		LetzteUrl = "BeobListe.html";
 	}
 	$.mobile.navigate(LetzteUrl);
-}
+};
 
 // die nachfolgenden funktionen bereinigen die localStorage und die globalen Variabeln
 // sie entfernen die im jeweiligen Formular ergänzten localStorage-Einträge
 // mitLatLngListe gibt an, ob die Liste für die Karte auch entfernt werden soll
 
-function leereAlleVariabeln(ohneClear) {
+window.em.leereAlleVariabeln = function(ohneClear) {
 	// ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
 	// Username soll erhalten bleiben
 	if (!ohneClear) {
@@ -3092,7 +3099,7 @@ function leereAlleVariabeln(ohneClear) {
 	leereStorageBeobEdit();
 	leereStorageFeldListe();
 	leereStorageFeldEdit();
-}
+};
 
 function leereStorageProjektListe(mitLatLngListe) {
 	delete window.Projektliste;
@@ -3398,7 +3405,7 @@ function handleAlPageinit() {
 
 // wenn Artenliste.html gezeigt wird
 function handleAlPageshow() {
-	initiiereArtenliste("");
+	window.em.initiiereArtenliste("");
 	if (window.gruppe_merken) {
 		$("#al_standardgruppe").removeClass('ui-disabled');
 	} else {
@@ -3415,20 +3422,20 @@ function handleAlPagehide() {
 function handleAlKeypress() {
 	if (event.which == 13) {
 		var filterwert = $("#al_filter").val().toLowerCase();
-		initiiereArtenliste(filterwert);
+		window.em.initiiereArtenliste(filterwert);
 	}
 }
 
 // wenn in Artenliste.html #al_filter_setzen geklickt wird
 function handleAlAlFilterClick() {
 	var filterwert = $("#al_filter").val().toLowerCase();
-	initiiereArtenliste(filterwert);
+	window.em.initiiereArtenliste(filterwert);
 }
 
 // wenn in Artenliste.html .ui-icon-delete geklickt wird
 function handleAlUiIconDeleteClick() {
 	var filterwert = "";
-	initiiereArtenliste(filterwert);
+	window.em.initiiereArtenliste(filterwert);
 }
 
 // wenn in Artenliste.html #al_standardgruppe geklickt wird
@@ -3451,7 +3458,7 @@ function handleAlArtListItemClick() {
 
 // wenn Artgruppenliste.html erscheint
 function handleAglPageshow() {
-	erstelleArtgruppenListe();
+	window.em.erstelleArtgruppenListe();
 	delete window.gruppe_merken;
 }
 
@@ -3497,11 +3504,11 @@ function handleBeobEditPageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.BeobId || localStorage.BeobId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("BeobListe.html");
 		return;
 	}
@@ -3520,11 +3527,11 @@ function handleBeobEditPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.BeobId || localStorage.BeobId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("BeobListe.html");
 		return;
 	}
@@ -3802,7 +3809,7 @@ function handleBeobEditMenuNeuAnmeldenClick() {
 // wenn BeobListe.html erscheint
 function handleBeobListePageshow() {
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	}
@@ -3814,7 +3821,7 @@ function handleBeobListePageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	}
@@ -3927,10 +3934,10 @@ function handleBeobListeMenuNeuAnmeldenClick() {
 // oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 function handleFeldEditPageshow() {
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		window.em.geheZurueckFE();
 	}
 	window.em.initiiereFeldEdit();
@@ -3942,10 +3949,10 @@ function handleFeldEditPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.FeldId || localStorage.FeldId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("BeobListe.html");
 	}
 
@@ -4083,7 +4090,7 @@ function handleFeldEditFeldFolgtNachChange() {
 // wenn in FeldEdit.htm #NeuesFeldFeldEdit geklickt wird
 function handleFeldEditNeuesFeldFeldEditClick() {
 	event.preventDefault();
-	neuesFeld();
+	window.em.neuesFeld();
 }
 
 // wenn in FeldEdit.htm #Standardwert geändert wird
@@ -4254,15 +4261,15 @@ function handleFelderWaehlenPageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("BeobListe.html");
 		return;
 	}
-	initiiereFelderWaehlen();
+	window.em.initiiereFelderWaehlen();
 }
 
 // wenn FelderWaehlen.html verschwindet
@@ -4280,11 +4287,11 @@ function handleFelderWaehlenPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	} else if (!localStorage.AufrufendeSeiteFW || localStorage.AufrufendeSeiteFW === "undefined") {
 		// oh, kein zurück bekannt
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("BeobListe.html");
 	}
 
@@ -4374,7 +4381,7 @@ function öffneFeld(FeldName) {
 // wenn FeldListe.html erscheint
 function handleFeldListePageshow() {
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	}
 	window.em.initiiereFeldliste();
@@ -4385,7 +4392,7 @@ function handleFeldListePageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	}
 
@@ -4414,7 +4421,7 @@ function handleFeldListeFeldClick() {
 // wenn in FeldListe.html #NeuesFeldFeldListe geklickt wird
 function handleFeldListeNeuesFeldFeldListeClick() {
 	event.preventDefault();
-	neuesFeld();
+	window.em.neuesFeld();
 }
 
 // wenn in FeldListe.html .menu_datenfelder_exportieren geklickt wird
@@ -4439,11 +4446,11 @@ function handleHArtEditPageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.Status && !localStorage.hBeobId) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -4455,11 +4462,11 @@ function handleHArtEditPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.hBeobId || localStorage.hBeobId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -4543,11 +4550,11 @@ function handleHArtListePageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -4559,11 +4566,11 @@ function handleHArtListePageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.ZeitId || localStorage.ZeitId === "undefined") {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -4708,11 +4715,11 @@ function handleHOrtEditPageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -4731,11 +4738,11 @@ function handleHOrtEditPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.OrtId || localStorage.OrtId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -5039,11 +5046,11 @@ function handleHOrtListePageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -5055,11 +5062,11 @@ function handleHOrtListePageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if (!localStorage.RaumId || localStorage.RaumId === "undefined") {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -5196,11 +5203,11 @@ function handleHProjektEditPageshow() {
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
@@ -5212,11 +5219,11 @@ function handleHProjektEditPageinit() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
-		leereAlleVariabeln();
+		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ProjektId || localStorage.ProjektId === "undefined")) {
-		leereAlleVariabeln("ohneClear");
+		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}

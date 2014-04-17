@@ -71,18 +71,18 @@
 					if (localStorage.Email) {
 						if (localStorage.UserStatus !== "neu") {
 							if (localStorage.Email && localStorage.Autor) {
-								oeffneZuletztBenutzteSeite();
+								window.em.oeffneZuletztBenutzteSeite();
 								return;
 							} else {
 								// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
-								stelleUserDatenBereit();
+								window.em.stelleUserDatenBereit();
 								return;
 							}
 						}
 					}
 				}
 				// Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
-				leereAlleVariabeln();
+				window.em.leereAlleVariabeln();
 					
 				if (!("autofocus" in document.createElement("input"))) {
 					$("#Email").focus();
@@ -128,7 +128,7 @@
 			function meldeUserAn() {
 				var Email, Passwort;
 				// sicherstellen, dass die localStorage leer ist
-				leereAlleVariabeln();
+				window.em.leereAlleVariabeln();
 				Email = $('input[name=Email]').val();
 				Passwort = $('input[name=Passwort]').val();
 				if (validiereUserIndex) {
@@ -147,7 +147,7 @@
 								$.mobile.navigate("UserEdit.html");
 							}
 							// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
-							stelleUserDatenBereit();
+							window.em.stelleUserDatenBereit();
 							delete localStorage.UserStatus;
 						},
 						error: function () {
