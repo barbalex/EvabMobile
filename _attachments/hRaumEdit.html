@@ -119,7 +119,7 @@
 					$.mobile.navigate("hProjektListe.html");
 					return;
 				}
-				initiiereRaumEdit();
+				window.em.initiiereRaumEdit();
 			});
 
 			$("#RaumEditPage").on("pageinit", function () {
@@ -305,13 +305,13 @@
 				function löscheRaum(Arten, Zeiten, Orte) {
 					// nur löschen, wo Datensätze vorkommen
 					if (Orte.rows.length > 0) {
-						loescheIdIdRevListe(Orte);
+						window.em.loescheIdIdRevListe(Orte);
 					}
 					if (Zeiten.rows.length > 0) {
-						loescheIdIdRevListe(Zeiten);
+						window.em.loescheIdIdRevListe(Zeiten);
 					}
 					if (Arten.rows.length > 0) {
-						loescheIdIdRevListe(Arten);
+						window.em.loescheIdIdRevListe(Arten);
 					}
 					if (window.hRaum) {
 						// Objekt benutzen
@@ -392,7 +392,7 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+					if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
@@ -409,9 +409,9 @@
 							leereStorageRaumListe("mitLatLngListe");
 						}
 						if (Feldwert) {
-							if (myTypeOf(Feldwert) === "float") {
+							if (window.em.myTypeOf(Feldwert) === "float") {
 								window.hRaum[Feldname] = parseFloat(Feldwert);
-							} else if (myTypeOf(Feldwert) === "integer") {
+							} else if (window.em.myTypeOf(Feldwert) === "integer") {
 								window.hRaum[Feldname] = parseInt(Feldwert);
 							} else {
 								window.hRaum[Feldname] = Feldwert;
@@ -516,7 +516,7 @@
 								if (parseInt(i) < AnzRaum) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)+1].doc._id;
 									leereStorageRaumEdit("mitLatLngListe", "ohneId");
-									initiiereRaumEdit();
+									window.em.initiiereRaumEdit();
 									return;
 								} else {
 									window.em.melde("Das ist der letzte Raum");
@@ -527,7 +527,7 @@
 								if (parseInt(i) > 0) {
 									localStorage.RaumId = RaumListe.rows[parseInt(i)-1].doc._id;
 									leereStorageRaumEdit("mitLatLngListe", "ohneId");
-									initiiereRaumEdit();
+									window.em.initiiereRaumEdit();
 									return;
 								} else {
 									leereStorageRaumEdit();

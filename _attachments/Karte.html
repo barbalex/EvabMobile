@@ -555,7 +555,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 						infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.OrtId, "hOrt");
+						window.em.speichereKoordinaten(localStorage.OrtId, "hOrt");
 					}
 
 					// wird benutzt in BeobEdit.html
@@ -586,7 +586,7 @@
 						google.maps.event.addListener(marker, 'click', function () {
 							infowindow.open(map,marker);
 						});
-						speichereKoordinaten(localStorage.BeobId, "Beobachtung");
+						window.em.speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 					}
 
 					// GoogleMap: alle Marker löschen

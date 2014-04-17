@@ -120,7 +120,7 @@
 					leereAlleVariabeln("ohneClear");
 					$.mobile.navigate("hProjektListe.html");
 				}
-				initiiereZeitEdit();
+				window.em.initiiereZeitEdit();
 			});
 
 			$(":jqmData(role='page')").on("pageinit", function () {
@@ -296,7 +296,7 @@
 				function löscheZeit(Arten) {
 					// nur löschen, wo Datensätze vorkommen
 					if (Arten.rows.length > 0) {
-						loescheIdIdRevListe(Arten);
+						window.em.loescheIdIdRevListe(Arten);
 					}
 					// dann die Zeit
 					if (window.hZeit) {
@@ -388,7 +388,7 @@
 
 				function speichern_2(that) {
 					var Feldname, Feldjson, Feldwert;
-					if (myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+					if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 						// slider
 						Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
 						Feldwert = $(that).attr("aria-valuenow");
@@ -406,9 +406,9 @@
 						}
 						// Werte aus dem Formular aktualisieren
 						if (Feldwert) {
-							if (myTypeOf(Feldwert) === "float") {
+							if (window.em.myTypeOf(Feldwert) === "float") {
 								window.hZeit[Feldname] = parseFloat(Feldwert);
-							} else if (myTypeOf(Feldwert) === "integer") {
+							} else if (window.em.myTypeOf(Feldwert) === "integer") {
 								window.hZeit[Feldname] = parseInt(Feldwert);
 							} else {
 								window.hZeit[Feldname] = Feldwert;
@@ -511,7 +511,7 @@
 								if (parseInt(i) < AnzZeit) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)+1].doc._id;
 									leereStorageZeitEdit("ohneId");
-									initiiereZeitEdit();
+									window.em.initiiereZeitEdit();
 									return;
 								} else {
 									window.em.melde("Das ist die letzte Zeit");
@@ -522,7 +522,7 @@
 								if (parseInt(i) > 0) {
 									localStorage.ZeitId = ZeitListe.rows[parseInt(i)-1].doc._id;
 									leereStorageZeitEdit("ohneId");
-									initiiereZeitEdit();
+									window.em.initiiereZeitEdit();
 									return;
 								} else {
 									leereStorageZeitEdit();
