@@ -208,7 +208,9 @@ window.em.geheZurueckFE = function() {
 		// direkt zurück, Feldliste auslassen
 		window.em.leereStorageFeldEdit();
 		window.em.leereStorageFeldListe();
-		$.mobile.navigate(localStorage.zurueck);
+		console.log("zurück zu FelderWaehlen.html");
+		// TODO: Geht zwar richtig zurück. Springt dann aber direkt zur BeobListe.html!
+		$.mobile.navigate("FelderWaehlen.html");
 		delete localStorage.zurueck;
 	} else {
 		// uups, kein zurück vorhanden
@@ -3984,9 +3986,28 @@ function handleFeldEditPageinit() {
 		geheZumVorigenFeld();
 	});
 
-	$("#FeldEditPage").on("vclick", ".ui-pagination-next", handleFeldEditUiPaginationNextClick);
+	$("#FeldEditPage").on("vclick", ".ui-pagination-next", function(event) {
+		event.preventDefault();
+		geheZumNächstenFeld();
+	});
 
-	$("#FeldEditPage").on("keyup", handleFeldEditKeyup);
+	$("#FeldEditPage").on("keyup", function(event) {
+		// wenn in FeldEdit.htm eine Taste gedrückt wird
+		// mit Pfeiltasten Datensätze wechseln
+		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				geheZumVorigenFeld();
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				geheZumNächstenFeld();
+				event.preventDefault();
+			}
+		}
+	});
 }
 
 // wenn in FeldEdit.htm .Feldeigenschaften geändert wird
@@ -4218,30 +4239,6 @@ function handleFeldEditMenuDatenfelderExportierenClick() {
 	$("#MenuFeldEdit").popup("close");
 }
 
-// wenn in FeldEdit.htm .ui-pagination-next geklickt wird
-function handleFeldEditUiPaginationNextClick() {
-	event.preventDefault();
-	geheZumNächstenFeld();
-}
-
-// wenn in FeldEdit.htm eine Taste gedrückt wird
-// mit Pfeiltasten Datensätze wechseln
-function handleFeldEditKeyup() {
-	// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-	if (!$(event.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
-		// Left arrow
-		if (event.keyCode === $.mobile.keyCode.LEFT) {
-			geheZumVorigenFeld();
-			event.preventDefault();
-		}
-		// Right arrow
-		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-			geheZumNächstenFeld();
-			event.preventDefault();
-		}
-	}
-}
-
 // wenn FelderWaehlen.html erscheint
 function handleFelderWaehlenPageshow() {
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
@@ -4264,7 +4261,7 @@ function handleFelderWaehlenPagehide() {
 	// globale Variabeln aufräumen
 	delete localStorage.FeldlisteFwName;
 	delete localStorage.KriterienFürZuWählendeFelder;
-	delete localStorage.AufrufendeSeiteFW;
+	//delete localStorage.AufrufendeSeiteFW;
 	// verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
 	$("#FeldlisteFW").empty();
 }
@@ -4282,28 +4279,34 @@ function handleFelderWaehlenPageinit() {
 		$.mobile.navigate("BeobListe.html");
 	}
 
-	$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", handleFelderWaehlenBackClick);
-	
-	
+	$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", function(event) {
+		event.preventDefault();
+		$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
+	});
+
 	$("#FeldlisteFW").on("change", "input[name='Felder']", handleFelderWaehlenInputFelderChange);
 
-	
-	$("#FeldlisteFW").on("taphold", "[name='Felder']", handleFelderWaehlenFelderTaphold);
-}
-
-// wenn in FelderWaehlen.html #FelderWaehlenPage_back geklickt wird
-function handleFelderWaehlenBackClick() {
-	event.preventDefault();
-	$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
+	// aus unbekanntem Grund funktioniert .on nicht aber .bind schon
+	//$("#FeldlisteFW").on("taphold", "input[name='Felder']", function(event) {
+	$("#FeldlisteFW").bind("taphold", "input[name='Felder']", function(event) {
+		event.preventDefault();
+		console.log("taphold registriert");
+		// event.target ist immer das label
+		var FeldName = $(event.target).prop("for");
+		öffneFeld(FeldName);
+	});
 }
 
 // wenn in FelderWaehlen.html input[name='Felder'] geändert wird
 // Felder speichern (checkbox)
 function handleFelderWaehlenInputFelderChange() {
-	var FeldName = $(this).prop("id"),
+	var i,
+		FeldName = $(this).prop("id"),
 		FeldId = $(this).attr("feldid"),
 		Feld,
-		FeldPosition;
+		FeldPosition,
+		SichtbarImModusX,
+		idx;
 	for (i in window[localStorage.FeldlisteFwName].rows) {
 		if (typeof window[localStorage.FeldlisteFwName] !== "function") {
 			if (window[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
@@ -4313,7 +4316,6 @@ function handleFelderWaehlenInputFelderChange() {
 			}
 		}
 	}
-	var SichtbarImModusX, idx;
 	// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
 	if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 		SichtbarImModusX = "SichtbarImModusEinfach";
@@ -4344,19 +4346,9 @@ function handleFelderWaehlenInputFelderChange() {
 	});
 }
 
-// wenn in FelderWaehlen.html taphold erfolgt
-// JETZT FOLGT VERSUCH, TAPHOLD ZU IMPLEMENTIEREN
-// NOCH NICHT IMPLEMENTIERT
-function handleFelderWaehlenFelderTaphold() {
-	// Feld aufrufen. SCHEINT NICHT ZU FUNKTIONIEREN
-	event.preventDefault();
-	alert("taphold");
-	öffneFeld(this.id);
-}
-
 function öffneFeld(FeldName) {
 	$db = $.couch.db("evab");
-	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"?include_docs=true', {
+	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"&include_docs=true', {
 		success: function (data) {
 			localStorage.FeldId = data.rows[0].doc._id;
 			localStorage.zurueck = "FelderWaehlen.html";
