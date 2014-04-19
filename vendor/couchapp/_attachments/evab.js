@@ -4261,6 +4261,7 @@ function handleFelderWaehlenPagehide() {
 	// globale Variabeln aufräumen
 	delete localStorage.FeldlisteFwName;
 	delete localStorage.KriterienFürZuWählendeFelder;
+	// ausgeschaltet, weil es das braucht, wenn man von FelderWahlen direkt nach FeldEdit springt und dann zu FeldWaehlen zurück
 	//delete localStorage.AufrufendeSeiteFW;
 	// verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
 	$("#FeldlisteFW").empty();
