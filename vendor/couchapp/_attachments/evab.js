@@ -4381,27 +4381,29 @@ function handleFeldListePageinit() {
 		localStorage.zurueck = "BeobListe.html";
 	}
 
-	$("#FeldListeFL").on('click', '.Feld', handleFeldListeFeldClick);
+	$("#FeldListeFL").on('click', '.Feld', function(event) {
+		event.preventDefault();
+		handleFeldListeFeldClick(this);
+	});
 
-	$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", handleFeldListeNeuesFeldFeldListeClick);
+	$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function(event) {
+		event.preventDefault();
+		window.em.neuesFeld();
+	});
 
 	$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', handleFeldListeMenuDatenfelderExportierenClick);
 
-	$("#FeldListeHeader").on('click', '#FeldListeBackButton', handleFeldListeBackButtonClick);
+	$("#FeldListeHeader").on('click', '#FeldListeBackButton', function(event) {
+		event.preventDefault();
+		handleFeldListeBackButtonClick();
+	});
 }
 
 // wenn in FeldListe.html .Feld geklickt wird
 // Feld öffnen
-function handleFeldListeFeldClick() {
-	event.preventDefault();
-	localStorage.FeldId = $(this).attr('FeldId');
+function handleFeldListeFeldClick(that) {
+	localStorage.FeldId = $(that).attr('FeldId');
 	$.mobile.navigate("FeldEdit.html");
-}
-
-// wenn in FeldListe.html #NeuesFeldFeldListe geklickt wird
-function handleFeldListeNeuesFeldFeldListeClick() {
-	event.preventDefault();
-	window.em.neuesFeld();
 }
 
 // wenn in FeldListe.html .menu_datenfelder_exportieren geklickt wird
@@ -4415,7 +4417,6 @@ function handleFeldListeMenuDatenfelderExportierenClick() {
 
 // wenn in FeldListe.html #FeldListeBackButton geklickt wird
 function handleFeldListeBackButtonClick() {
-	event.preventDefault();
 	$.mobile.navigate(localStorage.zurueck);
 	delete localStorage.zurueck;
 }
