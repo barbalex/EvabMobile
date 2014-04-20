@@ -4288,10 +4288,8 @@ function handleFelderWaehlenPageinit() {
 	$("#FeldlisteFW").on("change", "input[name='Felder']", handleFelderWaehlenInputFelderChange);
 
 	// aus unbekanntem Grund funktioniert .on nicht aber .bind schon
-	//$("#FeldlisteFW").on("taphold", "input[name='Felder']", function(event) {
 	$("#FeldlisteFW").bind("taphold", "input[name='Felder']", function(event) {
 		event.preventDefault();
-		console.log("taphold registriert");
 		// event.target ist immer das label
 		var FeldName = $(event.target).prop("for");
 		öffneFeld(FeldName);
@@ -4462,11 +4460,20 @@ function handleHArtEditPageinit() {
 		handleHArtEditOeffneZeithArtEditClick();
 	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", handleHArtEditOeffneOrthArtEditClick);
+	$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditOeffneOrthArtEditClick();
+	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", handleHArtEditOeffneRaumhArtEditClick);
+	$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditOeffneRaumhArtEditClick();
+	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", handleHArtEditOeffneProjekthArtEditClick);
+	$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditOeffneProjekthArtEditClick();
+	});
 
 	// Für jedes Feld bei Änderung speichern
 	$("#hArtEditForm").on("change", ".speichern", speichereHArt);
@@ -4485,19 +4492,34 @@ function handleHArtEditPageinit() {
 	$("#FormAnhängehAE").on("change", ".speichernAnhang", handleHArtEditSpeichernAnhangChange);
 
 	// Neue Beobachtung managen
-	$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", handleHArtEditNeueBeobhArtEditClick);
+	$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditNeueBeobhArtEditClick();
+	});
 
 	// Editieren von Beobachtungen managen, ausgehend von Artgruppe
-	$("#hArtEditForm").on("click", "[name='aArtGruppe']", handleHArtEditAArtGruppeClick);
+	$("#hArtEditForm").on("click", "[name='aArtGruppe']", function(event) {
+		event.preventDefault();
+		zuArtgruppenliste();
+	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
-	$("#hArtEditForm").on("click", "[name='aArtName']", handleHArtEditAArtNameClick);
+	$("#hArtEditForm").on("click", "[name='aArtName']", function(event) {
+		event.preventDefault();
+		zuArtliste();
+	});
 
 	// sichtbare Felder wählen
-	$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", handleHArtEditWaehleFelderClick);
+	$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditWaehleFelderClick();
+	});
 
 	// Code für den Art-Löschen-Dialog
-	$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', handleHArtEditLoescheBeobClick);
+	$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', function(event) {
+		event.preventDefault();
+		$("#hae_löschen_meldung").popup("open");
+	});
 
 	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", löscheHBeob);
 
@@ -4506,15 +4528,38 @@ function handleHArtEditPageinit() {
 	$("#hArtEditPage").on("swiperight", handleHArtEditSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#hArtEditPage").on("vclick", ".ui-pagination-prev", handleHArtEditUiPaginationPrevClick);
+	$("#hArtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+		event.preventDefault();
+		nächsteVorigeArt("vorige");
+	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#hArtEditPage").on("vclick", ".ui-pagination-next", handleHArtEditUiPaginationNextClick);
+	$("#hArtEditPage").on("vclick", ".ui-pagination-next", function(event) {
+		event.preventDefault();
+		nächsteVorigeArt("nächste");
+	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#hArtEditPage").on("keyup", handleHArtEditKeyup);
+	$("#hArtEditPage").on("keyup", function(event) {
+		// nur reagieren, wenn hArtEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				nächsteVorigeArt("vorige");
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				nächsteVorigeArt("nächste");
+				event.preventDefault();
+			}
+		}
+	});
 
-	$("#FormAnhängehAE").on("click", "[name='LöscheAnhang']", handleHArtEditLoescheAnhangClick);
+	$("#FormAnhängehAE").on("click", "[name='LöscheAnhang']", function(event) {
+		event.preventDefault();
+		handleHArtEditLoescheAnhangClick(this);
+	});
 
 	$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', handleHArtEditMenuArteigenschaftenClick);
 
@@ -5897,7 +5942,6 @@ function handleHArtEditOeffneZeithArtEditClick() {
 
 // wenn in hArtEdit.html #OeffneOrthArtEdit geklickt wird
 function handleHArtEditOeffneOrthArtEditClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -5907,7 +5951,6 @@ function handleHArtEditOeffneOrthArtEditClick() {
 
 // wenn in hArtEdit.html #OeffneRaumhArtEdit geklickt wird
 function handleHArtEditOeffneRaumhArtEditClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -5919,7 +5962,6 @@ function handleHArtEditOeffneRaumhArtEditClick() {
 
 // wenn in hArtEdit.html #OeffneProjekthArtEdit geklickt wird
 function handleHArtEditOeffneProjekthArtEditClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -5941,34 +5983,14 @@ function handleHArtEditSpeichernAnhangChange() {
 
 // wenn in hArtEdit.html #NeueBeobhArtEdit geklickt wird
 function handleHArtEditNeueBeobhArtEditClick() {
-	event.preventDefault();
 	localStorage.Status = "neu";
 	zuArtgruppenliste();
 }
 
-// wenn in hArtEdit.html [name='aArtGruppe'] geklickt wird
-function handleHArtEditAArtGruppeClick() {
-	event.preventDefault();
-	zuArtgruppenliste();
-}
-
-// wenn in hArtEdit.html [name='aArtName'] geklickt wird
-function handleHArtEditAArtNameClick() {
-	event.preventDefault();
-	zuArtliste();
-}
-
 // wenn in hArtEdit.html #waehleFelderhBeobEdit geklickt wird
 function handleHArtEditWaehleFelderClick() {
-	event.preventDefault();
 	localStorage.AufrufendeSeiteFW = "hArtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
-}
-
-// wenn in hArtEdit.html #LoescheBeobhArtEdit geklickt wird
-function handleHArtEditLoescheBeobClick() {
-	event.preventDefault();
-	$("#hae_löschen_meldung").popup("open");
 }
 
 // wenn in hArtEdit.html nach links gewischt wird
@@ -5987,40 +6009,9 @@ function handleHArtEditSwiperight() {
 	}
 }
 
-// wenn in hArtEdit.html .ui-pagination-prev geklickt wird
-function handleHArtEditUiPaginationPrevClick() {
-	event.preventDefault();
-	nächsteVorigeArt("vorige");
-}
-
-// wenn in hArtEdit.html .ui-pagination-next geklickt wird
-function handleHArtEditUiPaginationNextClick() {
-	event.preventDefault();
-	nächsteVorigeArt("nächste");
-}
-
-// wenn in hArtEdit.html keyup passiert
-// Navigation mit Pfeiltasten ermöglichen
-function handleHArtEditKeyup() {
-	// nur reagieren, wenn hArtEditPage sichtbar und Fokus nicht in einem Feld
-	if (!$(event.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
-		// Left arrow
-		if (event.keyCode === $.mobile.keyCode.LEFT) {
-			nächsteVorigeArt("vorige");
-			event.preventDefault();
-		}
-		// Right arrow
-		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-			nächsteVorigeArt("nächste");
-			event.preventDefault();
-		}
-	}
-}
-
 // wenn in hArtEdit.html [name='LöscheAnhang'] geklickt wird
-function handleHArtEditLoescheAnhangClick() {
-	event.preventDefault();
-	window.em.loescheAnhang(this, window.hArt, localStorage.hBeobId);
+function handleHArtEditLoescheAnhangClick(that) {
+	window.em.loescheAnhang(that, window.hArt, localStorage.hBeobId);
 }
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
