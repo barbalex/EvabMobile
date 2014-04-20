@@ -4452,9 +4452,15 @@ function handleHArtEditPageinit() {
 		return;
 	}
 
-	$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", handleHArtEditOeffneArtListehArtEditClick);
+	$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function(event) {
+		event.preventDefault();
+		handleHArtEditOeffneArtListehArtEditClick();
+	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", handleHArtEditOeffneZeithArtEditClick);
+	$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function(event) {
+		event.preventDefault();
+		handleHArtEditOeffneZeithArtEditClick();
+	});
 
 	$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", handleHArtEditOeffneOrthArtEditClick);
 
@@ -4557,16 +4563,31 @@ function handleHArtListePageinit() {
 	}
 
 	// Link zu Raum in Navbar und Titelleiste
-	$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", handleHArtListeOeffneZeitClick);
+	$("#hArtListePageHeader").on("click", "[name='OeffneZeithArtListe']", function(event) {
+		event.preventDefault();
+		handleHArtListeOeffneZeitClick();
+	});
 
-	$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", handleHArtListeOeffneOrtClick);
+	$("#hArtListePageHeader").on("click", "#OeffneOrthArtListe", function(event) {
+		event.preventDefault();
+		handleHArtListeOeffneOrtClick();
+	});
 
-	$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", handleHArtListeOeffneRaumClick);
+	$("#hArtListePageHeader").on("click", "#OeffneRaumhArtListe", function(event) {
+		event.preventDefault();
+		handleHArtListeOeffneRaumClick();
+	});
 
-	$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", handleHArtListeOeffneProjektClick);
+	$("#hArtListePageHeader").on("click", "#OeffneProjekthArtListe", function(event) {
+		event.preventDefault();
+		handleHArtListeOeffneProjektClick();
+	});
 
 	// Neue Beobachtung managen
-	$("#hArtListePage").on("click", ".NeueBeobhArtListe", handleHArtListeNeueBeobClick);
+	$("#hArtListePage").on("click", ".NeueBeobhArtListe", function(event) {
+		event.preventDefault();
+		öffneArtgruppenliste_hal();
+	});
 
 	$("#ArtlistehAL").on("swipeleft", ".erste", öffneArtgruppenliste_hal);
 
@@ -4589,14 +4610,12 @@ function handleHArtListePageinit() {
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
 function handleHArtListeOeffneZeitClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
 }
 
 // wenn in hArtListe.html #OeffneOrthArtListe geklickt wird
 function handleHArtListeOeffneOrtClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -4605,7 +4624,6 @@ function handleHArtListeOeffneOrtClick() {
 
 // wenn in hArtListe.html #OeffneRaumhArtListe geklickt wird
 function handleHArtListeOeffneRaumClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -4616,7 +4634,6 @@ function handleHArtListeOeffneRaumClick() {
 
 // wenn in hArtListe.html #OeffneProjekthArtListe geklickt wird
 function handleHArtListeOeffneProjektClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -4625,12 +4642,6 @@ function handleHArtListeOeffneProjektClick() {
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
-}
-
-// wenn in hArtListe.html .NeueBeobhArtListe geklickt wird
-function handleHArtListeNeueBeobClick() {
-	event.preventDefault();
-	öffneArtgruppenliste_hal();
 }
 
 // wenn in hArtListe.html .beob geklickt wird
@@ -4729,16 +4740,30 @@ function handleHOrtEditPageinit() {
 	}
 
 	// inaktive tabs inaktivieren
-	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
+	$(document).on("click", ".tab_inaktiv", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
 
-	$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", handleHOrtEditOeffneOrtListeClick);
+	$("#OrtEditHeader").on("click", "[name='OeffneOrtListeOrtEdit']", function(event) {
+		event.preventDefault();
+		handleHOrtEditOeffneOrtListeClick();
+	});
 
-	$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", handleHOrtEditOeffneRaumClick);
+	$("#OrtEditHeader").on("click", "#OeffneRaumOrtEdit", function(event) {
+		event.preventDefault();
+		handleHOrtEditOeffneRaumClick();
+	});
 
-	$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", handleHOrtEditOeffneZeitListeClick);
+	$("#OrtEditHeader").on("click", "#OeffneZeitListeOrtEdit", function(event) {
+		event.preventDefault();
+		$.mobile.navigate("hZeitListe.html");
+	});
 
-	$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", handleHOrtEditOeffneProjektClick);
+	$("#OrtEditHeader").on("click", "#OeffneProjektOrtEdit", function(event) {
+		event.preventDefault();
+		handleHOrtEditOeffneProjektClick();
+	});
 
 	// Für jedes Feld bei Änderung speichern
 	$("#hOrtEditForm").on("change", ".speichern", handleHOrtEditSpeichernChange);
@@ -4757,35 +4782,73 @@ function handleHOrtEditPageinit() {
 	$("#FormAnhängehOE").on("change", ".speichernAnhang", handleHOrtEditSpeichernAnhangChange);
 
 	// neuen Ort erstellen
-	$("#OrtEditFooter").on('click', '#NeuerOrtOrtEdit', handleHOrtEditNeuerOrtClick);
+	$("#OrtEditFooter").on('click', '#NeuerOrtOrtEdit', function(event) {
+		event.preventDefault();
+		window.em.erstelleNeuenOrt();
+	});
 
 	// sichtbare Felder wählen
-	$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", handleHOrtEditWaehleFelderClick);
+	$("#OrtEditFooter").on("click", "#waehleFelderOrtEdit", function(event) {
+		event.preventDefault();
+		handleHOrtEditWaehleFelderClick();
+	});
 
 	// Code für den Ort-Löschen-Dialog
-	$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', handleHOrtEditLoescheOrtClick);
+	$('#OrtEditFooter').on('click', '#LoescheOrtOrtEdit', function(event) {
+		event.preventDefault();
+		handleHOrtEditLoescheOrtClick(this);
+	});
 
 	$("#hoe_löschen_meldung").on("click", "#hoe_löschen_meldung_ja_loeschen", handleHOrtEditLoeschenMeldungJaClick);
 
 	// Karte managen
-	$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', handleHOrtEditKarteOeffnenClick);
+	$('#OrtEditFooter').on('click', '#KarteOeffnenOrtEdit', function(event) {
+		event.preventDefault();
+		handleHOrtEditKarteOeffnenClick();
+	});
 
-	$('#OrtEditFooter').on('click', '#VerortungOrtEdit', handleHOrtEditVerortungClick);
+	$('#OrtEditFooter').on('click', '#VerortungOrtEdit', function(event) {
+		event.preventDefault();
+		window.em.GetGeolocation(localStorage.OrtId, "Ort");
+	});
 	
 	$("#OrtEditPage").on("swipeleft", "#OrtEditContent", handleHOrtEditContentSwipeleft);
 
 	$("#OrtEditPage").on("swiperight", "#OrtEditContent", handleHOrtEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#OrtEditPage").on("vclick", ".ui-pagination-prev", handleHOrtEditUiPaginationPrevClick);
+	$("#OrtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+		event.preventDefault();
+		nächsterVorigerOrt("voriger");
+	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#OrtEditPage").on("vclick", ".ui-pagination-next", handleHOrtEditUiPaginationNextClick);
+	$("#OrtEditPage").on("vclick", ".ui-pagination-next", function(event) {
+		event.preventDefault();
+		nächsterVorigerOrt("nächster");
+	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#OrtEditPage").on("keyup", handleHOrtEditKeyup);
+	$("#OrtEditPage").on("keyup", function(event) {
+		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				nächsterVorigerOrt("voriger");
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				nächsterVorigerOrt("nächster");
+				event.preventDefault();
+			}
+		}
+	});
 
-	$("#FormAnhängehOE").on("click", "[name='LöscheAnhang']", handleHOrtEditLoescheAnhangClick);
+	$("#FormAnhängehOE").on("click", "[name='LöscheAnhang']", function(event) {
+		event.preventDefault();
+		window.em.loescheAnhang(this, window.hOrt, localStorage.OrtId);
+	});
 
 	$('#MenuOrtEdit').on('click', '.menu_einfacher_modus', handleHOrtEditMenuEinfacherModusClick);
 
@@ -4800,36 +4863,21 @@ function handleHOrtEditPageinit() {
 	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', handleHOrtEditMenuNeuAnmeldenClick);
 }
 
-// wenn in allen Formularen .tab_inaktiv geklickt wird
-function handleTabInaktivClick() {
-	event.preventDefault();
-	event.stopPropagation();
-}
-
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
 function handleHOrtEditOeffneOrtListeClick() {
-	event.preventDefault();
 	window.em.leereStorageOrtEdit();
 	$.mobile.navigate("hOrtListe.html");
 }
 
 // wenn in hOrtEdit.html #OeffneRaumOrtEdit geklickt wurde
 function handleHOrtEditOeffneRaumClick() {
-	event.preventDefault();
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
-// wenn in hOrtEdit.html #OeffneZeitListeOrtEdit geklickt wird
-function handleHOrtEditOeffneZeitListeClick() {
-	event.preventDefault();
-	$.mobile.navigate("hZeitListe.html");
-}
-
 // wenn in hOrtEdit.html #OeffneProjektOrtEdit geklickt wird
 function handleHOrtEditOeffneProjektClick() {
-	event.preventDefault();
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumListe();
@@ -4864,23 +4912,14 @@ function handleHOrtEditSpeichernAnhangChange() {
 	}
 }
 
-// wenn in hOrtEdit.html #NeuerOrtOrtEdit geklickt wird
-function handleHOrtEditNeuerOrtClick() {
-	event.preventDefault();
-	window.em.erstelleNeuenOrt();
-}
-
 // wenn in hOrtEdit.html #waehleFelderOrtEdit geklickt wird
 function handleHOrtEditWaehleFelderClick() {
-	event.preventDefault();
 	localStorage.AufrufendeSeiteFW = "hOrtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 }
 
 // wenn in hOrtEdit.html #LoescheOrtOrtEdit geklickt wird
-function handleHOrtEditLoescheOrtClick() {
-	var that = this;
-	event.preventDefault();
+function handleHOrtEditLoescheOrtClick(that) {
 	// Anzahl Zeiten von Ort zählen
 	$db = $.couch.db("evab");
 	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
@@ -4915,15 +4954,8 @@ function handleHOrtEditLoeschenMeldungJaClick() {
 
 // wenn in hOrtEdit.html #KarteOeffnenOrtEdit geklickt wird
 function handleHOrtEditKarteOeffnenClick() {
-	event.preventDefault();
 	localStorage.zurueck = "hOrtEdit";
 	$.mobile.navigate("Karte.html");
-}
-
-// wenn in hOrtEdit.html #VerortungOrtEdit geklickt wird
-function handleHOrtEditVerortungClick() {
-	event.preventDefault();
-	window.em.GetGeolocation(localStorage.OrtId, "Ort");
 }
 
 // wenn in hOrtEdit.html #OrtEditContent nach links gewischt wird
@@ -4940,42 +4972,6 @@ function handleHOrtEditContentSwiperight() {
 		// kein slider
 		nächsterVorigerOrt("voriger");
 	}
-}
-
-// wenn in hOrtEdit.html .ui-pagination-prev geklickt wird
-function handleHOrtEditUiPaginationPrevClick() {
-	event.preventDefault();
-	nächsterVorigerOrt("voriger");
-}
-
-// wenn in hOrtEdit.html .ui-pagination-next geklickt wird
-function handleHOrtEditUiPaginationNextClick() {
-	event.preventDefault();
-	nächsterVorigerOrt("nächster");
-}
-
-// wenn in hOrtEdit.html keyup geschieht
-// Navigation mit Pfeiltasten ermöglichen
-function handleHOrtEditKeyup() {
-	// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-	if (!$(event.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
-		// Left arrow
-		if (event.keyCode === $.mobile.keyCode.LEFT) {
-			nächsterVorigerOrt("voriger");
-			event.preventDefault();
-		}
-		// Right arrow
-		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-			nächsterVorigerOrt("nächster");
-			event.preventDefault();
-		}
-	}
-}
-
-// wenn in hOrtEdit.html [name='LöscheAnhang'] geklickt wird
-function handleHOrtEditLoescheAnhangClick() {
-	event.preventDefault();
-	window.em.loescheAnhang(this, window.hOrt, localStorage.OrtId);
 }
 
 // wenn in hOrtEdit.html .menu_einfacher_modus geklickt wird
@@ -5053,26 +5049,43 @@ function handleHOrtListePageinit() {
 	}
 
 	// inaktive tabs inaktivieren
-	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
+	$(document).on("click", ".tab_inaktiv", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
 	
 	// Link zu Raum in Navbar und Titelleiste
-	$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", handleHOrtListeOeffneRaumClick);
+	$("#hOrtListePageHeader").on("click", "[name='OeffneRaumOrtListe']", function(event) {
+		event.preventDefault();
+		handleHOrtListeOeffneRaumClick();
+	});
 
-	$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", handleHOrtListeOeffneProjektClick);
+	$("#hOrtListePageHeader").on("click", "#OeffneProjektOrtListe", function(event) {
+		event.preventDefault();
+		handleHOrtListeOeffneProjektClick();
+	});
 
 	// neuen Ort erstellen
-	$("#hOrtListePage").on("click", ".NeuerOrtOrtListe", handleHOrtListeNeuerOrtClick);
+	$("#hOrtListePage").on("click", ".NeuerOrtOrtListe", function(event) {
+		event.preventDefault();
+		window.em.erstelleNeuenOrt();
+	});
 
 	$("#OrtlistehOL").on("swipeleft", ".Ort", handleHOrtListeSwipeleft);
 
-	$("#OrtlistehOL").on("click", ".Ort", handleHOrtListeOrtClick);
+	$("#OrtlistehOL").on("click", ".Ort", function(event) {
+		event.preventDefault();
+		handleHOrtListeOrtClick();
+	});
 
 	$("#OrtlistehOL").on("swipeleft", ".erste", erstelleNeuenOrt);
 
 	$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", handleHOrtListePageContentSwiperight);
 
-	$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', handleHOrtListeOeffneKarteClick);
+	$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', function(event) {
+		event.preventDefault();
+		handleHOrtListeOeffneKarteClick();
+	});
 
 	$('#MenuOrtListe').on('click', '.menu_einfacher_modus', handleHOrtListeMenuEinfacherModusClick);
 
@@ -5089,24 +5102,16 @@ function handleHOrtListePageinit() {
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
 function handleHOrtListeOeffneRaumClick() {
-	event.preventDefault();
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 }
 
 // wenn in hOrtListe.html #OeffneProjektOrtListe geklickt wird
 function handleHOrtListeOeffneProjektClick() {
-	event.preventDefault();
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
-}
-
-// wenn in hOrtListe.html .NeuerOrtOrtListe geklickt wird
-function handleHOrtListeNeuerOrtClick() {
-	event.preventDefault();
-	window.em.erstelleNeuenOrt();
 }
 
 // wenn in hOrtListe.html nach links gewischt wird
@@ -5117,7 +5122,6 @@ function handleHOrtListeSwipeleft() {
 
 // wenn in hOrtListe.html .Ort geklickt wird
 function handleHOrtListeOrtClick() {
-	event.preventDefault();
 	localStorage.OrtId = $(this).attr('OrtId');
 	$.mobile.navigate("hOrtEdit.html");
 }
@@ -5131,7 +5135,6 @@ function handleHOrtListePageContentSwiperight() {
 
 // wenn in hOrtListe.html #OeffneKarteOrtListe geklickt wird
 function handleHOrtListeOeffneKarteClick() {
-	event.preventDefault();
 	localStorage.zurueck = "hOrtListe";
 	$.mobile.navigate("Karte.html");
 }
@@ -5210,12 +5213,20 @@ function handleHProjektEditPageinit() {
 	}
 
 	// inaktive tabs inaktivieren
-	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", handleTabInaktivClick);
+	$(document).on("click", ".tab_inaktiv", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
 
-	$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", handleHProjektEditOeffneProjektListeClick);
+	$("#hProjektEditHeader").on("click", "[name='OeffneProjektListeProjektEdit']", function(event) {
+		event.preventDefault();
+		handleHProjektEditOeffneProjektListeClick();
+	});
 
-	$("#hProjektEditHeader").on("click", "#OeffneRaumListeProjektEdit", handleHProjektEditOeffneRaumListeClick);
+	$("#hProjektEditHeader").on("click", "#OeffneRaumListeProjektEdit", function(event) {
+		event.preventDefault();
+		$.mobile.navigate("hRaumListe.html");
+	});
 
 	// Für jedes Feld bei Änderung speichern
 	$("#hProjektEditForm").on("change", ".speichern", speichereHProjektEdit);
@@ -5231,32 +5242,67 @@ function handleHProjektEditPageinit() {
 	$("#FormAnhängehPE").on("change", ".speichernAnhang", handleHProjektEditSpeichernAnhangChange);
 	
 	// Code für den Projekt-Löschen-Dialog
-	$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', handleHProjektEditLöscheProjektClick);
+	$('#hProjektEditFooter').on('click', '#LöscheProjektProjektEdit', function(event) {
+		event.preventDefault();
+		handleHProjektEditLöscheProjektClick(this);
+	});
 
 	$("#hpe_löschen_meldung").on("click", "#hpe_löschen_meldung_ja_loeschen", handleHProjektEditLoeschenMeldungJaClick);
 
 	// neues Projekt erstellen
-	$("#hProjektEditFooter").on("click", "#NeuesProjektProjektEdit", handleHProjektEditNeuesProjektClick);
+	$("#hProjektEditFooter").on("click", "#NeuesProjektProjektEdit", function(event) {
+		event.preventDefault();
+		window.em.erstelleNeuesProjekt();
+	});
 
 	// sichtbare Felder wählen
-	$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", handleHProjektEditWaehleFelderClick);
+	$("#hProjektEditFooter").on("click", "#waehleFelderProjektEdit", function(event) {
+		event.preventDefault();
+		handleHProjektEditWaehleFelderClick();
+	});
 
 	$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", handleHProjektEditContentSwipeleft);
 
 	$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", handleHProjektEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#ProjektEditPage").on("vclick", ".ui-pagination-prev", handleHProjektEditUiPaginationPrevClick);
+	$("#ProjektEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+		event.preventDefault();
+		nächstesVorigesProjekt("voriges");
+	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#ProjektEditPage").on("vclick", ".ui-pagination-next", handleHProjektEditUiPaginationNextClick);
+	$("#ProjektEditPage").on("vclick", ".ui-pagination-next", function(event) {
+		event.preventDefault();
+		nächstesVorigesProjekt("nächstes");
+	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#ProjektEditPage").on("keyup", handleHProjektEditKeyup);
+	$("#ProjektEditPage").on("keyup", function(event) {
+		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				nächstesVorigesProjekt("voriges");
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				nächstesVorigesProjekt("nächstes");
+				event.preventDefault();
+			}
+		}
+	});
 
-	$('#hProjektEditFooter').on('click', '#KarteOeffnenProjektEdit', handleHProjektEditKarteOeffnenClick);
+	$('#hProjektEditFooter').on('click', '#KarteOeffnenProjektEdit', function(event) {
+		event.preventDefault();
+		handleHProjektEditKarteOeffnenClick();
+	});
 
-	$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", handleHProjektEditLoescheAnhangClick);
+	$("#FormAnhängehPE").on("click", "[name='LöscheAnhang']", function(event) {
+		event.preventDefault();
+		window.em.loescheAnhang(this, window.hProjekt, localStorage.ProjektId);
+	});
 
 	$('#MenuProjektEdit').on('click', '.menu_einfacher_modus', handleHProjektEditMenuEinfacherModusClick);
 
@@ -5273,15 +5319,8 @@ function handleHProjektEditPageinit() {
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
 function handleHProjektEditOeffneProjektListeClick() {
-	event.preventDefault();
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("hProjektListe.html");
-}
-
-// wenn in hProjektEdit.html #OeffneRaumListeProjektEdit geklickt wird
-function handleHProjektEditOeffneRaumListeClick() {
-	event.preventDefault();
-	$.mobile.navigate("hRaumListe.html");
 }
 
 // wenn in hProjektEdit.html .speichernAnhang geändert wird
@@ -5293,9 +5332,7 @@ function handleHProjektEditSpeichernAnhangChange() {
 }
 
 // wenn in hProjektEdit.html #LöscheProjektProjektEdit geklickt wird
-function handleHProjektEditLöscheProjektClick() {
-	event.preventDefault();
-	var that = this;
+function handleHProjektEditLöscheProjektClick(that) {
 	// Anzahl Räume des Projekts zählen
 	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 	$db = $.couch.db("evab");
@@ -5346,15 +5383,8 @@ function handleHProjektEditLoeschenMeldungJaClick() {
 	löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
 }
 
-// wenn in hProjektEdit.html #NeuesProjektProjektEdit geklickt wird
-function handleHProjektEditNeuesProjektClick() {
-	event.preventDefault();
-	window.em.erstelleNeuesProjekt();
-}
-
 // wenn in hProjektEdit.html #waehleFelderProjektEdit geklickt wird
 function handleHProjektEditWaehleFelderClick() {
-	event.preventDefault();
 	localStorage.AufrufendeSeiteFW = "hProjektEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 }
@@ -5375,47 +5405,10 @@ function handleHProjektEditContentSwiperight() {
 	}
 }
 
-// wenn in hProjektEdit.html .ui-pagination-prev geklickt wird
-function handleHProjektEditUiPaginationPrevClick() {
-	event.preventDefault();
-	nächstesVorigesProjekt("voriges");
-}
-
-// wenn in hProjektEdit.html .ui-pagination-next geklickt wird
-function handleHProjektEditUiPaginationNextClick() {
-	event.preventDefault();
-	nächstesVorigesProjekt("nächstes");
-}
-
-// wenn in hProjektEdit.html keyup passiert
-// Navigatin mit Pfeiltasten ermöglichen
-function handleHProjektEditKeyup() {
-	// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-	if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
-		// Left arrow
-		if (event.keyCode === $.mobile.keyCode.LEFT) {
-			nächstesVorigesProjekt("voriges");
-			event.preventDefault();
-		}
-		// Right arrow
-		else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-			nächstesVorigesProjekt("nächstes");
-			event.preventDefault();
-		}
-	}
-}
-
 // wenn in hProjektEdit.html #KarteOeffnenProjektEdit geklickt wird
 function handleHProjektEditKarteOeffnenClick() {
-	event.preventDefault();
 	localStorage.zurueck = "hProjektEdit";
 	$.mobile.navigate("Karte.html");
-}
-
-// wenn in hProjektEdit.html [name='LöscheAnhang'] geklickt wird
-function handleHProjektEditLoescheAnhangClick() {
-	event.preventDefault();
-	window.em.loescheAnhang(this, window.hProjekt, localStorage.ProjektId);
 }
 
 // wenn in hProjektEdit.html .menu_einfacher_modus geklickt wird
@@ -5891,14 +5884,12 @@ function öffneArtgruppenliste_hal() {
 
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
 function handleHArtEditOeffneArtListehArtEditClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobEdit();
 	$.mobile.navigate("hArtListe.html");
 }
 
 // wenn in hArtEdit.html auf #OeffneZeithArtEdit geklickt wird
 function handleHArtEditOeffneZeithArtEditClick() {
-	event.preventDefault();
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
