@@ -3487,18 +3487,18 @@ function handleAglPageinit() {
 	// weil die nested List im DOM jedes mal eine eigene Page aufbaut
 	$("body").on("click", "[name='ArtgruppenListItem']", function(event) {
 		event.preventDefault();
-		handleAglArtgruppenListItemClick();
+		handleAglArtgruppenListItemClick(this);
 	});
 
 	$("#agl_Page").on("click", "#agl_standardgruppe", handleAglAglStandardgruppeClick);
 }
 
 // wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
-function handleAglArtgruppenListItemClick() {
-	localStorage.aArtGruppe = $(this).attr("ArtGruppe");
+function handleAglArtgruppenListItemClick(that) {
+	localStorage.aArtGruppe = $(that).attr("ArtGruppe");
 	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
 	if (window.gruppe_merken) {
-		window.gruppe_merken = $(this).attr("ArtGruppe");
+		window.gruppe_merken = $(that).attr("ArtGruppe");
 	}
 	$.mobile.navigate("Artenliste.html");
 }
