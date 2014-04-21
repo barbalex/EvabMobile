@@ -3397,70 +3397,69 @@ window.em.oeffneEigenschaftenVonArt = function(id) {
 
 
 // HIER WEITER MIT NAMESPACE
-// VORHER: preventDefault weg
 
 
 
 
 // wenn Artenliste.html initiiert wird
-function handleAlPageinit() {
-	$(document).on("keypress", handleAlKeypress);
+window.em.handleAlPageinit = function() {
+	$(document).on("keypress", window.em.handleAlKeypress);
 
-	$("#al_Page").on("click", "#al_filter_setzen", handleAlAlFilterClick);
+	$("#al_Page").on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick);
 
-	$("#al_Page").on("click", ".ui-icon-delete", handleAlUiIconDeleteClick);
+	$("#al_Page").on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick);
 
-	$("#al_Page").on("click", "#al_standardgruppe", handleAlAlStandardgruppeClick);
+	$("#al_Page").on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
 
 	$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 		event.preventDefault();
-		handleAlArtListItemClick(this);
+		window.em.handleAlArtListItemClick(this);
 	});
-}
+};
 
 // wenn Artenliste.html gezeigt wird
-function handleAlPageshow() {
+window.em.handleAlPageshow = function() {
 	window.em.initiiereArtenliste("");
 	if (window.gruppe_merken) {
 		$("#al_standardgruppe").removeClass('ui-disabled');
 	} else {
 		$("#al_standardgruppe").addClass('ui-disabled');
 	}
-}
+};
 
 // wenn Artenliste.html verschwindet
-function handleAlPagehide() {
+window.em.handleAlPagehide = function() {
 	$("#al_ArtenListe").hide();
-}
+};
 
 // wenn in Artenliste.html eine Taste gedrückt wird
-function handleAlKeypress() {
+window.em.handleAlKeypress = function() {
 	if (event.which == 13) {
 		var filterwert = $("#al_filter").val().toLowerCase();
 		window.em.initiiereArtenliste(filterwert);
 	}
-}
+};
 
 // wenn in Artenliste.html #al_filter_setzen geklickt wird
-function handleAlAlFilterClick() {
+window.em.handleAlAlFilterClick = function() {
 	var filterwert = $("#al_filter").val().toLowerCase();
 	window.em.initiiereArtenliste(filterwert);
-}
+};
 
 // wenn in Artenliste.html .ui-icon-delete geklickt wird
-function handleAlUiIconDeleteClick() {
+window.em.handleAlUiIconDeleteClick = function() {
 	var filterwert = "";
 	window.em.initiiereArtenliste(filterwert);
-}
+};
 
 // wenn in Artenliste.html #al_standardgruppe geklickt wird
-function handleAlAlStandardgruppeClick() {
+window.em.handleAlAlStandardgruppeClick = function() {
 	delete window.gruppe_merken;
 	$.mobile.navigate("Artgruppenliste.html");
-}
+};
 
 // wenn in Artenliste.html [name='ArtListItem'] geklickt wird
-function handleAlArtListItemClick(that) {
+window.em.handleAlArtListItemClick = function(that) {
 	var ArtBezeichnung = $(that).attr("ArtBezeichnung");
 	localStorage.aArtId = $(that).attr("artid");
 	if (localStorage.Status === "neu") {
@@ -3468,7 +3467,7 @@ function handleAlArtListItemClick(that) {
 	} else {
 		window.em.speichereBeobNeueArtgruppeArt(ArtBezeichnung);
 	}
-}
+};
 
 // wenn Artgruppenliste.html erscheint
 function handleAglPageshow() {
