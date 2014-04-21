@@ -58,8 +58,8 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script charset="utf-8">
-			$("#FeldListePage").on("pageshow", handleFeldListePageshow);
-			$(":jqmData(role='page')").on("pageinit", handleFeldListePageinit);
+			$("#FeldListePage").on("pageshow", window.em.handleFeldListePageshow);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleFeldListePageinit);
 		</script>
 	</div>
   </body>

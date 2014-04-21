@@ -3779,14 +3779,6 @@ window.em.handleBeobEditMenuFelderVerwaltenClick = function() {
 	$.mobile.navigate("FeldListe.html");
 };
 
-
-
-
-// NAMESPACE WEITER
-
-
-
-
 // wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
 window.em.handleBeobEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
@@ -3972,12 +3964,12 @@ window.em.handleFeldEditPageinit = function() {
 
 	$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function(event) {
 		event.preventDefault();
-		handleFeldEditLoescheFeldFeldEditClick();
+		window.em.handleFeldEditLoescheFeldFeldEditClick();
 	});
 
-	$("#fe_löschen_meldung").on("click", "#fe_löschen_meldung_ja_loeschen", handleFeldEditFeLoeschenMeldungJaClick);
+	$("#fe_löschen_meldung").on("click", "#fe_löschen_meldung_ja_loeschen", window.em.handleFeldEditFeLoeschenMeldungJaClick);
 
-	$('#MenuFeldEdit').on('click', '.menu_datenfelder_exportieren', handleFeldEditMenuDatenfelderExportierenClick);
+	$('#MenuFeldEdit').on('click', '.menu_datenfelder_exportieren', window.em.handleFeldEditMenuDatenfelderExportierenClick);
 
 	$("#FeldEditHeader").on('click', '#zurueckFeldEdit', function(event) {
 		event.preventDefault();
@@ -4190,16 +4182,16 @@ window.em.handleFeldEditStandardwertChange = function() {
 
 // wenn in FeldEdit.htm #LoescheFeldFeldEdit geklickt wird
 // Beim Löschen rückfragen
-function handleFeldEditLoescheFeldFeldEditClick() {
+window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
 	if (Feld.User === "ZentrenBdKt") {
 		window.em.melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 	} else {
 		$("#fe_löschen_meldung").popup("open");
 	}
-}
+};
 
 // wenn in FeldEdit.htm #fe_löschen_meldung_ja_loeschen geklickt wird
-function handleFeldEditFeLoeschenMeldungJaClick() {
+window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 	if (!Feld.FeldName) {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 		loescheFeld();
@@ -4235,19 +4227,19 @@ function handleFeldEditFeLoeschenMeldungJaClick() {
 			}
 		});
 	}
-}
+};
 
 // wenn in FeldEdit.htm .menu_datenfelder_exportieren geklickt wird
-function handleFeldEditMenuDatenfelderExportierenClick() {
+window.em.handleFeldEditMenuDatenfelderExportierenClick = function() {
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
 	$("#MenuFeldEdit").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuFeldEdit").popup("close");
-}
+};
 
 // wenn FelderWaehlen.html erscheint
-function handleFelderWaehlenPageshow() {
+window.em.handleFelderWaehlenPageshow = function() {
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -4261,10 +4253,10 @@ function handleFelderWaehlenPageshow() {
 		return;
 	}
 	window.em.initiiereFelderWaehlen();
-}
+};
 
 // wenn FelderWaehlen.html verschwindet
-function handleFelderWaehlenPagehide() {
+window.em.handleFelderWaehlenPagehide = function() {
 	// globale Variabeln aufräumen
 	delete localStorage.FeldlisteFwName;
 	delete localStorage.KriterienFürZuWählendeFelder;
@@ -4272,10 +4264,10 @@ function handleFelderWaehlenPagehide() {
 	//delete localStorage.AufrufendeSeiteFW;
 	// verhindern, dass beim nächsten Mal zuerst die alten Felder angezeigt werden
 	$("#FeldlisteFW").empty();
-}
+};
 
 // wenn FelderWaehlen.html initiiert wird
-function handleFelderWaehlenPageinit() {
+window.em.handleFelderWaehlenPageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4292,20 +4284,20 @@ function handleFelderWaehlenPageinit() {
 		$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
 	});
 
-	$("#FeldlisteFW").on("change", "input[name='Felder']", handleFelderWaehlenInputFelderChange);
+	$("#FeldlisteFW").on("change", "input[name='Felder']", window.em.handleFelderWaehlenInputFelderChange);
 
 	// aus unbekanntem Grund funktioniert .on nicht aber .bind schon
 	$("#FeldlisteFW").bind("taphold", "input[name='Felder']", function(event) {
 		event.preventDefault();
 		// event.target ist immer das label
 		var FeldName = $(event.target).prop("for");
-		öffneFeld(FeldName);
+		window.em.öffneFeld(FeldName);
 	});
-}
+};
 
 // wenn in FelderWaehlen.html input[name='Felder'] geändert wird
 // Felder speichern (checkbox)
-function handleFelderWaehlenInputFelderChange() {
+window.em.handleFelderWaehlenInputFelderChange = function() {
 	var i,
 		FeldName = $(this).prop("id"),
 		FeldId = $(this).attr("feldid"),
@@ -4350,9 +4342,9 @@ function handleFelderWaehlenInputFelderChange() {
 			window.em.melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 		}
 	});
-}
+};
 
-function öffneFeld(FeldName) {
+window.em.öffneFeld = function(FeldName) {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"&include_docs=true', {
 		success: function (data) {
@@ -4361,19 +4353,19 @@ function öffneFeld(FeldName) {
 			$.mobile.navigate("FeldEdit.html");
 		}
 	});
-}
+};
 
 // wenn FeldListe.html erscheint
-function handleFeldListePageshow() {
+window.em.handleFeldListePageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 	}
 	window.em.initiiereFeldliste();
-}
+};
 
 // wenn FeldListe.html initiiert wird
-function handleFeldListePageinit() {
+window.em.handleFeldListePageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4388,7 +4380,7 @@ function handleFeldListePageinit() {
 
 	$("#FeldListeFL").on('click', '.Feld', function(event) {
 		event.preventDefault();
-		handleFeldListeFeldClick(this);
+		window.em.handleFeldListeFeldClick(this);
 	});
 
 	$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function(event) {
@@ -4396,38 +4388,38 @@ function handleFeldListePageinit() {
 		window.em.neuesFeld();
 	});
 
-	$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', handleFeldListeMenuDatenfelderExportierenClick);
+	$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', window.em.handleFeldListeMenuDatenfelderExportierenClick);
 
 	$("#FeldListeHeader").on('click', '#FeldListeBackButton', function(event) {
 		event.preventDefault();
-		handleFeldListeBackButtonClick();
+		window.em.handleFeldListeBackButtonClick();
 	});
-}
+};
 
 // wenn in FeldListe.html .Feld geklickt wird
 // Feld öffnen
-function handleFeldListeFeldClick(that) {
+window.em.handleFeldListeFeldClick = function(that) {
 	localStorage.FeldId = $(that).attr('FeldId');
 	$.mobile.navigate("FeldEdit.html");
-}
+};
 
 // wenn in FeldListe.html .menu_datenfelder_exportieren geklickt wird
-function handleFeldListeMenuDatenfelderExportierenClick() {
+window.em.handleFeldListeMenuDatenfelderExportierenClick = function() {
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
 	$("#MenuFeldListe").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuFeldListe").popup("close");
-}
+};
 
 // wenn in FeldListe.html #FeldListeBackButton geklickt wird
-function handleFeldListeBackButtonClick() {
+window.em.handleFeldListeBackButtonClick = function() {
 	$.mobile.navigate(localStorage.zurueck);
 	delete localStorage.zurueck;
-}
+};
 
 // wenn hArtEdit.html erscheint
-function handleHArtEditPageshow() {
+window.em.handleHArtEditPageshow = function() {
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -4441,7 +4433,7 @@ function handleHArtEditPageshow() {
 		return;
 	}
 	window.em.initiierehBeobEdit();
-}
+};
 
 // wenn hArtEdit.html initiiert wird
 function handleHArtEditPageinit() {
@@ -4582,6 +4574,16 @@ function handleHArtEditPageinit() {
 
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', handleHArtEditMenuNeuAnmeldenClick);
 }
+
+
+
+
+
+// NAMESPACE
+
+
+
+
 
 // wenn hArtListe.html erscheint
 function handleHArtListePageshow() {

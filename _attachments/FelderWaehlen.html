@@ -50,11 +50,11 @@
 		<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script>
-			$("#FelderWaehlenPage").on("pageshow", handleFelderWaehlenPageshow);
+			$("#FelderWaehlenPage").on("pageshow", window.em.handleFelderWaehlenPageshow);
 
-			$("#FelderWaehlenPage").on("pagehide", handleFelderWaehlenPagehide);
+			$("#FelderWaehlenPage").on("pagehide", window.em.handleFelderWaehlenPagehide);
 
-			$(":jqmData(role='page')").on("pageinit", handleFelderWaehlenPageinit);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleFelderWaehlenPageinit);
 		</script>
 	</div>
   </body>
