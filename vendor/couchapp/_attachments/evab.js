@@ -3650,20 +3650,14 @@ window.em.handleBeobEditPageinit = function() {
 
 	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleBeobEditMenuFelderVerwaltenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', handleBeobEditMenuBeobExportierenClick);
+	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleBeobEditMenuBeobExportierenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_einstellungen', handleBeobEditMenuEinstellungenClick);
+	$('#MenuBeobEdit').on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', handleBeobEditMenuLokalInstallierenClick);
+	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', window.em.handleBeobEditMenuLokalInstallierenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', handleBeobEditMenuNeuAnmeldenClick);
+	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleBeobEditMenuNeuAnmeldenClick);
 };
-
-
-
-// NAMESPACE WEITER
-
-
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
 window.em.handleOeffneBeobListeBeobEditClick = function() {
@@ -3785,45 +3779,53 @@ window.em.handleBeobEditMenuFelderVerwaltenClick = function() {
 	$.mobile.navigate("FeldListe.html");
 };
 
+
+
+
+// NAMESPACE WEITER
+
+
+
+
 // wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
-function handleBeobEditMenuBeobExportierenClick() {
+window.em.handleBeobEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
 	$("#MenuBeobEdit").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuBeobEdit").popup("close");
-}
+};
 
 // wenn in BeobEdit.html .menu_einstellungen geklickt wird
-function handleBeobEditMenuEinstellungenClick() {
+window.em.handleBeobEditMenuEinstellungenClick = function() {
 	localStorage.zurueck = "BeobEdit.html";
 	window.em.öffneMeineEinstellungen();
-}
+};
 
 // wenn in BeobEdit.html .menu_lokal_installieren geklickt wird
-function handleBeobEditMenuLokalInstallierenClick() {
+window.em.handleBeobEditMenuLokalInstallierenClick = function() {
 	localStorage.zurueck = "BeobEdit.html";
 	$.mobile.navigate("Installieren.html");
-}
+};
 
 // wenn in BeobEdit.html .menu_neu_anmelden geklickt wird
-function handleBeobEditMenuNeuAnmeldenClick() {
+window.em.handleBeobEditMenuNeuAnmeldenClick = function() {
 	localStorage.UserStatus = "neu";
 	$.mobile.navigate("index.html");
-}
+};
 
 // wenn BeobListe.html erscheint
-function handleBeobListePageshow() {
+window.em.handleBeobListePageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
 	}
 	window.em.initiiereBeobliste();
-}
+};
 
 // Wenn BeobListe.html initiiert wird
-function handleBeobListePageinit() {
+window.em.handleBeobListePageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -3832,13 +3834,13 @@ function handleBeobListePageinit() {
 		return;
 	}
 
-	$("#BeoblisteBL").on("swipeleft click", ".beob", handleBeobListeBeobSwipeleftClick);
+	$("#BeoblisteBL").on("swipeleft click", ".beob", window.em.handleBeobListeBeobSwipeleftClick);
 
-	$("#BeoblisteBL").on("taphold", ".beob", handleBeobListeBeobTaphold);
+	$("#BeoblisteBL").on("taphold", ".beob", window.em.handleBeobListeBeobTaphold);
 
 	$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function(event) {
 		event.preventDefault();
-		handleBeobListeOeffneKarteBeobListeClick();
+		window.em.handleBeobListeOeffneKarteBeobListeClick();
 	});
 
 	$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function(event) {
@@ -3853,87 +3855,87 @@ function handleBeobListePageinit() {
 
 	$("#BeoblisteBL").on("swipeleft", ".erste", erstelleNeueBeob_1_Artgruppenliste);
 
-	$("#BeobListePage").on("swiperight", "#BeobListePageContent", handleBeobListeBeobListePageContentSwiperight);
+	$("#BeobListePage").on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
 
-	$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', handleBeobListeMenuHierarchischerModusClick);
+	$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', window.em.handleBeobListeMenuHierarchischerModusClick);
 
-	$('#MenuBeobListe').on('click', '.menu_felder_verwalten', handleBeobListeMenuFelderVerwaltenClick);
+	$('#MenuBeobListe').on('click', '.menu_felder_verwalten', window.em.handleBeobListeMenuFelderVerwaltenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_beob_exportieren', handleBeobListeMenuBeobExportierenClick);
+	$('#MenuBeobListe').on('click', '.menu_beob_exportieren', window.em.handleBeobListeMenuBeobExportierenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_einstellungen', handleBeobListeMenuEinstellungenClick);
+	$('#MenuBeobListe').on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_lokal_installieren', handleBeobListeMenuLokalInstallierenClick);
+	$('#MenuBeobListe').on('click', '.menu_lokal_installieren', window.em.handleBeobListeMenuLokalInstallierenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', handleBeobListeMenuNeuAnmeldenClick);
-}
+	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.handleBeobListeMenuNeuAnmeldenClick);
+};
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
-function handleBeobListeBeobSwipeleftClick() {
+window.em.handleBeobListeBeobSwipeleftClick = function() {
 	localStorage.BeobId = $(this).attr('id');
 	$.mobile.navigate("BeobEdit.html");
-}
+};
 
 // wenn in BeobListe.html .beob taphold
-function handleBeobListeBeobTaphold() {
+window.em.handleBeobListeBeobTaphold = function() {
 	// FUNKTIONIERT NICHT, WEIL JQUERY MOBILE NACH TAPHOLD IMMER EINEN TAP AUSFÜHRT!!!!!!!!!!!!!!!	
 	console.log('taphold');
-}
+};
 
 // wenn in BeobListe.html #OeffneKarteBeobListe geklickt wird
-function handleBeobListeOeffneKarteBeobListeClick() {
+window.em.handleBeobListeOeffneKarteBeobListeClick = function() {
 	localStorage.zurueck = "BeobListe";
 	$.mobile.navigate("Karte.html");
-}
+};
 
 // wenn in BeobListe.html #BeobListePageContent nach rechts gewischt wird
-function handleBeobListeBeobListePageContentSwiperight() {
+window.em.handleBeobListeBeobListePageContentSwiperight = function() {
 	$.mobile.navigate("hProjektListe.html");
-}
+};
 
 // wenn in BeobListe.html .menu_hierarchischer_modus geklickt wird
-function handleBeobListeMenuHierarchischerModusClick() {
+window.em.handleBeobListeMenuHierarchischerModusClick = function() {
 	$.mobile.navigate("hProjektListe.html");
-}
+};
 
 // wenn in BeobListe.html .menu_felder_verwalten geklickt wird
-function handleBeobListeMenuFelderVerwaltenClick() {
+window.em.handleBeobListeMenuFelderVerwaltenClick = function() {
 	localStorage.zurueck = "BeobListe.html";
 	$.mobile.navigate("FeldListe.html");
-}
+};
 
 // wenn in BeobListe.html .menu_beob_exportieren geklickt wird
-function handleBeobListeMenuBeobExportierenClick() {
+window.em.handleBeobListeMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
 	$("#MenuBeobListe").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuBeobListe").popup("close");
-}
+};
 
 // wenn in BeobListe.html .menu_einstellungen geklickt wird
-function handleBeobListeMenuEinstellungenClick() {
+window.em.handleBeobListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "BeobListe.html";
 	window.em.öffneMeineEinstellungen();
-}
+};
 
 // wenn in BeobListe.html .menu_lokal_installieren geklickt wird
-function handleBeobListeMenuLokalInstallierenClick() {
+window.em.handleBeobListeMenuLokalInstallierenClick = function() {
 	localStorage.zurueck = "BeobListe.html";
 	$.mobile.navigate("Installieren.html");
-}
+};
 
 // wenn in BeobListe.html .menu_neu_anmelden geklickt wird
-function handleBeobListeMenuNeuAnmeldenClick() {
+window.em.handleBeobListeMenuNeuAnmeldenClick = function() {
 	localStorage.UserStatus = "neu";
 	$.mobile.navigate("index.html");
-}
+};
 
 // wenn FeldEdit.html erscheint
 // Sollte keine id vorliegen, zu FeldListe.html wechseln
 // das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 // oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
-function handleFeldEditPageshow() {
+window.em.handleFeldEditPageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -3942,11 +3944,11 @@ function handleFeldEditPageshow() {
 		window.em.geheZurueckFE();
 	}
 	window.em.initiiereFeldEdit();
-}
+};
 
 // wenn FeldEdit.html initiiert wird
 // Code, der nur beim ersten Aufruf der Seite laufen soll
-function handleFeldEditPageinit() {
+window.em.handleFeldEditPageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -3957,16 +3959,16 @@ function handleFeldEditPageinit() {
 		$.mobile.navigate("BeobListe.html");
 	}
 
-	$("#FeldEditContent").on("change", ".Feldeigenschaften", handleFeldEditFeldeigenschaftenChange);
+	$("#FeldEditContent").on("change", ".Feldeigenschaften", window.em.handleFeldEditFeldeigenschaftenChange);
 
-	$("#FeldEditForm").on("change", "#FeldFolgtNach", handleFeldEditFeldFolgtNachChange);
+	$("#FeldEditForm").on("change", "#FeldFolgtNach", window.em.handleFeldEditFeldFolgtNachChange);
 
 	$("#FeldEditFooter").on("click", "#NeuesFeldFeldEdit", function(event) {
 		event.preventDefault();
 		window.em.neuesFeld();
 	});
 
-	$("#UserFeldForm").on("change", "#Standardwert", handleFeldEditStandardwertChange);
+	$("#UserFeldForm").on("change", "#Standardwert", window.em.handleFeldEditStandardwertChange);
 
 	$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function(event) {
 		event.preventDefault();
@@ -4013,11 +4015,11 @@ function handleFeldEditPageinit() {
 			}
 		}
 	});
-}
+};
 
 // wenn in FeldEdit.htm .Feldeigenschaften geändert wird
 // jedes Feld aus Feldeigenschaften bei Änderung speichern
-function handleFeldEditFeldeigenschaftenChange() {
+window.em.handleFeldEditFeldeigenschaftenChange = function() {
 	var AlterFeldWert;
 
 	localStorage.FeldWert = this.value;
@@ -4113,14 +4115,14 @@ function handleFeldEditFeldeigenschaftenChange() {
 }
 
 // wenn in FeldEdit.htm #FeldFolgtNach geändert wird
-function handleFeldEditFeldFolgtNachChange() {
+window.em.handleFeldEditFeldFolgtNachChange = function() {
 	setzeReihenfolgeMitVorgaenger(this.value);
 	// Feldliste soll neu aufgebaut werden
 	delete window.Feldliste;
-}
+};
 
 // wenn in FeldEdit.htm #Standardwert geändert wird
-function handleFeldEditStandardwertChange() {
+window.em.handleFeldEditStandardwertChange = function() {
 	var Optionen = $("#Optionen").val() || [],	// undefined verhindern
 		Feldwert = this.value || [],	// undefined verhindern
 		LetzterFeldwert, 
@@ -4184,7 +4186,7 @@ function handleFeldEditStandardwertChange() {
 		// Es gibt keine Optionen. Alle Standardwerte akzeptieren
 		speichereStandardwert();
 	}
-}
+};
 
 // wenn in FeldEdit.htm #LoescheFeldFeldEdit geklickt wird
 // Beim Löschen rückfragen

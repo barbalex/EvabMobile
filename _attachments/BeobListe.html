@@ -64,8 +64,8 @@
 			<script src="vendor/couchapp/markerwithlabel.js"></script>
 			
 			<script charset="utf-8">
-				$("#BeobListePage").on("pageshow", handleBeobListePageshow);
-				$(":jqmData(role='page')").on("pageinit", handleBeobListePageinit);
+				$("#BeobListePage").on("pageshow", window.em.handleBeobListePageshow);
+				$(":jqmData(role='page')").on("pageinit", window.em.handleBeobListePageinit);
 			</script>
 		</div>
 	</body>

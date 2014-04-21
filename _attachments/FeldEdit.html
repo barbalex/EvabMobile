@@ -204,8 +204,8 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 
 		<script>
-			$("#FeldEditPage").on("pageshow", handleFeldEditPageshow);
-			$(":jqmData(role='page')").on("pageinit", handleFeldEditPageinit);
+			$("#FeldEditPage").on("pageshow", window.em.handleFeldEditPageshow);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleFeldEditPageinit);
 		</script>
 	</div>
   </body>
