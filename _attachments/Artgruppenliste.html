@@ -46,9 +46,9 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script charset="utf-8">
-			$("#agl_Page").on("pageshow", handleAglPageshow);
-			$("#agl_Page").on("pagehide", handleAglPagehide);
-			$(":jqmData(role='page')").on("pageinit", handleAglPageinit);
+			$("#agl_Page").on("pageshow", window.em.handleAglPageshow);
+			$("#agl_Page").on("pagehide", window.em.handleAglPagehide);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleAglPageinit);
 		</script>
 	</div>
   </body>

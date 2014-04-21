@@ -128,9 +128,9 @@
 		<script src="vendor/couchapp/markerwithlabel.js"></script>
 		
 		<script>
-			$("#BeobEditPage").on("pageshow", handleBeobEditPageshow);
-			$("#BeobEditPage").on("pagehide", handleBeobEditPagehide);
-			$(":jqmData(role='page')").on("pageinit", handleBeobEditPageinit);
+			$("#BeobEditPage").on("pageshow", window.em.handleBeobEditPageshow);
+			$("#BeobEditPage").on("pagehide", window.em.handleBeobEditPagehide);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleBeobEditPageinit);
 		</script>
 	</div>
   </body>

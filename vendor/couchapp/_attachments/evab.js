@@ -3470,40 +3470,40 @@ window.em.handleAlArtListItemClick = function(that) {
 };
 
 // wenn Artgruppenliste.html erscheint
-function handleAglPageshow() {
+window.em.handleAglPageshow = function() {
 	window.em.erstelleArtgruppenListe();
 	delete window.gruppe_merken;
-}
+};
 
 // wenn Artgruppenliste.html verschwindet
-function handleAglPagehide() {
+window.em.handleAglPagehide = function() {
 	$("#agl_standardgruppe").html("nächste Gruppe merken");
-}
+};
 
 // wenn Artgruppenliste.html initiiert wird
-function handleAglPageinit() {
+window.em.handleAglPageinit = function() {
 	// Vorsicht: Genauer als body funktioniert hier nicht,
 	// weil die nested List im DOM jedes mal eine eigene Page aufbaut
 	$("body").on("click", "[name='ArtgruppenListItem']", function(event) {
 		event.preventDefault();
-		handleAglArtgruppenListItemClick(this);
+		window.em.handleAglArtgruppenListItemClick(this);
 	});
 
-	$("#agl_Page").on("click", "#agl_standardgruppe", handleAglAglStandardgruppeClick);
-}
+	$("#agl_Page").on("click", "#agl_standardgruppe", window.em.handleAglAglStandardgruppeClick);
+};
 
 // wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
-function handleAglArtgruppenListItemClick(that) {
+window.em.handleAglArtgruppenListItemClick = function(that) {
 	localStorage.aArtGruppe = $(that).attr("ArtGruppe");
 	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
 	if (window.gruppe_merken) {
 		window.gruppe_merken = $(that).attr("ArtGruppe");
 	}
 	$.mobile.navigate("Artenliste.html");
-}
+};
 
 // wenn in Artgruppenliste.html #agl_standardgruppe geklickt wird
-function handleAglAglStandardgruppeClick() {
+window.em.handleAglAglStandardgruppeClick = function() {
 	if ($(this).html() === "nächste Gruppe merken") {
 		window.gruppe_merken = true;
 		$(this).html("nächste Gruppe wird gemerkt");
@@ -3511,10 +3511,10 @@ function handleAglAglStandardgruppeClick() {
 		delete window.gruppe_merken;
 		$(this).html("nächste Gruppe merken");
 	}
-}
+};
 
 // wenn BeobEdit.html erscheint
-function handleBeobEditPageshow() {
+window.em.handleBeobEditPageshow = function() {
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -3528,17 +3528,17 @@ function handleBeobEditPageshow() {
 		return;
 	}
 	window.em.initiiereBeobEdit();
-}
+};
 
 // wenn BeobEdit.html verschwindet
-function handleBeobEditPagehide() {
+window.em.handleBeobEditPagehide = function() {
 	if (typeof watchID !== "undefined") {
 		window.em.stopGeolocation();
 	}
-}
+};
 
 // wenn BeobEdit.html initiiert wird
-function handleBeobEditPageinit() {
+window.em.handleBeobEditPageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -3551,29 +3551,29 @@ function handleBeobEditPageinit() {
 		return;
 	}
 
-	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", handleOeffneBeobListeBeobEditClick);
+	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", window.em.handleOeffneBeobListeBeobEditClick);
 
 	$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function(event) {
 		event.preventDefault();
-		handleNeueBeobBeobEditClick();
+		window.em.handleNeueBeobBeobEditClick();
 	});
 
 	$("#BeobEditForm").on("click", "[name='aArtGruppe']", function(event) {
 		event.preventDefault();
-		handleBeobEditAArtGruppeClick();
+		window.em.handleBeobEditAArtGruppeClick();
 	});
 
 	$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function(event) {
 		event.preventDefault();
-		handleWaehleFelderBeobEditClick();
+		window.em.handleWaehleFelderBeobEditClick();
 	});
 
 	$("#BeobEditForm").on('click', '[name="aArtName"]', function(event) {
 		event.preventDefault();
-		handleBeobEditAArtnameClick();
+		window.em.handleBeobEditAArtnameClick();
 	});
 
-	$("#BeobEditForm").on("change", ".speichern", handleBeobEditSpeichernChange);
+	$("#BeobEditForm").on("change", ".speichern", window.em.handleBeobEditSpeichernChange);
 
 	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', function() {
 		// Eingabe im Zahlenfeld abfangen (blur)
@@ -3586,11 +3586,11 @@ function handleBeobEditPageinit() {
 		speichereBeob(this);
 	});
 
-	$("#FormAnhängeBE").on("change", ".speichernAnhang", handleBeobEditSpeichernAnhangChange);
+	$("#FormAnhängeBE").on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange);
 
 	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function(event) {
 		event.preventDefault();
-		handleBeobEditOeffneKarteClick();
+		window.em.handleBeobEditOeffneKarteClick();
 	});
 
 	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function(event) {
@@ -3605,9 +3605,9 @@ function handleBeobEditPageinit() {
 
 	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", löscheBeob);
 
-	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", handleBeobEditContentSwipeleft);
+	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft);
 
-	$("#BeobEditPage").on("swiperight", "#BeobEditContent", handleBeobEditContentSwiperight);
+	$("#BeobEditPage").on("swiperight", "#BeobEditContent", window.em.handleBeobEditContentSwiperight);
 
 	$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
@@ -3644,11 +3644,11 @@ function handleBeobEditPageinit() {
 		window.em.loescheAnhang(this, window.Beobachtung, localStorage.BeobId);
 	});
 
-	$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', handleBeobEditMenuArteigenschaftenClick);
+	$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', window.em.handleBeobEditMenuArteigenschaftenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', handleBeobEditMenuHierarchischerModusClick);
+	$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', window.em.handleBeobEditMenuHierarchischerModusClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', handleBeobEditMenuFelderVerwaltenClick);
+	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleBeobEditMenuFelderVerwaltenClick);
 
 	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', handleBeobEditMenuBeobExportierenClick);
 
@@ -3657,17 +3657,23 @@ function handleBeobEditPageinit() {
 	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', handleBeobEditMenuLokalInstallierenClick);
 
 	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', handleBeobEditMenuNeuAnmeldenClick);
-}
+};
+
+
+
+// NAMESPACE WEITER
+
+
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
-function handleOeffneBeobListeBeobEditClick() {
+window.em.handleOeffneBeobListeBeobEditClick = function() {
 	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("BeobListe.html");
-}
+};
 
 // wenn in BeobEdit.html #NeueBeobBeobEdit geklickt wird
 // neue Beobachtung erfassen
-function handleNeueBeobBeobEditClick() {
+window.em.handleNeueBeobBeobEditClick = function() {
 	// Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
@@ -3679,11 +3685,11 @@ function handleNeueBeobBeobEditClick() {
 	} else {
 		$.mobile.navigate("Artgruppenliste.html");
 	}
-}
+};
 
 // wenn in BeobEdit.html [name='aArtGruppe'] geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von Artgruppe
-function handleBeobEditAArtGruppeClick() {
+window.em.handleBeobEditAArtGruppeClick = function() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	delete localStorage.Status;	// ja kein Status neu
@@ -3695,27 +3701,27 @@ function handleBeobEditAArtGruppeClick() {
 	} else {
 		$.mobile.navigate("Artgruppenliste.html");
 	}
-}
+};
 
 // wenn in BeobEdit.html #waehleFelderBeobEdit geklickt wird
 // sichtbare Felder wählen
-function handleWaehleFelderBeobEditClick() {
+window.em.handleWaehleFelderBeobEditClick = function() {
 	localStorage.AufrufendeSeiteFW = "BeobEdit";
 	$.mobile.navigate("FelderWaehlen.html");
-}
+};
 
 // wenn in BeobEdit.html [name="aArtName"] geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von ArtName
-function handleBeobEditAArtnameClick() {
+window.em.handleBeobEditAArtnameClick = function() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Von = "BeobEdit";
 	$.mobile.navigate("Artenliste.html");
-}
+};
 
 // wenn in BeobEdit.html .speichern geändert wird
 // Für jedes Feld bei Änderung speichern
-function handleBeobEditSpeichernChange() {
+window.em.handleBeobEditSpeichernChange = function() {
 	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 		// Wenn Koordinaten und beide erfasst
 		localStorage.oXKoord = $("[name='oXKoord']").val();
@@ -3729,55 +3735,55 @@ function handleBeobEditSpeichernChange() {
 	} else {
 		speichereBeob(this);
 	}
-}
+};
 
 // wenn in BeobEdit.html .speichernAnhang geändert wird
 // Änderungen im Formular für Anhänge speichern
-function handleBeobEditSpeichernAnhangChange() {
+window.em.handleBeobEditSpeichernAnhangChange = function() {
 	var _attachments = $("#_attachmentsBE").val();
 	if (_attachments && _attachments.length !== 0) {
 		window.em.speichereAnhänge(localStorage.BeobId, window.Beobachtung, "BE");
 	}
-}
+};
 
 // wenn in BeobEdit.html #OeffneKarteBeobEdit geklickt wird
-function handleBeobEditOeffneKarteClick() {
+window.em.handleBeobEditOeffneKarteClick = function() {
 	localStorage.zurueck = "BeobEdit";
 	$.mobile.navigate("Karte.html");
-}
+};
 
 // wenn in BeobEdit.html auf #BeobEditContent nach links gewischt wird
-function handleBeobEditContentSwipeleft() {
+window.em.handleBeobEditContentSwipeleft = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		nächsteVorigeBeob("nächste");
 	}
-}
+};
 
 // wenn in BeobEdit.html auf #BeobEditContent nach rechts gewischt wird
-function handleBeobEditContentSwiperight() {
+window.em.handleBeobEditContentSwiperight = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		nächsteVorigeBeob("vorige");
 	}
-}
+};
 
 // wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
-function handleBeobEditMenuArteigenschaftenClick() {
+window.em.handleBeobEditMenuArteigenschaftenClick = function() {
 	window.em.oeffneEigenschaftenVonArt(window.Beobachtung.aArtId);
-}
+};
 
 // wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
-function handleBeobEditMenuHierarchischerModusClick() {
+window.em.handleBeobEditMenuHierarchischerModusClick = function() {
 	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("hProjektListe.html");
-}
+};
 
 // wenn in BeobEdit.html .menu_felder_verwalten geklickt wird
-function handleBeobEditMenuFelderVerwaltenClick() {
+window.em.handleBeobEditMenuFelderVerwaltenClick = function() {
 	localStorage.zurueck = "BeobEdit.html";
 	$.mobile.navigate("FeldListe.html");
-}
+};
 
 // wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
 function handleBeobEditMenuBeobExportierenClick() {
