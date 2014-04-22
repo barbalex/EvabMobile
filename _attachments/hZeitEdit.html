@@ -429,9 +429,9 @@
 								setTimeout("window.ZuletztGespeicherteZeitId = window.ZeitIdZwischenspeicher", 1000);
 								setTimeout("delete window.ZeitIdZwischenspeicher", 1500);
 								// nicht aktualisierte hierarchisch tiefere Listen löschen
-								delete window.ArtenVonProjekt;
-								delete window.ArtenVonRaum;
-								delete window.ArtenVonOrt;
+								delete window.em.ArtenVonProjekt;
+								delete window.em.ArtenVonRaum;
+								delete window.em.ArtenVonOrt;
 							},
 							error: function () {
 								console.log('fehler in function speichern_2(that)');

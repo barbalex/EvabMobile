@@ -433,11 +433,11 @@
 								setTimeout("delete window.RaumIdZwischenspeicher", 1500);
 								// nicht aktualisierte hierarchisch tiefere Listen löschen
 								delete window.OrteVonProjekt;
-								delete window.ZeitenVonProjekt;
-								delete window.ZeitenVonOrt;
-								delete window.ArtenVonProjekt;
-								delete window.ArtenVonOrt;
-								delete window.ArtenVonZeit;
+								delete window.em.ZeitenVonProjekt;
+								delete window.em.ZeitenVonOrt;
+								delete window.em.ArtenVonProjekt;
+								delete window.em.ArtenVonOrt;
+								delete window.em.ArtenVonZeit;
 							},
 							error: function () {
 								console.log('fehler in function speichern_2(that)');

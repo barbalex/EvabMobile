@@ -2739,14 +2739,14 @@ window.em.initiiereFelderWaehlen = function() {
 	// Für FelderWaehlen.html könnte an sich immer die vollständige Liste verwendet werden
 	// besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
 	// darum wird hier für jede Seite eine eigene verwendet
-	if (window[localStorage.FeldlisteFwName]) {
+	if (window.em[localStorage.FeldlisteFwName]) {
 		window.em.initiiereFelderWaehlen_2();
 	} else {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
 			success: function (data) {
-				window[localStorage.FeldlisteFwName] = data;
+				window.em[localStorage.FeldlisteFwName] = data;
 				window.em.initiiereFelderWaehlen_2();
 			}
 		});
@@ -2761,8 +2761,8 @@ window.em.initiiereFelderWaehlen_2 = function() {
 		FeldName,
 		FeldBeschriftung,
 		ListItem;
-	for (i in window[localStorage.FeldlisteFwName].rows) {
-		Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
+	for (i in window.em[localStorage.FeldlisteFwName].rows) {
+		Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
 		FeldName = Feld.FeldName;
 		// Nur eigene und offizielle Felder berücksichtigen
 		if (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") {
@@ -3106,7 +3106,7 @@ window.em.leereAlleVariabeln = function(ohneClear) {
 window.em.leereStorageProjektListe = function(mitLatLngListe) {
 	delete window.em.Projektliste;
 	if (mitLatLngListe) {
-		delete window.hOrteLatLngProjektliste;
+		delete window.em.hOrteLatLngProjektliste;
 	}
 };
 
@@ -3117,27 +3117,27 @@ window.em.leereStorageProjektEdit = function(mitLatLngListe, ohneId) {
 	}
 	delete window.em.hProjekt;
 	if (mitLatLngListe) {
-		delete window.hOrteLatLngProjekt;
+		delete window.em.hOrteLatLngProjekt;
 	}
 	// hierarchisch tiefere Listen löschen
-	delete window.RaeumeVonProjekt;
-	delete window.OrteVonProjekt;
-	delete window.OrteVonRaum;
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
+	delete window.em.RaeumeVonProjekt;
+	delete window.em.OrteVonProjekt;
+	delete window.em.OrteVonRaum;
+	delete window.em.ZeitenVonProjekt;
+	delete window.em.ZeitenVonRaum;
+	delete window.em.ZeitenVonOrt;
+	delete window.em.ArtenVonProjekt;
+	delete window.em.ArtenVonRaum;
+	delete window.em.ArtenVonOrt;
+	delete window.em.ArtenVonZeit;
 };
 
 window.em.leereStorageRaumListe = function(mitLatLngListe) {
 	delete window.em.RaumListe;
 	if (mitLatLngListe) {
-		delete window.hOrteLatLngProjekt;
+		delete window.em.hOrteLatLngProjekt;
 	}
-	delete window.RaeumeVonProjekt;
+	delete window.em.RaeumeVonProjekt;
 };
 
 window.em.leereStorageRaumEdit = function(mitLatLngListe, ohneId) {
@@ -3146,27 +3146,27 @@ window.em.leereStorageRaumEdit = function(mitLatLngListe, ohneId) {
 	}
 	delete window.em.hRaum;
 	if (mitLatLngListe) {
-		delete window.hOrteLatLngRaum;
+		delete window.em.hOrteLatLngRaum;
 	}
 	// hierarchisch tiefere Listen löschen
-	delete window.OrteVonProjekt;
-	delete window.OrteVonRaum;
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
+	delete window.em.OrteVonProjekt;
+	delete window.em.OrteVonRaum;
+	delete window.em.ZeitenVonProjekt;
+	delete window.em.ZeitenVonRaum;
+	delete window.em.ZeitenVonOrt;
+	delete window.em.ArtenVonProjekt;
+	delete window.em.ArtenVonRaum;
+	delete window.em.ArtenVonOrt;
+	delete window.em.ArtenVonZeit;
 };
 
 window.em.leereStorageOrtListe = function(mitLatLngListe) {
 	delete window.em.OrtListe;
 	if (mitLatLngListe) {
-		delete window.hOrteLatLngRaum;
+		delete window.em.hOrteLatLngRaum;
 	}
-	delete window.OrteVonProjekt;
-	delete window.OrteVonRaum;
+	delete window.em.OrteVonProjekt;
+	delete window.em.OrteVonRaum;
 };
 
 window.em.leereStorageOrtEdit = function(ohneId) {
@@ -3183,13 +3183,13 @@ window.em.leereStorageOrtEdit = function(ohneId) {
 	delete localStorage.aArtName;
 	delete localStorage.aArtGruppe;
 	// hierarchisch tiefere Listen löschen
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
+	delete window.em.ZeitenVonProjekt;
+	delete window.em.ZeitenVonRaum;
+	delete window.em.ZeitenVonOrt;
+	delete window.em.ArtenVonProjekt;
+	delete window.em.ArtenVonRaum;
+	delete window.em.ArtenVonOrt;
+	delete window.em.ArtenVonZeit;
 	// allfällige Lokalisierung abbrechen
 	if (typeof window.em.watchID !== "undefined") {
 		window.em.stopGeolocation();
@@ -3198,9 +3198,9 @@ window.em.leereStorageOrtEdit = function(ohneId) {
 
 window.em.leereStorageZeitListe = function() {
 	delete window.em.ZeitListe;
-	delete window.ZeitenVonProjekt;
-	delete window.ZeitenVonRaum;
-	delete window.ZeitenVonOrt;
+	delete window.em.ZeitenVonProjekt;
+	delete window.em.ZeitenVonRaum;
+	delete window.em.ZeitenVonOrt;
 };
 
 window.em.leereStorageZeitEdit = function(ohneId) {
@@ -3209,18 +3209,18 @@ window.em.leereStorageZeitEdit = function(ohneId) {
 	}
 	delete window.em.hZeit;
 	// hierarchisch tiefere Listen löschen
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
+	delete window.em.ArtenVonProjekt;
+	delete window.em.ArtenVonRaum;
+	delete window.em.ArtenVonOrt;
+	delete window.em.ArtenVonZeit;
 };
 
 window.em.leereStoragehBeobListe = function() {
 	delete window.em.hBeobListe;
-	delete window.ArtenVonProjekt;
-	delete window.ArtenVonRaum;
-	delete window.ArtenVonOrt;
-	delete window.ArtenVonZeit;
+	delete window.em.ArtenVonProjekt;
+	delete window.em.ArtenVonRaum;
+	delete window.em.ArtenVonOrt;
+	delete window.em.ArtenVonZeit;
 };
 
 window.em.leereStoragehBeobEdit = function(ohneId) {
@@ -3232,7 +3232,7 @@ window.em.leereStoragehBeobEdit = function(ohneId) {
 
 window.em.leereStorageBeobListe = function() {
 	delete window.em.BeobListe;
-	delete window.BeobListeLatLng;
+	delete window.em.BeobListeLatLng;
 };
 
 window.em.leereStorageBeobEdit = function(ohneId) {
@@ -3420,7 +3420,7 @@ window.em.handleAlPageinit = function() {
 // wenn Artenliste.html gezeigt wird
 window.em.handleAlPageshow = function() {
 	window.em.initiiereArtenliste("");
-	if (window.gruppe_merken) {
+	if (window.em.gruppe_merken) {
 		$("#al_standardgruppe").removeClass('ui-disabled');
 	} else {
 		$("#al_standardgruppe").addClass('ui-disabled');
@@ -3454,7 +3454,7 @@ window.em.handleAlUiIconDeleteClick = function() {
 
 // wenn in Artenliste.html #al_standardgruppe geklickt wird
 window.em.handleAlAlStandardgruppeClick = function() {
-	delete window.gruppe_merken;
+	delete window.em.gruppe_merken;
 	$.mobile.navigate("Artgruppenliste.html");
 };
 
@@ -3472,7 +3472,7 @@ window.em.handleAlArtListItemClick = function(that) {
 // wenn Artgruppenliste.html erscheint
 window.em.handleAglPageshow = function() {
 	window.em.erstelleArtgruppenListe();
-	delete window.gruppe_merken;
+	delete window.em.gruppe_merken;
 };
 
 // wenn Artgruppenliste.html verschwindet
@@ -3496,8 +3496,8 @@ window.em.handleAglPageinit = function() {
 window.em.handleAglArtgruppenListItemClick = function(that) {
 	localStorage.aArtGruppe = $(that).attr("ArtGruppe");
 	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
-	if (window.gruppe_merken) {
-		window.gruppe_merken = $(that).attr("ArtGruppe");
+	if (window.em.gruppe_merken) {
+		window.em.gruppe_merken = $(that).attr("ArtGruppe");
 	}
 	$.mobile.navigate("Artenliste.html");
 };
@@ -3505,10 +3505,10 @@ window.em.handleAglArtgruppenListItemClick = function(that) {
 // wenn in Artgruppenliste.html #agl_standardgruppe geklickt wird
 window.em.handleAglAglStandardgruppeClick = function() {
 	if ($(this).html() === "nächste Gruppe merken") {
-		window.gruppe_merken = true;
+		window.em.gruppe_merken = true;
 		$(this).html("nächste Gruppe wird gemerkt");
 	} else {
-		delete window.gruppe_merken;
+		delete window.em.gruppe_merken;
 		$(this).html("nächste Gruppe merken");
 	}
 };
@@ -3670,7 +3670,7 @@ window.em.handleNeueBeobBeobEditClick = function() {
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "BeobEdit";
-	if (window.gruppe_merken) {
+	if (window.em.gruppe_merken) {
 		// Artgruppenliste auslassen
 		// localStorage.ArtGruppe ist schon gesetzt
 		$.mobile.navigate("Artenliste.html");
@@ -3686,7 +3686,7 @@ window.em.handleBeobEditAArtGruppeClick = function() {
 	window.em.leereStorageBeobListe();
 	delete localStorage.Status;	// ja kein Status neu
 	localStorage.Von = "BeobEdit";
-	if (window.gruppe_merken) {
+	if (window.em.gruppe_merken) {
 		// Artgruppenliste auslassen
 		// localStorage.aArtGruppe ist schon gesetzt
 		$.mobile.navigate("Artenliste.html");
@@ -4289,10 +4289,10 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 		FeldPosition,
 		SichtbarImModusX,
 		idx;
-	for (i in window[localStorage.FeldlisteFwName].rows) {
-		if (typeof window[localStorage.FeldlisteFwName] !== "function") {
-			if (window[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
-				Feld = window[localStorage.FeldlisteFwName].rows[i].doc;
+	for (i in window.em[localStorage.FeldlisteFwName].rows) {
+		if (typeof window.em[localStorage.FeldlisteFwName] !== "function") {
+			if (window.em[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
+				Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
 				FeldPosition = parseInt(i);
 				break;
 			}
@@ -4320,7 +4320,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 			// neue rev holen
 			Feld._rev = data.rev;
 			// Änderung in Feldliste-Objekt speichern
-			window[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
+			window.em[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
 		},
 		error: function () {
 			window.em.melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
@@ -5642,16 +5642,16 @@ window.em.speichereHProjektEdit_2 = function(that) {
 				// Zuletzt gespeicherte ProjektId NACH dem speichern setzen
 				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 				// darum zwischenspeichern
-				window.hProjektIdZwischenspeicher = localStorage.ProjektId;
-				setTimeout("window.ZuletztGespeicherteProjektId = window.hProjektIdZwischenspeicher", 1000);
-				setTimeout("delete window.hProjektIdZwischenspeicher", 1500);
+				window.em.hProjektIdZwischenspeicher = localStorage.ProjektId;
+				//setTimeout("window.ZuletztGespeicherteProjektId = window.em.hProjektIdZwischenspeicher", 1000);	AUSGESCHALTET, DA ZuletztGespeicherteProjektId NIRGENDS VERWENDET WIRD
+				setTimeout("delete window.em.hProjektIdZwischenspeicher", 1500);
 				// nicht aktualisierte hierarchisch tiefere Listen löschen
-				delete window.OrteVonRaum;
-				delete window.ZeitenVonRaum;
-				delete window.ZeitenVonOrt;
-				delete window.ArtenVonRaum;
-				delete window.ArtenVonOrt;
-				delete window.ArtenVonZeit;
+				delete window.em.OrteVonRaum;
+				delete window.em.ZeitenVonRaum;
+				delete window.em.ZeitenVonOrt;
+				delete window.em.ArtenVonRaum;
+				delete window.em.ArtenVonOrt;
+				delete window.em.ArtenVonZeit;
 			},
 			error: function () {
 				console.log('fehler in function speichereHProjektEdit_2(that)');
@@ -5795,15 +5795,15 @@ window.em.speichereHOrtEdit_2 = function(that) {
 				// Zuletzt gespeicherte OrtId NACH dem speichern setzen
 				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
 				// darum zwischenspeichern
-				window.OrtIdZwischenspeicher = localStorage.OrtId;
-				setTimeout("window.ZuletztGespeicherteOrtId = window.OrtIdZwischenspeicher", 1000);
-				setTimeout("delete window.OrtIdZwischenspeicher", 1500);
+				window.em.OrtIdZwischenspeicher = localStorage.OrtId;
+				//setTimeout("window.ZuletztGespeicherteOrtId = window.em.OrtIdZwischenspeicher", 1000);	AUSGESCHALTET, DA ZuletztGespeicherteOrtId NIRGENDS BENUTZT WIRD
+				setTimeout("delete window.em.OrtIdZwischenspeicher", 1500);
 				// nicht aktualisierte hierarchisch tiefere Listen löschen
-				delete window.ZeitenVonProjekt;
-				delete window.ZeitenVonRaum;
-				delete window.ArtenVonProjekt;
-				delete window.ArtenVonRaum;
-				delete window.ArtenVonZeit;
+				delete window.em.ZeitenVonProjekt;
+				delete window.em.ZeitenVonRaum;
+				delete window.em.ArtenVonProjekt;
+				delete window.em.ArtenVonRaum;
+				delete window.em.ArtenVonZeit;
 			},
 			error: function () {
 				console.log('fehler in function speichereHOrtEdit_2(that)');
@@ -6014,7 +6014,7 @@ window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
-	if (window.gruppe_merken) {
+	if (window.em.gruppe_merken) {
 		// Artgruppenliste auslassen
 		// localStorage.aArtGruppe ist schon gesetzt
 		$.mobile.navigate("Artenliste.html");
