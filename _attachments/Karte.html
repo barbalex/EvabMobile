@@ -178,11 +178,11 @@
 								// Infos für Infowindow holen
 								pName = "";
 								rName = "";
-								if (window.hProjekt && window.hProjekt.pName) {
-									pName = window.hProjekt.pName;
+								if (window.em.hProjekt && window.em.hProjekt.pName) {
+									pName = window.em.hProjekt.pName;
 								}
-								if (window.hRaum && window.hRaum.rName) {
-									rName = window.hRaum.rName;
+								if (window.em.hRaum && window.em.hRaum.rName) {
+									rName = window.em.hRaum.rName;
 								}
 
 								latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
@@ -257,16 +257,16 @@
 							infowindow,
 							// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 							contentHeight = $(window).height() - 44;
-						// Fehlermeldung verhindern, falls kein window.hOrt existiert
-						if (window.hOrt && window.hOrt.oName) {
-							title = window.hOrt.oName.toString();
-							oName = window.hOrt.oName;
+						// Fehlermeldung verhindern, falls kein window.em.hOrt existiert
+						if (window.em.hOrt && window.em.hOrt.oName) {
+							title = window.em.hOrt.oName.toString();
+							oName = window.em.hOrt.oName;
 						}
-						if (window.hProjekt && window.hProjekt.pName) {
-							pName = window.hProjekt.pName;
+						if (window.em.hProjekt && window.em.hProjekt.pName) {
+							pName = window.em.hProjekt.pName;
 						}
-						if (window.hRaum && window.hRaum.rName) {
-							rName = window.hRaum.rName;
+						if (window.em.hRaum && window.em.hRaum.rName) {
+							rName = window.em.hRaum.rName;
 						}
 						$("#MapCanvas").css("height", contentHeight + "px");
 						if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
@@ -468,9 +468,9 @@
 								'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
 								'<div id="bodyContent" class="GmInfowindow">'+
 								'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-								'<p>Autor: ' + window.Beobachtung.aAutor + '</p>'+
-								'<p>Datum: ' + window.Beobachtung.zDatum + '</p>'+
-								'<p>Zeit: ' + window.Beobachtung.zUhrzeit + '</p>'+
+								'<p>Autor: ' + window.em.Beobachtung.aAutor + '</p>'+
+								'<p>Datum: ' + window.em.Beobachtung.zDatum + '</p>'+
+								'<p>Zeit: ' + window.em.Beobachtung.zUhrzeit + '</p>'+
 								'<p>Koordinaten: ' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 								'</div>'+
 								'</div>';
@@ -498,7 +498,7 @@
 							position: location, 
 							map: map,
 							// title muss String sein
-							title: window.hOrt.oName.toString() || "",
+							title: window.em.hOrt.oName.toString() || "",
 							draggable: true
 						});
 						// Marker in Array speichern, damit er gelöscht werden kann
@@ -543,9 +543,9 @@
 									'<div id="siteNotice">'+
 									'</div>'+
 									'<div id="bodyContent" class="GmInfowindow">'+
-									'<p>Projekt: ' + window.hOrt.pName + '</p>'+
-									'<p>Raum: ' + window.hOrt.rName + '</p>'+
-									'<p>Ort: ' + window.hOrt.oName + '</p>'+
+									'<p>Projekt: ' + window.em.hOrt.pName + '</p>'+
+									'<p>Raum: ' + window.em.hOrt.rName + '</p>'+
+									'<p>Ort: ' + window.em.hOrt.oName + '</p>'+
 									'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
 									'</div>'+
 									'</div>';

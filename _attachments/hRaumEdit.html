@@ -165,7 +165,7 @@
 					var _attachments;
 					_attachments = $("#_attachmentshRE").val();
 					if (_attachments && _attachments.length > 0) {
-						window.em.speichereAnhänge(localStorage.RaumId, window.hRaum, "hRE");
+						window.em.speichereAnhänge(localStorage.RaumId, window.em.hRaum, "hRE");
 					}
 				});
 
@@ -299,7 +299,7 @@
 
 				$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
-					window.em.loescheAnhang(this, window.hRaum, localStorage.RaumId);
+					window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
 				});
 			
 				function löscheRaum(Arten, Zeiten, Orte) {
@@ -313,7 +313,7 @@
 					if (Arten.rows.length > 0) {
 						window.em.loescheIdIdRevListe(Arten);
 					}
-					if (window.hRaum) {
+					if (window.em.hRaum) {
 						// Objekt benutzen
 						löscheRaum_2();
 					} else {
@@ -321,7 +321,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.RaumId, {
 							success: function (data) {
-								window.hRaum = data;
+								window.em.hRaum = data;
 								löscheRaum_2();
 							},
 							error: function () {
@@ -333,14 +333,14 @@
 
 				function löscheRaum_2() {
 					$db = $.couch.db("evab");
-					$db.removeDoc(window.hRaum, {
+					$db.removeDoc(window.em.hRaum, {
 						success: function (data) {
 							var i;
 							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
-							if (window.RaumListe) {
-								for (i in window.RaumListe.rows) {
-									if (window.RaumListe.rows[i].doc._id === data.id) {
-										window.RaumListe.rows.splice(i, 1);
+							if (window.em.RaumListe) {
+								for (i in window.em.RaumListe.rows) {
+									if (window.em.RaumListe.rows[i].doc._id === data.id) {
+										window.em.RaumListe.rows.splice(i, 1);
 										break;
 									}
 								}
@@ -372,14 +372,14 @@
 				function speichern(that) {
 					// prüfen, ob Objekt Raum existiert
 					// fehlt z.B. nach refresh
-					if (window.hRaum) {
+					if (window.em.hRaum) {
 						speichern_2(that);
 					} else {
 						// kein Raum > aus DB holen
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.RaumId, {
 							success: function (data) {
-								window.hRaum = data;
+								window.em.hRaum = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -410,19 +410,19 @@
 						}
 						if (Feldwert) {
 							if (window.em.myTypeOf(Feldwert) === "float") {
-								window.hRaum[Feldname] = parseFloat(Feldwert);
+								window.em.hRaum[Feldname] = parseFloat(Feldwert);
 							} else if (window.em.myTypeOf(Feldwert) === "integer") {
-								window.hRaum[Feldname] = parseInt(Feldwert);
+								window.em.hRaum[Feldname] = parseInt(Feldwert);
 							} else {
-								window.hRaum[Feldname] = Feldwert;
+								window.em.hRaum[Feldname] = Feldwert;
 							}
-						} else if (window.hRaum[Feldname]) {
-							delete window.hRaum[Feldname];
+						} else if (window.em.hRaum[Feldname]) {
+							delete window.em.hRaum[Feldname];
 						}
 						// alles speichern
-						$db.saveDoc(window.hRaum, {
+						$db.saveDoc(window.em.hRaum, {
 							success: function (data) {
-								window.hRaum._rev = data.rev;
+								window.em.hRaum._rev = data.rev;
 								// window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
 								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								// Zuletzt gespeicherte RaumId NACH dem speichern setzen
@@ -483,7 +483,7 @@
 				function nächsterVorigerRaum(NächsterOderVoriger) {
 					// prüfen, ob RaumListe schon existiert
 					// nur abfragen, wenn sie noch nicht existiert
-					if (window.RaumListe) {
+					if (window.em.RaumListe) {
 						// globale Variable RaumListe existiert noch
 						nächsterVorigerRaum_2(NächsterOderVoriger);
 					} else {
@@ -493,7 +493,7 @@
 						$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 							success: function (data) {
 								// RaumListe bereitstellen
-								window.RaumListe = data;
+								window.em.RaumListe = data;
 								nächsterVorigerRaum_2(NächsterOderVoriger);
 							}
 						});

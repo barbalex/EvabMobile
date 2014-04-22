@@ -197,7 +197,7 @@
 					var _attachments;
 					_attachments = $("#_attachmentshZE").val();
 					if (_attachments && _attachments.length > 0) {
-						window.em.speichereAnhänge(localStorage.ZeitId, window.hZeit, "hZE");
+						window.em.speichereAnhänge(localStorage.ZeitId, window.em.hZeit, "hZE");
 					}
 				});
 
@@ -290,7 +290,7 @@
 
 				$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function (event) {
 					event.preventDefault();
-					window.em.loescheAnhang(this, window.hZeit, localStorage.ZeitId);
+					window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
 				});
 
 				function löscheZeit(Arten) {
@@ -299,7 +299,7 @@
 						window.em.loescheIdIdRevListe(Arten);
 					}
 					// dann die Zeit
-					if (window.hZeit) {
+					if (window.em.hZeit) {
 						// Objekt nutzen
 						löscheZeit_2();
 					} else {
@@ -307,7 +307,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ZeitId, {
 							success: function (data) {
-								window.hZeit = data;
+								window.em.hZeit = data;
 								löscheZeit_2();
 							},
 							error: function () {
@@ -319,14 +319,14 @@
 
 				function löscheZeit_2() {
 					$db = $.couch.db("evab");
-					$db.removeDoc(window.hZeit, {
+					$db.removeDoc(window.em.hZeit, {
 						success: function (data) {
 							var i;
 							// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
-							if (window.ZeitListe) {
-								for (i in window.ZeitListe.rows) {
-									if (window.ZeitListe.rows[i].doc._id === data.id) {
-										window.ZeitListe.rows.splice(i, 1);
+							if (window.em.ZeitListe) {
+								for (i in window.em.ZeitListe.rows) {
+									if (window.em.ZeitListe.rows[i].doc._id === data.id) {
+										window.em.ZeitListe.rows.splice(i, 1);
 										break;
 									}
 								}
@@ -366,7 +366,7 @@
 				// erwartet das Feld als Objekt
 				function speichern(that) {
 					// prüfen, ob die Zeit als Objekt vorliegt
-					if (window.hZeit) {
+					if (window.em.hZeit) {
 						// dieses verwenden
 						speichern_2(that);
 					} else {
@@ -374,7 +374,7 @@
 						$db = $.couch.db("evab");
 						$db.openDoc(localStorage.ZeitId, {
 							success: function (data) {
-								window.hZeit = data;
+								window.em.hZeit = data;
 								speichern_2(that);
 							},
 							error: function () {
@@ -407,19 +407,19 @@
 						// Werte aus dem Formular aktualisieren
 						if (Feldwert) {
 							if (window.em.myTypeOf(Feldwert) === "float") {
-								window.hZeit[Feldname] = parseFloat(Feldwert);
+								window.em.hZeit[Feldname] = parseFloat(Feldwert);
 							} else if (window.em.myTypeOf(Feldwert) === "integer") {
-								window.hZeit[Feldname] = parseInt(Feldwert);
+								window.em.hZeit[Feldname] = parseInt(Feldwert);
 							} else {
-								window.hZeit[Feldname] = Feldwert;
+								window.em.hZeit[Feldname] = Feldwert;
 							}
-						} else if (window.hZeit[Feldname]) {
-							delete window.hZeit[Feldname];
+						} else if (window.em.hZeit[Feldname]) {
+							delete window.em.hZeit[Feldname];
 						}
 						// alles speichern
-						$db.saveDoc(window.hZeit, {
+						$db.saveDoc(window.em.hZeit, {
 							success: function (data) {
-								window.hZeit._rev = data.rev;
+								window.em.hZeit._rev = data.rev;
 								// window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 								// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
 								// Zuletzt gespeicherte ZeitId NACH dem speichern setzen
@@ -482,13 +482,13 @@
 				function nächsteVorigeZeit(NächsteOderVorige) {
 					// prüfen, ob ZeitListe schon existiert
 					// nur abfragen, wenn sie noch nicht existiert
-					if (window.ZeitListe) {
+					if (window.em.ZeitListe) {
 						nächsteVorigeZeit_2(NächsteOderVorige);
 					} else {
 						$db = $.couch.db("evab");
 						$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 							success: function (data) {
-								window.ZeitListe = data;
+								window.em.ZeitListe = data;
 								nächsteVorigeZeit_2(NächsteOderVorige);
 							}
 						});
