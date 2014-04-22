@@ -3578,12 +3578,12 @@ window.em.handleBeobEditPageinit = function() {
 	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', function() {
 		// Eingabe im Zahlenfeld abfangen (blur)
 		// Ende des Schiebens abfangen (slidestop)
-		speichereBeob(this);
+		window.em.speichereBeob(this);
 	});
 
 	$("#BeobEditForm").on("mouseup", '.ui-slider-input', function() {
 		// Klicken auf den Pfeilen im Zahlenfeld abfangen
-		speichereBeob(this);
+		window.em.speichereBeob(this);
 	});
 
 	$("#FormAnhängeBE").on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange);
@@ -3603,7 +3603,7 @@ window.em.handleBeobEditPageinit = function() {
 		$("#beob_löschen_meldung").popup("open");
 	});
 
-	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", löscheBeob);
+	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", window.em.löscheBeob);
 
 	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft);
 
@@ -3612,13 +3612,13 @@ window.em.handleBeobEditPageinit = function() {
 	$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		// zum vorigen Datensatz wechseln
-		nächsteVorigeBeob('vorige');
+		window.em.nächsteVorigeBeob('vorige');
 	});
 
 	$("#BeobEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		// zum nächsten Datensatz wechseln
-		nächsteVorigeBeob('nächste');
+		window.em.nächsteVorigeBeob('nächste');
 	});
 
 	$("#BeobEditPage").on("keyup", function(event) {
@@ -3628,12 +3628,12 @@ window.em.handleBeobEditPageinit = function() {
 		if (!$(event.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				nächsteVorigeBeob('vorige');
+				window.em.nächsteVorigeBeob('vorige');
 				event.preventDefault();
 			}
 			// Right arrow
 			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				nächsteVorigeBeob('nächste');
+				window.em.nächsteVorigeBeob('nächste');
 				event.preventDefault();
 			}
 		}
@@ -3725,7 +3725,7 @@ window.em.handleBeobEditSpeichernChange = function() {
 		// und Koordinaten speichern
 		window.em.speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 	} else {
-		speichereBeob(this);
+		window.em.speichereBeob(this);
 	}
 };
 
@@ -3748,7 +3748,7 @@ window.em.handleBeobEditOeffneKarteClick = function() {
 window.em.handleBeobEditContentSwipeleft = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsteVorigeBeob("nächste");
+		window.em.nächsteVorigeBeob("nächste");
 	}
 };
 
@@ -3756,7 +3756,7 @@ window.em.handleBeobEditContentSwipeleft = function() {
 window.em.handleBeobEditContentSwiperight = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsteVorigeBeob("vorige");
+		window.em.nächsteVorigeBeob("vorige");
 	}
 };
 
@@ -3834,10 +3834,10 @@ window.em.handleBeobListePageinit = function() {
 
 	$("#BeobListePage").on("click", ".NeueBeobBeobListe", function(event) {
 		event.preventDefault();
-		erstelleNeueBeob_1_Artgruppenliste();
+		window.em.erstelleNeueBeob_1_Artgruppenliste();
 	});
 
-	$("#BeoblisteBL").on("swipeleft", ".erste", erstelleNeueBeob_1_Artgruppenliste);
+	$("#BeoblisteBL").on("swipeleft", ".erste", window.em.erstelleNeueBeob_1_Artgruppenliste);
 
 	$("#BeobListePage").on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
 
@@ -3960,18 +3960,18 @@ window.em.handleFeldEditPageinit = function() {
 		window.em.geheZurueckFE();
 	});
 
-	$("#FeldEditPage").on("swipeleft", "#FeldEditContent", geheZumNächstenFeld);
+	$("#FeldEditPage").on("swipeleft", "#FeldEditContent", window.em.geheZumNächstenFeld);
 
-	$("#FeldEditPage").on("swiperight", "#FeldEditContent", geheZumVorigenFeld);
+	$("#FeldEditPage").on("swiperight", "#FeldEditContent", window.em.geheZumVorigenFeld);
 
 	$("#FeldEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
-		geheZumVorigenFeld();
+		window.em.geheZumVorigenFeld();
 	});
 
 	$("#FeldEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
-		geheZumNächstenFeld();
+		window.em.geheZumNächstenFeld();
 	});
 
 	$("#FeldEditPage").on("keyup", function(event) {
@@ -3981,12 +3981,12 @@ window.em.handleFeldEditPageinit = function() {
 		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				geheZumVorigenFeld();
+				window.em.geheZumVorigenFeld();
 				event.preventDefault();
 			}
 			// Right arrow
 			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				geheZumNächstenFeld();
+				window.em.geheZumNächstenFeld();
 				event.preventDefault();
 			}
 		}
@@ -4046,7 +4046,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 						// prüfen, ob der neue Feldname schon existiert
 						// wenn ja: melden, zurückstellen
 						// wenn nein: speichern
-						pruefeFeldNamen();
+						window.em.pruefeFeldNamen();
 					} else {
 						// Feldname wird schon verwendet > melden, zurückstellen
 						ds = "Datensätzen";
@@ -4066,12 +4066,12 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			// prüfen, ob der neue Feldname schon existiert
 			// wenn ja: melden, zurückstellen
 			// wenn nein: speichern
-			pruefeFeldNamen();
+			window.em.pruefeFeldNamen();
 		}
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
 		window.em.leereStorageFeldListe();
-		speichereFeldeigenschaften();
+		window.em.speichereFeldeigenschaften();
 		// Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 		window.em.ArtGruppeAufbauenFeldEdit();
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
@@ -4081,18 +4081,18 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			$("#Artgruppenliste").empty();
 		}
 		window.em.leereStorageFeldListe();
-		speichereFeldeigenschaften();
+		window.em.speichereFeldeigenschaften();
 	} else {
 		if (localStorage.FeldName === "FeldBeschriftung") {
 			$(".FeldEditHeaderTitel").text(Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
 		}
-		speichereFeldeigenschaften();
+		window.em.speichereFeldeigenschaften();
 	}
 }
 
 // wenn in FeldEdit.htm #FeldFolgtNach geändert wird
 window.em.handleFeldEditFeldFolgtNachChange = function() {
-	setzeReihenfolgeMitVorgaenger(this.value);
+	window.em.setzeReihenfolgeMitVorgaenger(this.value);
 	// Feldliste soll neu aufgebaut werden
 	delete window.Feldliste;
 };
@@ -4131,7 +4131,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 				}
 			}
 			// alle Werte sind Optionen
-			speichereStandardwert();
+			window.em.speichereStandardwert();
 		} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Feld.Formularelement) > -1) {
 			// Array darf nur ein Element enthalten
 			if (StandardwertOptionen.length > 1) {
@@ -4151,16 +4151,16 @@ window.em.handleFeldEditStandardwertChange = function() {
 					}
 				}
 				// alle Werte sind Optionen
-				speichereStandardwert();
+				window.em.speichereStandardwert();
 				return;
 			}
 		} else {
 			// Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
-			speichereStandardwert();
+			window.em.speichereStandardwert();
 		}
 	} else {
 		// Es gibt keine Optionen. Alle Standardwerte akzeptieren
-		speichereStandardwert();
+		window.em.speichereStandardwert();
 	}
 };
 
@@ -4178,7 +4178,7 @@ window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
 window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 	if (!Feld.FeldName) {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-		loescheFeld();
+		window.em.loescheFeld();
 	} else {
 		$db = $.couch.db("evab");
 		// zählen, in wievielen Datensätzen das Feld verwendet wird
@@ -4200,7 +4200,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 					}
 				}
 				if (anzVorkommen === 0) {
-					loescheFeld();
+					window.em.loescheFeld();
 				} else {
 					ds = "Datensätzen";
 					if (anzVorkommen === 1) {
@@ -4459,17 +4459,17 @@ function handleHArtEditPageinit() {
 	});
 
 	// Für jedes Feld bei Änderung speichern
-	$("#hArtEditForm").on("change", ".speichern", speichereHArt);
+	$("#hArtEditForm").on("change", ".speichern", window.em.speichereHArt);
 
 	// ungelöstes Problem: swipe reagiert!
 	// Eingabe im Zahlenfeld abfangen
-	$("#hArtEditForm").on("blur", '.speichernSlider', speichereHArt);
+	$("#hArtEditForm").on("blur", '.speichernSlider', window.em.speichereHArt);
 
 	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hArtEditForm").on("mouseup", '.ui-slider-input', speichereHArt);
+	$("#hArtEditForm").on("mouseup", '.ui-slider-input', window.em.speichereHArt);
 
 	// Ende des Schiebens abfangen
-	$("#hArtEditForm").on("slidestop", '.speichernSlider', speichereHArt);
+	$("#hArtEditForm").on("slidestop", '.speichernSlider', window.em.speichereHArt);
 
 	// Änderungen im Formular für Anhänge speichern
 	$("#FormAnhängehAE").on("change", ".speichernAnhang", window.em.handleHArtEditSpeichernAnhangChange);
@@ -4483,13 +4483,13 @@ function handleHArtEditPageinit() {
 	// Editieren von Beobachtungen managen, ausgehend von Artgruppe
 	$("#hArtEditForm").on("click", "[name='aArtGruppe']", function(event) {
 		event.preventDefault();
-		zuArtgruppenliste();
+		window.em.zuArtgruppenliste();
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
 	$("#hArtEditForm").on("click", "[name='aArtName']", function(event) {
 		event.preventDefault();
-		zuArtliste();
+		window.em.zuArtliste();
 	});
 
 	// sichtbare Felder wählen
@@ -4504,7 +4504,7 @@ function handleHArtEditPageinit() {
 		$("#hae_löschen_meldung").popup("open");
 	});
 
-	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", löscheHBeob);
+	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHBeob);
 
 	$("#hArtEditPage").on("swipeleft", window.em.handleHArtEditSwipeleft);
 
@@ -4513,13 +4513,13 @@ function handleHArtEditPageinit() {
 	// Pagination Pfeil voriger initialisieren
 	$("#hArtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
-		nächsteVorigeArt("vorige");
+		window.em.nächsteVorigeArt("vorige");
 	});
 
 	// Pagination Pfeil nächster initialisieren
 	$("#hArtEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
-		nächsteVorigeArt("nächste");
+		window.em.nächsteVorigeArt("nächste");
 	});
 
 	// Pagination Pfeiltasten initialisieren
@@ -4528,12 +4528,12 @@ function handleHArtEditPageinit() {
 		if (!$(event.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				nächsteVorigeArt("vorige");
+				window.em.nächsteVorigeArt("vorige");
 				event.preventDefault();
 			}
 			// Right arrow
 			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				nächsteVorigeArt("nächste");
+				window.em.nächsteVorigeArt("nächste");
 				event.preventDefault();
 			}
 		}
@@ -4544,17 +4544,17 @@ function handleHArtEditPageinit() {
 		window.em.handleHArtEditLoescheAnhangClick(this);
 	});
 
-	$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', handleHArtEditMenuArteigenschaftenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', window.em.handleHArtEditMenuArteigenschaftenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', handleHArtEditMenuEinfacherModusClick);
+	$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', handleHArtEditMenuFelderVerwaltenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', handleHArtEditMenuBeobExportierenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', handleHArtEditMenuEinstellungenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', handleHArtEditMenuNeuAnmeldenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleHArtEditMenuNeuAnmeldenClick);
 }
 
 // wenn hArtListe.html erscheint
@@ -5933,7 +5933,7 @@ window.em.handleHArtEditSpeichernAnhangChange = function() {
 // wenn in hArtEdit.html #NeueBeobhArtEdit geklickt wird
 window.em.handleHArtEditNeueBeobhArtEditClick = function() {
 	localStorage.Status = "neu";
-	zuArtgruppenliste();
+	window.em.zuArtgruppenliste();
 };
 
 // wenn in hArtEdit.html #waehleFelderhBeobEdit geklickt wird
@@ -5946,7 +5946,7 @@ window.em.handleHArtEditWaehleFelderClick = function() {
 window.em.handleHArtEditSwipeleft = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsteVorigeArt("nächste");
+		window.em.nächsteVorigeArt("nächste");
 	}
 };
 
@@ -5954,7 +5954,7 @@ window.em.handleHArtEditSwipeleft = function() {
 window.em.handleHArtEditSwiperight = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsteVorigeArt("vorige");
+		window.em.nächsteVorigeArt("vorige");
 	}
 };
 
@@ -5963,50 +5963,13 @@ window.em.handleHArtEditLoescheAnhangClick = function(that) {
 	window.em.loescheAnhang(that, window.hArt, localStorage.hBeobId);
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// NAMESPACE
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
-function handleHArtEditMenuArteigenschaftenClick() {
+window.em.handleHArtEditMenuArteigenschaftenClick = function() {
 	window.em.oeffneEigenschaftenVonArt(window.hArt.aArtId);
-}
+};
 
 // wenn in hArtEdit.html .menu_einfacher_modus geklickt wird
-function handleHArtEditMenuEinfacherModusClick() {
+window.em.handleHArtEditMenuEinfacherModusClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -6017,37 +5980,37 @@ function handleHArtEditMenuEinfacherModusClick() {
 	window.em.leereStorageRaumListe();
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
-}
+};
 
 // wenn in hArtEdit.html .menu_felder_verwalten geklickt wird
-function handleHArtEditMenuFelderVerwaltenClick() {
+window.em.handleHArtEditMenuFelderVerwaltenClick = function() {
 	localStorage.zurueck = "hArtEdit.html";
 	$.mobile.navigate("FeldListe.html");
-}
+};
 
 // wenn in hArtEdit.html .menu_beob_exportieren geklickt wird
-function handleHArtEditMenuBeobExportierenClick() {
+window.em.handleHArtEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
 	$("#MenuhBeobEdit").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuhBeobEdit").popup("close");
-}
+};
 
 // wenn in hArtEdit.html .menu_einstellungen geklickt wird
-function handleHArtEditMenuEinstellungenClick() {
+window.em.handleHArtEditMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hArtEdit.html";
 	window.em.öffneMeineEinstellungen();
-}
+};
 
 // wenn in hArtEdit.html .menu_neu_anmelden geklickt wird
-function handleHArtEditMenuNeuAnmeldenClick() {
+window.em.handleHArtEditMenuNeuAnmeldenClick = function() {
 	localStorage.UserStatus = "neu";
 	$.mobile.navigate("index.html");
-}
+};
 
 // wird in hArtEdit.html verwendet
-function zuArtgruppenliste() {
+window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
@@ -6058,30 +6021,30 @@ function zuArtgruppenliste() {
 	} else {
 		$.mobile.navigate("Artgruppenliste.html");
 	}
-}
+};
 
 // wird in hArtEdit.html verwendet
-function zuArtliste() {
+window.em.zuArtliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
-}
+};
 
 // Speichert alle Daten
 // wird in hArtEdit.html verwendet
-function speichereHArt() {
+window.em.speichereHArt = function() {
 	// prüfen, ob hBeob als Objekt vorliegt
 	if (window.hArt) {
 		// dieses verwenden
-		speichereHArt_2(this);
+		window.em.speichereHArt_2(this);
 	} else {
 		// Objekt aud DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
 			success: function (data) {
 				window.hArt = data;
-				speichereHArt_2(that);
+				window.em.speichereHArt_2(that);
 			},
 			error: function () {
 				console.log('fehler in function speichereHArt');
@@ -6089,10 +6052,9 @@ function speichereHArt() {
 			}
 		});
 	}
+};
 
-}
-
-function speichereHArt_2(that) {
+window.em.speichereHArt_2 = function(that) {
 	var Feldname, Feldjson, Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
@@ -6130,19 +6092,19 @@ function speichereHArt_2(that) {
 			//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 		}
 	});
-}
+};
 
 // Öffnet die vorige oder nächste Art
 // vorige der ersten => ArtListe
 // nächste der letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird in hArtEdit.html verwendet
-function nächsteVorigeArt(NächsteOderVorige) {
+window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 	// prüfen, ob hBeobListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.hBeobListe) {
 		// hBeobListe liegt als Variable vor
-		nächsteVorigeArt_2(NächsteOderVorige);
+		window.em.nächsteVorigeArt_2(NächsteOderVorige);
 	} else {
 		// keine Ortliste vorhanden, neu aus DB erstellen
 		$db = $.couch.db("evab");
@@ -6150,13 +6112,13 @@ function nächsteVorigeArt(NächsteOderVorige) {
 			success: function (data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.hBeobListe = data;
-				nächsteVorigeArt_2(NächsteOderVorige);
+				window.em.nächsteVorigeArt_2(NächsteOderVorige);
 			}
 		});
 	}
-}
+};
 
-function nächsteVorigeArt_2(NächsteOderVorige) {
+window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 	var i, ArtIdAktuell, AnzArt;
 	for (i in window.hBeobListe.rows) {
 		ArtIdAktuell = window.hBeobListe.rows[i].doc._id;
@@ -6189,30 +6151,30 @@ function nächsteVorigeArt_2(NächsteOderVorige) {
 			}
 		}
 	}
-}
+};
 
 // wird in hArtEdit.html benutzt
 // löscht eine Beobachtung
-function löscheHBeob() {
+window.em.löscheHBeob = function() {
 	if (window.hArt) {
 		// vorhandenes Objekt nutzen
-		löscheHBeob_2();
+		window.em.löscheHBeob_2();
 	} else {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
 			success: function (data) {
 				window.hArt = data;
-				löscheHBeob_2();
+				window.em.löscheHBeob_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: Art nicht gelöscht");
 			}
 		});
 	}
-}
+};
 
-function löscheHBeob_2() {
+window.em.löscheHBeob_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.hArt, {
 		success: function (data) {
@@ -6235,14 +6197,14 @@ function löscheHBeob_2() {
 			window.em.melde("Fehler: Art nicht gelöscht");
 		}
 	});
-}
+};
 
 // prüft neue oder umbenannte Feldnamen
 // prüft, ob der neue Feldname schon existiert
 // wenn ja: melden, zurückstellen
 // wenn nein: speichern
 // wird in FeldEdit.html verwendet
-function pruefeFeldNamen() {
+window.em.pruefeFeldNamen = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function (data) {
@@ -6269,7 +6231,7 @@ function pruefeFeldNamen() {
 				// und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 				$("#SichtbarImModusHierarchisch").val("ja");
 				$("select#SichtbarImModusHierarchisch").slider("refresh");
-				speichereFeldeigenschaften();
+				window.em.speichereFeldeigenschaften();
 			} else {
 				// Feldname kommt bei diesem User schon vor
 				// Wert im Feld zurücksetzen
@@ -6300,30 +6262,30 @@ function pruefeFeldNamen() {
 			delete localStorage.AlterFeldWert;
 		}
 	});
-}
+};
 
 // löscht Felder
 // wird in FeldEdit.html verwendet
-function loescheFeld() {
+window.em.loescheFeld = function() {
 	if (window.Feld) {
 		// Objekt nutzen
-		loescheFeld_2();
+		window.em.loescheFeld_2();
 	} else {
 		// Feld aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(Feld._id, {
 			success: function (data) {
 				window.Feld = data;
-				loescheFeld_2();
+				window.em.loescheFeld_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: nicht gelöscht");
 			}
 		});
 	}
-}
+};
 
-function loescheFeld_2() {
+window.em.loescheFeld_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.Feld, {
 		success: function (data) {
@@ -6346,28 +6308,28 @@ function loescheFeld_2() {
 			window.em.melde("Fehler: nicht gelöscht");
 		}
 	});
-}
+};
 
 // Öffnet das nächste Feld
 // nächstes des letzten => melden
 // erwartet die ID des aktuellen Datensatzes
 // wird in FeldEdit.html verwendet
-function geheZumNächstenFeld() {
+window.em.geheZumNächstenFeld = function() {
 	if (window.Feldliste) {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
-		geheZumNächstenFeld_2();
+		window.em.geheZumNächstenFeld_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
 			success: function (data) {
 				window.Feldliste = data;
-				geheZumNächstenFeld_2();
+				window.em.geheZumNächstenFeld_2();
 			}
 		});
 	}
-}
+};
 
-function geheZumNächstenFeld_2() {
+window.em.geheZumNächstenFeld_2 = function() {
 	var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
 	AnzFelder = window.Feldliste.rows.length -1;
 	for (i in window.Feldliste.rows) {
@@ -6410,28 +6372,28 @@ function geheZumNächstenFeld_2() {
 			}
 		}
 	}
-}
+};
 
 // Öffnet das vorige Feld
 // voriges des ersten => FeldListe
 // erwartet die ID des aktuellen Datensatzes
 // wird in FeldEdit.html verwendet
-function geheZumVorigenFeld() {
+window.em.geheZumVorigenFeld = function() {
 	if (window.Feldliste) {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
-		geheZumVorigenFeld_2();
+		window.em.geheZumVorigenFeld_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
 			success: function (data) {
 				window.Feldliste = data;
-				geheZumVorigenFeld_2();
+				window.em.geheZumVorigenFeld_2();
 			}
 		});
 	}
-}
+};
 
-function geheZumVorigenFeld_2() {
+window.em.geheZumVorigenFeld_2 = function() {
 	var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder, AktFeld_i, AktFeld_y;
 	AnzFelder = window.Feldliste.rows.length -1;
 	for (i in window.Feldliste.rows) {
@@ -6477,14 +6439,14 @@ function geheZumVorigenFeld_2() {
 			}
 		}
 	}
-}
+};
 
 // empfängt den Feldnamen des gewählten Vorgängers
 // ermittelt dessen Reihenfolge
 // sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 // Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
 // wird in FeldEdit.html verwendet
-function setzeReihenfolgeMitVorgaenger(FeldNameVorgaenger) {
+window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
 	var viewname;
 	$db = $.couch.db("evab");
 	viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
@@ -6493,25 +6455,25 @@ function setzeReihenfolgeMitVorgaenger(FeldNameVorgaenger) {
 			var ReihenfolgeVorgaenger;
 			ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
 			$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
-			speichereFeldeigenschaften();
+			window.em.speichereFeldeigenschaften();
 		}
 	});
-}
+};
 
 // speichert, dass ein Wert als Standardwert verwendet werden soll
 // wird in FeldEdit.html verwendet
-function speichereStandardwert() {
+window.em.speichereStandardwert = function() {
 	// Prüfen, ob Feld als Objekt vorliegt
 	if (window.Feld) {
 		// dieses verwenden
-		speichereStandardwert_2();
+		window.em.speichereStandardwert_2();
 	} else {
 		// aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function (doc) {
 				window.Feld = doc;
-				speichereStandardwert_2();
+				window.em.speichereStandardwert_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: Feld nicht gespeichert");
@@ -6519,9 +6481,9 @@ function speichereStandardwert() {
 		});
 	}
 
-}
+};
 
-function speichereStandardwert_2() {
+window.em.speichereStandardwert_2 = function() {
 	var Feldwert;
 	Feldwert = $("#Standardwert").val();
 	// Standardwert managen
@@ -6558,31 +6520,31 @@ function speichereStandardwert_2() {
 			window.em.melde("Fehler: Feld nicht gespeichert");
 		}
 	});
-}
+};
 
 // speichert Feldeigenschaften
 // wird in FeldEdit.html verwendet
-function speichereFeldeigenschaften() {
+window.em.speichereFeldeigenschaften = function() {
 	// prüfen, ob das Feld als Objekt vorliegt
 	if (window.Feld) {
 		// bestehendes Objekt verwenden
-		speichereFeldeigenschaften_2();
+		window.em.speichereFeldeigenschaften_2();
 	} else {
 		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function (data) {
 				window.Feld = data;
-				speichereFeldeigenschaften_2();
+				window.em.speichereFeldeigenschaften_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 			}
 		});
 	}
-}
+};
 
-function speichereFeldeigenschaften_2() {
+window.em.speichereFeldeigenschaften_2 = function() {
 	var Formularfelder, idx1, idx2;
 	Formularfelder = $("#FeldEditForm").serializeObjectNull();
 	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
@@ -6687,18 +6649,18 @@ function speichereFeldeigenschaften_2() {
 	delete localStorage.FeldName;
 	delete localStorage.FeldWert;
 	delete localStorage.AlterFeldWert;
-}
+};
 
 // wird in BeobListe.html verwendet
 // eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
-function erstelleNeueBeob_1_Artgruppenliste() {
+window.em.erstelleNeueBeob_1_Artgruppenliste = function() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "BeobListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
 	$.mobile.navigate("Artgruppenliste.html");
-}
+};
 
 
 // wird in BeobEdit.html benutzt
@@ -6706,12 +6668,12 @@ function erstelleNeueBeob_1_Artgruppenliste() {
 // vorige der ersten => BeobListe
 // nächste der letzten => melden
 // erwartet ob nächster oder voriger gesucht wird
-function nächsteVorigeBeob(NächsteOderVorige) {
+window.em.nächsteVorigeBeob = function(NächsteOderVorige) {
 	// prüfen, ob BeobListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.BeobListe) {
 		// globale Variable BeobListe existiert noch
-		nächsteVorigeBeob_2(NächsteOderVorige);
+		window.em.nächsteVorigeBeob_2(NächsteOderVorige);
 	} else {
 		// keine Projektliste übergeben
 		// neu aus DB erstellen
@@ -6721,13 +6683,13 @@ function nächsteVorigeBeob(NächsteOderVorige) {
 				// Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 				// bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 				window.BeobListe = data;
-				nächsteVorigeBeob_2(NächsteOderVorige);
+				window.em.nächsteVorigeBeob_2(NächsteOderVorige);
 			}
 		});
 	}
-}
+};
 
-function nächsteVorigeBeob_2(NächsteOderVorige) {
+window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 	var i,
 		BeobIdAktuell,
 		AnzBeob;
@@ -6762,30 +6724,30 @@ function nächsteVorigeBeob_2(NächsteOderVorige) {
 			}
 		}
 	}
-}
+};
 
 // wird in BeobEdit.html benutzt
 // löscht eine Beobachtung
-function löscheBeob() {
+window.em.löscheBeob = function() {
 	if (window.Beobachtung) {
 		// vorhandenes Objekt nutzen
-		löscheBeob_2();
+		window.em.löscheBeob_2();
 	} else {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (data) {
 				window.Beobachtung = data;
-				löscheBeob_2();
+				window.em.löscheBeob_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: Beobachtung nicht gelöscht");
 			}
 		});
 	}
-}
+};
 
-function löscheBeob_2() {
+window.em.löscheBeob_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.Beobachtung, {
 		success: function (data) {
@@ -6808,30 +6770,30 @@ function löscheBeob_2() {
 			window.em.melde("Fehler: Beobachtung nicht gelöscht");
 		}
 	});
-}
+};
 
 // Speichert alle Daten in BeobEdit.html
-function speichereBeob(that) {
+window.em.speichereBeob = function(that) {
 	// prüfen, ob Beob als Objekt vorliegt
 	if (window.Beobachtung) {
 		// ja: dieses Objekt verwenden
-		speichereBeob_2(that);
+		window.em.speichereBeob_2(that);
 	} else {
 		// nein: Beob aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (data) {
 				window.Beobachtung = data;
-				speichereBeob_2(that);
+				window.em.speichereBeob_2(that);
 			},
 			error: function () {
 				console.log('fehler in function speichereBeob_2(that)');
 			}
 		});
 	}
-}
+};
 
-function speichereBeob_2(that) {
+window.em.speichereBeob_2 = function(that) {
 	var Feldname, Feldjson, Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
@@ -6868,7 +6830,7 @@ function speichereBeob_2(that) {
 			console.log('fehler in function speichereBeob_2(that)');
 		}
 	});
-}
+};
 
 
 /*!
@@ -7174,71 +7136,3 @@ jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
 jQuery.extend(jQuery.mobile.datebox.prototype.options, {
 	useLang: 'de'
 });
-
-
-/*
-* Versuch, damit taphold funktioniert, ohne dass tap ausgelöst wird
-* Quelle: http://stackoverflow.com/questions/11759049/tap-event-fired-after-taphold-jquery-mobile-1-1-1
-* ausgeschaltet, weil die Detailseite trotzdem kurz angezeibt wird
-*/
-/*$.event.special.tap = {
-	tapholdThreshold: 750,
-
-	setup: function() {
-		var thisObject = this,
-			$this = $( thisObject );
-
-		$this.bind( "vmousedown", function( event ) {
-
-			if ( event.which && event.which !== 1 ) {
-				return false;
-			}
-
-			var origTarget = event.target,
-				origEvent = event.originalEvent,
-				// Modified Here
-				tapfired = false,
-				timer;
-
-			function clearTapTimer() {
-				clearTimeout( timer );
-			}
-
-			function clearTapHandlers() {
-				clearTapTimer();
-
-				$this.unbind( "vclick", clickHandler )
-					.unbind( "vmouseup", clearTapTimer );
-				$( document ).unbind( "vmousecancel", clearTapHandlers );
-			}
-
-			function clickHandler( event ) {
-				clearTapHandlers();
-
-				// ONLY trigger a 'tap' event if the start target is
-				// the same as the stop target.
-				// Modified Here
-				//if ( origTarget === event.target) {
-				if ( origTarget === event.target && !tapfired) {
-					triggerCustomEvent( thisObject, "tap", event );
-				}
-			}
-
-			function triggerCustomEvent( obj, eventType, event ) {
-				var originalType = event.type;
-				event.type = eventType;
-				$.event.dispatch.call( obj, event );
-				event.type = originalType;
-			}
-
-			$this.bind( "vmouseup", clearTapTimer )
-				.bind( "vclick", clickHandler );
-			$( document ).bind( "vmousecancel", clearTapHandlers );
-
-			timer = setTimeout( function() {
-				tapfired = true;	// Modified Here
-				triggerCustomEvent( thisObject, "taphold", $.Event( "taphold", { target: origTarget } ) );
-			}, $.event.special.tap.tapholdThreshold );
-		});
-	}
-};*/
