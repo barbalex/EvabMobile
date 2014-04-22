@@ -2888,9 +2888,9 @@ window.em.oeffneBeob = function(BeobId) {
 // möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfällige Unterauswahl
 window.em.initiiereArtenliste = function(filterwert) {
 	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
-	// nur wenn eine Artenliste existiert. Grund: window.Artenliste lebt nicht so lang wie localStorage
+	// nur wenn eine Artenliste existiert. Grund: window.em.Artenliste lebt nicht so lang wie localStorage
 	// aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
-	if (window.Artenliste) {
+	if (window.em.Artenliste) {
 		if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
 			window.em.erstelleArtenliste(filterwert);
 			return;
@@ -2908,7 +2908,7 @@ window.em.holeArtenliste = function(filterwert) {
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
-			window.Artenliste = data.rows;
+			window.em.Artenliste = data.rows;
 			window.em.erstelleArtenliste(filterwert);
 		}
 	});
@@ -2923,15 +2923,15 @@ window.em.erstelleArtenliste = function(filterwert) {
 		Art,
 		zähler = 0;
 	// gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
-	if (window.Artenliste.length > 0) {
+	if (window.em.Artenliste.length > 0) {
 		if (filterwert) {
 			artenliste_loop:
-			for (i=0; i<window.Artenliste.length; i++) {
+			for (i=0; i<window.em.Artenliste.length; i++) {
 				if (zähler<200) {
-					ArtBezeichnung = window.Artenliste[i].key[1];
+					ArtBezeichnung = window.em.Artenliste[i].key[1];
 					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
 						zähler++;
-						Art = window.Artenliste[i].doc;
+						Art = window.em.Artenliste[i].doc;
 						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					}
 				} else if (zähler === 200) {
@@ -2950,26 +2950,26 @@ window.em.erstelleArtenliste = function(filterwert) {
 			}
 		} else {
 			// kein Filter gesetzt
-			if (window.Artenliste.length > 200) {
+			if (window.em.Artenliste.length > 200) {
 				// die ersten 200 anzeigen
 				artenliste_loop_2:
-				for (i=0; i<window.Artenliste.length; i++) {
+				for (i=0; i<window.em.Artenliste.length; i++) {
 					if (i<200) {
-						ArtBezeichnung = window.Artenliste[i].key[1];
-						Art = window.Artenliste[i].doc;
+						ArtBezeichnung = window.em.Artenliste[i].key[1];
+						Art = window.em.Artenliste[i].doc;
 						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
-						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + window.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
+						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + window.em.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
 						break artenliste_loop_2;
 					}
 				}
 				html += html_temp;
 			} else {
 				// weniger als 200 Arten, kein Filter. Alle anzeigen
-				html += '<li class="artlistenhinweis">' + window.Artenliste.length + ' Arten angezeigt</li>';
-				for (i=0; i<window.Artenliste.length; i++) {
-					ArtBezeichnung = window.Artenliste[i].key[1];
-					Art = window.Artenliste[i].doc;
+				html += '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten angezeigt</li>';
+				for (i=0; i<window.em.Artenliste.length; i++) {
+					ArtBezeichnung = window.em.Artenliste[i].key[1];
+					Art = window.em.Artenliste[i].doc;
 					html += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 				}
 			}
@@ -3003,17 +3003,17 @@ window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
 // aufgerufen von erstelleArtgruppenListe
 window.em.erstelleArtgruppenListe = function() {
 	// Artgruppenliste verfügbar machen
-	if (window.Artgruppenliste) {
+	if (window.em.Artgruppenliste) {
 		window.em.erstelleArtgruppenListe_2();
 	} else if (localStorage.Artgruppenliste) {
-		window.Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
+		window.em.Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
 		window.em.erstelleArtgruppenListe_2();
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function (data) {
 				// Artgruppenliste bereitstellen
-				window.Artgruppenliste = data;
+				window.em.Artgruppenliste = data;
 				localStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
 				window.em.erstelleArtgruppenListe_2();
 			}
@@ -3024,12 +3024,15 @@ window.em.erstelleArtgruppenListe = function() {
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
 window.em.erstelleArtgruppenListe_2 = function() {
-	var i, y, html, ArtGruppe, row, AnzArten;
-	html = "";
-	for (i in window.Artgruppenliste.rows) {
+	var i,
+		html = "",
+		ArtGruppe,
+		row,
+		AnzArten;
+	for (i in window.em.Artgruppenliste.rows) {
 		if (typeof i !== "function") {
-			ArtGruppe = window.Artgruppenliste.rows[i].key;
-			row = window.Artgruppenliste.rows[i].doc;
+			ArtGruppe = window.em.Artgruppenliste.rows[i].key;
+			row = window.em.Artgruppenliste.rows[i].doc;
 			AnzArten = row.AnzArten;
 			html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 			html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";

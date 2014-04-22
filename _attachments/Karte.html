@@ -43,7 +43,7 @@
 			<script src="vendor/couchapp/markerwithlabel.js"></script>
 
 			<script charset="utf-8">
-				
+
 				$("#KartePage").on("pageshow", function () {
 					// Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
 					var viewname, KeinOrtMeldung;
@@ -110,13 +110,13 @@
 							break;
 						}
 						// Liste der Orte holen. Prüfen, ob sie noch als Variable vorliegt
-						if (window[hOrtLatLngListe]) {
-							erstelleKarteH_2(window[hOrtLatLngListe]);
+						if (window.em[hOrtLatLngListe]) {
+							erstelleKarteH_2(window.em[hOrtLatLngListe]);
 						} else {
 							$db = $.couch.db("evab");
 							$db.view(viewname, {
 								success: function (data) {
-									window[hOrtLatLngListe] = data;
+									window.em[hOrtLatLngListe] = data;
 									erstelleKarteH_2(data);
 								}
 							});
@@ -330,13 +330,13 @@
 						contentHeight = $(window).height() - 44;
 						$("#MapCanvas").css("height", contentHeight + "px");
 						// Beobachtungen holen. Prüfen, ob die Liste noch da ist
-						if (window.BeobListeLatLng) {
+						if (window.em.BeobListeLatLng) {
 							erstelleKarteBeobListe_2();
 						} else {
 							$db = $.couch.db("evab");
 							$db.view('evab/BeobListeLatLng?key="' + localStorage.Email + '"&include_docs=true', {
 								success: function (data) {
-									window.BeobListeLatLng = data;
+									window.em.BeobListeLatLng = data;
 									erstelleKarteBeobListe_2();
 								}
 							});
