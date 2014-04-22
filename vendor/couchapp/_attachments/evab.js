@@ -4435,27 +4435,27 @@ function handleHArtEditPageinit() {
 
 	$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function(event) {
 		event.preventDefault();
-		handleHArtEditOeffneArtListehArtEditClick();
+		window.em.handleHArtEditOeffneArtListehArtEditClick();
 	});
 
 	$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditOeffneZeithArtEditClick();
+		window.em.handleHArtEditOeffneZeithArtEditClick();
 	});
 
 	$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditOeffneOrthArtEditClick();
+		window.em.handleHArtEditOeffneOrthArtEditClick();
 	});
 
 	$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditOeffneRaumhArtEditClick();
+		window.em.handleHArtEditOeffneRaumhArtEditClick();
 	});
 
 	$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditOeffneProjekthArtEditClick();
+		window.em.handleHArtEditOeffneProjekthArtEditClick();
 	});
 
 	// Für jedes Feld bei Änderung speichern
@@ -4472,12 +4472,12 @@ function handleHArtEditPageinit() {
 	$("#hArtEditForm").on("slidestop", '.speichernSlider', speichereHArt);
 
 	// Änderungen im Formular für Anhänge speichern
-	$("#FormAnhängehAE").on("change", ".speichernAnhang", handleHArtEditSpeichernAnhangChange);
+	$("#FormAnhängehAE").on("change", ".speichernAnhang", window.em.handleHArtEditSpeichernAnhangChange);
 
 	// Neue Beobachtung managen
 	$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditNeueBeobhArtEditClick();
+		window.em.handleHArtEditNeueBeobhArtEditClick();
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von Artgruppe
@@ -4495,7 +4495,7 @@ function handleHArtEditPageinit() {
 	// sichtbare Felder wählen
 	$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function(event) {
 		event.preventDefault();
-		handleHArtEditWaehleFelderClick();
+		window.em.handleHArtEditWaehleFelderClick();
 	});
 
 	// Code für den Art-Löschen-Dialog
@@ -4506,9 +4506,9 @@ function handleHArtEditPageinit() {
 
 	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", löscheHBeob);
 
-	$("#hArtEditPage").on("swipeleft", handleHArtEditSwipeleft);
+	$("#hArtEditPage").on("swipeleft", window.em.handleHArtEditSwipeleft);
 
-	$("#hArtEditPage").on("swiperight", handleHArtEditSwiperight);
+	$("#hArtEditPage").on("swiperight", window.em.handleHArtEditSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
 	$("#hArtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
@@ -4541,7 +4541,7 @@ function handleHArtEditPageinit() {
 
 	$("#FormAnhängehAE").on("click", "[name='LöscheAnhang']", function(event) {
 		event.preventDefault();
-		handleHArtEditLoescheAnhangClick(this);
+		window.em.handleHArtEditLoescheAnhangClick(this);
 	});
 
 	$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', handleHArtEditMenuArteigenschaftenClick);
@@ -4612,10 +4612,10 @@ window.em.handleHArtListePageinit = function() {
 	// Neue Beobachtung managen
 	$("#hArtListePage").on("click", ".NeueBeobhArtListe", function(event) {
 		event.preventDefault();
-		öffneArtgruppenliste_hal();
+		window.em.öffneArtgruppenliste_hal();
 	});
 
-	$("#ArtlistehAL").on("swipeleft", ".erste", öffneArtgruppenliste_hal);
+	$("#ArtlistehAL").on("swipeleft", ".erste", window.em.öffneArtgruppenliste_hal);
 
 	$("#ArtlistehAL").on("swipeleft click", ".beob", window.em.handleHArtListeBeobClick);
 
@@ -4788,13 +4788,13 @@ window.em.handleHOrtEditPageinit = function() {
 
 	// ungelöstes Problem: swipe reagiert!
 	// Eingabe im Zahlenfeld abfangen
-	$("#hOrtEditForm").on("blur", '.speichernSlider', speichereHOrtEdit);
+	$("#hOrtEditForm").on("blur", '.speichernSlider', window.em.speichereHOrtEdit);
 
 	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hOrtEditForm").on("mouseup", '.ui-slider-input', speichereHOrtEdit);
+	$("#hOrtEditForm").on("mouseup", '.ui-slider-input', window.em.speichereHOrtEdit);
 
 	// Ende des Schiebens abfangen
-	$("#hOrtEditForm").on("slidestop", '.speichernSlider', speichereHOrtEdit);
+	$("#hOrtEditForm").on("slidestop", '.speichernSlider', window.em.speichereHOrtEdit);
 
 	// Änderungen im Formular für Anhänge speichern
 	$("#FormAnhängehOE").on("change", ".speichernAnhang", window.em.handleHOrtEditSpeichernAnhangChange);
@@ -4837,13 +4837,13 @@ window.em.handleHOrtEditPageinit = function() {
 	// Pagination Pfeil voriger initialisieren
 	$("#OrtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
-		nächsterVorigerOrt("voriger");
+		window.em.nächsterVorigerOrt("voriger");
 	});
 
 	// Pagination Pfeil nächster initialisieren
 	$("#OrtEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
-		nächsterVorigerOrt("nächster");
+		window.em.nächsterVorigerOrt("nächster");
 	});
 
 	// Pagination Pfeiltasten initialisieren
@@ -4852,12 +4852,12 @@ window.em.handleHOrtEditPageinit = function() {
 		if (!$(event.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				nächsterVorigerOrt("voriger");
+				window.em.nächsterVorigerOrt("voriger");
 				event.preventDefault();
 			}
 			// Right arrow
 			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				nächsterVorigerOrt("nächster");
+				window.em.nächsterVorigerOrt("nächster");
 				event.preventDefault();
 			}
 		}
@@ -4916,7 +4916,7 @@ window.em.handleHOrtEditSpeichernChange = function() {
 		FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
 	} else {
-		speichereHOrtEdit(this);
+		window.em.speichereHOrtEdit(this);
 	}
 };
 
@@ -4965,7 +4965,7 @@ window.em.handleHOrtEditLoescheOrtClick = function(that) {
 // wenn in hOrtEdit.html #hoe_löschen_meldung_ja_loeschen geklickt wird
 window.em.handleHOrtEditLoeschenMeldungJaClick = function() {
 	var div = $("#hoe_löschen_meldung")[0];
-	löscheOrt($.data(div, 'Arten'), $.data(div, 'Zeiten'));
+	window.em.löscheOrt($.data(div, 'Arten'), $.data(div, 'Zeiten'));
 };
 
 // wenn in hOrtEdit.html #KarteOeffnenOrtEdit geklickt wird
@@ -4978,7 +4978,7 @@ window.em.handleHOrtEditKarteOeffnenClick = function() {
 window.em.handleHOrtEditContentSwipeleft = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsterVorigerOrt("nächster");
+		window.em.nächsterVorigerOrt("nächster");
 	}
 };
 
@@ -4986,7 +4986,7 @@ window.em.handleHOrtEditContentSwipeleft = function() {
 window.em.handleHOrtEditContentSwiperight = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
-		nächsterVorigerOrt("voriger");
+		window.em.nächsterVorigerOrt("voriger");
 	}
 };
 
@@ -5661,62 +5661,17 @@ window.em.speichereHProjektEdit_2 = function(that) {
 	}
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// NAMESPACE
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Öffnet den vorigen oder nächsten Ort
 // voriger des ersten => OrtListe
 // nächster des letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird benutzt in hOrtEdit.html
-function nächsterVorigerOrt(NächsterOderVoriger) {
+window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 	// prüfen, ob OrtListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.OrtListe) {
 		// Ortliste liegt als Variable vor
-		nächsterVorigerOrt_2(NächsterOderVoriger);
+		window.em.nächsterVorigerOrt_2(NächsterOderVoriger);
 	} else {
 		// keine Ortliste vorhanden
 		// neu aus DB erstellen
@@ -5725,13 +5680,13 @@ function nächsterVorigerOrt(NächsterOderVoriger) {
 			success: function (data) {
 				// OrtListe für hOrtListe.html bereitstellen
 				window.OrtListe = data;
-				nächsterVorigerOrt_2(NächsterOderVoriger);
+				window.em.nächsterVorigerOrt_2(NächsterOderVoriger);
 			}
 		});
 	}
-}
+};
 
-function nächsterVorigerOrt_2(NächsterOderVoriger) {
+window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 	var i, OrtIdAktuell, AnzOrt;
 	for (i in OrtListe.rows) {
 		OrtIdAktuell = OrtListe.rows[i].doc._id;
@@ -5764,10 +5719,10 @@ function nächsterVorigerOrt_2(NächsterOderVoriger) {
 			}
 		}
 	}
-}
+};
 
 // wird benutzt in hOrtEdit.html
-function validatehOrtEdit() {
+window.em.validatehOrtEdit = function() {
 	if (!$("[name='oName']").val()) {
 		window.em.melde("Bitte Ortnamen eingeben");
 		setTimeout(function() { 
@@ -5776,22 +5731,22 @@ function validatehOrtEdit() {
 		return false;
 	}
 	return true;
-}
+};
 
 // wird benutzt in hOrtEdit.html
-function speichereHOrtEdit() {
+window.em.speichereHOrtEdit = function() {
 	var that = this;
 	// prüfen, ob Ort existiert
 	if (window.hOrt) {
 		// bestehedes Objekt verwenden
-		speichereHOrtEdit_2(that);
+		window.em.speichereHOrtEdit_2(that);
 	} else {
 		// kein Ort > aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function (data) {
 				window.hOrt = data;
-				speichereHOrtEdit_2(that);
+				window.em.speichereHOrtEdit_2(that);
 			},
 			error: function () {
 				console.log('fehler in function speichereHOrtEdit');
@@ -5799,9 +5754,9 @@ function speichereHOrtEdit() {
 			}
 		});
 	}
-}
+};
 
-function speichereHOrtEdit_2(that) {
+window.em.speichereHOrtEdit_2 = function(that) {
 	var Feldname, Feldjson, Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
@@ -5814,7 +5769,7 @@ function speichereHOrtEdit_2(that) {
 		Feldjson = $("[name='" + Feldname + "']").serializeObject();
 		Feldwert = Feldjson[Feldname];
 	}
-	if (validatehOrtEdit()) {
+	if (window.em.validatehOrtEdit()) {
 		if (Feldname === "oName") {
 			// Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			window.em.leereStorageOrtListe("mitLatLngListe");
@@ -5856,10 +5811,10 @@ function speichereHOrtEdit_2(that) {
 			}
 		});
 	}
-}
+};
 
 // wird benutzt in hOrtEdit.html
-function löscheOrt(Arten, Zeiten) {
+window.em.löscheOrt = function(Arten, Zeiten) {
 	// nur löschen, wo Datensätze vorkommen
 	if (Zeiten.rows.length > 0) {
 		window.em.loescheIdIdRevListe(Zeiten);
@@ -5870,23 +5825,23 @@ function löscheOrt(Arten, Zeiten) {
 	// zuletzt den Ort löschen
 	if (window.hOrt) {
 		// Objekt nutzen
-		löscheOrt_2();
+		window.em.löscheOrt_2();
 	} else {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function (data) {
 				window.hOrt = data;
-				löscheOrt_2();
+				window.em.löscheOrt_2();
 			},
 			error: function () {
 				window.em.melde("Fehler: Der Ort wurde nicht gelöscht");
 			}
 		});
 	}
-}
+};
 
-function löscheOrt_2() {
+window.em.löscheOrt_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.hOrt, {
 		success: function (data) {
@@ -5909,42 +5864,42 @@ function löscheOrt_2() {
 			window.em.melde("Fehler: Der Ort wurde nicht gelöscht");
 		}
 	});
-}
+};
 
 // wird verwendet in hArtListe.html
-function öffneArtgruppenliste_hal() {
+window.em.öffneArtgruppenliste_hal = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStoragehBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "hArtListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
 	$.mobile.navigate("Artgruppenliste.html");
-}
+};
 
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
-function handleHArtEditOeffneArtListehArtEditClick() {
+window.em.handleHArtEditOeffneArtListehArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	$.mobile.navigate("hArtListe.html");
-}
+};
 
 // wenn in hArtEdit.html auf #OeffneZeithArtEdit geklickt wird
-function handleHArtEditOeffneZeithArtEditClick() {
+window.em.handleHArtEditOeffneZeithArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
-}
+};
 
 // wenn in hArtEdit.html #OeffneOrthArtEdit geklickt wird
-function handleHArtEditOeffneOrthArtEditClick() {
+window.em.handleHArtEditOeffneOrthArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
-}
+};
 
 // wenn in hArtEdit.html #OeffneRaumhArtEdit geklickt wird
-function handleHArtEditOeffneRaumhArtEditClick() {
+window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -5952,10 +5907,10 @@ function handleHArtEditOeffneRaumhArtEditClick() {
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
-}
+};
 
 // wenn in hArtEdit.html #OeffneProjekthArtEdit geklickt wird
-function handleHArtEditOeffneProjekthArtEditClick() {
+window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	window.em.leereStorageZeitEdit();
@@ -5965,48 +5920,85 @@ function handleHArtEditOeffneProjekthArtEditClick() {
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
-}
+};
 
 // wenn in hArtEdit.html .speichernAnhang geändert wird
-function handleHArtEditSpeichernAnhangChange() {
+window.em.handleHArtEditSpeichernAnhangChange = function() {
 	var _attachments = $("#_attachmentshAE").val();
 	if (_attachments && _attachments.length !== 0) {
 		window.em.speichereAnhänge(localStorage.hBeobId, window.hArt, "hAE");
 	}
-}
+};
 
 // wenn in hArtEdit.html #NeueBeobhArtEdit geklickt wird
-function handleHArtEditNeueBeobhArtEditClick() {
+window.em.handleHArtEditNeueBeobhArtEditClick = function() {
 	localStorage.Status = "neu";
 	zuArtgruppenliste();
-}
+};
 
 // wenn in hArtEdit.html #waehleFelderhBeobEdit geklickt wird
-function handleHArtEditWaehleFelderClick() {
+window.em.handleHArtEditWaehleFelderClick = function() {
 	localStorage.AufrufendeSeiteFW = "hArtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
-}
+};
 
 // wenn in hArtEdit.html nach links gewischt wird
-function handleHArtEditSwipeleft() {
+window.em.handleHArtEditSwipeleft = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		nächsteVorigeArt("nächste");
 	}
-}
+};
 
 // wenn in hArtEdit.html nach rechts gewischt wird
-function handleHArtEditSwiperight() {
+window.em.handleHArtEditSwiperight = function() {
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		nächsteVorigeArt("vorige");
 	}
-}
+};
 
 // wenn in hArtEdit.html [name='LöscheAnhang'] geklickt wird
-function handleHArtEditLoescheAnhangClick(that) {
+window.em.handleHArtEditLoescheAnhangClick = function(that) {
 	window.em.loescheAnhang(that, window.hArt, localStorage.hBeobId);
-}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// NAMESPACE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
 function handleHArtEditMenuArteigenschaftenClick() {
