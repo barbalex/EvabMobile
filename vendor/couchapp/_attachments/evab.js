@@ -648,7 +648,7 @@ window.em.initiiereBeobliste = function() {
 
 window.em.initiiereBeobliste_2 = function() {
 	var anzBeob, beob, ListItemContainer, Titel2;
-	anzBeob = BeobListe.rows.length;
+	anzBeob = window.em.BeobListe.rows.length;
 	ListItemContainer = "";
 
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
@@ -831,9 +831,9 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (var i in FeldlisteProjekt.rows) {
+	for (var i in window.em.FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteProjekt.rows[i].doc;
+			Feld = window.em.FeldlisteProjekt.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
@@ -1396,7 +1396,7 @@ window.em.initiiereProjektliste = function() {
 window.em.initiiereProjektliste_2 = function() {
 	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
 	ListItemContainer = "";
-	anzProj = Projektliste.rows.length;
+	anzProj = window.em.Projektliste.rows.length;
 
 	// Im Titel der Seite die Anzahl Projekte anzeigen
 	Titel2 = " Projekte";
@@ -1408,10 +1408,10 @@ window.em.initiiereProjektliste_2 = function() {
 	if (anzProj === 0) {
 		ListItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
-		for (i in Projektliste.rows) {			// Liste aufbauen
+		for (i in window.em.Projektliste.rows) {			// Liste aufbauen
 			if (typeof i !== "function") {
-				Proj = Projektliste.rows[i].doc;
-				key = Projektliste.rows[i].key;
+				Proj = window.em.Projektliste.rows[i].doc;
+				key = window.em.Projektliste.rows[i].key;
 				pName = key[1];
 				listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
 				listItem += "<a href=\"#\">";
@@ -1499,9 +1499,9 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteRaumEdit.rows) {
+	for (i in window.em.FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteRaumEdit.rows[i].doc;
+			Feld = window.em.FeldlisteRaumEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
@@ -1558,7 +1558,7 @@ window.em.initiiereRaumListe = function() {
 
 window.em.initiiereRaumListe_2 = function() {
 	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
-	anzRaum = RaumListe.rows.length;
+	anzRaum = window.em.RaumListe.rows.length;
 	ListItemContainer = "";
 
 	// Im Titel der Seite die Anzahl Räume anzeigen
@@ -1571,10 +1571,10 @@ window.em.initiiereRaumListe_2 = function() {
 	if (anzRaum === 0) {
 		ListItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
-		for (i in RaumListe.rows) {	// Liste aufbauen
+		for (i in window.em.RaumListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
-				Raum = RaumListe.rows[i].doc;
-				key = RaumListe.rows[i].key;
+				Raum = window.em.RaumListe.rows[i].doc;
+				key = window.em.RaumListe.rows[i].key;
 				rName = Raum.rName;
 				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
@@ -1671,9 +1671,9 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (var i in FeldlisteOrtEdit.rows) {
+	for (var i in window.em.FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteOrtEdit.rows[i].doc;
+			Feld = window.em.FeldlisteOrtEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
@@ -1733,7 +1733,7 @@ window.em.initiiereOrtListe = function() {
 
 window.em.initiiereOrtListe_2 = function() {
 	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
-	anzOrt = OrtListe.rows.length;
+	anzOrt = window.em.OrtListe.rows.length;
 	ListItemContainer = "";
 
 	// Im Titel der Seite die Anzahl Orte anzeigen
@@ -1746,10 +1746,10 @@ window.em.initiiereOrtListe_2 = function() {
 	if (anzOrt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
 	} else {
-		for (i in OrtListe.rows) {	// Liste aufbauen
+		for (i in window.em.OrtListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
-				Ort = OrtListe.rows[i].doc;
-				key = OrtListe.rows[i].key;
+				Ort = window.em.OrtListe.rows[i].doc;
+				key = window.em.OrtListe.rows[i].key;
 				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
 			}
@@ -1847,7 +1847,7 @@ window.em.initiiereZeitListe = function() {
 
 window.em.initiiereZeitListe_2 = function() {
 	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
-	anzZeit = ZeitListe.rows.length;
+	anzZeit = window.em.ZeitListe.rows.length;
 	ListItemContainer = "";
 
 	// Im Titel der Seite die Anzahl Zeiten anzeigen
@@ -1860,10 +1860,10 @@ window.em.initiiereZeitListe_2 = function() {
 	if (anzZeit === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
 	} else {
-		for (i in ZeitListe.rows) {
+		for (i in window.em.ZeitListe.rows) {
 			if (typeof i !== "function") {
-				Zeit = ZeitListe.rows[i].doc;
-				key = ZeitListe.rows[i].key;
+				Zeit = window.em.ZeitListe.rows[i].doc;
+				key = window.em.ZeitListe.rows[i].key;
 				zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 				listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
 				ListItemContainer += listItem;
@@ -1883,9 +1883,9 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 	Feld = {};
 	ListItem = "";
 	HtmlContainer = "";
-	for (i in FeldlisteZeitEdit.rows) {
+	for (i in window.em.FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = FeldlisteZeitEdit.rows[i].doc;
+			Feld = window.em.FeldlisteZeitEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === window.em.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
@@ -4423,7 +4423,7 @@ window.em.handleHArtEditPageshow = function() {
 };
 
 // wenn hArtEdit.html initiiert wird
-function handleHArtEditPageinit() {
+window.em.handleHArtEditPageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4558,7 +4558,7 @@ function handleHArtEditPageinit() {
 	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleHArtEditMenuNeuAnmeldenClick);
-}
+};
 
 // wenn hArtListe.html erscheint
 window.em.handleHArtListePageshow = function() {
@@ -5088,10 +5088,10 @@ window.em.handleHOrtListePageinit = function() {
 
 	$("#OrtlistehOL").on("click", ".Ort", function(event) {
 		event.preventDefault();
-		window.em.handleHOrtListeOrtClick();
+		window.em.handleHOrtListeOrtClick(this);
 	});
 
-	$("#OrtlistehOL").on("swipeleft", ".erste", erstelleNeuenOrt);
+	$("#OrtlistehOL").on("swipeleft", ".erste", window.em.erstelleNeuenOrt);
 
 	$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", window.em.handleHOrtListePageContentSwiperight);
 
@@ -5132,8 +5132,8 @@ window.em.handleHOrtListeSwipeleft = function() {
 };
 
 // wenn in hOrtListe.html .Ort geklickt wird
-window.em.handleHOrtListeOrtClick = function() {
-	localStorage.OrtId = $(this).attr('OrtId');
+window.em.handleHOrtListeOrtClick = function(that) {
+	localStorage.OrtId = $(that).attr('OrtId');
 	$.mobile.navigate("hOrtEdit.html");
 };
 
@@ -5480,14 +5480,14 @@ window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
 	var i,
 		ProjIdAktuell,
 		AnzProj;
-	for (i in Projektliste.rows) {
-		ProjIdAktuell = Projektliste.rows[i].doc._id;
-		AnzProj = Projektliste.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+	for (i in window.em.Projektliste.rows) {
+		ProjIdAktuell = window.em.Projektliste.rows[i].doc._id;
+		AnzProj = window.em.Projektliste.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (ProjIdAktuell === localStorage.ProjektId) {
 			switch (NächstesOderVoriges) {
 			case "nächstes":
 				if (parseInt(i) < AnzProj) {
-					localStorage.ProjektId = Projektliste.rows[parseInt(i)+1].doc._id;
+					localStorage.ProjektId = window.em.Projektliste.rows[parseInt(i)+1].doc._id;
 					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
@@ -5498,7 +5498,7 @@ window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
 				break;
 			case "voriges":
 				if (parseInt(i) > 0) {
-					localStorage.ProjektId = Projektliste.rows[parseInt(i)-1].doc._id;
+					localStorage.ProjektId = window.em.Projektliste.rows[parseInt(i)-1].doc._id;
 					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
@@ -5691,14 +5691,14 @@ window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 
 window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 	var i, OrtIdAktuell, AnzOrt;
-	for (i in OrtListe.rows) {
-		OrtIdAktuell = OrtListe.rows[i].doc._id;
-		AnzOrt = OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+	for (i in window.em.OrtListe.rows) {
+		OrtIdAktuell = window.em.OrtListe.rows[i].doc._id;
+		AnzOrt = window.em.OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (OrtIdAktuell === localStorage.OrtId) {
 			switch (NächsterOderVoriger) {
 			case "nächster":
 				if (parseInt(i) < AnzOrt) {
-					localStorage.OrtId = OrtListe.rows[parseInt(i)+1].doc._id;
+					localStorage.OrtId = window.em.OrtListe.rows[parseInt(i)+1].doc._id;
 					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
@@ -5709,7 +5709,7 @@ window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 				break;
 			case "voriger":
 				if (parseInt(i) > 0) {
-					localStorage.OrtId = OrtListe.rows[parseInt(i)-1].doc._id;
+					localStorage.OrtId = window.em.OrtListe.rows[parseInt(i)-1].doc._id;
 					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
@@ -5737,8 +5737,9 @@ window.em.validatehOrtEdit = function() {
 };
 
 // wird benutzt in hOrtEdit.html
-window.em.speichereHOrtEdit = function() {
-	var that = this;
+window.em.speichereHOrtEdit = function(that) {
+	// die eventhandler übergeben this nicht über die Klammer
+	var that = that || this;
 	// prüfen, ob Ort existiert
 	if (window.em.hOrt) {
 		// bestehedes Objekt verwenden
@@ -6020,7 +6021,7 @@ window.em.handleHProjektListePageshow = function() {
 		return;
 	}
 	window.em.initiiereProjektliste();
-}
+};
 
 // wenn hProjektListe initiiert wird
 window.em.handleHProjektListePageinit = function() {
@@ -6098,7 +6099,7 @@ window.em.handleHProjektListePageinit = function() {
 		localStorage.UserStatus = "neu";
 		$.mobile.navigate("index.html");
 	});
-}
+};
 
 // wenn in hProjektListe.html .menu_projekte_exportieren geklickt wird
 window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
@@ -6107,12 +6108,445 @@ window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
 	$("#MenuProjektListe").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuProjektListe").popup("close");
-}
+};
 
+// wenn RaumEdit erscheint
+window.em.handleRaumEditPageshow = function() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.RaumId || localStorage.RaumId === "undefined")) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	window.em.initiiereRaumEdit();
+};
 
+// wenn RaumEdit initiiert wird
+window.em.handleRaumEditPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.RaumId || localStorage.RaumId === "undefined")) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
 
+	$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
+		event.preventDefault();
+		window.em.leereStorageRaumEdit();
+		$.mobile.navigate("hRaumListe.html");
+	});
 
+	// Für jedes Feld bei Änderung speichern
+	$("#hRaumEditForm").on("change", ".speichern", function () {
+		window.em.speichereRaum(this);
+	});
 
+	// Eingabe im Zahlenfeld abfangen
+	$("#hRaumEditForm").on("blur", '.speichernSlider', function (event) {
+		window.em.speichereRaum(this);
+	});
+
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#hRaumEditForm").on("mouseup", '.ui-slider-input', function (event) {
+		window.em.speichereRaum(this);
+	});
+
+	// Ende des Schiebens abfangen
+	$("#hRaumEditForm").on("slidestop", '.speichernSlider', function (event) {
+		window.em.speichereRaum(this);
+	});
+
+	// Änderungen im Formular für Anhänge speichern
+	$("#FormAnhängehRE").on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange);
+
+	// Code für den Raum-Löschen-Dialog
+	$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function (event) {
+		event.preventDefault();
+		window.em.handleRaumEditLoescheRaumClick();
+	});
+
+	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function (event) {
+		var div = $("#hre_löschen_meldung")[0];
+		window.em.löscheRaum(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'));
+	});
+
+	// Link zu Projekt in Navbar und Titelleiste
+	$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
+		event.preventDefault();
+		window.em.leereStorageRaumListe("mitLatLngListe");
+		$.mobile.navigate("hProjektEdit.html");
+	});
+
+	// inaktive tabs inaktivieren
+	$(document).on("click", ".tab_inaktiv", function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
+	// Link zu Ortliste in Navbar
+	$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function (event) {
+		event.preventDefault();
+		$.mobile.navigate("hOrtListe.html");
+	});
+
+	// neuen Raum erstellen
+	$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function (event) {
+		event.preventDefault();
+		window.em.erstelleNeuenRaum();
+	});
+
+	// sichtbare Felder wählen
+	$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
+		event.preventDefault();
+		localStorage.AufrufendeSeiteFW = "hRaumEdit";
+		$.mobile.navigate("FelderWaehlen.html");
+	});
+
+	$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {
+		if (!$("*:focus").attr("aria-valuenow")) {
+			// kein slider
+			window.em.nächsterVorigerRaum("nächster");
+		}
+	});
+
+	$("#RaumEditPage").on("swiperight", "#hRaumEditContent", function () {
+		if (!$("*:focus").attr("aria-valuenow")) {
+			// kein slider
+			window.em.nächsterVorigerRaum("voriger");
+		}
+	});
+
+	// Pagination Pfeil voriger initialisieren
+	$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function (event) {
+		event.preventDefault();
+		window.em.nächsterVorigerRaum("voriger");
+	});
+
+	// Pagination Pfeil nächster initialisieren
+	$("#RaumEditPage").on("vclick", ".ui-pagination-next", function (event) {
+		event.preventDefault();
+		window.em.nächsterVorigerRaum("nächster");
+	});
+
+	// Pagination Pfeiltasten initialisieren
+	$("#RaumEditPage").on("keyup", function (event) {
+		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				window.em.nächsterVorigerRaum("voriger");
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				window.em.nächsterVorigerRaum("nächster");
+				event.preventDefault();
+			}
+		}
+	});
+
+	$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function (event) {
+		event.preventDefault();
+		localStorage.zurueck = "hRaumEdit";
+		$.mobile.navigate("Karte.html");
+	});
+
+	$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
+		event.preventDefault();
+		window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
+	});
+
+	$('#MenuRaumEdit').on('click', '.menu_einfacher_modus', window.em.handleRaumEditMenuEinfacherModusClick);
+
+	$('#MenuRaumEdit').on('click', '.menu_felder_verwalten', function() {
+		localStorage.zurueck = "hRaumEdit.html";
+		$.mobile.navigate("FeldListe.html");
+	});
+
+	$('#MenuRaumEdit').on('click', '.menu_raeume_exportieren', window.em.handleRaumEditMenuExportierenClick);
+
+	$('#MenuRaumEdit').on('click', '.menu_einstellungen', function() {
+		localStorage.zurueck = "hRaumEdit.html";
+		window.em.öffneMeineEinstellungen();
+	});
+
+	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', function() {
+		localStorage.UserStatus = "neu";
+		$.mobile.navigate("index.html");
+	});
+};
+
+window.em.handleRaumEditSpeichernAnhangChange = function() {
+	var _attachments = $("#_attachmentshRE").val();
+	if (_attachments && _attachments.length > 0) {
+		window.em.speichereAnhänge(localStorage.RaumId, window.em.hRaum, "hRE");
+	}
+};
+
+window.em.handleRaumEditLoescheRaumClick = function() {
+	// Anzahl Orte des Raums zählen
+	$db = $.couch.db("evab");
+	$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+		success: function (Orte) {
+			var anzOrte = Orte.rows.length;
+			// Anzahl Zeiten des Raums zählen
+			$db.view('evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+				success: function (Zeiten) {
+					var anzZeiten = Zeiten.rows.length;
+					// Anzahl Arten des Raums zählen
+					$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
+						success: function (Arten) {
+							var anzArten = Arten.rows.length, 
+								meldung, 
+								div,
+								orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
+								zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
+								arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+							meldung = 'Raum inklusive ' + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+							$("#hre_löschen_meldung_meldung").html(meldung);
+							// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+							div = $("#hre_löschen_meldung");
+							div.data('Arten', Arten);
+							div.data('Zeiten', Zeiten);
+							div.data('Orte', Orte);
+							// popup öffnen
+							$("#hre_löschen_meldung").popup("open");
+						}
+					});
+				}
+			});
+		}
+	});
+};
+
+window.em.handleRaumEditMenuEinfacherModusClick = function() {
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleRaumEditMenuExportierenClick = function() {
+	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuRaumEdit").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuRaumEdit").popup("close");
+};
+
+window.em.löscheRaum = function(Arten, Zeiten, Orte) {
+	// nur löschen, wo Datensätze vorkommen
+	if (Orte.rows.length > 0) {
+		window.em.loescheIdIdRevListe(Orte);
+	}
+	if (Zeiten.rows.length > 0) {
+		window.em.loescheIdIdRevListe(Zeiten);
+	}
+	if (Arten.rows.length > 0) {
+		window.em.loescheIdIdRevListe(Arten);
+	}
+	if (window.em.hRaum) {
+		// Objekt benutzen
+		window.em.löscheRaum_2();
+	} else {
+		// Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.RaumId, {
+			success: function (data) {
+				window.em.hRaum = data;
+				window.em.löscheRaum_2();
+			},
+			error: function () {
+				window.em.melde("Fehler: Raum nicht gelöscht");
+			}
+		});
+	}
+};
+
+window.em.löscheRaum_2 = function() {
+	$db = $.couch.db("evab");
+	$db.removeDoc(window.em.hRaum, {
+		success: function (data) {
+			var i;
+			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+			if (window.em.RaumListe) {
+				for (i in window.em.RaumListe.rows) {
+					if (window.em.RaumListe.rows[i].doc._id === data.id) {
+						window.em.RaumListe.rows.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				// Keine Raumliste mehr. Storage löschen
+				window.em.leereStorageRaumListe("mitLatLngListe");
+			}
+			// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+			window.em.leereStorageRaumEdit("mitLatLngListe");
+			$.mobile.navigate('hRaumListe.html');
+		},
+		error: function () {
+			window.em.melde("Fehler: Raum nicht gelöscht");
+		}
+	});
+};
+
+window.em.validierehRaumEdit = function() {
+	if (!$("#rName").val()) {
+		window.em.melde("Bitte Raumnamen eingeben");
+		setTimeout(function() { 
+			$('#rName').focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+};
+
+window.em.speichereRaum = function(that) {
+	// prüfen, ob Objekt Raum existiert
+	// fehlt z.B. nach refresh
+	if (window.em.hRaum) {
+		window.em.speichereRaum_2(that);
+	} else {
+		// kein Raum > aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.RaumId, {
+			success: function (data) {
+				window.em.hRaum = data;
+				window.em.speichereRaum_2(that);
+			},
+			error: function () {
+				window.em.melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
+			}
+		});
+	}
+
+};
+
+window.em.speichereRaum_2 = function(that) {
+	var Feldname, Feldjson, Feldwert;
+	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+		// slider
+		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+		Feldwert = $(that).attr("aria-valuenow");
+	} else {
+		// alle anderen Feldtypen
+		Feldname = that.name;
+		// nötig, damit Arrays richtig kommen
+		Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		Feldwert = Feldjson[Feldname];
+	}
+	if (window.em.validierehRaumEdit()) {
+		if (Feldname === "rName") {
+			// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+			window.em.leereStorageRaumListe("mitLatLngListe");
+		}
+		if (Feldwert) {
+			if (window.em.myTypeOf(Feldwert) === "float") {
+				window.em.hRaum[Feldname] = parseFloat(Feldwert);
+			} else if (window.em.myTypeOf(Feldwert) === "integer") {
+				window.em.hRaum[Feldname] = parseInt(Feldwert);
+			} else {
+				window.em.hRaum[Feldname] = Feldwert;
+			}
+		} else if (window.em.hRaum[Feldname]) {
+			delete window.em.hRaum[Feldname];
+		}
+		// alles speichern
+		$db.saveDoc(window.em.hRaum, {
+			success: function (data) {
+				window.em.hRaum._rev = data.rev;
+				// window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
+				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+				// Zuletzt gespeicherte RaumId NACH dem speichern setzen
+				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+				// darum zwischenspeichern
+				window.em.RaumIdZwischenspeicher = localStorage.RaumId;
+				//setTimeout("window.ZuletztGespeicherteRaumId = window.em.RaumIdZwischenspeicher", 1000);	AUSGESCHALTET, DA ZuletztGespeicherteRaumId NIRGENDS GEBRAUCHT
+				setTimeout("delete window.em.RaumIdZwischenspeicher", 1500);
+				// nicht aktualisierte hierarchisch tiefere Listen löschen
+				delete window.em.OrteVonProjekt;
+				delete window.em.ZeitenVonProjekt;
+				delete window.em.ZeitenVonOrt;
+				delete window.em.ArtenVonProjekt;
+				delete window.em.ArtenVonOrt;
+				delete window.em.ArtenVonZeit;
+			},
+			error: function () {
+				console.log('fehler in function speichereRaum_2(that)');
+			}
+		});
+	}
+};
+
+// Öffnet den vorigen oder nächsten Raum
+// voriger des ersten => RaumListe
+// nächster des letzten => melden
+// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
+	// prüfen, ob RaumListe schon existiert
+	// nur abfragen, wenn sie noch nicht existiert
+	if (window.em.RaumListe) {
+		// globale Variable RaumListe existiert noch
+		window.em.nächsterVorigerRaum_2(NächsterOderVoriger);
+	} else {
+		// keine Raumliste übergeben
+		// neu aus DB erstellen
+		$db = $.couch.db("evab");
+		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
+			success: function (data) {
+				// RaumListe bereitstellen
+				window.em.RaumListe = data;
+				window.em.nächsterVorigerRaum_2(NächsterOderVoriger);
+			}
+		});
+	}
+};
+
+window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
+	var i, RaumIdAktuell, AnzRaum;
+	for (i in window.em.RaumListe.rows) {
+		RaumIdAktuell = window.em.RaumListe.rows[i].doc._id;
+		AnzRaum = window.em.RaumListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (RaumIdAktuell === localStorage.RaumId) {
+			switch (NächsterOderVoriger) {
+			case "nächster":
+				if (parseInt(i) < AnzRaum) {
+					localStorage.RaumId = window.em.RaumListe.rows[parseInt(i)+1].doc._id;
+					window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
+					window.em.initiiereRaumEdit();
+					return;
+				} else {
+					window.em.melde("Das ist der letzte Raum");
+					return;
+				}
+				break;
+			case "voriger":
+				if (parseInt(i) > 0) {
+					localStorage.RaumId = window.em.RaumListe.rows[parseInt(i)-1].doc._id;
+					window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
+					window.em.initiiereRaumEdit();
+					return;
+				} else {
+					window.em.leereStorageRaumEdit();
+					$.mobile.navigate("hRaumListe.html");
+					return;
+				}
+				break;
+			}
+		}
+	}
+};
 
 
 
@@ -6168,7 +6602,9 @@ window.em.zuArtliste = function() {
 
 // Speichert alle Daten
 // wird in hArtEdit.html verwendet
-window.em.speichereHArt = function() {
+window.em.speichereHArt = function(that) {
+	// this wird von eventhandlern nicht in der Klammer übergeben
+	var that = that || this;
 	// prüfen, ob hBeob als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
@@ -6254,7 +6690,9 @@ window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 };
 
 window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
-	var i, ArtIdAktuell, AnzArt;
+	var i,
+		ArtIdAktuell,
+		AnzArt;
 	for (i in window.em.hBeobListe.rows) {
 		ArtIdAktuell = window.em.hBeobListe.rows[i].doc._id;
 		AnzArt = window.em.hBeobListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -6262,7 +6700,7 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 			switch (NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzArt) {
-					localStorage.hBeobId = hBeobListe.rows[parseInt(i)+1].doc._id;
+					localStorage.hBeobId = window.em.hBeobListe.rows[parseInt(i)+1].doc._id;
 					window.em.leereStoragehBeobEdit("ohneId");
 					window.em.initiierehBeobEdit();
 					return;
@@ -6273,7 +6711,7 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 				break;
 			case "vorige":
 				if (parseInt(i) > 0) {
-					localStorage.hBeobId = hBeobListe.rows[parseInt(i)-1].doc._id;
+					localStorage.hBeobId = window.em.hBeobListe.rows[parseInt(i)-1].doc._id;
 					window.em.leereStoragehBeobEdit("ohneId");
 					window.em.initiierehBeobEdit();
 					return;
@@ -6835,7 +7273,7 @@ window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 			switch (NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzBeob) {
-					localStorage.BeobId = BeobListe.rows[parseInt(i)+1].doc._id;
+					localStorage.BeobId = window.em.BeobListe.rows[parseInt(i)+1].doc._id;
 					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
@@ -6846,7 +7284,7 @@ window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 				break;
 			case "vorige":
 				if (parseInt(i) > 0) {
-					localStorage.BeobId = BeobListe.rows[parseInt(i)-1].doc._id;
+					localStorage.BeobId = window.em.BeobListe.rows[parseInt(i)-1].doc._id;
 					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
