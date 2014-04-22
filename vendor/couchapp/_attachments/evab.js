@@ -6012,6 +6012,138 @@ window.em.handleHArtEditMenuNeuAnmeldenClick = function() {
 	$.mobile.navigate("index.html");
 };
 
+// wenn hProjektListe erscheint
+window.em.handleHProjektListePageshow = function() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	}
+	window.em.initiiereProjektliste();
+}
+
+// wenn hProjektListe initiiert wird
+window.em.handleHProjektListePageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	}
+
+	$("#hProjektListePageHeader").on('click', '#OeffneProjektListeProjektListe', function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
+	// neues Projekt erstellen
+	$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function (event) {
+		event.preventDefault();
+		window.em.erstelleNeuesProjekt();
+	});
+
+	$("#ProjektlistehPL").on("swipeleft", ".Projekt", function () {
+		localStorage.ProjektId = $(this).attr('ProjektId');
+		$.mobile.navigate("hRaumListe.html");
+	});
+
+	$("#ProjektlistehPL").on("click", ".Projekt", function (event) {
+		event.preventDefault();
+		localStorage.ProjektId = $(this).attr('ProjektId');
+		$.mobile.navigate("hProjektEdit.html");
+	});
+
+	$("#ProjektlistehPL").on("swipeleft", ".erste", window.em.erstelleNeuesProjekt);
+
+	$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
+		event.preventDefault();
+		$.mobile.navigate("BeobListe.html");
+	});
+
+	$("#ProjektListePage").on("swiperight", function () {
+		$.mobile.navigate("BeobListe.html");
+	});
+
+	$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
+		event.preventDefault();
+		localStorage.zurueck = "hProjektListe";
+		$.mobile.navigate("Karte.html");
+	});
+
+	$('#MenuProjektListe').on('click', '.menu_einfacher_modus', function() {
+		$.mobile.navigate("BeobListe.html");
+	});
+
+	$('#MenuProjektListe').on('click', '.menu_felder_verwalten', function() {
+		localStorage.zurueck = "hProjektListe.html";
+		$.mobile.navigate("FeldListe.html");
+	});
+
+	$('#MenuProjektListe').on('click', '.menu_projekte_exportieren', window.em.handleHProjektListeMenuProjekteExportierenClick);
+
+	$('#MenuProjektListe').on('click', '.menu_einstellungen', function() {
+		localStorage.zurueck = "hProjektListe.html";
+		window.em.öffneMeineEinstellungen();
+	});
+
+	$('#MenuProjektListe').on('click', '.menu_neu_anmelden', function() {
+		localStorage.UserStatus = "neu";
+		$.mobile.navigate("index.html");
+	});
+}
+
+// wenn in hProjektListe.html .menu_projekte_exportieren geklickt wird
+window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
+	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuProjektListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuProjektListe").popup("close");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
