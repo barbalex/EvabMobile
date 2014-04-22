@@ -36,7 +36,6 @@
 					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
 					<li><a class="menu_zeiten_exportieren" href="#">Zeiten exportieren</a></li>
 					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
-					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
 					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
 				</ul>
 			</div>
@@ -184,11 +183,6 @@
 				$('#MenuZeitListe').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hZeitListe.html";
 					window.em.öffneMeineEinstellungen();
-				});
-
-				$('#MenuZeitListe').on('click', '.menu_lokal_installieren', function() {
-					localStorage.zurueck = "hZeitListe.html";
-					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuZeitListe').on('click', '.menu_neu_anmelden', function() {

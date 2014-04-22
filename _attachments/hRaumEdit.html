@@ -36,7 +36,6 @@
 					<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
 					<li><a class="menu_raeume_exportieren" href="#">Räume exportieren</a></li>
 					<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
-					<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
 					<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
 				</ul>
 			</div>
@@ -470,11 +469,6 @@
 				$('#MenuRaumEdit').on('click', '.menu_einstellungen', function() {
 					localStorage.zurueck = "hRaumEdit.html";
 					window.em.öffneMeineEinstellungen();
-				});
-
-				$('#MenuRaumEdit').on('click', '.menu_lokal_installieren', function() {
-					localStorage.zurueck = "hRaumEdit.html";
-					$.mobile.navigate("Installieren.html");
 				});
 
 				$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', function() {

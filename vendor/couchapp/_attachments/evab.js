@@ -3654,8 +3654,6 @@ window.em.handleBeobEditPageinit = function() {
 
 	$('#MenuBeobEdit').on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_lokal_installieren', window.em.handleBeobEditMenuLokalInstallierenClick);
-
 	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleBeobEditMenuNeuAnmeldenClick);
 };
 
@@ -3794,12 +3792,6 @@ window.em.handleBeobEditMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn in BeobEdit.html .menu_lokal_installieren geklickt wird
-window.em.handleBeobEditMenuLokalInstallierenClick = function() {
-	localStorage.zurueck = "BeobEdit.html";
-	$.mobile.navigate("Installieren.html");
-};
-
 // wenn in BeobEdit.html .menu_neu_anmelden geklickt wird
 window.em.handleBeobEditMenuNeuAnmeldenClick = function() {
 	localStorage.UserStatus = "neu";
@@ -3857,8 +3849,6 @@ window.em.handleBeobListePageinit = function() {
 
 	$('#MenuBeobListe').on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_lokal_installieren', window.em.handleBeobListeMenuLokalInstallierenClick);
-
 	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.handleBeobListeMenuNeuAnmeldenClick);
 };
 
@@ -3909,12 +3899,6 @@ window.em.handleBeobListeMenuBeobExportierenClick = function() {
 window.em.handleBeobListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "BeobListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-// wenn in BeobListe.html .menu_lokal_installieren geklickt wird
-window.em.handleBeobListeMenuLokalInstallierenClick = function() {
-	localStorage.zurueck = "BeobListe.html";
-	$.mobile.navigate("Installieren.html");
 };
 
 // wenn in BeobListe.html .menu_neu_anmelden geklickt wird
@@ -4570,8 +4554,6 @@ function handleHArtEditPageinit() {
 
 	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_lokal_installieren', handleHArtEditMenuLokalInstallierenClick);
-
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', handleHArtEditMenuNeuAnmeldenClick);
 }
 
@@ -4646,8 +4628,6 @@ window.em.handleHArtListePageinit = function() {
 	$('#MenuhBeobListe').on('click', '.menu_beob_exportieren', window.em.handleHArtListeMenuFelderVerwaltenClick);
 
 	$('#MenuhBeobListe').on('click', '.menu_einstellungen', window.em.handleHArtListeMenuEinstellungenClick);
-
-	$('#MenuhBeobListe').on('click', '.menu_lokal_installieren', window.em.handleHArtListeMenuLokalInstallierenClick);
 
 	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.handleHArtListeMenuNeuAnmeldenClick);
 };
@@ -4731,12 +4711,6 @@ window.em.handleHArtListeMenuBeobExportierenClick = function() {
 window.em.handleHArtListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hArtListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-// wenn in hArtListe.html .menu_lokal_installieren geklickt wird
-window.em.handleHArtListeMenuLokalInstallierenClick = function() {
-	localStorage.zurueck = "hArtListe.html";
-	$.mobile.navigate("Installieren.html");
 };
 
 // wenn in hArtListe.html .menu_neu_anmelden geklickt wird
@@ -4923,8 +4897,6 @@ window.em.handleHOrtEditPageinit = function() {
 
 	$('#MenuOrtEdit').on('click', '.menu_einstellungen', window.em.handleHOrtEditMenuEinstellungenClick);
 
-	$('#MenuOrtEdit').on('click', '.menu_lokal_installieren', window.em.handleHOrtEditMenuLokalInstallierenClick);
-
 	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', window.em.handleHOrtEditMenuNeuAnmeldenClick);
 };
 
@@ -5070,12 +5042,6 @@ window.em.handleHOrtEditMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn in hOrtEdit.html .menu_lokal_installieren geklickt wird
-window.em.handleHOrtEditMenuLokalInstallierenClick = function() {
-	localStorage.zurueck = "hOrtEdit.html";
-	$.mobile.navigate("Installieren.html");
-};
-
 // wenn in hOrtEdit.html .menu_neu_anmelden geklickt wird
 window.em.handleHOrtEditMenuNeuAnmeldenClick = function() {
 	localStorage.UserStatus = "neu";
@@ -5172,8 +5138,6 @@ function handleHOrtListePageinit() {
 
 	$('#MenuOrtListe').on('click', '.menu_einstellungen', handleHOrtListeMenuEinstellungenClick);
 
-	$('#MenuOrtListe').on('click', '.menu_lokal_installieren', handleHOrtListeMenuLokalInstallierenClick);
-
 	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', handleHOrtListeMenuNeuAnmeldenClick);
 }
 
@@ -5244,12 +5208,6 @@ function handleHOrtListeMenuOrteExportierenClick() {
 function handleHOrtListeMenuEinstellungenClick() {
 	localStorage.zurueck = "hOrtListe.html";
 	window.em.öffneMeineEinstellungen();
-}
-
-// wenn in hOrtListe.html .menu_lokal_installieren geklickt wird
-function handleHOrtListeMenuLokalInstallierenClick() {
-	localStorage.zurueck = "hOrtListe.html";
-	$.mobile.navigate("Installieren.html");
 }
 
 // wenn in hOrtListe.html .menu_neu_anmelden geklickt wird
@@ -5389,8 +5347,6 @@ function handleHProjektEditPageinit() {
 
 	$('#MenuProjektEdit').on('click', '.menu_einstellungen', handleHProjektEditMenuEinstellungenClick);
 
-	$('#MenuProjektEdit').on('click', '.menu_lokal_installieren', handleHProjektEditMenuLokalInstallierenClick);
-
 	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', handleHProjektEditMenuNeuAnmeldenClick);
 }
 
@@ -5513,12 +5469,6 @@ function handleHProjektEditMenuProjekteExportierenClick() {
 function handleHProjektEditMenuEinstellungenClick() {
 	localStorage.zurueck = "hProjektEdit.html";
 	window.em.öffneMeineEinstellungen();
-}
-
-// wenn in hProjektEdit.html .menu_lokal_installieren geklickt wird
-function handleHProjektEditMenuLokalInstallierenClick() {
-	localStorage.zurueck = "hProjektEdit.html";
-	$.mobile.navigate("Installieren.html");
 }
 
 // wenn in hProjektEdit.html .menu_neu_anmelden geklickt wird
@@ -6084,12 +6034,6 @@ function handleHArtEditMenuBeobExportierenClick() {
 function handleHArtEditMenuEinstellungenClick() {
 	localStorage.zurueck = "hArtEdit.html";
 	window.em.öffneMeineEinstellungen();
-}
-
-// wenn in hArtEdit.html .menu_lokal_installieren geklickt wird
-function handleHArtEditMenuLokalInstallierenClick() {
-	localStorage.zurueck = "hArtEdit.html";
-	$.mobile.navigate("Installieren.html");
 }
 
 // wenn in hArtEdit.html .menu_neu_anmelden geklickt wird

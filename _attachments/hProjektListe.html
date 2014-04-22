@@ -36,7 +36,6 @@
 						<li><a class="menu_felder_verwalten" href="#">Felder verwalten</a></li>
 						<li><a class="menu_projekte_exportieren" href="#">Projekte exportieren</a></li>
 						<li><a class="menu_einstellungen" href="#">Einstellungen</a></li>
-						<li><a class="menu_lokal_installieren" href="#">lokal installieren</a></li>
 						<li><a class="menu_neu_anmelden" href="#">neu anmelden</a></li>
 					</ul>
 				</div>
@@ -158,11 +157,6 @@
 					$('#MenuProjektListe').on('click', '.menu_einstellungen', function() {
 						localStorage.zurueck = "hProjektListe.html";
 						window.em.öffneMeineEinstellungen();
-					});
-
-					$('#MenuProjektListe').on('click', '.menu_lokal_installieren', function() {
-						localStorage.zurueck = "hProjektListe.html";
-						$.mobile.navigate("Installieren.html");
 					});
 
 					$('#MenuProjektListe').on('click', '.menu_neu_anmelden', function() {
