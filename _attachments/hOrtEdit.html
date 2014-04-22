@@ -120,9 +120,9 @@
 	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
 
 		<script charset="utf-8">
-			$("#OrtEditPage").on("pageshow", handleHOrtEditPageshow);
-			$("#OrtEditPage").on("pagehide", handleHOrtEditPagehide);
-			$(":jqmData(role='page')").on("pageinit", handleHOrtEditPageinit);
+			$("#OrtEditPage").on("pageshow", window.em.handleHOrtEditPageshow);
+			$("#OrtEditPage").on("pagehide", window.em.handleHOrtEditPagehide);
+			$(":jqmData(role='page')").on("pageinit", window.em.handleHOrtEditPageinit);
 		</script>
 	</div>
   </body>
