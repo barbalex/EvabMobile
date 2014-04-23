@@ -2886,14 +2886,13 @@ window.em.pruefeAnmeldung = function() {
 		$.ajax({
 			url: '/_session',
 			dataType: 'json',
-			async: false,
-			success: function(session) {
-				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
-					localStorage.Email = session.userCtx.name;
-				} else {
-					localStorage.UserStatus = "neu";
-					$.mobile.navigate("index.html");
-				}
+			async: false
+		}).done(function(session) {
+			if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
+				localStorage.Email = session.userCtx.name;
+			} else {
+				localStorage.UserStatus = "neu";
+				$.mobile.navigate("index.html");
 			}
 		});
 	}
