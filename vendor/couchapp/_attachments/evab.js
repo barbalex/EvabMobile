@@ -6514,7 +6514,9 @@ window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
 };
 
 window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
-	var i, RaumIdAktuell, AnzRaum;
+	var i,
+		RaumIdAktuell,
+		AnzRaum;
 	for (i in window.em.RaumListe.rows) {
 		RaumIdAktuell = window.em.RaumListe.rows[i].doc._id;
 		AnzRaum = window.em.RaumListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -6548,7 +6550,575 @@ window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
 	}
 };
 
+// wenn hRaumListe erscheint
+window.em.handleHRaumListePageshow = function() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	window.em.initiiereRaumListe();
+};
 
+// wenn hRaumListe initiiert wird
+window.em.handleHRaumListePageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.ProjektId || localStorage.ProjektId === "undefined") {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
+	// Link zu Projekt in Navbar und Titelleiste
+	$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
+		event.preventDefault();
+		window.em.leereStorageRaumListe();
+		$.mobile.navigate("hProjektEdit.html");
+	});
+
+	// neuen Raum erstellen
+	$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function (event) {
+		event.preventDefault();
+		window.em.erstelleNeuenRaum();
+	});
+
+	$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
+		localStorage.RaumId = $(this).attr('RaumId');
+		$.mobile.navigate("hOrtListe.html");
+	});
+
+	$("#RaumlistehRL").on("click", ".Raum", function (event) {
+		event.preventDefault();
+		localStorage.RaumId = $(this).attr('RaumId');
+		$.mobile.navigate("hRaumEdit.html");
+	});
+
+	$("#RaumlistehRL").on("swipeleft", ".erste", window.em.erstelleNeuenRaum);
+
+	$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
+		window.em.leereStorageRaumListe();
+		$.mobile.navigate("hProjektListe.html");
+	});
+
+	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function (event) {
+		event.preventDefault();
+		localStorage.zurueck = "hRaumListe";
+		$.mobile.navigate("Karte.html");
+	});
+
+	$('#MenuRaumListe').on('click', '.menu_einfacher_modus', window.em.handleHRaumListeMenuEinfacherModusClick);
+
+	$('#MenuRaumListe').on('click', '.menu_felder_verwalten', function() {
+		localStorage.zurueck = "hRaumListe.html";
+		$.mobile.navigate("FeldListe.html");
+	});
+
+	$('#MenuRaumListe').on('click', '.menu_raeume_exportieren', window.em.handleHRaumListeMenuExportierenClick);
+
+	$('#MenuRaumListe').on('click', '.menu_einstellungen', function() {
+		localStorage.zurueck = "hRaumListe.html";
+		window.em.öffneMeineEinstellungen();
+	});
+
+	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', function() {
+		localStorage.UserStatus = "neu";
+		$.mobile.navigate("index.html");
+	});
+};
+
+window.em.handleHRaumListeMenuEinfacherModusClick = function() {
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleHRaumListeMenuExportierenClick = function() {
+	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuRaumListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuRaumListe").popup("close");
+};
+
+// wenn hZeitEdit.html erscheint
+window.em.handleHZeitEditPageshow = function() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+	}
+	window.em.initiiereZeitEdit();
+};
+
+// wenn hZeitEdit.html initiiert wird
+window.em.handleHZeitEditPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.ZeitId || localStorage.ZeitId === "undefined")) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+	}
+
+	$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
+		event.preventDefault();
+		window.em.leereStorageZeitEdit();
+		$.mobile.navigate("hZeitListe.html");
+	});
+
+	$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditOeffneOrtClick();
+	});
+
+
+	$("#ZeitEditPageHeader").on("click", "#OeffneArtListeZeitEdit", function (event) {
+		event.preventDefault();
+		$.mobile.navigate("hArtListe.html");
+	});
+
+	$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditOeffneRaumClick();
+	});
+
+	$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditOeffneProjektClick();
+	});
+
+	// Für jedes Feld bei Änderung speichern
+	$("#hZeitEditForm").on("change", ".speichern", window.em.speichereHZeitEdit);
+
+	// Eingabe im Zahlenfeld abfangen
+	$("#hZeitEditForm").on("blur", '.speichernSlider', window.em.speichereHZeitEdit);
+
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#hZeitEditForm").on("mouseup", '.ui-slider-input', window.em.speichereHZeitEdit);
+
+	// Ende des Schiebens abfangen
+	$("#hZeitEditForm").on("slidestop", '.speichernSlider', window.em.speichereHZeitEdit);
+
+	// Änderungen im Formular für Anhänge speichern
+	$("#FormAnhängehZE").on("change", ".speichernAnhang", window.em.handleZeitEditSpeichernAnhangChange);
+
+	// Neue Zeit erstellen
+	$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditNeuClick();
+	});
+
+	// sichtbare Felder wählen
+	$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditWaehleFelderClick();
+	});
+
+	// Code für den Zeit-Löschen-Dialog
+	$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function (event) {
+		event.preventDefault();
+		window.em.handleZeitEditLoescheClick();
+	});
+
+	$("#hze_löschen_meldung").on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLoeschenMeldungJaClick);
+
+	$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', window.em.handleZeitEditContentSwipeleft);
+
+	$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight);
+
+	// Pagination Pfeil voriger initialisieren
+	$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function (event) {
+		event.preventDefault();
+		window.em.nächsteVorigeZeit("vorige");
+	});
+
+	// Pagination Pfeil nächster initialisieren
+	$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function (event) {
+		event.preventDefault();
+		window.em.nächsteVorigeZeit("nächste");
+	});
+
+	// Pagination Pfeiltasten initialisieren
+	$("#ZeitEditPage").on("keyup", function (event) {
+		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
+			// Left arrow
+			if (event.keyCode === $.mobile.keyCode.LEFT) {
+				window.em.nächsteVorigeZeit("vorige");
+				event.preventDefault();
+			}
+			// Right arrow
+			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+				window.em.nächsteVorigeZeit("nächste");
+				event.preventDefault();
+			}
+		}
+	});
+
+	$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function (event) {
+		event.preventDefault();
+		window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
+	});
+
+	$('#MenuZeitEdit').on('click', '.menu_einfacher_modus', window.em.handleZeitEditMenuEinfacherModusClick);
+
+	$('#MenuZeitEdit').on('click', '.menu_felder_verwalten', window.em.handleZeitEditMenuFelderVerwaltenClick);
+
+	$('#MenuZeitEdit').on('click', '.menu_zeiten_exportieren', window.em.handleZeitEditMenuExportierenClick);
+
+	$('#MenuZeitEdit').on('click', '.menu_einstellungen', window.em.handleZeitEditMenuEinstellungenClick);
+
+	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.handleZeitEditMenuNeuAnmeldenClick);
+};
+
+window.em.handleZeitEditOeffneOrtClick = function() {
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	$.mobile.navigate("hOrtEdit.html");
+};
+
+window.em.handleZeitEditOeffneRaumClick = function() {
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+};
+
+window.em.handleZeitEditOeffneProjektClick = function() {
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+};
+
+window.em.handleZeitEditSpeichernAnhangChange = function() {
+	var _attachments = $("#_attachmentshZE").val();
+	if (_attachments && _attachments.length > 0) {
+		window.em.speichereAnhänge(localStorage.ZeitId, window.em.hZeit, "hZE");
+	}
+};
+
+window.em.handleZeitEditNeuClick = function() {
+	// Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
+	window.em.leereStorageZeitListe();
+	window.em.erstelleNeueZeit();
+};
+
+window.em.handleZeitEditWaehleFelderClick = function() {
+	localStorage.AufrufendeSeiteFW = "hZeitEdit";
+	$.mobile.navigate("FelderWaehlen.html");
+};
+
+window.em.handleZeitEditLoescheClick = function() {
+	// Anzahl Zeiten von Ort zählen
+	$db = $.couch.db("evab");
+	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
+		success: function (Arten) {
+			var anzArten = Arten.rows.length, 
+				meldung, 
+				div,
+				arten_text = (anzArten === 1 ? ' Art' : ' Arten');
+			meldung = 'Zeit inklusive ' + anzArten + arten_text + ' löschen?';
+			$("#hze_löschen_meldung_meldung").html(meldung);
+			// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
+			div = $("#hze_löschen_meldung");
+			div.data('Arten', Arten);
+			// popup öffnen
+			$("#hze_löschen_meldung").popup("open");
+		}
+	});
+};
+
+window.em.handleZeitEditLoeschenMeldungJaClick = function() {
+	var div = $("#hze_löschen_meldung")[0];
+	window.em.löscheZeit(jQuery.data(div, 'Arten'));
+};
+
+window.em.handleZeitEditContentSwipeleft = function() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		window.em.nächsteVorigeZeit("nächste");
+	}
+};
+
+window.em.handleZeitEditContentSwiperight = function() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		window.em.nächsteVorigeZeit("vorige");
+	}
+};
+
+window.em.handleZeitEditMenuEinfacherModusClick = function() {
+	window.em.leereStorageZeitEdit();
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
+	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleZeitEditMenuFelderVerwaltenClick = function() {
+	localStorage.zurueck = "hZeitEdit.html";
+	$.mobile.navigate("FeldListe.html");
+};
+
+window.em.handleZeitEditMenuExportierenClick = function() {
+	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuZeitEdit").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuZeitEdit").popup("close");
+};
+
+window.em.handleZeitEditMenuEinstellungenClick = function() {
+	localStorage.zurueck = "hZeitEdit.html";
+	window.em.öffneMeineEinstellungen();
+};
+
+window.em.handleZeitEditMenuNeuAnmeldenClick = function() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
+}
+
+window.em.löscheZeit = function(Arten) {
+	// nur löschen, wo Datensätze vorkommen
+	if (Arten.rows.length > 0) {
+		window.em.loescheIdIdRevListe(Arten);
+	}
+	// dann die Zeit
+	if (window.em.hZeit) {
+		// Objekt nutzen
+		window.em.löscheZeit_2();
+	} else {
+		// Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ZeitId, {
+			success: function (data) {
+				window.em.hZeit = data;
+				window.em.löscheZeit_2();
+			},
+			error: function () {
+				window.em.melde("Fehler: Zeit nicht gelöscht");
+			}
+		});
+	}
+};
+
+window.em.löscheZeit_2 = function() {
+	$db = $.couch.db("evab");
+	$db.removeDoc(window.em.hZeit, {
+		success: function (data) {
+			var i;
+			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
+			if (window.em.ZeitListe) {
+				for (i in window.em.ZeitListe.rows) {
+					if (window.em.ZeitListe.rows[i].doc._id === data.id) {
+						window.em.ZeitListe.rows.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				// Keine ZeitListe mehr. Storage löschen
+				window.em.leereStorageZeitListe();
+			}
+			window.em.leereStorageZeitEdit();
+			$.mobile.navigate('hZeitListe.html');
+		},
+		error: function () {
+			window.em.melde("Fehler: Zeit nicht gelöscht");
+		}
+	});
+};
+
+window.em.validierehZeitEdit = function() {
+	if (!$("[name='zDatum']").val()) {
+		window.em.melde("Bitte Datum erfassen");
+		setTimeout(function() { 
+			$("[name='zDatum']").focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	if (!$("[name='zUhrzeit']").val()) {
+		window.em.melde("Bitte Zeit erfassen");
+		setTimeout(function() { 
+			$("[name='zUhrzeit']").focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+};
+
+// speichert nach jedem change event in einem Feld mit Class speichern
+// den Wert in die DB
+// erwartet das Feld als Objekt
+window.em.speichereHZeitEdit = function() {
+	var that = this;
+	// prüfen, ob die Zeit als Objekt vorliegt
+	if (window.em.hZeit) {
+		// dieses verwenden
+		window.em.speichereHZeitEdit_2(that);
+	} else {
+		// Objekt aus DB holen
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.ZeitId, {
+			success: function (data) {
+				window.em.hZeit = data;
+				window.em.speichereHZeitEdit_2(that);
+			},
+			error: function () {
+				console.log('fehler in function speichereHZeitEdit(that)');
+				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	}
+
+};
+
+window.em.speichereHZeitEdit_2 = function(that) {
+	var Feldname,
+		Feldjson,
+		Feldwert;
+	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+		// slider
+		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+		Feldwert = $(that).attr("aria-valuenow");
+	} else {
+		// alle anderen Feldtypen
+		Feldname = that.name;
+		// nötig, damit Arrays richtig kommen
+		Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		Feldwert = Feldjson[Feldname];
+	}
+	if (window.em.validierehZeitEdit()) {
+		if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
+			// Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+			window.em.leereStorageZeitListe();
+		}
+		// Werte aus dem Formular aktualisieren
+		if (Feldwert) {
+			if (window.em.myTypeOf(Feldwert) === "float") {
+				window.em.hZeit[Feldname] = parseFloat(Feldwert);
+			} else if (window.em.myTypeOf(Feldwert) === "integer") {
+				window.em.hZeit[Feldname] = parseInt(Feldwert);
+			} else {
+				window.em.hZeit[Feldname] = Feldwert;
+			}
+		} else if (window.em.hZeit[Feldname]) {
+			delete window.em.hZeit[Feldname];
+		}
+		// alles speichern
+		$db.saveDoc(window.em.hZeit, {
+			success: function (data) {
+				window.em.hZeit._rev = data.rev;
+				// window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
+				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
+				// Zuletzt gespeicherte ZeitId NACH dem speichern setzen
+				// sicherstellen, dass bis dahin nicht schon eine nächste vewendet wird
+				// darum zwischenspeichern
+				window.em.ZeitIdZwischenspeicher = localStorage.ZeitId;
+				//setTimeout("window.ZuletztGespeicherteZeitId = window.em.ZeitIdZwischenspeicher", 1000);	AUSGESCHALTET, DA ZuletztGespeicherteZeitId NIRGENDS BENUTZT
+				setTimeout("delete window.em.ZeitIdZwischenspeicher", 1500);
+				// nicht aktualisierte hierarchisch tiefere Listen löschen
+				delete window.em.ArtenVonProjekt;
+				delete window.em.ArtenVonRaum;
+				delete window.em.ArtenVonOrt;
+			},
+			error: function () {
+				console.log('fehler in function speichereHZeitEdit_2(that)');
+				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	}
+};
+
+// Öffnet die vorige oder nächste Zeit
+// vorige der ersten => ZeitListe
+// nächste der letzten => melden
+// erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
+window.em.nächsteVorigeZeit = function(NächsteOderVorige) {
+	// prüfen, ob ZeitListe schon existiert
+	// nur abfragen, wenn sie noch nicht existiert
+	if (window.em.ZeitListe) {
+		window.em.nächsteVorigeZeit_2(NächsteOderVorige);
+	} else {
+		$db = $.couch.db("evab");
+		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
+			success: function (data) {
+				window.em.ZeitListe = data;
+				window.em.nächsteVorigeZeit_2(NächsteOderVorige);
+			}
+		});
+	}
+};
+
+window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
+	var i,
+		ZeitIdAktuell,
+		AnzZeit;
+	for (i in window.em.ZeitListe.rows) {
+		ZeitIdAktuell = window.em.ZeitListe.rows[i].doc._id;
+		AnzZeit = window.em.ZeitListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (ZeitIdAktuell === localStorage.ZeitId) {
+			switch (NächsteOderVorige) {
+			case "nächste":
+				if (parseInt(i) < AnzZeit) {
+					localStorage.ZeitId = window.em.ZeitListe.rows[parseInt(i)+1].doc._id;
+					window.em.leereStorageZeitEdit("ohneId");
+					window.em.initiiereZeitEdit();
+					return;
+				} else {
+					window.em.melde("Das ist die letzte Zeit");
+					return;
+				}
+				break;
+			case "vorige":
+				if (parseInt(i) > 0) {
+					localStorage.ZeitId = window.em.ZeitListe.rows[parseInt(i)-1].doc._id;
+					window.em.leereStorageZeitEdit("ohneId");
+					window.em.initiiereZeitEdit();
+					return;
+				} else {
+					window.em.leereStorageZeitEdit();
+					$.mobile.navigate("hZeitListe.html");
+					return;
+				}
+				break;
+			}
+		}
+	}
+};
 
 
 
