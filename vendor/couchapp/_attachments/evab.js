@@ -189,7 +189,7 @@ window.em.melde = function(Meldung) {
 		.css({"line-height": "95%", "font-weight": "bold"})
 		.appendTo($.mobile.pageContainer);
 	$("#meldung").popup({
-		afterclose: function (event, ui) {
+		afterclose: function(event, ui) {
 			// Meldung wieder aus pageContainer entfernen
 			$("#meldung").remove();
 		}
@@ -254,7 +254,7 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 // Autor anfügen und weiter zum Edit-Formular
 window.em.speichereNeueBeob_02 = function(doc) {
 	$db.saveDoc(doc, {
-		success: function (data) {
+		success: function(data) {
 			// doc um id und rev ergänzen
 			doc._id = data.id;
 			doc._rev = data.rev;
@@ -276,7 +276,7 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				$.mobile.navigate("BeobEdit.html");
 			}
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Beobachtung nicht gespeichert.");
 		}
 	});
@@ -293,7 +293,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 	}
 	$db = $.couch.db("evab");
 	$db.openDoc(docId, {
-		success: function (doc) {
+		success: function(doc) {
 			if (localStorage.aArtGruppe) {
 				doc.aArtGruppe = localStorage.aArtGruppe;
 				delete localStorage.aArtGruppe;
@@ -301,7 +301,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 			doc.aArtName = aArtName;
 			doc.aArtId = sessionStorage.ArtId;
 			$db.saveDoc(doc, {
-				success: function (data) {
+				success: function(data) {
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 						// Variabeln verfügbar machen
 						localStorage.BeobId = data.id;
@@ -316,7 +316,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						$.mobile.navigate("hArtEdit.html");
 					}
 				},
-				error: function () {
+				error: function() {
 					window.em.melde("Fehler: Beobachtung nicht gespeichert");
 				}
 			});
@@ -451,17 +451,17 @@ window.em.öffneMeineEinstellungen = function() {
 window.em.löscheDokument = function(DocId) {
 	$db = $.couch.db("evab");
 	return $db.openDoc(DocId, {
-		success: function (document) {
+		success: function(document) {
 			$db.removeDoc(document, {
-				success: function (document) {
+				success: function(document) {
 					return true;
 				},
-				error: function (document) {
+				error: function(document) {
 					return false;
 				}
 			});
 		},
-		error: function (document) {
+		error: function(document) {
 			return false;
 		}
 	});
@@ -482,7 +482,7 @@ window.em.initiiereBeobEdit = function() {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.em.FeldlisteBeobEdit = data;
 				window.em.initiiereBeobEdit_2();
@@ -500,7 +500,7 @@ window.em.initiiereBeobEdit_2 = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Beobachtung = data;
 				window.em.initiiereBeobEdit_3();
 			}
@@ -605,7 +605,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.Beobachtung, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Beobachtung._id = data.id;
 				window.em.Beobachtung._rev = data.rev;
 				localStorage.BeobId = data.id;
@@ -630,7 +630,7 @@ window.em.initiiereBeobliste = function() {
 		// Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// BeobListe für BeobEdit bereitstellen
 				window.em.BeobListe = data;
 				window.em.initiiereBeobliste_2();
@@ -690,11 +690,11 @@ window.em.loescheAnhang = function(that, Objekt, id) {
 		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
-			success: function (data) {
+			success: function(data) {
 				window.em[Objekt.Typ] = data;
 				window.em.loescheAnhang_2(that, window.em[Objekt.Typ]);
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Anhang wurde nicht entfernt");
 			}
 		});
@@ -707,14 +707,14 @@ window.em.loescheAnhang_2 = function(that, Objekt) {
 	delete window.em[Objekt.Typ]._attachments[Dateiname];
 	// Objekt in DB speichern
 	$db.saveDoc(window.em[Objekt.Typ], {
-		success: function (data) {
+		success: function(data) {
 			// rev im Objekt ergänzen
 			// die globale Variable heisst gleich, wie der Typ im Objekt
 			window.em[Objekt.Typ]._rev = data.rev;
 			// im Formular den Anhang und die Lösch-Schaltfläche entfernen
 			$(that).parent().parent().remove();
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Anhänge werden nicht richtig angezeigt");
 		}
 	});
@@ -729,7 +729,7 @@ window.em.initiiereUserEdit = function() {
 	}
 	$db = $.couch.db("evab");
 	$db.openDoc(localStorage.Email, {
-		success: function (User) {
+		success: function(User) {
 			// fixe Felder aktualisieren
 			if (User.Datenverwendung) {
 				$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
@@ -740,7 +740,7 @@ window.em.initiiereUserEdit = function() {
 			}
 			window.em.speichereLetzteUrl();
 		},
-		error: function () {
+		error: function() {
 			console.log('User hat kein User-Dokument');
 			// Standardwert setzen
 			$("#JaAber").prop("checked",true).checkboxradio("refresh");
@@ -771,7 +771,7 @@ window.em.initiiereProjektEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hProjekt = data;
 				window.em.initiiereProjektEdit_2();
 			},
@@ -803,7 +803,7 @@ window.em.initiiereProjektEdit_2 = function() {
 		// Feldliste aus der DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeProjekt?include_docs=true', {
-			success: function (Feldliste) {
+			success: function(Feldliste) {
 				window.em.FeldlisteProjekt = Feldliste;
 				window.em.initiiereProjektEdit_3();
 			}
@@ -857,7 +857,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.hProjekt, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hProjekt._id = data.id;
 				window.em.hProjekt._rev = data.rev;
 				//
@@ -880,7 +880,7 @@ window.em.initiiereFeldEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
-			success: function (doc) {
+			success: function(doc) {
 				// Feld bereitstellen
 				window.em.Feld = doc;
 				window.em.initiiereFeldEdit_2();
@@ -985,7 +985,7 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 		} else {
 			$db = $.couch.db("evab");
 			$db.view("evab/FeldListe?include_docs=true", {
-				success: function (data) {
+				success: function(data) {
 					window.em.Feldliste = data;
 					window.em.erstelleSelectFeldFolgtNach_2();
 				}
@@ -1029,7 +1029,7 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 		$db = $.couch.db("evab");
 		$("select#ArtGruppe").empty();
 		$db.view("evab/Artgruppen", {
-			success: function (data) {
+			success: function(data) {
 				window.em.Artgruppen = data;
 				localStorage.Artgruppen = JSON.stringify(data);
 				window.em.ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
@@ -1076,7 +1076,7 @@ window.em.initiiereFeldliste = function() {
 		// FeldListe aus DB holen
 		$db = $.couch.db("evab");
 		$db.view("evab/FeldListe?include_docs=true", {
-			success: function (data) {
+			success: function(data) {
 				window.em.Feldliste = data;
 				window.em.initiiereFeldliste_2();
 			}
@@ -1144,11 +1144,11 @@ window.em.speichereKoordinaten = function(id, ObjektName) {
 		// nein: Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
-			success: function (data) {
+			success: function(data) {
 				window.em[ObjektName] = data;
 				window.em.speichereKoordinaten_2(id, ObjektName);
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Koordinaten nicht gespeichert");
 			}
 		});
@@ -1180,7 +1180,7 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 		var viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
 		$db = $.couch.db("evab");
 		$db.view(viewname, {
-			success: function (data) {
+			success: function(data) {
 				window.em[ObjektlistenName] = data;
 				window.em.speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
 			}
@@ -1281,7 +1281,7 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 	}
 	// in DB speichern
 	$db.saveDoc(window.em[ObjektName], {
-		success: function (data) {
+		success: function(data) {
 			window.em[ObjektName]._rev = data.rev;
 			if (FormularAktualisieren) {
 				window.em.aktualisiereKoordinatenfelderInFormular(ObjektName);
@@ -1398,7 +1398,7 @@ window.em.initiiereProjektliste = function() {
 		// Daten für die Projektliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Projektliste für ProjektEdit bereitstellen
 				window.em.Projektliste = data;
 				window.em.initiiereProjektliste_2();
@@ -1460,7 +1460,7 @@ window.em.initiiereRaumEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hRaum = data;
 				window.em.initiiereRaumEdit_2();
 			}
@@ -1489,7 +1489,7 @@ window.em.initiiereRaumEdit_2 = function() {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeRaum?include_docs=true', {
-			success: function (Feldliste) {
+			success: function(Feldliste) {
 				// Variabeln bereitstellen
 				window.em.FeldlisteRaumEdit = Feldliste;
 				window.em.initiiereRaumEdit_3();
@@ -1544,7 +1544,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 		$("#rName").focus();
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.hRaum, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hRaum._id = data.id;
 				window.em.hRaum._rev = data.rev;
 				localStorage.RaumId = data.id;
@@ -1567,7 +1567,7 @@ window.em.initiiereRaumListe = function() {
 		// Raumliste aud DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// RaumListe für haumEdit bereitstellen
 				window.em.RaumListe = data;
 				window.em.initiiereRaumListe_2();
@@ -1626,7 +1626,7 @@ window.em.initiiereOrtEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hOrt = data;
 				window.em.initiiereOrtEdit_2();
 			}
@@ -1665,7 +1665,7 @@ window.em.initiiereOrtEdit_2 = function() {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeOrt?include_docs=true', {
-			success: function (Feldliste) {
+			success: function(Feldliste) {
 				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
 				window.em.FeldlisteOrtEdit = Feldliste;
 				window.em.initiiereOrtEdit_3();
@@ -1721,7 +1721,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 		$("[name='oName']").focus();
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.hOrt, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hOrt._id = data.id;
 				window.em.hOrt._rev = data.rev;
 				localStorage.OrtId = data.id;
@@ -1747,7 +1747,7 @@ window.em.initiiereOrtListe = function() {
 		// Ortliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// OrtListe für hOrtEdit bereitstellen
 				window.em.OrtListe = data;
 				window.em.initiiereOrtListe_2();
@@ -1806,7 +1806,7 @@ window.em.initiiereZeitEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hZeit = data;
 				window.em.initiiereZeitEdit_2();
 			}
@@ -1836,7 +1836,7 @@ window.em.initiiereZeitEdit_2 = function() {
 		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeZeit?include_docs=true', {
-			success: function (Feldliste) {
+			success: function(Feldliste) {
 				window.em.FeldlisteZeitEdit = Feldliste;
 				window.em.initiiereZeitEdit_3();
 			}
@@ -1865,7 +1865,7 @@ window.em.initiiereZeitListe = function() {
 		// Zeitliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// ZeitListe für hZeitEdit bereitstellen
 				window.em.ZeitListe = data;
 				window.em.initiiereZeitListe_2();
@@ -1943,7 +1943,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.hZeit, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hZeit._id = data.id;
 				window.em.hZeit._rev = data.rev;
 				localStorage.ZeitId = data.id;
@@ -1967,7 +1967,7 @@ window.em.initiierehBeobEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hArt = data;
 				window.em.initiierehBeobEdit_2(data);
 			}
@@ -2018,7 +2018,7 @@ window.em.initiierehBeobEdit_2 = function() {
 		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				window.em.FeldlistehBeobEdit = data;
 				window.em.erstelleDynamischeFelderhArtEdit();
 			}
@@ -2075,7 +2075,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
 		$db.saveDoc(window.em.hArt, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hArt._id = data.id;
 				window.em.hArt._rev = data.rev;
 				localStorage.hBeobId = data.id;
@@ -2099,7 +2099,7 @@ window.em.initiierehBeobListe = function() {
 		// Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.em.hBeobListe = data;
 				window.em.initiierehBeobListe_2();
@@ -2441,15 +2441,15 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert,
 	return HtmlContainer;
 };
 
-(function ($) {
+(function($) {
 	// friendly helper http://tinyurl.com/6aow6yn
 	// Läuft durch alle Felder im Formular
 	// Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
 	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-	$.fn.serializeObject = function () {
+	$.fn.serializeObject = function() {
 		var o = {},
 			a = this.serializeArray();
-		$.each(a, function () {
+		$.each(a, function() {
 			if (this.value) {
 				if (o[this.name]) {
 					if (!o[this.name].push) {
@@ -2478,10 +2478,10 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert,
 	// so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
 	// siehe Beispiel in FeldEdit.html
 	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-	$.fn.serializeObjectNull = function () {
+	$.fn.serializeObjectNull = function() {
 		var o = {},
 			a = this.serializeArray();
-		$.each(a, function () {
+		$.each(a, function() {
 			if (o[this.name]) {
 				if (!o[this.name].push) {
 					o[this.name] = [o[this.name]];
@@ -2630,7 +2630,7 @@ window.em.speichereLetzteUrl = function() {
 window.em.holeAutor = function() {
 	// aAutor holen
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
-		success: function (doc) {
+		success: function(doc) {
 			if (doc.Standardwert) {
 				if (doc.Standardwert[localStorage.Email]) {
 					localStorage.Autor = doc.Standardwert[localStorage.Email];
@@ -2653,11 +2653,11 @@ window.em.speichereAnhänge = function(id, Objekt, Page) {
 		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(id, {
-			success: function (data) {
+			success: function(data) {
 				window.em[Objekt.Typ] = data;
 				window.em.speichereAnhänge_2(id, data, Page);
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Anhang nicht gespeichert");
 			}
 		});
@@ -2668,28 +2668,28 @@ window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
 	$("#_rev" + Page).val(window.em[Objekt.Typ]._rev);
 	$("#FormAnhänge" + Page).ajaxSubmit({
 		url: "/evab/" + id,
-		success: function () {
+		success: function() {
 			// doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			$db.openDoc(id, {
-				success: function (data2) {
+				success: function(data2) {
 					window.em[Objekt.Typ] = data2;
 					// show attachments in form
 					window.em.zeigeAttachments(data2, Page);
 				},
-				error: function () {
+				error: function() {
 					window.em.melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
 				}
 			});
 		},
 		// form.jquery.js meldet einen Fehler, obwohl der Vorgang funktioniert!
-		error: function () {
+		error: function() {
 			// doc nochmals holen, damit der Anhang mit Dateiname dabei ist
 			$db.openDoc(id, {
-				success: function (data3) {
+				success: function(data3) {
 					window.em[Objekt.Typ] = data3;
 					window.em.zeigeAttachments(data3, Page);
 				},
-				error: function () {
+				error: function() {
 					window.em.melde("Uups, Anhang wird erst beim nächsten Mal angezeigt");
 				}
 			});
@@ -2708,7 +2708,7 @@ window.em.zeigeAttachments = function(doc, Page) {
 		url_zumLöschen;
 	$("#_attachments" + Page).val("");
 	if (doc._attachments) {
-		$.each(doc._attachments, function (Dateiname, val) {
+		$.each(doc._attachments, function(Dateiname, val) {
 			url = "/evab/" + doc._id + "/" + Dateiname;
 			//url_zumLöschen = url + "?" + doc._rev;	// theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			HtmlContainer += "<div><a href='";
@@ -2783,7 +2783,7 @@ window.em.initiiereFelderWaehlen = function() {
 		// holt die Feldliste aus der DB
 		$db = $.couch.db("evab");
 		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				window.em[localStorage.FeldlisteFwName] = data;
 				window.em.initiiereFelderWaehlen_2();
 			}
@@ -2865,7 +2865,7 @@ window.em.neuesFeld = function() {
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
 	$db = $.couch.db("evab");
 	$db.saveDoc(NeuesFeld, {
-		success: function (data) {
+		success: function(data) {
 			localStorage.FeldId = data.id;
 			NeuesFeld._id = data.id;
 			NeuesFeld._rev = data.rev;
@@ -2874,7 +2874,7 @@ window.em.neuesFeld = function() {
 			window.em.leereStorageFeldListe();
 			$(":mobile-pagecontainer").pagecontainer("change", "FeldEdit.html", { allowSamePageTransition : true });
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Feld nicht erzeugt");
 		}
 	});
@@ -2890,7 +2890,7 @@ window.em.pruefeAnmeldung = function() {
 			url: '/_session',
 			dataType: 'json',
 			async: false,
-			success: function (session) {
+			success: function(session) {
 				if (session.userCtx.name !== undefined && session.userCtx.name !== null) {
 					localStorage.Email = session.userCtx.name;
 				} else {
@@ -2944,7 +2944,7 @@ window.em.holeArtenliste = function(filterwert) {
 	var viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
-		success: function (data) {
+		success: function(data) {
 			window.em.Artenliste = data.rows;
 			window.em.erstelleArtenliste(filterwert);
 		}
@@ -3048,7 +3048,7 @@ window.em.erstelleArtgruppenListe = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Artgruppenliste bereitstellen
 				window.em.Artgruppenliste = data;
 				localStorage.Artgruppenliste = JSON.stringify(window.em.Artgruppenliste);
@@ -3087,7 +3087,7 @@ window.em.erstelleArtgruppenListe_2 = function() {
 window.em.stelleUserDatenBereit = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/User?key="' + localStorage.Email + '"', {
-		success: function (data) {
+		success: function(data) {
 			// weitere anderswo benutzte Variabeln verfügbar machen
 			window.em.holeAutor();
 			// kontrollieren, ob User existiert
@@ -3319,7 +3319,7 @@ window.em.erstelleSichtbareFelder = function() {
 	var viewname = 'evab/FeldListeFeldName?include_docs=true';
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
-		success: function (data) {
+		success: function(data) {
 			var i,
 				Feld;
 			for (i in data.rows) {
@@ -3329,7 +3329,7 @@ window.em.erstelleSichtbareFelder = function() {
 					// if (Feld.User === "ZentrenBdKt") {
 					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
 						$db.openDoc(Feld._id, {
-							success: function (Feld) {
+							success: function(Feld) {
 								var Username = localStorage.Email;
 								Feld.SichtbarImModusHierarchisch.push(Username);
 								$db.saveDoc(Feld);
@@ -3352,13 +3352,13 @@ window.em.speichereUserInEvab = function() {
 	doc.Datenverwendung = localStorage.Datenverwendung || "JaAber";
 	$db = $.couch.db("evab");
 	$db.saveDoc(doc, {
-		success: function (data) {
+		success: function(data) {
 			// localStorage gründen
 			localStorage.Email = $('input[name=Email]').val();
 			localStorage.Autor = $("#Autor").val();
 			// Autor speichern
 			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
-				success: function (Feld) {
+				success: function(Feld) {
 					// Autor speichern
 					// Falls Standardwert noch nicht existiert, 
 					// muss zuerst das Objekt geschaffen werden
@@ -3367,24 +3367,24 @@ window.em.speichereUserInEvab = function() {
 					}
 					Feld.Standardwert[localStorage.Email] = $("#Autor").val();
 					$db.saveDoc(Feld, {
-						success: function () {
+						success: function() {
 							// Felder sictbar schalten
 							window.em.erstelleSichtbareFelder();
 							$.mobile.navigate("BeobListe.html");
 						},
-						error: function () {
+						error: function() {
 							window.em.erstelleSichtbareFelder();
 							window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
 						}
 					});
 				},
-				error: function () {
+				error: function() {
 					window.em.erstelleSichtbareFelder();
 					window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
 				}
 			});
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Oh je, Ihr User konnte nicht erstellt werden, der Name ist jetzt aber belegt\nVersuchen Sie es mit einem anderen Benutzernamen\noder bitten Sie alex@gabriel-software.ch, den Namen wieder freizugeben");
 		}
 	});
@@ -4040,7 +4040,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			// zählen, in wievielen Datensätzen das Feld verwendet wird
 			$db = $.couch.db("evab");
 			$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
-				success: function (data) {
+				success: function(data) {
 					var i,
 						anzVorkommen = 0,
 						Datensatz,
@@ -4198,7 +4198,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 		$db = $.couch.db("evab");
 		// zählen, in wievielen Datensätzen das Feld verwendet wird
 		$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				var i,
 					anzVorkommen = 0,
 					Datensatz,
@@ -4330,13 +4330,13 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 	Feld[SichtbarImModusX] = SichtbarImModusX;
 	// Änderung in DB speichern
 	$db.saveDoc(Feld, {
-		success: function (data) {
+		success: function(data) {
 			// neue rev holen
 			Feld._rev = data.rev;
 			// Änderung in Feldliste-Objekt speichern
 			window.em[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
 		}
 	});
@@ -4345,7 +4345,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 window.em.öffneFeld = function(FeldName) {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"&include_docs=true', {
-		success: function (data) {
+		success: function(data) {
 			localStorage.FeldId = data.rows[0].doc._id;
 			localStorage.zurueck = "FelderWaehlen.html";
 			$.mobile.navigate("FeldEdit.html");
@@ -4945,10 +4945,10 @@ window.em.handleHOrtEditLoescheOrtClick = function(that) {
 	// Anzahl Zeiten von Ort zählen
 	$db = $.couch.db("evab");
 	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
-		success: function (Zeiten) {
+		success: function(Zeiten) {
 			var anzZeiten = Zeiten.rows.length;
 			$db.view('evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
-				success: function (Arten) {
+				success: function(Arten) {
 					var anzArten = Arten.rows.length, 
 						div = $("#hoe_löschen_meldung"),
 						zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
@@ -5329,19 +5329,19 @@ window.em.handleHProjektEditLöscheProjektClick = function(that) {
 	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 	$db = $.couch.db("evab");
 	$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
-		success: function (Raeume) {
+		success: function(Raeume) {
 			var anzRaeume = Raeume.rows.length;
 			// Anzahl Orte des Projekts zählen
 			$db.view('evab/hOrtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
-				success: function (Orte) {
+				success: function(Orte) {
 					var anzOrte = Orte.rows.length;
 					// Anzahl Zeiten des Projekts zählen
 					$db.view('evab/hZeitIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
-						success: function (Zeiten) {
+						success: function(Zeiten) {
 							var anzZeiten = Zeiten.rows.length;
 							// Anzahl Arten des Projekts zählen
 							$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
-								success: function (Arten) {
+								success: function(Arten) {
 									var anzArten = Arten.rows.length, 
 										div = $("#hpe_löschen_meldung"),
 										räume_text = (anzRaeume === 1 ? ' Raum, ' : ' Räume, '),
@@ -5444,7 +5444,7 @@ window.em.nächstesVorigesProjekt = function(NächstesOderVoriges) {
 		// neu aus DB erstellen
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Projektliste bereitstellen
 				window.em.Projektliste = data;
 				window.em.nächstesVorigesProjekt_2(NächstesOderVoriges);
@@ -5513,11 +5513,11 @@ window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hProjekt = data;
 				window.em.löscheProjekt_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Projekt nicht gelöscht");
 			}
 		});
@@ -5527,7 +5527,7 @@ window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
 window.em.löscheProjekt_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hProjekt, {
-		success: function (data) {
+		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.Projektliste) {
 				for (i in window.em.Projektliste.rows) {
@@ -5547,7 +5547,7 @@ window.em.löscheProjekt_2 = function() {
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html", {reload: true});
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Projekt nicht gelöscht");
 		}
 	});
@@ -5573,11 +5573,11 @@ window.em.speichereHProjektEdit = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hProjekt = data;
 				window.em.speichereHProjektEdit_2(that);
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
 			}
 		});
@@ -5617,7 +5617,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hProjekt, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hProjekt._rev = data.rev;
 				// window.ZuletztGespeicherteProjektId wird benutzt, damit auch nach einem
 				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -5635,7 +5635,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 				delete window.em.ArtenVonOrt;
 				delete window.em.ArtenVonZeit;
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHProjektEdit_2(that)');
 				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -5659,7 +5659,7 @@ window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 		// neu aus DB erstellen
 		$db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// OrtListe für hOrtListe.html bereitstellen
 				window.em.OrtListe = data;
 				window.em.nächsterVorigerOrt_2(NächsterOderVoriger);
@@ -5729,11 +5729,11 @@ window.em.speichereHOrtEdit = function(that) {
 		// kein Ort > aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hOrt = data;
 				window.em.speichereHOrtEdit_2(_this);
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHOrtEdit');
 				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -5775,7 +5775,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hOrt, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hOrt._rev = data.rev;
 				// window.ZuletztGespeicherteOrtId wird benutzt, damit auch nach einem
 				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -5792,7 +5792,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 				delete window.em.ArtenVonRaum;
 				delete window.em.ArtenVonZeit;
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHOrtEdit_2(that)');
 				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -5817,11 +5817,11 @@ window.em.löscheOrt = function(Arten, Zeiten) {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hOrt = data;
 				window.em.löscheOrt_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Der Ort wurde nicht gelöscht");
 			}
 		});
@@ -5831,7 +5831,7 @@ window.em.löscheOrt = function(Arten, Zeiten) {
 window.em.löscheOrt_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hOrt, {
-		success: function (data) {
+		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.OrtListe) {
 				for (i in window.em.OrtListe.rows) {
@@ -5847,7 +5847,7 @@ window.em.löscheOrt_2 = function() {
 			window.em.leereStorageOrtEdit("mitLatLngListe");
 			$.mobile.navigate('hOrtListe.html');
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Der Ort wurde nicht gelöscht");
 		}
 	});
@@ -6010,41 +6010,41 @@ window.em.handleHProjektListePageinit = function() {
 		return;
 	}
 
-	$("#hProjektListePageHeader").on('click', '#OeffneProjektListeProjektListe', function (event) {
+	$("#hProjektListePageHeader").on('click', '#OeffneProjektListeProjektListe', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 	});
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", function (event) {
+	$(document).on("click", ".tab_inaktiv", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 	});
 
 	// neues Projekt erstellen
-	$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function (event) {
+	$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuesProjekt();
 	});
 
 	$("#ProjektlistehPL").on("swipeleft", ".Projekt", window.em.handleProjektListeSwipeleft);
 
-	$("#ProjektlistehPL").on("click", ".Projekt", function (event) {
+	$("#ProjektlistehPL").on("click", ".Projekt", function(event) {
 		event.preventDefault();
 		window.em.handleProjektListeProjektClick(this);
 	});
 
 	$("#ProjektlistehPL").on("swipeleft", ".erste", window.em.erstelleNeuesProjekt);
 
-	$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function (event) {
+	$("#hProjektListePageHeader").on('click', '#OeffneBeobListeProjektListe', function(event) {
 		event.preventDefault();
 		$.mobile.navigate("BeobListe.html");
 	});
 
 	$("#ProjektListePage").on("swiperight", window.em.handleProjektListeSwiperight);
 
-	$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
+	$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function(event) {
 		event.preventDefault();
 		window.em.handleProjektListeOeffneKarteClick();
 	});
@@ -6133,7 +6133,7 @@ window.em.handleRaumEditPageinit = function() {
 		return;
 	}
 
-	$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
+	$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function(event) {
 		event.preventDefault();
 		window.em.handleRaumEditOeffneRaumListeClick();
 	});
@@ -6154,42 +6154,42 @@ window.em.handleRaumEditPageinit = function() {
 	$("#FormAnhängehRE").on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange);
 
 	// Code für den Raum-Löschen-Dialog
-	$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function (event) {
+	$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function(event) {
 		event.preventDefault();
 		window.em.handleRaumEditLoescheRaumClick();
 	});
 
-	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function (event) {
+	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function(event) {
 		var div = $("#hre_löschen_meldung")[0];
 		window.em.löscheRaum(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'));
 	});
 
 	// Link zu Projekt in Navbar und Titelleiste
-	$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
+	$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function(event) {
 		event.preventDefault();
 		window.em.handleRaumEditProjektOeffnenClick();
 	});
 
 	// inaktive tabs inaktivieren
-	$(document).on("click", ".tab_inaktiv", function (event) {
+	$(document).on("click", ".tab_inaktiv", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 	});
 
 	// Link zu Ortliste in Navbar
-	$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function (event) {
+	$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function(event) {
 		event.preventDefault();
 		$.mobile.navigate("hOrtListe.html");
 	});
 
 	// neuen Raum erstellen
-	$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function (event) {
+	$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuenRaum();
 	});
 
 	// sichtbare Felder wählen
-	$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
+	$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function(event) {
 		event.preventDefault();
 		window.em.handleRaumEditWaehleFelderClick();
 	});
@@ -6199,19 +6199,19 @@ window.em.handleRaumEditPageinit = function() {
 	$("#RaumEditPage").on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function (event) {
+	$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerRaum("voriger");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#RaumEditPage").on("vclick", ".ui-pagination-next", function (event) {
+	$("#RaumEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerRaum("nächster");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#RaumEditPage").on("keyup", function (event) {
+	$("#RaumEditPage").on("keyup", function(event) {
 		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 		if (!$(event.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
 			// Left arrow
@@ -6227,12 +6227,12 @@ window.em.handleRaumEditPageinit = function() {
 		}
 	});
 
-	$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function (event) {
+	$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function(event) {
 		event.preventDefault();
 		window.em.handleRaumEditOeffneKarteClick();
 	});
 
-	$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
+	$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function(event) {
 		event.preventDefault();
 		window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
 	});
@@ -6264,15 +6264,15 @@ window.em.handleRaumEditLoescheRaumClick = function() {
 	// Anzahl Orte des Raums zählen
 	$db = $.couch.db("evab");
 	$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
-		success: function (Orte) {
+		success: function(Orte) {
 			var anzOrte = Orte.rows.length;
 			// Anzahl Zeiten des Raums zählen
 			$db.view('evab/hZeitIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
-				success: function (Zeiten) {
+				success: function(Zeiten) {
 					var anzZeiten = Zeiten.rows.length;
 					// Anzahl Arten des Raums zählen
 					$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
-						success: function (Arten) {
+						success: function(Arten) {
 							var anzArten = Arten.rows.length, 
 								meldung, 
 								div,
@@ -6368,11 +6368,11 @@ window.em.löscheRaum = function(Arten, Zeiten, Orte) {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hRaum = data;
 				window.em.löscheRaum_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Raum nicht gelöscht");
 			}
 		});
@@ -6382,7 +6382,7 @@ window.em.löscheRaum = function(Arten, Zeiten, Orte) {
 window.em.löscheRaum_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hRaum, {
-		success: function (data) {
+		success: function(data) {
 			var i;
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.RaumListe) {
@@ -6400,7 +6400,7 @@ window.em.löscheRaum_2 = function() {
 			window.em.leereStorageRaumEdit("mitLatLngListe");
 			$.mobile.navigate('hRaumListe.html');
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Raum nicht gelöscht");
 		}
 	});
@@ -6427,11 +6427,11 @@ window.em.speichereRaum = function() {
 		// kein Raum > aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hRaum = data;
 				window.em.speichereRaum_2(that);
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Änderung in " + that.name + " nicht gespeichert");
 			}
 		});
@@ -6470,7 +6470,7 @@ window.em.speichereRaum_2 = function(that) {
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hRaum, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hRaum._rev = data.rev;
 				// window.ZuletztGespeicherteRaumId wird benutzt, damit auch nach einem
 				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -6488,7 +6488,7 @@ window.em.speichereRaum_2 = function(that) {
 				delete window.em.ArtenVonOrt;
 				delete window.em.ArtenVonZeit;
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereRaum_2(that)');
 			}
 		});
@@ -6510,7 +6510,7 @@ window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
 		// neu aus DB erstellen
 		$db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// RaumListe bereitstellen
 				window.em.RaumListe = data;
 				window.em.nächsterVorigerRaum_2(NächsterOderVoriger);
@@ -6589,26 +6589,26 @@ window.em.handleHRaumListePageinit = function() {
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", function (event) {
+	$(document).on("click", ".tab_inaktiv", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 	});
 
 	// Link zu Projekt in Navbar und Titelleiste
-	$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
+	$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function(event) {
 		event.preventDefault();
 		window.em.handleRaumListeOeffneProjektEditClick();
 	});
 
 	// neuen Raum erstellen
-	$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function (event) {
+	$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuenRaum();
 	});
 
 	$("#RaumlistehRL").on("swipeleft", ".Raum", window.em.handleRaumListeSwipeleft);
 
-	$("#RaumlistehRL").on("click", ".Raum", function (event) {
+	$("#RaumlistehRL").on("click", ".Raum", function(event) {
 		event.preventDefault();
 		window.em.handleRaumListeRaumClick(this);
 	});
@@ -6617,7 +6617,7 @@ window.em.handleHRaumListePageinit = function() {
 
 	$("#RaumListePage").on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
 
-	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function (event) {
+	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function(event) {
 		event.preventDefault();
 		window.em.handleRaumListeOeffneKarteClick();
 	});
@@ -6709,29 +6709,29 @@ window.em.handleHZeitEditPageinit = function() {
 		$.mobile.navigate("hProjektListe.html");
 	}
 
-	$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function (event) {
+	$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function(event) {
 		event.preventDefault();
 		window.em.leereStorageZeitEdit();
 		$.mobile.navigate("hZeitListe.html");
 	});
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function (event) {
+	$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditOeffneOrtClick();
 	});
 
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneArtListeZeitEdit", function (event) {
+	$("#ZeitEditPageHeader").on("click", "#OeffneArtListeZeitEdit", function(event) {
 		event.preventDefault();
 		$.mobile.navigate("hArtListe.html");
 	});
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function (event) {
+	$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditOeffneRaumClick();
 	});
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function (event) {
+	$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditOeffneProjektClick();
 	});
@@ -6752,19 +6752,19 @@ window.em.handleHZeitEditPageinit = function() {
 	$("#FormAnhängehZE").on("change", ".speichernAnhang", window.em.handleZeitEditSpeichernAnhangChange);
 
 	// Neue Zeit erstellen
-	$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function (event) {
+	$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditNeuClick();
 	});
 
 	// sichtbare Felder wählen
-	$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function (event) {
+	$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditWaehleFelderClick();
 	});
 
 	// Code für den Zeit-Löschen-Dialog
-	$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function (event) {
+	$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function(event) {
 		event.preventDefault();
 		window.em.handleZeitEditLoescheClick();
 	});
@@ -6776,19 +6776,19 @@ window.em.handleHZeitEditPageinit = function() {
 	$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function (event) {
+	$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeZeit("vorige");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function (event) {
+	$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeZeit("nächste");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#ZeitEditPage").on("keyup", function (event) {
+	$("#ZeitEditPage").on("keyup", function(event) {
 		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
 		if (!$(event.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 			// Left arrow
@@ -6804,7 +6804,7 @@ window.em.handleHZeitEditPageinit = function() {
 		}
 	});
 
-	$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function (event) {
+	$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function(event) {
 		event.preventDefault();
 		window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
 	});
@@ -6866,7 +6866,7 @@ window.em.handleZeitEditLoescheClick = function() {
 	// Anzahl Zeiten von Ort zählen
 	$db = $.couch.db("evab");
 	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
-		success: function (Arten) {
+		success: function(Arten) {
 			var anzArten = Arten.rows.length, 
 				meldung, 
 				div,
@@ -6943,11 +6943,11 @@ window.em.löscheZeit = function(Arten) {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hZeit = data;
 				window.em.löscheZeit_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Zeit nicht gelöscht");
 			}
 		});
@@ -6957,7 +6957,7 @@ window.em.löscheZeit = function(Arten) {
 window.em.löscheZeit_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hZeit, {
-		success: function (data) {
+		success: function(data) {
 			var i;
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.ZeitListe) {
@@ -6974,7 +6974,7 @@ window.em.löscheZeit_2 = function() {
 			window.em.leereStorageZeitEdit();
 			$.mobile.navigate('hZeitListe.html');
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Zeit nicht gelöscht");
 		}
 	});
@@ -7011,11 +7011,11 @@ window.em.speichereHZeitEdit = function() {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hZeit = data;
 				window.em.speichereHZeitEdit_2(that);
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHZeitEdit(that)');
 				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -7058,7 +7058,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hZeit, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hZeit._rev = data.rev;
 				// window.ZuletztGespeicherteZeitId wird benutzt, damit auch nach einem
 				// Datensatzwechsel die Listen nicht (immer) aus der DB geholt werden müssen
@@ -7073,7 +7073,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 				delete window.em.ArtenVonRaum;
 				delete window.em.ArtenVonOrt;
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHZeitEdit_2(that)');
 				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -7093,7 +7093,7 @@ window.em.nächsteVorigeZeit = function(NächsteOderVorige) {
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				window.em.ZeitListe = data;
 				window.em.nächsteVorigeZeit_2(NächsteOderVorige);
 			}
@@ -7169,27 +7169,23 @@ window.em.handleZeitListePageinit = function() {
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", function (event) {
+	$(document).on("click", ".tab_inaktiv", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 	});
 
 	// Link zu Raum in Navbar und Titelleiste
-	$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
+	$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function(event) {
 		event.preventDefault();
-		window.em.leereStorageZeitListe();
-		$.mobile.navigate("hOrtEdit.html");
+		window.em.handleZeitListeOeffneOrtClick();
 	});
 
-	$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
+	$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function(event) {
 		event.preventDefault();
-		window.em.leereStorageZeitListe();
-		window.em.leereStorageOrtEdit();
-		window.em.leereStorageOrtListe();
-		$.mobile.navigate("hRaumEdit.html");
+		window.em.handleZeitListeOeffneRaumClick();
 	});
 
-	$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
+	$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function(event) {
 		event.preventDefault();
 		window.em.leereStorageZeitListe();
 		window.em.leereStorageOrtEdit();
@@ -7200,27 +7196,27 @@ window.em.handleZeitListePageinit = function() {
 	});
 
 	// Neue Zeit erstellen, erste Zeit und fixer button
-	$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function (event) {
+	$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeueZeit(); 
 	});
 
-	$("#ZeitlistehZL").on("swipeleft", ".Zeit", function () {
+	$("#ZeitlistehZL").on("swipeleft", ".Zeit", function() {
 		localStorage.ZeitId = $(this).attr('ZeitId');
 		$.mobile.navigate("hArtListe.html");
 	});
 
-	$("#ZeitlistehZL").on("click", ".Zeit", function (event) {
+	$("#ZeitlistehZL").on("click", ".Zeit", function(event) {
 		event.preventDefault();
 		localStorage.ZeitId = $(this).attr('ZeitId');
 		$.mobile.navigate("hZeitEdit.html");
 	});
 
-	$("#ZeitlistehZL").on("swipeleft", ".erste", function () {
+	$("#ZeitlistehZL").on("swipeleft", ".erste", function() {
 		window.em.erstelleNeueZeit();
 	});
 
-	$("#hZeitListePage").on("swiperight", function () {
+	$("#hZeitListePage").on("swiperight", function() {
 		$.mobile.navigate("hOrtListe.html");
 	});
 
@@ -7254,6 +7250,78 @@ window.em.handleZeitListePageinit = function() {
 	});
 
 	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+};
+
+window.em.handleZeitListeOeffneOrtClick = function() {
+	window.em.leereStorageZeitListe();
+	$.mobile.navigate("hOrtEdit.html");
+};
+
+window.em.handleZeitListeOeffneRaumClick = function() {
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	$.mobile.navigate("hRaumEdit.html");
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
+};
+
+window.em.handleZeitListe = function() {
+	
 };
 
 
@@ -7319,11 +7387,11 @@ window.em.speichereHArt = function(that) {
 		// Objekt aud DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hArt = data;
 				window.em.speichereHArt_2(_this);
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereHArt');
 				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
@@ -7360,11 +7428,11 @@ window.em.speichereHArt_2 = function(that) {
 	window.em.hArt.aArtName = localStorage.aArtName;
 	window.em.hArt.aArtGruppe = localStorage.aArtGruppe;
 	$db.saveDoc(window.em.hArt, {
-		success: function (data) {
+		success: function(data) {
 			window.em.hArt._rev = data.rev;
 			localStorage.hBeobId = data.id;
 		},
-		error: function () {
+		error: function() {
 			console.log('fehler in function speichereHArt_2');
 			//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 		}
@@ -7386,7 +7454,7 @@ window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 		// keine Ortliste vorhanden, neu aus DB erstellen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.em.hBeobListe = data;
 				window.em.nächsteVorigeArt_2(NächsteOderVorige);
@@ -7442,11 +7510,11 @@ window.em.löscheHBeob = function() {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.hArt = data;
 				window.em.löscheHBeob_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Art nicht gelöscht");
 			}
 		});
@@ -7456,7 +7524,7 @@ window.em.löscheHBeob = function() {
 window.em.löscheHBeob_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hArt, {
-		success: function (data) {
+		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.hBeobListe) {
 				for (i in window.em.hBeobListe.rows) {
@@ -7472,7 +7540,7 @@ window.em.löscheHBeob_2 = function() {
 			window.em.leereStoragehBeobEdit();
 			$.mobile.navigate("hArtListe.html");
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Art nicht gelöscht");
 		}
 	});
@@ -7486,7 +7554,7 @@ window.em.löscheHBeob_2 = function() {
 window.em.pruefeFeldNamen = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
-		success: function (data) {
+		success: function(data) {
 			var i, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
 			AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 			// durch alle Felder mit demselben Artnamen laufen
@@ -7519,7 +7587,7 @@ window.em.pruefeFeldNamen = function() {
 				} else {
 					$("#FeldName").val("");
 				}
-				setTimeout(function () { 
+				setTimeout(function() { 
 					$('#FeldName').focus(); 
 				}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 				window.em.melde("Feldname " + localStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
@@ -7528,7 +7596,7 @@ window.em.pruefeFeldNamen = function() {
 				delete localStorage.AlterFeldWert;
 			}
 		},
-		error: function () {
+		error: function() {
 			// Wert im Feld zurücksetzen
 			if (localStorage.AlterFeldWert) {
 				$("#FeldName").val(localStorage.AlterFeldWert);
@@ -7553,11 +7621,11 @@ window.em.loescheFeld = function() {
 		// Feld aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(Feld._id, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Feld = data;
 				window.em.loescheFeld_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: nicht gelöscht");
 			}
 		});
@@ -7567,7 +7635,7 @@ window.em.loescheFeld = function() {
 window.em.loescheFeld_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.Feld, {
-		success: function (data) {
+		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.Feldliste) {
 				for (i in window.em.Feldliste.rows) {
@@ -7583,7 +7651,7 @@ window.em.loescheFeld_2 = function() {
 			window.em.leereStorageFeldEdit();
 			$.mobile.navigate("FeldListe.html");
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: nicht gelöscht");
 		}
 	});
@@ -7600,7 +7668,7 @@ window.em.geheZumNächstenFeld = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				window.em.Feldliste = data;
 				window.em.geheZumNächstenFeld_2();
 			}
@@ -7664,7 +7732,7 @@ window.em.geheZumVorigenFeld = function() {
 	} else {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				window.em.Feldliste = data;
 				window.em.geheZumVorigenFeld_2();
 			}
@@ -7730,7 +7798,7 @@ window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
 	$db = $.couch.db("evab");
 	viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
 	$db.view(viewname, {
-		success: function (data) {
+		success: function(data) {
 			var ReihenfolgeVorgaenger;
 			ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
 			$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
@@ -7750,11 +7818,11 @@ window.em.speichereStandardwert = function() {
 		// aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
-			success: function (doc) {
+			success: function(doc) {
 				window.em.Feld = doc;
 				window.em.speichereStandardwert_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Feld nicht gespeichert");
 			}
 		});
@@ -7789,13 +7857,13 @@ window.em.speichereStandardwert_2 = function() {
 		}
 	}
 	$db.saveDoc(window.em.Feld, {
-		success: function (data) {
+		success: function(data) {
 			window.em.Feld._rev = data.rev;
 			localStorage.FeldId = data.id;
 			// Feldlisten leeren, damit Standardwert sofort verwendet werden kann!
 			window.em.leereStorageFeldListe();
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Feld nicht gespeichert");
 		}
 	});
@@ -7812,11 +7880,11 @@ window.em.speichereFeldeigenschaften = function() {
 		// Objekt aus der DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Feld = data;
 				window.em.speichereFeldeigenschaften_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 			}
 		});
@@ -7914,14 +7982,14 @@ window.em.speichereFeldeigenschaften_2 = function() {
 		}
 	}
 	$db.saveDoc(window.em.Feld, {
-		success: function (data) {
+		success: function(data) {
 			// rev aktualisieren
 			window.em.Feld._rev = data.rev;
 			localStorage.FeldId = data.id;
 			// Feldliste soll neu aufbauen
 			window.em.leereStorageFeldListe();
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
 		}
 	});
@@ -7958,7 +8026,7 @@ window.em.nächsteVorigeBeob = function(NächsteOderVorige) {
 		// neu aus DB erstellen
 		$db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
-			success: function (data) {
+			success: function(data) {
 				// Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
 				// bei neuen/Löschen von Beobachtungen wird BeobListe wieder auf undefined gesetzt
 				window.em.BeobListe = data;
@@ -8015,11 +8083,11 @@ window.em.löscheBeob = function() {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Beobachtung = data;
 				window.em.löscheBeob_2();
 			},
-			error: function () {
+			error: function() {
 				window.em.melde("Fehler: Beobachtung nicht gelöscht");
 			}
 		});
@@ -8029,7 +8097,7 @@ window.em.löscheBeob = function() {
 window.em.löscheBeob_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.Beobachtung, {
-		success: function (data) {
+		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.BeobListe) {
 				for (var i in window.em.BeobListe.rows) {
@@ -8045,7 +8113,7 @@ window.em.löscheBeob_2 = function() {
 			window.em.leereStorageBeobEdit();
 			$.mobile.navigate("BeobListe.html");
 		},
-		error: function () {
+		error: function() {
 			window.em.melde("Fehler: Beobachtung nicht gelöscht");
 		}
 	});
@@ -8063,11 +8131,11 @@ window.em.speichereBeob = function(that) {
 		// nein: Beob aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
-			success: function (data) {
+			success: function(data) {
 				window.em.Beobachtung = data;
 				window.em.speichereBeob_2(_this);
 			},
-			error: function () {
+			error: function() {
 				console.log('fehler in function speichereBeob_2(_this)');
 			}
 		});
@@ -8107,7 +8175,7 @@ window.em.speichereBeob_2 = function(that) {
 		success: function(data) {
 			window.em.Beobachtung._rev = data.rev;
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log('fehler in function speichereBeob_2(that)');
 		}
 	});
@@ -8124,10 +8192,10 @@ window.em.meldeNeuAn = function() {
 * Authored by Scott Jehl, scott@filamentgroup.com
 * Dual licensed under the MIT or GPL Version 2 licenses.
 */
-(function ($, undefined) {
+(function($, undefined) {
 
 	// auto-init on pagecreate
-	$(document).bind("pagecreate", function (e) {
+	$(document).bind("pagecreate", function(e) {
 		$(":jqmData(role='pagination')", e.target).pagination();
 	});
 
@@ -8135,7 +8203,7 @@ window.em.meldeNeuAn = function() {
 
 	// create widget
 	$.widget("mobile.pagination", $.mobile.widget, {
-		_create: function () {
+		_create: function() {
 			var $el			= this.element,
 				$page		= $el.closest(".ui-page"),
 				$links		= $el.find("a"),
@@ -8155,7 +8223,7 @@ window.em.meldeNeuAn = function() {
 
 			// set up next and prev buttons
 
-			$links.each(function () {
+			$links.each(function() {
 				var reverse = $(this).closest("." + prevLIClass).length;
 
 				$(this)
