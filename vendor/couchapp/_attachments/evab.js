@@ -1224,7 +1224,6 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			}
 		}
 		DsBulkListe.docs = Docs;
-		console.log("jetzt dann");
 		// Objektliste in DB speichern
 		$.ajax({
 			type: "POST",
@@ -1232,7 +1231,6 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			contentType: "application/json",
 			data: JSON.stringify(DsBulkListe)
 		}).done(function(data) {
-			console.log("juhui");
 			var z,
 				k;
 			// _rev in den Objekten in Objektliste aktualisieren
@@ -2111,12 +2109,10 @@ window.em.initiierehBeobListe = function() {
 
 window.em.initiierehBeobListe_2 = function() {
 	var i,
-		anzArt = window.em.hBeobListe.rows.length, 
-		Art, 
-		externalPage, 
-		listItem, 
-		ListItemContainer = "", 
-		Titel2, 
+		anzArt = window.em.hBeobListe.rows.length,
+		listItem,
+		ListItemContainer = "",
+		Titel2,
 		hBeobTemp;
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
@@ -6274,16 +6270,14 @@ window.em.handleRaumEditLoescheRaumClick = function() {
 					// Anzahl Arten des Raums zählen
 					$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 						success: function(Arten) {
-							var anzArten = Arten.rows.length, 
-								meldung, 
-								div,
+							var anzArten = Arten.rows.length,
+								div = $("#hre_löschen_meldung"),
 								orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
 								zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
-								arten_text = (anzArten === 1 ? ' Art' : ' Arten');
-							meldung = 'Raum inklusive ' + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+								arten_text = (anzArten === 1 ? ' Art' : ' Arten'),
+								meldung = 'Raum inklusive ' + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 							$("#hre_löschen_meldung_meldung").html(meldung);
 							// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-							div = $("#hre_löschen_meldung");
 							div.data('Arten', Arten);
 							div.data('Zeiten', Zeiten);
 							div.data('Orte', Orte);
@@ -6441,7 +6435,9 @@ window.em.speichereRaum = function() {
 };
 
 window.em.speichereRaum_2 = function(that) {
-	var Feldname, Feldjson, Feldwert;
+	var Feldname,
+		Feldjson,
+		Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
@@ -6869,13 +6865,11 @@ window.em.handleZeitEditLoescheClick = function() {
 	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
 		success: function(Arten) {
 			var anzArten = Arten.rows.length, 
-				meldung, 
-				div,
-				arten_text = (anzArten === 1 ? ' Art' : ' Arten');
-			meldung = 'Zeit inklusive ' + anzArten + arten_text + ' löschen?';
+				div = $("#hze_löschen_meldung"),
+				arten_text = (anzArten === 1 ? ' Art' : ' Arten'),
+				meldung = 'Zeit inklusive ' + anzArten + arten_text + ' löschen?';
 			$("#hze_löschen_meldung_meldung").html(meldung);
 			// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-			div = $("#hze_löschen_meldung");
 			div.data('Arten', Arten);
 			// popup öffnen
 			$("#hze_löschen_meldung").popup("open");
@@ -7682,9 +7676,8 @@ window.em.erstelleKartehOrtEdit = function() {
 
 // wird benutzt in BeobListe.html
 window.em.erstelleKarteBeobListe = function() {
-	var contentHeight;
 	// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-	contentHeight = $(window).height() - 44;
+	var contentHeight = $(window).height() - 44;
 	$("#MapCanvas").css("height", contentHeight + "px");
 	// Beobachtungen holen. Prüfen, ob die Liste noch da ist
 	if (window.em.BeobListeLatLng) {
@@ -7701,9 +7694,22 @@ window.em.erstelleKarteBeobListe = function() {
 };
 
 window.em.erstelleKarteBeobListe_2 = function() {
-	var i, anzBeob, beob, key, image, infowindow, lat, lng, latlng, latlng2, options, map, bounds, marker, markers, contentString, mcOptions, markerCluster;
-	// Anzahl Beobachtungen zählen
-	anzBeob = BeobListeLatLng.rows.length;
+	var i,
+		anzBeob = BeobListeLatLng.rows.length,
+		beob,
+		image,
+		lat,
+		lng,
+		latlng,
+		latlng2,
+		options,
+		map,
+		bounds,
+		marker,
+		markers,
+		contentString,
+		mcOptions,
+		markerCluster;
 	if (anzBeob === 0) {
 		// Keine Beobachtungen: Hinweis und zurück
 		window.em.melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
@@ -7776,9 +7782,20 @@ window.em.erstelleKarteBeobListe_2 = function() {
 };
 
 window.em.erstelleKarteBeobEdit = function() {
-	var map, verorted, lat, lng, ZoomLevel, latlng, options, mapcanvas, image, marker, contentString, infowindow;
-	// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-	var contentHeight = $(window).height() - 44;
+	var map,
+		verorted,
+		lat,
+		lng,
+		ZoomLevel,
+		latlng,
+		options,
+		mapcanvas,
+		image,
+		marker,
+		contentString,
+		infowindow,
+		// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
+		contentHeight = $(window).height() - 44;
 	$("#MapCanvas").css("height", contentHeight + "px");
 	if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
 		lat = localStorage.oLatitudeDecDeg;
@@ -7879,9 +7896,10 @@ window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
 
 // wird benutzt in hOrtEdit.html
 window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
-	var lat, lng, contentString, infowindow;
-	lat = LatLng.lat();
-	lng = LatLng.lng();
+	var lat = LatLng.lat(),
+		lng = LatLng.lng(),
+		contentString,
+		infowindow;
 	localStorage.oLatitudeDecDeg = lat;
 	localStorage.oLongitudeDecDeg = lng;
 	localStorage.oXKoord = window.em.DdInChX(lat, lng);
@@ -7910,9 +7928,10 @@ window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
 
 // wird benutzt in BeobEdit.html
 window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
-	var lat, lng, contentString, infowindow;
-	lat = LatLng.lat();
-	lng = LatLng.lng();
+	var lat = LatLng.lat(),
+		lng = LatLng.lng(),
+		contentString,
+		infowindow;
 	localStorage.oLatitudeDecDeg = lat;
 	localStorage.oLongitudeDecDeg = lng;
 	localStorage.oXKoord = window.em.DdInChX(lat, lng);
@@ -7988,11 +8007,10 @@ window.em.handleSignupSubmitButtonClick = function() {
 // kontrollierren, ob die erforderlichen Felder etwas enthalten
 // wenn ja wird true retourniert, sonst false
 window.em.validiereUserSignup = function() {
-	var Email, Passwort, Passwort2, Autor;
-	Email = $("#su_Email").val();
-	Passwort = $("#su_Passwort").val();
-	Passwort2 = $("#Passwort2").val();
-	Autor = $("#Autor").val();
+	var Email = $("#su_Email").val(),
+		Passwort = $("#su_Passwort").val(),
+		Passwort2 = $("#Passwort2").val(),
+		Autor = $("#Autor").val();
 	if (!Email) {
 		window.em.melde("Bitte Email eingeben");
 		setTimeout(function() {
@@ -8226,7 +8244,9 @@ window.em.speichereHArt = function(that) {
 };
 
 window.em.speichereHArt_2 = function(that) {
-	var Feldname, Feldjson, Feldwert;
+	var Feldname,
+		Feldjson,
+		Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
@@ -8381,7 +8401,8 @@ window.em.pruefeFeldNamen = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function(data) {
-			var i, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
+			var i,
+			TempFeld,
 			AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 			// durch alle Felder mit demselben Artnamen laufen
 			// prüfen, ob sie eigene oder offielle sind
@@ -8503,8 +8524,13 @@ window.em.geheZumNächstenFeld = function() {
 };
 
 window.em.geheZumNächstenFeld_2 = function() {
-	var i, y, FeldIdAktuell, FeldIdNächstes, AnzFelder, AktFeld_i, AktFeld_y;
-	AnzFelder = window.em.Feldliste.rows.length -1;
+	var i,
+		y,
+		FeldIdAktuell,
+		FeldIdNächstes,
+		AnzFelder = window.em.Feldliste.rows.length -1,
+		AktFeld_i,
+		AktFeld_y;
 	for (i in window.em.Feldliste.rows) {
 		if (typeof i !== "function") {
 			// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
@@ -8567,8 +8593,13 @@ window.em.geheZumVorigenFeld = function() {
 };
 
 window.em.geheZumVorigenFeld_2 = function() {
-	var i, y, FeldIdAktuell, FeldIdVoriges, AnzFelder, AktFeld_i, AktFeld_y;
-	AnzFelder = window.em.Feldliste.rows.length -1;
+	var i,
+		y,
+		FeldIdAktuell,
+		FeldIdVoriges,
+		AnzFelder = window.em.Feldliste.rows.length -1,
+		AktFeld_i,
+		AktFeld_y;
 	for (i in window.em.Feldliste.rows) {
 		if (typeof i !== "function") {
 			// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
@@ -8620,13 +8651,11 @@ window.em.geheZumVorigenFeld_2 = function() {
 // Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
 // wird in FeldEdit.html verwendet
 window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
-	var viewname;
+	var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
 	$db = $.couch.db("evab");
-	viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
 	$db.view(viewname, {
 		success: function(data) {
-			var ReihenfolgeVorgaenger;
-			ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
+			var ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
 			$("#Reihenfolge").val(Math.floor(ReihenfolgeVorgaenger + 1));
 			window.em.speichereFeldeigenschaften();
 		}
@@ -8717,8 +8746,9 @@ window.em.speichereFeldeigenschaften = function() {
 };
 
 window.em.speichereFeldeigenschaften_2 = function() {
-	var Formularfelder, idx1, idx2;
-	Formularfelder = $("#FeldEditForm").serializeObjectNull();
+	var Formularfelder = $("#FeldEditForm").serializeObjectNull(),
+		idx1,
+		idx2;
 	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
 	if (Formularfelder.Optionen) {
 		Formularfelder.Optionen = Formularfelder.Optionen.split(",");
@@ -8968,7 +8998,9 @@ window.em.speichereBeob = function(that) {
 };
 
 window.em.speichereBeob_2 = function(that) {
-	var Feldname, Feldjson, Feldwert;
+	var Feldname,
+		Feldjson,
+		Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
