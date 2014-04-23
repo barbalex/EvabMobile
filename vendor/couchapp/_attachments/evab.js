@@ -8048,44 +8048,134 @@ window.em.erstelleKonto = function() {
 	});
 };
 
+window.em.handleUserEditPageshow = function() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+	window.em.initiiereUserEdit();
+};
 
+window.em.handleUserEditPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
 
+	// zurück-Button steuern
+	$("#UserEditHeader").on('click', '#zurückUserEdit', function (event) {
+		event.preventDefault();
+		window.em.handleUserEditZurückClick();
+	});
 
+	// jedes Feld bei Änderung speichern
+	$("#UserEditForm").on("change", ".Feld", window.em.handleUserEditFeldChange);
 
+	$("#UserEditForm").on("change", "[name='Datenverwendung']", function () {
+		localStorage.Datenverwendung = $(this).attr("id");
+	});
 
+	// Autor bei Änderung speichern
+	$("#UserEditForm").on("change", "#Autor", window.em.handleUserEditAutorChange);
+};
 
+window.em.handleUserEditZurückClick = function() {
+	// sicherstellen, dass er immer ein zurück kennt
+	if (!localStorage.zurueck) {
+		localStorage.zurueck = "BeobListe.html";
+	}
+	$.mobile.navigate(localStorage.zurueck);
+	delete localStorage.zurueck;
+};
 
+window.em.handleUserEditFeldChange = function() {
+	var Feldname = this.name,
+		// nötig, damit Arrays richtig kommen
+		Feldjson = $("[name='" + Feldname + "']").serializeObject(),
+		Feldwert = Feldjson[Feldname];
+	if (window.em.validiereUserUserEdit()) {
+		window.em.speichereUser(Feldname, Feldwert);
+	}
+};
 
+window.em.handleUserEditAutorChange = function() {
+	$db = $.couch.db("evab");
+	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+		success: function (doc) {
+			if ($("#Autor").val()) {
+				// Wenn Autor erfasst ist, speichern
+				// Falls Standardwert noch nicht existiert, 
+				// uss zuerst das Objekt geschaffen werden
+				if (!doc.Standardwert) {
+					doc.Standardwert = {};
+				}
+				doc.Standardwert[localStorage.Email] = $("#Autor").val();
+			} else {
+				// Wenn kein Autor erfasst ist, einen allfälligen löschen
+				if (doc.Standardwert) {
+					delete doc.Standardwert[localStorage.Email];
+				}
+			}
+			$db.saveDoc(doc, {
+				success: function () {
+					// Feldliste soll neu aufgebaut werden
+					window.em.leereStorageFeldListe();
+					localStorage.Autor = $("#Autor").val();
+				},
+				error: function () {
+					window.em.melde("Fehler: Änderung am Autor nicht gespeichert");
+				}
+			});
+		},
+		error: function () {
+			window.em.melde("Fehler: Änderung am Autor nicht gespeichert");
+		}
+	});
+};
 
+// kontrollierren, ob die erforderlichen Felder etwas enthalten
+// wenn ja wird true retourniert, sonst false
+window.em.validiereUserUserEdit = function() {
+	if (!$("#Autor").val()) {
+		window.em.melde("Bitte Autor eingeben");
+		setTimeout(function() { 
+			$('#Autor').focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+window.em.speichereUser = function(Feldname, Feldwert) {
+	if (localStorage.Datenverwendung) {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.Email, {
+			success: function (doc) {
+					if (Feldwert) {
+						doc[Feldname] = Feldwert;
+					} else if (doc[Feldname]) {
+						delete doc[Feldname];
+					}
+				$db.saveDoc(doc, {
+					error: function () {
+						console.log('fehler in function window.em.speichereUser');
+						//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+					}
+				});
+			},
+			error: function () {
+				console.log('fehler in function window.em.speichereUser');
+				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+			}
+		});
+	} else {
+		// es gibt noch keine User-Doc
+		// vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
+		window.em.speichereUserInEvab();
+	}
+};
 
 
 // wird in hArtEdit.html verwendet
