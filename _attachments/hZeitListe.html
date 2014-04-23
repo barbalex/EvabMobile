@@ -185,10 +185,7 @@
 					window.em.öffneMeineEinstellungen();
 				});
 
-				$('#MenuZeitListe').on('click', '.menu_neu_anmelden', function() {
-					localStorage.UserStatus = "neu";
-					$.mobile.navigate("index.html");
-				});
+				$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 			});
 		</script>
 	</div>

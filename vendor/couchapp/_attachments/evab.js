@@ -4620,7 +4620,7 @@ window.em.handleHArtListePageinit = function() {
 
 	$('#MenuhBeobListe').on('click', '.menu_einstellungen', window.em.handleHArtListeMenuEinstellungenClick);
 
-	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.handleHArtListeMenuNeuAnmeldenClick);
+	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
@@ -4702,12 +4702,6 @@ window.em.handleHArtListeMenuBeobExportierenClick = function() {
 window.em.handleHArtListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hArtListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-// wenn in hArtListe.html .menu_neu_anmelden geklickt wird
-window.em.handleHArtListeMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
 };
 
 // wenn hOrtEdit.html erscheint
@@ -4867,7 +4861,7 @@ window.em.handleHOrtEditPageinit = function() {
 
 	$('#MenuOrtEdit').on('click', '.menu_einstellungen', window.em.handleHOrtEditMenuEinstellungenClick);
 
-	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', window.em.handleHOrtEditMenuNeuAnmeldenClick);
+	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
@@ -5012,12 +5006,6 @@ window.em.handleHOrtEditMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn in hOrtEdit.html .menu_neu_anmelden geklickt wird
-window.em.handleHOrtEditMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
-};
-
 // wenn hOrtListe.html erscheint
 window.em.handleHOrtListePageshow = function() {
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -5096,7 +5084,7 @@ window.em.handleHOrtListePageinit = function() {
 
 	$('#MenuOrtListe').on('click', '.menu_einstellungen', window.em.handleHOrtListeMenuEinstellungenClick);
 
-	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', window.em.handleHOrtListeMenuNeuAnmeldenClick);
+	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
@@ -5166,12 +5154,6 @@ window.em.handleHOrtListeMenuOrteExportierenClick = function() {
 window.em.handleHOrtListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hOrtListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-// wenn in hOrtListe.html .menu_neu_anmelden geklickt wird
-window.em.handleHOrtListeMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
 };
 
 // wenn hProjektEdit.html angezeigt wird
@@ -5305,7 +5287,7 @@ window.em.handleHProjektEditPageinit = function() {
 
 	$('#MenuProjektEdit').on('click', '.menu_einstellungen', window.em.handleHProjektEditMenuEinstellungenClick);
 
-	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', window.em.handleHProjektEditMenuNeuAnmeldenClick);
+	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
@@ -5428,16 +5410,6 @@ window.em.handleHProjektEditMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hProjektEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
-
-// wenn in hProjektEdit.html .menu_neu_anmelden geklickt wird
-window.em.handleHProjektEditMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
-};
-
-
-
-
 
 // Öffnet das vorige oder nächste Projekt
 // voriges des ersten => ProjektListe.html
@@ -6033,15 +6005,11 @@ window.em.handleHProjektListePageinit = function() {
 		window.em.erstelleNeuesProjekt();
 	});
 
-	$("#ProjektlistehPL").on("swipeleft", ".Projekt", function () {
-		localStorage.ProjektId = $(this).attr('ProjektId');
-		$.mobile.navigate("hRaumListe.html");
-	});
+	$("#ProjektlistehPL").on("swipeleft", ".Projekt", window.em.handleProjektListeSwipeleft);
 
 	$("#ProjektlistehPL").on("click", ".Projekt", function (event) {
 		event.preventDefault();
-		localStorage.ProjektId = $(this).attr('ProjektId');
-		$.mobile.navigate("hProjektEdit.html");
+		window.em.handleProjektListeProjektClick(this);
 	});
 
 	$("#ProjektlistehPL").on("swipeleft", ".erste", window.em.erstelleNeuesProjekt);
@@ -6051,36 +6019,50 @@ window.em.handleHProjektListePageinit = function() {
 		$.mobile.navigate("BeobListe.html");
 	});
 
-	$("#ProjektListePage").on("swiperight", function () {
-		$.mobile.navigate("BeobListe.html");
-	});
+	$("#ProjektListePage").on("swiperight", window.em.handleProjektListeSwiperight);
 
 	$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function (event) {
 		event.preventDefault();
-		localStorage.zurueck = "hProjektListe";
-		$.mobile.navigate("Karte.html");
+		window.em.handleProjektListeOeffneKarteClick();
 	});
 
-	$('#MenuProjektListe').on('click', '.menu_einfacher_modus', function() {
-		$.mobile.navigate("BeobListe.html");
-	});
+	$('#MenuProjektListe').on('click', '.menu_einfacher_modus', window.em.handleProjektListeMenuEinfacherModusClick);
 
-	$('#MenuProjektListe').on('click', '.menu_felder_verwalten', function() {
-		localStorage.zurueck = "hProjektListe.html";
-		$.mobile.navigate("FeldListe.html");
-	});
+	$('#MenuProjektListe').on('click', '.menu_felder_verwalten', window.em.handleProjektListeMenuFelderVerwaltenClick);
 
 	$('#MenuProjektListe').on('click', '.menu_projekte_exportieren', window.em.handleHProjektListeMenuProjekteExportierenClick);
 
-	$('#MenuProjektListe').on('click', '.menu_einstellungen', function() {
-		localStorage.zurueck = "hProjektListe.html";
-		window.em.öffneMeineEinstellungen();
-	});
+	$('#MenuProjektListe').on('click', '.menu_einstellungen', window.em.handleProjektListeMenuEinstellungenClick);
 
-	$('#MenuProjektListe').on('click', '.menu_neu_anmelden', function() {
-		localStorage.UserStatus = "neu";
-		$.mobile.navigate("index.html");
-	});
+	$('#MenuProjektListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+};
+
+window.em.handleProjektListeSwipeleft = function() {
+	localStorage.ProjektId = $(this).attr('ProjektId');
+	$.mobile.navigate("hRaumListe.html");
+};
+
+window.em.handleProjektListeProjektClick = function(that) {
+	localStorage.ProjektId = $(that).attr('ProjektId');
+	$.mobile.navigate("hProjektEdit.html");
+};
+
+window.em.handleProjektListeSwiperight = function() {
+	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleProjektListeOeffneKarteClick = function() {
+	localStorage.zurueck = "hProjektListe";
+	$.mobile.navigate("Karte.html");
+};
+
+window.em.handleProjektListeMenuEinfacherModusClick = function() {
+	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleProjektListeMenuFelderVerwaltenClick = function() {
+	localStorage.zurueck = "hProjektListe.html";
+	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hProjektListe.html .menu_projekte_exportieren geklickt wird
@@ -6090,6 +6072,11 @@ window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
 	$("#MenuProjektListe").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuProjektListe").popup("close");
+};
+
+window.em.handleProjektListeMenuEinstellungenClick = function() {
+	localStorage.zurueck = "hProjektListe.html";
+	window.em.öffneMeineEinstellungen();
 };
 
 // wenn RaumEdit erscheint
@@ -6125,29 +6112,20 @@ window.em.handleRaumEditPageinit = function() {
 
 	$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function (event) {
 		event.preventDefault();
-		window.em.leereStorageRaumEdit();
-		$.mobile.navigate("hRaumListe.html");
+		window.em.handleRaumEditOeffneRaumListeClick();
 	});
 
 	// Für jedes Feld bei Änderung speichern
-	$("#hRaumEditForm").on("change", ".speichern", function () {
-		window.em.speichereRaum(this);
-	});
+	$("#hRaumEditForm").on("change", ".speichern", window.em.speichereRaum);
 
 	// Eingabe im Zahlenfeld abfangen
-	$("#hRaumEditForm").on("blur", '.speichernSlider', function (event) {
-		window.em.speichereRaum(this);
-	});
+	$("#hRaumEditForm").on("blur", '.speichernSlider', window.em.speichereRaum);
 
 	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hRaumEditForm").on("mouseup", '.ui-slider-input', function (event) {
-		window.em.speichereRaum(this);
-	});
+	$("#hRaumEditForm").on("mouseup", '.ui-slider-input', window.em.speichereRaum);
 
 	// Ende des Schiebens abfangen
-	$("#hRaumEditForm").on("slidestop", '.speichernSlider', function (event) {
-		window.em.speichereRaum(this);
-	});
+	$("#hRaumEditForm").on("slidestop", '.speichernSlider', window.em.speichereRaum);
 
 	// Änderungen im Formular für Anhänge speichern
 	$("#FormAnhängehRE").on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange);
@@ -6245,6 +6223,11 @@ window.em.handleRaumEditPageinit = function() {
 	$('#MenuRaumEdit').on('click', '.menu_einstellungen', window.em.handleRaumEditMenuEinstellungenClick);
 
 	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+};
+
+window.em.handleRaumEditOeffneRaumListeClick = function() {
+	window.em.leereStorageRaumEdit();
+	$.mobile.navigate("hRaumListe.html");
 };
 
 window.em.handleRaumEditSpeichernAnhangChange = function() {
@@ -6411,7 +6394,8 @@ window.em.validierehRaumEdit = function() {
 	return true;
 };
 
-window.em.speichereRaum = function(that) {
+window.em.speichereRaum = function() {
+	var that = this;
 	// prüfen, ob Objekt Raum existiert
 	// fehlt z.B. nach refresh
 	if (window.em.hRaum) {
@@ -6623,7 +6607,7 @@ window.em.handleHRaumListePageinit = function() {
 
 	$('#MenuRaumListe').on('click', '.menu_einstellungen', window.em.handleRaumListeMenuEinstellungenClick);
 
-	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.handleRaumListeMenuNeuAnmeldenClick);
+	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 window.em.handleRaumListeOeffneProjektEditClick = function() {
@@ -6665,11 +6649,6 @@ window.em.handleRaumListeMenuFelderVerwaltenClick = function() {
 window.em.handleRaumListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hRaumListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-window.em.handleRaumListeMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
 };
 
 window.em.handleHRaumListeMenuExportierenClick = function() {
@@ -6815,7 +6794,7 @@ window.em.handleHZeitEditPageinit = function() {
 
 	$('#MenuZeitEdit').on('click', '.menu_einstellungen', window.em.handleZeitEditMenuEinstellungenClick);
 
-	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.handleZeitEditMenuNeuAnmeldenClick);
+	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 window.em.handleZeitEditOeffneOrtClick = function() {
@@ -6927,11 +6906,6 @@ window.em.handleZeitEditMenuEinstellungenClick = function() {
 	localStorage.zurueck = "hZeitEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
-
-window.em.handleZeitEditMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
-}
 
 window.em.löscheZeit = function(Arten) {
 	// nur löschen, wo Datensätze vorkommen
