@@ -774,6 +774,11 @@ window.em.initiiereProjektEdit = function() {
 			success: function (data) {
 				window.em.hProjekt = data;
 				window.em.initiiereProjektEdit_2();
+			},
+			error: function() {
+				// hoppla, zu dieser ID gibt es kein Projekt > Speicher löschen und Liste anzeigen
+				window.em.leereStorageProjektEdit("mitLatLngListe");
+				$.mobile.navigate("hProjektListe.html");
 			}
 		});
 	}
@@ -1386,6 +1391,7 @@ window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
 
 window.em.initiiereProjektliste = function() {
 	// hat ProjektEdit.html eine Projektliste übergeben?
+	console.log("Projektliste wird initiiert");
 	if (window.em.Projektliste) {
 		window.em.initiiereProjektliste_2();
 	} else {
@@ -3045,7 +3051,7 @@ window.em.erstelleArtgruppenListe = function() {
 			success: function (data) {
 				// Artgruppenliste bereitstellen
 				window.em.Artgruppenliste = data;
-				localStorage.Artgruppenliste = JSON.stringify(Artgruppenliste);
+				localStorage.Artgruppenliste = JSON.stringify(window.em.Artgruppenliste);
 				window.em.erstelleArtgruppenListe_2();
 			}
 		});
@@ -4904,8 +4910,7 @@ window.em.handleHOrtEditOeffneProjektClick = function() {
 
 // wenn in hOrtEdit.html .speichern geändert wird
 window.em.handleHOrtEditSpeichernChange = function() {
-	var Feldname = this.name,
-		FelderArray;
+	var Feldname = this.name;
 	if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
 		// Wenn Koordinaten und beide erfasst
 		localStorage.oXKoord = $("[name='oXKoord']").val();
@@ -4916,13 +4921,6 @@ window.em.handleHOrtEditSpeichernChange = function() {
 		localStorage.oLagegenauigkeit = null;
 		// und Koordinaten speichern
 		window.em.speichereKoordinaten(localStorage.OrtId, "hOrt");
-		
-		/*// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
-		FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-
-		//TODO: DIESE FUNKTION EXISTIERT NICHT
-		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);*/
-
 	} else {
 		window.em.speichereHOrtEdit(this);
 	}
@@ -4952,14 +4950,12 @@ window.em.handleHOrtEditLoescheOrtClick = function(that) {
 			$db.view('evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
 				success: function (Arten) {
 					var anzArten = Arten.rows.length, 
-						meldung, 
-						div,
+						div = $("#hoe_löschen_meldung"),
 						zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
-						arten_text = (anzArten === 1 ? ' Art' : ' Arten');
-					meldung = 'Ort inklusive ' + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+						arten_text = (anzArten === 1 ? ' Art' : ' Arten'), 
+						meldung = 'Ort inklusive ' + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 					$("#hoe_löschen_meldung_meldung").html(meldung);
 					// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-					div = $("#hoe_löschen_meldung");
 					div.data('Arten', Arten);
 					div.data('Zeiten', Zeiten);
 					// popup öffnen
@@ -5347,16 +5343,14 @@ window.em.handleHProjektEditLöscheProjektClick = function(that) {
 							$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 								success: function (Arten) {
 									var anzArten = Arten.rows.length, 
-										meldung, 
-										div,
+										div = $("#hpe_löschen_meldung"),
 										räume_text = (anzRaeume === 1 ? ' Raum, ' : ' Räume, '),
 										orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
 										zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
-										arten_text = (anzArten === 1 ? ' Art' : ' Arten');
-									meldung = 'Projekt inklusive ' + anzRaeume + räume_text + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
+										arten_text = (anzArten === 1 ? ' Art' : ' Arten'), 
+										meldung = 'Projekt inklusive ' + anzRaeume + räume_text + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 									$("#hpe_löschen_meldung_meldung").html(meldung);
 									// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-									div = $("#hpe_löschen_meldung");
 									div.data('Arten', Arten);
 									div.data('Zeiten', Zeiten);
 									div.data('Orte', Orte);
@@ -5546,9 +5540,9 @@ window.em.löscheProjekt_2 = function() {
 				// Keine Projektliste mehr. Storage löschen
 				window.em.leereStorageProjektListe("mitLatLngListe");
 			}
-			// Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
+			// Projektedit zurücksetzen
 			window.em.leereStorageProjektEdit("mitLatLngListe");
-			//$.mobile.navigate('hProjektListe.html');
+			console.log("jetzt hProjektListe anzeigen");
 			$.mobile.navigate("hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html", {reload: true});

@@ -22,6 +22,14 @@
 		});
 	</script>
 	<script src="vendor/couchapp/jquery.mobile.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+	<script src="vendor/couchapp/jquery.couch.js"></script>
+	<script src="vendor/couchapp/jquery.form.js"></script>
+	<script src="vendor/couchapp/evab.js"></script>
+	<script src="vendor/couchapp/sha1.js"></script>
+	<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="vendor/couchapp/markerclusterer.js"></script>
+  	<script src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
   	<div data-role="page" id="FeldListePage">
@@ -47,16 +55,6 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
-		
-		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-		<script src="vendor/couchapp/jquery.couch.js"></script>
-		<script src="vendor/couchapp/jquery.form.js"></script>
-		<script src="vendor/couchapp/evab.js"></script>
-		<script src="vendor/couchapp/sha1.js"></script>
-		<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-		<script src="vendor/couchapp/markerclusterer.js"></script>
-	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
-		
 		<script charset="utf-8">
 			$("#FeldListePage").on("pageshow", window.em.handleFeldListePageshow);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleFeldListePageinit);

@@ -22,6 +22,14 @@
 		});
 	</script>
 	<script src="vendor/couchapp/jquery.mobile.js"></script>
+	<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
+	<script src="vendor/couchapp/jquery.couch.js"></script>
+	<script src="vendor/couchapp/jquery.form.js"></script>
+	<script src="vendor/couchapp/evab.js"></script>
+	<script src="vendor/couchapp/sha1.js"></script>
+	<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="vendor/couchapp/markerclusterer.js"></script>
+	<script src="vendor/couchapp/markerwithlabel.js"></script>
   </head>
   <body>
 	<div data-role="page" id="RaumEditPage">
@@ -95,16 +103,6 @@
 				<a href="#" id="hre_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b rechts5px" data-rel="back" data-transition="flow">Ja, löschen</a>
 			</div>
 		</div>
-
-		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
-		<script src="vendor/couchapp/jquery.couch.js"></script>
-		<script src="vendor/couchapp/jquery.form.js"></script>
-		<script src="vendor/couchapp/evab.js"></script>
-		<script src="vendor/couchapp/sha1.js"></script>
-		<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-		<script src="vendor/couchapp/markerclusterer.js"></script>
-	  	<script src="vendor/couchapp/markerwithlabel.js"></script>
-
 		<script charset="utf-8">
 			$("#RaumEditPage").on("pageshow", window.em.handleRaumEditPageshow);
 			$("#RaumEditPage").on("pageinit", window.em.handleRaumEditPageinit);

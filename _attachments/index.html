@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
+	<head>
   		<link rel="SHORTCUT ICON" href="favicon.ico">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,38 +22,6 @@
 			});
 		</script>
 		<script src="vendor/couchapp/jquery.mobile.js"></script>
-  </head>
-  <body>
-	<div data-role="page" id="indexPage">
-		<div data-role="header" data-backbtn="false" data-position="fixed" data-tap-toggle="false">
-			<h1>anmelden</h1>
-		</div>
-		<div data-role="content">
-			<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
-			<form id="indexForm" action="#" method="get" autocomplete="on">
-				<div data-role="fieldcontain">
-					<label for="Email">Email:</label>
-					<input id="Email" name="Email" type="text" autofocus required>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="Passwort">Passwort:</label>
-					<input id="Passwort" name="Passwort" type="password" required>
-				</div>
-			</form>
-			<p style="text-align: center">Sie sehen nur Ihre eigenen Beobachtungen. Darum brauchen Sie ein Konto.</p>
-			<p style="text-align: center">Diese App ist in Entwicklung. Vorläufig können Sie gerne mit Email "z@z.ch" und Passwort "z" anmelden und alles ausprobieren.<br>Ihre Daten werden aber ohne Warnung gelöscht!</p>
-			<p style="text-align: center">Ich freue mich über <a href="mailto:alex@gabriel-software.ch">Rückmeldungen</a></p>
-			<p style="text-align: center"><a href="https://github.com/barbalex/EvabMobile">mehr Infos hier</a></p>
-		</div>
-		<div data-role="footer" id="indexFooter" data-position="fixed" data-tap-toggle="false">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#" id="SubmitButton" data-icon="check">anmelden</a></li>
-					<li><a href="Signup.html" data-icon="plus">Konto erstellen</a></li>
-				</ul>
-			</div><!-- /navbar -->
-		</div><!-- /footer -->
-
 		<script src="vendor/couchapp/jquery.mobile.datebox.js"></script>
 		<script src="vendor/couchapp/jquery.couch.js"></script>
 		<script src="vendor/couchapp/jquery.form.js"></script>
@@ -62,102 +30,132 @@
 		<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
 		<script src="vendor/couchapp/markerclusterer.js"></script>
 		<script src="vendor/couchapp/markerwithlabel.js"></script>
-
-		<script charset="utf-8">
-			$("#indexPage").on("pageshow", function () {
-				// Wenn möglich localStorage.Email für die Anmeldung verwenden
-				// ausser User hat via Menü bewusst neu anmelden wollen
-				// localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
-				if (localStorage.length > 0) {
-					if (localStorage.Email) {
-						if (localStorage.UserStatus !== "neu") {
-							if (localStorage.Email && localStorage.Autor) {
-								window.em.oeffneZuletztBenutzteSeite();
-								return;
-							} else {
-								// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
-								window.em.stelleUserDatenBereit();
-								return;
+	</head>
+	<body>
+		<div data-role="page" id="indexPage">
+			<div data-role="header" data-backbtn="false" data-position="fixed" data-tap-toggle="false">
+				<h1>anmelden</h1>
+			</div>
+			<div data-role="content">
+				<p style="text-align: center"><b>EvAB</b> = <b>E</b>rfassung <b>v</b>on <b>A</b>rt-<b>B</b>eobachtungen</p>
+				<form id="indexForm" action="#" method="get" autocomplete="on">
+					<div data-role="fieldcontain">
+						<label for="Email">Email:</label>
+						<input id="Email" name="Email" type="text" autofocus required>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="Passwort">Passwort:</label>
+						<input id="Passwort" name="Passwort" type="password" required>
+					</div>
+				</form>
+				<p style="text-align: center">Sie sehen nur Ihre eigenen Beobachtungen. Darum brauchen Sie ein Konto.</p>
+				<p style="text-align: center">Diese App ist in Entwicklung. Vorläufig können Sie gerne mit Email "z@z.ch" und Passwort "z" anmelden und alles ausprobieren.<br>Ihre Daten werden aber ohne Warnung gelöscht!</p>
+				<p style="text-align: center">Ich freue mich über <a href="mailto:alex@gabriel-software.ch">Rückmeldungen</a></p>
+				<p style="text-align: center"><a href="https://github.com/barbalex/EvabMobile">mehr Infos hier</a></p>
+			</div>
+			<div data-role="footer" id="indexFooter" data-position="fixed" data-tap-toggle="false">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" id="SubmitButton" data-icon="check">anmelden</a></li>
+						<li><a href="Signup.html" data-icon="plus">Konto erstellen</a></li>
+					</ul>
+				</div><!-- /navbar -->
+			</div><!-- /footer -->
+			<script charset="utf-8">
+				$("#indexPage").on("pageshow", function () {
+					// Wenn möglich localStorage.Email für die Anmeldung verwenden
+					// ausser User hat via Menü bewusst neu anmelden wollen
+					// localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+					if (localStorage.length > 0) {
+						if (localStorage.Email) {
+							if (localStorage.UserStatus !== "neu") {
+								if (localStorage.Email && localStorage.Autor) {
+									window.em.oeffneZuletztBenutzteSeite();
+									return;
+								} else {
+									// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
+									window.em.stelleUserDatenBereit();
+									return;
+								}
 							}
 						}
 					}
-				}
-				// Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
-				window.em.leereAlleVariabeln();
-					
-				if (!("autofocus" in document.createElement("input"))) {
-					$("#Email").focus();
-				}
-			});
-
-			$(":jqmData(role='page')").on("pageinit", function () {
-
-				$("#indexFooter").on("click", "#SubmitButton", function (event) {
-					event.preventDefault();
-					meldeUserAn();
-				});
-
-				// Reaktion auf Enter-Taste
-				$("#indexForm").on("keydown", "#Passwort", function (event) {
-					if (event.keyCode === 13) {
-						meldeUserAn();
-						event.preventDefault();
+					// Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
+					window.em.leereAlleVariabeln();
+						
+					if (!("autofocus" in document.createElement("input"))) {
+						$("#Email").focus();
 					}
 				});
-			});
 
-			function validiereUserIndex() {
-				var Email, Passwort;
-				Email = $('input[name=Email]').val();
-				Passwort = $('input[name=Passwort]').val();
-				if (!Email) {
-					setTimeout(function () { 
-						$('#Email').focus(); 
-					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
-					window.em.melde("Bitte Benutzernamen eingeben");
-					return false;
-				} else if (!Passwort) {
-					setTimeout(function () { 
-						$('#Passwort').focus(); 
-					}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
-					window.em.melde("Bitte Passwort eingeben");
-					return false;
-				}
-				return true;
-			}
+				$(":jqmData(role='page')").on("pageinit", function () {
 
-			function meldeUserAn() {
-				var Email, Passwort;
-				// sicherstellen, dass die localStorage leer ist
-				window.em.leereAlleVariabeln();
-				Email = $('input[name=Email]').val();
-				Passwort = $('input[name=Passwort]').val();
-				if (validiereUserIndex) {
-					$.couch.login({
-						name : Email,
-						password : Passwort,
-						success : function (r) {
-							
-							// TODO: Abfangen, wenn Username leer ist. USER erstellen
-							if (r.name) {
-								localStorage.Email = r.name;
-							} else {
-								// login erfolgreich, aber keine Informationen zum User
-								// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
-								// also User anbieten
-								$.mobile.navigate("UserEdit.html");
-							}
-							// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
-							window.em.stelleUserDatenBereit();
-							delete localStorage.UserStatus;
-						},
-						error: function () {
-							window.em.melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+					$("#indexFooter").on("click", "#SubmitButton", function (event) {
+						event.preventDefault();
+						meldeUserAn();
+					});
+
+					// Reaktion auf Enter-Taste
+					$("#indexForm").on("keydown", "#Passwort", function (event) {
+						if (event.keyCode === 13) {
+							meldeUserAn();
+							event.preventDefault();
 						}
 					});
+				});
+
+				function validiereUserIndex() {
+					var Email, Passwort;
+					Email = $('input[name=Email]').val();
+					Passwort = $('input[name=Passwort]').val();
+					if (!Email) {
+						setTimeout(function () { 
+							$('#Email').focus(); 
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+						window.em.melde("Bitte Benutzernamen eingeben");
+						return false;
+					} else if (!Passwort) {
+						setTimeout(function () { 
+							$('#Passwort').focus(); 
+						}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+						window.em.melde("Bitte Passwort eingeben");
+						return false;
+					}
+					return true;
 				}
-			}
-	  </script>
-	</div>
-  </body>
+
+				function meldeUserAn() {
+					var Email, Passwort;
+					// sicherstellen, dass die localStorage leer ist
+					window.em.leereAlleVariabeln();
+					Email = $('input[name=Email]').val();
+					Passwort = $('input[name=Passwort]').val();
+					if (validiereUserIndex) {
+						$.couch.login({
+							name : Email,
+							password : Passwort,
+							success : function (r) {
+								
+								// TODO: Abfangen, wenn Username leer ist. USER erstellen
+								if (r.name) {
+									localStorage.Email = r.name;
+								} else {
+									// login erfolgreich, aber keine Informationen zum User
+									// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
+									// also User anbieten
+									$.mobile.navigate("UserEdit.html");
+								}
+								// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
+								window.em.stelleUserDatenBereit();
+								delete localStorage.UserStatus;
+							},
+							error: function () {
+								window.em.melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+							}
+						});
+					}
+				}
+		</script>
+		</div>
+	</body>
 </html>
