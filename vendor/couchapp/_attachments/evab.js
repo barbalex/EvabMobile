@@ -7401,6 +7401,20 @@ window.em.meldeUserAn = function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird

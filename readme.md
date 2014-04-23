@@ -100,7 +100,7 @@ _evab mobile_ richtet sich aber primär an Naturschutzprofis und ambitionierte A
 **Installieren:**
 
 - Direkt auf der [Web-Applikation](http://artbeobachtungen.ch) arbeiten
-- [Auf dem PC installieren](http://artbeobachtungen.ch/Installieren.html) und lokal arbeiten (Windows, Mac OsX, Linux).<br>Vorteile: schneller, eigene Kontrolle über die Daten
+- Auf dem PC installieren und lokal arbeiten (Windows, Mac OsX, Linux).<br>Vorteile: schneller, eigene Kontrolle über die Daten (Anleitung pendent)
 
 **Beobachtungen erfassen...**
 
