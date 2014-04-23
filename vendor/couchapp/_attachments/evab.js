@@ -978,7 +978,7 @@ window.em.initiiereFeldEdit_2 = function() {
 // erstellt das Selectmenu, um die Reihenfolge-Position des Felds zu bestimmen
 window.em.erstelleSelectFeldFolgtNach = function() {
 	// Nur bei eigenen Feldern anzeigen
-	if (Feld.User !== "ZentrenBdKt") {
+	if (window.em.Feld.User !== "ZentrenBdKt") {
 		if (window.em.Feldliste) {
 			// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 			window.em.erstelleSelectFeldFolgtNach_2();
@@ -1224,30 +1224,31 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			}
 		}
 		DsBulkListe.docs = Docs;
+		console.log("jetzt dann");
 		// Objektliste in DB speichern
 		$.ajax({
 			type: "POST",
 			url: "../../_bulk_docs",
 			contentType: "application/json",
-			data: JSON.stringify(DsBulkListe),
-			success: function(data) {
-				var z,
-					k;
-				// _rev in den Objekten in Objektliste aktualisieren
-				// für alle zurückgegebenen aktualisierten Zeilen
-				// offenbar muss data zuerst geparst werden ??!!
-				data = JSON.parse(data);
-				for (z in data) {
-					if (typeof z !== "function") {
-						// das zugehörige Objekt in der Objektliste suchen
-						for (k in window.em[ObjektlistenName].rows) {
-							row = window.em[ObjektlistenName].rows[k].doc;
-							if (typeof k !== "function") {
-								// und dessen rev aktualisieren
-								if (row._id === data[z].id) {
-									row._rev = data[z].rev;
-									break;
-								}
+			data: JSON.stringify(DsBulkListe)
+		}).done(function(data) {
+			console.log("juhui");
+			var z,
+				k;
+			// _rev in den Objekten in Objektliste aktualisieren
+			// für alle zurückgegebenen aktualisierten Zeilen
+			// offenbar muss data zuerst geparst werden ??!!
+			data = JSON.parse(data);
+			for (z in data) {
+				if (typeof z !== "function") {
+					// das zugehörige Objekt in der Objektliste suchen
+					for (k in window.em[ObjektlistenName].rows) {
+						row = window.em[ObjektlistenName].rows[k].doc;
+						if (typeof k !== "function") {
+							// und dessen rev aktualisieren
+							if (row._id === data[z].id) {
+								row._rev = data[z].rev;
+								break;
 							}
 						}
 					}
@@ -4013,14 +4014,14 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 	localStorage.FeldWert = this.value;
 	if (this.name) {
 		localStorage.FeldName = this.name;
-		localStorage.AlterFeldWert = Feld[this.name];
+		localStorage.AlterFeldWert = window.em.Feld[this.name];
 	} else {
 		localStorage.FeldName = this.id;
-		localStorage.AlterFeldWert = Feld[this.id];
+		localStorage.AlterFeldWert = window.em.Feld[this.id];
 	}
 	// Felder der Datenzentren dürfen nicht verändert werden
 	// ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
-	if (Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen')) {
+	if (window.em.Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen')) {
 		// Feldwert zurücksetzen	
 		if (localStorage.AlterFeldWert) {
 			$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
@@ -4084,13 +4085,13 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			window.em.pruefeFeldNamen();
 		}
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
-		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
+		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + window.em.Feld.FeldBeschriftung);
 		window.em.leereStorageFeldListe();
 		window.em.speichereFeldeigenschaften();
 		// Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 		window.em.ArtGruppeAufbauenFeldEdit();
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
-		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + Feld.FeldBeschriftung);
+		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + window.em.Feld.FeldBeschriftung);
 		if (window.em.Feld.Hierarchiestufe === "Art") {
 			// Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 			$("#Artgruppenliste").empty();
@@ -4099,7 +4100,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		window.em.speichereFeldeigenschaften();
 	} else {
 		if (localStorage.FeldName === "FeldBeschriftung") {
-			$(".FeldEditHeaderTitel").text(Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
+			$(".FeldEditHeaderTitel").text(window.em.Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
 		}
 		window.em.speichereFeldeigenschaften();
 	}
@@ -4122,9 +4123,9 @@ window.em.handleFeldEditStandardwertChange = function() {
 	if (Optionen.length > 0) {
 		// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 		LetzterFeldwert = [];
-		if (Feld.Standardwert) {
-			if (Feld.Standardwert[localStorage.Email]) {
-				LetzterFeldwert = Feld.Standardwert[localStorage.Email];
+		if (window.em.Feld.Standardwert) {
+			if (window.em.Feld.Standardwert[localStorage.Email]) {
+				LetzterFeldwert = window.em.Feld.Standardwert[localStorage.Email];
 			}
 		}
 		// Standardwert in Array verwandeln
@@ -4133,7 +4134,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 			// Fehler verhindern, falls Feldwert undefined ist
 			StandardwertOptionen = Feldwert.split(",");
 		}
-		if (["multipleselect", "checkbox"].indexOf(Feld.Formularelement) > -1) {
+		if (["multipleselect", "checkbox"].indexOf(window.em.Feld.Formularelement) > -1) {
 			// alle StandardwertOptionen müssen Optionen sein
 			for (i in StandardwertOptionen) {
 				if (typeof i !== "function") {
@@ -4147,7 +4148,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 			}
 			// alle Werte sind Optionen
 			window.em.speichereStandardwert();
-		} else if (["toggleswitch", "selectmenu", "radio"].indexOf(Feld.Formularelement) > -1) {
+		} else if (["toggleswitch", "selectmenu", "radio"].indexOf(window.em.Feld.Formularelement) > -1) {
 			// Array darf nur ein Element enthalten
 			if (StandardwertOptionen.length > 1) {
 				// Array enthält mehrere Optionen, nicht zulässig
@@ -4182,7 +4183,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 // wenn in FeldEdit.htm #LoescheFeldFeldEdit geklickt wird
 // Beim Löschen rückfragen
 window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
-	if (Feld.User === "ZentrenBdKt") {
+	if (window.em.Feld.User === "ZentrenBdKt") {
 		window.em.melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 	} else {
 		$("#fe_löschen_meldung").popup("open");
@@ -4191,7 +4192,7 @@ window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
 
 // wenn in FeldEdit.htm #fe_löschen_meldung_ja_loeschen geklickt wird
 window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
-	if (!Feld.FeldName) {
+	if (!window.em.Feld.FeldName) {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 		window.em.loescheFeld();
 	} else {
@@ -4207,7 +4208,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 				for (i in data.rows) {
 					if (typeof i !== "function") {
 						Datensatz = data.rows[i].doc;
-						TempFeld = Datensatz[Feld.FeldName];
+						TempFeld = Datensatz[window.em.Feld.FeldName];
 						if (TempFeld) {
 							anzVorkommen += 1;
 						}
@@ -8177,7 +8178,6 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 	}
 };
 
-
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
@@ -8446,7 +8446,7 @@ window.em.loescheFeld = function() {
 	} else {
 		// Feld aus DB holen
 		$db = $.couch.db("evab");
-		$db.openDoc(Feld._id, {
+		$db.openDoc(window.em.Feld._id, {
 			success: function(data) {
 				window.em.Feld = data;
 				window.em.loescheFeld_2();
@@ -8657,8 +8657,7 @@ window.em.speichereStandardwert = function() {
 };
 
 window.em.speichereStandardwert_2 = function() {
-	var Feldwert;
-	Feldwert = $("#Standardwert").val();
+	var Feldwert = $("#Standardwert").val();
 	// Standardwert managen
 	// Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
 	// darum manuell für diesen User updaten
@@ -8756,7 +8755,7 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	// Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
 	if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
 		delete Formularfelder.InputTyp;
-		$("#" + Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
+		$("#" + window.em.Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
 	}
 	// Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
 	if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
