@@ -7960,6 +7960,94 @@ window.em.clearInfoWindows = function() {
 	}
 };
 
+window.em.handleSignupPageshow = function() {
+	// sicherstellen, dass nichts vom letzten User übrig bleibt
+	window.em.leereAlleVariabeln();
+	// Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
+	localStorage.Datenverwendung = "JaAber";
+};
+
+window.em.handleSignupPageinit = function() {
+	$("#SignupFooter").on("click", "#SubmitButton", function (event) {
+		event.preventDefault();
+		window.em.handleSignupSubmitButtonClick();
+	});
+
+	$("#SignupForm").on("change", "[name='Datenverwendung']", function () {
+		localStorage.Datenverwendung = $(this).attr("id");
+	});
+};
+
+window.em.handleSignupSubmitButtonClick = function() {
+	if (window.em.validiereUserSignup()) {
+		window.em.erstelleKonto();
+	}
+};
+
+// kontrollierren, ob die erforderlichen Felder etwas enthalten
+// wenn ja wird true retourniert, sonst false
+window.em.validiereUserSignup = function() {
+	var Email, Passwort, Passwort2, Autor;
+	Email = $("#su_Email").val();
+	Passwort = $("#su_Passwort").val();
+	Passwort2 = $("#Passwort2").val();
+	Autor = $("#Autor").val();
+	if (!Email) {
+		window.em.melde("Bitte Email eingeben");
+		setTimeout(function() {
+			$("#su_Email").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	} else if (!window.em.validateEmail(Email)) {
+		window.em.melde("Bitte gültige Email-Adresse eingeben");
+		setTimeout(function() {
+			$("#su_Email").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	} else if (!Passwort) {
+		window.em.melde("Bitte Passwort eingeben");
+		setTimeout(function() {
+			$("#su_Passwort").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	} else if (!Passwort2) {
+		window.em.melde("Bitte Passwort bestätigen");
+		setTimeout(function() {
+			$("#Passwort2").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	} else if (Passwort !== Passwort2) {
+		window.em.melde("Passwort ist falsch bestätigt");
+		setTimeout(function() {
+			$("#Passwort2").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	} else if (!Autor) {
+		window.em.melde("Bitte Autor eingeben");
+		setTimeout(function() {
+			$("#Autor").focus();
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		return false;
+	}
+	return true;
+};
+
+window.em.erstelleKonto = function() {
+	// User in _user eintragen
+	$.couch.signup({
+			name: $('#su_Email').val()
+		}, $('#su_Passwort').val(), {
+		success : function (r) {
+			localStorage.Email = r.name;
+			// Informationen zum User in doc vom typ User eintragen
+			window.em.speichereUserInEvab();
+		},
+		error : function () {
+			window.em.melde("Fehler: Das Konto wurde nicht erstellt");
+		}
+	});
+};
+
 
 
 
