@@ -3657,7 +3657,7 @@ window.em.handleBeobEditPageinit = function() {
 
 	$('#MenuBeobEdit').on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick);
 
-	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleBeobEditMenuNeuAnmeldenClick);
+	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -3795,12 +3795,6 @@ window.em.handleBeobEditMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn in BeobEdit.html .menu_neu_anmelden geklickt wird
-window.em.handleBeobEditMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
-};
-
 // wenn BeobListe.html erscheint
 window.em.handleBeobListePageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -3852,7 +3846,7 @@ window.em.handleBeobListePageinit = function() {
 
 	$('#MenuBeobListe').on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick);
 
-	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.handleBeobListeMenuNeuAnmeldenClick);
+	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
@@ -3902,12 +3896,6 @@ window.em.handleBeobListeMenuBeobExportierenClick = function() {
 window.em.handleBeobListeMenuEinstellungenClick = function() {
 	localStorage.zurueck = "BeobListe.html";
 	window.em.öffneMeineEinstellungen();
-};
-
-// wenn in BeobListe.html .menu_neu_anmelden geklickt wird
-window.em.handleBeobListeMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
 };
 
 // wenn FeldEdit.html erscheint
@@ -4557,7 +4545,7 @@ window.em.handleHArtEditPageinit = function() {
 
 	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.handleHArtEditMenuNeuAnmeldenClick);
+	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 // wenn hArtListe.html erscheint
@@ -6007,12 +5995,6 @@ window.em.handleHArtEditMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn in hArtEdit.html .menu_neu_anmelden geklickt wird
-window.em.handleHArtEditMenuNeuAnmeldenClick = function() {
-	localStorage.UserStatus = "neu";
-	$.mobile.navigate("index.html");
-};
-
 // wenn hProjektListe erscheint
 window.em.handleHProjektListePageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -6184,8 +6166,7 @@ window.em.handleRaumEditPageinit = function() {
 	// Link zu Projekt in Navbar und Titelleiste
 	$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function (event) {
 		event.preventDefault();
-		window.em.leereStorageRaumListe("mitLatLngListe");
-		$.mobile.navigate("hProjektEdit.html");
+		window.em.handleRaumEditProjektOeffnenClick();
 	});
 
 	// inaktive tabs inaktivieren
@@ -6209,23 +6190,12 @@ window.em.handleRaumEditPageinit = function() {
 	// sichtbare Felder wählen
 	$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function (event) {
 		event.preventDefault();
-		localStorage.AufrufendeSeiteFW = "hRaumEdit";
-		$.mobile.navigate("FelderWaehlen.html");
+		window.em.handleRaumEditWaehleFelderClick();
 	});
 
-	$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", function () {
-		if (!$("*:focus").attr("aria-valuenow")) {
-			// kein slider
-			window.em.nächsterVorigerRaum("nächster");
-		}
-	});
+	$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", window.em.handleRaumEditContentSwipreleft);
 
-	$("#RaumEditPage").on("swiperight", "#hRaumEditContent", function () {
-		if (!$("*:focus").attr("aria-valuenow")) {
-			// kein slider
-			window.em.nächsterVorigerRaum("voriger");
-		}
-	});
+	$("#RaumEditPage").on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
 	$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function (event) {
@@ -6258,8 +6228,7 @@ window.em.handleRaumEditPageinit = function() {
 
 	$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function (event) {
 		event.preventDefault();
-		localStorage.zurueck = "hRaumEdit";
-		$.mobile.navigate("Karte.html");
+		window.em.handleRaumEditOeffneKarteClick();
 	});
 
 	$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function (event) {
@@ -6269,22 +6238,13 @@ window.em.handleRaumEditPageinit = function() {
 
 	$('#MenuRaumEdit').on('click', '.menu_einfacher_modus', window.em.handleRaumEditMenuEinfacherModusClick);
 
-	$('#MenuRaumEdit').on('click', '.menu_felder_verwalten', function() {
-		localStorage.zurueck = "hRaumEdit.html";
-		$.mobile.navigate("FeldListe.html");
-	});
+	$('#MenuRaumEdit').on('click', '.menu_felder_verwalten', window.em.handleRaumEditMenuFelderVerwaltenClick);
 
 	$('#MenuRaumEdit').on('click', '.menu_raeume_exportieren', window.em.handleRaumEditMenuExportierenClick);
 
-	$('#MenuRaumEdit').on('click', '.menu_einstellungen', function() {
-		localStorage.zurueck = "hRaumEdit.html";
-		window.em.öffneMeineEinstellungen();
-	});
+	$('#MenuRaumEdit').on('click', '.menu_einstellungen', window.em.handleRaumEditMenuEinstellungenClick);
 
-	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', function() {
-		localStorage.UserStatus = "neu";
-		$.mobile.navigate("index.html");
-	});
+	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
 
 window.em.handleRaumEditSpeichernAnhangChange = function() {
@@ -6330,11 +6290,45 @@ window.em.handleRaumEditLoescheRaumClick = function() {
 	});
 };
 
+window.em.handleRaumEditProjektOeffnenClick = function() {
+	window.em.leereStorageRaumListe("mitLatLngListe");
+	$.mobile.navigate("hProjektEdit.html");
+};
+
+window.em.handleRaumEditWaehleFelderClick = function() {
+	localStorage.AufrufendeSeiteFW = "hRaumEdit";
+	$.mobile.navigate("FelderWaehlen.html");
+};
+
+window.em.handleRaumEditContentSwipreleft = function() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		window.em.nächsterVorigerRaum("nächster");
+	}
+};
+
+window.em.handleRaumEditContentSwiperight = function() {
+	if (!$("*:focus").attr("aria-valuenow")) {
+		// kein slider
+		window.em.nächsterVorigerRaum("voriger");
+	}
+};
+
+window.em.handleRaumEditOeffneKarteClick = function() {
+	localStorage.zurueck = "hRaumEdit";
+	$.mobile.navigate("Karte.html");
+};
+
 window.em.handleRaumEditMenuEinfacherModusClick = function() {
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleRaumEditMenuFelderVerwaltenClick = function() {
+	localStorage.zurueck = "hRaumEdit.html";
+	$.mobile.navigate("FeldListe.html");
 };
 
 window.em.handleRaumEditMenuExportierenClick = function() {
@@ -6343,6 +6337,11 @@ window.em.handleRaumEditMenuExportierenClick = function() {
 	$("#MenuRaumEdit").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
 	$("#MenuRaumEdit").popup("close");
+};
+
+window.em.handleRaumEditMenuEinstellungenClick = function() {
+	localStorage.zurueck = "hRaumEdit.html";
+	window.em.öffneMeineEinstellungen();
 };
 
 window.em.löscheRaum = function(Arten, Zeiten, Orte) {
@@ -7995,6 +7994,10 @@ window.em.speichereBeob_2 = function(that) {
 			console.log('fehler in function speichereBeob_2(that)');
 		}
 	});
+};
+
+window.em.meldeNeuAn = function() {
+	
 };
 
 
