@@ -6591,8 +6591,7 @@ window.em.handleHRaumListePageinit = function() {
 	// Link zu Projekt in Navbar und Titelleiste
 	$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function (event) {
 		event.preventDefault();
-		window.em.leereStorageRaumListe();
-		$.mobile.navigate("hProjektEdit.html");
+		window.em.handleRaumListeOeffneProjektEditClick();
 	});
 
 	// neuen Raum erstellen
@@ -6601,54 +6600,77 @@ window.em.handleHRaumListePageinit = function() {
 		window.em.erstelleNeuenRaum();
 	});
 
-	$("#RaumlistehRL").on("swipeleft", ".Raum", function () {
-		localStorage.RaumId = $(this).attr('RaumId');
-		$.mobile.navigate("hOrtListe.html");
-	});
+	$("#RaumlistehRL").on("swipeleft", ".Raum", window.em.handleRaumListeSwipeleft);
 
 	$("#RaumlistehRL").on("click", ".Raum", function (event) {
 		event.preventDefault();
-		localStorage.RaumId = $(this).attr('RaumId');
-		$.mobile.navigate("hRaumEdit.html");
+		window.em.handleRaumListeRaumClick(this);
 	});
 
 	$("#RaumlistehRL").on("swipeleft", ".erste", window.em.erstelleNeuenRaum);
 
-	$("#RaumListePage").on("swiperight", '#hRaumListePageContent', function () {
-		window.em.leereStorageRaumListe();
-		$.mobile.navigate("hProjektListe.html");
-	});
+	$("#RaumListePage").on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
 
 	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function (event) {
 		event.preventDefault();
-		localStorage.zurueck = "hRaumListe";
-		$.mobile.navigate("Karte.html");
+		window.em.handleRaumListeOeffneKarteClick();
 	});
 
 	$('#MenuRaumListe').on('click', '.menu_einfacher_modus', window.em.handleHRaumListeMenuEinfacherModusClick);
 
-	$('#MenuRaumListe').on('click', '.menu_felder_verwalten', function() {
-		localStorage.zurueck = "hRaumListe.html";
-		$.mobile.navigate("FeldListe.html");
-	});
+	$('#MenuRaumListe').on('click', '.menu_felder_verwalten', window.em.handleRaumListeMenuFelderVerwaltenClick);
 
 	$('#MenuRaumListe').on('click', '.menu_raeume_exportieren', window.em.handleHRaumListeMenuExportierenClick);
 
-	$('#MenuRaumListe').on('click', '.menu_einstellungen', function() {
-		localStorage.zurueck = "hRaumListe.html";
-		window.em.öffneMeineEinstellungen();
-	});
+	$('#MenuRaumListe').on('click', '.menu_einstellungen', window.em.handleRaumListeMenuEinstellungenClick);
 
-	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', function() {
-		localStorage.UserStatus = "neu";
-		$.mobile.navigate("index.html");
-	});
+	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.handleRaumListeMenuNeuAnmeldenClick);
+};
+
+window.em.handleRaumListeOeffneProjektEditClick = function() {
+	window.em.leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
+};
+
+window.em.handleRaumListeSwipeleft = function() {
+	localStorage.RaumId = $(this).attr('RaumId');
+	$.mobile.navigate("hOrtListe.html");
+};
+
+window.em.handleRaumListeRaumClick = function(that) {
+	localStorage.RaumId = $(that).attr('RaumId');
+	$.mobile.navigate("hRaumEdit.html");
+};
+
+window.em.handleRaumListeContentSwiperight = function() {
+	window.em.leereStorageRaumListe();
+	$.mobile.navigate("hProjektListe.html");
+};
+
+window.em.handleRaumListeOeffneKarteClick = function() {
+	localStorage.zurueck = "hRaumListe";
+	$.mobile.navigate("Karte.html");
 };
 
 window.em.handleHRaumListeMenuEinfacherModusClick = function() {
 	window.em.leereStorageRaumListe();
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
+};
+
+window.em.handleRaumListeMenuFelderVerwaltenClick = function() {
+	localStorage.zurueck = "hRaumListe.html";
+	$.mobile.navigate("FeldListe.html");
+};
+
+window.em.handleRaumListeMenuEinstellungenClick = function() {
+	localStorage.zurueck = "hRaumListe.html";
+	window.em.öffneMeineEinstellungen();
+};
+
+window.em.handleRaumListeMenuNeuAnmeldenClick = function() {
+	localStorage.UserStatus = "neu";
+	$.mobile.navigate("index.html");
 };
 
 window.em.handleHRaumListeMenuExportierenClick = function() {
