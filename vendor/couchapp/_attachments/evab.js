@@ -542,8 +542,7 @@ window.em.initiiereBeobEdit_3 = function() {
 // und aktualisiert die Links für pagination
 // Mitgeben: id der Beobachtung, Username
 window.em.erstelleDynamischeFelderBeobEdit = function() {
-	var HtmlContainer, Formularwerte;
-	HtmlContainer = window.em.generiereHtmlFuerBeobEditForm();
+	var HtmlContainer = window.em.generiereHtmlFuerBeobEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -578,12 +577,14 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 // erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerBeobEditForm = function() {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMaximum, SliderMinimum, ListItem, HtmlContainer, Status, ArtGruppe;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
-	Status = localStorage.Status;
-	ArtGruppe = window.em.Beobachtung.aArtGruppe;
+	var Feld = {},
+		i,
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "",
+		Status = localStorage.Status,
+		ArtGruppe = window.em.Beobachtung.aArtGruppe;
 	for (i in window.em.FeldlisteBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteBeobEdit.rows[i].doc;
@@ -603,7 +604,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 				}
 			}
 		}
@@ -647,9 +648,11 @@ window.em.initiiereBeobliste = function() {
 };
 
 window.em.initiiereBeobliste_2 = function() {
-	var anzBeob, beob, ListItemContainer, Titel2;
-	anzBeob = window.em.BeobListe.rows.length;
-	ListItemContainer = "";
+	var anzBeob = window.em.BeobListe.rows.length,
+		beob,
+		key,
+		ListItemContainer = "",
+		Titel2;
 
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	Titel2 = " Beobachtungen";
@@ -706,8 +709,7 @@ window.em.loescheAnhang = function(that, Objekt, id) {
 };
 
 window.em.loescheAnhang_2 = function(that, Objekt) {
-	var Dateiname;
-	Dateiname = that.id;
+	var Dateiname = that.id;
 	// Anhang aus Objekt entfernen
 	delete window.em[Objekt.Typ]._attachments[Dateiname];
 	// Objekt in DB speichern
@@ -812,8 +814,7 @@ window.em.initiiereProjektEdit_2 = function() {
 };
 
 window.em.initiiereProjektEdit_3 = function() {
-	var HtmlContainer, Formularwerte;
-	HtmlContainer = window.em.generiereHtmlFuerProjektEditForm();
+	var HtmlContainer = window.em.generiereHtmlFuerProjektEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -827,11 +828,13 @@ window.em.initiiereProjektEdit_3 = function() {
 // erwartet Feldliste als Objekt; Projekt als Objekt
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerProjektEditForm = function() {
-	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
-	for (var i in window.em.FeldlisteProjekt.rows) {
+	var i,
+		Feld = {},
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "";
+	for (i in window.em.FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteProjekt.rows[i].doc;
 			FeldName = Feld.FeldName;
@@ -847,7 +850,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 			}
 		}
 	}
@@ -889,10 +892,9 @@ window.em.initiiereFeldEdit = function() {
 };
 
 window.em.initiiereFeldEdit_2 = function() {
-	var SichtbarImModusHierarchisch, SichtbarImModusEinfach, Standardwert;
-	// korrekte Werte in Felder SichtbarImModusEinfach und -Hierarchisch setzen
-	SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch;
-	SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach;
+	var SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch,
+		SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach,
+		Standardwert;
 	// Vorsicht: Bei neuen Feldern gibt es window.em.Feld.SichtbarImModusHierarchisch noch nicht
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
@@ -995,8 +997,9 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 };
 
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
-	var i, TempFeld, Optionen;
-	Optionen = [];
+	var i,
+		TempFeld,
+		Optionen = [];
 	Optionen.push("");
 	for (i in window.em.Feldliste.rows) {
 		if (typeof i !== "function") {
@@ -1038,9 +1041,11 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 };
 
 window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
-	var i, ArtGruppe, ListItemContainer, listItem, ArtGruppenArray;
-	ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>";
-	ArtGruppenArray = ArtGruppenArrayIn || [];
+	var i,
+		ArtGruppe,
+		ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>",
+		listItem,
+		ArtGruppenArray = ArtGruppenArrayIn || [];
 	for (i in Artgruppen.rows) {
 		if (typeof i !== "function") {
 			ArtGruppe = Artgruppen.rows[i].key;
@@ -1082,9 +1087,14 @@ window.em.initiiereFeldliste = function() {
 };
 
 window.em.initiiereFeldliste_2 = function() {
-	var i, TempFeld, anzFelder, ImageLink, externalPage, ListItemContainer, Hierarchiestufe, FeldBeschriftung, FeldBeschreibung;
-	ListItemContainer = "";
-	anzFelder = 0;
+	var i,
+		TempFeld,
+		anzFelder = 0,
+		ImageLink,
+		ListItemContainer = "",
+		Hierarchiestufe,
+		FeldBeschriftung,
+		FeldBeschreibung;
 	for (i in window.em.Feldliste.rows) {
 		if (typeof i !== "function") {
 			TempFeld = window.em.Feldliste.rows[i].doc;
@@ -1151,8 +1161,7 @@ window.em.speichereKoordinaten = function(id, ObjektName) {
 // aktualisiert darin die Felder, welche in FelderArray aufgelistet sind
 // Variablen müssen in Objekt und localStorage denselben Namen verwenden
 window.em.speichereKoordinaten_2 = function(id, ObjektName) {
-	var FelderArray;
-	FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
+	var FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 	window.em.speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, "FormularAktualisieren");
 	// nun die Koordinaten in den Zeiten und Arten dieses Objekts aktualisieren
 	window.em.speichereFelderAusLocalStorageInObjektliste("ZeitenVonOrt", FelderArray, "hOrtId", id, "hZeitIdVonOrt");
@@ -1184,30 +1193,32 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 
 window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
 	// in allen Objekten in der Objektliste
-	var DsBulkListe, Docs, row;
+	var i,
+		y,
+		DsBulkListe = {},
+		Docs = [],
+		row;
 	// nur machen, wenn rows vorhanden!
 	if (window.em[ObjektlistenName].rows.length > 0) {
-		DsBulkListe = {};
-		Docs = [];
-		for (var i in window.em[ObjektlistenName].rows) {
+		for (i in window.em[ObjektlistenName].rows) {
 			row = window.em[ObjektlistenName].rows[i].doc;
 			if (typeof i !== "function") {
 				// Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
 				if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
 					// im Objekt alle in FelderArray aufgelisteten Felder suchen
-					for (i in FelderArray) {
-						if (typeof i !== "function") {
+					for (y in FelderArray) {
+						if (typeof y !== "function") {
 							// und ihre Werte aktualisieren
-							if (localStorage[FelderArray[i]]) {
-								if (window.em.myTypeOf(localStorage[FelderArray[i]]) === "integer") {
-									row[FelderArray[i]] = parseInt(localStorage[FelderArray[i]], 10);
-								} else if (window.em.myTypeOf(localStorage[FelderArray[i]]) === "float") {
-									row[FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
+							if (localStorage[FelderArray[y]]) {
+								if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "integer") {
+									row[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
+								} else if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "float") {
+									row[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
 								} else {
-									row[FelderArray[i]] = localStorage[FelderArray[i]];
+									row[FelderArray[y]] = localStorage[FelderArray[y]];
 								}
 							} else {
-								delete row[FelderArray[i]];
+								delete row[FelderArray[y]];
 							}
 						}
 					}
@@ -1227,15 +1238,15 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 				// für alle zurückgegebenen aktualisierten Zeilen
 				// offenbar muss data zuerst geparst werden ??!!
 				data = JSON.parse(data);
-				for (var y in data) {
-					if (typeof y !== "function") {
+				for (var z in data) {
+					if (typeof z !== "function") {
 						// das zugehörige Objekt in der Objektliste suchen
 						for (var i in window.em[ObjektlistenName].rows) {
 							row = window.em[ObjektlistenName].rows[i].doc;
 							if (typeof i !== "function") {
 								// und dessen rev aktualisieren
-								if (row._id === data[y].id) {
-									row._rev = data[y].rev;
+								if (row._id === data[z].id) {
+									row._rev = data[z].rev;
 									break;
 								}
 							}
@@ -1319,11 +1330,12 @@ window.em.myTypeOf = function(Wert) {
 // und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
 // NICHT IM GEBRAUCH
 window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, DatensatzlisteName) {
-	var DsBulkListe, Docs, row;
+	var i,
+		DsBulkListe = {},
+		Docs = [],
+		row;
 	// nur machen, wenn Datensätze da sind
-	DsBulkListe = {};
-	Docs = [];
-	for (var i in DatensatzlisteName.rows) {
+	for (i in DatensatzlisteName.rows) {
 		row = DatensatzlisteName.rows[i].doc;
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
@@ -1352,10 +1364,12 @@ window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, Datensatz
 // Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
 // Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
 window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
-	var ObjektMitDeleteListe, Docs, Datensatz, rowkey;
-	ObjektMitDeleteListe = {};
-	Docs = [];
-	for (var i in Datensatzobjekt.rows) {
+	var i,
+		ObjektMitDeleteListe = {},
+		Docs = [],
+		Datensatz,
+		rowkey;
+	for (i in Datensatzobjekt.rows) {
 		if (typeof i !== "function") {
 			// unsere Daten sind im key
 			rowkey = Datensatzobjekt.rows[i].key;
@@ -1394,9 +1408,14 @@ window.em.initiiereProjektliste = function() {
 };
 
 window.em.initiiereProjektliste_2 = function() {
-	var i, anzProj, Proj, externalPage, listItem, ListItemContainer, Titel2;
-	ListItemContainer = "";
-	anzProj = window.em.Projektliste.rows.length;
+	var i,
+		anzProj = window.em.Projektliste.rows.length,
+		Proj,
+		key,
+		pName,
+		listItem,
+		ListItemContainer = "",
+		Titel2;
 
 	// Im Titel der Seite die Anzahl Projekte anzeigen
 	Titel2 = " Projekte";
@@ -1480,8 +1499,7 @@ window.em.initiiereRaumEdit_2 = function() {
 };
 
 window.em.initiiereRaumEdit_3 = function() {
-	var HtmlContainer, Formularwerte;
-	HtmlContainer = window.em.generiereHtmlFuerRaumEditForm();
+	var HtmlContainer = window.em.generiereHtmlFuerRaumEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1495,10 +1513,12 @@ window.em.initiiereRaumEdit_3 = function() {
 // erwartet Feldliste als Objekt; window.em.hRaum als Objekt
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerRaumEditForm = function() {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
+	var Feld = {},
+		i,
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "";
 	for (i in window.em.FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteRaumEdit.rows[i].doc;
@@ -1515,7 +1535,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 			}
 		}
 	}
@@ -1557,9 +1577,14 @@ window.em.initiiereRaumListe = function() {
 };
 
 window.em.initiiereRaumListe_2 = function() {
-	var i, anzRaum, Raum, externalPage, listItem, ListItemContainer, Titel2;
-	anzRaum = window.em.RaumListe.rows.length;
-	ListItemContainer = "";
+	var i,
+		anzRaum = window.em.RaumListe.rows.length,
+		Raum,
+		key,
+		rName,
+		listItem,
+		ListItemContainer = "",
+		Titel2;
 
 	// Im Titel der Seite die Anzahl Räume anzeigen
 	Titel2 = " Räume";
@@ -1650,8 +1675,7 @@ window.em.initiiereOrtEdit_2 = function() {
 };
 
 window.em.initiiereOrtEdit_3 = function() {
-	var HtmlContainer, Formularwerte;
-	HtmlContainer = window.em.generiereHtmlFuerOrtEditForm();
+	var HtmlContainer = window.em.generiereHtmlFuerOrtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -1660,18 +1684,19 @@ window.em.initiiereOrtEdit_3 = function() {
 
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
-
 };
 
 // generiert das Html für das Formular in hOrtEdit.html
 // erwartet Feldliste als Objekt (aus der globalen Variable); window.em.hOrt als Objekt
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerOrtEditForm = function() {
-	var Feld, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
-	for (var i in window.em.FeldlisteOrtEdit.rows) {
+	var i,
+		Feld = {},
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "";
+	for (i in window.em.FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteOrtEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
@@ -1687,7 +1712,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 			}
 		}
 	}
@@ -1732,9 +1757,13 @@ window.em.initiiereOrtListe = function() {
 };
 
 window.em.initiiereOrtListe_2 = function() {
-	var i, anzOrt, Ort, externalPage, listItem, ListItemContainer, Titel2;
-	anzOrt = window.em.OrtListe.rows.length;
-	ListItemContainer = "";
+	var i,
+		anzOrt = window.em.OrtListe.rows.length,
+		Ort,
+		key,
+		listItem,
+		ListItemContainer = "",
+		Titel2;
 
 	// Im Titel der Seite die Anzahl Orte anzeigen
 	Titel2 = " Orte";
@@ -1846,9 +1875,14 @@ window.em.initiiereZeitListe = function() {
 };
 
 window.em.initiiereZeitListe_2 = function() {
-	var i, anzZeit, Zeit, externalPage, listItem, ListItemContainer, Titel2, zZeitDatum;
-	anzZeit = window.em.ZeitListe.rows.length;
-	ListItemContainer = "";
+	var i,
+		anzZeit = window.em.ZeitListe.rows.length,
+		Zeit,
+		key,
+		listItem,
+		ListItemContainer = "",
+		Titel2,
+		zZeitDatum;
 
 	// Im Titel der Seite die Anzahl Zeiten anzeigen
 	Titel2 = " Zeiten";
@@ -1879,10 +1913,12 @@ window.em.initiiereZeitListe_2 = function() {
 // erwartet Feldliste als Objekt; Zeit als Objekt
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerZeitEditForm = function() {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
+	var Feld = {},
+		i,
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "";
 	for (i in window.em.FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteZeitEdit.rows[i].doc;
@@ -1898,7 +1934,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 			}
 			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
@@ -1993,8 +2029,7 @@ window.em.initiierehBeobEdit_2 = function() {
 // generiert dynamisch die Artgruppen-abhängigen Felder
 // Mitgeben: Feldliste, Beobachtung
 window.em.erstelleDynamischeFelderhArtEdit = function() {
-	var HtmlContainer, Formularwerte;
-	HtmlContainer = window.em.generiereHtmlFuerhArtEditForm();
+	var HtmlContainer = window.em.generiereHtmlFuerhArtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (HtmlContainer) {
 		HtmlContainer = "<hr />" + HtmlContainer;
@@ -2008,10 +2043,13 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 // erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 // der HtmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerhArtEditForm = function() {
-	var Feld, i, FeldName, FeldBeschriftung, SliderMinimum, SliderMaximum, ListItem, HtmlContainer, ArtGruppe;
-	Feld = {};
-	ListItem = "";
-	HtmlContainer = "";
+	var Feld = {},
+		i,
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "",
+		ArtGruppe;
 	ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
@@ -2030,7 +2068,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp, SliderMinimum, SliderMaximum);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 			}
 		}
 	}
@@ -2111,8 +2149,10 @@ window.em.initiierehBeobListe_2 = function() {
 // generiert das Html für ein Formularelement
 // erwartet diverse Übergabewerte
 // der HtmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, SliderMinimum, SliderMaximum) {
-	var HtmlContainer = "";
+window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp) {
+	var HtmlContainer = "",
+		SliderMinimum,
+		SliderMinimum;
 	// abfangen, wenn Inputtyp vergessen wurde
 	InputTyp = InputTyp || "text";
 	switch(Feld.Formularelement) {
@@ -2154,8 +2194,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
-	var HtmlContainer;
-	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2174,8 +2213,7 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 // generiert den html-Inhalt für Slider
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
-	var HtmlContainer;
-	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2196,8 +2234,7 @@ window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWer
 // generiert den html-Inhalt für Textarea
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer;
-	HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2214,8 +2251,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 // generiert den html-Inhalt für Toggleswitch
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer;
-	HtmlContainer = "<div data-role='fieldcontain'><label for='";
+	var HtmlContainer = "<div data-role='fieldcontain'><label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "'>";
 	HtmlContainer += FeldBeschriftung;
@@ -2248,8 +2284,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer;
-	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
@@ -2260,8 +2295,10 @@ window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldW
 // generiert den html-Inhalt für Optionen von Checkbox
 // wird von generiereHtmlFuerCheckbox aufgerufen
 window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optionen) {
-	var i, HtmlContainer, Optionn, ListItem;
-	HtmlContainer = "";
+	var i,
+		HtmlContainer = "",
+		Optionn,
+		ListItem;
 	for (i in Optionen) {
 		if (typeof i !== "function") {
 			Optionn = Optionen[i];
@@ -2817,8 +2854,7 @@ window.em.initiiereFelderWaehlen_2 = function() {
 // kreiert ein neues Feld
 // wird benutzt von FeldListe.html und FeldEdit.html
 window.em.neuesFeld = function() {
-	var NeuesFeld;
-	NeuesFeld = {};
+	var NeuesFeld = {};
 	NeuesFeld.Typ = "Feld";
 	NeuesFeld.User = localStorage.Email;
 	NeuesFeld.SichtbarImModusEinfach = [];
@@ -3279,10 +3315,8 @@ window.em.leereStorageFeldEdit = function(ohneId) {
 // Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
 // wird verwendet in: Signup.html, UserEdit.html
 window.em.erstelleSichtbareFelder = function() {
-	var viewname,
-		Username = localStorage.Email;
+	var viewname = 'evab/FeldListeFeldName?include_docs=true';
 	$db = $.couch.db("evab");
-	viewname = 'evab/FeldListeFeldName?include_docs=true';
 	$db.view(viewname, {
 		success: function (data) {
 			var i, Feld;
@@ -3294,6 +3328,7 @@ window.em.erstelleSichtbareFelder = function() {
 					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
 						$db.openDoc(Feld._id, {
 							success: function (Feld) {
+								var Username = localStorage.Email;
 								Feld.SichtbarImModusHierarchisch.push(Username);
 								$db.saveDoc(Feld);
 							}
@@ -3309,8 +3344,7 @@ window.em.erstelleSichtbareFelder = function() {
 // erstellt die sichtbaren Felder
 // wird benutzt von: Signup.html, UserEdit.html
 window.em.speichereUserInEvab = function() {
-	var doc;
-	doc = {};
+	var doc = {};
 	doc._id = $('input[name=Email]').val();
 	doc.Typ = "User";
 	doc.Datenverwendung = localStorage.Datenverwendung || "JaAber";
@@ -3394,15 +3428,6 @@ window.em.oeffneEigenschaftenVonArt = function(id) {
 		win.location.href = url;
 	});
 };
-
-
-
-
-
-// HIER WEITER MIT NAMESPACE
-
-
-
 
 // wenn Artenliste.html initiiert wird
 window.em.handleAlPageinit = function() {
@@ -3578,16 +3603,12 @@ window.em.handleBeobEditPageinit = function() {
 
 	$("#BeobEditForm").on("change", ".speichern", window.em.handleBeobEditSpeichernChange);
 
-	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', function() {
-		// Eingabe im Zahlenfeld abfangen (blur)
-		// Ende des Schiebens abfangen (slidestop)
-		window.em.speichereBeob(this);
-	});
+	// Eingabe im Zahlenfeld abfangen (blur)
+	// Ende des Schiebens abfangen (slidestop)
+	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', window.em.speichereBeob);
 
-	$("#BeobEditForm").on("mouseup", '.ui-slider-input', function() {
-		// Klicken auf den Pfeilen im Zahlenfeld abfangen
-		window.em.speichereBeob(this);
-	});
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#BeobEditForm").on("mouseup", '.ui-slider-input', window.em.speichereBeob);
 
 	$("#FormAnhängeBE").on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange);
 
@@ -3987,8 +4008,6 @@ window.em.handleFeldEditPageinit = function() {
 // wenn in FeldEdit.htm .Feldeigenschaften geändert wird
 // jedes Feld aus Feldeigenschaften bei Änderung speichern
 window.em.handleFeldEditFeldeigenschaftenChange = function() {
-	var AlterFeldWert;
-
 	localStorage.FeldWert = this.value;
 	if (this.name) {
 		localStorage.FeldName = this.name;
@@ -4020,8 +4039,11 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			$db = $.couch.db("evab");
 			$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 				success: function (data) {
-					var i, anzVorkommen, Datensatz, TempFeld, ds;
-					anzVorkommen = 0;
+					var i,
+						anzVorkommen = 0,
+						Datensatz,
+						TempFeld,
+						ds;
 					// zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
 					for (i in data.rows) {
 						if (typeof i !== "function") {
@@ -5568,7 +5590,9 @@ window.em.speichereHProjektEdit = function() {
 };
 
 window.em.speichereHProjektEdit_2 = function(that) {
-	var Feldname, Feldjson, Feldwert;
+	var Feldname,
+		Feldjson,
+		Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
@@ -5650,7 +5674,9 @@ window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 };
 
 window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
-	var i, OrtIdAktuell, AnzOrt;
+	var i,
+		OrtIdAktuell,
+		AnzOrt;
 	for (i in window.em.OrtListe.rows) {
 		OrtIdAktuell = window.em.OrtListe.rows[i].doc._id;
 		AnzOrt = window.em.OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
@@ -5699,18 +5725,18 @@ window.em.validatehOrtEdit = function() {
 // wird benutzt in hOrtEdit.html
 window.em.speichereHOrtEdit = function(that) {
 	// die eventhandler übergeben this nicht über die Klammer
-	var that = that || this;
+	var _this = that || this;
 	// prüfen, ob Ort existiert
 	if (window.em.hOrt) {
 		// bestehedes Objekt verwenden
-		window.em.speichereHOrtEdit_2(that);
+		window.em.speichereHOrtEdit_2(_this);
 	} else {
 		// kein Ort > aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function (data) {
 				window.em.hOrt = data;
-				window.em.speichereHOrtEdit_2(that);
+				window.em.speichereHOrtEdit_2(_this);
 			},
 			error: function () {
 				console.log('fehler in function speichereHOrtEdit');
@@ -5721,7 +5747,9 @@ window.em.speichereHOrtEdit = function(that) {
 };
 
 window.em.speichereHOrtEdit_2 = function(that) {
-	var Feldname, Feldjson, Feldwert;
+	var Feldname,
+		Feldjson,
+		Feldwert;
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
@@ -7169,18 +7197,18 @@ window.em.zuArtliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function(that) {
 	// this wird von eventhandlern nicht in der Klammer übergeben
-	var that = that || this;
+	var _this = that || this;
 	// prüfen, ob hBeob als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
-		window.em.speichereHArt_2(this);
+		window.em.speichereHArt_2(_this);
 	} else {
 		// Objekt aud DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
 			success: function (data) {
 				window.em.hArt = data;
-				window.em.speichereHArt_2(that);
+				window.em.speichereHArt_2(_this);
 			},
 			error: function () {
 				console.log('fehler in function speichereHArt');
@@ -7346,7 +7374,7 @@ window.em.pruefeFeldNamen = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function (data) {
-			var i, key, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
+			var i, TempFeld, AnzEigeneOderOffizielleFelderMitSelbemNamen;
 			AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 			// durch alle Felder mit demselben Artnamen laufen
 			// prüfen, ob sie eigene oder offielle sind
@@ -7912,20 +7940,22 @@ window.em.löscheBeob_2 = function() {
 
 // Speichert alle Daten in BeobEdit.html
 window.em.speichereBeob = function(that) {
+	// eventhandler übergeben this nicht in der Klammer
+	var _this = that || this;
 	// prüfen, ob Beob als Objekt vorliegt
 	if (window.em.Beobachtung) {
 		// ja: dieses Objekt verwenden
-		window.em.speichereBeob_2(that);
+		window.em.speichereBeob_2(_this);
 	} else {
 		// nein: Beob aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function (data) {
 				window.em.Beobachtung = data;
-				window.em.speichereBeob_2(that);
+				window.em.speichereBeob_2(_this);
 			},
 			error: function () {
-				console.log('fehler in function speichereBeob_2(that)');
+				console.log('fehler in function speichereBeob_2(_this)');
 			}
 		});
 	}
@@ -7971,7 +8001,7 @@ window.em.speichereBeob_2 = function(that) {
 };
 
 window.em.meldeNeuAn = function() {
-	
+
 };
 
 
