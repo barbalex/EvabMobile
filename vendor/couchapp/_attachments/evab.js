@@ -7187,12 +7187,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function(event) {
 		event.preventDefault();
-		window.em.leereStorageZeitListe();
-		window.em.leereStorageOrtEdit();
-		window.em.leereStorageOrtListe();
-		window.em.leereStorageRaumEdit();
-		window.em.leereStorageRaumListe();
-		$.mobile.navigate("hProjektEdit.html");
+		window.em.handleZeitListeOeffneProjektClick();
 	});
 
 	// Neue Zeit erstellen, erste Zeit und fixer button
@@ -7201,53 +7196,24 @@ window.em.handleZeitListePageinit = function() {
 		window.em.erstelleNeueZeit(); 
 	});
 
-	$("#ZeitlistehZL").on("swipeleft", ".Zeit", function() {
-		localStorage.ZeitId = $(this).attr('ZeitId');
-		$.mobile.navigate("hArtListe.html");
-	});
+	$("#ZeitlistehZL").on("swipeleft", ".Zeit", window.em.handleZeitListeSwipeleftZeit);
 
 	$("#ZeitlistehZL").on("click", ".Zeit", function(event) {
 		event.preventDefault();
-		localStorage.ZeitId = $(this).attr('ZeitId');
-		$.mobile.navigate("hZeitEdit.html");
+		window.em.handleZeitListeZeitClick();
 	});
 
-	$("#ZeitlistehZL").on("swipeleft", ".erste", function() {
-		window.em.erstelleNeueZeit();
-	});
+	$("#ZeitlistehZL").on("swipeleft", ".erste", window.em.erstelleNeueZeit);
 
-	$("#hZeitListePage").on("swiperight", function() {
-		$.mobile.navigate("hOrtListe.html");
-	});
+	$("#hZeitListePage").on("swiperight", window.em.handleZeitListeSwiperight);
 
-	$('#MenuZeitListe').on('click', '.menu_einfacher_modus', function() {
-		window.em.leereStorageZeitListe();
-		window.em.leereStorageOrtEdit();
-		window.em.leereStorageOrtListe();
-		window.em.leereStorageRaumEdit();
-		window.em.leereStorageRaumListe();
-		window.em.leereStorageProjektEdit();
-		window.em.leereStorageOrtListe();
-		$.mobile.navigate("BeobListe.html");
-	});
+	$('#MenuZeitListe').on('click', '.menu_einfacher_modus', window.em.handleZeitListeMenuEinfacherModusClick);
 
-	$('#MenuZeitListe').on('click', '.menu_felder_verwalten', function() {
-		localStorage.zurueck = "hZeitListe.html";
-		$.mobile.navigate("FeldListe.html");
-	});
+	$('#MenuZeitListe').on('click', '.menu_felder_verwalten', window.em.handleZeitListeMenuFelderVerwaltenClick);
 
-	$('#MenuZeitListe').on('click', '.menu_zeiten_exportieren', function() {
-		window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-		// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-		$("#MenuZeitListe").popup();
-		// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-		$("#MenuZeitListe").popup("close");
-	});
+	$('#MenuZeitListe').on('click', '.menu_zeiten_exportieren', window.em.handleZeitListeMenuZeitenExportierenClick);
 
-	$('#MenuZeitListe').on('click', '.menu_einstellungen', function() {
-		localStorage.zurueck = "hZeitListe.html";
-		window.em.öffneMeineEinstellungen();
-	});
+	$('#MenuZeitListe').on('click', '.menu_einstellungen', window.em.handleZeitListeMenuEinstellungenClick);
 
 	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 };
@@ -7264,65 +7230,60 @@ window.em.handleZeitListeOeffneRaumClick = function() {
 	$.mobile.navigate("hRaumEdit.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeOeffneProjektClick = function() {
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	$.mobile.navigate("hProjektEdit.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeSwipeleftZeit = function() {
+	localStorage.ZeitId = $(this).attr('ZeitId');
+	$.mobile.navigate("hArtListe.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeZeitClick = function() {
+	localStorage.ZeitId = $(this).attr('ZeitId');
+	$.mobile.navigate("hZeitEdit.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeSwiperight = function() {
+	$.mobile.navigate("hOrtListe.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeMenuEinfacherModusClick = function() {
+	window.em.leereStorageZeitListe();
+	window.em.leereStorageOrtEdit();
+	window.em.leereStorageOrtListe();
+	window.em.leereStorageRaumEdit();
+	window.em.leereStorageRaumListe();
+	window.em.leereStorageProjektEdit();
+	window.em.leereStorageOrtListe();
+	$.mobile.navigate("BeobListe.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeMenuFelderVerwaltenClick = function() {
+	localStorage.zurueck = "hZeitListe.html";
+	$.mobile.navigate("FeldListe.html");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeMenuZeitenExportierenClick = function() {
+	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+	$("#MenuZeitListe").popup();
+	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuZeitListe").popup("close");
 };
 
-window.em.handleZeitListe = function() {
-	
+window.em.handleZeitListeMenuEinstellungenClick = function() {
+	localStorage.zurueck = "hZeitListe.html";
+	window.em.öffneMeineEinstellungen();
 };
 
-window.em.handleZeitListe = function() {
-	
-};
 
-window.em.handleZeitListe = function() {
-	
-};
 
-window.em.handleZeitListe = function() {
-	
-};
-
-window.em.handleZeitListe = function() {
-	
-};
-
-window.em.handleZeitListe = function() {
-	
-};
-
-window.em.handleZeitListe = function() {
-	
-};
-
-window.em.handleZeitListe = function() {
-	
-};
 
 
 
