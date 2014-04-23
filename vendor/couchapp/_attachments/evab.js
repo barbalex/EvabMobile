@@ -7282,7 +7282,95 @@ window.em.handleZeitListeMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
+window.em.handleIndexPageshow = function() {
+	// Wenn möglich localStorage.Email für die Anmeldung verwenden
+	// ausser User hat via Menü bewusst neu anmelden wollen
+	// localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
+	if (localStorage.length > 0) {
+		if (localStorage.Email) {
+			if (localStorage.UserStatus !== "neu") {
+				if (localStorage.Email && localStorage.Autor) {
+					window.em.oeffneZuletztBenutzteSeite();
+					return;
+				} else {
+					// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
+					window.em.stelleUserDatenBereit();
+					return;
+				}
+			}
+		}
+	}
+	// Wenn localStorage.UserStatus neu ist, müssen alle Variabeln entfernt werden, inkl. Username
+	window.em.leereAlleVariabeln();
+		
+	if (!("autofocus" in document.createElement("input"))) {
+		$("#Email").focus();
+	}
+};
 
+window.em.handleIndexPageinit = function() {
+	$("#indexFooter").on("click", "#SubmitButton", function (event) {
+		event.preventDefault();
+		window.em.meldeUserAn();
+	});
+
+	// Reaktion auf Enter-Taste
+	$("#indexForm").on("keydown", "#Passwort", function (event) {
+		if (event.keyCode === 13) {
+			window.em.meldeUserAn();
+			event.preventDefault();
+		}
+	});
+};
+
+window.em.validiereUserIndex = function() {
+	var Email = $('input[name=Email]').val(),
+		Passwort = $('input[name=Passwort]').val();
+	if (!Email) {
+		setTimeout(function () { 
+			$('#Email').focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		window.em.melde("Bitte Benutzernamen eingeben");
+		return false;
+	} else if (!Passwort) {
+		setTimeout(function () { 
+			$('#Passwort').focus(); 
+		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
+		window.em.melde("Bitte Passwort eingeben");
+		return false;
+	}
+	return true;
+};
+
+window.em.meldeUserAn = function() {
+	var Email = $('input[name=Email]').val(),
+		Passwort = $('input[name=Passwort]').val();
+	// sicherstellen, dass die localStorage leer ist
+	window.em.leereAlleVariabeln();
+	if (window.em.validiereUserIndex) {
+		$.couch.login({
+			name : Email,
+			password : Passwort,
+			success : function (r) {
+				// TODO: Abfangen, wenn Username leer ist. USER erstellen
+				if (r.name) {
+					localStorage.Email = r.name;
+				} else {
+					// login erfolgreich, aber keine Informationen zum User
+					// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
+					// also User anbieten
+					$.mobile.navigate("UserEdit.html");
+				}
+				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
+				window.em.stelleUserDatenBereit();
+				delete localStorage.UserStatus;
+			},
+			error: function () {
+				window.em.melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
+			}
+		});
+	}
+};
 
 
 
@@ -8143,7 +8231,8 @@ window.em.speichereBeob_2 = function(that) {
 };
 
 window.em.meldeNeuAn = function() {
-
+	localStorage.UserStatus = "neu";
+	$.mobile.changePage("index.html");
 };
 
 
