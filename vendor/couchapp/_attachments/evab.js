@@ -7138,6 +7138,124 @@ window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
 	}
 };
 
+window.em.handleZeitListePageshow = function() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.OrtId || localStorage.OrtId === "undefined") {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	window.em.initiiereZeitListe();
+};
+
+window.em.handleZeitListePageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.OrtId || localStorage.OrtId === "undefined") {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+
+	// inaktive tabs inaktivieren
+	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+	$(document).on("click", ".tab_inaktiv", function (event) {
+		event.preventDefault();
+		event.stopPropagation();
+	});
+
+	// Link zu Raum in Navbar und Titelleiste
+	$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function (event) {
+		event.preventDefault();
+		window.em.leereStorageZeitListe();
+		$.mobile.navigate("hOrtEdit.html");
+	});
+
+	$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function (event) {
+		event.preventDefault();
+		window.em.leereStorageZeitListe();
+		window.em.leereStorageOrtEdit();
+		window.em.leereStorageOrtListe();
+		$.mobile.navigate("hRaumEdit.html");
+	});
+
+	$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function (event) {
+		event.preventDefault();
+		window.em.leereStorageZeitListe();
+		window.em.leereStorageOrtEdit();
+		window.em.leereStorageOrtListe();
+		window.em.leereStorageRaumEdit();
+		window.em.leereStorageRaumListe();
+		$.mobile.navigate("hProjektEdit.html");
+	});
+
+	// Neue Zeit erstellen, erste Zeit und fixer button
+	$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function (event) {
+		event.preventDefault();
+		window.em.erstelleNeueZeit(); 
+	});
+
+	$("#ZeitlistehZL").on("swipeleft", ".Zeit", function () {
+		localStorage.ZeitId = $(this).attr('ZeitId');
+		$.mobile.navigate("hArtListe.html");
+	});
+
+	$("#ZeitlistehZL").on("click", ".Zeit", function (event) {
+		event.preventDefault();
+		localStorage.ZeitId = $(this).attr('ZeitId');
+		$.mobile.navigate("hZeitEdit.html");
+	});
+
+	$("#ZeitlistehZL").on("swipeleft", ".erste", function () {
+		window.em.erstelleNeueZeit();
+	});
+
+	$("#hZeitListePage").on("swiperight", function () {
+		$.mobile.navigate("hOrtListe.html");
+	});
+
+	$('#MenuZeitListe').on('click', '.menu_einfacher_modus', function() {
+		window.em.leereStorageZeitListe();
+		window.em.leereStorageOrtEdit();
+		window.em.leereStorageOrtListe();
+		window.em.leereStorageRaumEdit();
+		window.em.leereStorageRaumListe();
+		window.em.leereStorageProjektEdit();
+		window.em.leereStorageOrtListe();
+		$.mobile.navigate("BeobListe.html");
+	});
+
+	$('#MenuZeitListe').on('click', '.menu_felder_verwalten', function() {
+		localStorage.zurueck = "hZeitListe.html";
+		$.mobile.navigate("FeldListe.html");
+	});
+
+	$('#MenuZeitListe').on('click', '.menu_zeiten_exportieren', function() {
+		window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
+		// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+		$("#MenuZeitListe").popup();
+		// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+		$("#MenuZeitListe").popup("close");
+	});
+
+	$('#MenuZeitListe').on('click', '.menu_einstellungen', function() {
+		localStorage.zurueck = "hZeitListe.html";
+		window.em.öffneMeineEinstellungen();
+	});
+
+	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+};
+
 
 
 
