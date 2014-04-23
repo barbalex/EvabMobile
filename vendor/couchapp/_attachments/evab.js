@@ -223,8 +223,7 @@ window.em.geheZurueckFE = function() {
 // ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 // aufgerufen bloss von Artenliste.html
 window.em.speichereNeueBeob = function(aArtBezeichnung) {
-	var doc;
-	doc = {};
+	var doc = {};
 	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
@@ -329,8 +328,7 @@ window.em.erstelleNeueZeit = function() {
 // Neue Zeiten werden erstellt
 // ausgelöst durch hZeitListe.html oder hZeitEdit.html
 // dies ist der erste Schritt: doc bilden
-	var doc;
-	doc = {};
+	var doc = {};
 	doc.Typ = "hZeit";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -364,8 +362,7 @@ window.em.erstelleNeueZeit = function() {
 // wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 // erwartet Username, hProjektId, hRaumId
 window.em.erstelleNeuenOrt = function() {
-	var doc;
-	doc = {};
+	var doc = {};
 	doc.Typ = "hOrt";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -393,8 +390,7 @@ window.em.erstelleNeuenOrt = function() {
 };
 
 window.em.erstelleNeuenRaum = function() {
-	var doc;
-	doc = {};
+	var doc = {};
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -409,16 +405,13 @@ window.em.erstelleNeuenRaum = function() {
 	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
-		console.log("var 1");
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-		console.log("var 2");
 		//$(":mobile-pagecontainer").pagecontainer("change", "#RaumEditPage.html", {allowSamePageTransition : "true"});   FUNKTIONIERT NICHT
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else {
-		console.log("var 3");
 		$.mobile.navigate("hRaumEdit.html");
 	}
 };
@@ -426,8 +419,7 @@ window.em.erstelleNeuenRaum = function() {
 // erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
 // das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
 window.em.erstelleNeuesProjekt = function() {
-	var doc;
-	doc = {};
+	var doc = {};
 	doc.Typ = "hProjekt";
 	doc.User = localStorage.Email;
 	// damit hProjektEdit.html die hBeob nicht aus der DB holen muss
@@ -648,7 +640,8 @@ window.em.initiiereBeobliste = function() {
 };
 
 window.em.initiiereBeobliste_2 = function() {
-	var anzBeob = window.em.BeobListe.rows.length,
+	var i,
+		anzBeob = window.em.BeobListe.rows.length,
 		beob,
 		key,
 		ListItemContainer = "",
@@ -664,7 +657,7 @@ window.em.initiiereBeobliste_2 = function() {
 	if (anzBeob === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
 	} else {
-		for (var i in window.em.BeobListe.rows) {
+		for (i in window.em.BeobListe.rows) {
 			if (typeof i !== "function") {
 				beob = window.em.BeobListe.rows[i].doc;
 				key = window.em.BeobListe.rows[i].key;
@@ -1174,13 +1167,12 @@ window.em.speichereKoordinaten_2 = function(id, ObjektName) {
 // wird verwendet, um die Koordinaten von Orten in Zeiten und Arten zu schreiben
 // im ersten Schritt prüfen, ob die Objektliste vorhanden ist. Wenn nicht, aus DB holen
 window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert, Querystring) {
-	var viewname;
 	if (window.em[ObjektlistenName]) {
 		// vorhandene Objektliste nutzen
 		window.em.speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
 	} else {
 		// Objektliste aus DB holen
-		viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
+		var viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
 		$db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function (data) {
@@ -1234,16 +1226,18 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			contentType: "application/json",
 			data: JSON.stringify(DsBulkListe),
 			success: function(data) {
+				var z,
+					k;
 				// _rev in den Objekten in Objektliste aktualisieren
 				// für alle zurückgegebenen aktualisierten Zeilen
 				// offenbar muss data zuerst geparst werden ??!!
 				data = JSON.parse(data);
-				for (var z in data) {
+				for (z in data) {
 					if (typeof z !== "function") {
 						// das zugehörige Objekt in der Objektliste suchen
-						for (var i in window.em[ObjektlistenName].rows) {
-							row = window.em[ObjektlistenName].rows[i].doc;
-							if (typeof i !== "function") {
+						for (k in window.em[ObjektlistenName].rows) {
+							row = window.em[ObjektlistenName].rows[k].doc;
+							if (typeof k !== "function") {
 								// und dessen rev aktualisieren
 								if (row._id === data[z].id) {
 									row._rev = data[z].rev;
@@ -2049,8 +2043,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		FeldBeschriftung,
 		Optionen,
 		HtmlContainer = "",
-		ArtGruppe;
-	ArtGruppe = window.em.hArt.aArtGruppe;
+		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehBeobEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlistehBeobEdit.rows[i].doc;
@@ -2110,7 +2103,8 @@ window.em.initiierehBeobListe = function() {
 };
 
 window.em.initiierehBeobListe_2 = function() {
-	var anzArt = window.em.hBeobListe.rows.length, 
+	var i,
+		anzArt = window.em.hBeobListe.rows.length, 
 		Art, 
 		externalPage, 
 		listItem, 
@@ -2128,7 +2122,7 @@ window.em.initiierehBeobListe_2 = function() {
 	if (anzArt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (var i in window.em.hBeobListe.rows) {
+		for (i in window.em.hBeobListe.rows) {
 			if (typeof i !== "function") {
 				hBeobTemp = window.em.hBeobListe.rows[i].doc;
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
@@ -2266,8 +2260,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 };
 
 /*window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer;
-	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "'>";
 	HtmlContainer += FeldBeschriftung;
@@ -2326,8 +2319,7 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optio
 // generiert den html-Inhalt für Radio
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer;
-	HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
@@ -2338,8 +2330,10 @@ window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert
 // generiert den html-Inhalt für Optionen von Radio
 // wird von generiereHtmlFuerRadio aufgerufen
 window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen) {
-	var i, HtmlContainer, Optionn, ListItem;
-	HtmlContainer = "";
+	var i,
+		HtmlContainer = "",
+		Optionn,
+		ListItem;
 	for (i in Optionen) {
 		if (typeof i !== "function") {
 			Optionn = Optionen[i];
@@ -2366,8 +2360,7 @@ window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
-	var HtmlContainer;
-	HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' class='select'>";
 	HtmlContainer += FeldBeschriftung;
@@ -2394,12 +2387,14 @@ window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, Fel
 // generiert den html-Inhalt für Optionen von Selectmenu
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 window.em.generiereHtmlFuerSelectmenuOptionen = function(FeldName, FeldWert, Optionen) {
-	var i, HtmlContainer, Optionn, ListItem;
-	HtmlContainer = "\n\t\t<option value=''></option>";
+	var i,
+		HtmlContainer = "<option value=''></option>",
+		Optionn,
+		ListItem;
 	for (i in Optionen) {
 		if (typeof i !== "function") {
 			Optionn = Optionen[i];
-			ListItem = "\n\t\t<option value='";
+			ListItem = "<option value='";
 			ListItem += Optionn;
 			ListItem += "' class='speichern'";
 			if (FeldWert === Optionn) {
@@ -2418,12 +2413,14 @@ window.em.generiereHtmlFuerSelectmenuOptionen = function(FeldName, FeldWert, Opt
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 // FeldWert ist ein Array
 window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert, Optionen) {
-	var i, HtmlContainer, Optionn, ListItem;
-	HtmlContainer = "\n\t\t<option value=''></option>";
+	var i,
+		HtmlContainer = "<option value=''></option>",
+		Optionn,
+		ListItem;
 	for (i in Optionen) {
 		if (typeof i !== "function") {
 			Optionn = Optionen[i];
-			ListItem = "\n\t\t<option value='";
+			ListItem = "<option value='";
 			ListItem += Optionn;
 			ListItem += "' class='speichern'";
 			if (FeldWert.indexOf(Optionn) !== -1) {
@@ -2444,9 +2441,8 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert,
 	// Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
 	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
 	$.fn.serializeObject = function () {
-		var o, a;
-		o = {};
-		a = this.serializeArray();
+		var o = {},
+			a = this.serializeArray();
 		$.each(a, function () {
 			if (this.value) {
 				if (o[this.name]) {
@@ -2477,9 +2473,8 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert,
 	// siehe Beispiel in FeldEdit.html
 	// nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
 	$.fn.serializeObjectNull = function () {
-		var o, a;
-		o = {};
-		a = this.serializeArray();
+		var o = {},
+			a = this.serializeArray();
 		$.each(a, function () {
 			if (o[this.name]) {
 				if (!o[this.name].push) {
@@ -3319,7 +3314,8 @@ window.em.erstelleSichtbareFelder = function() {
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function (data) {
-			var i, Feld;
+			var i,
+				Feld;
 			for (i in data.rows) {
 				if (typeof i !== "function") {
 					Feld = data.rows[i].doc;
@@ -4198,11 +4194,10 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 		$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 			success: function (data) {
 				var i,
-					anzVorkommen,
+					anzVorkommen = 0,
 					Datensatz,
 					TempFeld,
 					ds;
-				anzVorkommen = 0;
 				for (i in data.rows) {
 					if (typeof i !== "function") {
 						Datensatz = data.rows[i].doc;
@@ -4919,9 +4914,15 @@ window.em.handleHOrtEditSpeichernChange = function() {
 		localStorage.oLongitudeDecDeg = window.em.CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLatitudeDecDeg = window.em.CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLagegenauigkeit = null;
-		// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
+		// und Koordinaten speichern
+		window.em.speichereKoordinaten(localStorage.OrtId, "hOrt");
+		
+		/*// oHöhe und -Genauigkeit leer mitgeben, dann werden allfällige alte Werte gelöscht
 		FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
-		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);
+
+		//TODO: DIESE FUNKTION EXISTIERT NICHT
+		speichereMehrereFelderAusLocalStorageInDbUndZeigeSieImFormular(localStorage.OrtId, "hOrt", FelderArray);*/
+
 	} else {
 		window.em.speichereHOrtEdit(this);
 	}
