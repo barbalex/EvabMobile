@@ -7694,7 +7694,7 @@ window.em.erstelleKarteBeobListe = function() {
 
 window.em.erstelleKarteBeobListe_2 = function() {
 	var i,
-		anzBeob = BeobListeLatLng.rows.length,
+		anzBeob = window.em.BeobListeLatLng.rows.length,
 		beob,
 		image,
 		lat,
@@ -7729,8 +7729,8 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		bounds = new google.maps.LatLngBounds();
 		// für alle Beobachtungen Marker erstellen
 		markers = [];
-		for (i in BeobListeLatLng.rows) {
-			beob = BeobListeLatLng.rows[i].doc;
+		for (i in window.em.BeobListeLatLng.rows) {
+			beob = window.em.BeobListeLatLng.rows[i].doc;
 			image = "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 			latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 			if (anzBeob === 1) {
