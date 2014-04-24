@@ -1929,7 +1929,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === window.em.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
-				if (window.em.hZeit[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && window.em.hZeit[FeldName]) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && window.em.hZeit[FeldName]) {
 					FeldWert = Feld.Standardwert[window.em.hZeit.User] || "";
 					// Objekt window.em.hZeit um den Standardwert ergänzen, um später zu speichern
 					window.em.hZeit[FeldName] = FeldWert;
@@ -2118,7 +2118,8 @@ window.em.initiierehBeobListe_2 = function() {
 		listItem,
 		ListItemContainer = "",
 		Titel2,
-		hBeobTemp;
+		hBeobTemp,
+		artgruppenname;
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
 	Titel2 = " Arten";
@@ -2133,9 +2134,13 @@ window.em.initiierehBeobListe_2 = function() {
 		for (i in window.em.hBeobListe.rows) {
 			if (typeof i !== "function") {
 				hBeobTemp = window.em.hBeobListe.rows[i].doc;
+				artgruppenname = encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+				if (hBeobTemp.aArtGruppe === "DiverseInsekten") {
+					artgruppenname = "unbenannt.png";
+				}
 				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
 					"<a href=\"#\">" +
-					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png\" />" +
+					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + artgruppenname + "\" />" +
 					"<h3>" + hBeobTemp.aArtName + "<\/h3>" +
 					"<\/a> <\/li>";
 				ListItemContainer += listItem;
@@ -7199,7 +7204,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$("#ZeitlistehZL").on("click", ".Zeit", function(event) {
 		event.preventDefault();
-		window.em.handleZeitListeZeitClick();
+		window.em.handleZeitListeZeitClick(this);
 	});
 
 	$("#ZeitlistehZL").on("swipeleft", ".erste", window.em.erstelleNeueZeit);
@@ -7243,8 +7248,8 @@ window.em.handleZeitListeSwipeleftZeit = function() {
 	$.mobile.navigate("hArtListe.html");
 };
 
-window.em.handleZeitListeZeitClick = function() {
-	localStorage.ZeitId = $(this).attr('ZeitId');
+window.em.handleZeitListeZeitClick = function(that) {
+	localStorage.ZeitId = $(that).attr('ZeitId');
 	$.mobile.navigate("hZeitEdit.html");
 };
 
@@ -7711,7 +7716,8 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		markers,
 		contentString,
 		mcOptions,
-		markerCluster;
+		markerCluster,
+		artgruppenname;
 	if (anzBeob === 0) {
 		// Keine Beobachtungen: Hinweis und zurück
 		window.em.melde("Es wurden noch keine Beobachtungen mit Koordinaten erfasst");
@@ -7734,7 +7740,11 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		markers = [];
 		for (i in window.em.BeobListeLatLng.rows) {
 			beob = window.em.BeobListeLatLng.rows[i].doc;
-			image = "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+			artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+			if (beob.aArtGruppe === "DiverseInsekten") {
+				artgruppenname = "unbenannt.png";
+			}
+			image = "Artgruppenbilder/" + artgruppenname;
 			latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 			if (anzBeob === 1) {
 				// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -7797,7 +7807,8 @@ window.em.erstelleKarteBeobEdit = function() {
 		contentString,
 		infowindow,
 		// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
-		contentHeight = $(window).height() - 44;
+		contentHeight = $(window).height() - 44,
+		artgruppenname;
 	$("#MapCanvas").css("height", contentHeight + "px");
 	if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
 		lat = localStorage.oLatitudeDecDeg;
@@ -7820,7 +7831,11 @@ window.em.erstelleKarteBeobEdit = function() {
 	mapcanvas = $('#MapCanvas');
 	map = new google.maps.Map(mapcanvas[0],options);
 	//google.maps.event.trigger(map,'resize');
-	image = "Artgruppenbilder/" + encodeURIComponent(localStorage.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+	artgruppenname = encodeURIComponent(localStorage.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+	if (localStorage.aArtGruppe === "DiverseInsekten") {
+		artgruppenname = "unbenannt.png";
+	}
+	image = "Artgruppenbilder/" + artgruppenname;
 	if (verorted === true) {
 		marker = new google.maps.Marker({
 			position: latlng, 
