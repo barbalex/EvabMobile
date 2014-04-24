@@ -3794,7 +3794,7 @@ window.em.handleBeobEditContentSwiperight = function() {
 
 // wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
 window.em.handleBeobEditMenuArteigenschaftenClick = function() {
-	window.em.oeffneEigenschaftenVonArt(window.em.Beobachtung.aArtId);
+	window.em.oeffneEigenschaftenVonArt(localStorage.aArtId);
 };
 
 // wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
