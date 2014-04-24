@@ -7373,8 +7373,7 @@ window.em.meldeUserAn = function() {
 
 window.em.handleKartePageshow = function() {
 	// Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
-	var viewname,
-		KeinOrtMeldung;
+	var viewname;
 	// In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
 	// wird benutzt von: hOrtEdit.html, BeobEdit.html
 	window.em.markersArray = [],
@@ -7389,19 +7388,19 @@ window.em.handleKartePageshow = function() {
 	switch(localStorage.zurueck) {
 		case "hProjektListe":
 			viewname = 'evab/hProjektlisteOrteFuerKarte?key="' + localStorage.Email + '"&include_docs=true';
-			KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+			window.em.KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 			window.em.erstelleKarteH(viewname);
 			break;
 		case "hProjektEdit":	// gleich wie hRaumListe
 		case "hRaumListe":
 			viewname = 'evab/hProjektOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true';
-			KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+			window.em.KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 			window.em.erstelleKarteH(viewname);
 			break;
 		case "hRaumEdit":	// gleich wie hOrtListe
 		case "hOrtListe":
 			viewname = 'evab/hRaumOrteFuerKarte?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true';
-			KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
+			window.em.KeinOrtMeldung = "Es gibt keine Orte mit Koordinaten";
 			window.em.erstelleKarteH(viewname);
 			break;
 		case "hOrtEdit":
@@ -7505,9 +7504,8 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 	}
 
 	if (anzOrt === 0) {
-		// Keine Orte: Hinweis und zurück
-		window.em.melde(KeinOrtMeldung);
-		history.back();
+		// Keine Orte: Hinweis
+		window.em.melde(window.em.KeinOrtMeldung);
 	} else {
 		// Orte vorhanden: Karte aufbauen
 		// mal auf Zürich zentrieren, falls in den hOrteLatLng.rows keine Koordinaten kommen
