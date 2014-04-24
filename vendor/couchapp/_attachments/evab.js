@@ -7847,7 +7847,7 @@ window.em.erstelleKarteBeobEdit = function() {
 			infowindow.open(map,marker);
 		});
 		google.maps.event.addListener(marker, "dragend", function (event) {
-			SetLocationBeobEdit(event.latLng, map, marker);
+			window.em.SetLocationBeobEdit(event.latLng, map, marker);
 		});
 	}
 	google.maps.event.addListener(map, 'click', function (event) {
@@ -7888,9 +7888,9 @@ window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
 	// Marker in Array speichern, damit er gelöscht werden kann
 	window.em.markersArray.push(marker);
 	google.maps.event.addListener(marker, "dragend", function (event) {
-		SetLocationBeobEdit(event.latLng, map, marker);
+		window.em.SetLocationBeobEdit(event.latLng, map, marker);
 	});
-	SetLocationBeobEdit(location, map, marker);
+	window.em.SetLocationBeobEdit(location, map, marker);
 };
 
 // wird benutzt in hOrtEdit.html
