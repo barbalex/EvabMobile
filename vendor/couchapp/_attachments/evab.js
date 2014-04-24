@@ -586,7 +586,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 				// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 				// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
-					if (window.em.Beobachtung[FeldName] && Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+					if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 						FeldWert = Feld.Standardwert[localStorage.Email];
 						// Objekt Beob um den Standardwert ergänzen, um später zu speichern
 						window.em.Beobachtung[FeldName] = FeldWert;
@@ -838,7 +838,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
-				if (window.em.hProjekt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
 					// window.em.hProjekt um den Standardwert ergänzen, um später zu speichern
 					window.em.hProjekt[FeldName] = FeldWert;
@@ -1524,7 +1524,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
-				if (window.em.hRaum[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
 					// Objekt window.em.hRaum um den Standardwert ergänzen, um später zu speichern
 					window.em.hRaum[FeldName] = FeldWert;
@@ -1701,7 +1701,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-				if (window.em.hOrt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
 					// Objekt window.em.hOrt um den Standardwert ergänzen, um später zu speichern
 					window.em.hOrt[FeldName] = FeldWert;
