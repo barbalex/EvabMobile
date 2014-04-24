@@ -645,7 +645,8 @@ window.em.initiiereBeobliste_2 = function() {
 		beob,
 		key,
 		ListItemContainer = "",
-		Titel2;
+		Titel2,
+		artgruppenname;
 
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	Titel2 = " Beobachtungen";
@@ -661,10 +662,14 @@ window.em.initiiereBeobliste_2 = function() {
 			if (typeof i !== "function") {
 				beob = window.em.BeobListe.rows[i].doc;
 				key = window.em.BeobListe.rows[i].key;
+				artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+				if (beob.aArtGruppe === "DiverseInsekten") {
+					artgruppenname = "unbenannt.png";
+				}
 				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
 				ListItemContainer += beob._id;
 				ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
-				ListItemContainer += "Artgruppenbilder/" + encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+				ListItemContainer += "Artgruppenbilder/" + artgruppenname;
 				ListItemContainer += "\" /><h3 class=\"aArtName\">";
 				ListItemContainer += beob.aArtName;
 				ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
