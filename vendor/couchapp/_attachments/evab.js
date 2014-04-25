@@ -226,7 +226,7 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
-	delete localStorage.aArtGruppe;
+	//delete localStorage.aArtGruppe;
 	doc.aArtName = aArtBezeichnung;
 	doc.aArtId = localStorage.aArtId;
 	if (localStorage.Von === "hArtListe" || localStorage.Von === "hArtEdit") {
@@ -236,7 +236,6 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 		doc.hOrtId = localStorage.OrtId;
 		doc.hZeitId = localStorage.ZeitId;
 		doc.aArtId = localStorage.aArtId;
-		// Bei hierarchischen Beobachtungen wollen wir jetzt die Felder der höheren hierarchischen Ebenen anfügen
 		window.em.speichereNeueBeob_02(doc);
 	} else {
 		//localStorage.Von == "BeobListe" || localStorage.Von == "BeobEdit"
@@ -254,6 +253,7 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 window.em.speichereNeueBeob_02 = function(doc) {
 	$db.saveDoc(doc, {
 		success: function(data) {
+			var row_objekt = {};
 			// doc um id und rev ergänzen
 			doc._id = data.id;
 			doc._rev = data.rev;
@@ -262,8 +262,15 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				localStorage.hBeobId = data.id;
 				// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 				window.em.hArt = doc;
-				// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-				window.em.leereStoragehBeobListe();
+				// window.em.hBeobListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
+				row_objekt.id = data.id;
+				row_objekt.doc = doc;
+				window.em.hBeobListe.rows.push(row_objekt);
+				// jetzt die Liste neu sortieren
+				window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+					return row.doc.aArtName;
+				});
+				/*window.em.hBeobListe.rows.sort(window.em.sortiereRowsNachArtname);*/
 				$.mobile.navigate("hArtEdit.html");
 			} else {
 				// Variabeln verfügbar machen
@@ -295,23 +302,36 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 		success: function(doc) {
 			if (localStorage.aArtGruppe) {
 				doc.aArtGruppe = localStorage.aArtGruppe;
-				delete localStorage.aArtGruppe;
 			}
 			doc.aArtName = aArtName;
 			doc.aArtId = sessionStorage.ArtId;
 			$db.saveDoc(doc, {
 				success: function(data) {
+					var row_objekt = {};
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 						// Variabeln verfügbar machen
-						localStorage.BeobId = data.id;
+						localStorage.BeobId = docId;
 						// Globale Variablen für BeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 						window.em.leereStorageBeobListe();
 						$.mobile.navigate("BeobEdit.html");
 					} else {
 						// Variabeln verfügbar machen
-						localStorage.hBeobId = data.id;
-						// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-						window.em.leereStoragehBeobListe();
+						localStorage.hBeobId = docId;
+						// damit hArtEdit.html die hBeob nicht aus der DB holen muss
+						window.em.hArt = doc;
+						// window.em.hBeobListe anpassen
+						for (var i in window.em.hBeobListe.rows) {
+							if (window.em.hBeobListe.rows[i].id == docId) {
+								window.em.hBeobListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
+								window.em.hBeobListe.rows[i].doc.aArtName = aArtName;
+								window.em.hBeobListe.rows[i].doc.aArtId = sessionStorage.ArtId;
+							}
+						}
+						// window.em.hBeobListe neu sortieren
+						window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+							return row.doc.aArtName;
+						});
+						delete localStorage.aArtGruppe;
 						$.mobile.navigate("hArtEdit.html");
 					}
 				},
@@ -2114,7 +2134,6 @@ window.em.initiierehBeobListe = function() {
 window.em.initiierehBeobListe_2 = function() {
 	var i,
 		anzArt = window.em.hBeobListe.rows.length,
-		listItem,
 		ListItemContainer = "",
 		Titel2,
 		hBeobTemp,
@@ -2131,24 +2150,32 @@ window.em.initiierehBeobListe_2 = function() {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
 		for (i in window.em.hBeobListe.rows) {
-			if (typeof i !== "function") {
-				hBeobTemp = window.em.hBeobListe.rows[i].doc;
-				artgruppenname = encodeURIComponent(hBeobTemp.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
-				if (hBeobTemp.aArtGruppe === "DiverseInsekten") {
-					artgruppenname = "unbenannt.png";
-				}
-				listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + hBeobTemp._id + "\" aArtGruppe=\"" + hBeobTemp.aArtGruppe + "\">" +
-					"<a href=\"#\">" +
-					"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + artgruppenname + "\" />" +
-					"<h3>" + hBeobTemp.aArtName + "<\/h3>" +
-					"<\/a> <\/li>";
-				ListItemContainer += listItem;
+			hBeobTemp = window.em.hBeobListe.rows[i].doc;
+			if (hBeobTemp) {
+				ListItemContainer += window.em.erstelleHtmlFürBeobInHBeobListe(hBeobTemp);
 			}
 		}
 	}
 	$("#ArtlistehAL").html(ListItemContainer);
 	$("#ArtlistehAL").listview("refresh");
 	window.em.speichereLetzteUrl();
+};
+
+// übernimmt eine hBeobachtung
+// retourniert das html für deren Zeile in der Liste
+window.em.erstelleHtmlFürBeobInHBeobListe = function(beob) {
+	var artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png",
+		listItem;
+	if (beob.aArtGruppe === "DiverseInsekten") {
+		// das leere Bild anzeigen
+		artgruppenname = "unbenannt.png";
+	}
+	listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + beob._id + "\" aArtGruppe=\"" + beob.aArtGruppe + "\"" + "\" aArtId=\"" + beob.aArtId + "\">" +
+		"<a href=\"#\">" +
+		"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + artgruppenname + "\" />" +
+		"<h3>" + beob.aArtName + "<\/h3>" +
+		"<\/a> <\/li>";
+	return listItem;
 };
 
 
@@ -3495,12 +3522,26 @@ window.em.handleAlAlStandardgruppeClick = function() {
 
 // wenn in Artenliste.html [name='ArtListItem'] geklickt wird
 window.em.handleAlArtListItemClick = function(that) {
-	var ArtBezeichnung = $(that).attr("ArtBezeichnung");
-	localStorage.aArtId = $(that).attr("artid");
-	if (localStorage.Status === "neu") {
-		window.em.speichereNeueBeob(ArtBezeichnung);
+	var ArtBezeichnung = $(that).attr("ArtBezeichnung"),
+		artid = $(that).attr("artid"),
+		art_schon_erfasst = false,
+		i;
+
+	window.em.hBeobListe.rows.each(function() {
+		if (this.doc.aArtId == artid) {
+			art_schon_erfasst = true;
+		}
+	});
+
+	if (art_schon_erfasst) {
+		window.em.melde("Diese Art wurde bereits erfasst");
 	} else {
-		window.em.speichereBeobNeueArtgruppeArt(ArtBezeichnung);
+		localStorage.aArtId = artid;
+		if (localStorage.Status === "neu") {
+			window.em.speichereNeueBeob(ArtBezeichnung);
+		} else {
+			window.em.speichereBeobNeueArtgruppeArt(ArtBezeichnung);
+		}
 	}
 };
 
@@ -5861,7 +5902,7 @@ window.em.löscheOrt_2 = function() {
 // wird verwendet in hArtListe.html
 window.em.öffneArtgruppenliste_hal = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	window.em.leereStoragehBeobListe();
+	//window.em.leereStoragehBeobListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "hArtListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
@@ -8215,7 +8256,7 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	window.em.leereStoragehBeobListe();
+	//window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
 	if (window.em.gruppe_merken) {
 		// Artgruppenliste auslassen
@@ -8229,7 +8270,7 @@ window.em.zuArtgruppenliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.zuArtliste = function() {
 	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	window.em.leereStoragehBeobListe();
+	//window.em.leereStoragehBeobListe();
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
 };
