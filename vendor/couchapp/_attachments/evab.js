@@ -208,7 +208,6 @@ window.em.geheZurueckFE = function() {
 		// direkt zurück, Feldliste auslassen
 		window.em.leereStorageFeldEdit();
 		window.em.leereStorageFeldListe();
-		console.log("zurück zu FelderWaehlen.html");
 		// TODO: Geht zwar richtig zurück. Springt dann aber direkt zur BeobListe.html!
 		$.mobile.navigate("FelderWaehlen.html");
 		delete localStorage.zurueck;
@@ -1049,9 +1048,9 @@ window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 		ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>",
 		listItem,
 		ArtGruppenArray = ArtGruppenArrayIn || [];
-	for (i in Artgruppen.rows) {
+	for (i in window.em.Artgruppen.rows) {
 		if (typeof i !== "function") {
-			ArtGruppe = Artgruppen.rows[i].key;
+			ArtGruppe = window.em.Artgruppen.rows[i].key;
 			listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
 			listItem += ArtGruppe;
 			listItem += "' value='";
@@ -8237,20 +8236,19 @@ window.em.zuArtliste = function() {
 
 // Speichert alle Daten
 // wird in hArtEdit.html verwendet
-window.em.speichereHArt = function(that) {
-	// this wird von eventhandlern nicht in der Klammer übergeben
-	var _this = that || this;
+window.em.speichereHArt = function() {
+	var that = this;
 	// prüfen, ob hBeob als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
-		window.em.speichereHArt_2(_this);
+		window.em.speichereHArt_2(that);
 	} else {
 		// Objekt aud DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hBeobId, {
 			success: function(data) {
 				window.em.hArt = data;
-				window.em.speichereHArt_2(_this);
+				window.em.speichereHArt_2(that);
 			},
 			error: function() {
 				console.log('fehler in function speichereHArt');
@@ -8980,7 +8978,7 @@ window.em.löscheBeob_2 = function() {
 				}
 			} else {
 				// Keine BeobListe mehr. Storage löschen
-				leereStorageBeobListe;
+				window.em.leereStorageBeobListe;
 			}
 			window.em.leereStorageBeobEdit();
 			$.mobile.navigate("BeobListe.html");
