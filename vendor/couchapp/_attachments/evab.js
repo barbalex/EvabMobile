@@ -4183,22 +4183,29 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 }
 
 window.em.blendeDatentypabhängigeFelder = function() {
-	console.log("blende felder");
-	$("#feldedit_inputtyp").hide();
-	$("#feldedit_optionen").hide();
-	$(".feldedit_slider").hide();
 	switch (window.em.Feld.Formularelement) {
 		case "textinput":
 			$("#feldedit_inputtyp").show();
+			$("#feldedit_optionen").hide();
+			$(".feldedit_slider").hide();
 			break;
 		case "selectmenu":
 		case "multipleselect":
 		case "radio":
 		case "checkbox":
 			$("#feldedit_optionen").show();
+			$("#feldedit_inputtyp").hide();
+			$(".feldedit_slider").hide();
 			break;
 		case "slider":
 			$(".feldedit_slider").show();
+			$("#feldedit_inputtyp").hide();
+			$("#feldedit_optionen").hide();
+			break;
+		default:
+			$(".feldedit_slider").hide();
+			$("#feldedit_inputtyp").hide();
+			$("#feldedit_optionen").hide();
 			break;
 	}
 }
