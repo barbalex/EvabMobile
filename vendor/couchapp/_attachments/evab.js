@@ -917,6 +917,10 @@ window.em.initiiereFeldEdit_2 = function() {
 	var SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch,
 		SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach,
 		Standardwert;
+
+	// alle radio und checkboxen leeren (damit keine voher gewählten Werte verbleiben)
+	window.em.checkAllRadiosOfForm("FeldEditPage", false);
+
 	// Vorsicht: Bei neuen Feldern gibt es window.em.Feld.SichtbarImModusHierarchisch noch nicht
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
@@ -2538,6 +2542,30 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert,
 		return o;
 	};
 })(jQuery);
+
+window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
+	var checkboxes = new Array(),
+		i; 
+	checkboxes = $("#" + pagename).find('input');
+	for (i=0; i<checkboxes.length; i++)	{
+		if (checkboxes[i].type == 'checkbox')	 {
+			checkboxes[i].checked = checktoggle;
+			$("#"+checkboxes[i].id).checkboxradio("refresh");
+		}
+	}
+};
+
+window.em.checkAllRadiosOfForm = function(pagename, checktoggle) {
+	var radios = new Array(),
+		i; 
+	radios = $("#" + pagename).find('input');
+	for (i=0; i<radios.length; i++)	{
+		if (radios[i].type == 'radio')	 {
+			radios[i].checked = checktoggle;
+			$("#"+radios[i].id).checkboxradio("refresh");
+		}
+	}
+};
 
 // verorted mit Hilfe aller Methoden
 // wird benutzt von BeobEdit.html und hOrtEdit.html
