@@ -265,12 +265,14 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				// window.em.hBeobListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
 				row_objekt.id = data.id;
 				row_objekt.doc = doc;
-				window.em.hBeobListe.rows.push(row_objekt);
-				// jetzt die Liste neu sortieren
-				window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
-					return row.doc.aArtName;
-				});
-				/*window.em.hBeobListe.rows.sort(window.em.sortiereRowsNachArtname);*/
+				// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+				if (window.em.hBeobListe && window.em.hBeobListe.rows) {
+					window.em.hBeobListe.rows.push(row_objekt);
+					// jetzt die Liste neu sortieren
+					window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+						return row.doc.aArtName;
+					});
+				}
 				$.mobile.navigate("hArtEdit.html");
 			} else {
 				// Variabeln verfügbar machen
@@ -320,17 +322,20 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 						window.em.hArt = doc;
 						// window.em.hBeobListe anpassen
-						for (var i in window.em.hBeobListe.rows) {
-							if (window.em.hBeobListe.rows[i].id == docId) {
-								window.em.hBeobListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
-								window.em.hBeobListe.rows[i].doc.aArtName = aArtName;
-								window.em.hBeobListe.rows[i].doc.aArtId = sessionStorage.ArtId;
+						// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+						if (window.em.hBeobListe && window.em.hBeobListe.rows) {
+							for (var i in window.em.hBeobListe.rows) {
+								if (window.em.hBeobListe.rows[i].id == docId) {
+									window.em.hBeobListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
+									window.em.hBeobListe.rows[i].doc.aArtName = aArtName;
+									window.em.hBeobListe.rows[i].doc.aArtId = sessionStorage.ArtId;
+								}
 							}
+							// window.em.hBeobListe neu sortieren
+							window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+								return row.doc.aArtName;
+							});
 						}
-						// window.em.hBeobListe neu sortieren
-						window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
-							return row.doc.aArtName;
-						});
 						delete localStorage.aArtGruppe;
 						$.mobile.navigate("hArtEdit.html");
 					}
@@ -701,6 +706,8 @@ window.em.initiiereBeobliste_2 = function() {
 	}
 	$("#BeoblisteBL").html(ListItemContainer);
 	$("#BeoblisteBL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#BeobListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1155,6 +1162,8 @@ window.em.initiiereFeldliste_2 = function() {
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 	$("#FeldListeFL").html(ListItemContainer);
 	$("#FeldListeFL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#FeldListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1470,6 +1479,8 @@ window.em.initiiereProjektliste_2 = function() {
 	}
 	$("#ProjektlistehPL").html(ListItemContainer);
 	$("#ProjektlistehPL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#ProjektListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1637,6 +1648,8 @@ window.em.initiiereRaumListe_2 = function() {
 	}
 	$("#RaumlistehRL").html(ListItemContainer);
 	$("#RaumlistehRL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#RaumListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1815,6 +1828,8 @@ window.em.initiiereOrtListe_2 = function() {
 	}
 	$("#OrtlistehOL").html(ListItemContainer);
 	$("#OrtlistehOL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#hOrtListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1935,6 +1950,8 @@ window.em.initiiereZeitListe_2 = function() {
 	}
 	$("#ZeitlistehZL").html(ListItemContainer);
 	$("#ZeitlistehZL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#hZeitListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -2164,6 +2181,8 @@ window.em.initiierehBeobListe_2 = function() {
 	}
 	$("#ArtlistehAL").html(ListItemContainer);
 	$("#ArtlistehAL").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#hArtListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -3107,6 +3126,9 @@ window.em.erstelleArtenliste = function(filterwert) {
 	$("#al_ArtenListe").html(html);
 	$("#al_ArtenListe").show();
 	$("#al_ArtenListe").listview("refresh");
+	// Fokus in das Suchfeld setzen
+	$("#al_Page").find(".ui-input-search").children("input")[0].focus();
+
 };
 
 window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
@@ -3167,6 +3189,8 @@ window.em.erstelleArtgruppenListe_2 = function() {
 	$("#agl_ArtgruppenListe").html(html);
 	$("#agl_ArtgruppenListe").listview("refresh");
 	$("#agl_Hinweistext").empty().remove();
+	// Fokus in das Suchfeld setzen
+	$("#agl_Page").find(".ui-input-search").children("input")[0].focus();
 };
 
 // Stellt die Daten des Users bereit
@@ -3584,11 +3608,15 @@ window.em.handleAlArtListItemClick = function(that) {
 		art_schon_erfasst = false,
 		i;
 
-	window.em.hBeobListe.rows.each(function() {
-		if (this.doc.aArtId == artid) {
-			art_schon_erfasst = true;
-		}
-	});
+	// kontrollieren, ob diese Art schon erfasst wurde
+	// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+	if (window.em.hBeobListe && window.em.hBeobListe.rows) {
+		_.each(window.em.hBeobListe.rows, function(row) {
+			if (row.doc.aArtId == artid) {
+				art_schon_erfasst = true;
+			}
+		});
+	}
 
 	if (art_schon_erfasst) {
 		window.em.melde("Diese Art wurde bereits erfasst");
@@ -4147,16 +4175,14 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 					var i,
 						anzVorkommen = 0,
 						Datensatz,
-						TempFeld,
+						feldname,
 						ds;
 					// zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
 					for (i in data.rows) {
-						if (typeof i !== "function") {
-							Datensatz = data.rows[i].doc; 
-							TempFeld = Datensatz[localStorage.AlterFeldWert];
-							if (TempFeld) {
-								anzVorkommen += 1;
-							}
+						Datensatz = data.rows[i].doc;
+						feldname = Datensatz[localStorage.AlterFeldWert];
+						if (feldname) {
+							anzVorkommen += 1;
 						}
 					}
 					if (anzVorkommen === 0) {
@@ -4335,13 +4361,13 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 				var i,
 					anzVorkommen = 0,
 					Datensatz,
-					TempFeld,
+					feldname,
 					ds;
 				for (i in data.rows) {
 					if (typeof i !== "function") {
 						Datensatz = data.rows[i].doc;
-						TempFeld = Datensatz[window.em.Feld.FeldName];
-						if (TempFeld) {
+						feldname = Datensatz[window.em.Feld.FeldName];
+						if (feldname) {
 							anzVorkommen += 1;
 						}
 					}
