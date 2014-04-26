@@ -1130,7 +1130,7 @@ window.em.initiiereFeldliste_2 = function() {
 			// Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
 				Hierarchiestufe = TempFeld.Hierarchiestufe;
-				FeldBeschriftung = TempFeld.FeldBeschriftung;
+				FeldBeschriftung = TempFeld.FeldBeschriftung || "(ohne Feldnahme)";
 				FeldBeschreibung = "";
 				if (TempFeld.FeldBeschreibung) {
 					FeldBeschreibung = TempFeld.FeldBeschreibung;
