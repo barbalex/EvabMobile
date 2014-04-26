@@ -87,69 +87,71 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
-					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="erforderlich">
+					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="Erforderlich">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
-					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="erforderlich">
+					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="Wenn nicht erfasst = Name">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
-					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung"></textarea>
+					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung" placeholder="Was wird hier wofür und wie erfasst?"></textarea>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Reihenfolge">Reihenfolge:</label>
-					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="erforderlich">
+					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="Wenn nicht erfasst = 1. Alternativ 'Feld folgt nach' wählen">
 				</div>
 				<div id="FeldFolgtNachDiv"></div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
-					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text">
+					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text" placeholder="Feldname in EvAB, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameZdsf">Name beim ZDSF:</label>
-					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text">
+					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text" placeholder="Feldname bei Info Flora, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameCscf">Name beim CSCF:</label>
-					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text">
+					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text" placeholder="Feldname beim CSCF, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameNism">Name beim NISM:</label>
-					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text">
+					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text" placeholder="Feldname beim NISM, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text">
+					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text" placeholder="Feldname bei WSL Flechten, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
-					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text">
+					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text" placeholder="Feldname bei WSL Pilze, falls dieses Feld dort vorkommt">
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Feldtyp:</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput">
-							<label for="textinput">einfaches Feld (textinput)</label>
+							<label for="textinput">einfaches Feld</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea">
-							<label for="textarea">einfaches Feld, wächst mit Inhalt (textarea)</label>
+							<label for="textarea">einfaches Feld, wächst mit Inhalt</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch">
-							<label for="toggleswitch">ja/nein (toggleswitch)</label>
+							<label for="toggleswitch">ja/nein-Schalter</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider">
-							<label for="slider">Schieber: Zahlen von min. Wert bis max. Wert (slider)</label>
+							<label for="slider">Schieber: Zahlen von min. Wert bis max. Wert</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu">
-							<label for="selectmenu">Auswahlliste geschlossen, ein Wert möglich (selectmenu)</label>
+							<label for="selectmenu">Auswahlliste geschlossen, ein Wert möglich</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="multipleselect" value="multipleselect">
-							<label for="multipleselect">Auswahlliste geschlossen, mehrere Werte möglich (multipleselect)</label>
+							<label for="multipleselect">Auswahlliste geschlossen, mehrere Werte wählbar</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="radio" value="radio">
-							<label for="radio">Auswahlliste offen, ein Wert möglich (radio)</label>
+							<label for="radio">Auswahlliste offen, ein Wert möglich</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="checkbox" value="checkbox">
-							<label for="checkbox">Auswahlliste offen, mehrere Werte möglich (checkbox)</label>
+							<label for="checkbox">Auswahlliste offen, mehrere Werte wählbar</label>
 					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<fieldset data-role="controlgroup">
 						<legend>Datentyp eines einfachen Feldes:</legend>
+							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="keinWert" value="">
+							<label for="keinWert">(nichts wählen)</label>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text">
 							<label for="text">Text</label>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="number" value="number">
@@ -174,11 +176,11 @@
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text">
+					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text" placeholder="Erforderlich für Schieber. Beispiel: '0'">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
-					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" >
+					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" placeholder="Erforderlich für Schieber. Beispiel: '100'">
 				</div>
 			</form>
 			<ul data-role="pagination">

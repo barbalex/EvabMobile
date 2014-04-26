@@ -2888,11 +2888,35 @@ window.em.initiiereFelderWaehlen_2 = function() {
 // kreiert ein neues Feld
 // wird benutzt von FeldListe.html und FeldEdit.html
 window.em.neuesFeld = function() {
-	var NeuesFeld = {};
+	var NeuesFeld = {},
+		hierarchiestufe;
 	NeuesFeld.Typ = "Feld";
 	NeuesFeld.User = localStorage.Email;
 	NeuesFeld.SichtbarImModusEinfach = [];
 	NeuesFeld.SichtbarImModusHierarchisch = [];
+	// Hierarchiestufe aufgrund der Herkunft wählen
+	switch (localStorage.zurueck) {
+		case "hProjektEdit.html":
+		case "hProjektListe.html":
+			hierarchiestufe = "Projekt";
+			break;
+		case "hRaumEdit.html":
+		case "hRaumListe.html":
+			hierarchiestufe = "Raum";
+			break;
+		case "hOrtEdit.html":
+		case "hOrtListe.html":
+			hierarchiestufe = "Ort";
+			break;
+		case "hZeitEdit.html":
+		case "hZeitListe.html":
+			hierarchiestufe = "Zeit";
+			break;
+		default:
+			hierarchiestufe = "Art";
+			break;
+	}
+	NeuesFeld.Hierarchiestufe = hierarchiestufe;
 	// gleich sichtbar stellen
 	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
@@ -8812,15 +8836,6 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	/*if (window.em.Feld.ArtGruppe) {
 		window.em.Feld.ArtGruppe = window.em.Feld.ArtGruppe.split(", ");
 	}*/
-
-	// Es braucht eine Hierrarchiestufe
-	if (!Formularfelder.Hierarchiestufe && Formularfelder.Hierarchiestufe !== "undefined") {
-		// keine vorhanden > Art setzen
-		Formularfelder.Hierarchiestufe = "Art";
-		$("#Art").prop("checked",true).checkboxradio("refresh");
-		// und Artgruppenliste aufbauen
-		window.em.ArtGruppeAufbauenFeldEdit();
-	}
 	// Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
 	if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 		Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
