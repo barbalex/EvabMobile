@@ -154,6 +154,10 @@ margin: 3px 3px 3px 4px;
   z-index: 2;
 }
 
+/*anfänglich versteckte Elemente*/
+.hidden {
+  display: none;
+}
 
 /*!
 * jQuery Mobile Framework : drag pagination plugin

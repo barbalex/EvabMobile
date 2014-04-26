@@ -85,6 +85,8 @@
 							<label for="Art">Art</label>
 					</fieldset>
 				</div>
+				<div data-role="fieldcontain" id="Artgruppenliste">
+				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
 					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="Erforderlich">
@@ -126,7 +128,7 @@
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
 					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text" placeholder="Feldname bei WSL Pilze, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div data-role="fieldcontain" id="feldedit_formularelement">
 					<fieldset data-role="controlgroup">
 						<legend>Feldtyp:</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput">
@@ -147,7 +149,7 @@
 							<label for="checkbox">Auswahlliste offen, mehrere Werte wählbar</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain">
+				<div data-role="fieldcontain" id="feldedit_inputtyp" class="hidden">
 					<fieldset data-role="controlgroup">
 						<legend>Datentyp eines einfachen Feldes:</legend>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="keinWert" value="">
@@ -168,17 +170,15 @@
 							<label for="url">url</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain" id="Artgruppenliste">
-				</div>
-				<div data-role="fieldcontain">
+				<div data-role="fieldcontain" id="feldedit_optionen" class="hidden">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
 					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
 				</div>
-				<div data-role="fieldcontain">
+				<div data-role="fieldcontain" class="feldedit_slider hidden">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text" placeholder="Erforderlich für Schieber. Beispiel: '0'">
 				</div>
-				<div data-role="fieldcontain">
+				<div data-role="fieldcontain" class="feldedit_slider hidden">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" placeholder="Erforderlich für Schieber. Beispiel: '100'">
 				</div>

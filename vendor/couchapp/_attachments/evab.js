@@ -994,6 +994,8 @@ window.em.initiiereFeldEdit_2 = function() {
 
 	window.em.erstelleSelectFeldFolgtNach();	// BESSER: Nur aufrufen, wenn erstaufbau oder auch Feldliste zurückgesetzt wurde
 	window.em.speichereLetzteUrl();
+	// abhängige Felder blenden
+	window.em.blendeDatentypabhängigeFelder();
 	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 };
@@ -1065,7 +1067,7 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 	var i,
 		ArtGruppe,
-		ListItemContainer = "<fieldset data-role='controlgroup'>\n\t<legend>Artgruppen:</legend>",
+		ListItemContainer = "<fieldset data-role='controlgroup'><legend>In diesen Artgruppen kann das Feld angezeigt werden (erforderlich):</legend>",
 		listItem,
 		ArtGruppenArray = ArtGruppenArrayIn || [];
 	for (i in window.em.Artgruppen.rows) {
@@ -2917,6 +2919,9 @@ window.em.neuesFeld = function() {
 			break;
 	}
 	NeuesFeld.Hierarchiestufe = hierarchiestufe;
+	// Feldtyp vorwählen
+	NeuesFeld.Formularelement = "textinput";
+	NeuesFeld.InputTyp = "text";
 	// gleich sichtbar stellen
 	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
@@ -4159,6 +4164,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		window.em.speichereFeldeigenschaften();
 		// Wenn die Hierarchiestufe zu Art geändert wird, muss das Feld für die Artgruppe aufgebaut werden
 		window.em.ArtGruppeAufbauenFeldEdit();
+		window.em.melde("Jetzt müssen Sie wählen, in welchen Artgruppen dieses Feld angezeigt werden kann");
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert !== "Art") {
 		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + window.em.Feld.FeldBeschriftung);
 		if (window.em.Feld.Hierarchiestufe === "Art") {
@@ -4172,6 +4178,28 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			$(".FeldEditHeaderTitel").text(window.em.Feld.Hierarchiestufe + ": " + localStorage.FeldWert);
 		}
 		window.em.speichereFeldeigenschaften();
+	}
+	window.em.blendeDatentypabhängigeFelder();
+}
+
+window.em.blendeDatentypabhängigeFelder = function() {
+	console.log("blende felder");
+	$("#feldedit_inputtyp").hide();
+	$("#feldedit_optionen").hide();
+	$(".feldedit_slider").hide();
+	switch (window.em.Feld.Formularelement) {
+		case "textinput":
+			$("#feldedit_inputtyp").show();
+			break;
+		case "selectmenu":
+		case "multipleselect":
+		case "radio":
+		case "checkbox":
+			$("#feldedit_optionen").show();
+			break;
+		case "slider":
+			$(".feldedit_slider").show();
+			break;
 	}
 }
 
@@ -8829,13 +8857,10 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	var Formularfelder = $("#FeldEditForm").serializeObjectNull(),
 		idx1,
 		idx2;
-	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln. Plötzlich nicht mehr nötig??!!
+	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
 	if (Formularfelder.Optionen) {
 		Formularfelder.Optionen = Formularfelder.Optionen.split(",");
 	}
-	/*if (window.em.Feld.ArtGruppe) {
-		window.em.Feld.ArtGruppe = window.em.Feld.ArtGruppe.split(", ");
-	}*/
 	// Wenn Beschriftung fehlt und Name existiert: Beschriftung = Name
 	if (!Formularfelder.FeldBeschriftung && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
 		Formularfelder.FeldBeschriftung = Formularfelder.FeldName;
@@ -8848,19 +8873,15 @@ window.em.speichereFeldeigenschaften_2 = function() {
 		// Feldliste soll neu aufgebaut werden
 		window.em.leereStorageFeldListe();
 	}
-	// Es braucht einen Feldtyp
-	if (!Formularfelder.Formularelement && Formularfelder.Hierarchiestufe && Formularfelder.FeldName) {
-		Formularfelder.Formularelement = "textinput";
-		Formularfelder.InputTyp = "text";
-	}
 	// Wenn Feldtyp von textinput weg geändert wurde, sollte InputTyp entfernt werden
 	if (Formularfelder.Formularelement !== "textinput" && Formularfelder.InputTyp) {
 		delete Formularfelder.InputTyp;
 		$("#" + window.em.Feld.InputTyp).prop("checked",false).checkboxradio("refresh");
 	}
-	// Wenn Feldtyp gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
+	// Wenn Feldtyp textinput gesetzt wurde, muss ein InputTyp existieren. Wenn er nicht gesetzt wurde, text setzen
 	if (Formularfelder.Formularelement === "textinput" && !Formularfelder.InputTyp) {
 		Formularfelder.InputTyp = "text";
+		$("#" + window.em.Feld.InputTyp).prop("checked",true).checkboxradio("refresh");
 	}
 	// Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
