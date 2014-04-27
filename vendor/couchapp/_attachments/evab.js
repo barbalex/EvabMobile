@@ -8318,7 +8318,7 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 						} else if (doc[Feldname]) {
 							delete doc[Feldname];
 						}
-					$db.saveDoc(doc, {
+					db.saveDoc(doc, {
 						error: function () {
 							console.log('fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
 						}
@@ -8332,7 +8332,6 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 	} else {
 		// es gibt noch keine User-Doc
 		// vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
-		//window.em.speichereAutorAlsStandardwert();
 		console.log("Fehler: Datenverwendung nicht gespeichert");
 	}
 };
