@@ -49,18 +49,22 @@
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
 				<h2>meine Einstellungen</h2>
 				<div data-role="fieldcontain">
-					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
-					<select class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach" name="SichtbarImModusEinfach" data-role="flipswitch">
-						<option value="nein">nein</option>
-						<option value="ja">ja</option>
-					</select> 
+					<fieldset data-role="controlgroup">
+						<legend>Sichtbar im einfachen Modus?</legend>
+							<input type="radio" name="SichtbarImModusEinfach" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach_ja" value="ja">
+							<label for="SichtbarImModusEinfach_ja">ja</label>
+							<input type="radio" name="SichtbarImModusEinfach" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach_nein" value="nein">
+							<label for="SichtbarImModusEinfach_nein">nein</label>
+					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
-					<select class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch" name="SichtbarImModusHierarchisch" data-role="flipswitch">
-						<option value="nein">nein</option>
-						<option value="ja">ja</option>
-					</select> 
+					<fieldset data-role="controlgroup">
+						<legend>Sichtbar im hierarchischen Modus?</legend>
+							<input type="radio" name="SichtbarImModusHierarchisch" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch_ja" value="ja">
+							<label for="SichtbarImModusHierarchisch_ja">ja</label>
+							<input type="radio" name="SichtbarImModusHierarchisch" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch_nein" value="nein">
+							<label for="SichtbarImModusHierarchisch_nein">nein</label>
+					</fieldset>
 				</div>
 				<div data-role="fieldcontain">
 					<label for="Standardwert">Standardwert:</label>
@@ -135,8 +139,8 @@
 							<label for="textinput">einfaches Feld</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textarea" value="textarea">
 							<label for="textarea">einfaches Feld, wächst mit Inhalt</label>
-							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch">
-							<label for="toggleswitch">ja/nein - Schalter</label>
+							<!--input type="radio" name="Formularelement" class="Feldeigenschaften" id="toggleswitch" value="toggleswitch">
+							<label for="toggleswitch">ja/nein - Schalter</label-->
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="slider" value="slider">
 							<label for="slider">Schieber: Zahlen von ... bis</label>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="selectmenu" value="selectmenu">

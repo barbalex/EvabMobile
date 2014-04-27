@@ -928,22 +928,22 @@ window.em.initiiereFeldEdit_2 = function() {
 	// alle radio und checkboxen leeren (damit keine voher gewählten Werte verbleiben)
 	window.em.checkAllRadiosOfForm("FeldEditPage", false);
 
-	// Vorsicht: Bei neuen Feldern gibt es window.em.Feld.SichtbarImModusHierarchisch noch nicht
+	// Sichtbarkeit anzeigen
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
+		$("#SichtbarImModusHierarchisch_ja").prop("checked",true).checkboxradio("refresh");
 	} else {
 		$("#SichtbarImModusHierarchisch").val("nein");
+		$("#SichtbarImModusHierarchisch_nein").prop("checked",true).checkboxradio("refresh");
 	}
-	$("#SichtbarImModusHierarchisch").flipswitch();
-	$("#SichtbarImModusHierarchisch").flipswitch("refresh");
-	// Vorsicht: Bei neuen Feldern gibt es window.em.Feld.SichtbarImModusEinfach noch nicht
 	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
-		$("select#SichtbarImModusEinfach").val("ja");
+		$("#SichtbarImModusEinfach").val("ja");
+		$("#SichtbarImModusEinfach_ja").prop("checked",true).checkboxradio("refresh");
 	} else {
-		$("select#SichtbarImModusEinfach").val("nein");
+		$("#SichtbarImModusEinfach").val("nein");
+		$("#SichtbarImModusEinfach_nein").prop("checked",true).checkboxradio("refresh");
 	}
-	$("#SichtbarImModusEinfach").flipswitch();
-	$("#SichtbarImModusEinfach").flipswitch("refresh");
+	
 	// Artgruppe Aufbauen, wenn Hierarchiestufe == Art
 	if (window.em.Feld.Hierarchiestufe === "Art") {
 		window.em.ArtGruppeAufbauenFeldEdit(window.em.Feld.ArtGruppe);
@@ -2220,10 +2220,9 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 	case "textarea":
 		HtmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
 		break;
-	case "toggleswitch":
-		console.log("generiere Html für toggleswitch für Feld " + FeldName + " mit Inhalt " + FeldWert);
+	/*case "toggleswitch":
 		HtmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
-		break;
+		break;*/
 	case "checkbox":
 		HtmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
 		break;
@@ -2306,7 +2305,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 	return HtmlContainer;
 };
 
-// generiert den html-Inhalt für Toggleswitch
+/*// generiert den html-Inhalt für Toggleswitch
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer = "<div data-role='fieldcontain'><label for='";
@@ -2319,22 +2318,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 	HtmlContainer += FeldName;
 	HtmlContainer += "' data-role='flipswitch' value='";
 	HtmlContainer += FeldWert;
-	HtmlContainer += "' class='speichern'><option value='nein'>nein</option><option value='ja'>ja</option></select></div>";
-	return HtmlContainer;
-};
-
-/*window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "'>";
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += "</label>\n\t<select name='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' id='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' data-role='slider' value='";
-	HtmlContainer += FeldWert;
-	HtmlContainer += "' class='speichern'>\n\t\t<option value='nein'>nein</option>\n\t\t<option value='ja'>ja</option>\n\t</select>\n</div>";
+	HtmlContainer += "' class='speichern flipswitch'><option value='ja'>ja</option><option value='nein'>nein</option></select></div>";
 	return HtmlContainer;
 };*/
 
@@ -4057,6 +4041,7 @@ window.em.handleBeobListeMenuEinstellungenClick = function() {
 // das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 // oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 window.em.handleFeldEditPageshow = function() {
+	console.log("feldedit pageshow");
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -4070,6 +4055,7 @@ window.em.handleFeldEditPageshow = function() {
 // wenn FeldEdit.html initiiert wird
 // Code, der nur beim ersten Aufruf der Seite laufen soll
 window.em.handleFeldEditPageinit = function() {
+	console.log("feldedit pageinit");
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -8593,7 +8579,7 @@ window.em.pruefeFeldNamen = function() {
 				// Feldname ist neu, somit zulässig > speichern
 				// und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
 				$("#SichtbarImModusHierarchisch").val("ja");
-				$("select#SichtbarImModusHierarchisch").slider("refresh");
+				$("#SichtbarImModusHierarchisch_ja").prop("checked",true).checkboxradio("refresh");
 				window.em.speichereFeldeigenschaften();
 			} else {
 				// Feldname kommt bei diesem User schon vor
@@ -8948,7 +8934,7 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
 	// Soll das Feld im Modus einfach sichtbar sein?
 	idx1 = window.em.Feld.SichtbarImModusEinfach.indexOf(localStorage.Email);
-	if ($("#SichtbarImModusEinfach").val() === "ja") {
+	if ($("#SichtbarImModusEinfach_ja").prop("checked") === true) {
 		// User ergänzen, wenn noch nicht enthalten
 		if (idx1 === -1) {
 			window.em.Feld.SichtbarImModusEinfach.push(localStorage.Email);
@@ -8961,7 +8947,7 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	}
 	// Soll das Feld im Modus hierarchisch sichtbar sein?
 	idx2 = window.em.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email);
-	if ($("#SichtbarImModusHierarchisch").val() === "ja") {
+	if ($("#SichtbarImModusHierarchisch_ja").prop("checked") === true) {
 		// User ergänzen, wenn noch nicht enthalten
 		if (idx2 === -1) {
 			window.em.Feld.SichtbarImModusHierarchisch.push(localStorage.Email);
