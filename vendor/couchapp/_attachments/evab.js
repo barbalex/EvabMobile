@@ -758,24 +758,25 @@ window.em.initiiereUserEdit = function() {
 	if (localStorage.Autor) {
 		$("#Autor").val(localStorage.Autor);
 	}
-	$db = $.couch.db("evab");
-	$db.openDoc(localStorage.Email, {
-		success: function(User) {
-			// fixe Felder aktualisieren
-			if (User.Datenverwendung) {
-				$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
-				localStorage.Datenverwendung = User.Datenverwendung;
-			} else {
+	$.couch.userDb(function(db) {
+		db.openDoc("org.couchdb.user:" + localStorage.Email, {
+			success: function(User) {
+				// fixe Felder aktualisieren
+				if (User.Datenverwendung) {
+					$("#" + User.Datenverwendung).prop("checked",true).checkboxradio("refresh");
+					localStorage.Datenverwendung = User.Datenverwendung;
+				} else {
+					// Standardwert setzen
+					$("#JaAber").prop("checked",true).checkboxradio("refresh");
+				}
+				window.em.speichereLetzteUrl();
+			},
+			error: function() {
+				console.log('User hat kein User-Dokument');
 				// Standardwert setzen
 				$("#JaAber").prop("checked",true).checkboxradio("refresh");
 			}
-			window.em.speichereLetzteUrl();
-		},
-		error: function() {
-			console.log('User hat kein User-Dokument');
-			// Standardwert setzen
-			$("#JaAber").prop("checked",true).checkboxradio("refresh");
-		}
+		});
 	});
 };
 
