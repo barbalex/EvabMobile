@@ -772,7 +772,7 @@ window.em.initiiereUserEdit = function() {
 				window.em.speichereLetzteUrl();
 			},
 			error: function() {
-				console.log('User hat kein User-Dokument');
+				console.log('Fehler in window.em.initiiereUserEdit');
 				// Standardwert setzen
 				$("#JaAber").prop("checked",true).checkboxradio("refresh");
 			}
@@ -3440,41 +3440,25 @@ window.em.erstelleSichtbareFelder = function() {
 	});
 };
 
-// Schreibt die Informationen des users in ein doc vom Typ User
 // erstellt die sichtbaren Felder
-// wird benutzt von: Signup.html, UserEdit.html
-window.em.speichereUserInEvab = function() {
-	var doc = {};
-	doc._id = $('input[name=Email]').val();
-	doc.Typ = "User";
-	doc.Datenverwendung = localStorage.Datenverwendung || "JaAber";
+// wird benutzt von: Signup.html
+window.em.speichereAutorAlsStandardwert = function() {
 	$db = $.couch.db("evab");
-	$db.saveDoc(doc, {
-		success: function(data) {
-			// localStorage gründen
-			localStorage.Email = $('input[name=Email]').val();
-			localStorage.Autor = $("#Autor").val();
-			// Autor speichern
-			$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
-				success: function(Feld) {
-					// Autor speichern
-					// Falls Standardwert noch nicht existiert, 
-					// muss zuerst das Objekt geschaffen werden
-					if (!Feld.Standardwert) {
-						Feld.Standardwert = {};
-					}
-					Feld.Standardwert[localStorage.Email] = $("#Autor").val();
-					$db.saveDoc(Feld, {
-						success: function() {
-							// Felder sictbar schalten
-							window.em.erstelleSichtbareFelder();
-							$.mobile.navigate("BeobListe.html");
-						},
-						error: function() {
-							window.em.erstelleSichtbareFelder();
-							window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
-						}
-					});
+	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
+		success: function(Feld) {
+			// Falls Standardwert noch nicht existiert, 
+			// muss zuerst das Objekt geschaffen werden
+			if (!Feld.Standardwert) {
+				Feld.Standardwert = {};
+			}
+			Feld.Standardwert[localStorage.Email] = localStorage.Autor;
+			$db.saveDoc(Feld, {
+				success: function() {
+					// Felder sictbar schalten
+					window.em.erstelleSichtbareFelder();
+					// Feldliste soll neu aufgebaut werden
+					window.em.leereStorageFeldListe();
+					$.mobile.navigate("BeobListe.html");
 				},
 				error: function() {
 					window.em.erstelleSichtbareFelder();
@@ -3483,7 +3467,8 @@ window.em.speichereUserInEvab = function() {
 			});
 		},
 		error: function() {
-			window.em.melde("Oh je, Ihr User konnte nicht erstellt werden, der Name ist jetzt aber belegt\nVersuchen Sie es mit einem anderen Benutzernamen\noder bitten Sie alex@gabriel-software.ch, den Namen wieder freizugeben");
+			window.em.erstelleSichtbareFelder();
+			window.em.melde("Konto erfolgreich erstellt\nAnmeldung gescheitert\nBitte melden Sie sich neu an");
 		}
 	});
 };
@@ -7496,17 +7481,7 @@ window.em.meldeUserAn = function() {
 			name : Email,
 			password : Passwort,
 			success : function (r) {
-				console.log("r = " + JSON.stringify(r));
-				console.log("r.name = " + r.name);
-				// TODO: Abfangen, wenn Username leer ist. USER erstellen
-				if (r.name) {
-					localStorage.Email = r.name;
-				} else {
-					// login erfolgreich, aber keine Informationen zum User
-					// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
-					// also User anbieten
-					$.mobile.navigate("UserEdit.html");
-				}
+				localStorage.Email = Email;
 				if (r.roles.indexOf("_admin") !== -1) {
 					// das ist ein admin
 					// er hat mehr Befehle zur Verfügung
@@ -8224,8 +8199,8 @@ window.em.erstelleKonto = function() {
 		}, $('#su_Passwort').val(), {
 		success : function (r) {
 			localStorage.Email = $('#su_Email').val();
-			// Informationen zum User in doc vom typ User eintragen
-			window.em.speichereUserInEvab();
+			localStorage.Autor = $("#Autor").val();
+			window.em.speichereAutorAlsStandardwert();
 		},
 		error : function () {
 			window.em.melde("Fehler: Das Konto wurde nicht erstellt");
@@ -8335,30 +8310,30 @@ window.em.validiereUserUserEdit = function() {
 
 window.em.speichereUser = function(Feldname, Feldwert) {
 	if (localStorage.Datenverwendung) {
-		$db = $.couch.db("evab");
-		$db.openDoc(localStorage.Email, {
-			success: function (doc) {
-					if (Feldwert) {
-						doc[Feldname] = Feldwert;
-					} else if (doc[Feldname]) {
-						delete doc[Feldname];
-					}
-				$db.saveDoc(doc, {
-					error: function () {
-						console.log('fehler in function window.em.speichereUser');
-						//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-					}
-				});
-			},
-			error: function () {
-				console.log('fehler in function window.em.speichereUser');
-				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
-			}
+		$.couch.userDb(function(db) {
+			db.openDoc("org.couchdb.user:" + localStorage.Email, {
+				success: function (doc) {
+						if (Feldwert) {
+							doc[Feldname] = Feldwert;
+						} else if (doc[Feldname]) {
+							delete doc[Feldname];
+						}
+					$db.saveDoc(doc, {
+						error: function () {
+							console.log('fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
+						}
+					});
+				},
+				error: function () {
+					console.log('fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
+				}
+			});
 		});
 	} else {
 		// es gibt noch keine User-Doc
 		// vielleicht hatte der User ein Konto bei ArtenDb erstellt und ist das erste mal in Evab
-		window.em.speichereUserInEvab();
+		//window.em.speichereAutorAlsStandardwert();
+		console.log("Fehler: Datenverwendung nicht gespeichert");
 	}
 };
 
