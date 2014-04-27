@@ -943,7 +943,7 @@ window.em.initiiereFeldEdit_2 = function() {
 		$("#SichtbarImModusEinfach").val("nein");
 		$("#SichtbarImModusEinfach_nein").prop("checked",true).checkboxradio("refresh");
 	}
-	
+
 	// Artgruppe Aufbauen, wenn Hierarchiestufe == Art
 	if (window.em.Feld.Hierarchiestufe === "Art") {
 		window.em.ArtGruppeAufbauenFeldEdit(window.em.Feld.ArtGruppe);
@@ -7495,6 +7495,8 @@ window.em.meldeUserAn = function() {
 			name : Email,
 			password : Passwort,
 			success : function (r) {
+				console.log("r = " + JSON.stringify(r));
+				console.log("r.name = " + r.name);
 				// TODO: Abfangen, wenn Username leer ist. USER erstellen
 				if (r.name) {
 					localStorage.Email = r.name;
@@ -7503,6 +7505,12 @@ window.em.meldeUserAn = function() {
 					// Möglicher Grund: Das Konto wurde von ArtenDb erstellt
 					// also User anbieten
 					$.mobile.navigate("UserEdit.html");
+				}
+				if (r.roles.indexOf("_admin") !== -1) {
+					// das ist ein admin
+					// er hat mehr Befehle zur Verfügung
+					console.log("hallo admin");
+					window.em.admin = true;
 				}
 				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
 				window.em.stelleUserDatenBereit();
@@ -8210,10 +8218,11 @@ window.em.validiereUserSignup = function() {
 window.em.erstelleKonto = function() {
 	// User in _user eintragen
 	$.couch.signup({
-			name: $('#su_Email').val()
+			name: $('#su_Email').val(),
+			Datenverwendung: localStorage.Datenverwendung || "JaAber"
 		}, $('#su_Passwort').val(), {
 		success : function (r) {
-			localStorage.Email = r.name;
+			localStorage.Email = $('#su_Email').val();
 			// Informationen zum User in doc vom typ User eintragen
 			window.em.speichereUserInEvab();
 		},
@@ -9180,6 +9189,30 @@ window.em.speichereBeob_2 = function(that) {
 window.em.meldeNeuAn = function() {
 	localStorage.UserStatus = "neu";
 	$.mobile.changePage("index.html");
+};
+
+window.em.aktualisiereArtGruppen = function() {
+	// neue von arteigenschaften.ch holen
+
+	// auflisten:
+	// bisherige unverändert (keine Aktion)
+	// bisherige verändert: aktualisieren
+	// zusätzliche: importieren
+	// nicht mehr vorhandene: 
+	//    1. zugehörige Beobachtungen exportieren (um sie anzupassen)
+	//    2. löschen
+};
+
+window.em.aktualisiereArten = function() {
+	// neue von arteigenschaften.ch holen
+
+	// auflisten:
+	// bisherige unverändert (keine Aktion)
+	// bisherige verändert: aktualisieren
+	// zusätzliche: importieren
+	// nicht mehr vorhandene: 
+	//    1. zugehörige Beobachtungen exportieren (um sie anzupassen) 
+	//    2. löschen
 };
 
 
