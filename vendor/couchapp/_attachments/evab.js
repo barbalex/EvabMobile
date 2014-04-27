@@ -934,16 +934,16 @@ window.em.initiiereFeldEdit_2 = function() {
 	} else {
 		$("#SichtbarImModusHierarchisch").val("nein");
 	}
-	$("select#SichtbarImModusHierarchisch").slider();
-	$("select#SichtbarImModusHierarchisch").slider("refresh");
+	$("#SichtbarImModusHierarchisch").flipswitch();
+	$("#SichtbarImModusHierarchisch").flipswitch("refresh");
 	// Vorsicht: Bei neuen Feldern gibt es window.em.Feld.SichtbarImModusEinfach noch nicht
 	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
 		$("select#SichtbarImModusEinfach").val("ja");
 	} else {
 		$("select#SichtbarImModusEinfach").val("nein");
 	}
-	$("select#SichtbarImModusEinfach").slider();
-	$("select#SichtbarImModusEinfach").slider("refresh");
+	$("#SichtbarImModusEinfach").flipswitch();
+	$("#SichtbarImModusEinfach").flipswitch("refresh");
 	// Artgruppe Aufbauen, wenn Hierarchiestufe == Art
 	if (window.em.Feld.Hierarchiestufe === "Art") {
 		window.em.ArtGruppeAufbauenFeldEdit(window.em.Feld.ArtGruppe);
