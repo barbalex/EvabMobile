@@ -26,6 +26,10 @@
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}
 
+@media all and (min-width: 450px) {
+  .ausgerichtet_an_input { margin-left: 22%; }
+}
+
 /*jqm setzt Linien nach fieldcontain
   ist unschön, entfernen*/
 .ui-field-contain {
