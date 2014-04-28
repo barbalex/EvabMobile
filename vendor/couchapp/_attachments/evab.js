@@ -2696,6 +2696,7 @@ window.em.speichereLetzteUrl = function() {
 
 window.em.holeAutor = function() {
 	// aAutor holen
+	$db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function(doc) {
 			if (doc.Standardwert) {
@@ -3183,22 +3184,21 @@ window.em.erstelleArtgruppenListe_2 = function() {
 // Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
 // braucht den Usernamen
 window.em.stelleUserDatenBereit = function() {
-	$db = $.couch.db("evab");
-	$db.view('evab/User?key="' + localStorage.Email + '"', {
-		success: function(data) {
-			// weitere anderswo benutzte Variabeln verfügbar machen
-			window.em.holeAutor();
-			// kontrollieren, ob User existiert
-			// wenn nicht, kann es sein, dass dieser User sei Konto ursprünglich in ArtenDb erstellt hat
-			if (data.rows.length === 0) {
-				$.mobile.navigate("UserEdit.html");
-				return;
+	window.em.holeAutor();
+	$.couch.userDb(function(db) {
+		db.openDoc("org.couchdb.user:" + localStorage.Email, {
+			success: function (doc) {
+				if (doc.Datenverwendung) {
+					localStorage.Datenverwendung = doc.Datenverwendung;
+				} else {
+					// Datenverwendung existiert nicht
+					// Kann es sein, dass dieser User sein Konto ursprünglich in ArtenDb erstellt hat
+					$.mobile.navigate("UserEdit.html");
+					return;
+				}
+				window.em.oeffneZuletztBenutzteSeite();
 			}
-			if (data.Datenverwendung) {
-				localStorage.Datenverwendung = data.Datenverwendung;
-			}
-			window.em.oeffneZuletztBenutzteSeite();
-		}
+		});
 	});
 };
 
@@ -7484,10 +7484,15 @@ window.em.meldeUserAn = function() {
 				localStorage.Email = Email;
 				if (r.roles.indexOf("_admin") !== -1) {
 					// das ist ein admin
-					// er hat mehr Befehle zur Verfügung
 					console.log("hallo admin");
-					window.em.admin = true;
-				}
+					// Admin-Menu-Befehle einblenden
+					$(".popup").find(".admin").css("display", "block");
+					$(".popup").popup();
+				}/* else {
+					// Verstecken, weil sonst nach Neuanmeldung eines Nicht-Admins die Menüs immer noch sichtbar sind
+					$(".popup").find(".admin").hide();
+					$(".popup").popup();
+				}*/
 				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
 				window.em.stelleUserDatenBereit();
 				delete localStorage.UserStatus;

@@ -26,6 +26,7 @@
 .min-width-480px .ui-field-contain {margin: 0.5em 0;}
 .titel {margin:0.12cm; text-align:center}
 
+/*Text, der mit Feldern ausgerichtet werden soll*/
 @media all and (min-width: 450px) {
   .ausgerichtet_an_input { margin-left: 22%; }
 }
@@ -145,8 +146,8 @@ em { color: red; font-weight: bold; padding-right: .25em; }
 
 /*Buttons ohne Text vergrössern*/
 .ui-btn-icon-notext {
-width: 26px;
-height: 26px;
+  width: 26px;
+  height: 26px;
 }
 
 .ui-btn-icon-notext .ui-btn-inner .ui-icon {
@@ -160,6 +161,10 @@ margin: 3px 3px 3px 4px;
 
 /*anfänglich versteckte Elemente*/
 .hidden {
+  display: none;
+}
+
+.popup .admin {
   display: none;
 }
 
