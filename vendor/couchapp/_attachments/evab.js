@@ -3782,6 +3782,10 @@ window.em.handleBeobEditPageinit = function() {
 	$('#MenuBeobEdit').on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick);
 
 	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -3971,6 +3975,10 @@ window.em.handleBeobListePageinit = function() {
 	$('#MenuBeobListe').on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick);
 
 	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
@@ -4700,6 +4708,10 @@ window.em.handleHArtEditPageinit = function() {
 	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn hArtListe.html erscheint
@@ -4775,6 +4787,10 @@ window.em.handleHArtListePageinit = function() {
 	$('#MenuhBeobListe').on('click', '.menu_einstellungen', window.em.handleHArtListeMenuEinstellungenClick);
 
 	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
@@ -5016,6 +5032,10 @@ window.em.handleHOrtEditPageinit = function() {
 	$('#MenuOrtEdit').on('click', '.menu_einstellungen', window.em.handleHOrtEditMenuEinstellungenClick);
 
 	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuOrtEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuOrtEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
@@ -5235,6 +5255,10 @@ window.em.handleHOrtListePageinit = function() {
 	$('#MenuOrtListe').on('click', '.menu_einstellungen', window.em.handleHOrtListeMenuEinstellungenClick);
 
 	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuOrtListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuOrtListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
@@ -5438,6 +5462,10 @@ window.em.handleHProjektEditPageinit = function() {
 	$('#MenuProjektEdit').on('click', '.menu_einstellungen', window.em.handleHProjektEditMenuEinstellungenClick);
 
 	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuProjektEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuProjektEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
@@ -6189,6 +6217,10 @@ window.em.handleHProjektListePageinit = function() {
 	$('#MenuProjektListe').on('click', '.menu_einstellungen', window.em.handleProjektListeMenuEinstellungenClick);
 
 	$('#MenuProjektListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuProjektListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuProjektListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 window.em.handleProjektListeSwipeleft = function() {
@@ -6377,6 +6409,10 @@ window.em.handleRaumEditPageinit = function() {
 	$('#MenuRaumEdit').on('click', '.menu_einstellungen', window.em.handleRaumEditMenuEinstellungenClick);
 
 	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 window.em.handleRaumEditOeffneRaumListeClick = function() {
@@ -6762,6 +6798,10 @@ window.em.handleHRaumListePageinit = function() {
 	$('#MenuRaumListe').on('click', '.menu_einstellungen', window.em.handleRaumListeMenuEinstellungenClick);
 
 	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 window.em.handleRaumListeOeffneProjektEditClick = function() {
@@ -6949,6 +6989,10 @@ window.em.handleHZeitEditPageinit = function() {
 	$('#MenuZeitEdit').on('click', '.menu_einstellungen', window.em.handleZeitEditMenuEinstellungenClick);
 
 	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuZeitEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 window.em.handleZeitEditOeffneOrtClick = function() {
@@ -7345,6 +7389,10 @@ window.em.handleZeitListePageinit = function() {
 	$('#MenuZeitListe').on('click', '.menu_einstellungen', window.em.handleZeitListeMenuEinstellungenClick);
 
 	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+
+	$('#MenuZeitListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
 
 window.em.handleZeitListeOeffneOrtClick = function() {
@@ -7486,13 +7534,13 @@ window.em.meldeUserAn = function() {
 					// das ist ein admin
 					console.log("hallo admin");
 					// Admin-Menu-Befehle einblenden
-					$(".popup").find(".admin").css("display", "block");
-					$(".popup").popup();
-				}/* else {
+					$(".popup").find(".admin").show();
+					//$(".popup").popup();
+				} else {
 					// Verstecken, weil sonst nach Neuanmeldung eines Nicht-Admins die Menüs immer noch sichtbar sind
 					$(".popup").find(".admin").hide();
-					$(".popup").popup();
-				}*/
+					//$(".popup").popup();
+				}
 				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
 				window.em.stelleUserDatenBereit();
 				delete localStorage.UserStatus;
@@ -9169,9 +9217,13 @@ window.em.speichereBeob_2 = function(that) {
 window.em.meldeNeuAn = function() {
 	localStorage.UserStatus = "neu";
 	$.mobile.changePage("index.html");
+	// Felder zurücksetzen, sonst ist hier noch die alte Anmeldung drin
+	$("#Email").val("");
+	$("#Passwort").val("");
 };
 
 window.em.aktualisiereArtGruppen = function() {
+	console.log("window.em.aktualisiereArtGruppen");
 	// neue von arteigenschaften.ch holen
 
 	// auflisten:
@@ -9184,6 +9236,7 @@ window.em.aktualisiereArtGruppen = function() {
 };
 
 window.em.aktualisiereArten = function() {
+	console.log("window.em.aktualisiereArten");
 	// neue von arteigenschaften.ch holen
 
 	// auflisten:

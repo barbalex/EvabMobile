@@ -131,7 +131,11 @@ label.error {
     label.error { display: inline-block; margin-left: 22%; }
 }
 
-em { color: red; font-weight: bold; padding-right: .25em; }
+em {
+  color: red;
+  font-weight: bold;
+  padding-right: .25em;
+}
 
 /*Zweispaltige Listen für Arten formatieren*/
 
@@ -166,6 +170,10 @@ margin: 3px 3px 3px 4px;
 
 .popup .admin {
   display: none;
+}
+
+.text-zentrieren {
+  text-align: center;
 }
 
 /*!
