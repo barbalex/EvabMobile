@@ -3796,7 +3796,7 @@ window.em.handleBeobEditPageinit = function() {
 
 	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -3989,7 +3989,7 @@ window.em.handleBeobListePageinit = function() {
 
 	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -4722,7 +4722,7 @@ window.em.handleHArtEditPageinit = function() {
 
 	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -4801,7 +4801,7 @@ window.em.handleHArtListePageinit = function() {
 
 	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -5046,7 +5046,7 @@ window.em.handleHOrtEditPageinit = function() {
 
 	$('#MenuOrtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuOrtEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuOrtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuOrtEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -5269,7 +5269,7 @@ window.em.handleHOrtListePageinit = function() {
 
 	$('#MenuOrtListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuOrtListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuOrtListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuOrtListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -5476,7 +5476,7 @@ window.em.handleHProjektEditPageinit = function() {
 
 	$('#MenuProjektEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuProjektEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuProjektEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuProjektEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -6231,7 +6231,7 @@ window.em.handleHProjektListePageinit = function() {
 
 	$('#MenuProjektListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuProjektListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuProjektListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuProjektListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -6423,7 +6423,7 @@ window.em.handleRaumEditPageinit = function() {
 
 	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -6812,7 +6812,7 @@ window.em.handleHRaumListePageinit = function() {
 
 	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -7003,7 +7003,7 @@ window.em.handleHZeitEditPageinit = function() {
 
 	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuZeitEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -7403,7 +7403,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.aktualisiereArtGruppen);
+	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuZeitListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
 };
@@ -7546,9 +7546,9 @@ window.em.meldeUserAn = function() {
 				if (r.roles.indexOf("_admin") !== -1) {
 					// das ist ein admin
 					console.log("hallo admin");
-					window.em.admin = true;
+					localStorage.admin = true;
 				} else {
-					delete window.em.admin;
+					delete localStorage.admin;
 				}
 				window.em.blendeMenus();
 				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
@@ -7563,7 +7563,7 @@ window.em.meldeUserAn = function() {
 };
 
 window.em.blendeMenus = function() {
-	if (window.em.admin) {
+	if (localStorage.admin) {
 		$(".popup").find(".admin").show();
 	} else {
 		$(".popup").find(".admin").hide();
@@ -9240,6 +9240,47 @@ window.em.meldeNeuAn = function() {
 	$("#Passwort").val("");
 };
 
+
+
+
+
+window.em.handleArtengruppenImportierenPageshow = function() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+	//window.em.initiiereArtengruppenImportieren();
+};
+
+window.em.handleArtengruppenImportierenPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+
+	// zurück-Button steuern
+	$("#ArtengruppenImportierenHeader").on('click', '#zurückArtengruppenImportieren', function (event) {
+		event.preventDefault();
+		window.em.handleArtengruppenImportierenZurückClick();
+	});
+};
+
+window.em.handleArtengruppenImportierenZurückClick = function() {
+	// sicherstellen, dass er immer ein zurück kennt
+	if (!localStorage.zurueck) {
+		localStorage.zurueck = "BeobListe.html";
+	}
+	$.mobile.navigate(localStorage.zurueck + ".html");
+	delete localStorage.zurueck;
+};
+
+window.em.öffneArtengruppenImportieren = function() {
+	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
+	$.mobile.navigate("ArtengruppenImportieren.html");
+}
+
 window.em.aktualisiereArtGruppen = function() {
 	console.log("window.em.aktualisiereArtGruppen");
 	// neue von arteigenschaften.ch holen
@@ -9252,6 +9293,10 @@ window.em.aktualisiereArtGruppen = function() {
 	//    1. zugehörige Beobachtungen exportieren (um sie anzupassen)
 	//    2. löschen
 };
+
+
+
+
 
 window.em.aktualisiereArten = function() {
 	console.log("window.em.aktualisiereArten");

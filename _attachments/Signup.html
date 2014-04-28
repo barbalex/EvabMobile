@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
 	</head>
 	<body>
-	  	<div data-role="page" id="SignupPage">
+	  	<div data-role="page" id="Signup">
 			<div data-role="header" data-position="fixed" data-tap-toggle="false">
 				<a href="index.html" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
 				<h1>Konto erstellen</h1>
@@ -83,7 +83,7 @@
 				</div><!-- /navbar -->
 			</div><!-- /footer -->
 			<script charset="utf-8">
-				$("#SignupPage").on("pageshow", window.em.handleSignupPageshow);
+				$("#Signup").on("pageshow", window.em.handleSignupPageshow);
 				$(":jqmData(role='page')").on("pageinit", window.em.handleSignupPageinit);
 			</script>
 		</div>

@@ -34,13 +34,22 @@
 	</head>
 	<body>
 		<div data-role="page" id="ArtengruppenImportieren">
-			<div data-role="header" id="UserEditHeader" data-position="fixed" data-tap-toggle="false">
-				<a href="#" id="zurückUserEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
-				<h2>meine Einstellungen</h2>
+			<div data-role="header" id="ArtengruppenImportierenHeader" data-position="fixed" data-tap-toggle="false">
+				<a href="#" id="zurückArtengruppenImportieren" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
+				<h2>Artgruppen importieren</h2>
 			</div>
-			<div id="UserEditContent" data-role="content">
-				<form id="ArtengruppenImportierenForm" action="#" method="get">
-					
+			<div id="ArtengruppenImportierenContent" data-role="content">
+				<form id="ArtengruppenImportierenForm">
+					<p>In arteigenschaften.ch und artbeobachtungen.ch vorhandene Artengruppen:</p>
+					<div id="agi_gemeinsam"></div>
+					<br>
+					<p>In arteigenschaften.ch zusätzlich vorhandene Artengruppen:</p>
+					<div id="agi_zusätzlich"></div>
+					<input id="agi_zusätzliche_importieren" type="button" value="importieren" data-inline="true">
+					<br>
+					<p>In arteigenschaften.ch nicht mehr vorhandene Artengruppen:</p>
+					<div id="agi_fehlend"></div>
+					<input id="agi_fehlende_exportieren" type="button" value="zugehörige Beobachtungen exportieren (um die Artgruppen anzupassen)" data-inline="true">
 				</form>
 			</div>
 			<script>

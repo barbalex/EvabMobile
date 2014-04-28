@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
 	</head>
 	<body>
-		<div data-role="page" id="UserEditPage">
+		<div data-role="page" id="UserEdit">
 			<div data-role="header" id="UserEditHeader" data-position="fixed" data-tap-toggle="false">
 				<a href="#" id="zurückUserEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
 				<h2>meine Einstellungen</h2>
@@ -68,7 +68,7 @@
 				</form>
 			</div>
 			<script>
-				$("#UserEditPage").on("pageshow", window.em.handleUserEditPageshow);
+				$("#UserEdit").on("pageshow", window.em.handleUserEditPageshow);
 				$(":jqmData(role='page')").on("pageinit", window.em.handleUserEditPageinit);
 			</script>
 		</div>
