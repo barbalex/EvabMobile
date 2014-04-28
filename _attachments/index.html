@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
 	</head>
 	<body>
-		<div data-role="page" id="indexPage">
+		<div data-role="page" id="index">
 			<div data-role="header" data-backbtn="false" data-position="fixed" data-tap-toggle="false">
 				<h1>anmelden</h1>
 			</div>
@@ -67,7 +67,7 @@
 				</div><!-- /navbar -->
 			</div><!-- /footer -->
 			<script charset="utf-8">
-				$("#indexPage").on("pageshow", window.em.handleIndexPageshow);
+				$("#index").on("pageshow", window.em.handleIndexPageshow);
 				$(":jqmData(role='page')").on("pageinit", window.em.handleIndexPageinit);
 		</script>
 		</div>

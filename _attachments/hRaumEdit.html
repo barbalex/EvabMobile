@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-	<div data-role="page" id="RaumEditPage">
+	<div data-role="page" id="hRaumEdit">
 		<div data-role="header" id="RaumEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneRaumListeRaumEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Raum-Liste</a>
 			<h2>Raum</h2>
@@ -107,8 +107,8 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#RaumEditPage").on("pageshow", window.em.handleRaumEditPageshow);
-			$("#RaumEditPage").on("pageinit", window.em.handleRaumEditPageinit);
+			$("#hRaumEdit").on("pageshow", window.em.handleRaumEditPageshow);
+			$("#hRaumEdit").on("pageinit", window.em.handleRaumEditPageinit);
 		</script>
 	</div>
   </body>

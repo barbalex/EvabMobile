@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-  	<div data-role="page" id="RaumListePage">
+  	<div data-role="page" id="hRaumListe">
   		<div data-role="header" id="hRaumListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" name="ProjektEditOeffnenRaumListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zum Projekt</a>
   			<h2 class="hRaumListePageTitel">R&auml;ume</h2>
@@ -73,7 +73,7 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#RaumListePage").on("pageshow", window.em.handleHRaumListePageshow);
+			$("#hRaumListe").on("pageshow", window.em.handleHRaumListePageshow);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleHRaumListePageinit);
 		</script>
 	</div>

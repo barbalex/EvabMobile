@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-  	<div data-role="page" id="InstallierenPage">
+  	<div data-role="page" id="Installieren">
   		<div data-role="header" id="InstallierenHeader" data-position="fixed" data-tap-toggle="false">
   			<a href="#" id="zurückInstallieren" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Beobachtungs-Liste</a>
   			<h2>lokal installieren</h2>
@@ -63,7 +63,7 @@
 			<hr >
 		</div>
 		<script>
-			$("#InstallierenPage").on("pageshow", function () {
+			$("#Installieren").on("pageshow", function () {
 				if (localStorage.length === 0 || !localStorage.Email) {
 					window.em.leereAlleVariabeln();
 					$.mobile.navigate("index.html");

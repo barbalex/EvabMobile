@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
 	</head>
 	<body>
-		<div data-role="page" id="KartePage" style="width:100%; height:100%;">
+		<div data-role="page" id="Karte" style="width:100%; height:100%;">
 			<div data-role="header" id="KarteHeader" data-position="fixed" data-tap-toggle="false">
 				<a href="#" id="ZurueckKarte" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
 				<h1>Karte</h1>
@@ -42,9 +42,9 @@
 				<div id="MapCanvas" style="width:100%; height:100%;"></div>
 			</div>
 			<script charset="utf-8">
-				$("#KartePage").on("pageshow", window.em.handleKartePageshow);
-				$("#KartePage").on("pageinit", window.em.handleKartePageinit);
-				$("#KartePage").on("pagehide", window.em.handleKartePagehide);
+				$("#Karte").on("pageshow", window.em.handleKartePageshow);
+				$("#Karte").on("pageinit", window.em.handleKartePageinit);
+				$("#Karte").on("pagehide", window.em.handleKartePagehide);
 			</script>
 		</div>
 	</body>

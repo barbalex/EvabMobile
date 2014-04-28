@@ -368,13 +368,13 @@ window.em.erstelleNeueZeit = function() {
 	// Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	delete window.em.ZeitListe;
 	// Vorsicht: Von hZeitEdit.html aus samepage transition!
-	if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") !== "ZeitEditPage") {
+	if ($("#hZeitEdit").length > 0 && $("#hZeitEdit").attr("data-url") !== "hZeitEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.em.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
-	} else if ($("#ZeitEditPage").length > 0 && $("#ZeitEditPage").attr("data-url") === "ZeitEditPage") {
-		//$(":mobile-pagecontainer").pagecontainer("change", "#ZeitEditPage.html", { allowSamePageTransition : true });    FUNKTIONIERT NICHT
+	} else if ($("#hZeitEdit").length > 0 && $("#hZeitEdit").attr("data-url") === "hZeitEdit") {
+		//$(":mobile-pagecontainer").pagecontainer("change", "#hZeitEdit.html", { allowSamePageTransition : true });    FUNKTIONIERT NICHT
 		localStorage.hZeit = JSON.stringify(window.em.hZeit);
 		window.open("hZeitEdit.html", target = "_self");
 	} else {
@@ -399,13 +399,13 @@ window.em.erstelleNeuenOrt = function() {
 	window.em.leereStorageOrtListe("mitLatLngListe");
 	localStorage.Status = "neu";	// das löst bei initiiereOrtEdit die Verortung aus
 	// Vorsicht: Von hOrtEdit.html aus samepage transition!
-	if ($("#OrtEdit").length > 0 && $("#OrtEdit").attr("data-url") !== "OrtEdit") {
+	if ($("#hOrtEdit").length > 0 && $("#hOrtEdit").attr("data-url") !== "hOrtEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
-	} else if ($("#OrtEdit").length > 0 && $("#OrtEdit").attr("data-url") === "OrtEdit") {
-		//$(":mobile-pagecontainer").pagecontainer("change", "#OrtEdit.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
+	} else if ($("#hOrtEdit").length > 0 && $("#hOrtEdit").attr("data-url") === "hOrtEdit") {
+		//$(":mobile-pagecontainer").pagecontainer("change", "#hOrtEdit.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
 	} else {
@@ -426,13 +426,13 @@ window.em.erstelleNeuenRaum = function() {
 	// Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStorageRaumListe("mitLatLngListe");
 	// Vorsicht: Von hRaumEdit.html aus same page transition!
-	if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") !== "RaumEditPage") {
+	if ($("#hRaumEdit").length > 0 && $("#hRaumEdit").attr("data-url") !== "hRaumEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
-	} else if ($("#RaumEditPage").length > 0 && $("#RaumEditPage").attr("data-url") === "RaumEditPage") {
-		//$(":mobile-pagecontainer").pagecontainer("change", "#RaumEditPage.html", {allowSamePageTransition : "true"});   FUNKTIONIERT NICHT
+	} else if ($("#hRaumEdit").length > 0 && $("#hRaumEdit").attr("data-url") === "hRaumEdit") {
+		//$(":mobile-pagecontainer").pagecontainer("change", "#hRaumEdit.html", {allowSamePageTransition : "true"});   FUNKTIONIERT NICHT
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
 		window.open("hRaumEdit.html", target = "_self");
 	} else {
@@ -451,16 +451,16 @@ window.em.erstelleNeuesProjekt = function() {
 	// ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
 	delete localStorage.ProjektId;
 	localStorage.Status = "neu";
-	// Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	// Globale Variablen für hProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStorageProjektListe("mitLatLngListe");
 	// Vorsicht: Von hProjektEdit.html aus same page transition!
-	if ($("#ProjektEdit").length > 0 && $("#ProjektEdit").attr("data-url") !== "ProjektEdit") {
+	if ($("#hProjektEdit").length > 0 && $("#hProjektEdit").attr("data-url") !== "hProjektEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
-	} else if ($("#ProjektEdit").length > 0 && $("#ProjektEdit").attr("data-url") === "ProjektEdit") {
-		//$.mobile.navigate($("#ProjektEdit"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
+	} else if ($("#hProjektEdit").length > 0 && $("#hProjektEdit").attr("data-url") === "hProjektEdit") {
+		//$.mobile.navigate($("#hProjektEdit"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
 	} else {
@@ -1436,7 +1436,7 @@ window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
 
 
 window.em.initiiereProjektliste = function() {
-	// hat ProjektEdit.html eine Projektliste übergeben?
+	// hat hProjektEdit.html eine Projektliste übergeben?
 	console.log("Projektliste wird initiiert");
 	if (window.em.Projektliste) {
 		window.em.initiiereProjektliste_2();
@@ -1445,7 +1445,7 @@ window.em.initiiereProjektliste = function() {
 		$db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 			success: function(data) {
-				// Projektliste für ProjektEdit bereitstellen
+				// Projektliste für hProjektEdit bereitstellen
 				window.em.Projektliste = data;
 				window.em.initiiereProjektliste_2();
 			}
@@ -1489,7 +1489,7 @@ window.em.initiiereProjektliste_2 = function() {
 	$("#ProjektlistehPL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#ProjektListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#hProjektListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1660,7 +1660,7 @@ window.em.initiiereRaumListe_2 = function() {
 	$("#RaumlistehRL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#RaumListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#hRaumListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1965,7 +1965,7 @@ window.em.initiiereZeitListe_2 = function() {
 	$("#ZeitlistehZL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hZeitListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#hZeitListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -4115,7 +4115,7 @@ window.em.handleFeldEditPageinit = function() {
 	$("#FeldEdit").on("keyup", function(event) {
 		// wenn in FeldEdit.htm eine Taste gedrückt wird
 		// mit Pfeiltasten Datensätze wechseln
-		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
+		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
 		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
@@ -4998,26 +4998,26 @@ window.em.handleHOrtEditPageinit = function() {
 		window.em.GetGeolocation(localStorage.OrtId, "Ort");
 	});
 	
-	$("#OrtEdit").on("swipeleft", "#OrtEditContent", window.em.handleHOrtEditContentSwipeleft);
+	$("#hOrtEdit").on("swipeleft", "#OrtEditContent", window.em.handleHOrtEditContentSwipeleft);
 
-	$("#OrtEdit").on("swiperight", "#OrtEditContent", window.em.handleHOrtEditContentSwiperight);
+	$("#hOrtEdit").on("swiperight", "#OrtEditContent", window.em.handleHOrtEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#OrtEdit").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#hOrtEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerOrt("voriger");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#OrtEdit").on("vclick", ".ui-pagination-next", function(event) {
+	$("#hOrtEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerOrt("nächster");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#OrtEdit").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#OrtEdit').is(':visible')) {
+	$("#hOrtEdit").on("keyup", function(event) {
+		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hOrtEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsterVorigerOrt("voriger");
@@ -5423,26 +5423,26 @@ window.em.handleHProjektEditPageinit = function() {
 		window.em.handleHProjektEditWaehleFelderClick();
 	});
 
-	$("#ProjektEdit").on("swipeleft", "#hProjektEditContent", window.em.handleHProjektEditContentSwipeleft);
+	$("#hProjektEdit").on("swipeleft", "#hProjektEditContent", window.em.handleHProjektEditContentSwipeleft);
 
-	$("#ProjektEdit").on("swiperight", "#hProjektEditContent", window.em.handleHProjektEditContentSwiperight);
+	$("#hProjektEdit").on("swiperight", "#hProjektEditContent", window.em.handleHProjektEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#ProjektEdit").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#hProjektEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächstesVorigesProjekt("voriges");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#ProjektEdit").on("vclick", ".ui-pagination-next", function(event) {
+	$("#hProjektEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächstesVorigesProjekt("nächstes");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#ProjektEdit").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEdit').is(':visible')) {
+	$("#hProjektEdit").on("keyup", function(event) {
+		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hProjektEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächstesVorigesProjekt("voriges");
@@ -5601,7 +5601,7 @@ window.em.handleHProjektEditMenuEinstellungenClick = function() {
 };
 
 // Öffnet das vorige oder nächste Projekt
-// voriges des ersten => ProjektListe.html
+// voriges des ersten => hProjektListe.html
 // nächstes des letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird benutzt in hProjektEdit.html
@@ -6195,7 +6195,7 @@ window.em.handleHProjektListePageinit = function() {
 	});
 
 	// neues Projekt erstellen
-	$("#ProjektListePage").on("click", ".NeuesProjektProjektListe", function(event) {
+	$("#hProjektListe").on("click", ".NeuesProjektProjektListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuesProjekt();
 	});
@@ -6214,7 +6214,7 @@ window.em.handleHProjektListePageinit = function() {
 		$.mobile.navigate("BeobListe.html");
 	});
 
-	$("#ProjektListePage").on("swiperight", window.em.handleProjektListeSwiperight);
+	$("#hProjektListe").on("swiperight", window.em.handleProjektListeSwiperight);
 
 	$('#ProjektListePageFooter').on('click', '#OeffneKarteProjektListe', function(event) {
 		event.preventDefault();
@@ -6278,7 +6278,7 @@ window.em.handleProjektListeMenuEinstellungenClick = function() {
 	window.em.öffneMeineEinstellungen();
 };
 
-// wenn RaumEdit erscheint
+// wenn hRaumEdit erscheint
 window.em.handleRaumEditPageshow = function() {
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
@@ -6295,7 +6295,7 @@ window.em.handleRaumEditPageshow = function() {
 	window.em.initiiereRaumEdit();
 };
 
-// wenn RaumEdit initiiert wird
+// wenn hRaumEdit initiiert wird
 window.em.handleRaumEditPageinit = function() {
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
@@ -6370,26 +6370,26 @@ window.em.handleRaumEditPageinit = function() {
 		window.em.handleRaumEditWaehleFelderClick();
 	});
 
-	$("#RaumEditPage").on("swipeleft", "#hRaumEditContent", window.em.handleRaumEditContentSwipreleft);
+	$("#hRaumEdit").on("swipeleft", "#hRaumEditContent", window.em.handleRaumEditContentSwipreleft);
 
-	$("#RaumEditPage").on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight);
+	$("#hRaumEdit").on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#RaumEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#hRaumEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerRaum("voriger");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#RaumEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#hRaumEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerRaum("nächster");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#RaumEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
+	$("#hRaumEdit").on("keyup", function(event) {
+		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hRaumEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsterVorigerRaum("voriger");
@@ -6781,7 +6781,7 @@ window.em.handleHRaumListePageinit = function() {
 	});
 
 	// neuen Raum erstellen
-	$("#RaumListePage").on("click", "[name='NeuerRaumRaumListe']", function(event) {
+	$("#hRaumListe").on("click", "[name='NeuerRaumRaumListe']", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuenRaum();
 	});
@@ -6795,7 +6795,7 @@ window.em.handleHRaumListePageinit = function() {
 
 	$("#RaumlistehRL").on("swipeleft", ".erste", window.em.erstelleNeuenRaum);
 
-	$("#RaumListePage").on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
+	$("#hRaumListe").on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
 
 	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function(event) {
 		event.preventDefault();
@@ -6955,26 +6955,26 @@ window.em.handleHZeitEditPageinit = function() {
 
 	$("#hze_löschen_meldung").on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLoeschenMeldungJaClick);
 
-	$("#ZeitEditPage").on("swipeleft", '#ZeitEditPageContent', window.em.handleZeitEditContentSwipeleft);
+	$("#hZeitEdit").on("swipeleft", '#ZeitEditPageContent', window.em.handleZeitEditContentSwipeleft);
 
-	$("#ZeitEditPage").on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight);
+	$("#hZeitEdit").on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#ZeitEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#hZeitEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeZeit("vorige");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#ZeitEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#hZeitEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeZeit("nächste");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#ZeitEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
+	$("#hZeitEdit").on("keyup", function(event) {
+		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hZeitEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsteVorigeZeit("vorige");
@@ -7377,7 +7377,7 @@ window.em.handleZeitListePageinit = function() {
 	});
 
 	// Neue Zeit erstellen, erste Zeit und fixer button
-	$("#hZeitListePage").on("click", ".NeueZeitZeitListe", function(event) {
+	$("#hZeitListe").on("click", ".NeueZeitZeitListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeueZeit(); 
 	});
@@ -7391,7 +7391,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$("#ZeitlistehZL").on("swipeleft", ".erste", window.em.erstelleNeueZeit);
 
-	$("#hZeitListePage").on("swiperight", window.em.handleZeitListeSwiperight);
+	$("#hZeitListe").on("swiperight", window.em.handleZeitListeSwiperight);
 
 	$('#MenuZeitListe').on('click', '.menu_einfacher_modus', window.em.handleZeitListeMenuEinfacherModusClick);
 
