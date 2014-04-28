@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-	<div data-role="page" id="hArtEditPage">
+	<div data-role="page" id="hArtEdit">
 		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneArtListehArtEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Art-Liste</a>
 			<h1>Art</h1>
@@ -110,8 +110,8 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#hArtEditPage").on("pageshow", window.em.handleHArtEditPageshow);
-			$("#hArtEditPage").on("pageinit", window.em.handleHArtEditPageinit);
+			$("#hArtEdit").on("pageshow", window.em.handleHArtEditPageshow);
+			$("#hArtEdit").on("pageinit", window.em.handleHArtEditPageinit);
 		</script>
 	</div>
   </body>

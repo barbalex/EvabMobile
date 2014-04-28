@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
 </head>
 <body>
-	<div data-role="page" id="FeldEditPage">
+	<div data-role="page" id="FeldEdit">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="FeldEditHeader">
 			<a href="#" id="zurueckFeldEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">abbrechen</a>
 			<h2 class="FeldEditHeaderTitel">Datenfelder</h2>
@@ -91,7 +91,7 @@
 							<label for="Art">Art</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain" id="Artgruppenliste">
+				<div data-role="fieldcontain" id="Artgruppenliste_FeldEdit">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="FeldName">Name:</label>
@@ -209,7 +209,7 @@
 			</div>
 		</div>
 		<script>
-			$("#FeldEditPage").on("pageshow", window.em.handleFeldEditPageshow);
+			$("#FeldEdit").on("pageshow", window.em.handleFeldEditPageshow);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleFeldEditPageinit);
 		</script>
 	</div>

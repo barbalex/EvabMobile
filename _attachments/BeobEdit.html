@@ -34,7 +34,7 @@
   </head>
 
   <body>
-	<div data-role="page" id="BeobEditPage">
+	<div data-role="page" id="BeobEdit">
 		<div data-role="header" id="BeobEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" id="OeffneBeobListeBeobEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Beobachtungs-Liste</a>
 			<h2>Beobachtung</h2>
@@ -128,8 +128,8 @@
 			</div>
 		</div>
 		<script>
-			$("#BeobEditPage").on("pageshow", window.em.handleBeobEditPageshow);
-			$("#BeobEditPage").on("pagehide", window.em.handleBeobEditPagehide);
+			$("#BeobEdit").on("pageshow", window.em.handleBeobEditPageshow);
+			$("#BeobEdit").on("pagehide", window.em.handleBeobEditPagehide);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleBeobEditPageinit);
 		</script>
 	</div>

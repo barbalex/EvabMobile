@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-	<div data-role="page" id="OrtEditPage">
+	<div data-role="page" id="OrtEdit">
 		<div data-role="header" id="OrtEditHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneOrtListeOrtEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Ort-Liste</a>
 			<h1>Ort</h1>
@@ -120,8 +120,8 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#OrtEditPage").on("pageshow", window.em.handleHOrtEditPageshow);
-			$("#OrtEditPage").on("pagehide", window.em.handleHOrtEditPagehide);
+			$("#OrtEdit").on("pageshow", window.em.handleHOrtEditPageshow);
+			$("#OrtEdit").on("pagehide", window.em.handleHOrtEditPagehide);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleHOrtEditPageinit);
 		</script>
 	</div>

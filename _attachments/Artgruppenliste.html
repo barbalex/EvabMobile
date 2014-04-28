@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-	<div data-role="page" data-dom-cache="true" id="agl_Page">
+	<div data-role="page" data-dom-cache="true" id="Artgruppenliste">
 		<div data-role="header" data-position="fixed" data-tap-toggle="false" id="agl_Header">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">zurück</a>
 			<h1>Artgruppe wählen</h1>
@@ -45,8 +45,8 @@
 			<p id="agl_Hinweistext" class="HinweisDynamischerFeldaufbau">Die Liste wird aufgebaut...</p>
 		</div>
 		<script charset="utf-8">
-			$("#agl_Page").on("pageshow", window.em.handleAglPageshow);
-			$("#agl_Page").on("pagehide", window.em.handleAglPagehide);
+			$("#Artgruppenliste").on("pageshow", window.em.handleAglPageshow);
+			$("#Artgruppenliste").on("pagehide", window.em.handleAglPagehide);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleAglPageinit);
 		</script>
 	</div>

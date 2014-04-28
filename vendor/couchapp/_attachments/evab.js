@@ -399,13 +399,13 @@ window.em.erstelleNeuenOrt = function() {
 	window.em.leereStorageOrtListe("mitLatLngListe");
 	localStorage.Status = "neu";	// das löst bei initiiereOrtEdit die Verortung aus
 	// Vorsicht: Von hOrtEdit.html aus samepage transition!
-	if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") !== "OrtEditPage") {
+	if ($("#OrtEdit").length > 0 && $("#OrtEdit").attr("data-url") !== "OrtEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
-	} else if ($("#OrtEditPage").length > 0 && $("#OrtEditPage").attr("data-url") === "OrtEditPage") {
-		//$(":mobile-pagecontainer").pagecontainer("change", "#OrtEditPage.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
+	} else if ($("#OrtEdit").length > 0 && $("#OrtEdit").attr("data-url") === "OrtEdit") {
+		//$(":mobile-pagecontainer").pagecontainer("change", "#OrtEdit.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
 		window.open("hOrtEdit.html", target = "_self");
 	} else {
@@ -454,13 +454,13 @@ window.em.erstelleNeuesProjekt = function() {
 	// Globale Variablen für ProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStorageProjektListe("mitLatLngListe");
 	// Vorsicht: Von hProjektEdit.html aus same page transition!
-	if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") !== "ProjektEditPage") {
+	if ($("#ProjektEdit").length > 0 && $("#ProjektEdit").attr("data-url") !== "ProjektEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
-	} else if ($("#ProjektEditPage").length > 0 && $("#ProjektEditPage").attr("data-url") === "ProjektEditPage") {
-		//$.mobile.navigate($("#ProjektEditPage"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
+	} else if ($("#ProjektEdit").length > 0 && $("#ProjektEdit").attr("data-url") === "ProjektEdit") {
+		//$.mobile.navigate($("#ProjektEdit"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
 		window.open("hProjektEdit.html", target = "_self");
 	} else {
@@ -568,7 +568,7 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 	}
 	// nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-	$("#BeobEditPage").trigger("create").trigger("refresh");
+	$("#BeobEdit").trigger("create").trigger("refresh");
 };
 
 // setzt die Values in die hart codierten Felder im Formular BeobEdit.html
@@ -709,7 +709,7 @@ window.em.initiiereBeobliste_2 = function() {
 	$("#BeoblisteBL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#BeobListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#BeobListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -932,7 +932,7 @@ window.em.initiiereFeldEdit_2 = function() {
 		Standardwert;
 
 	// alle radio und checkboxen leeren (damit keine voher gewählten Werte verbleiben)
-	window.em.checkAllRadiosOfForm("FeldEditPage", false);
+	window.em.checkAllRadiosOfForm("FeldEdit", false);
 
 	// Sichtbarkeit anzeigen
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
@@ -1107,7 +1107,7 @@ window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 		}
 	}
 	ListItemContainer += "\n</fieldset>";
-	$("#Artgruppenliste").html(ListItemContainer).trigger("create").trigger("refresh");
+	$("#Artgruppenliste_FeldEdit").html(ListItemContainer).trigger("create").trigger("refresh");
 };
 
 // initiiert FeldListe.html
@@ -1841,7 +1841,7 @@ window.em.initiiereOrtListe_2 = function() {
 	$("#OrtlistehOL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hOrtListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#hOrtListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -2198,7 +2198,7 @@ window.em.initiierehBeobListe_2 = function() {
 	$("#ArtlistehAL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hArtListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#hArtListe").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -2808,8 +2808,6 @@ window.em.zeigeAttachments = function(doc, Page) {
 	$(":jqmData(role='page')").focus();
 };
 
-// AB HIER WEITER NAMESPACEN
-
 // initiiert FelderWaehlen.html
 // generiert dynamisch die Felder im Checkbox Felder
 // checked diejenigen, die der User anzeigen will
@@ -3128,7 +3126,7 @@ window.em.erstelleArtenliste = function(filterwert) {
 	$("#al_ArtenListe").show();
 	$("#al_ArtenListe").listview("refresh");
 	// Fokus in das Suchfeld setzen
-	$("#al_Page").find(".ui-input-search").children("input")[0].focus();
+	$("#Artenliste").find(".ui-input-search").children("input")[0].focus();
 
 };
 
@@ -3191,7 +3189,7 @@ window.em.erstelleArtgruppenListe_2 = function() {
 	$("#agl_ArtgruppenListe").listview("refresh");
 	$("#agl_Hinweistext").empty().remove();
 	// Fokus in das Suchfeld setzen
-	$("#agl_Page").find(".ui-input-search").children("input")[0].focus();
+	$("#Artgruppenliste").find(".ui-input-search").children("input")[0].focus();
 };
 
 // Stellt die Daten des Users bereit
@@ -3533,11 +3531,11 @@ window.em.oeffneEigenschaftenVonArt = function(id) {
 window.em.handleAlPageinit = function() {
 	$(document).on("keypress", window.em.handleAlKeypress);
 
-	$("#al_Page").on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick);
+	$("#Artenliste").on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick);
 
-	$("#al_Page").on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick);
+	$("#Artenliste").on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick);
 
-	$("#al_Page").on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
+	$("#Artenliste").on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
 
 	$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 		event.preventDefault();
@@ -3635,7 +3633,7 @@ window.em.handleAglPageinit = function() {
 		window.em.handleAglArtgruppenListItemClick(this);
 	});
 
-	$("#agl_Page").on("click", "#agl_standardgruppe", window.em.handleAglAglStandardgruppeClick);
+	$("#Artgruppenliste").on("click", "#agl_standardgruppe", window.em.handleAglAglStandardgruppeClick);
 };
 
 // wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
@@ -3747,27 +3745,27 @@ window.em.handleBeobEditPageinit = function() {
 
 	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", window.em.löscheBeob);
 
-	$("#BeobEditPage").on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft);
+	$("#BeobEdit").on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft);
 
-	$("#BeobEditPage").on("swiperight", "#BeobEditContent", window.em.handleBeobEditContentSwiperight);
+	$("#BeobEdit").on("swiperight", "#BeobEditContent", window.em.handleBeobEditContentSwiperight);
 
-	$("#BeobEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#BeobEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		// zum vorigen Datensatz wechseln
 		window.em.nächsteVorigeBeob('vorige');
 	});
 
-	$("#BeobEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#BeobEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		// zum nächsten Datensatz wechseln
 		window.em.nächsteVorigeBeob('nächste');
 	});
 
-	$("#BeobEditPage").on("keyup", function(event) {
+	$("#BeobEdit").on("keyup", function(event) {
 		// Wechsel zwischen Datensätzen via Pfeiltasten steuern
 		// nicht in separate Funktion auslagern, weil IE9 event.preventDefault nicht kenn (und hier jQuery das abfängt)
-		// nur reagieren, wenn BeobEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#BeobEditPage').is(':visible')) {
+		// nur reagieren, wenn BeobEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#BeobEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsteVorigeBeob('vorige');
@@ -3972,14 +3970,14 @@ window.em.handleBeobListePageinit = function() {
 		$.mobile.navigate("hProjektListe.html");
 	});
 
-	$("#BeobListePage").on("click", ".NeueBeobBeobListe", function(event) {
+	$("#BeobListe").on("click", ".NeueBeobBeobListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeueBeob_1_Artgruppenliste();
 	});
 
 	$("#BeoblisteBL").on("swipeleft", ".erste", window.em.erstelleNeueBeob_1_Artgruppenliste);
 
-	$("#BeobListePage").on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
+	$("#BeobListe").on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
 
 	$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', window.em.handleBeobListeMenuHierarchischerModusClick);
 
@@ -4100,25 +4098,25 @@ window.em.handleFeldEditPageinit = function() {
 		window.em.geheZurueckFE();
 	});
 
-	$("#FeldEditPage").on("swipeleft", "#FeldEditContent", window.em.geheZumNächstenFeld);
+	$("#FeldEdit").on("swipeleft", "#FeldEditContent", window.em.geheZumNächstenFeld);
 
-	$("#FeldEditPage").on("swiperight", "#FeldEditContent", window.em.geheZumVorigenFeld);
+	$("#FeldEdit").on("swiperight", "#FeldEditContent", window.em.geheZumVorigenFeld);
 
-	$("#FeldEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#FeldEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.geheZumVorigenFeld();
 	});
 
-	$("#FeldEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#FeldEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.geheZumNächstenFeld();
 	});
 
-	$("#FeldEditPage").on("keyup", function(event) {
+	$("#FeldEdit").on("keyup", function(event) {
 		// wenn in FeldEdit.htm eine Taste gedrückt wird
 		// mit Pfeiltasten Datensätze wechseln
-		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEditPage').is(':visible')) {
+		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.geheZumVorigenFeld();
@@ -4218,7 +4216,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + window.em.Feld.FeldBeschriftung);
 		if (window.em.Feld.Hierarchiestufe === "Art") {
 			// Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
-			$("#Artgruppenliste").empty();
+			$("#Artgruppenliste_FeldEdit").empty();
 		}
 		window.em.leereStorageFeldListe();
 		window.em.speichereFeldeigenschaften();
@@ -4674,26 +4672,26 @@ window.em.handleHArtEditPageinit = function() {
 
 	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHBeob);
 
-	$("#hArtEditPage").on("swipeleft", window.em.handleHArtEditSwipeleft);
+	$("#hArtEdit").on("swipeleft", window.em.handleHArtEditSwipeleft);
 
-	$("#hArtEditPage").on("swiperight", window.em.handleHArtEditSwiperight);
+	$("#hArtEdit").on("swiperight", window.em.handleHArtEditSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#hArtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#hArtEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeArt("vorige");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#hArtEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#hArtEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsteVorigeArt("nächste");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#hArtEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn hArtEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#hArtEditPage').is(':visible')) {
+	$("#hArtEdit").on("keyup", function(event) {
+		// nur reagieren, wenn hArtEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#hArtEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsteVorigeArt("vorige");
@@ -4782,7 +4780,7 @@ window.em.handleHArtListePageinit = function() {
 	});
 
 	// Neue Beobachtung managen
-	$("#hArtListePage").on("click", ".NeueBeobhArtListe", function(event) {
+	$("#hArtListe").on("click", ".NeueBeobhArtListe", function(event) {
 		event.preventDefault();
 		window.em.öffneArtgruppenliste_hal();
 	});
@@ -4791,7 +4789,7 @@ window.em.handleHArtListePageinit = function() {
 
 	$("#ArtlistehAL").on("swipeleft click", ".beob", window.em.handleHArtListeBeobClick);
 
-	$("#hArtListePage").on("swiperight", window.em.handleHArtListeSwiperight);
+	$("#hArtListe").on("swiperight", window.em.handleHArtListeSwiperight);
 
 	$('#MenuhBeobListe').on('click', '.menu_einfacher_modus', window.em.handleHArtListeMenuEinfacherModusClick);
 
@@ -5000,26 +4998,26 @@ window.em.handleHOrtEditPageinit = function() {
 		window.em.GetGeolocation(localStorage.OrtId, "Ort");
 	});
 	
-	$("#OrtEditPage").on("swipeleft", "#OrtEditContent", window.em.handleHOrtEditContentSwipeleft);
+	$("#OrtEdit").on("swipeleft", "#OrtEditContent", window.em.handleHOrtEditContentSwipeleft);
 
-	$("#OrtEditPage").on("swiperight", "#OrtEditContent", window.em.handleHOrtEditContentSwiperight);
+	$("#OrtEdit").on("swiperight", "#OrtEditContent", window.em.handleHOrtEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#OrtEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#OrtEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerOrt("voriger");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#OrtEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#OrtEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächsterVorigerOrt("nächster");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#OrtEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#OrtEditPage').is(':visible')) {
+	$("#OrtEdit").on("keyup", function(event) {
+		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#OrtEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächsterVorigerOrt("voriger");
@@ -5240,7 +5238,7 @@ window.em.handleHOrtListePageinit = function() {
 	});
 
 	// neuen Ort erstellen
-	$("#hOrtListePage").on("click", ".NeuerOrtOrtListe", function(event) {
+	$("#hOrtListe").on("click", ".NeuerOrtOrtListe", function(event) {
 		event.preventDefault();
 		window.em.erstelleNeuenOrt();
 	});
@@ -5254,7 +5252,7 @@ window.em.handleHOrtListePageinit = function() {
 
 	$("#OrtlistehOL").on("swipeleft", ".erste", window.em.erstelleNeuenOrt);
 
-	$("#hOrtListePage").on("swiperight", "#hOrtListePageContent", window.em.handleHOrtListePageContentSwiperight);
+	$("#hOrtListe").on("swiperight", "#hOrtListePageContent", window.em.handleHOrtListePageContentSwiperight);
 
 	$("#hOrtListePageFooter").on('click', '#OeffneKarteOrtListe', function(event) {
 		event.preventDefault();
@@ -5425,26 +5423,26 @@ window.em.handleHProjektEditPageinit = function() {
 		window.em.handleHProjektEditWaehleFelderClick();
 	});
 
-	$("#ProjektEditPage").on("swipeleft", "#hProjektEditContent", window.em.handleHProjektEditContentSwipeleft);
+	$("#ProjektEdit").on("swipeleft", "#hProjektEditContent", window.em.handleHProjektEditContentSwipeleft);
 
-	$("#ProjektEditPage").on("swiperight", "#hProjektEditContent", window.em.handleHProjektEditContentSwiperight);
+	$("#ProjektEdit").on("swiperight", "#hProjektEditContent", window.em.handleHProjektEditContentSwiperight);
 
 	// Pagination Pfeil voriger initialisieren
-	$("#ProjektEditPage").on("vclick", ".ui-pagination-prev", function(event) {
+	$("#ProjektEdit").on("vclick", ".ui-pagination-prev", function(event) {
 		event.preventDefault();
 		window.em.nächstesVorigesProjekt("voriges");
 	});
 
 	// Pagination Pfeil nächster initialisieren
-	$("#ProjektEditPage").on("vclick", ".ui-pagination-next", function(event) {
+	$("#ProjektEdit").on("vclick", ".ui-pagination-next", function(event) {
 		event.preventDefault();
 		window.em.nächstesVorigesProjekt("nächstes");
 	});
 
 	// Pagination Pfeiltasten initialisieren
-	$("#ProjektEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEditPage').is(':visible')) {
+	$("#ProjektEdit").on("keyup", function(event) {
+		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
+		if (!$(event.target).is("input, textarea, select, button") && $('#ProjektEdit').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
 				window.em.nächstesVorigesProjekt("voriges");
@@ -6390,7 +6388,7 @@ window.em.handleRaumEditPageinit = function() {
 
 	// Pagination Pfeiltasten initialisieren
 	$("#RaumEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
 		if (!$(event.target).is("input, textarea, select, button") && $('#RaumEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {
@@ -6975,7 +6973,7 @@ window.em.handleHZeitEditPageinit = function() {
 
 	// Pagination Pfeiltasten initialisieren
 	$("#ZeitEditPage").on("keyup", function(event) {
-		// nur reagieren, wenn ProjektEditPage sichtbar und Fokus nicht in einem Feld
+		// nur reagieren, wenn ProjektEdit sichtbar und Fokus nicht in einem Feld
 		if (!$(event.target).is("input, textarea, select, button") && $('#ZeitEditPage').is(':visible')) {
 			// Left arrow
 			if (event.keyCode === $.mobile.keyCode.LEFT) {

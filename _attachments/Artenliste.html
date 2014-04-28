@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-  	<div data-role="page" id="al_Page">
+  	<div data-role="page" id="Artenliste">
 		<div data-role="header" id="al_Header" data-position="fixed" data-tap-toggle="false">
 			<a href="#" data-role="button" data-icon="arrow-l" data-iconpos="notext" data-rel="back">zurück</a>
 			<h1>Art wählen</h1>
@@ -57,8 +57,8 @@
 			</ul>
 		</div>
 		<script charset="utf-8">
-			$("#al_Page").on("pageshow", window.em.handleAlPageshow);
-			$("#al_Page").on("pagehide", window.em.handleAlPagehide);
+			$("#Artenliste").on("pageshow", window.em.handleAlPageshow);
+			$("#Artenliste").on("pagehide", window.em.handleAlPagehide);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleAlPageinit);
 		</script>
 	</div>

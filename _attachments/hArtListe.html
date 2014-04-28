@@ -33,7 +33,7 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-  	<div data-role="page" id="hArtListePage">
+  	<div data-role="page" id="hArtListe">
   		<div data-role="header" id="hArtListePageHeader" data-position="fixed" data-tap-toggle="false" data-backbtn="false">
   			<a href="#" name="OeffneZeithArtListe" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zum Zeitpunkt</a>
   			<h2 class="hArtListePageTitel">Art</h2>
@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#hArtListePage").on("pageshow", window.em.handleHArtListePageshow);
+			$("#hArtListe").on("pageshow", window.em.handleHArtListePageshow);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleHArtListePageinit);
 		</script>
 	</div>

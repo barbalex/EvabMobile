@@ -33,7 +33,7 @@
 		<script src="vendor/couchapp/underscore.js"></script>
 	</head>
 	<body>
-		<div data-role="page" id="ArtengruppenImportierenPage">
+		<div data-role="page" id="ArtengruppenImportieren">
 			<div data-role="header" id="UserEditHeader" data-position="fixed" data-tap-toggle="false">
 				<a href="#" id="zurückUserEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zurück</a>
 				<h2>meine Einstellungen</h2>
@@ -44,7 +44,7 @@
 				</form>
 			</div>
 			<script>
-				$("#ArtengruppenImportierenPage").on("pageshow", window.em.handleArtengruppenImportierenPageshow);
+				$("#ArtengruppenImportieren").on("pageshow", window.em.handleArtengruppenImportierenPageshow);
 				$(":jqmData(role='page')").on("pageinit", window.em.handleArtengruppenImportierenPageinit);
 			</script>
 		</div>
