@@ -550,6 +550,7 @@ window.em.initiiereBeobEdit_3 = function() {
 	localStorage.oYKoord = window.em.Beobachtung.oYKoord;
 	window.em.setzeFixeFelderInBeobEdit(window.em.Beobachtung);
 	window.em.erstelleDynamischeFelderBeobEdit();
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -706,6 +707,7 @@ window.em.initiiereBeobliste_2 = function() {
 	}
 	$("#BeoblisteBL").html(ListItemContainer);
 	$("#BeoblisteBL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#BeobListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -769,6 +771,7 @@ window.em.initiiereUserEdit = function() {
 					// Standardwert setzen
 					$("#JaAber").prop("checked",true).checkboxradio("refresh");
 				}
+				window.em.blendeMenus();
 				window.em.speichereLetzteUrl();
 			},
 			error: function() {
@@ -783,6 +786,7 @@ window.em.initiiereUserEdit = function() {
 // initiiert Installieren.html
 // kurz, da keine Daten benötigt werden
 window.em.initiiereInstallieren = function() {
+	window.em.blendeMenus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -850,6 +854,7 @@ window.em.initiiereProjektEdit_3 = function() {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -1008,6 +1013,7 @@ window.em.initiiereFeldEdit_2 = function() {
 	window.em.speichereLetzteUrl();
 	// abhängige Felder blenden
 	window.em.blendeDatentypabhängigeFelder();
+	window.em.blendeMenus();
 	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 };
@@ -1163,6 +1169,7 @@ window.em.initiiereFeldliste_2 = function() {
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
 	$("#FeldListeFL").html(ListItemContainer);
 	$("#FeldListeFL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#FeldListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -1480,6 +1487,7 @@ window.em.initiiereProjektliste_2 = function() {
 	}
 	$("#ProjektlistehPL").html(ListItemContainer);
 	$("#ProjektlistehPL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#ProjektListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -1546,6 +1554,7 @@ window.em.initiiereRaumEdit_3 = function() {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -1649,6 +1658,7 @@ window.em.initiiereRaumListe_2 = function() {
 	}
 	$("#RaumlistehRL").html(ListItemContainer);
 	$("#RaumlistehRL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#RaumListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -1724,7 +1734,7 @@ window.em.initiiereOrtEdit_3 = function() {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
-
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -1829,6 +1839,7 @@ window.em.initiiereOrtListe_2 = function() {
 	}
 	$("#OrtlistehOL").html(ListItemContainer);
 	$("#OrtlistehOL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#hOrtListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -1896,6 +1907,7 @@ window.em.initiiereZeitEdit_3 = function() {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -1951,6 +1963,7 @@ window.em.initiiereZeitListe_2 = function() {
 	}
 	$("#ZeitlistehZL").html(ListItemContainer);
 	$("#ZeitlistehZL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#hZeitListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -2082,6 +2095,7 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 		HtmlContainer = "<hr />" + HtmlContainer;
 	}
 	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
 };
@@ -2182,6 +2196,7 @@ window.em.initiierehBeobListe_2 = function() {
 	}
 	$("#ArtlistehAL").html(ListItemContainer);
 	$("#ArtlistehAL").listview("refresh");
+	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#hArtListePage").find(".ui-input-search").children("input")[0].focus();
 	window.em.speichereLetzteUrl();
@@ -7533,14 +7548,11 @@ window.em.meldeUserAn = function() {
 				if (r.roles.indexOf("_admin") !== -1) {
 					// das ist ein admin
 					console.log("hallo admin");
-					// Admin-Menu-Befehle einblenden
-					$(".popup").find(".admin").show();
-					//$(".popup").popup();
+					window.em.admin = true;
 				} else {
-					// Verstecken, weil sonst nach Neuanmeldung eines Nicht-Admins die Menüs immer noch sichtbar sind
-					$(".popup").find(".admin").hide();
-					//$(".popup").popup();
+					delete window.em.admin;
 				}
+				window.em.blendeMenus();
 				// Userdaten bereitstellen und an die zuletzt benutzte Seite weiterleiten
 				window.em.stelleUserDatenBereit();
 				delete localStorage.UserStatus;
@@ -7549,6 +7561,14 @@ window.em.meldeUserAn = function() {
 				window.em.melde("Anmeldung gescheitert.<br>Sie müssen ev. ein Konto erstellen?");
 			}
 		});
+	}
+};
+
+window.em.blendeMenus = function() {
+	if (window.em.admin) {
+		$(".popup").find(".admin").show();
+	} else {
+		$(".popup").find(".admin").hide();
 	}
 };
 
