@@ -3177,13 +3177,11 @@ window.em.erstelleArtgruppenListe_2 = function() {
 		row,
 		AnzArten;
 	for (i in window.em.Artgruppenliste.rows) {
-		if (typeof i !== "function") {
-			ArtGruppe = window.em.Artgruppenliste.rows[i].key;
-			row = window.em.Artgruppenliste.rows[i].doc;
-			AnzArten = row.AnzArten;
-			html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-			html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-		}
+		ArtGruppe = window.em.Artgruppenliste.rows[i].key;
+		row = window.em.Artgruppenliste.rows[i].doc;
+		AnzArten = row.AnzArten;
+		html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
+		html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 	}
 	$("#agl_ArtgruppenListe").html(html);
 	$("#agl_ArtgruppenListe").listview("refresh");
@@ -3798,7 +3796,7 @@ window.em.handleBeobEditPageinit = function() {
 
 	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -3991,7 +3989,7 @@ window.em.handleBeobListePageinit = function() {
 
 	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
@@ -4724,7 +4722,7 @@ window.em.handleHArtEditPageinit = function() {
 
 	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn hArtListe.html erscheint
@@ -4803,7 +4801,7 @@ window.em.handleHArtListePageinit = function() {
 
 	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
@@ -5048,7 +5046,7 @@ window.em.handleHOrtEditPageinit = function() {
 
 	$('#MenuOrtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuOrtEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuOrtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
@@ -5271,7 +5269,7 @@ window.em.handleHOrtListePageinit = function() {
 
 	$('#MenuOrtListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuOrtListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuOrtListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
@@ -5478,7 +5476,7 @@ window.em.handleHProjektEditPageinit = function() {
 
 	$('#MenuProjektEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuProjektEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuProjektEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
@@ -6233,7 +6231,7 @@ window.em.handleHProjektListePageinit = function() {
 
 	$('#MenuProjektListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuProjektListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuProjektListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 window.em.handleProjektListeSwipeleft = function() {
@@ -6425,7 +6423,7 @@ window.em.handleRaumEditPageinit = function() {
 
 	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 window.em.handleRaumEditOeffneRaumListeClick = function() {
@@ -6814,7 +6812,7 @@ window.em.handleHRaumListePageinit = function() {
 
 	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 window.em.handleRaumListeOeffneProjektEditClick = function() {
@@ -7005,7 +7003,7 @@ window.em.handleHZeitEditPageinit = function() {
 
 	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuZeitEdit').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuZeitEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 window.em.handleZeitEditOeffneOrtClick = function() {
@@ -7405,7 +7403,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuZeitListe').on('click', '.menu_arten_importieren', window.em.aktualisiereArten);
+	$('#MenuZeitListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 };
 
 window.em.handleZeitListeOeffneOrtClick = function() {
@@ -9240,6 +9238,206 @@ window.em.meldeNeuAn = function() {
 	$("#Passwort").val("");
 };
 
+
+
+
+
+window.em.handleArtenImportierenPageshow = function() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+	window.em.initiiereArtenImportieren();
+};
+
+window.em.handleArtenImportierenPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+
+	// zurück-Button steuern
+	$("#ArtenImportierenHeader").on('click', '#zurückArtenImportieren', function (event) {
+		event.preventDefault();
+		window.em.handleArtenImportierenZurückClick();
+	});
+
+	$("#ArtenImportierenContent").on('click', '#ai_arten_ohne_artgruppe_entfernen', window.em.entferneArtenOhneArtgruppe);
+
+	$("#ArtenImportierenContent").on('click', '#ai_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArten);
+
+	$("#ArtenImportierenContent").on('click', '#ai_fehlen_in_evab_importieren', window.em.importiereFehlendeArten);
+
+	$("#ArtenImportierenContent").on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
+};
+
+// PROVISORISCH, NACH BENUTZUNG ENTFERNEN
+window.em.entferneArtenOhneArtgruppe = function() {
+	$db = $.couch.db("evab");
+	$db.view('evab/ArtenOhneArtgruppe?include_docs=true', {
+		success: function(data) {
+			var arten_ohne_artgruppe = _.map(data.rows, function(objekt) {
+					return objekt.doc;
+				});
+			_.each(arten_ohne_artgruppe, function(art) {
+				$db.removeDoc(art, {
+					error: function() {
+						console.log("Fehler: " + art.Artname + " nicht gelöscht");
+					}
+				});
+			});
+		}
+	});
+};
+
+window.em.handleArtenImportierenZurückClick = function() {
+	// sicherstellen, dass er immer ein zurück kennt
+	if (!localStorage.zurueck) {
+		localStorage.zurueck = "BeobListe";
+	}
+	$.mobile.navigate(localStorage.zurueck + ".html");
+	delete localStorage.zurueck;
+};
+
+window.em.initiiereArtenImportieren = function() {
+	// aktuelle aus evm holen
+	$.ajax({
+		type: "GET",
+		url: "http://arteigenschaften.ch/_list/export_evm_arten/evab_arten?include_docs=true",
+		contentType: "application/json"
+	})
+	.done(function(data) {
+		data = JSON.parse(data);
+		window.em.arten_artendb = data.docs;
+		var arten_artendb_reduziert = window.em.reduziereArtenfelderAufArtgruppeUndName(window.em.arten_artendb);
+		// Tabelle aufbauen
+		$("#ai_artendb").html(window.em.erstelleTabelle(arten_artendb_reduziert, "reflow", "ai_artendb_tabelle"));
+		// initialisieren
+		$("#ai_artendb_tabelle").table();
+		// Anzahl anzeigen
+		$("#ai_artendb_titel").html("Erste 50 von " + window.em.arten_artendb.length + " Arten aus arteigenschaften.ch:");
+
+		// eigene Arten holen
+		console.log("hole Arten aus evab");
+		$db = $.couch.db("evab");
+		$db.view('evab/Artliste?include_docs=true', {
+			success: function(data) {
+				// Arten in evab ermitteln
+				console.log("verarbeite Arten aus evab");
+				window.em.arten_evab = _.map(data.rows, function(objekt) {
+					return objekt.doc;
+				});
+				var arten_evab_reduziert = window.em.reduziereArtenfelderAufArtgruppeUndName(window.em.arten_evab);
+				// Tabelle aufbauen
+				$("#ai_evab").html(window.em.erstelleTabelle(arten_evab_reduziert, "reflow", "ai_evab_tabelle"));
+				// initialisieren
+				$("#ai_evab_tabelle").table();
+				// Anzahl anzeigen
+				$("#ai_evab_titel").html("Erste 50 von " + window.em.arten_evab.length + " Arten aus artbeobachtungen.ch:");
+
+				// gemeinsame Arten mit unterschiedlichem Namen oder Artgruppe ermitteln
+				console.log("suche Arten mit Unterschieden");
+				window.em.arten_gemeinsam_unterschiedlich = _.filter(window.em.arten_artendb, function(art_artendb) {
+					for (var i in window.em.arten_evab) {
+						var art_evab = window.em.arten_evab[i];
+						if (art_evab._id === art_artendb._id && (art_evab.ArtGruppe !== art_artendb.ArtGruppe || art_evab.Artname !== art_artendb.Artname)) {
+							return true;
+						}
+					}
+				});
+				if (window.em.arten_gemeinsam_unterschiedlich.length > 0) {
+					var arten_gemeinsam_unterschiedlich_reduziert = window.em.reduziereArtenfelderAufArtgruppeUndName(window.em.arten_gemeinsam_unterschiedlich);
+					// Tabelle aufbauen
+					$("#ai_arten_gemeinsam_unterschiedlich").html(window.em.erstelleTabelle(arten_gemeinsam_unterschiedlich_reduziert, "reflow", "ai_arten_gemeinsam_unterschiedlich_tabelle"));
+					// initialisieren
+					$("#ai_arten_gemeinsam_unterschiedlich_tabelle").table();
+					// Schaltfläche einschalten
+					$("#ai_arten_gemeinsam_unterschiedlich_aktualisieren").button("enable");
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#ai_arten_gemeinsam_unterschiedlich").html("<p>Erfolg:<br>Alle gemeinsamen Arten weisen dieselbe Anzahl Arten aus!</p>");
+					$("#ai_arten_gemeinsam_unterschiedlich_aktualisieren").button("disable");
+				}
+				// Anzahl anzeigen
+				$("#ai_arten_gemeinsam_unterschiedlich_titel").html("Erste 50 von " + window.em.arten_arten_gemeinsam_unterschiedlich.length + " gemeinsamen Arten<br>mit unterschiedlicher Artgruppe oder Artname:");
+
+				// Arten aus artendb, die in evab fehlen
+				console.log("suche Arten, die in evab fehlen");
+				window.em.arten_fehlen_in_evab = _.reject(window.em.arten_artendb, function(art_artendb) {
+					for (var i in window.em.arten_evab) {
+						if (window.em.arten_evab[i]._id === art_artendb._id) {
+							return true;
+						}
+					}
+				});
+				if (window.em.arten_fehlen_in_evab.length > 0) {
+					var arten_fehlen_in_evab_reduziert = window.em.reduziereArtenfelderAufArtgruppeUndName(window.em.arten_fehlen_in_evab);
+					// Tabelle aufbauen
+					$("#ai_fehlen_in_evab").html(window.em.erstelleTabelle(arten_fehlen_in_evab_reduziert, "reflow", "ai_fehlen_in_evab_tabelle"));
+					// initialisieren
+					$("#ai_fehlen_in_evab_tabelle").table();
+					// Schaltfläche einschalten
+					$("#ai_fehlen_in_evab_importieren").button("enable");
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#ai_fehlen_in_evab").html("<p>Erfolg:<br>artbeobachtungen.ch enthält schon alle Arten aus arteigenschaften.ch!</p>");
+					$("#ai_fehlen_in_evab_importieren").button("disable");
+				}
+				// Anzahl anzeigen
+				$("#ai_fehlen_in_evab_titel").html("Erste 50 von " + window.em.arten_fehlen_in_evab.length + " Arten aus arteigenschaften.ch, die in artbeobachtungen.ch fehlen:");
+
+				// Arten aus evab, die in artendb fehlen
+				console.log("suche Arten, die in artendb fehlen");
+				window.em.arten_fehlen_in_artendb = _.reject(window.em.arten_evab, function(art_evab) {
+					for (var i in window.em.arten_artendb) {
+						if (window.em.arten_artendb[i]._id === art_evab._id) {
+							return true;
+						}
+					}
+				});
+				if (window.em.arten_fehlen_in_artendb.length > 0) {
+					var arten_fehlen_in_artendb_reduziert = window.em.reduziereArtenfelderAufArtgruppeUndName(window.em.arten_fehlen_in_artendb);
+					// Tabelle aufbauen
+					$("#ai_fehlen_in_artendb").html(window.em.erstelleTabelle(arten_fehlen_in_artendb_reduziert, "reflow", "ai_fehlen_in_artendb_tabelle"));
+					// initialisieren
+					$("#ai_fehlen_in_artendb_tabelle").table();
+					// Schaltfläche einschalten
+					$("#ai_fehlen_in_artendb_exportieren").button("enable");
+					$("#ai_fehlen_in_artendb_exportieren_hinweis").show();
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#ai_fehlen_in_artendb").html("<p>Erfolg:<br>artbeobachtungen.ch enthält keine Arten, die in arteigenschaften.ch nicht vorkommen!</p>");
+					$("#ai_fehlen_in_artendb_exportieren").button("disable");
+					$("#ai_fehlen_in_artendb_exportieren_hinweis").hide();
+				}
+				// Anzahl anzeigen
+				$("#ai_fehlen_in_artendb_titel").html("Erste 50 von " + window.em.arten_fehlen_in_artendb.length + " Arten aus artbeobachtungen.ch, die in arteigenschaften.ch fehlen:");
+			}
+		});
+	})
+	.fail(function() {
+		console.log("Fehler: keine Arten erhalten");
+	});
+};
+
+window.em.reduziereArtenfelderAufArtgruppeUndName = function(arten) {
+	// da es soviele Arten gibt, nur die ersten 50 verarbeiten und anzeigen
+	var erste_fünfzig_arten = _.first(arten, 50);
+	return _.map(erste_fünfzig_arten, function(art) {
+		var art_return = {};
+		art_return.Artgruppe = art.ArtGruppe;
+		art_return.Artname = art.Artname;
+		return art_return;
+	});
+};
+
+
+
+
+
+
 window.em.handleArtengruppenImportierenPageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
@@ -9322,7 +9520,7 @@ window.em.aktualisiereAnzahlArtenVonArtengruppen = function() {
 window.em.handleArtengruppenImportierenZurückClick = function() {
 	// sicherstellen, dass er immer ein zurück kennt
 	if (!localStorage.zurueck) {
-		localStorage.zurueck = "BeobListe.html";
+		localStorage.zurueck = "BeobListe";
 	}
 	$.mobile.navigate(localStorage.zurueck + ".html");
 	delete localStorage.zurueck;
@@ -9354,7 +9552,7 @@ window.em.initiiereArtengruppenImportieren = function() {
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function(data) {
-				
+				// Artgruppen in evab ermitteln
 				window.em.artgruppen_evab = _.map(data.rows, function(objekt) {
 					return objekt.doc;
 				});
@@ -9370,13 +9568,17 @@ window.em.initiiereArtengruppenImportieren = function() {
 				window.em.artgruppen_gemeinsam = _.filter(window.em.artgruppen_evab, function(artgruppe_evab) {
 					return _.filter(window.em.artgruppen_artendb, _.matches(artgruppe_evab));
 				});
-				var artgruppen_gemeinsam_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_gemeinsam);
-				// Tabelle aufbauen
-				$("#agi_gemeinsam").html(window.em.erstelleTabelle(artgruppen_gemeinsam_reduziert, "reflow", "agi_gemeinsam_tabelle"));
-				// initialisieren
-				$("#agi_gemeinsam_tabelle").table();
+				if (window.em.artgruppen_gemeinsam.length > 0) {
+					var artgruppen_gemeinsam_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_gemeinsam);
+					// Tabelle aufbauen
+					$("#agi_gemeinsam").html(window.em.erstelleTabelle(artgruppen_gemeinsam_reduziert, "reflow", "agi_gemeinsam_tabelle"));
+					// initialisieren
+					$("#agi_gemeinsam_tabelle").table();
+				} else {
+					$("#agi_gemeinsam").html("<p>Oops: Es gibt keine gemeinsamen Artgruppen!</p>");
+				}
 				// Anzahl anzeigen
-				$("#agi_gemeinsam_titel").html("Gemeinsame<br>Artengruppen (" + artgruppen_gemeinsam_reduziert.length + "):");
+				$("#agi_gemeinsam_titel").html("Gemeinsame<br>Artengruppen (" + window.em.artgruppen_gemeinsam.length + "):");
 
 				// gemeinsame Artengruppen mit unterschiedlicher Anzahl Arten ermitteln
 				window.em.artgruppen_gemeinsam_anzarten = _.filter(window.em.artgruppen_artendb, function(artgruppe_artendb) {
@@ -9513,7 +9715,10 @@ window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
 
 
 
-
+window.em.öffneArtenImportieren = function() {
+	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
+	$.mobile.navigate("ArtenImportieren.html");
+};
 
 window.em.aktualisiereArten = function() {
 	console.log("window.em.aktualisiereArten");
