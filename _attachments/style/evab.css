@@ -176,6 +176,66 @@ margin: 3px 3px 3px 4px;
   text-align: center;
 }
 
+/*Tabellen*/
+.tabelle_gestreift thead th,
+.tabelle_gestreift tbody tr:last-child {
+  border-bottom: 1px solid #d6d6d6; /* non-RGBA fallback */
+  border-bottom: 1px solid rgba(0,0,0,.1);
+}
+.tabelle_gestreift tbody th,
+.tabelle_gestreift tbody td {
+  border-bottom: 1px solid #e6e6e6; /* non-RGBA fallback  */
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+.tabelle_gestreift tbody tr:last-child th,
+.tabelle_gestreift tbody tr:last-child td {
+  border-bottom: 0;
+}
+.tabelle_gestreift tbody tr:nth-child(odd) td,
+.tabelle_gestreift tbody tr:nth-child(odd) th {
+  background-color: #eeeeee; /* non-RGBA fallback  */
+  background-color: rgba(0,0,0,.04);
+}
+.ui-table th,
+.ui-table td {
+  line-height: 1.0em;
+}
+
+/*Artengruppentabellen: Je nach Bildschirmbreite darstellen*/
+.artengruppentabelle .ui-block-a,
+.artengruppentabelle .ui-block-b,
+.artengruppentabelle .ui-block-c,
+.artengruppentabelle .ui-block-d,
+.artengruppentabelle .ui-block-e,
+.artengruppentabelle .ui-block-f {
+  width: 100%;
+  float:none;
+}
+
+@media all and (min-width: 50em) {
+  .artengruppentabelle .ui-block-a,
+  .artengruppentabelle .ui-block-b,
+  .artengruppentabelle .ui-block-c,
+  .artengruppentabelle .ui-block-d,
+  .artengruppentabelle .ui-block-e,
+  .artengruppentabelle .ui-block-f {
+    width: 33%;
+    float: left;
+  }
+}
+
+@media all and (min-width: 100em) {
+  .artengruppentabelle .ui-block-a,
+  .artengruppentabelle .ui-block-b,
+  .artengruppentabelle .ui-block-c,
+  .artengruppentabelle .ui-block-d,
+  .artengruppentabelle .ui-block-e,
+  .artengruppentabelle .ui-block-f {
+    width: 16%;
+    float: left;
+  }
+}
+
 /*!
 * jQuery Mobile Framework : drag pagination plugin
 * Copyright (c) Filament Group, Inc

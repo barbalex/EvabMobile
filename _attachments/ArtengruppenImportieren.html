@@ -40,16 +40,40 @@
 			</div>
 			<div id="ArtengruppenImportierenContent" data-role="content">
 				<form id="ArtengruppenImportierenForm">
-					<p>In arteigenschaften.ch und artbeobachtungen.ch vorhandene Artengruppen:</p>
-					<div id="agi_gemeinsam"></div>
-					<br>
-					<p>In arteigenschaften.ch zusätzlich vorhandene Artengruppen:</p>
-					<div id="agi_zusätzlich"></div>
-					<input id="agi_zusätzliche_importieren" type="button" value="importieren" data-inline="true">
-					<br>
-					<p>In arteigenschaften.ch nicht mehr vorhandene Artengruppen:</p>
-					<div id="agi_fehlend"></div>
-					<input id="agi_fehlende_exportieren" type="button" value="Liste der zugehörigen Beobachtungen exportieren (um die Artgruppen anzupassen)" data-inline="true">
+					<div class="ui-grid-b artengruppentabelle">
+						<div class="ui-block-a">
+							<p id="agi_artendb_titel">In arteigenschaften.ch<br>vorhandene Artengruppen:</p>
+							<div id="agi_artendb"></div>
+							<br>
+						</div>
+						<div class="ui-block-b">
+							<p id="agi_evab_titel">In artbeobachtungen.ch<br>vorhandene Artengruppen:</p>
+							<div id="agi_evab"></div>
+							<br>
+						</div>
+						<div class="ui-block-c">
+							<p id="agi_gemeinsam_titel">Gemeinsame Artengruppen:</p>
+							<div id="agi_gemeinsam"></div>
+							<br>
+						</div>
+						<div class="ui-block-d">
+							<p id="agi_gemeinsam_anzarten_titel">Gemeinsame Artengruppen<br>mit unterschiedlicher Anzahl Arten:</p>
+							<div id="agi_gemeinsam_anzarten"></div>
+							<input id="agi_gemeinsam_anzarten_button" type="button" value="Anzahl Arten aktualisieren" data-inline="true">
+							<br>
+						</div>
+						<div class="ui-block-e">
+							<p id="agi_fehlen_in_evab_titel">Artengruppen aus arteigenschaften.ch,<br>die in artbeobachtungen.ch fehlen:</p>
+							<div id="agi_fehlen_in_evab"></div>
+							<input id="agi_fehlen_in_evab_importieren" type="button" value="importieren" data-inline="true">
+							<br>
+						</div>
+						<div class="ui-block-f">
+							<p id="agi_fehlen_in_artendb_titel">Artengruppen aus artbeobachtungen.ch,<br>die in arteigenschaften.ch fehlen:</p>
+							<div id="agi_fehlen_in_artendb"></div>
+							<input id="agi_fehlen_in_artendb_exportieren" type="button" value="Zugehörige Beobachtungen<br>exportieren (um die<br>Artgruppen anzupassen)" data-inline="true">
+						</div>
+					</div>
 				</form>
 			</div>
 			<script>
