@@ -9357,11 +9357,11 @@ window.em.initiiereArtenImportieren = function() {
 					$("#ai_arten_gemeinsam_unterschiedlich_aktualisieren").button("enable");
 				} else {
 					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
-					$("#ai_arten_gemeinsam_unterschiedlich").html("<p>Erfolg:<br>Alle gemeinsamen Arten weisen dieselbe Anzahl Arten aus!</p>");
+					$("#ai_arten_gemeinsam_unterschiedlich").html("<p>Erfolg:<br>Alle gemeinsamen Arten haben denselben Namen und dieselbe Artgruppe!</p>");
 					$("#ai_arten_gemeinsam_unterschiedlich_aktualisieren").button("disable");
 				}
 				// Anzahl anzeigen
-				$("#ai_arten_gemeinsam_unterschiedlich_titel").html("Erste 50 von " + window.em.arten_arten_gemeinsam_unterschiedlich.length + " gemeinsamen Arten<br>mit unterschiedlicher Artgruppe oder Artname:");
+				$("#ai_arten_gemeinsam_unterschiedlich_titel").html("Erste 50 von " + window.em.arten_gemeinsam_unterschiedlich.length + " gemeinsamen Arten<br>mit unterschiedlicher Artgruppe oder Artname:");
 
 				// Arten aus artendb, die in evab fehlen
 				console.log("suche Arten, die in evab fehlen");
@@ -9391,6 +9391,10 @@ window.em.initiiereArtenImportieren = function() {
 				// Arten aus evab, die in artendb fehlen
 				console.log("suche Arten, die in artendb fehlen");
 				window.em.arten_fehlen_in_artendb = _.reject(window.em.arten_evab, function(art_evab) {
+					// eigene und unbekannte Arten ignorieren
+					if (art_evab.Artname.substring(0, 6) === "Eigene" || art_evab.Artname.substring(0, 9) === "Unbekannt") {
+						return true;
+					}
 					for (var i in window.em.arten_artendb) {
 						if (window.em.arten_artendb[i]._id === art_evab._id) {
 							return true;
