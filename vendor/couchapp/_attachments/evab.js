@@ -9273,11 +9273,41 @@ window.em.handleArtenImportierenPageinit = function() {
 	$("#ArtenImportierenContent").on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
 };
 
+window.em.importiereFehlendeArten = function() {
+	if (window.em.arten_fehlen_in_evab.length === 0) {
+		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Arten, die in artbeobachtungen.ch fehlen");
+		return;
+	}
+	$db = $.couch.db("evab");
+	_.each(window.em.arten_fehlen_in_evab, function(art) {
+		$db.saveDoc(art, {
+			success: function() {
+				//window.em.initiiereArtenImportieren();
+			},
+			error: function() {
+				window.em.melde("Fehler: Art " + art.Artname + " nicht importiert");
+			}
+		});
+	});
+};
+
+window.em.aktualisiereAnzahlArtenVonArten = function() {
+	window.em.melde("Diese Funktion ist noch nicht implementiert");
+};
+
+window.em.exportiereBeobVonInArtendbFehlendenArten = function() {
+	window.em.melde("Diese Funktion ist noch nicht implementiert");
+};
+
 // PROVISORISCH, NACH BENUTZUNG ENTFERNEN
 window.em.entferneArtenOhneArtgruppe = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/ArtenOhneArtgruppe?include_docs=true', {
 		success: function(data) {
+			if (data.rows.length === 0) {
+				window.em.melde("Es gibt keine Arten ohne Artgruppe");
+				return;
+			}
 			var arten_ohne_artgruppe = _.map(data.rows, function(objekt) {
 					return objekt.doc;
 				});

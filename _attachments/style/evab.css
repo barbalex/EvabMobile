@@ -181,7 +181,8 @@ margin: 3px 3px 3px 4px;
 }
 
 /*Text gleich einrücken, wie in den Tabellen*/
-.artengruppentabellen p {
+.artengruppentabellen p,
+.artentabellen p {
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -279,6 +280,42 @@ margin: 3px 3px 3px 4px;
   .artengruppentabellen .ui-block-e,
   .artengruppentabellen .ui-block-f {
     width: 16%;
+    float: left;
+  }
+}
+
+/*Artentabellen: Je nach Bildschirmbreite anordnen*/
+.artentabellen .ui-block-a,
+.artentabellen .ui-block-b,
+.artentabellen .ui-block-c,
+.artentabellen .ui-block-d,
+.artentabellen .ui-block-e,
+.artentabellen .ui-block-f {
+  width: 100%;
+  /*float:none;*/
+  float: left;
+}
+
+@media all and (min-width: 50em) {
+  .artentabellen .ui-block-a,
+  .artentabellen .ui-block-b,
+  .artentabellen .ui-block-c,
+  .artentabellen .ui-block-d,
+  .artentabellen .ui-block-e,
+  .artentabellen .ui-block-f {
+    width: 50%;
+    float: left;
+  }
+}
+
+@media all and (min-width: 100em) {
+  .artentabellen .ui-block-a,
+  .artentabellen .ui-block-b,
+  .artentabellen .ui-block-c,
+  .artentabellen .ui-block-d,
+  .artentabellen .ui-block-e,
+  .artentabellen .ui-block-f {
+    width: 33%;
     float: left;
   }
 }
