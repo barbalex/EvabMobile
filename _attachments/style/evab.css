@@ -176,6 +176,16 @@ margin: 3px 3px 3px 4px;
   text-align: center;
 }
 
+.text-fett {
+  font-weight: bold;
+}
+
+/*Text gleich einrücken, wie in den Tabellen*/
+.artengruppentabellen p {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 /*Tabellen*/
 .tabelle_gestreift thead th,
 .tabelle_gestreift tbody tr:last-child {
@@ -202,35 +212,72 @@ margin: 3px 3px 3px 4px;
 }
 
 /*Artengruppentabellen: Je nach Bildschirmbreite anordnen*/
-.artengruppentabelle .ui-block-a,
-.artengruppentabelle .ui-block-b,
-.artengruppentabelle .ui-block-c,
-.artengruppentabelle .ui-block-d,
-.artengruppentabelle .ui-block-e,
-.artengruppentabelle .ui-block-f {
+.artengruppentabellen .ui-block-a,
+.artengruppentabellen .ui-block-b,
+.artengruppentabellen .ui-block-c,
+.artengruppentabellen .ui-block-d,
+.artengruppentabellen .ui-block-e,
+.artengruppentabellen .ui-block-f {
   width: 100%;
-  float:none;
+  /*float:none;*/
+  float: left;
+}
+
+@media all and (min-width: 35em) {
+  .artengruppentabellen .ui-block-a,
+  .artengruppentabellen .ui-block-b,
+  .artengruppentabellen .ui-block-c,
+  .artengruppentabellen .ui-block-d,
+  .artengruppentabellen .ui-block-e,
+  .artengruppentabellen .ui-block-f {
+    width: 50%;
+    float: left;
+  }
 }
 
 @media all and (min-width: 50em) {
-  .artengruppentabelle .ui-block-a,
-  .artengruppentabelle .ui-block-b,
-  .artengruppentabelle .ui-block-c,
-  .artengruppentabelle .ui-block-d,
-  .artengruppentabelle .ui-block-e,
-  .artengruppentabelle .ui-block-f {
+  .artengruppentabellen .ui-block-a,
+  .artengruppentabellen .ui-block-b,
+  .artengruppentabellen .ui-block-c,
+  .artengruppentabellen .ui-block-d,
+  .artengruppentabellen .ui-block-e,
+  .artengruppentabellen .ui-block-f {
     width: 33%;
     float: left;
   }
 }
 
+@media all and (min-width: 67em) {
+  .artengruppentabellen .ui-block-a,
+  .artengruppentabellen .ui-block-b,
+  .artengruppentabellen .ui-block-c,
+  .artengruppentabellen .ui-block-d,
+  .artengruppentabellen .ui-block-e,
+  .artengruppentabellen .ui-block-f {
+    width: 25%;
+    float: left;
+  }
+}
+
+@media all and (min-width: 84em) {
+  .artengruppentabellen .ui-block-a,
+  .artengruppentabellen .ui-block-b,
+  .artengruppentabellen .ui-block-c,
+  .artengruppentabellen .ui-block-d,
+  .artengruppentabellen .ui-block-e,
+  .artengruppentabellen .ui-block-f {
+    width: 20%;
+    float: left;
+  }
+}
+
 @media all and (min-width: 100em) {
-  .artengruppentabelle .ui-block-a,
-  .artengruppentabelle .ui-block-b,
-  .artengruppentabelle .ui-block-c,
-  .artengruppentabelle .ui-block-d,
-  .artengruppentabelle .ui-block-e,
-  .artengruppentabelle .ui-block-f {
+  .artengruppentabellen .ui-block-a,
+  .artengruppentabellen .ui-block-b,
+  .artengruppentabellen .ui-block-c,
+  .artengruppentabellen .ui-block-d,
+  .artengruppentabellen .ui-block-e,
+  .artengruppentabellen .ui-block-f {
     width: 16%;
     float: left;
   }

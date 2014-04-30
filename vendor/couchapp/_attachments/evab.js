@@ -9240,10 +9240,6 @@ window.em.meldeNeuAn = function() {
 	$("#Passwort").val("");
 };
 
-
-
-
-
 window.em.handleArtengruppenImportierenPageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
@@ -9264,6 +9260,62 @@ window.em.handleArtengruppenImportierenPageinit = function() {
 	$("#ArtengruppenImportierenHeader").on('click', '#zurückArtengruppenImportieren', function (event) {
 		event.preventDefault();
 		window.em.handleArtengruppenImportierenZurückClick();
+	});
+
+	$(document).on('click', '#agi_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArtengruppen);
+
+	$("#ArtengruppenImportierenContent").on('click', '#agi_fehlen_in_evab_importieren', window.em.importiereFehlendeArtengruppen);
+
+	$("#ArtengruppenImportierenContent").on('click', '#agi_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArtengruppen);
+};
+
+window.em.exportiereBeobVonInArtendbFehlendenArtengruppen = function() {
+	console.log("window.em.exportiereBeobVonInArtendbFehlendenArtengruppen");
+};
+
+window.em.importiereFehlendeArtengruppen = function() {
+	console.log("window.em.importiereFehlendeArtengruppen");
+	if (window.em.artgruppen_fehlen_in_evab.length === 0) {
+		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Artengruppen, die in artbeobachtungen.ch fehlen");
+		return;
+	}
+	$db = $.couch.db("evab");
+	_.each(window.em.artgruppen_fehlen_in_evab, function(artgruppe) {
+		$db.saveDoc(artgruppe, {
+			success: function() {
+				window.em.initiiereArtengruppenImportieren();
+			},
+			error: function() {
+				window.em.melde("Fehler: Artgruppe " + artgruppe_artendb.ArtGruppe + " nicht aktualisiert");
+			}
+		});
+	});
+};
+
+window.em.aktualisiereAnzahlArtenVonArtengruppen = function() {
+	if (window.em.artgruppen_gemeinsam_anzarten.length === 0) {
+		window.em.melde("Aktion abgebrochen: Es gibt keine gemeinsamen Artengruppen mit unterschiedlicher Anzahl Arten");
+		return;
+	}
+	$db = $.couch.db("evab");
+	_.each(window.em.artgruppen_gemeinsam_anzarten, function(artgruppe_artendb) {
+		$db.openDoc(artgruppe_artendb._id, {
+			success: function(artgruppe_evab) {
+				artgruppe_evab.AnzArten = artgruppe_artendb.AnzArten;
+				$db.saveDoc(artgruppe_evab, {
+					success: function() {
+						window.em.initiiereArtengruppenImportieren();
+					},
+					error: function() {
+						window.em.melde("Fehler: Artgruppe " + artgruppe_artendb.ArtGruppe + " nicht aktualisiert");
+					}
+				});
+			},
+			error: function() {
+				window.em.melde("Fehler: Artgruppe " + artgruppe_artendb.ArtGruppe + " nicht aktualisiert");
+			}
+		});
+				
 	});
 };
 
@@ -9291,18 +9343,13 @@ window.em.initiiereArtengruppenImportieren = function() {
 	.done(function(data) {
 		data = JSON.parse(data);
 		window.em.artgruppen_artendb = data.docs;
-		var artgruppen_artendb_reduziert = _.map(window.em.artgruppen_artendb, function(artgruppe) {
-			var artgruppe_return = {};
-			artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
-			artgruppe_return["Anzahl Arten"] = artgruppe.AnzArten;
-			return artgruppe_return;
-		});
+		var artgruppen_artendb_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_artendb);
 		// Tabelle aufbauen
 		$("#agi_artendb").html(window.em.erstelleTabelle(artgruppen_artendb_reduziert, "reflow", "agi_artendb_tabelle"));
 		// initialisieren
 		$("#agi_artendb_tabelle").table();
 		// Anzahl anzeigen
-		$("#agi_artendb_titel").html("In arteigenschaften.ch<br>vorhandene Artengruppen: (" + artgruppen_artendb_reduziert.length + ")");
+		$("#agi_artendb_titel").html("In arteigenschaften.ch<br>vorhandene Artengruppen (" + artgruppen_artendb_reduziert.length + "):");
 		// eigene Artgruppen holen
 		$db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
@@ -9311,40 +9358,30 @@ window.em.initiiereArtengruppenImportieren = function() {
 				window.em.artgruppen_evab = _.map(data.rows, function(objekt) {
 					return objekt.doc;
 				});
-				var artgruppen_evab_reduziert = _.map(window.em.artgruppen_evab, function(artgruppe) {
-					var artgruppe_return = {};
-					artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
-					artgruppe_return["Anzahl Arten"] = artgruppe.AnzArten;
-					return artgruppe_return;
-				});
+				var artgruppen_evab_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_evab);
 				// Tabelle aufbauen
 				$("#agi_evab").html(window.em.erstelleTabelle(artgruppen_evab_reduziert, "reflow", "agi_evab_tabelle"));
 				// initialisieren
 				$("#agi_evab_tabelle").table();
 				// Anzahl anzeigen
-				$("#agi_evab_titel").html("In artbeobachtungen.ch<br>vorhandene Artengruppen: (" + artgruppen_evab_reduziert.length + ")");
+				$("#agi_evab_titel").html("In artbeobachtungen.ch<br>vorhandene Artengruppen (" + artgruppen_evab_reduziert.length + "):");
 
 				// gemeinsame Artgruppen ermitteln
 				window.em.artgruppen_gemeinsam = _.filter(window.em.artgruppen_evab, function(artgruppe_evab) {
 					return _.filter(window.em.artgruppen_artendb, _.matches(artgruppe_evab));
 				});
-				var artgruppen_gemeinsam_reduziert = _.map(window.em.artgruppen_gemeinsam, function(artgruppe) {
-					var artgruppe_return = {};
-					artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
-					artgruppe_return["Anzahl Arten"] = artgruppe.AnzArten;
-					return artgruppe_return;
-				});
+				var artgruppen_gemeinsam_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_gemeinsam);
 				// Tabelle aufbauen
 				$("#agi_gemeinsam").html(window.em.erstelleTabelle(artgruppen_gemeinsam_reduziert, "reflow", "agi_gemeinsam_tabelle"));
 				// initialisieren
 				$("#agi_gemeinsam_tabelle").table();
 				// Anzahl anzeigen
-				$("#agi_gemeinsam_titel").html("Gemeinsame Artengruppen: (" + artgruppen_gemeinsam_reduziert.length + ")");
+				$("#agi_gemeinsam_titel").html("Gemeinsame<br>Artengruppen (" + artgruppen_gemeinsam_reduziert.length + "):");
 
 				// gemeinsame Artengruppen mit unterschiedlicher Anzahl Arten ermitteln
-				window.em.artgruppen_gemeinsam_anzarten = _.filter(window.em.artgruppen_evab, function(artgruppe_evab) {
-					for (var i in window.em.artgruppen_artendb) {
-						if (window.em.artgruppen_artendb[i].ArtGruppe === artgruppe_evab.ArtGruppe && window.em.artgruppen_artendb[i].AnzArten !== artgruppe_evab.AnzArten) {
+				window.em.artgruppen_gemeinsam_anzarten = _.filter(window.em.artgruppen_artendb, function(artgruppe_artendb) {
+					for (var i in window.em.artgruppen_evab) {
+						if (window.em.artgruppen_evab[i].ArtGruppe === artgruppe_artendb.ArtGruppe && window.em.artgruppen_evab[i].AnzArten !== artgruppe_artendb.AnzArten) {
 							return true;
 						}
 					}
@@ -9354,12 +9391,20 @@ window.em.initiiereArtengruppenImportieren = function() {
 					artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
 					return artgruppe_return;
 				});
-				// Tabelle aufbauen
-				$("#agi_gemeinsam_anzarten").html(window.em.erstelleTabelle(artgruppen_gemeinsam_anzarten_reduziert, "reflow", "agi_gemeinsam_anzarten_tabelle"));
-				// initialisieren
-				$("#agi_gemeinsam_anzarten_tabelle").table();
+				if (window.em.artgruppen_gemeinsam_anzarten.length > 0) {
+					// Tabelle aufbauen
+					$("#agi_gemeinsam_anzarten").html(window.em.erstelleTabelle(artgruppen_gemeinsam_anzarten_reduziert, "reflow", "agi_gemeinsam_anzarten_tabelle"));
+					// initialisieren
+					$("#agi_gemeinsam_anzarten_tabelle").table();
+					// Schaltfläche einschalten
+					$("#agi_gemeinsam_anzarten_aktualisieren").button("enable");
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#agi_gemeinsam_anzarten").html("<p>Erfolg:<br>Alle gemeinsamen Artengruppen weisen dieselbe Anzahl Arten aus!</p>");
+					$("#agi_gemeinsam_anzarten_aktualisieren").button("disable");
+				}
 				// Anzahl anzeigen
-				$("#agi_gemeinsam_anzarten_titel").html("Gemeinsame Artengruppen<br>mit unterschiedlicher Anzahl Arten: (" + artgruppen_gemeinsam_anzarten_reduziert.length + ")");
+				$("#agi_gemeinsam_anzarten_titel").html("Gemeinsame Artengruppen<br>mit unterschiedlicher Anz. Arten (" + window.em.artgruppen_gemeinsam_anzarten.length + "):");
 
 				// Artengruppen aus artendb, die in evab fehlen
 				window.em.artgruppen_fehlen_in_evab = _.reject(window.em.artgruppen_artendb, function(artgruppe_artendb) {
@@ -9369,18 +9414,21 @@ window.em.initiiereArtengruppenImportieren = function() {
 						}
 					}
 				});
-				var artgruppen_fehlen_in_evab_reduziert = _.map(window.em.artgruppen_fehlen_in_evab, function(artgruppe) {
-					var artgruppe_return = {};
-					artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
-					artgruppe_return["Anzahl Arten"] = artgruppe.AnzArten;
-					return artgruppe_return;
-				});
-				// Tabelle aufbauen
-				$("#agi_fehlen_in_evab").html(window.em.erstelleTabelle(artgruppen_fehlen_in_evab_reduziert, "reflow", "agi_fehlen_in_evab_tabelle"));
-				// initialisieren
-				$("#agi_fehlen_in_evab_tabelle").table();
+				if (window.em.artgruppen_fehlen_in_evab.length > 0) {
+					var artgruppen_fehlen_in_evab_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_fehlen_in_evab);
+					// Tabelle aufbauen
+					$("#agi_fehlen_in_evab").html(window.em.erstelleTabelle(artgruppen_fehlen_in_evab_reduziert, "reflow", "agi_fehlen_in_evab_tabelle"));
+					// initialisieren
+					$("#agi_fehlen_in_evab_tabelle").table();
+					// Schaltfläche einschalten
+					$("#agi_fehlen_in_evab_importieren").button("enable");
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#agi_fehlen_in_evab").html("<p>Erfolg:<br>artbeobachtungen.ch enthält schon alle Artgruppen aus arteigenschaften.ch!</p>");
+					$("#agi_fehlen_in_evab_importieren").button("disable");
+				}
 				// Anzahl anzeigen
-				$("#agi_fehlen_in_evab_titel").html("Artengruppen aus arteigenschaften.ch,<br>die in artbeobachtungen.ch fehlen: (" + artgruppen_fehlen_in_evab_reduziert.length + ")");
+				$("#agi_fehlen_in_evab_titel").html("Artengruppen aus arteigenschaften.ch,<br>die in artbeobachtungen.ch fehlen (" + window.em.artgruppen_fehlen_in_evab.length + "):");
 
 				// Artengruppen aus evab, die in artendb fehlen
 				window.em.artgruppen_fehlen_in_artendb = _.reject(window.em.artgruppen_evab, function(artgruppe_evab) {
@@ -9390,32 +9438,38 @@ window.em.initiiereArtengruppenImportieren = function() {
 						}
 					}
 				});
-				var artgruppen_fehlen_in_artendb_reduziert = _.map(window.em.artgruppen_fehlen_in_artendb, function(artgruppe) {
-					var artgruppe_return = {};
-					artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
-					artgruppe_return["Anzahl Arten"] = artgruppe.AnzArten;
-					return artgruppe_return;
-				});
-				// Tabelle aufbauen
-				$("#agi_fehlen_in_artendb").html(window.em.erstelleTabelle(artgruppen_fehlen_in_artendb_reduziert, "reflow", "agi_fehlen_in_artendb_tabelle"));
-				// initialisieren
-				$("#agi_fehlen_in_artendb_tabelle").table();
+				if (window.em.artgruppen_fehlen_in_artendb.length > 0) {
+					var artgruppen_fehlen_in_artendb_reduziert = window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl(window.em.artgruppen_fehlen_in_artendb);
+					// Tabelle aufbauen
+					$("#agi_fehlen_in_artendb").html(window.em.erstelleTabelle(artgruppen_fehlen_in_artendb_reduziert, "reflow", "agi_fehlen_in_artendb_tabelle"));
+					// initialisieren
+					$("#agi_fehlen_in_artendb_tabelle").table();
+					// Schaltfläche einschalten
+					$("#agi_fehlen_in_artendb_exportieren").button("enable");
+					$("#agi_fehlen_in_artendb_exportieren_hinweis").show();
+				} else {
+					// p mitliefern, damit der Text gleich eingerückt wird, wie der Titel darüber
+					$("#agi_fehlen_in_artendb").html("<p>Erfolg:<br>artbeobachtungen.ch enthält keine Artgruppen, die in arteigenschaften.ch nicht vorkommen!</p>");
+					$("#agi_fehlen_in_artendb_exportieren").button("disable");
+					$("#agi_fehlen_in_artendb_exportieren_hinweis").hide();
+				}
 				// Anzahl anzeigen
-				$("#agi_fehlen_in_artendb_titel").html("Artengruppen aus artbeobachtungen.ch,<br>die in arteigenschaften.ch fehlen: (" + artgruppen_fehlen_in_artendb_reduziert.length + ")");
+				$("#agi_fehlen_in_artendb_titel").html("Artengruppen aus artbeobachtungen.ch,<br>die in arteigenschaften.ch fehlen (" + window.em.artgruppen_fehlen_in_artendb.length + "):");
 			}
 		});
 	})
 	.fail(function() {
 		console.log("Fehler: keine Artgruppen erhalten");
 	});
+};
 
-	
-
-	// gemeinsame auflisten
-
-	// zusätzliche auflisten
-
-	// nicht mehr vorhandene auflisten
+window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl = function(artgruppen) {
+	return _.map(artgruppen, function(artgruppe) {
+		var artgruppe_return = {};
+		artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
+		artgruppe_return["Anz. Arten"] = artgruppe.AnzArten;
+		return artgruppe_return;
+	})
 };
 
 // baut Tabellen auf
