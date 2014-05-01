@@ -180,11 +180,10 @@ margin: 3px 3px 3px 4px;
   font-weight: bold;
 }
 
-/*Text gleich einrücken, wie in den Tabellen*/
-.artengruppentabellen p,
-.artentabellen p {
-  padding-left: 8px;
+.artentabellen > div,
+.artengruppentabellen > div {
   padding-right: 8px;
+  padding-left: 8px;
 }
 
 /*Tabellen*/

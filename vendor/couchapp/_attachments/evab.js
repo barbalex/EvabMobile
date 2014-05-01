@@ -3797,6 +3797,8 @@ window.em.handleBeobEditPageinit = function() {
 	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -3990,6 +3992,8 @@ window.em.handleBeobListePageinit = function() {
 	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuBeobListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
@@ -4723,6 +4727,8 @@ window.em.handleHArtEditPageinit = function() {
 	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuhBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn hArtListe.html erscheint
@@ -4802,6 +4808,8 @@ window.em.handleHArtListePageinit = function() {
 	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuhBeobListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
@@ -5046,7 +5054,7 @@ window.em.handleHOrtEditPageinit = function() {
 
 	$('#MenuOrtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuOrtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuOrtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
@@ -5269,7 +5277,7 @@ window.em.handleHOrtListePageinit = function() {
 
 	$('#MenuOrtListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuOrtListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuOrtListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
@@ -5476,7 +5484,7 @@ window.em.handleHProjektEditPageinit = function() {
 
 	$('#MenuProjektEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuProjektEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuProjektEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
@@ -6232,6 +6240,8 @@ window.em.handleHProjektListePageinit = function() {
 	$('#MenuProjektListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuProjektListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuProjektListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleProjektListeSwipeleft = function() {
@@ -6424,6 +6434,8 @@ window.em.handleRaumEditPageinit = function() {
 	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuRaumEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleRaumEditOeffneRaumListeClick = function() {
@@ -6813,6 +6825,8 @@ window.em.handleHRaumListePageinit = function() {
 	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
 	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuRaumListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleRaumListeOeffneProjektEditClick = function() {
@@ -7003,7 +7017,7 @@ window.em.handleHZeitEditPageinit = function() {
 
 	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuZeitEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuZeitEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleZeitEditOeffneOrtClick = function() {
@@ -7403,7 +7417,7 @@ window.em.handleZeitListePageinit = function() {
 
 	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuZeitListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuZeitListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleZeitListeOeffneOrtClick = function() {
@@ -9584,6 +9598,186 @@ window.em.öffneArtengruppenImportieren = function() {
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("ArtengruppenImportieren.html");
 }
+
+window.em.öffneAdmin = function() {
+	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
+	$.mobile.navigate("admin.html");
+}
+
+window.em.handleAdminPageshow = function() {
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+	//window.em.initiiereAdmin();
+};
+
+window.em.handleAdminPageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+	}
+
+	// zurück-Button steuern
+	$("#AdminHeader").on('click', '#zurückAdmin', function (event) {
+		event.preventDefault();
+		window.em.handleAdminZurückClick();
+	});
+
+	$("#AdminContent").on('click', '#admin_beob_eines_users_entfernen', window.em.entferneDokumenteEinesUsers);
+
+	$("#AdminContent").on('click', '#admin_user_entfernen', window.em.entferneUser);
+};
+
+window.em.handleAdminZurückClick = function() {
+	// sicherstellen, dass er immer ein zurück kennt
+	if (!localStorage.zurueck) {
+		localStorage.zurueck = "BeobListe";
+	}
+	$.mobile.navigate(localStorage.zurueck + ".html");
+	delete localStorage.zurueck;
+};
+
+window.em.entferneDokumenteEinesUsers = function() {
+	var user = $("#admin_beob_eines_users_entfernen_user").val();
+	if (!user) {
+		window.em.melde("Bitte User eingeben");
+		return;
+	}
+	$db = $.couch.db("evab");
+	$db.view('evab/UserDocs?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+		success: function(data) {
+			var dokumenten = data.rows,
+				fehler = 0,
+				gelöscht = 0;
+			$("#admin_user_entfernen_rückmeldung").html("Dokumente: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + dokumenten.length);
+			_.each(dokumenten, function (doc) {
+				$db.removeDoc(doc.doc, {
+					success: function() {
+						gelöscht ++;
+						$("#admin_user_entfernen_rückmeldung").html("Dokumente: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + dokumenten.length);
+					},
+					error: function() {
+						fehler ++;
+						$("#admin_user_entfernen_rückmeldung").html("Dokumente: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + dokumenten.length);
+
+					}
+				});
+			});
+
+			// Bezug zu Usern aus Feldern entfernen (username in Arrays)
+			$db = $.couch.db("evab");
+			$db.view('evab/UserFelderMitDaten?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+				success: function(data) {
+					var felder = data.rows,
+						indexpos_einfach,
+						indexpos_hierarchisch,
+						fehler = 0,
+						gelöscht = 0;
+
+					$("#admin_user_entfernen_rückmeldung2").html("Einstellungen in Feldern: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + felder.length);
+
+					_.each(felder, function(feld) {
+						feld = feld.doc;
+
+						// User aus SichtbarImModusEinfach entfernen
+						if (feld.SichtbarImModusEinfach && feld.SichtbarImModusEinfach.length > 0) {
+							indexpos_einfach = feld.SichtbarImModusEinfach.indexOf(user);
+							if (indexpos_einfach > -1) {
+								feld.SichtbarImModusEinfach.splice(indexpos_einfach, 1);
+							}
+						}
+
+						// User aus SichtbarImModusHierarchisch entfernen
+						if (feld.SichtbarImModusHierarchisch && feld.SichtbarImModusHierarchisch.length > 0) {
+							indexpos_hierarchisch = feld.SichtbarImModusHierarchisch.indexOf(user);
+							if (indexpos_hierarchisch > -1) {
+								feld.SichtbarImModusHierarchisch.splice(indexpos_hierarchisch, 1);
+							}
+						}
+
+						// User aus Standardwert entfernen
+						if (feld.Standardwert && feld.Standardwert[user]) {
+							delete feld.Standardwert[user];
+						}
+
+						$db.saveDoc(feld, {
+							success: function() {
+								gelöscht ++;
+								$("#admin_user_entfernen_rückmeldung2").html("Einstellungen in Feldern: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + felder.length);
+							},
+							error: function() {
+								fehler ++;
+								$("#admin_user_entfernen_rückmeldung2").html("Einstellungen in Feldern: Gelöscht: " + gelöscht + ", Fehler: " + fehler + " von " + felder.length);
+							}
+						});
+					});
+				},
+				error: function() {
+					window.em.melde("Die Felder konnten nicht abgerufen werden");
+				}
+			});
+
+		},
+		error: function() {
+			window.em.melde("Die Dokumente des Benutzers konnten nicht abgerufen werden");
+		}
+	});
+};
+
+window.em.entferneUser = function() {
+	var user = $("#admin_user_entfernen_user").val();
+	if (!user) {
+		window.em.melde("Bitte User eingeben");
+		return;
+	}
+	// TODO: Kontrollieren, ob der User noch Dokumente hat
+	$db = $.couch.db("evab");
+	$db.view('evab/UserDocs?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+		success: function(data) {
+			if (data.rows.length > 0) {
+				window.em.melde("Dieser User hat noch Dokumente. Bitte diese zuerst entfernen");
+				return;
+			}
+			// kontrollieren, ob der User noch Feldeinstellungen hat
+			$db = $.couch.db("evab");
+			$db.view('evab/UserFelderMitDaten?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+				success: function(data) {
+					if (data.rows.length > 0) {
+						window.em.melde("Dieser User hat noch Einstellungen in Feldern. Bitte diese zuerst entfernen");
+						return;
+					}
+					// der Benutzer hat keine Daten mehr. Benutzer entfernen
+					$.couch.userDb(function(db) {
+						db.openDoc("org.couchdb.user:" + user, {
+							success: function (doc) {
+								db.removeDoc(doc, {
+									success: function() {
+										window.em.melde("Benutzer " + user + " wurde entfernt");
+									},
+									error: function() {
+										window.em.melde("Fehler: Benutzer " + user + " wurde nicht entfernt");
+									}
+								});
+							},
+							error: function () {
+								window.em.melde('Fehler: User wurde nicht gefunden');
+							}
+						});
+					});
+				},
+				error: function() {
+					window.em.melde("Die Felder konnten nicht abgerufen werden");
+				}
+			});
+		},
+		error: function() {
+			window.em.melde("Fehler: Es konnte nicht kontrolliert werden, ob der Benutzer noch Beobachtungen hat");
+		}
+	});	
+};
 
 window.em.initiiereArtengruppenImportieren = function() {
 	// aktuelle aus evm holen
