@@ -160,6 +160,8 @@ Admin-Benutzer können:
 
 - Artengruppen mit den GIS-Layern von [arteigenschaften.ch](http://arteigenschaften.ch) aktualisieren
 - Arten mit den Arten von [arteigenschaften.ch](http://arteigenschaften.ch) aktualisieren
+- Daten von Benutzern entfernen
+- Benutzer entfernen
 
 <a href="#top">&#8593; top</a>
 
