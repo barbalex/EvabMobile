@@ -7497,7 +7497,7 @@ window.em.handleIndexPageshow = function() {
 };
 
 window.em.handleIndexPageinit = function() {
-	$("#indexFooter").on("click", "#SubmitButton", function (event) {
+	$("#indexFooter").on("click", "#index_submit_button", function (event) {
 		event.preventDefault();
 		window.em.meldeUserAn();
 	});
@@ -7509,6 +7509,19 @@ window.em.handleIndexPageinit = function() {
 			event.preventDefault();
 		}
 	});
+
+	$("#indexFooter").on("click", "#index_signup_button", function (event) {
+		var email = $("#Email").val(),
+			passwort = $("#Passwort").val();
+		if (email) {
+			sessionStorage.prov_email = email;
+		}
+		if (passwort) {
+			sessionStorage.prov_passwort = passwort;
+		}
+		event.preventDefault();
+		$.mobile.navigate("Signup.html");
+	})
 };
 
 window.em.validiereUserIndex = function() {
@@ -8194,6 +8207,18 @@ window.em.handleSignupPageshow = function() {
 	window.em.leereAlleVariabeln();
 	// Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
 	localStorage.Datenverwendung = "JaAber";
+	// wenn der Benutzer vom Login her kommt und bereits Benutzername und Passwort erfasst hat: übernehmen
+	if (sessionStorage.prov_email) {
+		$("#su_Email").val(sessionStorage.prov_email);
+		delete sessionStorage.prov_email;
+		if (sessionStorage.prov_passwort) {
+			$("#su_Passwort").val(sessionStorage.prov_passwort);
+			delete sessionStorage.prov_passwort;
+			$("#su_Passwort2").focus();
+		} else {
+			$("#su_Passwort").focus();
+		}
+	}
 };
 
 window.em.handleSignupPageinit = function() {
@@ -8218,7 +8243,7 @@ window.em.handleSignupSubmitButtonClick = function() {
 window.em.validiereUserSignup = function() {
 	var Email = $("#su_Email").val(),
 		Passwort = $("#su_Passwort").val(),
-		Passwort2 = $("#Passwort2").val(),
+		su_Passwort2 = $("#su_Passwort2").val(),
 		Autor = $("#Autor").val();
 	if (!Email) {
 		window.em.melde("Bitte Email eingeben");
@@ -8238,16 +8263,16 @@ window.em.validiereUserSignup = function() {
 			$("#su_Passwort").focus();
 		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 		return false;
-	} else if (!Passwort2) {
+	} else if (!su_Passwort2) {
 		window.em.melde("Bitte Passwort bestätigen");
 		setTimeout(function() {
-			$("#Passwort2").focus();
+			$("#su_Passwort2").focus();
 		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 		return false;
-	} else if (Passwort !== Passwort2) {
+	} else if (Passwort !== su_Passwort2) {
 		window.em.melde("Passwort ist falsch bestätigt");
 		setTimeout(function() {
-			$("#Passwort2").focus();
+			$("#su_Passwort2").focus();
 		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 		return false;
 	} else if (!Autor) {
