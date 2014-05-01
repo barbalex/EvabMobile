@@ -9467,11 +9467,6 @@ window.em.reduziereArtenfelderAufArtgruppeUndName = function(arten) {
 	});
 };
 
-
-
-
-
-
 window.em.handleArtengruppenImportierenPageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();

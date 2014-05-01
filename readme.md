@@ -154,6 +154,13 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Installieren Sie die App auf PC oder Mobilgerät, verfügen Sie über eine lokale Version der Datenbank, welche laufend mit derjenigen im Internet synchronisiert. Sie sind dem Webservice und mir nicht ausgeliefert. Anders gesagt: Verschwindet die Web-Applikation, sind die Daten noch vorhanden und die App funktioniert weiter. Die Daten werden einfach nicht mehr mit Apps auf anderen Geräten synchronisiert. Eine solche Synchronisation kann ein Profi aber rasch wieder herstellen
 - [Die verwendete Open Source Lizenz](https://github.com/barbalex/EvabMobile/blob/master/License.md) erlaubt es Ihnen oder einem von Ihnen beauftragten Profi, den Code zu prüfen und für Ihre Bedürfnisse weiter zu entwickeln - sogar für kommerzielle Zwecke
 
+**Stammdaten aktualisieren**
+
+Admin-Benutzer können:
+
+- Artengruppen mit den GIS-Layern von [arteigenschaften.ch](http://arteigenschaften.ch) aktualisieren
+- Arten mit den Arten von [arteigenschaften.ch](http://arteigenschaften.ch) aktualisieren
+
 <a href="#top">&#8593; top</a>
 
 
