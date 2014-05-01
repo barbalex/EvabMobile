@@ -18,7 +18,9 @@ function(doc) {
 		}
 
 		if (userliste.length > 0) {
-			emit (userliste, null);
+			_.each(userliste, function(user) {
+				emit (user, null);
+			});
 		}
 	}
 }

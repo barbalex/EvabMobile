@@ -9647,7 +9647,7 @@ window.em.entferneDokumenteEinesUsers = function() {
 		return;
 	}
 	$db = $.couch.db("evab");
-	$db.view('evab/UserDocs?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+	$db.view('evab/UserDocs?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 		success: function(data) {
 			var dokumenten = data.rows,
 				fehler = 0,
@@ -9669,7 +9669,7 @@ window.em.entferneDokumenteEinesUsers = function() {
 
 			// Bezug zu Usern aus Feldern entfernen (username in Arrays)
 			$db = $.couch.db("evab");
-			$db.view('evab/UserFelderMitDaten?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					var felder = data.rows,
 						indexpos_einfach,
@@ -9733,9 +9733,9 @@ window.em.entferneUser = function() {
 		window.em.melde("Bitte User eingeben");
 		return;
 	}
-	// TODO: Kontrollieren, ob der User noch Dokumente hat
+	// Kontrollieren, ob der User noch Dokumente hat
 	$db = $.couch.db("evab");
-	$db.view('evab/UserDocs?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+	$db.view('evab/UserDocs?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 		success: function(data) {
 			if (data.rows.length > 0) {
 				window.em.melde("Dieser User hat noch Dokumente. Bitte diese zuerst entfernen");
@@ -9743,7 +9743,7 @@ window.em.entferneUser = function() {
 			}
 			// kontrollieren, ob der User noch Feldeinstellungen hat
 			$db = $.couch.db("evab");
-			$db.view('evab/UserFelderMitDaten?startkey=["' + user + '",{}]&endkey=["' + user + '"]&descending=true&include_docs=true', {
+			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					if (data.rows.length > 0) {
 						window.em.melde("Dieser User hat noch Einstellungen in Feldern. Bitte diese zuerst entfernen");
