@@ -50,7 +50,7 @@
 		<div id="FeldEditContent" data-role="content">
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
 				<h2>meine Einstellungen</h2>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<fieldset data-role="controlgroup">
 						<legend>Sichtbar im einfachen Modus?</legend>
 							<input type="radio" name="SichtbarImModusEinfach" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach_ja" value="ja">
@@ -59,7 +59,7 @@
 							<label for="SichtbarImModusEinfach_nein">nein</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<fieldset data-role="controlgroup">
 						<legend>Sichtbar im hierarchischen Modus?</legend>
 							<input type="radio" name="SichtbarImModusHierarchisch" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch_ja" value="ja">
@@ -68,7 +68,7 @@
 							<label for="SichtbarImModusHierarchisch_nein">nein</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="Standardwert">Standardwert:</label>
 					<input id="Standardwert" name="Standardwert" type="text" placeholder="wird bei neuen Beobachtungen in diesem Feld eingefügt">
 				</div>
@@ -76,7 +76,7 @@
 				<hr>
 				<h2>Feldeigenschaften</h2>
 			<form id="FeldEditForm" action="#" method="get">
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<fieldset data-role="controlgroup">
 						<legend>Hierarchiestufe (erforderlich):</legend>
 							<input type="radio" name="Hierarchiestufe" class="Feldeigenschaften" id="Projekt" value="Projekt">
@@ -91,50 +91,50 @@
 							<label for="Art">Art</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain" id="Artgruppenliste_FeldEdit">
+				<div class="ui-field-contain" id="Artgruppenliste_FeldEdit">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldName">Name:</label>
 					<input class="Feldeigenschaften required" id="FeldName" name="FeldName" type="text" placeholder="Erforderlich">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldBeschriftung">Beschriftung:</label>
 					<input class="Feldeigenschaften required" id="FeldBeschriftung" name="FeldBeschriftung" type="text" placeholder="Wenn nicht erfasst = Name">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldBeschreibung">Beschreibung:</label>
 					<textarea class="Feldeigenschaften" id="FeldBeschreibung" name="FeldBeschreibung" placeholder="Was wird hier wofür und wie erfasst?"></textarea>
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="Reihenfolge">Reihenfolge:</label>
 					<input class="Feldeigenschaften required" id="Reihenfolge" name="Reihenfolge" type="number" placeholder="Wenn nicht erfasst = 1. Alternativ 'Feld folgt nach' wählen">
 				</div>
 				<div id="FeldFolgtNachDiv"></div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameEvab">Name in EvAB:</label>
 					<input class="Feldeigenschaften" id="FeldNameEvab" name="FeldNameEvab" type="text" placeholder="Feldname in EvAB, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameZdsf">Name beim ZDSF:</label>
 					<input class="Feldeigenschaften" id="FeldNameZdsf" name="FeldNameZdsf" type="text" placeholder="Feldname bei Info Flora, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameCscf">Name beim CSCF:</label>
 					<input class="Feldeigenschaften" id="FeldNameCscf" name="FeldNameCscf" type="text" placeholder="Feldname beim CSCF, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameNism">Name beim NISM:</label>
 					<input class="Feldeigenschaften" id="FeldNameNism" name="FeldNameNism" type="text" placeholder="Feldname beim NISM, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameWslFlechten">Name bei WSL Flechten:</label>
 					<input class="Feldeigenschaften" id="FeldNameWslFlechten" name="FeldNameWslFlechten" type="text" placeholder="Feldname bei WSL Flechten, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain">
+				<div class="ui-field-contain">
 					<label for="FeldNameWslPilze">Name bei WSL Pilze:</label>
 					<input class="Feldeigenschaften" id="FeldNameWslPilze" name="FeldNameWslPilze" type="text" placeholder="Feldname bei WSL Pilze, falls dieses Feld dort vorkommt">
 				</div>
-				<div data-role="fieldcontain" id="feldedit_formularelement">
+				<div class="ui-field-contain" id="feldedit_formularelement">
 					<fieldset data-role="controlgroup">
 						<legend>Feldtyp:</legend>
 							<input type="radio" name="Formularelement" class="Feldeigenschaften" id="textinput" value="textinput">
@@ -155,7 +155,7 @@
 							<label for="checkbox">Auswahlliste offen, mehrere Werte können gewählt werden</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain" id="feldedit_inputtyp" class="hidden">
+				<div id="feldedit_inputtyp" class="hidden ui-field-contain">
 					<fieldset data-role="controlgroup">
 						<legend>Datentyp eines einfachen Feldes:</legend>
 							<input type="radio" name="InputTyp" class="Feldeigenschaften" id="text" value="text">
@@ -174,15 +174,15 @@
 							<label for="url">url</label>
 					</fieldset>
 				</div>
-				<div data-role="fieldcontain" id="feldedit_optionen" class="hidden">
+				<div id="feldedit_optionen" class="hidden ui-field-contain">
 					<label for="FeldBeschreibung">Optionen in Auswahllisten:</label>
 					<textarea class="Feldeigenschaften" id="Optionen" name="Optionen" placeholder="Werte,mit,Komma,und,ohne,Leerzeichen,trennen. Erforderlich für Auswahllisten"></textarea>
 				</div>
-				<div data-role="fieldcontain" class="feldedit_slider hidden">
+				<div class="feldedit_slider hidden ui-field-contain">
 					<label for="SliderMinimum">Kleinster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMinimum" name="SliderMinimum" type="text" placeholder="Standardwert, wenn nicht anders gewählt: '0'">
 				</div>
-				<div data-role="fieldcontain" class="feldedit_slider hidden">
+				<div class="feldedit_slider hidden ui-field-contain">
 					<label for="SliderMaximum">Höchster Wert für Schieber:</label>
 					<input class="Feldeigenschaften" id="SliderMaximum" name="SliderMaximum" type="text" placeholder="Standardwert, wenn nicht anders gewählt: '100'">
 				</div>

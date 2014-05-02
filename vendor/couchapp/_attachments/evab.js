@@ -259,17 +259,17 @@ window.em.speichereNeueBeob_02 = function(doc) {
 			doc._rev = data.rev;
 			if (doc.Typ === 'hArt') {
 				// Variabeln verfügbar machen
-				localStorage.hBeobId = data.id;
+				localStorage.hArtId = data.id;
 				// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 				window.em.hArt = doc;
-				// window.em.hBeobListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
+				// window.em.hArtListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
 				row_objekt.id = data.id;
 				row_objekt.doc = doc;
-				// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
-				if (window.em.hBeobListe && window.em.hBeobListe.rows) {
-					window.em.hBeobListe.rows.push(row_objekt);
+				// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+				if (window.em.hArtListe && window.em.hArtListe.rows) {
+					window.em.hArtListe.rows.push(row_objekt);
 					// jetzt die Liste neu sortieren
-					window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+					window.em.hArtListe.rows = _.sortBy(window.em.hArtListe.rows, function(row) {
 						return row.doc.aArtName;
 					});
 				}
@@ -297,7 +297,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 	if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 		docId = localStorage.BeobId;
 	} else {
-		docId = localStorage.hBeobId;
+		docId = localStorage.hArtId;
 	}
 	$db = $.couch.db("evab");
 	$db.openDoc(docId, {
@@ -318,21 +318,21 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						$.mobile.navigate("BeobEdit.html");
 					} else {
 						// Variabeln verfügbar machen
-						localStorage.hBeobId = docId;
+						localStorage.hArtId = docId;
 						// damit hArtEdit.html die hBeob nicht aus der DB holen muss
 						window.em.hArt = doc;
-						// window.em.hBeobListe anpassen
-						// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
-						if (window.em.hBeobListe && window.em.hBeobListe.rows) {
-							for (var i in window.em.hBeobListe.rows) {
-								if (window.em.hBeobListe.rows[i].id == docId) {
-									window.em.hBeobListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
-									window.em.hBeobListe.rows[i].doc.aArtName = aArtName;
-									window.em.hBeobListe.rows[i].doc.aArtId = sessionStorage.ArtId;
+						// window.em.hArtListe anpassen
+						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+						if (window.em.hArtListe && window.em.hArtListe.rows) {
+							for (var i in window.em.hArtListe.rows) {
+								if (window.em.hArtListe.rows[i].id == docId) {
+									window.em.hArtListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
+									window.em.hArtListe.rows[i].doc.aArtName = aArtName;
+									window.em.hArtListe.rows[i].doc.aArtId = sessionStorage.ArtId;
 								}
 							}
-							// window.em.hBeobListe neu sortieren
-							window.em.hBeobListe.rows = _.sortBy(window.em.hBeobListe.rows, function(row) {
+							// window.em.hArtListe neu sortieren
+							window.em.hArtListe.rows = _.sortBy(window.em.hArtListe.rows, function(row) {
 								return row.doc.aArtName;
 							});
 						}
@@ -574,14 +574,19 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 // setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 // erwartet das Objekt Beob, welches die Werte enthält
 window.em.setzeFixeFelderInBeobEdit = function() {
-	$("[name='aArtGruppe']").selectmenu();
-	$("[name='aArtGruppe']").html("<option value='" + window.em.Beobachtung.aArtGruppe + "'>" + window.em.Beobachtung.aArtGruppe + "</option>");
-	$("[name='aArtGruppe']").val(window.em.Beobachtung.aArtGruppe);
-	$("[name='aArtGruppe']").selectmenu("refresh");
-	$("[name='aArtName']").selectmenu();
-	$("[name='aArtName']").html("<option value='" + window.em.Beobachtung.aArtName + "'>" + window.em.Beobachtung.aArtName + "</option>");
-	$("[name='aArtName']").val(window.em.Beobachtung.aArtName);
-	$("[name='aArtName']").selectmenu("refresh");
+	$("#aArtGruppeBE").selectmenu();
+	$("#aArtGruppeBE").html("<option value='" + window.em.Beobachtung.aArtGruppe + "'>" + window.em.Beobachtung.aArtGruppe + "</option>");
+	$("#aArtGruppeBE").val(window.em.Beobachtung.aArtGruppe);
+	// JQUERY MOBILE BRACHT MANCHMAL LANGE UM ZU INITIALIIEREN
+	// OHNE TIMEOUT REKLAMIERT ES BEIM REFRESH, DAS WIDGET SEI NOCH NICHT INITIALISIERT!!!!
+	// NACH EIN MAL VERZÖGERN HAT ES ABER WIEDER FUNKTIONIERT????!!!!
+	setTimeout(function() {
+		$("#aArtGruppeBE").selectmenu("refresh");
+	}, 0);
+	$("#aArtNameBE").selectmenu();
+	$("#aArtNameBE").html("<option value='" + window.em.Beobachtung.aArtName + "'>" + window.em.Beobachtung.aArtName + "</option>");
+	$("#aArtNameBE").val(window.em.Beobachtung.aArtName);
+	$("#aArtNameBE").selectmenu("refresh");
 	$("[name='aAutor']").val(window.em.Beobachtung.aAutor);
 	$("[name='oXKoord']").val(window.em.Beobachtung.oXKoord);
 	$("[name='oYKoord']").val(window.em.Beobachtung.oYKoord);
@@ -2020,13 +2025,15 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 // managt den Aufbau aller Daten und Felder für hBeobEdit.html
 // erwartet die hBeobId
 // wird aufgerufen von hBeobEdit.html bei pageshow
-window.em.initiierehBeobEdit = function() {
+window.em.initiierehArtEdit = function() {
+	// markieren, dass die Einzelsicht aktiv ist
+	localStorage.hArtSicht = "einzel";
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		window.em.initiierehBeobEdit_2(window.em.hArt);
 	} else {
 		$db = $.couch.db("evab");
-		$db.openDoc(localStorage.hBeobId, {
+		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.initiierehBeobEdit_2(data);
@@ -2052,25 +2059,30 @@ window.em.initiierehBeobEdit_2 = function() {
 	localStorage.ZeitId = window.em.hArt.hZeitId;
 	// bei neuen hBeob hat das Objekt noch keine ID
 	if (window.em.hArt._id) {
-		localStorage.hBeobId = window.em.hArt._id;
+		localStorage.hArtId = window.em.hArt._id;
 	} else {
-		localStorage.hBeobId = "neu";
+		localStorage.hArtId = "neu";
 	}
 	localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 	localStorage.aArtName = window.em.hArt.aArtName;
 	localStorage.aArtId = window.em.hArt.aArtId;
 	// fixe Felder aktualisieren
-	$("[name='aArtGruppe']").selectmenu();
-	$("[name='aArtGruppe']").val(window.em.hArt.aArtGruppe);
-	$("[name='aArtGruppe']").html("<option value='" + window.em.hArt.aArtGruppe + "'>" + window.em.hArt.aArtGruppe + "</option>");
-	$("[name='aArtGruppe']").selectmenu("refresh");
-	$("[name='aArtName']").selectmenu();
-	$("[name='aArtName']").val(window.em.hArt.aArtName);
-	$("[name='aArtName']").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
-	$("[name='aArtName']").selectmenu("refresh");
+	$("#aArtGruppe").val(window.em.hArt.aArtGruppe);
+	$("#aArtGruppe").html("<option value='" + window.em.hArt.aArtGruppe + "'>" + window.em.hArt.aArtGruppe + "</option>");
+	$("#aArtGruppe").selectmenu();
+	// JQUERY MOBILE BRACHT MANCHMAL LANGE UM ZU INITIALIIEREN
+	// OHNE TIMEOUT REKLAMIERT ES BEIM REFRESH, DAS WIDGET SEI NOCH NICHT INITIALISIERT!!!!
+	// NACH EIN MAL VERZÖGERN HAT ES ABER WIEDER FUNKTIONIERT????!!!!
+	setTimeout(function() {
+		$("#aArtGruppe").selectmenu("refresh");
+	}, 0);
+	$("#aArtName").val(window.em.hArt.aArtName);
+	$("#aArtName").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
+	$("#aArtName").selectmenu();
+	$("#aArtName").selectmenu("refresh");
 	// prüfen, ob die Feldliste schon geholt wurde
 	// wenn ja: deren globale Variable verwenden
-	if (window.em.FeldlistehBeobEdit) {
+	if (window.em.FeldlistehArtEdit) {
 		window.em.erstelleDynamischeFelderhArtEdit();
 	} else {
 		// Feldliste aus der DB holen
@@ -2079,7 +2091,7 @@ window.em.initiierehBeobEdit_2 = function() {
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function(data) {
-				window.em.FeldlistehBeobEdit = data;
+				window.em.FeldlistehArtEdit = data;
 				window.em.erstelleDynamischeFelderhArtEdit();
 			}
 		});
@@ -2111,9 +2123,9 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		Optionen,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
-	for (i in window.em.FeldlistehBeobEdit.rows) {
+	for (i in window.em.FeldlistehArtEdit.rows) {
 		if (typeof i !== "function") {
-			Feld = window.em.FeldlistehBeobEdit.rows[i].doc;
+			Feld = window.em.FeldlistehArtEdit.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
@@ -2139,7 +2151,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 			success: function(data) {
 				window.em.hArt._id = data.id;
 				window.em.hArt._rev = data.rev;
-				localStorage.hBeobId = data.id;
+				localStorage.hArtId = data.id;
 			}
 		});
 		delete localStorage.Status;
@@ -2151,30 +2163,30 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 };
 
 // initiiert BeobListe.html
-window.em.initiierehBeobListe = function() {
+window.em.initiierehArtListe = function() {
 	// hat hArtEdit.html eine hBeobListe übergeben?
-	if (window.em.hBeobListe) {
+	if (window.em.hArtListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
-		window.em.initiierehBeobListe_2();
+		window.em.initiierehArtListe_2();
 	} else {
 		// Beobliste aus DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-				window.em.hBeobListe = data;
-				window.em.initiierehBeobListe_2();
+				window.em.hArtListe = data;
+				window.em.initiierehArtListe_2();
 			}
 		});
 	}
 };
 
-window.em.initiierehBeobListe_2 = function() {
+window.em.initiierehArtListe_2 = function() {
 	var i,
-		anzArt = window.em.hBeobListe.rows.length,
+		anzArt = window.em.hArtListe.rows.length,
 		ListItemContainer = "",
 		Titel2,
-		hBeobTemp,
+		hArtTemp,
 		artgruppenname;
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
@@ -2187,10 +2199,10 @@ window.em.initiierehBeobListe_2 = function() {
 	if (anzArt === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (i in window.em.hBeobListe.rows) {
-			hBeobTemp = window.em.hBeobListe.rows[i].doc;
-			if (hBeobTemp) {
-				ListItemContainer += window.em.erstelleHtmlFürBeobInHBeobListe(hBeobTemp);
+		for (i in window.em.hArtListe.rows) {
+			hArtTemp = window.em.hArtListe.rows[i].doc;
+			if (hArtTemp) {
+				ListItemContainer += window.em.erstelleHtmlFürBeobInHArtListe(hArtTemp);
 			}
 		}
 	}
@@ -2204,7 +2216,7 @@ window.em.initiierehBeobListe_2 = function() {
 
 // übernimmt eine hBeobachtung
 // retourniert das html für deren Zeile in der Liste
-window.em.erstelleHtmlFürBeobInHBeobListe = function(beob) {
+window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 	var artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png",
 		listItem;
 	if (beob.aArtGruppe === "DiverseInsekten") {
@@ -2267,7 +2279,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2286,7 +2298,7 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 // generiert den html-Inhalt für Slider
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2307,7 +2319,7 @@ window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWer
 // generiert den html-Inhalt für Textarea
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = '<div data-role="fieldcontain">\n\t<label for="';
+	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '">';
 	HtmlContainer += FeldBeschriftung;
@@ -2324,7 +2336,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 /*// generiert den html-Inhalt für Toggleswitch
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = "<div data-role='fieldcontain'><label for='";
+	var HtmlContainer = "<div class='ui-field-contain'><label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "'>";
 	HtmlContainer += FeldBeschriftung;
@@ -2341,7 +2353,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
@@ -2383,7 +2395,7 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optio
 // generiert den html-Inhalt für Radio
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
+	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
 	HtmlContainer += "</legend>";
 	HtmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
@@ -2424,7 +2436,7 @@ window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehBeobEdit aufgerufen
 window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
-	var HtmlContainer = "<div data-role='fieldcontain'>\n\t<label for='";
+	var HtmlContainer = "<div class='ui-field-contain'>\n\t<label for='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' class='select'>";
 	HtmlContainer += FeldBeschriftung;
@@ -2874,7 +2886,7 @@ window.em.initiiereFelderWaehlen = function() {
 
 window.em.initiiereFelderWaehlen_2 = function() {
 	var i,
-		HtmlContainer = "<div data-role='fieldcontain'>\n\t<fieldset data-role='controlgroup'>",
+		HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
 		anzFelder = 0,
 		Feld,
 		FeldName,
@@ -3365,7 +3377,7 @@ window.em.leereStorageZeitEdit = function(ohneId) {
 };
 
 window.em.leereStoragehBeobListe = function() {
-	delete window.em.hBeobListe;
+	delete window.em.hArtListe;
 	delete window.em.ArtenVonProjekt;
 	delete window.em.ArtenVonRaum;
 	delete window.em.ArtenVonOrt;
@@ -3374,7 +3386,7 @@ window.em.leereStoragehBeobListe = function() {
 
 window.em.leereStoragehBeobEdit = function(ohneId) {
 	if (!ohneId) {
-		delete localStorage.hBeobId;
+		delete localStorage.hArtId;
 	}
 	delete window.em.hArt;
 };
@@ -3406,7 +3418,7 @@ window.em.leereStorageBeobEdit = function(ohneId) {
 window.em.leereStorageFeldListe = function() {
 	delete window.em.Feldliste;
 	delete window.em.FeldlisteBeobEdit;
-	delete window.em.FeldlistehBeobEdit;
+	delete window.em.FeldlistehArtEdit;
 	delete window.em.FeldlisteZeitEdit;
 	delete window.em.FeldlisteOrtEdit;
 	delete window.em.FeldlisteRaumEdit;
@@ -3590,9 +3602,9 @@ window.em.handleAlArtListItemClick = function(that) {
 		i;
 
 	// kontrollieren, ob diese Art schon erfasst wurde
-	// Vorsicht: window.em.hBeobListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
-	if (window.em.hBeobListe && window.em.hBeobListe.rows) {
-		_.each(window.em.hBeobListe.rows, function(row) {
+	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+	if (window.em.hArtListe && window.em.hArtListe.rows) {
+		_.each(window.em.hArtListe.rows, function(row) {
 			if (row.doc.aArtId == artid) {
 				art_schon_erfasst = true;
 			}
@@ -3700,7 +3712,7 @@ window.em.handleBeobEditPageinit = function() {
 		window.em.handleNeueBeobBeobEditClick();
 	});
 
-	$("#BeobEditForm").on("click", "[name='aArtGruppe']", function(event) {
+	$("#BeobEditForm").on("click", ".aArtGruppe", function(event) {
 		event.preventDefault();
 		window.em.handleBeobEditAArtGruppeClick();
 	});
@@ -3710,7 +3722,7 @@ window.em.handleBeobEditPageinit = function() {
 		window.em.handleWaehleFelderBeobEditClick();
 	});
 
-	$("#BeobEditForm").on('click', '[name="aArtName"]', function(event) {
+	$("#BeobEditForm").on('click', '.aArtName', function(event) {
 		event.preventDefault();
 		window.em.handleBeobEditAArtnameClick();
 	});
@@ -3823,7 +3835,7 @@ window.em.handleNeueBeobBeobEditClick = function() {
 	}
 };
 
-// wenn in BeobEdit.html [name='aArtGruppe'] geklickt wird
+// wenn in BeobEdit.html .aArtGruppe geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von Artgruppe
 window.em.handleBeobEditAArtGruppeClick = function() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -3846,7 +3858,7 @@ window.em.handleWaehleFelderBeobEditClick = function() {
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
-// wenn in BeobEdit.html [name="aArtName"] geklickt wird
+// wenn in BeobEdit.html .aArtName geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von ArtName
 window.em.handleBeobEditAArtnameClick = function() {
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
@@ -4579,12 +4591,12 @@ window.em.handleHArtEditPageshow = function() {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
-	} else if (!localStorage.Status && !localStorage.hBeobId) {
+	} else if (!localStorage.Status && !localStorage.hArtId) {
 		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
-	window.em.initiierehBeobEdit();
+	window.em.initiierehArtEdit();
 };
 
 // wenn hArtEdit.html initiiert wird
@@ -4595,7 +4607,7 @@ window.em.handleHArtEditPageinit = function() {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
 		return;
-	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.hBeobId || localStorage.hBeobId === "undefined")) {
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.hArtId || localStorage.hArtId === "undefined")) {
 		window.em.leereAlleVariabeln("ohneClear");
 		$.mobile.navigate("hProjektListe.html");
 		return;
@@ -4606,22 +4618,22 @@ window.em.handleHArtEditPageinit = function() {
 		window.em.handleHArtEditOeffneArtListehArtEditClick();
 	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneZeithArtEdit", function(event) {
+	$("#hArtEditPageHeader").on("click", ".OeffneZeithArtEdit", function(event) {
 		event.preventDefault();
 		window.em.handleHArtEditOeffneZeithArtEditClick();
 	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneOrthArtEdit", function(event) {
+	$("#hArtEditPageHeader").on("click", ".OeffneOrthArtEdit", function(event) {
 		event.preventDefault();
 		window.em.handleHArtEditOeffneOrthArtEditClick();
 	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneRaumhArtEdit", function(event) {
+	$("#hArtEditPageHeader").on("click", ".OeffneRaumhArtEdit", function(event) {
 		event.preventDefault();
 		window.em.handleHArtEditOeffneRaumhArtEditClick();
 	});
 
-	$("#hArtEditPageHeader").on("click", "#OeffneProjekthArtEdit", function(event) {
+	$("#hArtEditPageHeader").on("click", ".OeffneProjekthArtEdit", function(event) {
 		event.preventDefault();
 		window.em.handleHArtEditOeffneProjekthArtEditClick();
 	});
@@ -4649,19 +4661,19 @@ window.em.handleHArtEditPageinit = function() {
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von Artgruppe
-	$("#hArtEditForm").on("click", "[name='aArtGruppe']", function(event) {
+	$("#hArtEditForm").on("click", ".aArtGruppe", function(event) {
 		event.preventDefault();
 		window.em.zuArtgruppenliste();
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
-	$("#hArtEditForm").on("click", "[name='aArtName']", function(event) {
+	$("#hArtEditForm").on("click", ".aArtName", function(event) {
 		event.preventDefault();
 		window.em.zuArtliste();
 	});
 
 	// sichtbare Felder wählen
-	$("#hArtEditPageFooter").on("click", "#waehleFelderhBeobEdit", function(event) {
+	$("#hArtEditPageFooter").on("click", "#waehleFelderhArtEdit", function(event) {
 		event.preventDefault();
 		window.em.handleHArtEditWaehleFelderClick();
 	});
@@ -4670,6 +4682,13 @@ window.em.handleHArtEditPageinit = function() {
 	$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', function(event) {
 		event.preventDefault();
 		$("#hae_löschen_meldung").popup("open");
+	});
+
+	// Code für den Art-Löschen-Dialog
+	$("#hArtEditPageFooter").on('click', '#öffnehArtEditListe', function(event) {
+		event.preventDefault();
+		console.log("jetzt hArtEditListe öffnen");
+		$.mobile.navigate("hArtEditListe.html");
 	});
 
 	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHBeob);
@@ -4731,6 +4750,308 @@ window.em.handleHArtEditPageinit = function() {
 	$('#MenuhBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
+
+
+
+
+
+
+
+// wenn hArtEditListe.html erscheint
+window.em.handleHArtEditListePageshow = function() {
+	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
+	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
+	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if (!localStorage.Status && !localStorage.hArtId) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+	window.em.initiierehArtEditListe();
+};
+
+
+
+// managt den Aufbau aller Daten und Felder für hArtEditListe.html
+window.em.initiierehArtEditListe = function() {
+	// markieren, dass die Listensicht aktiv ist
+	localStorage.hArtSicht = "liste";
+	// hat hArtEdit.html eine hBeobListe übergeben?
+	if (window.em.hArtListe) {
+		// Beobliste aus globaler Variable holen - muss nicht geparst werden
+		window.em.initiierehArtEditListe_2();
+	} else {
+		// Beobliste aus DB holen
+		$db = $.couch.db("evab");
+		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
+			success: function(data) {
+				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
+				window.em.hArtListe = data;
+				window.em.initiierehArtEditListe_2();
+			}
+		});
+	}
+};
+
+window.em.initiierehArtEditListe_2 = function() {
+	var i,
+		anzArt = window.em.hArtListe.rows.length,
+		ListItemContainer = "",
+		Titel2,
+		hArtTemp,
+		artgruppenname;
+
+	// Im Titel der Seite die Anzahl Arten anzeigen
+	Titel2 = " Arten";
+	if (anzArt === 1) {
+		Titel2 = " Art";
+	}
+	$("#hArtEditListePageHeader .hArtEditListePageTitel").text(anzArt + Titel2);
+
+	if (anzArt === 0) {
+		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
+	} else {
+		for (i in window.em.hArtListe.rows) {
+			hArtTemp = window.em.hArtListe.rows[i].doc;
+			if (hArtTemp) {
+				//ListItemContainer += window.em.erstelleHtmlFürBeobInHArtEditListe(hArtTemp);
+			}
+		}
+	}
+	/*$("#ArtlistehAL").html(ListItemContainer);
+	$("#ArtlistehAL").listview("refresh");*/
+	window.em.blendeMenus();
+	window.em.speichereLetzteUrl();
+};
+
+
+// managt das Initialiseren einer Art in hArtEditListe.html
+// erwartet die hArtId
+// wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
+window.em.initiierehArtEditListeArt = function() {
+	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
+	if (window.em.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
+		window.em.initiierehArtEditListeArt_2(window.em.hArt);
+	} else {
+		$db = $.couch.db("evab");
+		$db.openDoc(localStorage.hArtId, {
+			success: function(data) {
+				window.em.hArt = data;
+				window.em.initiierehArtEditListeArt_2(data);
+			}
+		});
+	}
+};
+
+window.em.initiierehArtEditListeArt_2 = function() {
+	// hier werden Variablen gesetzt,
+	// in die fixen Felder Werte eingesetzt,
+	// die dynamischen Felder aufgebaut
+	// und die Nav-Links gesetzt
+
+	// diese (globalen) Variabeln werden in hArtEditListe.html gebraucht
+	// Variabeln bereitstellen
+	localStorage.ProjektId = window.em.hArt.hProjektId;
+	localStorage.RaumId = window.em.hArt.hRaumId;
+	localStorage.OrtId = window.em.hArt.hOrtId;
+	localStorage.ZeitId = window.em.hArt.hZeitId;
+	// bei neuen hArt hat das Objekt noch keine ID
+	if (window.em.hArt._id) {
+		localStorage.hArtId = window.em.hArt._id;
+	} else {
+		localStorage.hArtId = "neu";
+	}
+	localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
+	localStorage.aArtName = window.em.hArt.aArtName;
+	localStorage.aArtId = window.em.hArt.aArtId;
+	// fixe Felder aktualisieren
+	$(".aArtName").selectmenu();
+	$(".aArtName").val(window.em.hArt.aArtName);
+	$(".aArtName").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
+	$(".aArtName").selectmenu("refresh");
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
+	if (window.em.FeldlistehArtEdit) {
+		window.em.erstelleDynamischeFelderhArtEditListe();
+	} else {
+		// Feldliste aus der DB holen
+		// das dauert länger - hinweisen
+		$("#hArtEditListeFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeArt?include_docs=true', {
+			success: function(data) {
+				window.em.FeldlistehArtEdit = data;
+				window.em.erstelleDynamischeFelderhArtEditListe();
+			}
+		});
+	}
+};
+
+// generiert dynamisch die Artgruppen-abhängigen Felder
+// Mitgeben: Feldliste, Beobachtung
+window.em.erstelleDynamischeFelderhArtEditListe = function() {
+	var HtmlContainer = window.em.generiereHtmlFuerhArtEditListeForm();
+	// Linie nur anfügen, wenn Felder erstellt wurden
+	if (HtmlContainer) {
+		HtmlContainer = "<hr />" + HtmlContainer;
+	}
+	$("#hArtEditListeFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	window.em.blendeMenus();
+	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
+	window.em.speichereLetzteUrl();
+};
+
+// generiert das Html für Formular in hArtEdit.html
+// erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
+// der HtmlContainer wird zurück gegeben
+window.em.generiereHtmlFuerhArtEditListeForm = function() {
+	var Feld = {},
+		i,
+		FeldName,
+		FeldBeschriftung,
+		Optionen,
+		HtmlContainer = "",
+		ArtGruppe = window.em.hArt.aArtGruppe;
+	for (i in window.em.FeldlistehArtEdit.rows) {
+		if (typeof i !== "function") {
+			Feld = window.em.FeldlistehArtEdit.rows[i].doc;
+			FeldName = Feld.FeldName;
+			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+			if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+				if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
+					FeldWert = Feld.Standardwert[window.em.hArt.User];
+					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+					window.em.hArt[FeldName] = FeldWert;
+				} else {
+					//"" verhindert, dass im Feld undefined erscheint
+					FeldWert = window.em.hArt[FeldName] || "";
+				}
+				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+			}
+		}
+	}
+	if (localStorage.Status === "neu") {
+		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
+		$db = $.couch.db("evab");
+		$db.saveDoc(window.em.hArt, {
+			success: function(data) {
+				window.em.hArt._id = data.id;
+				window.em.hArt._rev = data.rev;
+				localStorage.hArtId = data.id;
+			}
+		});
+		delete localStorage.Status;
+	} else {
+		// Neue Datensätze haben keine Anhänge
+		window.em.zeigeAttachments(window.em.hArt, "hAE");
+	}
+	return HtmlContainer;
+};
+
+
+
+
+
+// wenn hArtEditListe.html initiiert wird
+window.em.handleHArtEditListePageinit = function() {
+	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
+	// muss auf index.html umgeleitet werden
+	if (localStorage.length === 0 || !localStorage.Email) {
+		window.em.leereAlleVariabeln();
+		$.mobile.navigate("index.html");
+		return;
+	} else if ((!localStorage.Status || localStorage.Status === "undefined") && (!localStorage.hArtId || localStorage.hArtId === "undefined")) {
+		window.em.leereAlleVariabeln("ohneClear");
+		$.mobile.navigate("hProjektListe.html");
+		return;
+	}
+
+	$("#hArtEditListePageHeader").on("click", "[name='OeffneArtListehArtEdit']", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditOeffneArtListehArtEditClick();
+	});
+
+	$("#hArtEditListePageHeader").on("click", ".OeffneZeithArtEdit", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditOeffneZeithArtEditClick();
+	});
+
+	$("#hArtEditListePageHeader").on("click", ".OeffneOrthArtEdit", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditOeffneOrthArtEditClick();
+	});
+
+	$("#hArtEditListePageHeader").on("click", ".OeffneRaumhArtEdit", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditOeffneRaumhArtEditClick();
+	});
+
+	$("#hArtEditListePageHeader").on("click", ".OeffneProjekthArtEdit", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditOeffneProjekthArtEditClick();
+	});
+
+	// Für jedes Feld bei Änderung speichern
+	$("#hArtEditListeForm").on("change", ".speichern", window.em.speichereHArt);
+
+	// Eingabe im Zahlenfeld abfangen
+	$("#hArtEditListeForm").on("blur", '.speichernSlider', window.em.speichereHArt);
+
+	// Klicken auf den Pfeilen im Zahlenfeld abfangen
+	$("#hArtEditListeForm").on("mouseup", '.ui-slider-input', window.em.speichereHArt);
+
+	// Ende des Schiebens abfangen
+	$("#hArtEditListeForm").on("slidestop", '.speichernSlider', window.em.speichereHArt);
+
+	// Neue Beobachtung managen
+	$("#hArtEditListePageFooter").on("click", "#NeueBeobhArtEdit", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditNeueBeobhArtEditClick();
+	});
+
+	// Editieren von Beobachtungen managen, ausgehend von ArtName
+	$("#hArtEditListeForm").on("click", ".aArtName", function(event) {
+		event.preventDefault();
+		window.em.zuArtliste();
+	});
+
+	// sichtbare Felder wählen
+	$("#hArtEditListePageFooter").on("click", "#waehleFelderhArtEditListe", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditWaehleFelderClick();
+	});
+
+	$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
+
+	$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
+
+	$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
+
+	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
+
+	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+
+	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
+
+	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+
+	$('#MenuhBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+};
+
+
+
+
+
+
+
+
 // wenn hArtListe.html erscheint
 window.em.handleHArtListePageshow = function() {
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
@@ -4745,7 +5066,7 @@ window.em.handleHArtListePageshow = function() {
 		$.mobile.navigate("hProjektListe.html");
 		return;
 	}
-	window.em.initiierehBeobListe();
+	window.em.initiierehArtListe();
 };
 
 // wenn hArtListe.html initiiert wird
@@ -4850,7 +5171,7 @@ window.em.handleHArtListeOeffneProjektClick = function() {
 
 // wenn in hArtListe.html .beob geklickt wird
 window.em.handleHArtListeBeobClick = function() {
-	localStorage.hBeobId = $(this).attr('hBeobId');
+	localStorage.hArtId = $(this).attr('hBeobId');
 	$.mobile.navigate("hArtEdit.html");
 };
 
@@ -6047,14 +6368,14 @@ window.em.handleHArtEditOeffneArtListehArtEditClick = function() {
 	$.mobile.navigate("hArtListe.html");
 };
 
-// wenn in hArtEdit.html auf #OeffneZeithArtEdit geklickt wird
+// wenn in hArtEdit.html auf .OeffneZeithArtEdit geklickt wird
 window.em.handleHArtEditOeffneZeithArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
 	$.mobile.navigate("hZeitEdit.html");
 };
 
-// wenn in hArtEdit.html #OeffneOrthArtEdit geklickt wird
+// wenn in hArtEdit.html .OeffneOrthArtEdit geklickt wird
 window.em.handleHArtEditOeffneOrthArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
@@ -6063,7 +6384,7 @@ window.em.handleHArtEditOeffneOrthArtEditClick = function() {
 	$.mobile.navigate("hOrtEdit.html");
 };
 
-// wenn in hArtEdit.html #OeffneRaumhArtEdit geklickt wird
+// wenn in hArtEdit.html .OeffneRaumhArtEdit geklickt wird
 window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
@@ -6074,7 +6395,7 @@ window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
 	$.mobile.navigate("hRaumEdit.html");
 };
 
-// wenn in hArtEdit.html #OeffneProjekthArtEdit geklickt wird
+// wenn in hArtEdit.html .OeffneProjekthArtEdit geklickt wird
 window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
 	window.em.leereStoragehBeobEdit();
 	window.em.leereStoragehBeobListe();
@@ -6091,7 +6412,7 @@ window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
 window.em.handleHArtEditSpeichernAnhangChange = function() {
 	var _attachments = $("#_attachmentshAE").val();
 	if (_attachments && _attachments.length !== 0) {
-		window.em.speichereAnhänge(localStorage.hBeobId, window.em.hArt, "hAE");
+		window.em.speichereAnhänge(localStorage.hArtId, window.em.hArt, "hAE");
 	}
 };
 
@@ -6101,7 +6422,7 @@ window.em.handleHArtEditNeueBeobhArtEditClick = function() {
 	window.em.zuArtgruppenliste();
 };
 
-// wenn in hArtEdit.html #waehleFelderhBeobEdit geklickt wird
+// wenn in hArtEdit.html #waehleFelderhArtEdit geklickt wird
 window.em.handleHArtEditWaehleFelderClick = function() {
 	localStorage.AufrufendeSeiteFW = "hArtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
@@ -6125,7 +6446,7 @@ window.em.handleHArtEditSwiperight = function() {
 
 // wenn in hArtEdit.html [name='LöscheAnhang'] geklickt wird
 window.em.handleHArtEditLoescheAnhangClick = function(that) {
-	window.em.loescheAnhang(that, window.em.hArt, localStorage.hBeobId);
+	window.em.loescheAnhang(that, window.em.hArt, localStorage.hArtId);
 };
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
@@ -8477,14 +8798,13 @@ window.em.speichereHArt = function() {
 	} else {
 		// Objekt aud DB holen
 		$db = $.couch.db("evab");
-		$db.openDoc(localStorage.hBeobId, {
+		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.speichereHArt_2(that);
 			},
 			error: function() {
 				console.log('fehler in function speichereHArt');
-				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
 		});
 	}
@@ -8523,7 +8843,7 @@ window.em.speichereHArt_2 = function(that) {
 	$db.saveDoc(window.em.hArt, {
 		success: function(data) {
 			window.em.hArt._rev = data.rev;
-			localStorage.hBeobId = data.id;
+			localStorage.hArtId = data.id;
 		},
 		error: function() {
 			console.log('fehler in function speichereHArt_2');
@@ -8540,7 +8860,7 @@ window.em.speichereHArt_2 = function(that) {
 window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 	// prüfen, ob hBeobListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
-	if (window.em.hBeobListe) {
+	if (window.em.hArtListe) {
 		// hBeobListe liegt als Variable vor
 		window.em.nächsteVorigeArt_2(NächsteOderVorige);
 	} else {
@@ -8549,7 +8869,7 @@ window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
-				window.em.hBeobListe = data;
+				window.em.hArtListe = data;
 				window.em.nächsteVorigeArt_2(NächsteOderVorige);
 			}
 		});
@@ -8560,16 +8880,16 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 	var i,
 		ArtIdAktuell,
 		AnzArt;
-	for (i in window.em.hBeobListe.rows) {
-		ArtIdAktuell = window.em.hBeobListe.rows[i].doc._id;
-		AnzArt = window.em.hBeobListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-		if (ArtIdAktuell === localStorage.hBeobId) {
+	for (i in window.em.hArtListe.rows) {
+		ArtIdAktuell = window.em.hArtListe.rows[i].doc._id;
+		AnzArt = window.em.hArtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (ArtIdAktuell === localStorage.hArtId) {
 			switch (NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzArt) {
-					localStorage.hBeobId = window.em.hBeobListe.rows[parseInt(i)+1].doc._id;
+					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)+1].doc._id;
 					window.em.leereStoragehBeobEdit("ohneId");
-					window.em.initiierehBeobEdit();
+					window.em.initiierehArtEdit();
 					return;
 				} else {
 					window.em.melde("Das ist die letzte Art");
@@ -8578,9 +8898,9 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 				break;
 			case "vorige":
 				if (parseInt(i) > 0) {
-					localStorage.hBeobId = window.em.hBeobListe.rows[parseInt(i)-1].doc._id;
+					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)-1].doc._id;
 					window.em.leereStoragehBeobEdit("ohneId");
-					window.em.initiierehBeobEdit();
+					window.em.initiierehArtEdit();
 					return;
 				} else {
 					window.em.leereStoragehBeobEdit();
@@ -8602,7 +8922,7 @@ window.em.löscheHBeob = function() {
 	} else {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
-		$db.openDoc(localStorage.hBeobId, {
+		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.löscheHBeob_2();
@@ -8619,10 +8939,10 @@ window.em.löscheHBeob_2 = function() {
 	$db.removeDoc(window.em.hArt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
-			if (window.em.hBeobListe) {
-				for (i in window.em.hBeobListe.rows) {
-					if (window.em.hBeobListe.rows[i].doc._id === data.id) {
-						window.em.hBeobListe.rows.splice(i, 1);
+			if (window.em.hArtListe) {
+				for (i in window.em.hArtListe.rows) {
+					if (window.em.hArtListe.rows[i].doc._id === data.id) {
+						window.em.hArtListe.rows.splice(i, 1);
 						break;
 					}
 				}

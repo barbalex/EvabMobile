@@ -32,10 +32,10 @@
 	<script src="vendor/couchapp/underscore.js"></script>
   </head>
   <body>
-	<div data-role="page" id="hArtEdit">
-		<div data-role="header" id="hArtEditPageHeader" data-position="fixed" data-tap-toggle="false">
+	<div data-role="page" id="hArtEditListe">
+		<div data-role="header" id="hArtEditListePageHeader" data-position="fixed" data-tap-toggle="false">
 			<a href="#" name="OeffneArtListehArtEdit" class="ui-btn ui-btn-inline ui-btn-icon-left ui-corner-all ui-icon-arrow-l ui-btn-icon-notext">zur Art-Liste</a>
-			<h1>Art</h1>
+			<h1>Artliste</h1>
 			<a href="#MenuhBeobEdit" data-rel="popup" data-transition="slide" class="ui-btn ui-corner-all ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a ui-btn-icon-notext">Menu</a>
 			<div data-role="popup" class="popup" id="MenuhBeobEdit" data-theme="a">
 				<ul data-role="listview" data-inset="true" style="min-width:210px;">
@@ -53,66 +53,64 @@
 			</div>
   			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="OeffneProjekthArtEdit" class="OeffneProjekthArtEdit">Projekt</a></li>
-					<li><a href="#" id="OeffneRaumhArtEdit" class="OeffneProjekthArtEdit">Raum</a></li>
-					<li><a href="#" id="OeffneOrthArtEdit" class="OeffneProjekthArtEdit">Ort</a></li>
-					<li><a href="#" id="OeffneZeithArtEdit" class="OeffneZeithArtEdit">Zeit</a></li>
+					<li><a href="#" id="OeffneProjekthArtEdit">Projekt</a></li>
+					<li><a href="#" id="OeffneRaumhArtEdit">Raum</a></li>
+					<li><a href="#" id="OeffneOrthArtEdit">Ort</a></li>
+					<li><a href="#" id="OeffneZeithArtEdit">Zeit</a></li>
 					<li><a href="#" name="OeffneArtListehArtEdit" class="ui-btn-active ui-state-persist">Arten</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div>
-		<div data-role="content" id="hArtEditPageContent">
-			<form id="hArtEditForm" action="#" method="get" autocomplete="off">
-				<div class='ui-field-contain'>
-					<label for='aArtGruppe' class='select'>Artgruppe:</label>
-					<select id='aArtGruppe' name='aArtGruppe' class='speichern aArtGruppe' data-icon='arrow-r' data-native-menu='true'>
-					</select>
-				</div>
-				<div class='ui-field-contain'>
-					<label for='aArtName' class='select'>Artname:</label>
-					<select id='aArtName' name='aArtName' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true'>
-					</select>
-				</div>
-				<div id="hArtEditFormHtml">
-					<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>
-				</div>
+		<div data-role="content" id="hArtEditListePageContent">
+			<form id="hArtEditListeForm" action="#" method="get" autocomplete="off">
+				<table data-role="table" class="table-stripe" id="hArtEditListeFormTable" data-mode="columntoggle">
+					<thead>
+						<tr>
+							<th>Art</th>
+							<th>ein Feld</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>
+								<select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="meine Art">
+									<option>meine Art</option>
+								</select>
+							</th>
+							<th><input type="text" value="ein Text"></th>
+						</tr>
+						<tr>
+							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="eine andere Art"><option>eine andere Art</option></select></th>
+							<th><input type="text" value="noch ein Text"></th>
+						</tr>
+						<tr>
+							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="dritte Art"><option>dritte Art</option></select></th>
+							<th><input type="text" value="dritter Text"></th>
+						</tr>
+						<tr>
+							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="vierte Art"><option>vierte Art</option></select></th>
+							<th><input type="text" value="vierter Text"></th>
+						</tr>
+						<tr>
+							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="fünfte Art"><option>fünfte Art</option></select></th>
+							<th><input type="text" value="fünfter Text"></th>
+						</tr>
+					</tbody>
+				</table>
 			</form>
-			<form id="FormAnhängehAE" action="" method="post" >
-				<hr >
-				<div style="display: inline"><big><b>Anhänge</b></big> (z.B. Bilder, Tonaufnahmen)</div>
-				<div id="AnhängehAE"></div>			
-				<div class="ui-field-contain">
-					<label for="_attachmentshAE">Dateien anfügen:</label>
-					<input type="file" id="_attachmentshAE" name="_attachments" multiple class="speichernAnhang ui-body-c">
-				</div>
-				<input type="hidden" id="_revhAE" name="_rev">
-			</form>
-			<ul data-role="pagination">
-				<li class="ui-pagination-prev"><a href="#">Prev</a></li>
-				<li class="ui-pagination-next"><a href="#">Next</a></li>
-			</ul>
 		</div>
-		<div data-role="footer" id="hArtEditPageFooter" data-position="fixed" data-tap-toggle="false">
+		<div data-role="footer" id="hArtEditListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#" id="NeueBeobhArtEdit" data-icon="plus">neu</a></li>				
-					<li><a href="#" id="LoescheBeobhArtEdit" data-role="button" data-icon="minus" forceInput="false">l&ouml;schen</a></li>
-					<li><a href="#" id="waehleFelderhArtEdit" data-icon="info">Felder</a></li>
-					<li><a href="#" id="öffnehArtEditListe" data-icon="bars">Liste</a></li>
+					<li><a href="#" id="NeueBeobhArtEdit" data-icon="plus">neu</a></li>
+					<li><a href="#" id="waehleFelderhArtEditListe" data-icon="info">Felder</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
 
-		<div data-role="popup" id="hae_löschen_meldung" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="max-width:400px;">
-			<div role="main" class="ui-content">
-				<h3 id="hae_löschen_meldung_meldung" class="ui-title">Wollen Sie diese Art löschen?</h3>
-				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Nein, behalten</a>
-				<a href="#" id="hae_löschen_meldung_ja_loeschen" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b rechts5px" data-rel="back" data-transition="flow">Ja, löschen</a>
-			</div>
-		</div>
 		<script charset="utf-8">
-			$("#hArtEdit").on("pageshow", window.em.handleHArtEditPageshow);
-			$("#hArtEdit").on("pageinit", window.em.handleHArtEditPageinit);
+			$("#hArtEditListe").on("pageshow", window.em.handleHArtEditListePageshow);
+			$("#hArtEditListe").on("pageinit", window.em.handleHArtEditListePageinit);
 		</script>
 	</div>
   </body>
