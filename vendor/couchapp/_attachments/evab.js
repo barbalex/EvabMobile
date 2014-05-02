@@ -3072,7 +3072,7 @@ window.em.erstelleArtenliste = function(filterwert) {
 			artenliste_loop:
 			for (i=0; i<window.em.Artenliste.length; i++) {
 				if (zähler<200) {
-					ArtBezeichnung = window.em.Artenliste[i].key[1];
+					ArtBezeichnung = window.em.Artenliste[i].key[2];
 					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
 						zähler++;
 						Art = window.em.Artenliste[i].doc;
@@ -3099,7 +3099,7 @@ window.em.erstelleArtenliste = function(filterwert) {
 				artenliste_loop_2:
 				for (i=0; i<window.em.Artenliste.length; i++) {
 					if (i<200) {
-						ArtBezeichnung = window.em.Artenliste[i].key[1];
+						ArtBezeichnung = window.em.Artenliste[i].key[2];
 						Art = window.em.Artenliste[i].doc;
 						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 					} else if (i === 200) {
@@ -3112,7 +3112,7 @@ window.em.erstelleArtenliste = function(filterwert) {
 				// weniger als 200 Arten, kein Filter. Alle anzeigen
 				html += '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten angezeigt</li>';
 				for (i=0; i<window.em.Artenliste.length; i++) {
-					ArtBezeichnung = window.em.Artenliste[i].key[1];
+					ArtBezeichnung = window.em.Artenliste[i].key[2];
 					Art = window.em.Artenliste[i].doc;
 					html += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
 				}
