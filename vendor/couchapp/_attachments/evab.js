@@ -260,12 +260,12 @@ window.em.speichereNeueBeob_02 = function(doc) {
 			if (doc.Typ === 'hArt') {
 				// Variabeln verfügbar machen
 				localStorage.hArtId = data.id;
-				// damit hArtEdit.html die hBeob nicht aus der DB holen muss
+				// damit hArtEdit.html die hArt nicht aus der DB holen muss
 				window.em.hArt = doc;
 				// window.em.hArtListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
 				row_objekt.id = data.id;
 				row_objekt.doc = doc;
-				// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+				// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 				if (window.em.hArtListe && window.em.hArtListe.rows) {
 					window.em.hArtListe.rows.push(row_objekt);
 					// jetzt die Liste neu sortieren
@@ -319,10 +319,10 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 					} else {
 						// Variabeln verfügbar machen
 						localStorage.hArtId = docId;
-						// damit hArtEdit.html die hBeob nicht aus der DB holen muss
+						// damit hArtEdit.html die hArt nicht aus der DB holen muss
 						window.em.hArt = doc;
 						// window.em.hArtListe anpassen
-						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 						if (window.em.hArtListe && window.em.hArtListe.rows) {
 							for (var i in window.em.hArtListe.rows) {
 								if (window.em.hArtListe.rows[i].id == docId) {
@@ -446,7 +446,7 @@ window.em.erstelleNeuesProjekt = function() {
 	var doc = {};
 	doc.Typ = "hProjekt";
 	doc.User = localStorage.Email;
-	// damit hProjektEdit.html die hBeob nicht aus der DB holen muss
+	// damit hProjektEdit.html die hArt nicht aus der DB holen muss
 	window.em.hProjekt = doc;
 	// ProjektId faken, sonst leitet die edit-Seite an die oberste Liste weiter
 	delete localStorage.ProjektId;
@@ -2022,27 +2022,27 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 	return HtmlContainer;
 };
 
-// managt den Aufbau aller Daten und Felder für hBeobEdit.html
-// erwartet die hBeobId
-// wird aufgerufen von hBeobEdit.html bei pageshow
+// managt den Aufbau aller Daten und Felder für hArtEdit.html
+// erwartet die hArtId
+// wird aufgerufen von hArtEdit.html bei pageshow
 window.em.initiierehArtEdit = function() {
 	// markieren, dass die Einzelsicht aktiv ist
 	localStorage.hArtSicht = "einzel";
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
-		window.em.initiierehBeobEdit_2(window.em.hArt);
+		window.em.initiierehArtEdit_2(window.em.hArt);
 	} else {
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
-				window.em.initiierehBeobEdit_2(data);
+				window.em.initiierehArtEdit_2(data);
 			}
 		});
 	}
 };
 
-window.em.initiierehBeobEdit_2 = function() {
+window.em.initiierehArtEdit_2 = function() {
 	// hier werden Variablen gesetzt,
 	// in die fixen Felder Werte eingesetzt,
 	// die dynamischen Felder aufgebaut
@@ -2057,7 +2057,7 @@ window.em.initiierehBeobEdit_2 = function() {
 	localStorage.RaumId = window.em.hArt.hRaumId;
 	localStorage.OrtId = window.em.hArt.hOrtId;
 	localStorage.ZeitId = window.em.hArt.hZeitId;
-	// bei neuen hBeob hat das Objekt noch keine ID
+	// bei neuen hArt hat das Objekt noch keine ID
 	if (window.em.hArt._id) {
 		localStorage.hArtId = window.em.hArt._id;
 	} else {
@@ -2164,7 +2164,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 
 // initiiert BeobListe.html
 window.em.initiierehArtListe = function() {
-	// hat hArtEdit.html eine hBeobListe übergeben?
+	// hat hArtEdit.html eine hArtListe übergeben?
 	if (window.em.hArtListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiierehArtListe_2();
@@ -2214,7 +2214,7 @@ window.em.initiierehArtListe_2 = function() {
 	window.em.speichereLetzteUrl();
 };
 
-// übernimmt eine hBeobachtung
+// übernimmt eine hArt
 // retourniert das html für deren Zeile in der Liste
 window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 	var artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png",
@@ -2223,7 +2223,7 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 		// das leere Bild anzeigen
 		artgruppenname = "unbenannt.png";
 	}
-	listItem = "<li class=\"beob ui-li-has-thumb\" hBeobId=\"" + beob._id + "\" aArtGruppe=\"" + beob.aArtGruppe + "\"" + "\" aArtId=\"" + beob.aArtId + "\">" +
+	listItem = "<li class=\"beob ui-li-has-thumb\" hArtId=\"" + beob._id + "\" aArtGruppe=\"" + beob.aArtGruppe + "\"" + "\" aArtId=\"" + beob.aArtId + "\">" +
 		"<a href=\"#\">" +
 		"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + artgruppenname + "\" />" +
 		"<h3>" + beob.aArtName + "<\/h3>" +
@@ -2277,7 +2277,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 };
 
 // generiert den html-Inhalt für Textinputs
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
 	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -2296,7 +2296,7 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 }
 
 // generiert den html-Inhalt für Slider
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
 	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -2317,7 +2317,7 @@ window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWer
 };
 
 // generiert den html-Inhalt für Textarea
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
 	HtmlContainer += FeldName;
@@ -2334,7 +2334,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 };
 
 /*// generiert den html-Inhalt für Toggleswitch
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
 	var HtmlContainer = "<div class='ui-field-contain'><label for='";
 	HtmlContainer += FeldName;
@@ -2351,7 +2351,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 };*/
 
 // generiert den html-Inhalt für Checkbox
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
@@ -2393,7 +2393,7 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optio
 };
 
 // generiert den html-Inhalt für Radio
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
 	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
 	HtmlContainer += FeldBeschriftung;
@@ -2434,7 +2434,7 @@ window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen
 };
 
 // generiert den html-Inhalt für Selectmenus
-// wird von erstellehBeobEdit aufgerufen
+// wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
 	var HtmlContainer = "<div class='ui-field-contain'>\n\t<label for='";
 	HtmlContainer += FeldName;
@@ -2854,7 +2854,7 @@ window.em.initiiereFelderWaehlen = function() {
 		break;
 	case "hArtEdit":
 		TextUeberListe_FW = "<h3>Felder für Art wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
-		localStorage.FeldlisteFwName = "FeldlistehBeobEdit";
+		localStorage.FeldlisteFwName = "FeldlistehArtEdit";
 		FeldlisteViewname = "FeldListeArt";
 		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
 		break;
@@ -5171,7 +5171,7 @@ window.em.handleHArtListeOeffneProjektClick = function() {
 
 // wenn in hArtListe.html .beob geklickt wird
 window.em.handleHArtListeBeobClick = function() {
-	localStorage.hArtId = $(this).attr('hBeobId');
+	localStorage.hArtId = $(this).attr('hArtId');
 	$.mobile.navigate("hArtEdit.html");
 };
 
