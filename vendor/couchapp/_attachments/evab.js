@@ -3256,8 +3256,8 @@ window.em.leereAlleVariabeln = function(ohneClear) {
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageZeitEdit();
-	window.em.leereStoragehBeobListe();
-	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehArtListe();
+	window.em.leereStoragehArtEdit();
 	window.em.leereStorageBeobListe();
 	window.em.leereStorageBeobEdit();
 	window.em.leereStorageFeldListe();
@@ -3376,7 +3376,7 @@ window.em.leereStorageZeitEdit = function(ohneId) {
 	delete window.em.ArtenVonZeit;
 };
 
-window.em.leereStoragehBeobListe = function() {
+window.em.leereStoragehArtListe = function() {
 	delete window.em.hArtListe;
 	delete window.em.ArtenVonProjekt;
 	delete window.em.ArtenVonRaum;
@@ -3384,7 +3384,7 @@ window.em.leereStoragehBeobListe = function() {
 	delete window.em.ArtenVonZeit;
 };
 
-window.em.leereStoragehBeobEdit = function(ohneId) {
+window.em.leereStoragehArtEdit = function(ohneId) {
 	if (!ohneId) {
 		delete localStorage.hArtId;
 	}
@@ -3602,7 +3602,7 @@ window.em.handleAlArtListItemClick = function(that) {
 		i;
 
 	// kontrollieren, ob diese Art schon erfasst wurde
-	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hBeobEdit F5 gedrückt wurde!
+	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 	if (window.em.hArtListe && window.em.hArtListe.rows) {
 		_.each(window.em.hArtListe.rows, function(row) {
 			if (row.doc.aArtId == artid) {
@@ -4691,7 +4691,7 @@ window.em.handleHArtEditPageinit = function() {
 		$.mobile.navigate("hArtEditListe.html");
 	});
 
-	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHBeob);
+	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHArt);
 
 	$("#hArtEdit").on("swipeleft", window.em.handleHArtEditSwipeleft);
 
@@ -4731,23 +4731,23 @@ window.em.handleHArtEditPageinit = function() {
 		window.em.handleHArtEditLoescheAnhangClick(this);
 	});
 
-	$('#MenuhBeobEdit').on('click', '.menu_arteigenschaften', window.em.handleHArtEditMenuArteigenschaftenClick);
+	$('#MenuhArtEdit').on('click', '.menu_arteigenschaften', window.em.handleHArtEditMenuArteigenschaftenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
+	$('#MenuhArtEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
+	$('#MenuhArtEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
+	$('#MenuhArtEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
+	$('#MenuhArtEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+	$('#MenuhArtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
+	$('#MenuhArtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
-	$('#MenuhBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 
@@ -4780,7 +4780,7 @@ window.em.handleHArtEditListePageshow = function() {
 window.em.initiierehArtEditListe = function() {
 	// markieren, dass die Listensicht aktiv ist
 	localStorage.hArtSicht = "liste";
-	// hat hArtEdit.html eine hBeobListe übergeben?
+	// hat hArtEdit.html eine hArtListe übergeben?
 	if (window.em.hArtListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiierehArtEditListe_2();
@@ -5028,21 +5028,21 @@ window.em.handleHArtEditListePageinit = function() {
 		window.em.handleHArtEditWaehleFelderClick();
 	});
 
-	$('#MenuhBeobEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
+	$('#MenuhArtEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
+	$('#MenuhArtEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
+	$('#MenuhArtEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
+	$('#MenuhArtEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+	$('#MenuhArtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
+	$('#MenuhArtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
-	$('#MenuhBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 
@@ -5116,32 +5116,32 @@ window.em.handleHArtListePageinit = function() {
 
 	$("#hArtListe").on("swiperight", window.em.handleHArtListeSwiperight);
 
-	$('#MenuhBeobListe').on('click', '.menu_einfacher_modus', window.em.handleHArtListeMenuEinfacherModusClick);
+	$('#MenuhArtListe').on('click', '.menu_einfacher_modus', window.em.handleHArtListeMenuEinfacherModusClick);
 
-	$('#MenuhBeobListe').on('click', '.menu_felder_verwalten', window.em.handleHArtListeMenuFelderVerwaltenClick);
+	$('#MenuhArtListe').on('click', '.menu_felder_verwalten', window.em.handleHArtListeMenuFelderVerwaltenClick);
 
-	$('#MenuhBeobListe').on('click', '.menu_beob_exportieren', window.em.handleHArtListeMenuFelderVerwaltenClick);
+	$('#MenuhArtListe').on('click', '.menu_beob_exportieren', window.em.handleHArtListeMenuFelderVerwaltenClick);
 
-	$('#MenuhBeobListe').on('click', '.menu_einstellungen', window.em.handleHArtListeMenuEinstellungenClick);
+	$('#MenuhArtListe').on('click', '.menu_einstellungen', window.em.handleHArtListeMenuEinstellungenClick);
 
-	$('#MenuhBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+	$('#MenuhArtListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
+	$('#MenuhArtListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuhArtListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
-	$('#MenuhBeobListe').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuhArtListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
 window.em.handleHArtListeOeffneZeitClick = function() {
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtListe();
 	$.mobile.navigate("hZeitEdit.html");
 };
 
 // wenn in hArtListe.html #OeffneOrthArtListe geklickt wird
 window.em.handleHArtListeOeffneOrtClick = function() {
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
@@ -5149,7 +5149,7 @@ window.em.handleHArtListeOeffneOrtClick = function() {
 
 // wenn in hArtListe.html #OeffneRaumhArtListe geklickt wird
 window.em.handleHArtListeOeffneRaumClick = function() {
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -5159,7 +5159,7 @@ window.em.handleHArtListeOeffneRaumClick = function() {
 
 // wenn in hArtListe.html #OeffneProjekthArtListe geklickt wird
 window.em.handleHArtListeOeffneProjektClick = function() {
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -5182,7 +5182,7 @@ window.em.handleHArtListeSwiperight = function() {
 
 // wenn in hArtListe.html .menu_einfacher_modus geklickt wird
 window.em.handleHArtListeMenuEinfacherModusClick = function() {
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -5203,9 +5203,9 @@ window.em.handleHArtListeMenuFelderVerwaltenClick = function() {
 window.em.handleHArtListeMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuhBeobListe").popup();
+	$("#MenuhArtListe").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuhBeobListe").popup("close");
+	$("#MenuhArtListe").popup("close");
 };
 
 // wenn in hArtListe.html .menu_einstellungen geklickt wird
@@ -6354,8 +6354,8 @@ window.em.löscheOrt_2 = function() {
 
 // wird verwendet in hArtListe.html
 window.em.öffneArtgruppenliste_hal = function() {
-	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	//window.em.leereStoragehBeobListe();
+	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	//window.em.leereStoragehArtListe();
 	localStorage.Status = "neu";
 	localStorage.Von = "hArtListe";
 	delete localStorage.aArtGruppe;	// verhindern, dass eine Artgruppe übergeben wird
@@ -6364,21 +6364,21 @@ window.em.öffneArtgruppenliste_hal = function() {
 
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
 window.em.handleHArtEditOeffneArtListehArtEditClick = function() {
-	window.em.leereStoragehBeobEdit();
+	window.em.leereStoragehArtEdit();
 	$.mobile.navigate("hArtListe.html");
 };
 
 // wenn in hArtEdit.html auf .OeffneZeithArtEdit geklickt wird
 window.em.handleHArtEditOeffneZeithArtEditClick = function() {
-	window.em.leereStoragehBeobEdit();
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtEdit();
+	window.em.leereStoragehArtListe();
 	$.mobile.navigate("hZeitEdit.html");
 };
 
 // wenn in hArtEdit.html .OeffneOrthArtEdit geklickt wird
 window.em.handleHArtEditOeffneOrthArtEditClick = function() {
-	window.em.leereStoragehBeobEdit();
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtEdit();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
@@ -6386,8 +6386,8 @@ window.em.handleHArtEditOeffneOrthArtEditClick = function() {
 
 // wenn in hArtEdit.html .OeffneRaumhArtEdit geklickt wird
 window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
-	window.em.leereStoragehBeobEdit();
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtEdit();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -6397,8 +6397,8 @@ window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
 
 // wenn in hArtEdit.html .OeffneProjekthArtEdit geklickt wird
 window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
-	window.em.leereStoragehBeobEdit();
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtEdit();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -6456,8 +6456,8 @@ window.em.handleHArtEditMenuArteigenschaftenClick = function() {
 
 // wenn in hArtEdit.html .menu_einfacher_modus geklickt wird
 window.em.handleHArtEditMenuEinfacherModusClick = function() {
-	window.em.leereStoragehBeobEdit();
-	window.em.leereStoragehBeobListe();
+	window.em.leereStoragehArtEdit();
+	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -6478,9 +6478,9 @@ window.em.handleHArtEditMenuFelderVerwaltenClick = function() {
 window.em.handleHArtEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuhBeobEdit").popup();
+	$("#MenuhArtEdit").popup();
 	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuhBeobEdit").popup("close");
+	$("#MenuhArtEdit").popup("close");
 };
 
 // wenn in hArtEdit.html .menu_einstellungen geklickt wird
@@ -8767,8 +8767,8 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
-	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	//window.em.leereStoragehBeobListe();
+	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	//window.em.leereStoragehArtListe();
 	localStorage.Von = "hArtEdit";
 	if (window.em.gruppe_merken) {
 		// Artgruppenliste auslassen
@@ -8781,8 +8781,8 @@ window.em.zuArtgruppenliste = function() {
 
 // wird in hArtEdit.html verwendet
 window.em.zuArtliste = function() {
-	// Globale Variablen für hBeobListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	//window.em.leereStoragehBeobListe();
+	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
+	//window.em.leereStoragehArtListe();
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
 };
@@ -8791,7 +8791,7 @@ window.em.zuArtliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
 	var that = this;
-	// prüfen, ob hBeob als Objekt vorliegt
+	// prüfen, ob hArt als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
 		window.em.speichereHArt_2(that);
@@ -8858,10 +8858,10 @@ window.em.speichereHArt_2 = function(that) {
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird in hArtEdit.html verwendet
 window.em.nächsteVorigeArt = function(NächsteOderVorige) {
-	// prüfen, ob hBeobListe schon existiert
+	// prüfen, ob hArtListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.hArtListe) {
-		// hBeobListe liegt als Variable vor
+		// hArtListe liegt als Variable vor
 		window.em.nächsteVorigeArt_2(NächsteOderVorige);
 	} else {
 		// keine Ortliste vorhanden, neu aus DB erstellen
@@ -8888,7 +8888,7 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 			case "nächste":
 				if (parseInt(i) < AnzArt) {
 					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)+1].doc._id;
-					window.em.leereStoragehBeobEdit("ohneId");
+					window.em.leereStoragehArtEdit("ohneId");
 					window.em.initiierehArtEdit();
 					return;
 				} else {
@@ -8899,11 +8899,11 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 			case "vorige":
 				if (parseInt(i) > 0) {
 					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)-1].doc._id;
-					window.em.leereStoragehBeobEdit("ohneId");
+					window.em.leereStoragehArtEdit("ohneId");
 					window.em.initiierehArtEdit();
 					return;
 				} else {
-					window.em.leereStoragehBeobEdit();
+					window.em.leereStoragehArtEdit();
 					$.mobile.navigate("hArtListe.html");
 					return;
 				}
@@ -8915,17 +8915,17 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 
 // wird in hArtEdit.html benutzt
 // löscht eine Beobachtung
-window.em.löscheHBeob = function() {
+window.em.löscheHArt = function() {
 	if (window.em.hArt) {
 		// vorhandenes Objekt nutzen
-		window.em.löscheHBeob_2();
+		window.em.löscheHArt_2();
 	} else {
 		// Objekt aus DB holen
 		$db = $.couch.db("evab");
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
-				window.em.löscheHBeob_2();
+				window.em.löscheHArt_2();
 			},
 			error: function() {
 				window.em.melde("Fehler: Art nicht gelöscht");
@@ -8934,7 +8934,7 @@ window.em.löscheHBeob = function() {
 	}
 };
 
-window.em.löscheHBeob_2 = function() {
+window.em.löscheHArt_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hArt, {
 		success: function(data) {
@@ -8948,9 +8948,9 @@ window.em.löscheHBeob_2 = function() {
 				}
 			} else {
 				// Keine Beobliste mehr. Storage löschen
-				window.em.leereStoragehBeobListe();
+				window.em.leereStoragehArtListe();
 			}
-			window.em.leereStoragehBeobEdit();
+			window.em.leereStoragehArtEdit();
 			$.mobile.navigate("hArtListe.html");
 		},
 		error: function() {
