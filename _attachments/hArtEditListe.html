@@ -63,37 +63,43 @@
 		</div>
 		<div data-role="content" id="hArtEditListePageContent">
 			<form id="hArtEditListeForm" action="#" method="get" autocomplete="off">
-				<table data-role="table" class="table-stripe" id="hArtEditListeFormTable" data-mode="columntoggle">
+				<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="columntoggle" data-column-btn-text="Felder...">
 					<thead>
-						<tr>
-							<th>Art</th>
-							<th>ein Feld</th>
+						<tr class="ui-bar-d">
+							<th data-priority="1">Art</th>
+							<th data-priority="2">erstes Feld</th>
+							<th data-priority="3">zweites Feld</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<th>
+						<tr class="hart" hartid="">
+							<td>
 								<select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="meine Art">
 									<option>meine Art</option>
 								</select>
-							</th>
-							<th><input type="text" value="ein Text"></th>
+							</td>
+							<td><input type="text" value="ein Text"></td>
+							<td><input type="text" value="ein Text"></td>
 						</tr>
-						<tr>
-							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="eine andere Art"><option>eine andere Art</option></select></th>
-							<th><input type="text" value="noch ein Text"></th>
+						<tr class="hart" hartid="">
+							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="eine andere Art"><option>eine andere Art</option></select></td>
+							<td><input type="text" value="noch ein Text"></td>
+							<td><input type="text" value="noch ein Text"></td>
 						</tr>
-						<tr>
-							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="dritte Art"><option>dritte Art</option></select></th>
-							<th><input type="text" value="dritter Text"></th>
+						<tr class="hart" hartid="">
+							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="dritte Art"><option>dritte Art</option></select></td>
+							<td><input type="text" value="dritter Text"></td>
+							<td><input type="text" value="dritter Text"></td>
 						</tr>
-						<tr>
-							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="vierte Art"><option>vierte Art</option></select></th>
-							<th><input type="text" value="vierter Text"></th>
+						<tr class="hart" hartid="">
+							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="vierte Art"><option>vierte Art</option></select></td>
+							<td><input type="text" value="vierter Text"></td>
+							<td><input type="text" value="vierter Text"></td>
 						</tr>
-						<tr>
-							<th><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="fünfte Art"><option>fünfte Art</option></select></th>
-							<th><input type="text" value="fünfter Text"></th>
+						<tr class="hart" hartid="">
+							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="fünfte Art"><option>fünfte Art</option></select></td>
+							<td><input type="text" value="fünfter Text"></td>
+							<td><input type="text" value="fünfter Text"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -103,10 +109,22 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" id="NeueBeobhArtEdit" data-icon="plus">neu</a></li>
-					<li><a href="#" id="waehleFelderhArtEditListe" data-icon="info">Felder</a></li>
+					<li><a href="#" id="hArtEditListeEinzelsicht" data-icon="bars">Einzel-Ansicht</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
+ 
+		<div data-role="popup" id="hael_artgruppen_popup" data-dismissible="false">
+			<p>Bitte wählen Sie eine Artgruppe:</p>
+			<div class="ui-field-contain">
+				<fieldset id="hael_artgruppen_popup_fieldset" data-role="controlgroup">
+					<input type="radio" name="hael_artgruppen_popup_input" id="hael_Artgruppe_1" value="Artgruppe_1">
+					<label for="hael_Artgruppe_1">Artgruppe 1</label>
+					<input type="radio" name="hael_artgruppen_popup_input" id="hael_Artgruppe_2" value="Artgruppe_2">
+					<label for="hael_Artgruppe_2">Artgruppe 2</label>
+				</fieldset>
+			</div>
+		</div>
 
 		<script charset="utf-8">
 			$("#hArtEditListe").on("pageshow", window.em.handleHArtEditListePageshow);

@@ -142,6 +142,43 @@ em {
 .ui-grid-a .ArteigenschaftFeldname { width: 35%; }
 .ui-grid-a .ArteigenschaftFeldwert { width: 65%; }
 
+/*hArtEditListe: Tabelle soll bis an den Rand reichen*/
+#hArtEditListePageContent {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+#hArtEditListePageContent .ui-table-columntoggle-btn {
+  margin-right: 8px !important;
+}
+
+/*Tabelle in hArtEditListe stylen*/
+.felder_tabelle thead th,
+.felder_tabelle tbody tr:last-child {
+  border-bottom: 1px solid #d6d6d6; /* non-RGBA fallback */
+  border-bottom: 1px solid rgba(0,0,0,.1);
+}
+.felder_tabelle tbody th,
+.felder_tabelle tbody td {
+  border-bottom: 1px solid #e6e6e6; /* non-RGBA fallback  */
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+.felder_tabelle tbody tr:last-child th,
+.felder_tabelle tbody tr:last-child td {
+  border-bottom: 0;
+}
+/* Hintergrund streifen - nein
+.felder_tabelle tbody tr:nth-child(odd) td,
+.felder_tabelle tbody tr:nth-child(odd) th {
+  background-color: #eeeeee;
+  background-color: rgba(0,0,0,.04);
+}*/
+
+#hael_artgruppen_popup {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 /*Navbar im Header: Titel nicht abschneiden*/
 .ui-btn-inner {
   overflow: visible !important;

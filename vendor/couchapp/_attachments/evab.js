@@ -4803,7 +4803,9 @@ window.em.initiierehArtEditListe_2 = function() {
 		ListItemContainer = "",
 		Titel2,
 		hArtTemp,
-		artgruppenname;
+		artgruppenname,
+		artgruppen = [],
+		artgruppe;
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
 	Titel2 = " Arten";
@@ -4813,14 +4815,35 @@ window.em.initiierehArtEditListe_2 = function() {
 	$("#hArtEditListePageHeader .hArtEditListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
+		// Anzuzeigende Felder können erst bestimmt werden, wenn die Artgruppe der ersten Art gewählt wurde
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (i in window.em.hArtListe.rows) {
-			hArtTemp = window.em.hArtListe.rows[i].doc;
-			if (hArtTemp) {
-				//ListItemContainer += window.em.erstelleHtmlFürBeobInHArtEditListe(hArtTemp);
+		// Felder bestimmen, die in der Tabelle angezeigt werden können
+		// Es sind alle EINER ARTENGRUPPE
+		// wenn also die Liste mehr als eine Artengruppe enthält, muss der Benutzer eine davon wählen
+		// also zuerst eine Liste der Artengruppen erstellen
+		_.each(window.em.hArtListe.rows, function(row) {
+			if (row.doc.aArtGruppe) {
+				artgruppen.push(row.doc.aArtGruppe);
 			}
+		});
+		// artgruppen-array reduzieren, damit jede Artgruppe nur ein mal vorkommt
+		artgruppen = _.uniq(artgruppen);
+		if (artgruppen.length > 1) {
+			// TODO: Benutzer muss eine Artgruppe wählen
+			$("#hael_artgruppen_popup_fieldset").html(window.em.erstelleHtmlFürHaelArtgruppenPopupFieldset(artgruppen)).trigger("create");
+			//$("#hael_artgruppen_popup_fieldset").controlgroup("refresh");
+			//$("input[name='hael_artgruppen_popup_input']").checkboxradio();
+			//$("input[name='hael_artgruppen_popup_input']").checkboxradio("refresh");
+			//$.mobile.activePage.trigger("pagecreate");
+			$("#hael_artgruppen_popup").popup();
+			$("#hael_artgruppen_popup").popup("open");
+		} else {
+			artgruppe = artgruppen[0];
 		}
+		
+
+		
 	}
 	/*$("#ArtlistehAL").html(ListItemContainer);
 	$("#ArtlistehAL").listview("refresh");*/
@@ -4828,17 +4851,35 @@ window.em.initiierehArtEditListe_2 = function() {
 	window.em.speichereLetzteUrl();
 };
 
+window.em.erstelleHtmlFürHaelArtgruppenPopupFieldset = function(artgruppen) {
+	var html = '';
+	_.each(artgruppen, function(artgruppe) {
+		html += '<input type="radio" name="hael_artgruppen_popup_input" id="hael_';
+		html += artgruppe;
+		html += '" value="';
+		html += artgruppe;
+		html += '">';
+		html += '<label for="hael_';
+		html += artgruppe;
+		html += '">';
+		html += artgruppe;
+		html += '</label>';
+	});
+	console.log("html = " + html);
+	return html;
+};
+
 
 // managt das Initialiseren einer Art in hArtEditListe.html
 // erwartet die hArtId
 // wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
-window.em.initiierehArtEditListeArt = function() {
+window.em.initiierehArtEditListeArt = function(hartid) {
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
-	if (window.em.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
+	if (window.em.hArt && window.em.hArt._id === hartid && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		window.em.initiierehArtEditListeArt_2(window.em.hArt);
 	} else {
 		$db = $.couch.db("evab");
-		$db.openDoc(localStorage.hArtId, {
+		$db.openDoc(hartid, {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.initiierehArtEditListeArt_2(data);
@@ -4869,10 +4910,10 @@ window.em.initiierehArtEditListeArt_2 = function() {
 	localStorage.aArtName = window.em.hArt.aArtName;
 	localStorage.aArtId = window.em.hArt.aArtId;
 	// fixe Felder aktualisieren
-	$(".aArtName").selectmenu();
-	$(".aArtName").val(window.em.hArt.aArtName);
-	$(".aArtName").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
-	$(".aArtName").selectmenu("refresh");
+	$(".aArtName_hael").selectmenu();
+	$(".aArtName_hael").val(window.em.hArt.aArtName);
+	$(".aArtName_hael").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
+	$(".aArtName_hael").selectmenu("refresh");
 	// prüfen, ob die Feldliste schon geholt wurde
 	// wenn ja: deren globale Variable verwenden
 	if (window.em.FeldlistehArtEdit) {
@@ -5016,16 +5057,26 @@ window.em.handleHArtEditListePageinit = function() {
 		window.em.handleHArtEditNeueBeobhArtEditClick();
 	});
 
+	// In Einzelansicht wechseln
+	$("#hArtEditListePageFooter").on("click", "#hArtEditListeEinzelsicht", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditListeEinzelsichtClick();
+	});
+
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
 	$("#hArtEditListeForm").on("click", ".aArtName", function(event) {
 		event.preventDefault();
 		window.em.zuArtliste();
 	});
 
-	// sichtbare Felder wählen
-	$("#hArtEditListePageFooter").on("click", "#waehleFelderhArtEditListe", function(event) {
+	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
+	$("#hArtEditListeForm").on("click", ".hart", function(event) {
 		event.preventDefault();
-		window.em.handleHArtEditWaehleFelderClick();
+		var hartid = $(this).attr("hartid");
+		if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
+			// die Art muss initiiert werden
+			window.em.initiierehArtEditListeArt(hartid);
+		}
 	});
 
 	$('#MenuhArtEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
@@ -5045,12 +5096,11 @@ window.em.handleHArtEditListePageinit = function() {
 	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
-
-
-
-
-
-
+window.em.handleHArtEditListeEinzelsichtClick = function() {
+	// initiiert hArtEdit
+	// funktioniert, weil bei jedem Klick in einen Datensatz dessen id global gespeichert wir
+	window.em.initiierehArtEdit();
+};
 
 // wenn hArtListe.html erscheint
 window.em.handleHArtListePageshow = function() {
