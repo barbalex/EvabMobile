@@ -2124,24 +2124,22 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEdit.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlistehArtEdit.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-				if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
-					FeldWert = Feld.Standardwert[window.em.hArt.User];
-					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-					window.em.hArt[FeldName] = FeldWert;
-				} else {
-					//"" verhindert, dass im Feld undefined erscheint
-					FeldWert = window.em.hArt[FeldName] || "";
-				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+		Feld = window.em.FeldlistehArtEdit.rows[i].doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
+				FeldWert = Feld.Standardwert[window.em.hArt.User];
+				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+				window.em.hArt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert, dass im Feld undefined erscheint
+				FeldWert = window.em.hArt[FeldName] || "";
 			}
+			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
+			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
 		}
 	}
 	if (localStorage.Status === "neu") {
@@ -2235,7 +2233,8 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 // generiert das Html für ein Formularelement
 // erwartet diverse Übergabewerte
 // der HtmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp) {
+// OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
+window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, OhneLabel) {
 	var HtmlContainer = "",
 		SliderMinimum,
 		SliderMinimum;
@@ -2243,34 +2242,34 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 	InputTyp = InputTyp || "text";
 	switch(Feld.Formularelement) {
 	case "textinput":
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
+		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel);
 		break;
 	case "textarea":
-		HtmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert);
+		HtmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;
 	/*case "toggleswitch":
-		HtmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert);
+		HtmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;*/
 	case "checkbox":
-		HtmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen);
+		HtmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel);
 		break;
 	case "selectmenu":
-		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect");
+		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect", OhneLabel);
 		break;
 	case "multipleselect":
-		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect");
+		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect", OhneLabel);
 		break;
 	case "slider":
 		SliderMinimum = Feld.SliderMinimum || 0;
 		SliderMaximum = Feld.SliderMaximum || 100;
-		HtmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum);
+		HtmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel);
 		break;
 	case "radio":
-		HtmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen);
+		HtmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel);
 		break;
 	case null:
 		// Abfangen, wenn das Formularelement nicht gewählt wurde
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp);
+		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel);
 		break;
 	}
 	return HtmlContainer;
@@ -2278,12 +2277,16 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp) {
-	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '">';
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<input id="';
+window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel) {
+	var HtmlContainer = '<div class="ui-field-contain">';
+	if (!OhneLabel) {
+		HtmlContainer += '<label for="';
+		HtmlContainer += FeldName;
+		HtmlContainer += '">';
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += ':</label>';
+	}
+	HtmlContainer += '<input id="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" name="';
 	HtmlContainer += FeldName;
@@ -2291,18 +2294,22 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 	HtmlContainer += InputTyp;
 	HtmlContainer += '" value="';
 	HtmlContainer += FeldWert;
-	HtmlContainer += '" class="speichern"/>\n</div>';
+	HtmlContainer += '" class="speichern"/></div>';
 	return HtmlContainer;
 }
 
 // generiert den html-Inhalt für Slider
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum) {
-	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '">';
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<input class="speichernSlider" type="range" data-highlight="true" name="';
+window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel) {
+	var HtmlContainer = '<div class="ui-field-contain">';
+	if (!OhneLabel) {
+		HtmlContainer += '<label for="';
+		HtmlContainer += FeldName;
+		HtmlContainer += '">';
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += ':</label>';
+	}
+	HtmlContainer += '<input class="speichernSlider" type="range" data-highlight="true" name="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" id="';
 	HtmlContainer += FeldName;
@@ -2312,35 +2319,43 @@ window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWer
 	HtmlContainer += SliderMinimum;
 	HtmlContainer += '" max="';
 	HtmlContainer += SliderMaximum;
-	HtmlContainer += '"/>\n</div>';
+	HtmlContainer += '"/></div>';
 	return HtmlContainer;
 };
 
 // generiert den html-Inhalt für Textarea
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = '<div class="ui-field-contain">\n\t<label for="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '">';
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += ':</label>\n\t<textarea id="';
+window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+	var HtmlContainer = '<div class="ui-field-contain">';
+	if (!OhneLabel) {
+		HtmlContainer += '<label for="';
+		HtmlContainer += FeldName;
+		HtmlContainer += '">';
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += ':</label>';
+	}
+	HtmlContainer += '<textarea id="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" name="';
 	HtmlContainer += FeldName;
 	HtmlContainer += '" class="speichern">';
 	HtmlContainer += FeldWert;
-	HtmlContainer += '</textarea>\n</div>';
+	HtmlContainer += '</textarea></div>';
 	return HtmlContainer;
 };
 
 /*// generiert den html-Inhalt für Toggleswitch
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert) {
-	var HtmlContainer = "<div class='ui-field-contain'><label for='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "'>";
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += "</label><select name='";
+window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+	var HtmlContainer = "<div class='ui-field-contain'>";
+	if (!OhneLabel) {
+		HtmlContainer += "<label for='";
+		HtmlContainer += FeldName;
+		HtmlContainer += "'>";
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += "</label>";
+	}
+	HtmlContainer += "<select name='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' id='";
 	HtmlContainer += FeldName;
@@ -2352,12 +2367,15 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += "</legend>";
+window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
+	var HtmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
+	if (!OhneLabel) {
+		HtmlContainer += "<legend>";
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += "</legend>";
+	}
 	HtmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
-	HtmlContainer += "\n\t</fieldset>\n</div>";
+	HtmlContainer += "</fieldset></div>";
 	return HtmlContainer;
 };
 
@@ -2371,11 +2389,11 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optio
 	for (i in Optionen) {
 		if (typeof i !== "function") {
 			Optionn = Optionen[i];
-			ListItem = "\n\t\t\t<label for='";
+			ListItem = "<label for='";
 			ListItem += Optionn;
 			ListItem += "'>";
 			ListItem += Optionn;
-			ListItem += "</label>\n\t\t\t<input type='checkbox' name='";
+			ListItem += "</label><input type='checkbox' name='";
 			ListItem += FeldName;
 			ListItem += "' id='";
 			ListItem += Optionn;
@@ -2394,12 +2412,15 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optio
 
 // generiert den html-Inhalt für Radio
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen) {
-	var HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>\n\t\t<legend>";
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += "</legend>";
+window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
+	var HtmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
+	if (!OhneLabel) {
+		HtmlContainer += "<legend>";
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += "</legend>";
+	}
 	HtmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
-	HtmlContainer += "\n\t</fieldset>\n</div>";
+	HtmlContainer += "</fieldset></div>";
 	return HtmlContainer;
 };
 
@@ -2435,12 +2456,16 @@ window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect) {
-	var HtmlContainer = "<div class='ui-field-contain'>\n\t<label for='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' class='select'>";
-	HtmlContainer += FeldBeschriftung;
-	HtmlContainer += "</label>\n\t<select name='";
+window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect, OhneLabel) {
+	var HtmlContainer = "<div class='ui-field-contain'>";
+	if (!OhneLabel) {
+		HtmlContainer += "<label for='";
+		HtmlContainer += FeldName;
+		HtmlContainer += "' class='select'>";
+		HtmlContainer += FeldBeschriftung;
+		HtmlContainer += "</label>";
+	}
+	HtmlContainer += "<select name='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' id='";
 	HtmlContainer += FeldName;
@@ -2456,7 +2481,7 @@ window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, Fel
 	} else {
 		HtmlContainer += window.em.generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
 	}
-	HtmlContainer += "\n\t</select>\n</div>";
+	HtmlContainer += "</select></div>";
 	return HtmlContainer;
 };
 
@@ -4641,7 +4666,6 @@ window.em.handleHArtEditPageinit = function() {
 	// Für jedes Feld bei Änderung speichern
 	$("#hArtEditForm").on("change", ".speichern", window.em.speichereHArt);
 
-	// ungelöstes Problem: swipe reagiert!
 	// Eingabe im Zahlenfeld abfangen
 	$("#hArtEditForm").on("blur", '.speichernSlider', window.em.speichereHArt);
 
@@ -4687,7 +4711,6 @@ window.em.handleHArtEditPageinit = function() {
 	// Code für den Art-Löschen-Dialog
 	$("#hArtEditPageFooter").on('click', '#öffnehArtEditListe', function(event) {
 		event.preventDefault();
-		console.log("jetzt hArtEditListe öffnen");
 		$.mobile.navigate("hArtEditListe.html");
 	});
 
@@ -4777,6 +4800,7 @@ window.em.handleHArtEditListePageshow = function() {
 
 
 // managt den Aufbau aller Daten und Felder für hArtEditListe.html
+// Artliste holen
 window.em.initiierehArtEditListe = function() {
 	// markieren, dass die Listensicht aktiv ist
 	localStorage.hArtSicht = "liste";
@@ -4798,12 +4822,9 @@ window.em.initiierehArtEditListe = function() {
 };
 
 window.em.initiierehArtEditListe_2 = function() {
-	var i,
-		anzArt = window.em.hArtListe.rows.length,
+	var anzArt = window.em.hArtListe.rows.length,
 		ListItemContainer = "",
 		Titel2,
-		hArtTemp,
-		artgruppenname,
 		artgruppen = [],
 		artgruppe;
 
@@ -4815,6 +4836,7 @@ window.em.initiierehArtEditListe_2 = function() {
 	$("#hArtEditListePageHeader .hArtEditListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
+		// TODO: anpassen
 		// Anzuzeigende Felder können erst bestimmt werden, wenn die Artgruppe der ersten Art gewählt wurde
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
@@ -4830,46 +4852,151 @@ window.em.initiierehArtEditListe_2 = function() {
 		// artgruppen-array reduzieren, damit jede Artgruppe nur ein mal vorkommt
 		artgruppen = _.uniq(artgruppen);
 		if (artgruppen.length > 1) {
-			// TODO: Benutzer muss eine Artgruppe wählen
-			$("#hael_artgruppen_popup_fieldset").html(window.em.erstelleHtmlFürHaelArtgruppenPopupFieldset(artgruppen)).trigger("create");
-			//$("#hael_artgruppen_popup_fieldset").controlgroup("refresh");
-			//$("input[name='hael_artgruppen_popup_input']").checkboxradio();
-			//$("input[name='hael_artgruppen_popup_input']").checkboxradio("refresh");
-			//$.mobile.activePage.trigger("pagecreate");
+			// Benutzer muss eine Artgruppe wählen
+			$("#hael_artgruppen_popup_fieldcontain").html(window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup(artgruppen)).trigger("create");
 			$("#hael_artgruppen_popup").popup();
 			$("#hael_artgruppen_popup").popup("open");
 		} else {
 			artgruppe = artgruppen[0];
+			window.em.initiierehArtEditListe_3(artgruppe);
 		}
-		
-
-		
 	}
-	/*$("#ArtlistehAL").html(ListItemContainer);
-	$("#ArtlistehAL").listview("refresh");*/
+	
+};
+
+// Feldliste holen
+window.em.initiierehArtEditListe_3 = function(artgruppe) {
+	// prüfen, ob die Feldliste schon geholt wurde
+	// wenn ja: deren globale Variable verwenden
+	if (window.em.FeldlistehArtEdit) {
+		window.em.initiierehArtEditListe_4(artgruppe);
+	} else {
+		// Feldliste aus der DB holen
+		// das dauert länger - hinweisen
+		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
+		$db = $.couch.db("evab");
+		$db.view('evab/FeldListeArt?include_docs=true', {
+			success: function(data) {
+				window.em.FeldlistehArtEdit = data;
+				window.em.initiierehArtEditListe_4(artgruppe);
+			}
+		});
+	}
+	
+};
+
+// baut das HTML für die hArtEditListeForm auf
+window.em.initiierehArtEditListe_4 = function(artgruppe) {
+	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="columntoggle" data-column-btn-text="Felder...">',
+		htmlContainerHead,
+		htmlContainerBody,
+		datapriority = 1;
+	feldliste = [];
+
+	//console.log("artgruppe = " + artgruppe);
+
+	// zuerst mal ermitteln, welche Felder für diese Artgruppe und diesen User im Formular eingeblendet werden sollen
+	_.each(window.em.FeldlistehArtEdit.rows, function(row) {
+		var Feld = row.doc,
+			FeldName = Feld.FeldName;
+			//console.log("Feld vor Bedingung = " + JSON.stringify(Feld));
+		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(artgruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+			feldliste.push(Feld);
+		}
+	});
+
+	// mit diesen Feldern den Head aufbauen
+	// dazu wird der Feldname gebraucht
+	// Die Art wird immer angezeigt
+	htmlContainerHead = '<thead><tr class="ui-bar-d"><th data-priority="1">Art</th>';
+	_.each(feldliste, function(feld) {
+		htmlContainerHead += '<th data-priority="';
+		htmlContainerHead += datapriority;
+		htmlContainerHead += '">';
+		htmlContainerHead += feld.FeldBeschriftung;
+		htmlContainerHead += '</th>';
+		datapriority ++;
+	});
+	htmlContainerHead += '</tr></thead>';
+
+	// Den Body aufbauen
+	htmlContainerBody = '<tbody>';
+	// pro hArt das html erzeugen
+	_.each(window.em.hArtListe.rows, function(row) {
+		var hart = row.doc,
+			optionen = [],
+			feldwert = hart.aArtName,
+			feldname = "aArtName_hael";
+		optionen.push(hart.aArtName);
+		htmlContainerBody += '<tr class="hart" hartid="';
+		htmlContainerBody += hart._id;
+		htmlContainerBody += '">';
+		// Artname ergänzen
+		htmlContainerBody += '<td>';
+		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true);;
+		htmlContainerBody += '</td>';
+		// dynamische Felder setzen
+		_.each(feldliste, function(feld) {
+			var FeldName = feld.FeldName + "_hael";
+			// Feldwert setzen
+			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
+				FeldWert = feld.Standardwert[window.em.hArt.User];
+				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+				window.em.hArt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert, dass im Feld undefined erscheint
+				FeldWert = window.em.hArt[FeldName] || "";
+			}
+			FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
+			Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+			// html generieren
+			htmlContainerBody += '<td>';
+			htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, feld.InputTyp, true);
+			htmlContainerBody += '</td>';
+		});
+		// Tabellenzeile abschliessen
+		htmlContainerBody += '</tr>';
+	});
+		
+	htmlContainerBody += '</tbody>';
+
+	// head und body zusammensetzen
+	htmlContainer += htmlContainerHead;
+	htmlContainer += htmlContainerBody;
+	// Tabelle abschliessen
+	htmlContainer += '</table>';
+
+	// htmlContainer in Formular setzen
+	$("#hArtEditListeForm").html(htmlContainer).trigger("create").trigger("refresh");
+	$("#hArtEditListeTable").table();
+	// TODO?: Einstellen, welche Felder sichtbar sind
+
+	// Menus blenden und letzte url speichern
 	window.em.blendeMenus();
 	window.em.speichereLetzteUrl();
 };
 
-window.em.erstelleHtmlFürHaelArtgruppenPopupFieldset = function(artgruppen) {
-	var html = '';
+window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup = function(artgruppen) {
+	var html = '<fieldset id="hael_artgruppen_popup_fieldset" data-role="controlgroup">';
 	_.each(artgruppen, function(artgruppe) {
 		html += '<input type="radio" name="hael_artgruppen_popup_input" id="hael_';
 		html += artgruppe;
 		html += '" value="';
 		html += artgruppe;
-		html += '">';
+		html += '" class="hael_artgruppen_popup_input">';
 		html += '<label for="hael_';
+		html += artgruppe;
+		html += '" class="hael_artgruppen_popup_input_label" artgruppe="';
 		html += artgruppe;
 		html += '">';
 		html += artgruppe;
 		html += '</label>';
 	});
-	console.log("html = " + html);
+	html += '</fieldset>';
 	return html;
 };
 
-
+// TODO
 // managt das Initialiseren einer Art in hArtEditListe.html
 // erwartet die hArtId
 // wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
@@ -5060,13 +5187,17 @@ window.em.handleHArtEditListePageinit = function() {
 	// In Einzelansicht wechseln
 	$("#hArtEditListePageFooter").on("click", "#hArtEditListeEinzelsicht", function(event) {
 		event.preventDefault();
-		window.em.handleHArtEditListeEinzelsichtClick();
+		$.mobile.navigate("hArtEdit.html");
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
 	$("#hArtEditListeForm").on("click", ".aArtName", function(event) {
 		event.preventDefault();
 		window.em.zuArtliste();
+	});
+
+	$("#hArtEditListe").on("click", ".hael_artgruppen_popup_input_label", function() {
+		window.em.initiierehArtEditListe_3($(this).attr("artgruppe"));
 	});
 
 	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
@@ -5094,12 +5225,6 @@ window.em.handleHArtEditListePageinit = function() {
 	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
 	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
-};
-
-window.em.handleHArtEditListeEinzelsichtClick = function() {
-	// initiiert hArtEdit
-	// funktioniert, weil bei jedem Klick in einen Datensatz dessen id global gespeichert wir
-	window.em.initiierehArtEdit();
 };
 
 // wenn hArtListe.html erscheint

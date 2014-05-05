@@ -63,47 +63,15 @@
 		</div>
 		<div data-role="content" id="hArtEditListePageContent">
 			<form id="hArtEditListeForm" action="#" method="get" autocomplete="off">
-				<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="columntoggle" data-column-btn-text="Felder...">
-					<thead>
-						<tr class="ui-bar-d">
-							<th data-priority="1">Art</th>
-							<th data-priority="2">erstes Feld</th>
-							<th data-priority="3">zweites Feld</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="hart" hartid="">
-							<td>
-								<select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="meine Art">
-									<option>meine Art</option>
-								</select>
-							</td>
-							<td><input type="text" value="ein Text"></td>
-							<td><input type="text" value="ein Text"></td>
-						</tr>
-						<tr class="hart" hartid="">
-							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="eine andere Art"><option>eine andere Art</option></select></td>
-							<td><input type="text" value="noch ein Text"></td>
-							<td><input type="text" value="noch ein Text"></td>
-						</tr>
-						<tr class="hart" hartid="">
-							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="dritte Art"><option>dritte Art</option></select></td>
-							<td><input type="text" value="dritter Text"></td>
-							<td><input type="text" value="dritter Text"></td>
-						</tr>
-						<tr class="hart" hartid="">
-							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="vierte Art"><option>vierte Art</option></select></td>
-							<td><input type="text" value="vierter Text"></td>
-							<td><input type="text" value="vierter Text"></td>
-						</tr>
-						<tr class="hart" hartid="">
-							<td><select id='aArtName_hael' class='speichern aArtName' data-icon='arrow-r' data-native-menu='true' value="fünfte Art"><option>fünfte Art</option></select></td>
-							<td><input type="text" value="fünfter Text"></td>
-							<td><input type="text" value="fünfter Text"></td>
-						</tr>
-					</tbody>
-				</table>
+				
 			</form>
+
+			<div data-role="popup" id="hael_artgruppen_popup" data-dismissible="false">
+				<p>Wählen Sie eine der Artgruppen:</p>
+				<div id="hael_artgruppen_popup_fieldcontain" class="ui-field-contain">
+				</div>
+			</div>
+
 		</div>
 		<div data-role="footer" id="hArtEditListePageFooter" data-position="fixed" data-tap-toggle="false">
 			<div data-role="navbar">
@@ -113,18 +81,6 @@
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->
- 
-		<div data-role="popup" id="hael_artgruppen_popup" data-dismissible="false">
-			<p>Bitte wählen Sie eine Artgruppe:</p>
-			<div class="ui-field-contain">
-				<fieldset id="hael_artgruppen_popup_fieldset" data-role="controlgroup">
-					<input type="radio" name="hael_artgruppen_popup_input" id="hael_Artgruppe_1" value="Artgruppe_1">
-					<label for="hael_Artgruppe_1">Artgruppe 1</label>
-					<input type="radio" name="hael_artgruppen_popup_input" id="hael_Artgruppe_2" value="Artgruppe_2">
-					<label for="hael_Artgruppe_2">Artgruppe 2</label>
-				</fieldset>
-			</div>
-		</div>
 
 		<script charset="utf-8">
 			$("#hArtEditListe").on("pageshow", window.em.handleHArtEditListePageshow);
