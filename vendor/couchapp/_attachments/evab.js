@@ -2460,8 +2460,11 @@ window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect, OhneLabel) {
+window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect, OhneLabel, icon, id) {
 	var HtmlContainer = "<div class='ui-field-contain'>";
+	if (!id) {
+		id = FeldName;
+	}
 	if (!OhneLabel) {
 		HtmlContainer += "<label for='";
 		HtmlContainer += FeldName;
@@ -2472,12 +2475,15 @@ window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, Fel
 	HtmlContainer += "<select name='";
 	HtmlContainer += FeldName;
 	HtmlContainer += "' id='";
-	HtmlContainer += FeldName;
+	HtmlContainer += id;
 	HtmlContainer += "' value='";
 	HtmlContainer += FeldWert.toString();
 	HtmlContainer += "' data-native-menu='false'";
 	if (MultipleSingleSelect === "MultipleSelect") {
 		HtmlContainer += " multiple='multiple'";
+	}
+	if (icon) {
+		HtmlContainer += " data-icon='" + icon + "'";
 	}
 	HtmlContainer += " class='speichern'>";
 	if (MultipleSingleSelect === "MultipleSelect") {
@@ -4939,7 +4945,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			htmlContainerBody += '">';
 			// Artname ergänzen
 			htmlContainerBody += '<td>';
-			htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true);;
+			htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true, "arrow-r", hart._id + "_art");
 			htmlContainerBody += '</td>';
 			// dynamische Felder setzen
 			_.each(feldliste, function(feld) {
@@ -5165,7 +5171,8 @@ window.em.handleHArtEditListePageinit = function() {
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
-	$("#hArtEditListeForm").on("click", ".aArtName", function(event) {
+	$("#hArtEditListe").on("click", "[name='aArtName_hael']", function(event) {
+		console.log("Artname geklickt");
 		event.preventDefault();
 		window.em.zuArtliste();
 	});
@@ -8931,8 +8938,6 @@ window.em.zuArtgruppenliste = function() {
 
 // wird in hArtEdit.html verwendet
 window.em.zuArtliste = function() {
-	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
-	//window.em.leereStoragehArtListe();
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
 };
