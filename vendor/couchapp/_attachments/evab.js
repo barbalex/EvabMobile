@@ -8941,6 +8941,7 @@ window.em.zuArtliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
 	var that = this;
+	console.log("this = " + this);
 	// prüfen, ob hArt als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
@@ -8973,7 +8974,8 @@ window.em.speichereHArt_2 = function(that) {
 		// alle anderen Feldtypen
 		Feldname = that.name;
 		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		//Feldjson = $("[name='" + Feldname + "']").serializeObject();	// Problem: Es gibt in hArtEditListe viele Felder mit diesem Namen
+		Feldjson = $(that).serializeObject();
 		Feldwert = Feldjson[Feldname];
 	}
 	// window.em.hArt aktualisieren
