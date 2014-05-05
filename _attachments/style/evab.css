@@ -146,10 +146,13 @@ em {
 #hArtEditListePageContent {
   padding-right: 0px;
   padding-left: 0px;
+  padding-top: 8px;
 }
 
 #hArtEditListePageContent .ui-table-columntoggle-btn {
   margin-right: 8px !important;
+  margin-bottom: 0px !important;
+  margin-top: 0px !important;
 }
 
 /*Tabelle in hArtEditListe stylen*/

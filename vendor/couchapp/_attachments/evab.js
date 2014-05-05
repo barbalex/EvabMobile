@@ -4809,11 +4809,13 @@ window.em.initiierehArtEditListe = function() {
 	// markieren, dass die Listensicht aktiv ist
 	localStorage.hArtSicht = "liste";
 	// hat hArtEdit.html eine hArtListe übergeben?
-	if (window.em.hArtListe) {
+	/*if (window.em.hArtListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiierehArtEditListe_2();
-	} else {
+	} else {*/
 		// Beobliste aus DB holen
+		// Problem: Wenn in hArtEdit ein Wert geändert wurde, ist er sonst nicht aktuell
+		// Alternative: Beim Speichern window.em.hArtListe nachführen
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
@@ -4822,7 +4824,7 @@ window.em.initiierehArtEditListe = function() {
 				window.em.initiierehArtEditListe_2();
 			}
 		});
-	}
+	//}
 };
 
 window.em.initiierehArtEditListe_2 = function() {
@@ -4876,8 +4878,6 @@ window.em.initiierehArtEditListe_3 = function(artgruppe) {
 		window.em.initiierehArtEditListe_4(artgruppe);
 	} else {
 		// Feldliste aus der DB holen
-		// das dauert länger - hinweisen
-		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function(data) {
@@ -4894,8 +4894,8 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="columntoggle" data-column-btn-text="Felder...">',
 		htmlContainerHead,
 		htmlContainerBody,
-		datapriority = 1;
-	feldliste = [];
+		datapriority = 1,
+		feldliste = [];
 
 	//console.log("artgruppe = " + artgruppe);
 
@@ -4943,15 +4943,15 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			htmlContainerBody += '</td>';
 			// dynamische Felder setzen
 			_.each(feldliste, function(feld) {
-				var FeldName = feld.FeldName + "_hael";
+				var FeldName = feld.FeldName;
 				// Feldwert setzen
-				if (window.em.hArt[feld.FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
+				if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
 					FeldWert = feld.Standardwert[window.em.hArt.User];
 					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-					window.em.hArt[feld.FeldName] = FeldWert;
+					window.em.hArt[FeldName] = FeldWert;
 				} else {
 					//"" verhindert, dass im Feld undefined erscheint
-					FeldWert = hart[feld.FeldName] || "";
+					FeldWert = hart[FeldName] || "";
 				}
 				FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
 				Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
@@ -5003,7 +5003,6 @@ window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup = function(artgruppen) {
 	return html;
 };
 
-// TODO
 // managt das Initialiseren einer Art in hArtEditListe.html
 // erwartet die hArtId
 // wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
@@ -8965,6 +8964,7 @@ window.em.speichereHArt_2 = function(that) {
 	var Feldname,
 		Feldjson,
 		Feldwert;
+	// Feldname und -wert ermitteln
 	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
 		// slider
 		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
@@ -8976,7 +8976,7 @@ window.em.speichereHArt_2 = function(that) {
 		Feldjson = $("[name='" + Feldname + "']").serializeObject();
 		Feldwert = Feldjson[Feldname];
 	}
-	// Werte aus dem Formular aktualisieren
+	// window.em.hArt aktualisieren
 	if (Feldwert) {
 		if (window.em.myTypeOf(Feldwert) === "float") {
 			window.em.hArt[Feldname] = parseFloat(Feldwert);
@@ -8988,9 +8988,11 @@ window.em.speichereHArt_2 = function(that) {
 	} else if (window.em.hArt[Feldname]) {
 		delete window.em.hArt[Feldname];
 	}
+	// Werte aktualisieren, die nicht durch .speichern erfasst werden
 	window.em.hArt.aArtId = localStorage.aArtId;
 	window.em.hArt.aArtName = localStorage.aArtName;
 	window.em.hArt.aArtGruppe = localStorage.aArtGruppe;
+	// Datenbank aktualisieren
 	$db.saveDoc(window.em.hArt, {
 		success: function(data) {
 			window.em.hArt._rev = data.rev;
@@ -8998,7 +9000,6 @@ window.em.speichereHArt_2 = function(that) {
 		},
 		error: function() {
 			console.log('fehler in function speichereHArt_2');
-			//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 		}
 	});
 };
