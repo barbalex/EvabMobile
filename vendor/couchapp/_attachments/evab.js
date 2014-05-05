@@ -5023,17 +5023,6 @@ window.em.initiierehArtEditListeArt = function(hartid) {
 };
 
 window.em.initiierehArtEditListeArt_2 = function() {
-	// hier werden Variablen gesetzt,
-	// in die fixen Felder Werte eingesetzt,
-	// die dynamischen Felder aufgebaut
-	// und die Nav-Links gesetzt
-
-	// diese (globalen) Variabeln werden in hArtEditListe.html gebraucht
-	// Variabeln bereitstellen
-	localStorage.ProjektId = window.em.hArt.hProjektId;
-	localStorage.RaumId = window.em.hArt.hRaumId;
-	localStorage.OrtId = window.em.hArt.hOrtId;
-	localStorage.ZeitId = window.em.hArt.hZeitId;
 	// bei neuen hArt hat das Objekt noch keine ID
 	if (window.em.hArt._id) {
 		localStorage.hArtId = window.em.hArt._id;
@@ -5043,27 +5032,6 @@ window.em.initiierehArtEditListeArt_2 = function() {
 	localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 	localStorage.aArtName = window.em.hArt.aArtName;
 	localStorage.aArtId = window.em.hArt.aArtId;
-	// fixe Felder aktualisieren
-	$(".aArtName_hael").selectmenu();
-	$(".aArtName_hael").val(window.em.hArt.aArtName);
-	$(".aArtName_hael").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
-	$(".aArtName_hael").selectmenu("refresh");
-	// prüfen, ob die Feldliste schon geholt wurde
-	// wenn ja: deren globale Variable verwenden
-	if (window.em.FeldlistehArtEdit) {
-		window.em.erstelleDynamischeFelderhArtEditListe();
-	} else {
-		// Feldliste aus der DB holen
-		// das dauert länger - hinweisen
-		$("#hArtEditListeFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		$db = $.couch.db("evab");
-		$db.view('evab/FeldListeArt?include_docs=true', {
-			success: function(data) {
-				window.em.FeldlistehArtEdit = data;
-				window.em.erstelleDynamischeFelderhArtEditListe();
-			}
-		});
-	}
 };
 
 // generiert dynamisch die Artgruppen-abhängigen Felder
@@ -5210,7 +5178,7 @@ window.em.handleHArtEditListePageinit = function() {
 
 	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
 	$("#hArtEditListeForm").on("click", ".hart", function(event) {
-		event.preventDefault();
+		//event.preventDefault();
 		var hartid = $(this).attr("hartid");
 		if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
 			// die Art muss initiiert werden
