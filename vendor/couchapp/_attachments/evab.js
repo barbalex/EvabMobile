@@ -273,7 +273,11 @@ window.em.speichereNeueBeob_02 = function(doc) {
 						return row.doc.aArtName;
 					});
 				}
-				$.mobile.navigate("hArtEdit.html");
+				if (localStorage.hArtSicht === "liste") {
+					$.mobile.navigate("hArtEditListe.html");
+				} else {
+					$.mobile.navigate("hArtEdit.html");
+				}
 			} else {
 				// Variabeln verfügbar machen
 				localStorage.BeobId = data.id;
@@ -4927,35 +4931,38 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			optionen = [],
 			feldwert = hart.aArtName,
 			feldname = "aArtName_hael";
-		optionen.push(hart.aArtName);
-		htmlContainerBody += '<tr class="hart" hartid="';
-		htmlContainerBody += hart._id;
-		htmlContainerBody += '">';
-		// Artname ergänzen
-		htmlContainerBody += '<td>';
-		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true);;
-		htmlContainerBody += '</td>';
-		// dynamische Felder setzen
-		_.each(feldliste, function(feld) {
-			var FeldName = feld.FeldName + "_hael";
-			// Feldwert setzen
-			if (window.em.hArt[feld.FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
-				FeldWert = feld.Standardwert[window.em.hArt.User];
-				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-				window.em.hArt[feld.FeldName] = FeldWert;
-			} else {
-				//"" verhindert, dass im Feld undefined erscheint
-				FeldWert = hart[feld.FeldName] || "";
-			}
-			FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
-			Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			// html generieren
+		// nur Arten der gewählten Artgruppe auflisten
+		if (hart.aArtGruppe === artgruppe) {
+			optionen.push(hart.aArtName);
+			htmlContainerBody += '<tr class="hart" hartid="';
+			htmlContainerBody += hart._id;
+			htmlContainerBody += '">';
+			// Artname ergänzen
 			htmlContainerBody += '<td>';
-			htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, feld.InputTyp, true);
+			htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true);;
 			htmlContainerBody += '</td>';
-		});
-		// Tabellenzeile abschliessen
-		htmlContainerBody += '</tr>';
+			// dynamische Felder setzen
+			_.each(feldliste, function(feld) {
+				var FeldName = feld.FeldName + "_hael";
+				// Feldwert setzen
+				if (window.em.hArt[feld.FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
+					FeldWert = feld.Standardwert[window.em.hArt.User];
+					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+					window.em.hArt[feld.FeldName] = FeldWert;
+				} else {
+					//"" verhindert, dass im Feld undefined erscheint
+					FeldWert = hart[feld.FeldName] || "";
+				}
+				FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
+				Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+				// html generieren
+				htmlContainerBody += '<td>';
+				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, feld.InputTyp, true);
+				htmlContainerBody += '</td>';
+			});
+			// Tabellenzeile abschliessen
+			htmlContainerBody += '</tr>';
+		}
 	});
 		
 	htmlContainerBody += '</tbody>';
@@ -5198,6 +5205,7 @@ window.em.handleHArtEditListePageinit = function() {
 
 	$("#hArtEditListe").on("click", ".hael_artgruppen_popup_input_label", function() {
 		window.em.initiierehArtEditListe_3($(this).attr("artgruppe"));
+		$("#hael_artgruppen_popup").popup("close");
 	});
 
 	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
