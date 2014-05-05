@@ -170,6 +170,11 @@ em {
 .felder_tabelle tbody tr:last-child td {
   border-bottom: 0;
 }
+
+.felder_tabelle .ui-field-contain .ui-controlgroup-controls {
+  width: 100%;
+}
+
 /* Hintergrund streifen - nein
 .felder_tabelle tbody tr:nth-child(odd) td,
 .felder_tabelle tbody tr:nth-child(odd) th {
