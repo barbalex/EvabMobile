@@ -4848,9 +4848,7 @@ window.em.initiierehArtEditListe_2 = function() {
 	$("#hArtEditListePageHeader .hArtEditListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
-		// TODO: anpassen
-		// Anzuzeigende Felder können erst bestimmt werden, wenn die Artgruppe der ersten Art gewählt wurde
-		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
+		// Sollte nicht vorkommen, weil man nur aus einer existierenden Beobachtung in die Liste wechseln kann
 	} else {
 		// Felder bestimmen, die in der Tabelle angezeigt werden können
 		// Es sind alle EINER ARTENGRUPPE
@@ -4863,13 +4861,14 @@ window.em.initiierehArtEditListe_2 = function() {
 		});
 		// artgruppen-array reduzieren, damit jede Artgruppe nur ein mal vorkommt
 		artgruppen = _.uniq(artgruppen);
-		if (artgruppen.length > 1) {
+		if ((!window.em.hArt || !window.em.hArt.aArtGruppe) && artgruppen.length > 1) {
 			// Benutzer muss eine Artgruppe wählen
 			$("#hael_artgruppen_popup_fieldcontain").html(window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup(artgruppen)).trigger("create");
 			$("#hael_artgruppen_popup").popup();
 			$("#hael_artgruppen_popup").popup("open");
 		} else {
-			artgruppe = artgruppen[0];
+			// die Artgruppen der zuletzt gewählten Art nehmen
+			artgruppe = window.em.hArt.aArtGruppe;
 			window.em.initiierehArtEditListe_3(artgruppe);
 		}
 	}
