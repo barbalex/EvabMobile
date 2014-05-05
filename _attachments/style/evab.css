@@ -183,6 +183,11 @@ em {
   padding-bottom: 0px;
 }
 
+.felder_tabelle .ui-controlgroup {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+
 #hael_artgruppen_popup {
   padding-left: 10px;
   padding-right: 10px;

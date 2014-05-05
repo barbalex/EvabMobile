@@ -4939,13 +4939,13 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 		_.each(feldliste, function(feld) {
 			var FeldName = feld.FeldName + "_hael";
 			// Feldwert setzen
-			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
+			if (window.em.hArt[feld.FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
 				FeldWert = feld.Standardwert[window.em.hArt.User];
 				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-				window.em.hArt[FeldName] = FeldWert;
+				window.em.hArt[feld.FeldName] = FeldWert;
 			} else {
 				//"" verhindert, dass im Feld undefined erscheint
-				FeldWert = window.em.hArt[FeldName] || "";
+				FeldWert = hart[feld.FeldName] || "";
 			}
 			FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
 			Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
