@@ -5183,10 +5183,19 @@ window.em.handleHArtEditListePageinit = function() {
 	});
 
 	// Editieren von Beobachtungen managen, ausgehend von ArtName
+	// irgendwie funktioniert das hier nicht. Keine Ahnung wieso
 	$("#hArtEditListe").on("click", "[name='aArtName_hael']", function(event) {
-		console.log("Artname geklickt");
 		event.preventDefault();
 		window.em.zuArtliste();
+	});
+
+	// darum so gegriffen:
+	$("#hArtEditListe").on("click", ".hart [role='button']", function(event) {
+		if ($(this).next("select").attr("name") === "aArtName_hael") {
+			// ja, das ist die Art
+			event.preventDefault();
+			window.em.zuArtliste();
+		}
 	});
 
 	$("#hArtEditListe").on("click", ".hael_artgruppen_popup_input_label", function() {
