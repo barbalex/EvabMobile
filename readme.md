@@ -143,6 +143,7 @@ Auf allen hierarchischen Stufen der Beobachtungen können Anhänge gespeichert w
 - Nach dem ersten mal wird man auf demselben Browser automatisch angemeldet...
 - ...und kann an derselben Stelle weiterarbeiten
 - Artgruppe vorwählen, um die Artauswahl zu beschleunigen
+- Im hierarchischen Modus können Beobachtungen auf der Stufe Art auch in Listenform bearbeitet werden. Beispiel: Zuerst alle Pflanzenarten erfassen. Danach alle Deckungen schätzen
 
 **Sich informieren**
 - Arteigenschaften auf [arteigenschaften.ch](http://arteigenschaften.ch) nachschauen
