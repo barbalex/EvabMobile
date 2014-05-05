@@ -4993,6 +4993,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	// htmlContainer in Formular setzen
 	$("#hArtEditListeForm").html(htmlContainer).trigger("create").trigger("refresh");
 	$("#hArtEditListeTable").table();
+	$("#hArtEditListeTable").table("refresh");
 	// TODO?: Einstellen, welche Felder sichtbar sind
 
 	// Menus blenden und letzte url speichern
