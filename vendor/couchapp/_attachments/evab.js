@@ -341,7 +341,11 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 							});
 						}
 						delete localStorage.aArtGruppe;
-						$.mobile.navigate("hArtEdit.html");
+						if (localStorage.hArtSicht === "liste") {
+							$.mobile.navigate("hArtEditListe.html");
+						} else {
+							$.mobile.navigate("hArtEdit.html");
+						}
 					}
 				},
 				error: function() {
@@ -4825,8 +4829,16 @@ window.em.initiierehArtEditListe = function() {
 		$db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
+				var hart_row;
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
 				window.em.hArtListe = data;
+				// window.em.hArt herstellen, falls nicht vorhanden
+				if (!window.em.hArt && localStorage.hArtId) {
+					hart_row = _.find(window.em.hArtListe.rows, function(row) {
+						return row.doc._id === localStorage.hArtId;
+					});
+					window.em.hArt = hart_row.doc;
+				}
 				window.em.initiierehArtEditListe_2();
 			}
 		});
@@ -5328,7 +5340,11 @@ window.em.handleHArtListeOeffneProjektClick = function() {
 // wenn in hArtListe.html .beob geklickt wird
 window.em.handleHArtListeBeobClick = function() {
 	localStorage.hArtId = $(this).attr('hArtId');
-	$.mobile.navigate("hArtEdit.html");
+	if (localStorage.hArtSicht === "liste") {
+		$.mobile.navigate("hArtEditListe.html");
+	} else {
+		$.mobile.navigate("hArtEdit.html");
+	}
 };
 
 // wenn in hArtListe.html nach rechts gewischt wird
