@@ -5200,6 +5200,7 @@ window.em.handleHArtEditListePageinit = function() {
 		var hartid = $(this).attr("hartid");
 		if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
 			// die Art muss initiiert werden
+			localStorage.hArtId = hartid;
 			window.em.initiierehArtEditListeArt(hartid);
 		}
 	});
