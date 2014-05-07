@@ -3471,6 +3471,7 @@ window.em.leereStorageFeldListe = function() {
 	delete window.em.Feldliste;
 	delete window.em.FeldlisteBeobEdit;
 	delete window.em.FeldlistehArtEdit;
+	delete window.em.FeldlistehArtEditListe;
 	delete window.em.FeldlisteZeitEdit;
 	delete window.em.FeldlisteOrtEdit;
 	delete window.em.FeldlisteRaumEdit;
@@ -4906,18 +4907,19 @@ window.em.initiierehArtEditListe_2 = function() {
 window.em.initiierehArtEditListe_3 = function(artgruppe) {
 	// prüfen, ob die Feldliste schon geholt wurde
 	// wenn ja: deren globale Variable verwenden
-	if (window.em.FeldlistehArtEdit) {
+	// immer neu holen, sonst hat man veraltete Daten, wenn zuvor in hArtEdit Felder geändert wurden
+	/*if (window.em.FeldlistehArtEditListe) {
 		window.em.initiierehArtEditListe_4(artgruppe);
-	} else {
+	} else {*/
 		// Feldliste aus der DB holen
 		$db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function(data) {
-				window.em.FeldlistehArtEdit = data;
+				window.em.FeldlistehArtEditListe = data;
 				window.em.initiierehArtEditListe_4(artgruppe);
 			}
 		});
-	}
+	//}
 	
 };
 
@@ -4930,7 +4932,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 		feldliste = [];
 
 	// zuerst mal ermitteln, welche Felder für diese Artgruppe und diesen User im Formular eingeblendet werden sollen
-	_.each(window.em.FeldlistehArtEdit.rows, function(row) {
+	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
 		var Feld = row.doc,
 			FeldName = Feld.FeldName;
 			//console.log("Feld vor Bedingung = " + JSON.stringify(Feld));
@@ -5090,9 +5092,9 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 		Optionen,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
-	for (i in window.em.FeldlistehArtEdit.rows) {
+	for (i in window.em.FeldlistehArtEditListe.rows) {
 		if (typeof i !== "function") {
-			Feld = window.em.FeldlistehArtEdit.rows[i].doc;
+			Feld = window.em.FeldlistehArtEditListe.rows[i].doc;
 			FeldName = Feld.FeldName;
 			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
