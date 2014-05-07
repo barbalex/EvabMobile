@@ -149,11 +149,12 @@ em {
   padding-top: 8px;
 }
 
+/* ausgeschaltet, da nicht mehr gebraucht
 #hArtEditListePageContent .ui-table-columntoggle-btn {
   margin-right: 8px !important;
   margin-bottom: 0px !important;
   margin-top: 0px !important;
-}
+}*/
 
 /*Tabelle in hArtEditListe stylen*/
 .felder_tabelle thead th,
@@ -194,6 +195,11 @@ em {
 .felder_tabelle .ui-controlgroup {
   margin-top: 8px !important;
   margin-bottom: 8px !important;
+}
+
+/*Der Artname muss umbrechen können, wenn das Feld schmal wird*/
+.felder_tabelle td .ui-select .ui-btn>span {
+  white-space: normal;
 }
 
 #hael_artgruppen_popup {

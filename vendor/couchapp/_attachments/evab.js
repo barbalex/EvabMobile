@@ -2898,7 +2898,7 @@ window.em.initiiereFelderWaehlen = function() {
 		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
 		break;
 	case "hArtEditListe":
-		TextUeberListe_FW = "<h3>Felder für Art wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
+		TextUeberListe_FW = "<h3>Felder für Artliste wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
 		localStorage.FeldlisteFwName = "FeldlistehArtEditListe";
 		FeldlisteViewname = "FeldListeArt";
 		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
@@ -4925,10 +4925,9 @@ window.em.initiierehArtEditListe_3 = function(artgruppe) {
 
 // baut das HTML für die hArtEditListeForm auf
 window.em.initiierehArtEditListe_4 = function(artgruppe) {
-	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="columntoggle" data-column-btn-text="Felder...">',
+	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="reflow">',
 		htmlContainerHead,
 		htmlContainerBody,
-		datapriority = 1,
 		feldliste = [];
 
 	// zuerst mal ermitteln, welche Felder für diese Artgruppe und diesen User im Formular eingeblendet werden sollen
@@ -4946,12 +4945,9 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	// Die Art wird immer angezeigt
 	htmlContainerHead = '<thead><tr class="ui-bar-d"><th data-priority="1">Art</th>';
 	_.each(feldliste, function(feld) {
-		htmlContainerHead += '<th data-priority="';
-		htmlContainerHead += datapriority;
-		htmlContainerHead += '">';
+		htmlContainerHead += '<th>';
 		htmlContainerHead += feld.FeldBeschriftung;
 		htmlContainerHead += '</th>';
-		datapriority ++;
 	});
 	htmlContainerHead += '</tr></thead>';
 
