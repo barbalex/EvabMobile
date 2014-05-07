@@ -1224,7 +1224,7 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 	// in allen Objekten in der Objektliste
 	var DsBulkListe = {},
 		Docs = [],
-		row;
+		doc;
 	// nur machen, wenn rows vorhanden!
 	if (window.em[ObjektlistenName].rows.length > 0) {
 		_.each(window.em[ObjektlistenName].rows, function(row) {
@@ -1383,7 +1383,7 @@ window.em.myTypeOf = function(Wert) {
 window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, DatensatzlisteName) {
 	var DsBulkListe = {},
 		Docs = [],
-		row;
+		doc;
 	// nur machen, wenn Datensätze da sind
 	_.each(DatensatzlisteName.rows, function(row) {
 		doc = row.doc;
@@ -3153,18 +3153,17 @@ window.em.erstelleArtgruppenListe = function() {
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
 window.em.erstelleArtgruppenListe_2 = function() {
-	var i,
-		html = "",
+	var html = "",
 		ArtGruppe,
-		row,
+		doc,
 		AnzArten;
-	for (i in window.em.Artgruppenliste.rows) {
-		ArtGruppe = window.em.Artgruppenliste.rows[i].key;
-		row = window.em.Artgruppenliste.rows[i].doc;
-		AnzArten = row.AnzArten;
+	_.each(window.em.Artgruppenliste.rows, function(row) {
+		ArtGruppe = row.key;
+		doc = row.doc;
+		AnzArten = doc.AnzArten;
 		html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 		html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
-	}
+	});
 	$("#agl_ArtgruppenListe").html(html);
 	$("#agl_ArtgruppenListe").listview("refresh");
 	$("#agl_Hinweistext").empty().remove();
