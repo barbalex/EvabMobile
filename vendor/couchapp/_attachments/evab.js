@@ -677,7 +677,7 @@ window.em.initiiereBeobliste_2 = function() {
 		anzBeob = window.em.BeobListe.rows.length,
 		beob,
 		key,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2,
 		artgruppenname;
 
@@ -689,7 +689,7 @@ window.em.initiiereBeobliste_2 = function() {
 	$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
 
 	if (anzBeob === 0) {
-		ListItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
+		listItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
 	} else {
 		_.each(window.em.BeobListe.rows, function(row) {
 			beob = row.doc;
@@ -698,20 +698,20 @@ window.em.initiiereBeobliste_2 = function() {
 			if (beob.aArtGruppe === "DiverseInsekten") {
 				artgruppenname = "unbenannt.png";
 			}
-			ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-			ListItemContainer += beob._id;
-			ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
-			ListItemContainer += "Artgruppenbilder/" + artgruppenname;
-			ListItemContainer += "\" /><h3 class=\"aArtName\">";
-			ListItemContainer += beob.aArtName;
-			ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-			ListItemContainer += beob.zDatum;
-			ListItemContainer += "&nbsp; &nbsp;";
-			ListItemContainer += beob.zUhrzeit;
-			ListItemContainer += "<\/p><\/a> <\/li>";
+			listItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+			listItemContainer += beob._id;
+			listItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
+			listItemContainer += "Artgruppenbilder/" + artgruppenname;
+			listItemContainer += "\" /><h3 class=\"aArtName\">";
+			listItemContainer += beob.aArtName;
+			listItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+			listItemContainer += beob.zDatum;
+			listItemContainer += "&nbsp; &nbsp;";
+			listItemContainer += beob.zUhrzeit;
+			listItemContainer += "<\/p><\/a> <\/li>";
 		});
 	}
-	$("#BeoblisteBL").html(ListItemContainer);
+	$("#BeoblisteBL").html(listItemContainer);
 	$("#BeoblisteBL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -1040,19 +1040,17 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
 	var i,
-		TempFeld,
+		tempFeld,
 		optionen = [];
 	optionen.push("");
-	for (i in window.em.Feldliste.rows) {
-		if (typeof i !== "function") {
-			TempFeld = window.em.Feldliste.rows[i].doc;
-			// Liste aufbauen
-			// Nur eigene Felder und offizielle
-			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
-				optionen.push(TempFeld.FeldName);
-			}
+	_.each(window.em.Feldliste.rows, function(row) {
+		tempFeld = row.doc;
+		// Liste aufbauen
+		// Nur eigene Felder und offizielle
+		if (tempFeld.User === localStorage.Email || tempFeld.User === "ZentrenBdKt") {
+			optionen.push(tempFeld.FeldName);
 		}
-	}
+	});
 	htmlContainer = window.em.generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", optionen, "SingleSelect");
 	$("#FeldFolgtNachDiv").html(htmlContainer).trigger("create").trigger("refresh");
 };
@@ -1085,29 +1083,27 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 	var i,
 		ArtGruppe,
-		ListItemContainer = "<fieldset data-role='controlgroup'><legend>In diesen Artgruppen kann das Feld angezeigt werden (erforderlich):</legend>",
+		listItemContainer = "<fieldset data-role='controlgroup'><legend>In diesen Artgruppen kann das Feld angezeigt werden (erforderlich):</legend>",
 		listItem,
 		ArtGruppenArray = ArtGruppenArrayIn || [];
-	for (i in window.em.Artgruppen.rows) {
-		if (typeof i !== "function") {
-			ArtGruppe = window.em.Artgruppen.rows[i].key;
-			listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
-			listItem += ArtGruppe;
-			listItem += "' value='";
-			listItem += ArtGruppe;
-			if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
-				listItem += "' checked='checked";
-			}
-			listItem += "'/>\n<label for='";
-			listItem += ArtGruppe;
-			listItem += "'>";
-			listItem += ArtGruppe;
-			listItem += "</label>";
-			ListItemContainer += listItem;
+	_.each(window.em.Artgruppen.rows, function(row) {
+		ArtGruppe = row.key;
+		listItem = "<input type='checkbox' class='custom Feldeigenschaften' name='ArtGruppe' id='";
+		listItem += ArtGruppe;
+		listItem += "' value='";
+		listItem += ArtGruppe;
+		if (ArtGruppenArray.indexOf(ArtGruppe) !== -1) {
+			listItem += "' checked='checked";
 		}
-	}
-	ListItemContainer += "\n</fieldset>";
-	$("#Artgruppenliste_FeldEdit").html(ListItemContainer).trigger("create").trigger("refresh");
+		listItem += "'/>\n<label for='";
+		listItem += ArtGruppe;
+		listItem += "'>";
+		listItem += ArtGruppe;
+		listItem += "</label>";
+		listItemContainer += listItem;
+	});
+	listItemContainer += "\n</fieldset>";
+	$("#Artgruppenliste_FeldEdit").html(listItemContainer).trigger("create").trigger("refresh");
 };
 
 // initiiert FeldListe.html
@@ -1130,44 +1126,42 @@ window.em.initiiereFeldliste = function() {
 
 window.em.initiiereFeldliste_2 = function() {
 	var i,
-		TempFeld,
+		tempFeld,
 		anzFelder = 0,
 		ImageLink,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Hierarchiestufe,
 		FeldBeschriftung,
 		FeldBeschreibung;
-	for (i in window.em.Feldliste.rows) {
-		if (typeof i !== "function") {
-			TempFeld = window.em.Feldliste.rows[i].doc;
-			// Liste aufbauen
-			// Nur eigene Felder und offizielle
-			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
-				Hierarchiestufe = TempFeld.Hierarchiestufe;
-				FeldBeschriftung = TempFeld.FeldBeschriftung || "(ohne Feldbeschriftung)";
-				FeldBeschreibung = "";
-				if (TempFeld.FeldBeschreibung) {
-					FeldBeschreibung = TempFeld.FeldBeschreibung;
-				}
-				ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-				ListItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
-				ListItemContainer += TempFeld._id;
-				ListItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
-				ListItemContainer += ImageLink + "\" /><h2>";
-				ListItemContainer += Hierarchiestufe;
-				ListItemContainer += ': ';
-				ListItemContainer += FeldBeschriftung;
-				ListItemContainer += "<\/h2><p>";
-				ListItemContainer += FeldBeschreibung;
-				ListItemContainer += "</p><\/a><\/li>";
-				// Felder zählen
-				anzFelder += 1;
+	_.each(window.em.Feldliste.rows, function(row) {
+		tempFeld = row.doc;
+		// Liste aufbauen
+		// Nur eigene Felder und offizielle
+		if (tempFeld.User === localStorage.Email || tempFeld.User === "ZentrenBdKt") {
+			Hierarchiestufe = tempFeld.Hierarchiestufe;
+			FeldBeschriftung = tempFeld.FeldBeschriftung || "(ohne Feldbeschriftung)";
+			FeldBeschreibung = "";
+			if (tempFeld.FeldBeschreibung) {
+				FeldBeschreibung = tempFeld.FeldBeschreibung;
 			}
+			ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
+			listItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
+			listItemContainer += tempFeld._id;
+			listItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
+			listItemContainer += ImageLink + "\" /><h2>";
+			listItemContainer += Hierarchiestufe;
+			listItemContainer += ': ';
+			listItemContainer += FeldBeschriftung;
+			listItemContainer += "<\/h2><p>";
+			listItemContainer += FeldBeschreibung;
+			listItemContainer += "</p><\/a><\/li>";
+			// Felder zählen
+			anzFelder += 1;
 		}
-	}
+	});
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
-	$("#FeldListeFL").html(ListItemContainer);
+	$("#FeldListeFL").html(listItemContainer);
 	$("#FeldListeFL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -1244,32 +1238,47 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 		row;
 	// nur machen, wenn rows vorhanden!
 	if (window.em[ObjektlistenName].rows.length > 0) {
-		for (i in window.em[ObjektlistenName].rows) {
-			row = window.em[ObjektlistenName].rows[i].doc;
+		_.each(window.em[ObjektlistenName].rows, function(row) {
+			doc = row.doc;
 			if (typeof i !== "function") {
 				// Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
-				if (row[BezugsIdName] && row[BezugsIdName] === BezugsIdWert) {
+				if (doc[BezugsIdName] && doc[BezugsIdName] === BezugsIdWert) {
 					// im Objekt alle in FelderArray aufgelisteten Felder suchen
+					_.each(FelderArray, function(feld) {
+						// und ihre Werte aktualisieren
+						if (localStorage[feld]) {
+							if (window.em.myTypeOf(localStorage[feld]) === "integer") {
+								doc[feld] = parseInt(localStorage[feld], 10);
+							} else if (window.em.myTypeOf(localStorage[feld]) === "float") {
+								doc[feld] = parseFloat(localStorage[feld]);
+							} else {
+								doc[feld] = localStorage[feld];
+							}
+						} else {
+							delete doc[feld];
+						}
+					});
+					/* löschen, wenn kein Fehler durch neue Variante
 					for (y in FelderArray) {
 						if (typeof y !== "function") {
 							// und ihre Werte aktualisieren
 							if (localStorage[FelderArray[y]]) {
 								if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "integer") {
-									row[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
+									doc[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
 								} else if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "float") {
-									row[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
+									doc[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
 								} else {
-									row[FelderArray[y]] = localStorage[FelderArray[y]];
+									doc[FelderArray[y]] = localStorage[FelderArray[y]];
 								}
 							} else {
-								delete row[FelderArray[y]];
+								delete doc[FelderArray[y]];
 							}
 						}
-					}
-					Docs.push(row);
+					}*/
+					Docs.push(doc);
 				}
 			}
-		}
+		});
 		DsBulkListe.docs = Docs;
 		// Objektliste in DB speichern
 		$.ajax({
@@ -1285,16 +1294,14 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			// offenbar muss data zuerst geparst werden ??!!
 			data = JSON.parse(data);
 			for (z in data) {
-				if (typeof z !== "function") {
-					// das zugehörige Objekt in der Objektliste suchen
-					for (k in window.em[ObjektlistenName].rows) {
-						row = window.em[ObjektlistenName].rows[k].doc;
-						if (typeof k !== "function") {
-							// und dessen rev aktualisieren
-							if (row._id === data[z].id) {
-								row._rev = data[z].rev;
-								break;
-							}
+				// das zugehörige Objekt in der Objektliste suchen
+				for (k in window.em[ObjektlistenName].rows) {
+					row = window.em[ObjektlistenName].rows[k].doc;
+					if (typeof k !== "function") {
+						// und dessen rev aktualisieren
+						if (row._id === data[z].id) {
+							row._rev = data[z].rev;
+							break;
 						}
 					}
 				}
@@ -1310,6 +1317,20 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 // ObjektName ist der Name des zu aktualisierenden Objekts bzw. Datensatzes
 window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderArray, FormularAktualisieren) {
 	// Objekt aktualisieren
+	_.each(FelderArray, function(feldname) {
+		if (localStorage[feldname]) {
+			if (window.em.myTypeOf(localStorage[feldname]) === "integer") {
+				window.em[ObjektName][feldname] = parseInt(localStorage[feldname], 10);
+			} else if (window.em.myTypeOf(localStorage[feldname]) === "float") {
+				window.em[ObjektName][feldname] = parseFloat(localStorage[feldname]);
+			} else {
+				window.em[ObjektName][feldname] = localStorage[feldname];
+			}
+		} else {
+			delete window.em[ObjektName][feldname];
+		}
+	});
+	/* löschen, wenn obiges funktioniert
 	for (var i in FelderArray) {
 		if (typeof i !== "function") {
 			if (localStorage[FelderArray[i]]) {
@@ -1324,7 +1345,7 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 				delete window.em[ObjektName][FelderArray[i]];
 			}
 		}
-	}
+	}*/
 	// in DB speichern
 	$db.saveDoc(window.em[ObjektName], {
 		success: function(data) {
@@ -1339,11 +1360,9 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 // übernimmt ein Objekt (via dessen Namen) und eine Liste von Feldern (FelderArray)
 // setzt in alle Felder mit den Namen gemäss FelderArray die Werte gemäss Objekt
 window.em.aktualisiereKoordinatenfelderInFormular = function(ObjektName, FelderArray) {
-	for (var i in FelderArray) {
-		if (typeof i !== "function") {
-			$("[name='" + FelderArray[i] + "']").val(window.em[ObjektName][FelderArray[i]] || null);
-		}
-	}
+	_.each(FelderArray, function(feldname) {
+		$("[name='" + feldname + "']").val(window.em[ObjektName][feldname] || null);
+	});
 };
 
 // dient der Unterscheidung von Int und Float
@@ -1460,7 +1479,7 @@ window.em.initiiereProjektliste_2 = function() {
 		key,
 		pName,
 		listItem,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2;
 
 	// Im Titel der Seite die Anzahl Projekte anzeigen
@@ -1471,7 +1490,7 @@ window.em.initiiereProjektliste_2 = function() {
 	$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
 
 	if (anzProj === 0) {
-		ListItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
+		listItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
 		for (i in window.em.Projektliste.rows) {			// Liste aufbauen
 			if (typeof i !== "function") {
@@ -1481,11 +1500,11 @@ window.em.initiiereProjektliste_2 = function() {
 				listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
 				listItem += "<a href=\"#\">";
 				listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-				ListItemContainer += listItem;
+				listItemContainer += listItem;
 			}
 		}
 	}
-	$("#ProjektlistehPL").html(ListItemContainer);
+	$("#ProjektlistehPL").html(listItemContainer);
 	$("#ProjektlistehPL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -1629,7 +1648,7 @@ window.em.initiiereRaumListe_2 = function() {
 		key,
 		rName,
 		listItem,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2;
 
 	// Im Titel der Seite die Anzahl Räume anzeigen
@@ -1640,7 +1659,7 @@ window.em.initiiereRaumListe_2 = function() {
 	$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
 
 	if (anzRaum === 0) {
-		ListItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
+		listItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
 		for (i in window.em.RaumListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
@@ -1648,11 +1667,11 @@ window.em.initiiereRaumListe_2 = function() {
 				key = window.em.RaumListe.rows[i].key;
 				rName = Raum.rName;
 				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-				ListItemContainer += listItem;
+				listItemContainer += listItem;
 			}
 		}
 	}
-	$("#RaumlistehRL").html(ListItemContainer);
+	$("#RaumlistehRL").html(listItemContainer);
 	$("#RaumlistehRL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -1807,7 +1826,7 @@ window.em.initiiereOrtListe_2 = function() {
 		Ort,
 		key,
 		listItem,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2;
 
 	// Im Titel der Seite die Anzahl Orte anzeigen
@@ -1818,18 +1837,18 @@ window.em.initiiereOrtListe_2 = function() {
 	$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
 
 	if (anzOrt === 0) {
-		ListItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
+		listItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
 	} else {
 		for (i in window.em.OrtListe.rows) {	// Liste aufbauen
 			if (typeof i !== "function") {
 				Ort = window.em.OrtListe.rows[i].doc;
 				key = window.em.OrtListe.rows[i].key;
 				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
-				ListItemContainer += listItem;
+				listItemContainer += listItem;
 			}
 		}
 	}
-	$("#OrtlistehOL").html(ListItemContainer);
+	$("#OrtlistehOL").html(listItemContainer);
 	$("#OrtlistehOL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -1929,7 +1948,7 @@ window.em.initiiereZeitListe_2 = function() {
 		Zeit,
 		key,
 		listItem,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2,
 		zZeitDatum;
 
@@ -1941,7 +1960,7 @@ window.em.initiiereZeitListe_2 = function() {
 	$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
 
 	if (anzZeit === 0) {
-		ListItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
+		listItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
 	} else {
 		for (i in window.em.ZeitListe.rows) {
 			if (typeof i !== "function") {
@@ -1949,11 +1968,11 @@ window.em.initiiereZeitListe_2 = function() {
 				key = window.em.ZeitListe.rows[i].key;
 				zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
 				listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
-				ListItemContainer += listItem;
+				listItemContainer += listItem;
 			}
 		}
 	}
-	$("#ZeitlistehZL").html(ListItemContainer);
+	$("#ZeitlistehZL").html(listItemContainer);
 	$("#ZeitlistehZL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -2161,7 +2180,7 @@ window.em.initiierehArtListe = function() {
 window.em.initiierehArtListe_2 = function() {
 	var i,
 		anzArt = window.em.hArtListe.rows.length,
-		ListItemContainer = "",
+		listItemContainer = "",
 		Titel2,
 		hArtTemp,
 		artgruppenname;
@@ -2174,16 +2193,16 @@ window.em.initiierehArtListe_2 = function() {
 	$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
-		ListItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
+		listItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
 		for (i in window.em.hArtListe.rows) {
 			hArtTemp = window.em.hArtListe.rows[i].doc;
 			if (hArtTemp) {
-				ListItemContainer += window.em.erstelleHtmlFürBeobInHArtListe(hArtTemp);
+				listItemContainer += window.em.erstelleHtmlFürBeobInHArtListe(hArtTemp);
 			}
 		}
 	}
-	$("#ArtlistehAL").html(ListItemContainer);
+	$("#ArtlistehAL").html(listItemContainer);
 	$("#ArtlistehAL").listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
@@ -4827,7 +4846,6 @@ window.em.initiierehArtEditListe = function() {
 // Artgruppe ermitteln
 window.em.initiierehArtEditListe_2 = function() {
 	var anzArt = window.em.hArtListe.rows.length,
-		ListItemContainer = "",
 		Titel2,
 		artgruppen = [],
 		artgruppe;
@@ -9138,7 +9156,7 @@ window.em.pruefeFeldNamen = function() {
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function(data) {
 			var i,
-			TempFeld,
+			tempFeld,
 			AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 			// durch alle Felder mit demselben Artnamen laufen
 			// prüfen, ob sie eigene oder offielle sind
@@ -9146,9 +9164,9 @@ window.em.pruefeFeldNamen = function() {
 				for (i in data.rows) {
 					if (typeof i !== "function") {
 						if (data.rows[i].doc) {
-							TempFeld = data.rows[i].doc;
+							tempFeld = data.rows[i].doc;
 							// ist es ein eigenes oder ein offizielles?
-							if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
+							if (tempFeld.User === localStorage.Email || tempFeld.User === "ZentrenBdKt") {
 								// ja > dieser Name ist nicht zulässig
 								AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
 							}
