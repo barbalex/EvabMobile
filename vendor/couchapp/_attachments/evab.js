@@ -1399,21 +1399,21 @@ window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, Datensatz
 		Docs = [],
 		row;
 	// nur machen, wenn Datensätze da sind
-	for (i in DatensatzlisteName.rows) {
-		row = DatensatzlisteName.rows[i].doc;
+	_.each(DatensatzlisteName.rows, function(row) {
+		doc = row.doc;
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
-				row[Feldname] = parseFloat(Feldwert);
+				doc[Feldname] = parseFloat(Feldwert);
 			} else if (window.em.myTypeOf(Feldwert) === "integer") {
-				row[Feldname] = parseInt(Feldwert, 10);
+				doc[Feldname] = parseInt(Feldwert, 10);
 			} else {
-				row[Feldname] = Feldwert;
+				doc[Feldname] = Feldwert;
 			}
-		} else if (row[Feldname]) {
-			delete row[Feldname];
+		} else if (doc[Feldname]) {
+			delete doc[Feldname];
 		}
-		Docs.push(row);
-	}
+		Docs.push(doc);
+	});
 	DsBulkListe.docs = Docs;
 	$.ajax({
 		type: "POST",
@@ -1433,17 +1433,15 @@ window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
 		Docs = [],
 		Datensatz,
 		rowkey;
-	for (i in Datensatzobjekt.rows) {
-		if (typeof i !== "function") {
-			// unsere Daten sind im key
-			rowkey = Datensatzobjekt.rows[i].key;
-			Datensatz = {};
-			Datensatz._id = rowkey[1];
-			Datensatz._rev = rowkey[2];
-			Datensatz._deleted = true;
-			Docs.push(Datensatz);
-		}
-	}
+	_.each(Datensatzobjekt.rows, function(row) {
+		// unsere Daten sind im key
+		rowkey = row.key;
+		Datensatz = {};
+		Datensatz._id = rowkey[1];
+		Datensatz._rev = rowkey[2];
+		Datensatz._deleted = true;
+		Docs.push(Datensatz);
+	});
 	ObjektMitDeleteListe.docs = Docs;
 	$.ajax({
 		type: "POST",
@@ -1492,17 +1490,15 @@ window.em.initiiereProjektliste_2 = function() {
 	if (anzProj === 0) {
 		listItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
-		for (i in window.em.Projektliste.rows) {			// Liste aufbauen
-			if (typeof i !== "function") {
-				Proj = window.em.Projektliste.rows[i].doc;
-				key = window.em.Projektliste.rows[i].key;
-				pName = key[1];
-				listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-				listItem += "<a href=\"#\">";
-				listItem += "<h3>" + pName + "<\/h3><\/a> <\/li>";
-				listItemContainer += listItem;
-			}
-		}
+		_.each(window.em.Projektliste.rows, function(row) {
+			Proj = row.doc;
+			key = row.key;
+			pName = key[1];
+			listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
+			listItem += "<a href=\"#\">";
+			listItem += "<h3>" + pName + "<\/h3><\/a><\/li>";
+			listItemContainer += listItem;
+		});
 	}
 	$("#ProjektlistehPL").html(listItemContainer);
 	$("#ProjektlistehPL").listview("refresh");
@@ -1586,24 +1582,22 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 		i,
 		FeldName,
 		htmlContainer = "";
-	for (i in window.em.FeldlisteRaumEdit.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlisteRaumEdit.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
-					FeldWert = Feld.Standardwert[localStorage.Email];
-					// Objekt window.em.hRaum um den Standardwert ergänzen, um später zu speichern
-					window.em.hRaum[FeldName] = FeldWert;
-				} else {
-					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = window.em.hRaum[FeldName] || "";
-				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlisteRaumEdit.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "rName") {
+			if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				FeldWert = Feld.Standardwert[localStorage.Email];
+				// Objekt window.em.hRaum um den Standardwert ergänzen, um später zu speichern
+				window.em.hRaum[FeldName] = FeldWert;
+			} else {
+				//"" verhindert die Anzeige von undefined im Feld
+				FeldWert = window.em.hRaum[FeldName] || "";
 			}
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+	});
 	// In neuen Datensätzen allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
 		$("#rName").focus();
@@ -1661,15 +1655,13 @@ window.em.initiiereRaumListe_2 = function() {
 	if (anzRaum === 0) {
 		listItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
 	} else {
-		for (i in window.em.RaumListe.rows) {	// Liste aufbauen
-			if (typeof i !== "function") {
-				Raum = window.em.RaumListe.rows[i].doc;
-				key = window.em.RaumListe.rows[i].key;
-				rName = Raum.rName;
-				listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-				listItemContainer += listItem;
-			}
-		}
+		_.each(window.em.RaumListe.rows, function(row) {
+			Raum = row.doc;
+			key = row.key;
+			rName = Raum.rName;
+			listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
+			listItemContainer += listItem;
+		});
 	}
 	$("#RaumlistehRL").html(listItemContainer);
 	$("#RaumlistehRL").listview("refresh");
@@ -1762,24 +1754,22 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 		Feld = {},
 		FeldName,
 		htmlContainer = "";
-	for (i in window.em.FeldlisteOrtEdit.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlisteOrtEdit.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
-					FeldWert = Feld.Standardwert[localStorage.Email];
-					// Objekt window.em.hOrt um den Standardwert ergänzen, um später zu speichern
-					window.em.hOrt[FeldName] = FeldWert;
-				} else {
-					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = window.em.hOrt[FeldName] || "";
-				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlisteOrtEdit.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+			if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				FeldWert = Feld.Standardwert[localStorage.Email];
+				// Objekt window.em.hOrt um den Standardwert ergänzen, um später zu speichern
+				window.em.hOrt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert die Anzeige von undefined im Feld
+				FeldWert = window.em.hOrt[FeldName] || "";
 			}
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+	});
 	// Allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
 		$("[name='oName']").focus();
@@ -1962,15 +1952,13 @@ window.em.initiiereZeitListe_2 = function() {
 	if (anzZeit === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
 	} else {
-		for (i in window.em.ZeitListe.rows) {
-			if (typeof i !== "function") {
-				Zeit = window.em.ZeitListe.rows[i].doc;
-				key = window.em.ZeitListe.rows[i].key;
-				zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-				listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
-				listItemContainer += listItem;
-			}
-		}
+		_.each(window.em.ZeitListe.rows, function(row) {
+			Zeit = row.doc;
+			key = row.key;
+			zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
+			listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
+			listItemContainer += listItem;
+		});
 	}
 	$("#ZeitlistehZL").html(listItemContainer);
 	$("#ZeitlistehZL").listview("refresh");
