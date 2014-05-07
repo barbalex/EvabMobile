@@ -2897,6 +2897,12 @@ window.em.initiiereFelderWaehlen = function() {
 		FeldlisteViewname = "FeldListeArt";
 		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
 		break;
+	case "hArtEditListe":
+		TextUeberListe_FW = "<h3>Felder für Art wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
+		localStorage.FeldlisteFwName = "FeldlistehArtEditListe";
+		FeldlisteViewname = "FeldListeArt";
+		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
+		break;
 	case "BeobEdit":
 		TextUeberListe_FW = "<h3>Felder für Beobachtungen wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
 		localStorage.FeldlisteFwName = "FeldlisteBeobEdit";
@@ -2963,9 +2969,16 @@ window.em.initiiereFelderWaehlen_2 = function() {
 							ListItem += " checked='checked'";
 						}
 					}
-				} else {
+				} else if (localStorage.AufrufendeSeiteFW === "hArtEdit") {
 					if (Feld.SichtbarImModusHierarchisch) {
 						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
+							// wenn sichtbar, anzeigen
+							ListItem += " checked='checked'";
+						}
+					}
+				} else if (localStorage.AufrufendeSeiteFW === "hArtEditListe") {
+					if (Feld.SichtbarInHArtEditListe) {
+						if (Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1) {
 							// wenn sichtbar, anzeigen
 							ListItem += " checked='checked'";
 						}
@@ -4506,33 +4519,34 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 		FeldId = $(this).attr("feldid"),
 		Feld,
 		FeldPosition,
-		SichtbarImModusX,
+		feld_mit_sichtbarkeit,
+		sichtbar_fuer_benutzer,
 		idx;
 	for (i in window.em[localStorage.FeldlisteFwName].rows) {
-		if (typeof window.em[localStorage.FeldlisteFwName] !== "function") {
-			if (window.em[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
-				Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
-				FeldPosition = parseInt(i);
-				break;
-			}
+		if (window.em[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
+			Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
+			FeldPosition = parseInt(i);
+			break;
 		}
 	}
 	// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
 	if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
-		SichtbarImModusX = "SichtbarImModusEinfach";
+		feld_mit_sichtbarkeit = "SichtbarImModusEinfach";
+	} else if (localStorage.AufrufendeSeiteFW === "hArtEdit") {
+		feld_mit_sichtbarkeit = "SichtbarImModusHierarchisch";
 	} else {
-		SichtbarImModusX = "SichtbarImModusHierarchisch";
+		feld_mit_sichtbarkeit = "SichtbarInHArtEditListe";
 	}
-	SichtbarImModusX = Feld[SichtbarImModusX] || [];
+	sichtbar_fuer_benutzer = Feld[feld_mit_sichtbarkeit] || [];
 	if ($("#" + FeldName).prop("checked") === true) {
-		SichtbarImModusX.push(localStorage.Email);
+		sichtbar_fuer_benutzer.push(localStorage.Email);
 	} else {
-		idx = SichtbarImModusX.indexOf(localStorage.Email);
+		idx = sichtbar_fuer_benutzer.indexOf(localStorage.Email);
 		if (idx !== -1) {
-			SichtbarImModusX.splice(idx, 1);
+			sichtbar_fuer_benutzer.splice(idx, 1);
 		}
 	}
-	Feld[SichtbarImModusX] = SichtbarImModusX;
+	Feld[feld_mit_sichtbarkeit] = sichtbar_fuer_benutzer;
 	// Änderung in DB speichern
 	$db.saveDoc(Feld, {
 		success: function(data) {
@@ -5176,6 +5190,12 @@ window.em.handleHArtEditListePageinit = function() {
 		window.em.handleHArtEditNeueBeobhArtEditClick();
 	});
 
+	// sichtbare Felder wählen
+	$("#hArtEditListePageFooter").on("click", "#waehleFelderhArtEditListe", function(event) {
+		event.preventDefault();
+		window.em.handleHArtEditListeWaehleFelderClick();
+	});
+
 	// In Einzelansicht wechseln
 	$("#hArtEditListePageFooter").on("click", "#hArtEditListeEinzelsicht", function(event) {
 		event.preventDefault();
@@ -5229,6 +5249,13 @@ window.em.handleHArtEditListePageinit = function() {
 	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
 	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+};
+
+
+// wenn in hArtEditListe.html #waehleFelderhArtEditListe geklickt wird
+window.em.handleHArtEditListeWaehleFelderClick = function() {
+	localStorage.AufrufendeSeiteFW = "hArtEditListe";
+	$.mobile.navigate("FelderWaehlen.html");
 };
 
 // wenn hArtListe.html erscheint
