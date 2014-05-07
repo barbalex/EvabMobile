@@ -610,7 +610,6 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "",
 		Status = localStorage.Status,
 		ArtGruppe = window.em.Beobachtung.aArtGruppe;
@@ -631,8 +630,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 						// "" verhindert die Anzeige von undefined im Feld
 						FeldWert = window.em.Beobachtung[FeldName] || "";
 					}
-					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 				}
 			}
 		}
@@ -877,7 +875,6 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 	var i,
 		Feld = {},
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
@@ -893,8 +890,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hProjekt[FeldName] || "";
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 			}
 		}
 	}
@@ -1575,7 +1571,6 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
@@ -1591,8 +1586,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hRaum[FeldName] || "";
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 			}
 		}
 	}
@@ -1753,7 +1747,6 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 	var i,
 		Feld = {},
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
@@ -1769,8 +1762,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hOrt[FeldName] || "";
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 			}
 		}
 	}
@@ -1981,7 +1973,6 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
@@ -1996,8 +1987,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 				} else {
 					FeldWert = window.em.hZeit[FeldName] || "";
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 			}
 			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
@@ -2117,7 +2107,6 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEdit.rows) {
@@ -2134,8 +2123,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 				//"" verhindert, dass im Feld undefined erscheint
 				FeldWert = window.em.hArt[FeldName] || "";
 			}
-			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 		}
 	}
 	if (localStorage.Status === "neu") {
@@ -2230,11 +2218,12 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 // erwartet diverse Übergabewerte
 // der HtmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldWert, OhneLabel) {
 	var HtmlContainer = "",
 		SliderMinimum,
 		SliderMinimum,
-		Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
+		Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'],
+		FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 	// abfangen, wenn Inputtyp vergessen wurde
 	Feld.InputTyp = Feld.InputTyp || "text";
 	switch(Feld.Formularelement) {
@@ -4970,7 +4959,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 					//"" verhindert, dass im Feld undefined erscheint
 					FeldWert = hart[FeldName] || "";
 				}
-				FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
 				// html generieren
 				htmlContainerBody += '<td>';
 
@@ -4979,7 +4967,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 				console.log("FeldWert = " + FeldWert);
 				console.log("feld.InputTyp = " + feld.InputTyp);
 
-				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, true);
+				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldWert, true);
 				htmlContainerBody += '</td>';
 			});
 			// Tabellenzeile abschliessen
@@ -5078,7 +5066,6 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		FeldBeschriftung,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEditListe.rows) {
@@ -5096,8 +5083,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 					//"" verhindert, dass im Feld undefined erscheint
 					FeldWert = window.em.hArt[FeldName] || "";
 				}
-				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldWert);
 			}
 		}
 	}
