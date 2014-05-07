@@ -328,13 +328,14 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						// window.em.hArtListe anpassen
 						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 						if (window.em.hArtListe && window.em.hArtListe.rows) {
-							for (var i in window.em.hArtListe.rows) {
-								if (window.em.hArtListe.rows[i].id == docId) {
-									window.em.hArtListe.rows[i].doc.aArtGruppe = localStorage.aArtGruppe;
-									window.em.hArtListe.rows[i].doc.aArtName = aArtName;
-									window.em.hArtListe.rows[i].doc.aArtId = sessionStorage.ArtId;
+							_.each(window.em.hArtListe.rows, function(row) {
+								var doc = row.doc;
+								if (doc._id == docId) {
+									doc.aArtGruppe = localStorage.aArtGruppe;
+									doc.aArtName = aArtName;
+									doc.aArtId = sessionStorage.ArtId;
 								}
-							}
+							});
 							// window.em.hArtListe neu sortieren
 							window.em.hArtListe.rows = _.sortBy(window.em.hArtListe.rows, function(row) {
 								return row.doc.aArtName;
@@ -613,28 +614,26 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 		htmlContainer = "",
 		Status = localStorage.Status,
 		ArtGruppe = window.em.Beobachtung.aArtGruppe;
-	for (i in window.em.FeldlisteBeobEdit.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlisteBeobEdit.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
-				// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
-				// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-				if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
-					if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
-						FeldWert = Feld.Standardwert[localStorage.Email];
-						// Objekt Beob um den Standardwert ergänzen, um später zu speichern
-						window.em.Beobachtung[FeldName] = FeldWert;
-					} else {
-						// "" verhindert die Anzeige von undefined im Feld
-						FeldWert = window.em.Beobachtung[FeldName] || "";
-					}
-					htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlisteBeobEdit.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
+			// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
+			// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+			if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
+				if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+					FeldWert = Feld.Standardwert[localStorage.Email];
+					// Objekt Beob um den Standardwert ergänzen, um später zu speichern
+					window.em.Beobachtung[FeldName] = FeldWert;
+				} else {
+					// "" verhindert die Anzeige von undefined im Feld
+					FeldWert = window.em.Beobachtung[FeldName] || "";
 				}
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 		}
-	}
+	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
@@ -692,27 +691,25 @@ window.em.initiiereBeobliste_2 = function() {
 	if (anzBeob === 0) {
 		ListItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
 	} else {
-		for (i in window.em.BeobListe.rows) {
-			if (typeof i !== "function") {
-				beob = window.em.BeobListe.rows[i].doc;
-				key = window.em.BeobListe.rows[i].key;
-				artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
-				if (beob.aArtGruppe === "DiverseInsekten") {
-					artgruppenname = "unbenannt.png";
-				}
-				ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
-				ListItemContainer += beob._id;
-				ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
-				ListItemContainer += "Artgruppenbilder/" + artgruppenname;
-				ListItemContainer += "\" /><h3 class=\"aArtName\">";
-				ListItemContainer += beob.aArtName;
-				ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
-				ListItemContainer += beob.zDatum;
-				ListItemContainer += "&nbsp; &nbsp;";
-				ListItemContainer += beob.zUhrzeit;
-				ListItemContainer += "<\/p><\/a> <\/li>";
+		_.each(window.em.BeobListe.rows, function(row) {
+			beob = row.doc;
+			key = row.key;
+			artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
+			if (beob.aArtGruppe === "DiverseInsekten") {
+				artgruppenname = "unbenannt.png";
 			}
-		}
+			ListItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+			ListItemContainer += beob._id;
+			ListItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
+			ListItemContainer += "Artgruppenbilder/" + artgruppenname;
+			ListItemContainer += "\" /><h3 class=\"aArtName\">";
+			ListItemContainer += beob.aArtName;
+			ListItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+			ListItemContainer += beob.zDatum;
+			ListItemContainer += "&nbsp; &nbsp;";
+			ListItemContainer += beob.zUhrzeit;
+			ListItemContainer += "<\/p><\/a> <\/li>";
+		});
 	}
 	$("#BeoblisteBL").html(ListItemContainer);
 	$("#BeoblisteBL").listview("refresh");
@@ -876,24 +873,22 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 		Feld = {},
 		FeldName,
 		htmlContainer = "";
-	for (i in window.em.FeldlisteProjekt.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlisteProjekt.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
-				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
-					FeldWert = Feld.Standardwert[localStorage.Email];
-					// window.em.hProjekt um den Standardwert ergänzen, um später zu speichern
-					window.em.hProjekt[FeldName] = FeldWert;
-				} else {
-					//"" verhindert die Anzeige von undefined im Feld
-					FeldWert = window.em.hProjekt[FeldName] || "";
-				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlisteProjekt.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && FeldName !== "pName") {
+			if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				FeldWert = Feld.Standardwert[localStorage.Email];
+				// window.em.hProjekt um den Standardwert ergänzen, um später zu speichern
+				window.em.hProjekt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert die Anzeige von undefined im Feld
+				FeldWert = window.em.hProjekt[FeldName] || "";
 			}
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+	});
 	if (localStorage.Status === "neu") {
 		$("#pName").focus();
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
