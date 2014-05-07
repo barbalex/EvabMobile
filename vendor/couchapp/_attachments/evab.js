@@ -2848,8 +2848,7 @@ window.em.initiiereFelderWaehlen = function() {
 };
 
 window.em.initiiereFelderWaehlen_2 = function() {
-	var i,
-		htmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
+	var htmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
 		anzFelder = 0,
 		Feld,
 		FeldName,
@@ -3155,12 +3154,10 @@ window.em.erstelleArtgruppenListe = function() {
 window.em.erstelleArtgruppenListe_2 = function() {
 	var html = "",
 		ArtGruppe,
-		doc,
 		AnzArten;
 	_.each(window.em.Artgruppenliste.rows, function(row) {
 		ArtGruppe = row.key;
-		doc = row.doc;
-		AnzArten = doc.AnzArten;
+		AnzArten = row.doc.AnzArten;
 		html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
 		html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 	});
@@ -3411,24 +3408,21 @@ window.em.erstelleSichtbareFelder = function() {
 	$db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function(data) {
-			var i,
-				Feld;
-			for (i in data.rows) {
-				if (typeof i !== "function") {
-					Feld = data.rows[i].doc;
-					// Nur ausgewählte offizielle Felder berücksichtigen
-					// if (Feld.User === "ZentrenBdKt") {
-					if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
-						$db.openDoc(Feld._id, {
-							success: function(Feld) {
-								var Username = localStorage.Email;
-								Feld.SichtbarImModusHierarchisch.push(Username);
-								$db.saveDoc(Feld);
-							}
-						});
-					}
+			var Feld;
+			_.each(data.rows, function(row) {
+				Feld = row.doc;
+				// Nur ausgewählte offizielle Felder berücksichtigen
+				// if (Feld.User === "ZentrenBdKt") {
+				if (["pBemerkungen", "rBemerkungen", "oLatitudeDecDeg", "oLongitudeDecDeg", "oHöhe", "oHöheGenauigkeit", "oBemerkungen", "zBemerkungen", "aArtNameUnsicher", "aArtNameEigener", "aArtNameBemerkungen", "aMenge", "aBemerkungen"].indexOf(Feld.FeldName) > -1) {
+					$db.openDoc(Feld._id, {
+						success: function(Feld) {
+							var Username = localStorage.Email;
+							Feld.SichtbarImModusHierarchisch.push(Username);
+							$db.saveDoc(Feld);
+						}
+					});
 				}
-			}
+			});
 		}
 	});
 };
@@ -3568,8 +3562,7 @@ window.em.handleAlAlStandardgruppeClick = function() {
 window.em.handleAlArtListItemClick = function(that) {
 	var ArtBezeichnung = $(that).attr("ArtBezeichnung"),
 		artid = $(that).attr("artid"),
-		art_schon_erfasst = false,
-		i;
+		art_schon_erfasst = false;
 
 	// kontrollieren, ob diese Art schon erfasst wurde
 	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
@@ -4150,19 +4143,18 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			$db = $.couch.db("evab");
 			$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 				success: function(data) {
-					var i,
-						anzVorkommen = 0,
+					var anzVorkommen = 0,
 						Datensatz,
 						feldname,
 						ds;
 					// zählen, in wievielen Datensätzen das bisherige Feld verwendet wird
-					for (i in data.rows) {
-						Datensatz = data.rows[i].doc;
+					_.each(data.rows, function(row) {
+						Datensatz = row.doc;
 						feldname = Datensatz[localStorage.AlterFeldWert];
 						if (feldname) {
-							anzVorkommen += 1;
+							anzVorkommen ++;
 						}
-					}
+					});
 					if (anzVorkommen === 0) {
 						// alter Feldname wurde noch in keinem Datensatz verwendet
 						// prüfen, ob der neue Feldname schon existiert
@@ -4272,16 +4264,14 @@ window.em.handleFeldEditStandardwertChange = function() {
 		}
 		if (["multipleselect", "checkbox"].indexOf(window.em.Feld.Formularelement) > -1) {
 			// alle StandardwertOptionen müssen Optionen sein
-			for (i in StandardwertOptionen) {
-				if (typeof i !== "function") {
-					if (optionen.indexOf(StandardwertOptionen[i]) === -1) {
-						// ein Wert ist keine Option, abbrechen
-						$("#Standardwert").val(LetzterFeldwert);
-						window.em.melde("Bitte wählen Sie eine oder mehrere der Optionen");
-						return;
-					}
+			_.each(StandardwertOptionen, function(standardwertoption) {
+				if (optionen.indexOf(standardwertoption) === -1) {
+					// ein Wert ist keine Option, abbrechen
+					$("#Standardwert").val(LetzterFeldwert);
+					window.em.melde("Bitte wählen Sie eine oder mehrere der Optionen");
+					return;
 				}
-			}
+			});
 			// alle Werte sind Optionen
 			window.em.speichereStandardwert();
 		} else if (["toggleswitch", "selectmenu", "radio"].indexOf(window.em.Feld.Formularelement) > -1) {
@@ -4292,16 +4282,14 @@ window.em.handleFeldEditStandardwertChange = function() {
 				window.em.melde("Bitte wählen Sie nur EINE der Optionen");
 			} else {
 				// Array enthält eine einzige Option
-				for (i in StandardwertOptionen) {
-					if (typeof i !== "function") {
-						if (optionen.indexOf(StandardwertOptionen[i]) === -1) {
-							// der Wert ist keine Option, abbrechen
-							$("#Standardwert").val(LetzterFeldwert);
-							window.em.melde("Bitte wählen Sie eine der Optionen");
-							return;
-						}
+				_.each(StandardwertOptionen, function(standardwertoption) {
+					if (optionen.indexOf(standardwertoption) === -1) {
+						// der Wert ist keine Option, abbrechen
+						$("#Standardwert").val(LetzterFeldwert);
+						window.em.melde("Bitte wählen Sie eine der Optionen");
+						return;
 					}
-				}
+				});
 				// alle Werte sind Optionen
 				window.em.speichereStandardwert();
 				return;
@@ -4336,20 +4324,17 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 		// zählen, in wievielen Datensätzen das Feld verwendet wird
 		$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 			success: function(data) {
-				var i,
-					anzVorkommen = 0,
+				var anzVorkommen = 0,
 					Datensatz,
 					feldname,
 					ds;
-				for (i in data.rows) {
-					if (typeof i !== "function") {
-						Datensatz = data.rows[i].doc;
-						feldname = Datensatz[window.em.Feld.FeldName];
-						if (feldname) {
-							anzVorkommen += 1;
-						}
+				_.each(data.rows, function(row) {
+					Datensatz = row.doc;
+					feldname = Datensatz[window.em.Feld.FeldName];
+					if (feldname) {
+						anzVorkommen ++;
 					}
-				}
+				});
 				if (anzVorkommen === 0) {
 					window.em.loescheFeld();
 				} else {
