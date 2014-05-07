@@ -609,7 +609,6 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerBeobEditForm = function() {
 	var Feld = {},
-		i,
 		FeldName,
 		htmlContainer = "",
 		Status = localStorage.Status,
@@ -673,8 +672,7 @@ window.em.initiiereBeobliste = function() {
 };
 
 window.em.initiiereBeobliste_2 = function() {
-	var i,
-		anzBeob = window.em.BeobListe.rows.length,
+	var anzBeob = window.em.BeobListe.rows.length,
 		beob,
 		key,
 		listItemContainer = "",
@@ -869,8 +867,7 @@ window.em.initiiereProjektEdit_3 = function() {
 // erwartet Feldliste als Objekt; Projekt als Objekt
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerProjektEditForm = function() {
-	var i,
-		Feld = {},
+	var Feld = {},
 		FeldName,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteProjekt.rows, function(row) {
@@ -1039,8 +1036,7 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 };
 
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
-	var i,
-		tempFeld,
+	var tempFeld,
 		optionen = [];
 	optionen.push("");
 	_.each(window.em.Feldliste.rows, function(row) {
@@ -1081,8 +1077,7 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 };
 
 window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
-	var i,
-		ArtGruppe,
+	var ArtGruppe,
 		listItemContainer = "<fieldset data-role='controlgroup'><legend>In diesen Artgruppen kann das Feld angezeigt werden (erforderlich):</legend>",
 		listItem,
 		ArtGruppenArray = ArtGruppenArrayIn || [];
@@ -1125,8 +1120,7 @@ window.em.initiiereFeldliste = function() {
 };
 
 window.em.initiiereFeldliste_2 = function() {
-	var i,
-		tempFeld,
+	var tempFeld,
 		anzFelder = 0,
 		ImageLink,
 		listItemContainer = "",
@@ -1231,52 +1225,48 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 
 window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
 	// in allen Objekten in der Objektliste
-	var i,
-		y,
-		DsBulkListe = {},
+	var DsBulkListe = {},
 		Docs = [],
 		row;
 	// nur machen, wenn rows vorhanden!
 	if (window.em[ObjektlistenName].rows.length > 0) {
 		_.each(window.em[ObjektlistenName].rows, function(row) {
 			doc = row.doc;
-			if (typeof i !== "function") {
-				// Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
-				if (doc[BezugsIdName] && doc[BezugsIdName] === BezugsIdWert) {
-					// im Objekt alle in FelderArray aufgelisteten Felder suchen
-					_.each(FelderArray, function(feld) {
+			// Objekte mit dem richtigen Wert in der BezugsId suchen (z.B. die richtige hOrtId)
+			if (doc[BezugsIdName] && doc[BezugsIdName] === BezugsIdWert) {
+				// im Objekt alle in FelderArray aufgelisteten Felder suchen
+				_.each(FelderArray, function(feldname) {
+					// und ihre Werte aktualisieren
+					if (localStorage[feldname]) {
+						if (window.em.myTypeOf(localStorage[feldname]) === "integer") {
+							doc[feldname] = parseInt(localStorage[feldname], 10);
+						} else if (window.em.myTypeOf(localStorage[feldname]) === "float") {
+							doc[feldname] = parseFloat(localStorage[feldname]);
+						} else {
+							doc[feldname] = localStorage[feldname];
+						}
+					} else {
+						delete doc[feldname];
+					}
+				});
+				/* löschen, wenn kein Fehler durch neue Variante
+				for (y in FelderArray) {
+					if (typeof y !== "function") {
 						// und ihre Werte aktualisieren
-						if (localStorage[feld]) {
-							if (window.em.myTypeOf(localStorage[feld]) === "integer") {
-								doc[feld] = parseInt(localStorage[feld], 10);
-							} else if (window.em.myTypeOf(localStorage[feld]) === "float") {
-								doc[feld] = parseFloat(localStorage[feld]);
+						if (localStorage[FelderArray[y]]) {
+							if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "integer") {
+								doc[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
+							} else if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "float") {
+								doc[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
 							} else {
-								doc[feld] = localStorage[feld];
+								doc[FelderArray[y]] = localStorage[FelderArray[y]];
 							}
 						} else {
-							delete doc[feld];
+							delete doc[FelderArray[y]];
 						}
-					});
-					/* löschen, wenn kein Fehler durch neue Variante
-					for (y in FelderArray) {
-						if (typeof y !== "function") {
-							// und ihre Werte aktualisieren
-							if (localStorage[FelderArray[y]]) {
-								if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "integer") {
-									doc[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
-								} else if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "float") {
-									doc[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
-								} else {
-									doc[FelderArray[y]] = localStorage[FelderArray[y]];
-								}
-							} else {
-								delete doc[FelderArray[y]];
-							}
-						}
-					}*/
-					Docs.push(doc);
-				}
+					}
+				}*/
+				Docs.push(doc);
 			}
 		});
 		DsBulkListe.docs = Docs;
@@ -1394,8 +1384,7 @@ window.em.myTypeOf = function(Wert) {
 // und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
 // NICHT IM GEBRAUCH
 window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, DatensatzlisteName) {
-	var i,
-		DsBulkListe = {},
+	var DsBulkListe = {},
 		Docs = [],
 		row;
 	// nur machen, wenn Datensätze da sind
@@ -1428,15 +1417,12 @@ window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, Datensatz
 // Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
 // Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
 window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
-	var i,
-		ObjektMitDeleteListe = {},
-		Docs = [],
-		Datensatz,
-		rowkey;
+	var ObjektMitDeleteListe = {},
+		Docs = [];
 	_.each(Datensatzobjekt.rows, function(row) {
 		// unsere Daten sind im key
-		rowkey = row.key;
-		Datensatz = {};
+		var rowkey = row.key,
+			Datensatz = {};
 		Datensatz._id = rowkey[1];
 		Datensatz._rev = rowkey[2];
 		Datensatz._deleted = true;
@@ -1641,7 +1627,6 @@ window.em.initiiereRaumListe_2 = function() {
 		Raum,
 		key,
 		rName,
-		listItem,
 		listItemContainer = "",
 		Titel2;
 
@@ -1659,8 +1644,7 @@ window.em.initiiereRaumListe_2 = function() {
 			Raum = row.doc;
 			key = row.key;
 			rName = Raum.rName;
-			listItem = "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a> <\/li>";
-			listItemContainer += listItem;
+			listItemContainer += "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a><\/li>";
 		});
 	}
 	$("#RaumlistehRL").html(listItemContainer);
@@ -1815,7 +1799,6 @@ window.em.initiiereOrtListe_2 = function() {
 		anzOrt = window.em.OrtListe.rows.length,
 		Ort,
 		key,
-		listItem,
 		listItemContainer = "",
 		Titel2;
 
@@ -1829,14 +1812,11 @@ window.em.initiiereOrtListe_2 = function() {
 	if (anzOrt === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
 	} else {
-		for (i in window.em.OrtListe.rows) {	// Liste aufbauen
-			if (typeof i !== "function") {
-				Ort = window.em.OrtListe.rows[i].doc;
-				key = window.em.OrtListe.rows[i].key;
-				listItem = "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a> <\/li>";
-				listItemContainer += listItem;
-			}
-		}
+		_.each(window.em.OrtListe.rows, function(row) {
+			Ort = row.doc;
+			key = row.key;
+			listItemContainer += "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a><\/li>";
+		});
 	}
 	$("#OrtlistehOL").html(listItemContainer);
 	$("#OrtlistehOL").listview("refresh");
@@ -1937,7 +1917,6 @@ window.em.initiiereZeitListe_2 = function() {
 		anzZeit = window.em.ZeitListe.rows.length,
 		Zeit,
 		key,
-		listItem,
 		listItemContainer = "",
 		Titel2,
 		zZeitDatum;
@@ -1956,8 +1935,7 @@ window.em.initiiereZeitListe_2 = function() {
 			Zeit = row.doc;
 			key = row.key;
 			zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-			listItem = "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a> <\/li>";
-			listItemContainer += listItem;
+			listItemContainer += "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a><\/li>";
 		});
 	}
 	$("#ZeitlistehZL").html(listItemContainer);
@@ -1976,24 +1954,22 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 		i,
 		FeldName,
 		htmlContainer = "";
-	for (i in window.em.FeldlisteZeitEdit.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlisteZeitEdit.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			if ((Feld.User === window.em.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
-				if (localStorage.Status === "neu" && Feld.Standardwert && window.em.hZeit[FeldName]) {
-					FeldWert = Feld.Standardwert[window.em.hZeit.User] || "";
-					// Objekt window.em.hZeit um den Standardwert ergänzen, um später zu speichern
-					window.em.hZeit[FeldName] = FeldWert;
-				} else {
-					FeldWert = window.em.hZeit[FeldName] || "";
-				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlisteZeitEdit.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		if ((Feld.User === window.em.hZeit.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hZeit.User) !== -1 && FeldName !== "zDatum" && FeldName !== "zUhrzeit") {
+			if (localStorage.Status === "neu" && Feld.Standardwert && window.em.hZeit[FeldName]) {
+				FeldWert = Feld.Standardwert[window.em.hZeit.User] || "";
+				// Objekt window.em.hZeit um den Standardwert ergänzen, um später zu speichern
+				window.em.hZeit[FeldName] = FeldWert;
+			} else {
+				FeldWert = window.em.hZeit[FeldName] || "";
 			}
-			// localStorage.Status wird schon im aufrufenden function gelöscht!
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+		// localStorage.Status wird schon im aufrufenden function gelöscht!
+	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
@@ -2111,8 +2087,8 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		FeldName,
 		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
-	for (i in window.em.FeldlistehArtEdit.rows) {
-		Feld = window.em.FeldlistehArtEdit.rows[i].doc;
+	_.each(window.em.FeldlistehArtEdit.rows, function(row) {
+		Feld = row.doc;
 		FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
@@ -2127,7 +2103,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 			}
 			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
@@ -2183,12 +2159,12 @@ window.em.initiierehArtListe_2 = function() {
 	if (anzArt === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
 	} else {
-		for (i in window.em.hArtListe.rows) {
-			hArtTemp = window.em.hArtListe.rows[i].doc;
+		_.each(window.em.hArtListe.rows, function(row) {
+			hArtTemp = row.doc;
 			if (hArtTemp) {
 				listItemContainer += window.em.erstelleHtmlFürBeobInHArtListe(hArtTemp);
 			}
-		}
+		});
 	}
 	$("#ArtlistehAL").html(listItemContainer);
 	$("#ArtlistehAL").listview("refresh");
@@ -2415,28 +2391,24 @@ window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert
 window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen) {
 	var i,
 		htmlContainer = "",
-		option,
 		listItem;
-	for (i in optionen) {
-		if (typeof i !== "function") {
-			option = optionen[i];
-			listItem = "<label for='";
-			listItem += option;
-			listItem += "'>";
-			listItem += option;
-			listItem += "</label><input class='speichern' type='radio' name='";
-			listItem += feldname;
-			listItem += "' id='";
-			listItem += option;
-			listItem += "' value='";
-			listItem += option;
-			if (feldwert === option) {
-				listItem += "' checked='checked";
-			}
-			listItem += "'/>";
-			htmlContainer += listItem;
+	_.each(optionen, function(option) {
+		listItem = "<label for='";
+		listItem += option;
+		listItem += "'>";
+		listItem += option;
+		listItem += "</label><input class='speichern' type='radio' name='";
+		listItem += feldname;
+		listItem += "' id='";
+		listItem += option;
+		listItem += "' value='";
+		listItem += option;
+		if (feldwert === option) {
+			listItem += "' checked='checked";
 		}
-	}
+		listItem += "'/>";
+		htmlContainer += listItem;
+	});
 	return htmlContainer;
 };
 
@@ -2585,15 +2557,14 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 })(jQuery);
 
 window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
-	var checkboxes = new Array(),
-		i; 
+	var checkboxes = new Array(); 
 	checkboxes = $("#" + pagename).find('input');
-	for (i=0; i<checkboxes.length; i++)	{
-		if (checkboxes[i].type == 'checkbox')	 {
-			checkboxes[i].checked = checktoggle;
-			$("#"+checkboxes[i].id).checkboxradio("refresh");
+	_.each(checkboxes, function(checkbox) {
+		if (checkbox.type == 'checkbox')	 {
+			checkbox.checked = checktoggle;
+			$("#"+checkbox.id).checkboxradio("refresh");
 		}
-	}
+	});
 };
 
 window.em.checkAllRadiosOfForm = function(pagename, checktoggle) {
