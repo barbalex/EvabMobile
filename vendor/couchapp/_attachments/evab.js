@@ -634,7 +634,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 				}
 			}
 		}
@@ -898,7 +898,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 			}
 		}
 	}
@@ -1598,7 +1598,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 			}
 		}
 	}
@@ -1778,7 +1778,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 			}
 		}
 	}
@@ -2007,7 +2007,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 			}
 			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
@@ -2147,7 +2147,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 		}
 	}
 	if (localStorage.Status === "neu") {
@@ -2242,15 +2242,15 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 // erwartet diverse Übergabewerte
 // der HtmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, InputTyp, OhneLabel) {
+window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
 	var HtmlContainer = "",
 		SliderMinimum,
 		SliderMinimum;
 	// abfangen, wenn Inputtyp vergessen wurde
-	InputTyp = InputTyp || "text";
+	Feld.InputTyp = Feld.InputTyp || "text";
 	switch(Feld.Formularelement) {
 	case "textinput":
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel);
+		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	case "textarea":
 		HtmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
@@ -2277,7 +2277,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschr
 		break;
 	case null:
 		// Abfangen, wenn das Formularelement nicht gewählt wurde
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel);
+		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	}
 	return HtmlContainer;
@@ -4985,7 +4985,13 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 				Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 				// html generieren
 				htmlContainerBody += '<td>';
-				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, feld.InputTyp, true);
+
+				console.log("feld = " + JSON.stringify(feld));
+				console.log("FeldName = " + FeldName);
+				console.log("FeldWert = " + FeldWert);
+				console.log("feld.InputTyp = " + feld.InputTyp);
+
+				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, true);
 				htmlContainerBody += '</td>';
 			});
 			// Tabellenzeile abschliessen
@@ -5105,7 +5111,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, Feld.InputTyp);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
 			}
 		}
 	}
@@ -8993,7 +8999,7 @@ window.em.zuArtliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
 	var that = this;
-	console.log("this = " + this);
+	//console.log("this = " + this);
 	// prüfen, ob hArt als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
