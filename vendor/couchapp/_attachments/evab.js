@@ -611,7 +611,6 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 		i,
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "",
 		Status = localStorage.Status,
 		ArtGruppe = window.em.Beobachtung.aArtGruppe;
@@ -633,8 +632,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 						FeldWert = window.em.Beobachtung[FeldName] || "";
 					}
 					FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-					Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 				}
 			}
 		}
@@ -880,7 +878,6 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 		Feld = {},
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
@@ -897,8 +894,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 					FeldWert = window.em.hProjekt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 			}
 		}
 	}
@@ -1580,7 +1576,6 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 		i,
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
@@ -1597,8 +1592,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 					FeldWert = window.em.hRaum[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 			}
 		}
 	}
@@ -1760,7 +1754,6 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 		Feld = {},
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
@@ -1777,8 +1770,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 					FeldWert = window.em.hOrt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 			}
 		}
 	}
@@ -1990,7 +1982,6 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 		i,
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "";
 	for (i in window.em.FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
@@ -2006,8 +1997,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 					FeldWert = window.em.hZeit[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 			}
 			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
@@ -2128,7 +2118,6 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		i,
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEdit.rows) {
@@ -2146,8 +2135,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 				FeldWert = window.em.hArt[FeldName] || "";
 			}
 			FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-			Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 		}
 	}
 	if (localStorage.Status === "neu") {
@@ -2242,10 +2230,11 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 // erwartet diverse Übergabewerte
 // der HtmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
+window.em.generiereHtmlFuerFormularelement = function(Feld, FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
 	var HtmlContainer = "",
 		SliderMinimum,
-		SliderMinimum;
+		SliderMinimum,
+		Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 	// abfangen, wenn Inputtyp vergessen wurde
 	Feld.InputTyp = Feld.InputTyp || "text";
 	switch(Feld.Formularelement) {
@@ -4982,7 +4971,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 					FeldWert = hart[FeldName] || "";
 				}
 				FeldBeschriftung = "";	// wird hier nicht benötigt, da schon die Spalte beschriftet ist
-				Optionen = feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
 				// html generieren
 				htmlContainerBody += '<td>';
 
@@ -4991,7 +4979,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 				console.log("FeldWert = " + FeldWert);
 				console.log("feld.InputTyp = " + feld.InputTyp);
 
-				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, Optionen, true);
+				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldName, FeldBeschriftung, FeldWert, true);
 				htmlContainerBody += '</td>';
 			});
 			// Tabellenzeile abschliessen
@@ -5091,7 +5079,6 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 		i,
 		FeldName,
 		FeldBeschriftung,
-		Optionen,
 		HtmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEditListe.rows) {
@@ -5110,8 +5097,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 					FeldWert = window.em.hArt[FeldName] || "";
 				}
 				FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
-				Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'];
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert, Optionen);
+				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldName, FeldBeschriftung, FeldWert);
 			}
 		}
 	}
