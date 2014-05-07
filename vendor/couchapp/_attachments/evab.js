@@ -305,13 +305,13 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 	}
 	$db = $.couch.db("evab");
 	$db.openDoc(docId, {
-		success: function(doc) {
+		success: function(beob) {
 			if (localStorage.aArtGruppe) {
-				doc.aArtGruppe = localStorage.aArtGruppe;
+				beob.aArtGruppe = localStorage.aArtGruppe;
 			}
-			doc.aArtName = aArtName;
-			doc.aArtId = sessionStorage.ArtId;
-			$db.saveDoc(doc, {
+			beob.aArtName = aArtName;
+			beob.aArtId = sessionStorage.ArtId;
+			$db.saveDoc(beob, {
 				success: function(data) {
 					var row_objekt = {};
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
@@ -324,16 +324,16 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						// Variabeln verfügbar machen
 						localStorage.hArtId = docId;
 						// damit hArtEdit.html die hArt nicht aus der DB holen muss
-						window.em.hArt = doc;
+						window.em.hArt = beob;
 						// window.em.hArtListe anpassen
 						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 						if (window.em.hArtListe && window.em.hArtListe.rows) {
 							_.each(window.em.hArtListe.rows, function(row) {
-								var doc = row.doc;
-								if (doc._id == docId) {
-									doc.aArtGruppe = localStorage.aArtGruppe;
-									doc.aArtName = aArtName;
-									doc.aArtId = sessionStorage.ArtId;
+								var hArt = row.doc;
+								if (hArt._id == docId) {
+									hArt.aArtGruppe = localStorage.aArtGruppe;
+									hArt.aArtName = aArtName;
+									hArt.aArtId = sessionStorage.ArtId;
 								}
 							});
 							// window.em.hArtListe neu sortieren
@@ -608,20 +608,17 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 // erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerBeobEditForm = function() {
-	var Feld = {},
-		FeldName,
-		htmlContainer = "",
-		Status = localStorage.Status,
+	var htmlContainer = "",
 		ArtGruppe = window.em.Beobachtung.aArtGruppe;
 	_.each(window.em.FeldlisteBeobEdit.rows, function(row) {
-		Feld = row.doc;
-		FeldName = Feld.FeldName;
+		var Feld = row.doc,
+			FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 			// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
 			if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
-				if (Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
 					// Objekt Beob um den Standardwert ergänzen, um später zu speichern
 					window.em.Beobachtung[FeldName] = FeldWert;
@@ -1457,11 +1454,7 @@ window.em.initiiereProjektliste = function() {
 };
 
 window.em.initiiereProjektliste_2 = function() {
-	var i,
-		anzProj = window.em.Projektliste.rows.length,
-		Proj,
-		key,
-		pName,
+	var anzProj = window.em.Projektliste.rows.length,
 		listItem,
 		listItemContainer = "",
 		Titel2;
@@ -1477,9 +1470,9 @@ window.em.initiiereProjektliste_2 = function() {
 		listItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
 	} else {
 		_.each(window.em.Projektliste.rows, function(row) {
-			Proj = row.doc;
-			key = row.key;
-			pName = key[1];
+			var Proj = row.doc,
+				key = row.key,
+				pName = key[1];
 			listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
 			listItem += "<a href=\"#\">";
 			listItem += "<h3>" + pName + "<\/h3><\/a><\/li>";
@@ -1565,7 +1558,6 @@ window.em.initiiereRaumEdit_3 = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerRaumEditForm = function() {
 	var Feld = {},
-		i,
 		FeldName,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteRaumEdit.rows, function(row) {
@@ -1622,8 +1614,7 @@ window.em.initiiereRaumListe = function() {
 };
 
 window.em.initiiereRaumListe_2 = function() {
-	var i,
-		anzRaum = window.em.RaumListe.rows.length,
+	var anzRaum = window.em.RaumListe.rows.length,
 		Raum,
 		key,
 		rName,
@@ -1734,8 +1725,7 @@ window.em.initiiereOrtEdit_3 = function() {
 // erwartet Feldliste als Objekt (aus der globalen Variable); window.em.hOrt als Objekt
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerOrtEditForm = function() {
-	var i,
-		Feld = {},
+	var Feld = {},
 		FeldName,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteOrtEdit.rows, function(row) {
@@ -1795,8 +1785,7 @@ window.em.initiiereOrtListe = function() {
 };
 
 window.em.initiiereOrtListe_2 = function() {
-	var i,
-		anzOrt = window.em.OrtListe.rows.length,
+	var anzOrt = window.em.OrtListe.rows.length,
 		Ort,
 		key,
 		listItemContainer = "",
@@ -1913,8 +1902,7 @@ window.em.initiiereZeitListe = function() {
 };
 
 window.em.initiiereZeitListe_2 = function() {
-	var i,
-		anzZeit = window.em.ZeitListe.rows.length,
+	var anzZeit = window.em.ZeitListe.rows.length,
 		Zeit,
 		key,
 		listItemContainer = "",
@@ -1951,7 +1939,6 @@ window.em.initiiereZeitListe_2 = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerZeitEditForm = function() {
 	var Feld = {},
-		i,
 		FeldName,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteZeitEdit.rows, function(row) {
@@ -2083,7 +2070,6 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerhArtEditForm = function() {
 	var Feld = {},
-		i,
 		FeldName,
 		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
@@ -2142,8 +2128,7 @@ window.em.initiierehArtListe = function() {
 };
 
 window.em.initiierehArtListe_2 = function() {
-	var i,
-		anzArt = window.em.hArtListe.rows.length,
+	var anzArt = window.em.hArtListe.rows.length,
 		listItemContainer = "",
 		Titel2,
 		hArtTemp,
@@ -2347,9 +2332,7 @@ window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldW
 // generiert den html-Inhalt für Optionen von Checkbox
 // wird von generiereHtmlFuerCheckbox aufgerufen
 window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, optionen) {
-	var i,
-		htmlContainer = "",
-		option,
+	var htmlContainer = "",
 		listItem;
 	_.each(optionen, function(option) {
 		listItem = "<label for='";
@@ -2389,8 +2372,7 @@ window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert
 // generiert den html-Inhalt für Optionen von Radio
 // wird von generiereHtmlFuerRadio aufgerufen
 window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen) {
-	var i,
-		htmlContainer = "",
+	var htmlContainer = "",
 		listItem;
 	_.each(optionen, function(option) {
 		listItem = "<label for='";
@@ -2452,9 +2434,7 @@ window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, Fel
 // generiert den html-Inhalt für Optionen von Selectmenu
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, optionen) {
-	var i,
-		htmlContainer = "<option value=''></option>",
-		option,
+	var htmlContainer = "<option value=''></option>",
 		listItem;
 		_.each(optionen, function(option) {
 			listItem = "<option value='";
@@ -2475,8 +2455,7 @@ window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, opt
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 // FeldWert ist ein Array
 window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert, optionen) {
-	var i,
-		htmlContainer = "<option value=''></option>",
+	var htmlContainer = "<option value=''></option>",
 		listItem;
 	_.each(optionen, function(option) {
 		listItem = "<option value='";
