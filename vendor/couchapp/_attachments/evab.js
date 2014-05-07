@@ -567,15 +567,15 @@ window.em.initiiereBeobEdit_3 = function() {
 // und aktualisiert die Links für pagination
 // Mitgeben: id der Beobachtung, Username
 window.em.erstelleDynamischeFelderBeobEdit = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerBeobEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerBeobEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	} else {
-		HtmlContainer = "";
+		htmlContainer = "";
 	}
 	// nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
-	$("#BeobEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#BeobEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	$("#BeobEdit").trigger("create").trigger("refresh");
 };
 
@@ -605,12 +605,12 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 
 // generiert das Html für das Formular in BeobEdit.html
 // erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerBeobEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		HtmlContainer = "",
+		htmlContainer = "",
 		Status = localStorage.Status,
 		ArtGruppe = window.em.Beobachtung.aArtGruppe;
 	for (i in window.em.FeldlisteBeobEdit.rows) {
@@ -630,7 +630,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 						// "" verhindert die Anzeige von undefined im Feld
 						FeldWert = window.em.Beobachtung[FeldName] || "";
 					}
-					HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+					htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 				}
 			}
 		}
@@ -651,7 +651,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 		// Neue Datensätze haben keine Attachments
 		window.em.zeigeAttachments(window.em.Beobachtung, "BE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // BeobListe in BeobList.html vollständig neu aufbauen
@@ -857,12 +857,12 @@ window.em.initiiereProjektEdit_2 = function() {
 };
 
 window.em.initiiereProjektEdit_3 = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerProjektEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerProjektEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hProjektEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hProjektEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -870,12 +870,12 @@ window.em.initiiereProjektEdit_3 = function() {
 
 // generiert das Html für das Formular in hProjektEdit.html
 // erwartet Feldliste als Objekt; Projekt als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerProjektEditForm = function() {
 	var i,
 		Feld = {},
 		FeldName,
-		HtmlContainer = "";
+		htmlContainer = "";
 	for (i in window.em.FeldlisteProjekt.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteProjekt.rows[i].doc;
@@ -890,7 +890,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hProjekt[FeldName] || "";
 				}
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 		}
 	}
@@ -911,7 +911,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 		// neue Datensätze haben keine Attachments
 		window.em.zeigeAttachments(window.em.hProjekt, "hPE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // initiiert FeldEdit.html
@@ -1046,20 +1046,20 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
 	var i,
 		TempFeld,
-		Optionen = [];
-	Optionen.push("");
+		optionen = [];
+	optionen.push("");
 	for (i in window.em.Feldliste.rows) {
 		if (typeof i !== "function") {
 			TempFeld = window.em.Feldliste.rows[i].doc;
 			// Liste aufbauen
 			// Nur eigene Felder und offizielle
 			if (TempFeld.User === localStorage.Email || TempFeld.User === "ZentrenBdKt") {
-				Optionen.push(TempFeld.FeldName);
+				optionen.push(TempFeld.FeldName);
 			}
 		}
 	}
-	HtmlContainer = window.em.generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", Optionen, "SingleSelect");
-	$("#FeldFolgtNachDiv").html(HtmlContainer).trigger("create").trigger("refresh");
+	htmlContainer = window.em.generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", optionen, "SingleSelect");
+	$("#FeldFolgtNachDiv").html(htmlContainer).trigger("create").trigger("refresh");
 };
 
 // wird benutzt in FeldEdit.html
@@ -1553,12 +1553,12 @@ window.em.initiiereRaumEdit_2 = function() {
 };
 
 window.em.initiiereRaumEdit_3 = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerRaumEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerRaumEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hRaumEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hRaumEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1566,12 +1566,12 @@ window.em.initiiereRaumEdit_3 = function() {
 
 // generiert das Html für das Formular in hRaumEdit.html
 // erwartet Feldliste als Objekt; window.em.hRaum als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerRaumEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		HtmlContainer = "";
+		htmlContainer = "";
 	for (i in window.em.FeldlisteRaumEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteRaumEdit.rows[i].doc;
@@ -1586,7 +1586,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hRaum[FeldName] || "";
 				}
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 		}
 	}
@@ -1606,7 +1606,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 		// Attachments gibt's bei neuen Datensätzen nicht
 		window.em.zeigeAttachments(window.em.hRaum, "hRE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 window.em.initiiereRaumListe = function() {
@@ -1729,12 +1729,12 @@ window.em.initiiereOrtEdit_2 = function() {
 };
 
 window.em.initiiereOrtEdit_3 = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerOrtEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerOrtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hOrtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hOrtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1742,12 +1742,12 @@ window.em.initiiereOrtEdit_3 = function() {
 
 // generiert das Html für das Formular in hOrtEdit.html
 // erwartet Feldliste als Objekt (aus der globalen Variable); window.em.hOrt als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerOrtEditForm = function() {
 	var i,
 		Feld = {},
 		FeldName,
-		HtmlContainer = "";
+		htmlContainer = "";
 	for (i in window.em.FeldlisteOrtEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteOrtEdit.rows[i].doc;
@@ -1762,7 +1762,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 					//"" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.hOrt[FeldName] || "";
 				}
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 		}
 	}
@@ -1784,7 +1784,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 		// Attachments gibt es bei neuen Orten nicht
 		window.em.zeigeAttachments(window.em.hOrt, "hOE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // erstellt die Ortliste in hOrtListe.html
@@ -1898,12 +1898,12 @@ window.em.initiiereZeitEdit_2 = function() {
 };
 
 window.em.initiiereZeitEdit_3 = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerZeitEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerZeitEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hZeitEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hZeitEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1968,12 +1968,12 @@ window.em.initiiereZeitListe_2 = function() {
 
 // generiert das Html für das Formular in hZeitEdit.html
 // erwartet Feldliste als Objekt; Zeit als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerZeitEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		HtmlContainer = "";
+		htmlContainer = "";
 	for (i in window.em.FeldlisteZeitEdit.rows) {
 		if (typeof i !== "function") {
 			Feld = window.em.FeldlisteZeitEdit.rows[i].doc;
@@ -1987,7 +1987,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 				} else {
 					FeldWert = window.em.hZeit[FeldName] || "";
 				}
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 			// localStorage.Status wird schon im aufrufenden function gelöscht!
 		}
@@ -2007,7 +2007,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 		// Neue Datensätze haben keine Attachments
 		window.em.zeigeAttachments(window.em.hZeit, "hZE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // managt den Aufbau aller Daten und Felder für hArtEdit.html
@@ -2089,12 +2089,12 @@ window.em.initiierehArtEdit_2 = function() {
 // generiert dynamisch die Artgruppen-abhängigen Felder
 // Mitgeben: Feldliste, Beobachtung
 window.em.erstelleDynamischeFelderhArtEdit = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerhArtEditForm();
+	var htmlContainer = window.em.generiereHtmlFuerhArtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hArtEditFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hArtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -2102,12 +2102,12 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 
 // generiert das Html für Formular in hArtEdit.html
 // erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerhArtEditForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		HtmlContainer = "",
+		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEdit.rows) {
 		Feld = window.em.FeldlistehArtEdit.rows[i].doc;
@@ -2123,7 +2123,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 				//"" verhindert, dass im Feld undefined erscheint
 				FeldWert = window.em.hArt[FeldName] || "";
 			}
-			HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
 	}
 	if (localStorage.Status === "neu") {
@@ -2141,7 +2141,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		// Neue Datensätze haben keine Anhänge
 		window.em.zeigeAttachments(window.em.hArt, "hAE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // initiiert BeobListe.html
@@ -2216,317 +2216,307 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 
 // generiert das Html für ein Formularelement
 // erwartet diverse Übergabewerte
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
 window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel) {
-	var HtmlContainer = "",
+	var htmlContainer = "",
 		SliderMinimum,
 		SliderMinimum,
-		Optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'],
+		optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'],
 		FeldName = Feld.FeldName,
 		FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
 	// abfangen, wenn Inputtyp vergessen wurde
 	Feld.InputTyp = Feld.InputTyp || "text";
 	switch(Feld.Formularelement) {
 	case "textinput":
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	case "textarea":
-		HtmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;
 	/*case "toggleswitch":
-		HtmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;*/
 	case "checkbox":
-		HtmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
+		break;
+	case "radio":
+		htmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
 		break;
 	case "selectmenu":
-		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "SingleSelect", OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "SingleSelect", OhneLabel);
 		break;
 	case "multipleselect":
-		HtmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, Optionen, "MultipleSelect", OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "MultipleSelect", OhneLabel);
 		break;
 	case "slider":
 		SliderMinimum = Feld.SliderMinimum || 0;
 		SliderMaximum = Feld.SliderMaximum || 100;
-		HtmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel);
-		break;
-	case "radio":
-		HtmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel);
 		break;
 	case null:
 		// Abfangen, wenn das Formularelement nicht gewählt wurde
-		HtmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel) {
-	var HtmlContainer = '<div class="ui-field-contain">';
+	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
-		HtmlContainer += '<label for="';
-		HtmlContainer += FeldName;
-		HtmlContainer += '">';
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += ':</label>';
+		htmlContainer += '<label for="';
+		htmlContainer += FeldName;
+		htmlContainer += '">';
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += ':</label>';
 	}
-	HtmlContainer += '<input id="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" name="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" type="';
-	HtmlContainer += InputTyp;
-	HtmlContainer += '" value="';
-	HtmlContainer += FeldWert;
-	HtmlContainer += '" class="speichern"/></div>';
-	return HtmlContainer;
+	htmlContainer += '<input id="';
+	htmlContainer += FeldName;
+	htmlContainer += '" name="';
+	htmlContainer += FeldName;
+	htmlContainer += '" type="';
+	htmlContainer += InputTyp;
+	htmlContainer += '" value="';
+	htmlContainer += FeldWert;
+	htmlContainer += '" class="speichern"/></div>';
+	return htmlContainer;
 }
 
 // generiert den html-Inhalt für Slider
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel) {
-	var HtmlContainer = '<div class="ui-field-contain">';
+	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
-		HtmlContainer += '<label for="';
-		HtmlContainer += FeldName;
-		HtmlContainer += '">';
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += ':</label>';
+		htmlContainer += '<label for="';
+		htmlContainer += FeldName;
+		htmlContainer += '">';
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += ':</label>';
 	}
-	HtmlContainer += '<input class="speichernSlider" type="range" data-highlight="true" name="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" id="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" value="';
-	HtmlContainer += FeldWert;
-	HtmlContainer += '" min="';
-	HtmlContainer += SliderMinimum;
-	HtmlContainer += '" max="';
-	HtmlContainer += SliderMaximum;
-	HtmlContainer += '"/></div>';
-	return HtmlContainer;
+	htmlContainer += '<input class="speichernSlider" type="range" data-highlight="true" name="';
+	htmlContainer += FeldName;
+	htmlContainer += '" id="';
+	htmlContainer += FeldName;
+	htmlContainer += '" value="';
+	htmlContainer += FeldWert;
+	htmlContainer += '" min="';
+	htmlContainer += SliderMinimum;
+	htmlContainer += '" max="';
+	htmlContainer += SliderMaximum;
+	htmlContainer += '"/></div>';
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Textarea
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
-	var HtmlContainer = '<div class="ui-field-contain">';
+	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
-		HtmlContainer += '<label for="';
-		HtmlContainer += FeldName;
-		HtmlContainer += '">';
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += ':</label>';
+		htmlContainer += '<label for="';
+		htmlContainer += FeldName;
+		htmlContainer += '">';
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += ':</label>';
 	}
-	HtmlContainer += '<textarea id="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" name="';
-	HtmlContainer += FeldName;
-	HtmlContainer += '" class="speichern">';
-	HtmlContainer += FeldWert;
-	HtmlContainer += '</textarea></div>';
-	return HtmlContainer;
+	htmlContainer += '<textarea id="';
+	htmlContainer += FeldName;
+	htmlContainer += '" name="';
+	htmlContainer += FeldName;
+	htmlContainer += '" class="speichern">';
+	htmlContainer += FeldWert;
+	htmlContainer += '</textarea></div>';
+	return htmlContainer;
 };
 
 /*// generiert den html-Inhalt für Toggleswitch
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
-	var HtmlContainer = "<div class='ui-field-contain'>";
+	var htmlContainer = "<div class='ui-field-contain'>";
 	if (!OhneLabel) {
-		HtmlContainer += "<label for='";
-		HtmlContainer += FeldName;
-		HtmlContainer += "'>";
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += "</label>";
+		htmlContainer += "<label for='";
+		htmlContainer += FeldName;
+		htmlContainer += "'>";
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += "</label>";
 	}
-	HtmlContainer += "<select name='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' id='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' data-role='flipswitch' value='";
-	HtmlContainer += FeldWert;
-	HtmlContainer += "' class='speichern flipswitch'><option value='ja'>ja</option><option value='nein'>nein</option></select></div>";
-	return HtmlContainer;
+	htmlContainer += "<select name='";
+	htmlContainer += FeldName;
+	htmlContainer += "' id='";
+	htmlContainer += FeldName;
+	htmlContainer += "' data-role='flipswitch' value='";
+	htmlContainer += FeldWert;
+	htmlContainer += "' class='speichern flipswitch'><option value='ja'>ja</option><option value='nein'>nein</option></select></div>";
+	return htmlContainer;
 };*/
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
-	var HtmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
+window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
-		HtmlContainer += "<legend>";
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += "</legend>";
+		htmlContainer += "<legend>";
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += "</legend>";
 	}
-	HtmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, Optionen);
-	HtmlContainer += "</fieldset></div>";
-	return HtmlContainer;
+	htmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, optionen);
+	htmlContainer += "</fieldset></div>";
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von Checkbox
 // wird von generiereHtmlFuerCheckbox aufgerufen
-window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, optionen) {
 	var i,
-		HtmlContainer = "",
-		Optionn,
-		ListItem;
-	for (i in Optionen) {
-		if (typeof i !== "function") {
-			Optionn = Optionen[i];
-			ListItem = "<label for='";
-			ListItem += Optionn;
-			ListItem += "'>";
-			ListItem += Optionn;
-			ListItem += "</label><input type='checkbox' name='";
-			ListItem += FeldName;
-			ListItem += "' id='";
-			ListItem += Optionn;
-			ListItem += "' value='";
-			ListItem += Optionn;
-			ListItem += "' class='custom speichern'";
-			if (FeldWert.indexOf(Optionn) >= 0) {
-				ListItem += " checked='checked'";
-			}
-			ListItem += "/>";
-			HtmlContainer += ListItem;
+		htmlContainer = "",
+		option,
+		listItem;
+	_.each(optionen, function(option) {
+		listItem = "<label for='";
+		listItem += option;
+		listItem += "'>";
+		listItem += option;
+		listItem += "</label><input type='checkbox' name='";
+		listItem += FeldName;
+		listItem += "' id='";
+		listItem += option;
+		listItem += "' value='";
+		listItem += option;
+		listItem += "' class='custom speichern'";
+		if (FeldWert.indexOf(option) >= 0) {
+			listItem += " checked='checked'";
 		}
-	}
-	return HtmlContainer;
+		listItem += "/>";
+		htmlContainer += listItem;
+	});
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Radio
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, Optionen, OhneLabel) {
-	var HtmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
+window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
-		HtmlContainer += "<legend>";
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += "</legend>";
+		htmlContainer += "<legend>";
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += "</legend>";
 	}
-	HtmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, Optionen);
-	HtmlContainer += "</fieldset></div>";
-	return HtmlContainer;
+	htmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, optionen);
+	htmlContainer += "</fieldset></div>";
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von Radio
 // wird von generiereHtmlFuerRadio aufgerufen
-window.em.generiereHtmlFuerRadioOptionen = function(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen) {
 	var i,
-		HtmlContainer = "",
-		Optionn,
-		ListItem;
-	for (i in Optionen) {
+		htmlContainer = "",
+		option,
+		listItem;
+	for (i in optionen) {
 		if (typeof i !== "function") {
-			Optionn = Optionen[i];
-			ListItem = "\n\t\t\t<label for='";
-			ListItem += Optionn;
-			ListItem += "'>";
-			ListItem += Optionn;
-			ListItem += "</label>\n\t\t\t<input class='speichern' type='radio' name='";
-			ListItem += FeldName;
-			ListItem += "' id='";
-			ListItem += Optionn;
-			ListItem += "' value='";
-			ListItem += Optionn;
-			if (FeldWert === Optionn) {
-				ListItem += "' checked='checked";
+			option = optionen[i];
+			listItem = "<label for='";
+			listItem += option;
+			listItem += "'>";
+			listItem += option;
+			listItem += "</label><input class='speichern' type='radio' name='";
+			listItem += feldname;
+			listItem += "' id='";
+			listItem += option;
+			listItem += "' value='";
+			listItem += option;
+			if (feldwert === option) {
+				listItem += "' checked='checked";
 			}
-			ListItem += "'/>";
-			HtmlContainer += ListItem;
+			listItem += "'/>";
+			htmlContainer += listItem;
 		}
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, Optionen, MultipleSingleSelect, OhneLabel, icon, id) {
-	var HtmlContainer = "<div class='ui-field-contain'>";
+window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon, id) {
+	var htmlContainer = "<div class='ui-field-contain'>";
 	if (!id) {
 		id = FeldName;
 	}
 	if (!OhneLabel) {
-		HtmlContainer += "<label for='";
-		HtmlContainer += FeldName;
-		HtmlContainer += "' class='select'>";
-		HtmlContainer += FeldBeschriftung;
-		HtmlContainer += "</label>";
+		htmlContainer += "<label for='";
+		htmlContainer += FeldName;
+		htmlContainer += "' class='select'>";
+		htmlContainer += FeldBeschriftung;
+		htmlContainer += "</label>";
 	}
-	HtmlContainer += "<select name='";
-	HtmlContainer += FeldName;
-	HtmlContainer += "' id='";
-	HtmlContainer += id;
-	HtmlContainer += "' value='";
-	HtmlContainer += FeldWert.toString();
-	HtmlContainer += "' data-native-menu='false'";
+	htmlContainer += "<select name='";
+	htmlContainer += FeldName;
+	htmlContainer += "' id='";
+	htmlContainer += id;
+	htmlContainer += "' value='";
+	htmlContainer += FeldWert.toString();
+	htmlContainer += "' data-native-menu='false'";
 	if (MultipleSingleSelect === "MultipleSelect") {
-		HtmlContainer += " multiple='multiple'";
+		htmlContainer += " multiple='multiple'";
 	}
 	if (icon) {
-		HtmlContainer += " data-icon='" + icon + "'";
+		htmlContainer += " data-icon='" + icon + "'";
 	}
-	HtmlContainer += " class='speichern'>";
+	htmlContainer += " class='speichern'>";
 	if (MultipleSingleSelect === "MultipleSelect") {
-		HtmlContainer += window.em.generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, Optionen);
+		htmlContainer += window.em.generiereHtmlFuerMultipleselectOptionen(FeldName, FeldWert, optionen);
 	} else {
-		HtmlContainer += window.em.generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, Optionen);
+		htmlContainer += window.em.generiereHtmlFuerSelectmenuOptionen(FeldName, FeldWert, optionen);
 	}
-	HtmlContainer += "</select></div>";
-	return HtmlContainer;
+	htmlContainer += "</select></div>";
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von Selectmenu
 // wird von generiereHtmlFuerSelectmenu aufgerufen
-window.em.generiereHtmlFuerSelectmenuOptionen = function(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, optionen) {
 	var i,
-		HtmlContainer = "<option value=''></option>",
-		Optionn,
-		ListItem;
-	for (i in Optionen) {
-		if (typeof i !== "function") {
-			Optionn = Optionen[i];
-			ListItem = "<option value='";
-			ListItem += Optionn;
-			ListItem += "' class='speichern'";
-			if (FeldWert === Optionn) {
-				ListItem += " selected='selected'";
+		htmlContainer = "<option value=''></option>",
+		option,
+		listItem;
+		_.each(optionen, function(option) {
+			listItem = "<option value='";
+			listItem += option;
+			listItem += "' class='speichern'";
+			if (feldwert === option) {
+				listItem += " selected='selected'";
 			}
-			ListItem += ">";
-			ListItem += Optionn;
-			ListItem += "</option>";
-			HtmlContainer += ListItem;
-		}
-	}
-	return HtmlContainer;
+			listItem += ">";
+			listItem += option;
+			listItem += "</option>";
+			htmlContainer += listItem;
+		});
+	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von MultipleSelect
 // wird von generiereHtmlFuerSelectmenu aufgerufen
 // FeldWert ist ein Array
-window.em.generiereHtmlFuerMultipleselectOptionen = function(FeldName, FeldWert, Optionen) {
+window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert, optionen) {
 	var i,
-		HtmlContainer = "<option value=''></option>",
-		Optionn,
-		ListItem;
-	for (i in Optionen) {
-		if (typeof i !== "function") {
-			Optionn = Optionen[i];
-			ListItem = "<option value='";
-			ListItem += Optionn;
-			ListItem += "' class='speichern'";
-			if (FeldWert.indexOf(Optionn) !== -1) {
-				ListItem += " selected='selected'";
-			}
-			ListItem += ">";
-			ListItem += Optionn;
-			ListItem += "</option>";
-			HtmlContainer += ListItem;
+		htmlContainer = "<option value=''></option>",
+		listItem;
+	_.each(optionen, function(option) {
+		listItem = "<option value='";
+		listItem += option;
+		listItem += "' class='speichern'";
+		if (feldwert.indexOf(option) !== -1) {
+			listItem += " selected='selected'";
 		}
-	}
-	return HtmlContainer;
+		listItem += ">";
+		listItem += option;
+		listItem += "</option>";
+		htmlContainer += listItem;
+	});
+	return htmlContainer;
 };
 
 (function($) {
@@ -2816,7 +2806,7 @@ window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
 // wird benutzt von allen (h)Beobachtungs-Edit-Formularen
 // erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
 window.em.zeigeAttachments = function(doc, Page) {
-	var HtmlContainer = "",
+	var htmlContainer = "",
 		url,
 		url_zumLöschen;
 	$("#_attachments" + Page).val("");
@@ -2824,16 +2814,16 @@ window.em.zeigeAttachments = function(doc, Page) {
 		$.each(doc._attachments, function(Dateiname, val) {
 			url = "/evab/" + doc._id + "/" + Dateiname;
 			//url_zumLöschen = url + "?" + doc._rev;	// theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
-			HtmlContainer += "<div><a href='";
-			HtmlContainer += url;
-			HtmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
-			HtmlContainer += Dateiname;
-			HtmlContainer += "</a><button name='LöscheAnhang' id='";
-			HtmlContainer += Dateiname;
-			HtmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/></div>";
+			htmlContainer += "<div><a href='";
+			htmlContainer += url;
+			htmlContainer += "' data-inline='true' data-role='button' target='_blank'>";
+			htmlContainer += Dateiname;
+			htmlContainer += "</a><button name='LöscheAnhang' id='";
+			htmlContainer += Dateiname;
+			htmlContainer += "' data-icon='delete' data-inline='true' data-iconpos='notext'/></div>";
 		});
 	}
-	$("#Anhänge" + Page).html(HtmlContainer).trigger("create");
+	$("#Anhänge" + Page).html(htmlContainer).trigger("create");
 	// Fokus auf Page richten, damit die Pagination mit den Pfeiltasten funktioniert
 	$(":jqmData(role='page')").focus();
 };
@@ -2910,12 +2900,12 @@ window.em.initiiereFelderWaehlen = function() {
 
 window.em.initiiereFelderWaehlen_2 = function() {
 	var i,
-		HtmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
+		htmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
 		anzFelder = 0,
 		Feld,
 		FeldName,
 		FeldBeschriftung,
-		ListItem;
+		listItem;
 	for (i in window.em[localStorage.FeldlisteFwName].rows) {
 		Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
 		FeldName = Feld.FeldName;
@@ -2928,49 +2918,49 @@ window.em.initiiereFelderWaehlen_2 = function() {
 				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
 					FeldBeschriftung += "<span style='font-weight:normal;'> (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")</span>";
 				}
-				ListItem = "\n\t\t<label for='";
-				ListItem += FeldName;
-				ListItem += "'>";
-				ListItem += FeldBeschriftung;
-				ListItem += "</label>\n\t\t<input type='checkbox' name='";
-				ListItem += "Felder";
-				ListItem += "' id='";
-				ListItem += FeldName;
-				ListItem += "' FeldId='";
-				ListItem += Feld._id;
-				ListItem += "' value='";
-				ListItem += FeldName;
-				ListItem += "' class='custom'";
+				listItem = "\n\t\t<label for='";
+				listItem += FeldName;
+				listItem += "'>";
+				listItem += FeldBeschriftung;
+				listItem += "</label>\n\t\t<input type='checkbox' name='";
+				listItem += "Felder";
+				listItem += "' id='";
+				listItem += FeldName;
+				listItem += "' FeldId='";
+				listItem += Feld._id;
+				listItem += "' value='";
+				listItem += FeldName;
+				listItem += "' class='custom'";
 				if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 					if (Feld.SichtbarImModusEinfach) {
 						if (Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
 							// wenn sichtbar, anzeigen
-							ListItem += " checked='checked'";
+							listItem += " checked='checked'";
 						}
 					}
 				} else if (localStorage.AufrufendeSeiteFW === "hArtEdit") {
 					if (Feld.SichtbarImModusHierarchisch) {
 						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 							// wenn sichtbar, anzeigen
-							ListItem += " checked='checked'";
+							listItem += " checked='checked'";
 						}
 					}
 				} else if (localStorage.AufrufendeSeiteFW === "hArtEditListe") {
 					if (Feld.SichtbarInHArtEditListe) {
 						if (Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1) {
 							// wenn sichtbar, anzeigen
-							ListItem += " checked='checked'";
+							listItem += " checked='checked'";
 						}
 					}
 				}
-				ListItem += "/>";
-				HtmlContainer += ListItem;
+				listItem += "/>";
+				htmlContainer += listItem;
 			}
 		}
 	}
 	$("#FelderWaehlenPageHeader .FelderWaehlenPageTitel").text(anzFelder + " Felder");
-	HtmlContainer += "\n\t</fieldset>\n</div>";
-	$("#FeldlisteFW").html(HtmlContainer).trigger("create");
+	htmlContainer += "\n\t</fieldset>\n</div>";
+	$("#FeldlisteFW").html(htmlContainer).trigger("create");
 	$("input[name='Felder']").checkboxradio();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -4312,12 +4302,12 @@ window.em.handleFeldEditFeldFolgtNachChange = function() {
 
 // wenn in FeldEdit.htm #Standardwert geändert wird
 window.em.handleFeldEditStandardwertChange = function() {
-	var Optionen = $("#Optionen").val() || [],	// undefined verhindern
+	var optionen = $("#Optionen").val() || [],	// undefined verhindern
 		Feldwert = this.value || [],	// undefined verhindern
 		LetzterFeldwert, 
 		Formularelement, 
 		StandardwertOptionen;
-	if (Optionen.length > 0) {
+	if (optionen.length > 0) {
 		// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 		LetzterFeldwert = [];
 		if (window.em.Feld.Standardwert) {
@@ -4335,7 +4325,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 			// alle StandardwertOptionen müssen Optionen sein
 			for (i in StandardwertOptionen) {
 				if (typeof i !== "function") {
-					if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
+					if (optionen.indexOf(StandardwertOptionen[i]) === -1) {
 						// ein Wert ist keine Option, abbrechen
 						$("#Standardwert").val(LetzterFeldwert);
 						window.em.melde("Bitte wählen Sie eine oder mehrere der Optionen");
@@ -4355,7 +4345,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 				// Array enthält eine einzige Option
 				for (i in StandardwertOptionen) {
 					if (typeof i !== "function") {
-						if (Optionen.indexOf(StandardwertOptionen[i]) === -1) {
+						if (optionen.indexOf(StandardwertOptionen[i]) === -1) {
 							// der Wert ist keine Option, abbrechen
 							$("#Standardwert").val(LetzterFeldwert);
 							window.em.melde("Bitte wählen Sie eine der Optionen");
@@ -4966,7 +4956,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 				console.log("feld = " + JSON.stringify(feld));
 				console.log("FeldName = " + FeldName);
 				console.log("FeldWert = " + FeldWert);
-				console.log("feld.InputTyp = " + feld.InputTyp);
 
 				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldWert, true);
 				htmlContainerBody += '</td>';
@@ -5049,12 +5038,12 @@ window.em.initiierehArtEditListeArt_2 = function() {
 // generiert dynamisch die Artgruppen-abhängigen Felder
 // Mitgeben: Feldliste, Beobachtung
 window.em.erstelleDynamischeFelderhArtEditListe = function() {
-	var HtmlContainer = window.em.generiereHtmlFuerhArtEditListeForm();
+	var htmlContainer = window.em.generiereHtmlFuerhArtEditListeForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
-	if (HtmlContainer) {
-		HtmlContainer = "<hr />" + HtmlContainer;
+	if (htmlContainer) {
+		htmlContainer = "<hr />" + htmlContainer;
 	}
-	$("#hArtEditListeFormHtml").html(HtmlContainer).trigger("create").trigger("refresh");
+	$("#hArtEditListeFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -5062,12 +5051,12 @@ window.em.erstelleDynamischeFelderhArtEditListe = function() {
 
 // generiert das Html für Formular in hArtEdit.html
 // erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
-// der HtmlContainer wird zurück gegeben
+// der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	var Feld = {},
 		i,
 		FeldName,
-		HtmlContainer = "",
+		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	for (i in window.em.FeldlistehArtEditListe.rows) {
 		if (typeof i !== "function") {
@@ -5084,7 +5073,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 					//"" verhindert, dass im Feld undefined erscheint
 					FeldWert = window.em.hArt[FeldName] || "";
 				}
-				HtmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 			}
 		}
 	}
@@ -5103,7 +5092,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 		// Neue Datensätze haben keine Anhänge
 		window.em.zeigeAttachments(window.em.hArt, "hAE");
 	}
-	return HtmlContainer;
+	return htmlContainer;
 };
 
 // wenn hArtEditListe.html initiiert wird
