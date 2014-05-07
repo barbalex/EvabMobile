@@ -4828,7 +4828,7 @@ window.em.handleHArtEditListePageshow = function() {
 
 
 // managt den Aufbau aller Daten und Felder für hArtEditListe.html
-// Artliste holen
+// Artliste und hArt holen
 window.em.initiierehArtEditListe = function() {
 	// markieren, dass die Listensicht aktiv ist
 	localStorage.hArtSicht = "liste";
@@ -4859,6 +4859,7 @@ window.em.initiierehArtEditListe = function() {
 	//}
 };
 
+// Artgruppe ermitteln
 window.em.initiierehArtEditListe_2 = function() {
 	var anzArt = window.em.hArtListe.rows.length,
 		ListItemContainer = "",
@@ -4928,14 +4929,12 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 		datapriority = 1,
 		feldliste = [];
 
-	//console.log("artgruppe = " + artgruppe);
-
 	// zuerst mal ermitteln, welche Felder für diese Artgruppe und diesen User im Formular eingeblendet werden sollen
 	_.each(window.em.FeldlistehArtEdit.rows, function(row) {
 		var Feld = row.doc,
 			FeldName = Feld.FeldName;
 			//console.log("Feld vor Bedingung = " + JSON.stringify(Feld));
-		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(artgruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe && Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(artgruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			feldliste.push(Feld);
 		}
 	});
@@ -5039,6 +5038,7 @@ window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup = function(artgruppen) {
 // erwartet die hArtId
 // wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
 window.em.initiierehArtEditListeArt = function(hartid) {
+	// Infos zur Art holen
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.hArt && window.em.hArt._id === hartid && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		window.em.initiierehArtEditListeArt_2(window.em.hArt);
@@ -5128,10 +5128,6 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	}
 	return HtmlContainer;
 };
-
-
-
-
 
 // wenn hArtEditListe.html initiiert wird
 window.em.handleHArtEditListePageinit = function() {
