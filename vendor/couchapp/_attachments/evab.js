@@ -2536,8 +2536,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 })(jQuery);
 
 window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
-	var checkboxes = new Array(); 
-	checkboxes = $("#" + pagename).find('input');
+	var checkboxes = $("#" + pagename).find('input');
 	_.each(checkboxes, function(checkbox) {
 		if (checkbox.type == 'checkbox')	 {
 			checkbox.checked = checktoggle;
@@ -2547,15 +2546,13 @@ window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
 };
 
 window.em.checkAllRadiosOfForm = function(pagename, checktoggle) {
-	var radios = new Array(),
-		i; 
-	radios = $("#" + pagename).find('input');
-	for (i=0; i<radios.length; i++)	{
-		if (radios[i].type == 'radio')	 {
-			radios[i].checked = checktoggle;
-			$("#"+radios[i].id).checkboxradio("refresh");
+	var radios = $("#" + pagename).find('input');
+	_.each(radios, function(radio) {
+		if (radio.type == 'radio')	 {
+			radio.checked = checktoggle;
+			$("#"+radio.id).checkboxradio("refresh");
 		}
-	}
+	});
 };
 
 // verorted mit Hilfe aller Methoden
@@ -2858,8 +2855,8 @@ window.em.initiiereFelderWaehlen_2 = function() {
 		FeldName,
 		FeldBeschriftung,
 		listItem;
-	for (i in window.em[localStorage.FeldlisteFwName].rows) {
-		Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
+	_.each(window.em[localStorage.FeldlisteFwName].rows, function(row) {
+		Feld = row.doc;
 		FeldName = Feld.FeldName;
 		// Nur eigene und offizielle Felder berücksichtigen
 		if (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") {
@@ -2909,7 +2906,7 @@ window.em.initiiereFelderWaehlen_2 = function() {
 				htmlContainer += listItem;
 			}
 		}
-	}
+	});
 	$("#FelderWaehlenPageHeader .FelderWaehlenPageTitel").text(anzFelder + " Felder");
 	htmlContainer += "\n\t</fieldset>\n</div>";
 	$("#FeldlisteFW").html(htmlContainer).trigger("create");
@@ -3096,11 +3093,11 @@ window.em.erstelleArtenliste = function(filterwert) {
 			} else {
 				// weniger als 200 Arten, kein Filter. Alle anzeigen
 				html += '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten angezeigt</li>';
-				for (i=0; i<window.em.Artenliste.length; i++) {
-					ArtBezeichnung = window.em.Artenliste[i].key[2];
-					Art = window.em.Artenliste[i].doc;
+				_.each(window.em.Artenliste, function(art_objekt) {
+					ArtBezeichnung = art_objekt.key[2];
+					Art = art_objekt.doc;
 					html += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
-				}
+				});
 			}
 		}
 	} else {
@@ -4132,7 +4129,8 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 	}
 	// Felder der Datenzentren dürfen nicht verändert werden
 	// ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
-	if (window.em.Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen')) {
+	// aber: Der Benutzer soll wählen können, in welchen Artgruppen er ein solches Feld anzeigt
+	if (window.em.Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen') && localStorage.FeldName !== "ArtGruppe") {
 		// Feldwert zurücksetzen	
 		if (localStorage.AlterFeldWert) {
 			$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
