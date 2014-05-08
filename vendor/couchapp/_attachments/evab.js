@@ -1221,7 +1221,6 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 };
 
 window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
-	console.log("window.em.speichereFelderAusLocalStorageInObjektliste_2");
 	// in allen Objekten in der Objektliste
 	var DsBulkListe = {},
 		Docs = [],
@@ -1258,22 +1257,20 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			contentType: "application/json",
 			data: JSON.stringify(DsBulkListe)
 		}).done(function(data) {
-			var z,
-				k,
-				objekt,
+			var objekt,
 				doc;
 			// _rev in den Objekten in Objektliste aktualisieren
 			// für alle zurückgegebenen aktualisierten Zeilen
 			// offenbar muss data zuerst geparst werden ??!!
 			data = JSON.parse(data);
-			for (z in data) {
+			_.each(data, function(ds, index) {
 				// das zugehörige Objekt in der Objektliste suchen
 				objekt = _.find(window.em[ObjektlistenName].rows, function(row) {
 					doc = row.doc;
-					return doc._id === data[z].id;
+					return doc._id === data[index].id;
 				});
-				objekt._rev = data[z].rev;
-			}
+				objekt._rev = data[index].rev;
+			});
 		});
 	}
 };
@@ -1298,22 +1295,6 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 			delete window.em[ObjektName][feldname];
 		}
 	});
-	/* löschen, wenn obiges funktioniert
-	for (var i in FelderArray) {
-		if (typeof i !== "function") {
-			if (localStorage[FelderArray[i]]) {
-				if (window.em.myTypeOf(localStorage[FelderArray[i]]) === "integer") {
-					window.em[ObjektName][FelderArray[i]] = parseInt(localStorage[FelderArray[i]], 10);
-				} else if (window.em.myTypeOf(localStorage[FelderArray[i]]) === "float") {
-					window.em[ObjektName][FelderArray[i]] = parseFloat(localStorage[FelderArray[i]]);
-				} else {
-					window.em[ObjektName][FelderArray[i]] = localStorage[FelderArray[i]];
-				}
-			} else {
-				delete window.em[ObjektName][FelderArray[i]];
-			}
-		}
-	}*/
 	// in DB speichern
 	$db.saveDoc(window.em[ObjektName], {
 		success: function(data) {
@@ -2847,11 +2828,11 @@ window.em.initiiereFelderWaehlen_2 = function() {
 				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
 					FeldBeschriftung += "<span style='font-weight:normal;'> (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")</span>";
 				}
-				listItem = "\n\t\t<label for='";
+				listItem = "<label for='";
 				listItem += FeldName;
 				listItem += "'>";
 				listItem += FeldBeschriftung;
-				listItem += "</label>\n\t\t<input type='checkbox' name='";
+				listItem += "</label><input type='checkbox' name='";
 				listItem += "Felder";
 				listItem += "' id='";
 				listItem += FeldName;
@@ -3021,38 +3002,36 @@ window.em.holeArtenliste = function(filterwert) {
 };
 
 // bekommt eine Artenliste und baut damit im Formular die Artenliste auf
+// filterwert: übergebener Teil aus der Artbezeichnung
 window.em.erstelleArtenliste = function(filterwert) {
 	var i,
 		html_temp = "",
 		html = "",
 		ArtBezeichnung,
 		Art,
-		zähler = 0;
+		artenliste_gefiltert;
 	// gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
 	if (window.em.Artenliste.length > 0) {
 		if (filterwert) {
-			artenliste_loop:
-			for (i=0; i<window.em.Artenliste.length; i++) {
-				if (zähler<200) {
-					ArtBezeichnung = window.em.Artenliste[i].key[2];
-					if (filterwert && ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1) {
-						zähler++;
-						Art = window.em.Artenliste[i].doc;
-						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
-					}
-				} else if (zähler === 200) {
-					zähler++;
-					html += '<li class="artlistenhinweis">' + zähler + ' Arten entsprechen dem Filter.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Versuchen Sie einen strengeren Filter</li>';
-					break artenliste_loop;
-				}
-			}
-			if (html_temp === "") {
-				html += '<li class="artlistenhinweis">Keine Arten gefunden</li>';
-			} else {
-				if (zähler <= 200) {
-					html += '<li class="artlistenhinweis">' + zähler + ' Arten gefiltert</li>';
-				}
+			// artenliste filtern
+			artenliste_gefiltert = _.filter(window.em.Artenliste, function(art) {
+				ArtBezeichnung = art.key[2];
+				return ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1;
+			});
+			if (artenliste_gefiltert.length > 0) {
+				// html der ersten 200 aufbauen
+				_.each(_.first(artenliste_gefiltert, 200), function(art) {
+					ArtBezeichnung = art.key[2];
+					html_temp += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
+				});
 				html += html_temp;
+				if (artenliste_gefiltert.length > 200) {
+					html += '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Versuchen Sie einen strengeren Filter</li>';
+				} else {
+					html += '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert</li>';
+				}
+			} else {
+				html += '<li class="artlistenhinweis">Keine Arten gefunden</li>';
 			}
 		} else {
 			// kein Filter gesetzt
