@@ -56,14 +56,15 @@
 .PopupText {text-align:center; margin:6px 4px 4px 4px; font-weight:bold;}
 
 .MapLabel {
-	color: black;
-	background-color: white;
+	color: red;
+	/*background-color: white;*/
 	font-family: "Lucida Grande", "Arial", sans-serif;
-	font-size: 10px;
+	font-size: 15px;
 	font-weight: bold;
 	text-align: center;
 	width: 150px;
-	border: 1px solid black;
+  text-shadow: 0px 0px 0px #FF4700;
+	/*border: 1px solid black;*/
 }
 
 /*Titel in BeobListe.html nach rechts verschieben

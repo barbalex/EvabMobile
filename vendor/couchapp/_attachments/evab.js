@@ -8167,9 +8167,8 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				// title muss String sein
 				title: Ort.oName.toString() || "",
 				labelContent: Ort.oName,
-				labelAnchor: new google.maps.Point(76, 0),
+				labelAnchor: new google.maps.Point(75, 0),
 				labelClass: "MapLabel", // the CSS class for the label
-				labelStyle: {opacity: 0.75}
 			});
 			markers.push(marker);
 			contentString = '<div class="GmInfowindow">';
