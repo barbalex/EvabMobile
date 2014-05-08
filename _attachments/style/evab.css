@@ -56,14 +56,14 @@
 .PopupText {text-align:center; margin:6px 4px 4px 4px; font-weight:bold;}
 
 .MapLabel {
-	color: red;
+	color: #FF4700;
 	/*background-color: white;*/
 	font-family: "Lucida Grande", "Arial", sans-serif;
 	font-size: 15px;
 	font-weight: bold;
 	text-align: center;
 	width: 150px;
-  text-shadow: 0px 0px 0px #FF4700;
+  text-shadow: 1px 1px 8px #000, 1px 1px 8px #000, -1px -1px 8px #000, -1px -1px 8px #000;
 	/*border: 1px solid black;*/
 }
 

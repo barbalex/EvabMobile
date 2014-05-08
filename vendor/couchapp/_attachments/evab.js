@@ -8166,7 +8166,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				// title muss String sein
 				title: Ort.oName.toString() || "",
 				labelContent: Ort.oName,
-				labelAnchor: new google.maps.Point(75, 0),
+				labelAnchor: new google.maps.Point(75, -5),
 				labelClass: "MapLabel", // the CSS class for the label
 			});
 			markers.push(marker);
@@ -8426,24 +8426,19 @@ window.em.erstelleKarteBeobListe_2 = function() {
 				title: beob.aArtName.toString() || "",
 				//icon: image,
 				labelContent: beob.aArtName,
-				labelAnchor: new google.maps.Point(75, 0),
+				labelAnchor: new google.maps.Point(75, -5),
 				labelClass: "MapLabel", // the CSS class for the label
-				//labelStyle: {opacity: 0.75}
 			});
 			markers.push(marker);
-			contentString = '<div id="content">'+
-				'<div id="siteNotice">'+
-				'</div>'+
-				'<h4 id="firstHeading" class="GmInfowindow">' + beob.aArtName + '</h4>'+
-				'<div id="bodyContent" class="GmInfowindow">'+
-				'<p>Art-Gruppe: ' + beob.aArtGruppe + '</p>'+
-				'<p>Autor: ' + beob.aAutor + '</p>'+
-				'<p>Datum: ' + beob.zDatum + '</p>'+
-				'<p>Zeit: ' + beob.zUhrzeit + '</p>'+
-				'<p>Koordinaten: ' + beob.oXKoord + " / " + beob.oYKoord + '</p>' +
-				"<p><a <a href=\"#\" onclick=\"window.em.oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>"+
-				'</div>'+
-				'</div>';
+			contentString = '<h4 class="GmInfowindow">' + beob.aArtName + '</h4>';
+			contentString += '<div class="GmInfowindow">';
+			contentString += '<p>Art-Gruppe: ' + beob.aArtGruppe + '</p>';
+			contentString += '<p>Autor: ' + beob.aAutor + '</p>';
+			contentString += '<p>Datum: ' + beob.zDatum + '</p>';
+			contentString += '<p>Zeit: ' + beob.zUhrzeit + '</p>';
+			contentString += '<p>Koordinaten: ' + beob.oXKoord + " / " + beob.oYKoord + '</p>';
+			contentString += "<p><a <a href=\"#\" onclick=\"window.em.oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>";
+			contentString += '</div>';
 			window.em.makeMapListener(map, marker, contentString);
 		}
 		mcOptions = {maxZoom: 17};
@@ -8459,7 +8454,27 @@ window.em.erstelleKarteBeobListe_2 = function() {
 	}
 };
 
+// sicherstellen, dass window.em.Beobachtung existiert
 window.em.erstelleKarteBeobEdit = function() {
+	if (!window.em.Beobachtung) {
+		if (localStorage.BeobId) {
+			$db = $.couch.db("evab");
+			$db.openDoc(localStorage.BeobId, {
+				success: function(doc) {
+					window.em.Beobachtung = doc;
+					window.em.erstelleKarteBeobEdit_2(doc);
+				}
+			});
+		} else {
+			window.em.melde("Fehler: Keine Beobachtung verfügbar");
+			return;
+		}
+	} else {
+		window.em.erstelleKarteBeobEdit_2(window.em.Beobachtung);
+	}
+};
+
+window.em.erstelleKarteBeobEdit_2 = function(beob) {
 	var map,
 		verorted,
 		lat,
@@ -8474,7 +8489,8 @@ window.em.erstelleKarteBeobEdit = function() {
 		infowindow,
 		// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 44,
-		artgruppenname;
+		artgruppenname,
+		beob_row;
 	$("#MapCanvas").css("height", contentHeight + "px");
 	if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
 		lat = localStorage.oLatitudeDecDeg;
@@ -8508,7 +8524,7 @@ window.em.erstelleKarteBeobEdit = function() {
 			map: map,
 			// title muss String sein
 			title: localStorage.aArtName.toString() || "",
-			icon: image,
+			//icon: image,
 			draggable: true
 		});
 		// Marker in Array speichern, damit er gelöscht werden kann
@@ -8517,9 +8533,9 @@ window.em.erstelleKarteBeobEdit = function() {
 			'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
 			'<div id="bodyContent" class="GmInfowindow">'+
 			'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-			'<p>Autor: ' + window.em.Beobachtung.aAutor + '</p>'+
-			'<p>Datum: ' + window.em.Beobachtung.zDatum + '</p>'+
-			'<p>Zeit: ' + window.em.Beobachtung.zUhrzeit + '</p>'+
+			'<p>Autor: ' + beob.aAutor + '</p>'+
+			'<p>Datum: ' + beob.zDatum + '</p>'+
+			'<p>Zeit: ' + beob.zUhrzeit + '</p>'+
 			'<p>Koordinaten: ' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
 			'</div>'+
 			'</div>';
@@ -8551,6 +8567,8 @@ window.em.placeMarkerhOrtEdit = function(location, map, marker) {
 		draggable: true
 	});
 	// Marker in Array speichern, damit er gelöscht werden kann
+	// zuerst bisherige löschen, sonst gibt es pro Klick einen Marker...
+	window.em.clearMarkers();
 	window.em.markersArray.push(marker);
 	google.maps.event.addListener(marker, "dragend", function (event) {
 		window.em.SetLocationhOrtEdit(event.latLng, map, marker);
@@ -8566,15 +8584,24 @@ window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
 		map: map,
 		// title muss String sein
 		title: localStorage.aArtName.toString() || "",
-		icon: image,
+		//icon: image,
 		draggable: true
 	});
 	// Marker in Array speichern, damit er gelöscht werden kann
+	// zuerst bisherige löschen, sonst gibt es pro Klick einen Marker...
+	window.em.clearMarkers();
 	window.em.markersArray.push(marker);
 	google.maps.event.addListener(marker, "dragend", function (event) {
 		window.em.SetLocationBeobEdit(event.latLng, map, marker);
 	});
 	window.em.SetLocationBeobEdit(location, map, marker);
+};
+
+window.em.clearMarkers = function() {
+	_.each(window.em.markersArray, function(marker) {
+		marker.setMap(null);
+	});
+	window.em.markersArray = [];
 };
 
 // wird benutzt in hOrtEdit.html
