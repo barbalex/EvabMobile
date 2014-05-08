@@ -8084,7 +8084,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 		Ort,
 		lat,
 		lng,
-		latlng,
+		latlng_mapcenter,
 		options,
 		map,
 		projekt_row,
@@ -8094,7 +8094,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 		bounds,
 		markers,
 		hOrtId,
-		latlng2,
+		latlng_ort,
 		marker,
 		contentString,
 		mcOptions,
@@ -8114,10 +8114,10 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 		// auf die die Karte ausgerichtet werden kann
 		lat = 47.383333;
 		lng = 8.533333;
-		latlng = new google.maps.LatLng(lat, lng);
+		latlng_mapcenter = new google.maps.LatLng(lat, lng);
 		options = {
 			zoom: 15,
-			center: latlng,
+			center: latlng_mapcenter,
 			streetViewControl: false,
 			mapTypeId: google.maps.MapTypeId.HYBRID
 		};
@@ -8153,39 +8153,39 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				rName = raum_row.doc.rName;
 			}
 
-			latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
+			latlng_ort = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
 			if (anzOrt === 1) {
 				// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-				latlng = latlng2;
+				latlng_mapcenter = latlng_ort;
 			} else {
 				// Kartenausschnitt um diese Koordinate erweitern
-				bounds.extend(latlng2);
+				bounds.extend(latlng_ort);
 			}
 			marker = new MarkerWithLabel({ 
 				map: map,
-				position: latlng2,
+				position: latlng_ort,
 				// title muss String sein
 				title: Ort.oName.toString() || "",
 				labelContent: Ort.oName,
-				labelAnchor: new google.maps.Point(22, 0),
+				labelAnchor: new google.maps.Point(76, 0),
 				labelClass: "MapLabel", // the CSS class for the label
 				labelStyle: {opacity: 0.75}
 			});
 			markers.push(marker);
-			contentString = '<div class="GmInfowindow">'+
-				'<p>Projekt: ' + pName + '</p>'+
-				'<p>Raum: ' + rName + '</p>'+
-				'<p>Ort: ' + Ort.oName + '</p>'+
-				'<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>'+
-				"<p><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
-				'</div>';
+			contentString = '<div class="GmInfowindow">';
+			contentString += '<p>Projekt: ' + pName + '</p>';
+			contentString += '<p>Raum: ' + rName + '</p>';
+			contentString += '<p>Ort: ' + Ort.oName + '</p>';
+			contentString += '<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>';
+			contentString += "<p><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>";
+			contentString += '</div>';
 			window.em.makeMapListener(map, marker, contentString);
 		});
 		mcOptions = {maxZoom: 17};
 		markerCluster = new MarkerClusterer(map, markers, mcOptions);
 		if (anzOrt === 1) {
 			// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-			map.setCenter(latlng);
+			map.setCenter(latlng_mapcenter);
 			map.setZoom(18);
 		} else {
 			// Karte auf Ausschnitt anpassen
@@ -8198,7 +8198,7 @@ window.em.makeMapListener = function(map, marker, contentString) {
 	var infowindow = new google.maps.InfoWindow();
 	google.maps.event.addListener(marker, 'click', function () {
 		infowindow.setContent(contentString);
-		infowindow.open(map,marker);
+		infowindow.open(map, marker);
 	});
 };
 
