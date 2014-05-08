@@ -5996,14 +5996,14 @@ window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
 	var i,
 		ProjIdAktuell,
 		AnzProj;
-	for (i in window.em.Projektliste.rows) {
+	for (i=0; window.em.Projektliste.rows.length; i++) {
 		ProjIdAktuell = window.em.Projektliste.rows[i].doc._id;
 		AnzProj = window.em.Projektliste.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (ProjIdAktuell === localStorage.ProjektId) {
 			switch (NächstesOderVoriges) {
 			case "nächstes":
-				if (parseInt(i) < AnzProj) {
-					localStorage.ProjektId = window.em.Projektliste.rows[parseInt(i)+1].doc._id;
+				if (i < AnzProj) {
+					localStorage.ProjektId = window.em.Projektliste.rows[i+1].doc._id;
 					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
@@ -6013,8 +6013,8 @@ window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
 				}
 				break;
 			case "voriges":
-				if (parseInt(i) > 0) {
-					localStorage.ProjektId = window.em.Projektliste.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.ProjektId = window.em.Projektliste.rows[i-1].doc._id;
 					window.em.leereStorageProjektEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereProjektEdit();
 					return;
@@ -6208,14 +6208,14 @@ window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 	var i,
 		OrtIdAktuell,
 		AnzOrt;
-	for (i in window.em.OrtListe.rows) {
+	for (i=0; window.em.OrtListe.rows.length; i++) {
 		OrtIdAktuell = window.em.OrtListe.rows[i].doc._id;
 		AnzOrt = window.em.OrtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (OrtIdAktuell === localStorage.OrtId) {
 			switch (NächsterOderVoriger) {
 			case "nächster":
-				if (parseInt(i) < AnzOrt) {
-					localStorage.OrtId = window.em.OrtListe.rows[parseInt(i)+1].doc._id;
+				if (i < AnzOrt) {
+					localStorage.OrtId = window.em.OrtListe.rows[i+1].doc._id;
 					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
@@ -6225,8 +6225,8 @@ window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 				}
 				break;
 			case "voriger":
-				if (parseInt(i) > 0) {
-					localStorage.OrtId = window.em.OrtListe.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.OrtId = window.em.OrtListe.rows[i-1].doc._id;
 					window.em.leereStorageOrtEdit("ohneId");
 					window.em.initiiereOrtEdit();
 					return;
@@ -7071,14 +7071,14 @@ window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
 	var i,
 		RaumIdAktuell,
 		AnzRaum;
-	for (i in window.em.RaumListe.rows) {
+	for (i=0; window.em.RaumListe.rows.length; i++) {
 		RaumIdAktuell = window.em.RaumListe.rows[i].doc._id;
 		AnzRaum = window.em.RaumListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (RaumIdAktuell === localStorage.RaumId) {
 			switch (NächsterOderVoriger) {
 			case "nächster":
-				if (parseInt(i) < AnzRaum) {
-					localStorage.RaumId = window.em.RaumListe.rows[parseInt(i)+1].doc._id;
+				if (i < AnzRaum) {
+					localStorage.RaumId = window.em.RaumListe.rows[i+1].doc._id;
 					window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereRaumEdit();
 					return;
@@ -7088,8 +7088,8 @@ window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
 				}
 				break;
 			case "voriger":
-				if (parseInt(i) > 0) {
-					localStorage.RaumId = window.em.RaumListe.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.RaumId = window.em.RaumListe.rows[i-1].doc._id;
 					window.em.leereStorageRaumEdit("mitLatLngListe", "ohneId");
 					window.em.initiiereRaumEdit();
 					return;
@@ -7661,14 +7661,14 @@ window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
 	var i,
 		ZeitIdAktuell,
 		AnzZeit;
-	for (i in window.em.ZeitListe.rows) {
+	for (i=0; window.em.ZeitListe.rows.length; i++) {
 		ZeitIdAktuell = window.em.ZeitListe.rows[i].doc._id;
 		AnzZeit = window.em.ZeitListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (ZeitIdAktuell === localStorage.ZeitId) {
 			switch (NächsteOderVorige) {
 			case "nächste":
-				if (parseInt(i) < AnzZeit) {
-					localStorage.ZeitId = window.em.ZeitListe.rows[parseInt(i)+1].doc._id;
+				if (i < AnzZeit) {
+					localStorage.ZeitId = window.em.ZeitListe.rows[i+1].doc._id;
 					window.em.leereStorageZeitEdit("ohneId");
 					window.em.initiiereZeitEdit();
 					return;
@@ -7678,8 +7678,8 @@ window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
 				}
 				break;
 			case "vorige":
-				if (parseInt(i) > 0) {
-					localStorage.ZeitId = window.em.ZeitListe.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.ZeitId = window.em.ZeitListe.rows[i-1].doc._id;
 					window.em.leereStorageZeitEdit("ohneId");
 					window.em.initiiereZeitEdit();
 					return;
@@ -8919,14 +8919,14 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 	var i,
 		ArtIdAktuell,
 		AnzArt;
-	for (i in window.em.hArtListe.rows) {
+	for (i=0; window.em.hArtListe.rows.length; i++) {
 		ArtIdAktuell = window.em.hArtListe.rows[i].doc._id;
 		AnzArt = window.em.hArtListe.rows.length -1;  // vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (ArtIdAktuell === localStorage.hArtId) {
 			switch (NächsteOderVorige) {
 			case "nächste":
-				if (parseInt(i) < AnzArt) {
-					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)+1].doc._id;
+				if (i < AnzArt) {
+					localStorage.hArtId = window.em.hArtListe.rows[i+1].doc._id;
 					window.em.leereStoragehArtEdit("ohneId");
 					window.em.initiierehArtEdit();
 					return;
@@ -8936,8 +8936,8 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 				}
 				break;
 			case "vorige":
-				if (parseInt(i) > 0) {
-					localStorage.hArtId = window.em.hArtListe.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.hArtId = window.em.hArtListe.rows[i-1].doc._id;
 					window.em.leereStoragehArtEdit("ohneId");
 					window.em.initiierehArtEdit();
 					return;
@@ -9137,42 +9137,40 @@ window.em.geheZumNächstenFeld_2 = function() {
 		AnzFelder = window.em.Feldliste.rows.length -1,
 		AktFeld_i,
 		AktFeld_y;
-	for (i in window.em.Feldliste.rows) {
-		if (typeof i !== "function") {
-			// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-			AktFeld_i = window.em.Feldliste.rows[i].doc;
-			// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-			if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
-				// Nur eigene und offizielle Felder berücksichtigen
-				FeldIdAktuell = window.em.Feldliste.rows[i].doc._id;
-				if (FeldIdAktuell === localStorage.FeldId) {
-					// das ist das aktuelle Feld
-					// von hier aus vorwärts das nächste eigene oder offizielle suchen
-					if (parseInt(i) < AnzFelder) {
-						// das aktuelle Feld ist nicht das letzte
-						for (y = parseInt(i)+1; y <= AnzFelder; y++) {
-							// alle verbleibenden Felder durchlaufen, eigenes suchen
-							AktFeld_y = window.em.Feldliste.rows[y].doc;
-							// Nur eigene Felder und offizielle berücksichtigen
-							if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
-								// das ist das nächste eigene Feld > öffnen
-								localStorage.FeldId = window.em.Feldliste.rows[parseInt(i)+1].doc._id;
-								window.em.leereStorageFeldEdit("ohneId");
-								window.em.initiiereFeldEdit();
+	for (i=0; window.em.Feldliste.rows.length; i++) {
+		// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+		AktFeld_i = window.em.Feldliste.rows[i].doc;
+		// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
+			// Nur eigene und offizielle Felder berücksichtigen
+			FeldIdAktuell = window.em.Feldliste.rows[i].doc._id;
+			if (FeldIdAktuell === localStorage.FeldId) {
+				// das ist das aktuelle Feld
+				// von hier aus vorwärts das nächste eigene oder offizielle suchen
+				if (i < AnzFelder) {
+					// das aktuelle Feld ist nicht das letzte
+					for (y = i+1; y <= AnzFelder; y++) {
+						// alle verbleibenden Felder durchlaufen, eigenes suchen
+						AktFeld_y = window.em.Feldliste.rows[y].doc;
+						// Nur eigene Felder und offizielle berücksichtigen
+						if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
+							// das ist das nächste eigene Feld > öffnen
+							localStorage.FeldId = window.em.Feldliste.rows[i+1].doc._id;
+							window.em.leereStorageFeldEdit("ohneId");
+							window.em.initiiereFeldEdit();
+							return;
+						} else {
+							if (y === AnzFelder) {
+								// am letzten Feld angelangt und es ist kein eigenes
+								window.em.melde("Das ist das letzte Feld");
 								return;
-							} else {
-								if (y === AnzFelder) {
-									// am letzten Feld angelangt und es ist kein eigenes
-									window.em.melde("Das ist das letzte Feld");
-									return;
-								}
 							}
 						}
-					} else {
-						// das aktuelle Feld ist das letzte
-						window.em.melde("Das ist das letzte Feld");
-						return;
 					}
+				} else {
+					// das aktuelle Feld ist das letzte
+					window.em.melde("Das ist das letzte Feld");
+					return;
 				}
 			}
 		}
@@ -9206,45 +9204,43 @@ window.em.geheZumVorigenFeld_2 = function() {
 		AnzFelder = window.em.Feldliste.rows.length -1,
 		AktFeld_i,
 		AktFeld_y;
-	for (i in window.em.Feldliste.rows) {
-		if (typeof i !== "function") {
-			// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
-			AktFeld_i = window.em.Feldliste.rows[i].doc;
-			// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
-			if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
-				// Nur eigene und offizielle Felder berücksichtigen
-				FeldIdAktuell = window.em.Feldliste.rows[i].doc._id;
-				if (FeldIdAktuell === localStorage.FeldId) {
-					// das ist das aktuelle Feld
-					// von hier aus rückwärts das nächste eigene oder offizielle suchen
-					if (parseInt(i) > 0) {
-						// das aktuelle Feld ist nicht das erste 
-						for (y = parseInt(i)-1; y >= 0; y--) {
-							// alle vorhergehenden Felder durchlaufen, eigenes suchen
-							AktFeld_y = window.em.Feldliste.rows[y].doc;
-							// Nur eigene Felder und offizielle berücksichtigen
-							if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
-								// das ist das nächstvorherige eigene Feld > öffnen
-								FeldIdVoriges = window.em.Feldliste.rows[parseInt(i)-1].doc._id;
-								localStorage.FeldId = FeldIdVoriges;
-								window.em.leereStorageFeldEdit("ohneId");
-								window.em.initiiereFeldEdit();
+	for (i=0; window.em.Feldliste.rows.length; i++) {
+		// alle Felder durchlaufen, aktuelles eigenes oder offizielles suchen
+		AktFeld_i = window.em.Feldliste.rows[i].doc;
+		// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
+		if (AktFeld_i.User === localStorage.Email || AktFeld_i.User === "ZentrenBdKt") {
+			// Nur eigene und offizielle Felder berücksichtigen
+			FeldIdAktuell = window.em.Feldliste.rows[i].doc._id;
+			if (FeldIdAktuell === localStorage.FeldId) {
+				// das ist das aktuelle Feld
+				// von hier aus rückwärts das nächste eigene oder offizielle suchen
+				if (i > 0) {
+					// das aktuelle Feld ist nicht das erste 
+					for (y = i-1; y >= 0; y--) {
+						// alle vorhergehenden Felder durchlaufen, eigenes suchen
+						AktFeld_y = window.em.Feldliste.rows[y].doc;
+						// Nur eigene Felder und offizielle berücksichtigen
+						if (AktFeld_y.User === localStorage.Email || AktFeld_y.User === "ZentrenBdKt") {
+							// das ist das nächstvorherige eigene Feld > öffnen
+							FeldIdVoriges = window.em.Feldliste.rows[i-1].doc._id;
+							localStorage.FeldId = FeldIdVoriges;
+							window.em.leereStorageFeldEdit("ohneId");
+							window.em.initiiereFeldEdit();
+							return;
+						} else {
+							if (y === 1) {
+								// am ersten Feld angelangt und es ist kein eigenes
+								// wir gehen zur Feldliste
+								window.em.geheZurueckFE();
 								return;
-							} else {
-								if (y === 1) {
-									// am ersten Feld angelangt und es ist kein eigenes
-									// wir gehen zur Feldliste
-									window.em.geheZurueckFE();
-									return;
-								}
 							}
 						}
-					} else {
-						// das aktuelle Feld ist das erste
-						// wir gehen zur Feldliste
-						window.em.geheZurueckFE();
-						return;
 					}
+				} else {
+					// das aktuelle Feld ist das erste
+					// wir gehen zur Feldliste
+					window.em.geheZurueckFE();
+					return;
 				}
 			}
 		}
@@ -9485,14 +9481,14 @@ window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 	var i,
 		BeobIdAktuell,
 		AnzBeob;
-	for (i in window.em.BeobListe.rows) {
+	for (i=0; window.em.BeobListe.rows.length; i++) {
 		BeobIdAktuell = window.em.BeobListe.rows[i].doc._id;
 		AnzBeob = window.em.BeobListe.rows.length -1;		// vorsicht: Objekte zählen Elemente ab 1, Arrays ab 0!
 		if (BeobIdAktuell === localStorage.BeobId) {
 			switch (NächsteOderVorige) {
 			case "nächste":
-				if (parseInt(i) < AnzBeob) {
-					localStorage.BeobId = window.em.BeobListe.rows[parseInt(i)+1].doc._id;
+				if (i < AnzBeob) {
+					localStorage.BeobId = window.em.BeobListe.rows[i+1].doc._id;
 					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
@@ -9502,8 +9498,8 @@ window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 				}
 				break;
 			case "vorige":
-				if (parseInt(i) > 0) {
-					localStorage.BeobId = window.em.BeobListe.rows[parseInt(i)-1].doc._id;
+				if (i > 0) {
+					localStorage.BeobId = window.em.BeobListe.rows[i-1].doc._id;
 					window.em.leereStorageBeobEdit("ohneId");
 					window.em.initiiereBeobEdit();
 					return;
