@@ -8064,7 +8064,7 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 	}
 };
 
-// alle benötigten Projekte holen
+// alle benötigten Räume holen
 window.em.erstelleKarteH_3 = function(hOrteLatLng, hProjektListe) {
 	if (!window.em.hRaum && !window.em.hRaumListe) {
 		$db = $.couch.db("evab");
@@ -8152,7 +8152,6 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				});
 				rName = raum_row.doc.rName;
 			}
-
 			latlng_ort = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
 			if (anzOrt === 1) {
 				// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
@@ -8201,18 +8200,70 @@ window.em.makeMapListener = function(map, marker, contentString) {
 	});
 };
 
-// wird benutzt in hOrtEdit.html
+// wenn nötig Ort holen
 window.em.erstelleKartehOrtEdit = function() {
+	if (!window.em.hOrt) {
+		if (localStorage.OrtId) {
+			$db = $.couch.db("evab");
+			$db.openDoc(localStorage.OrtId, {
+				success: function(doc) {
+					window.em.hOrt = doc;
+					window.em.erstelleKartehOrtEdit_2(doc);
+				}
+			});
+		} else {
+			window.em.melde("Fehler: Kein Ort verfügbar");
+			return;
+		}
+	} else {
+		window.em.erstelleKartehOrtEdit_2(window.em.hOrt);
+	}
+};
+
+// alle benötigten Projekte holen
+window.em.erstelleKartehOrtEdit_2 = function(ort) {
+	if (!window.em.hProjekt && !window.em.hProjektListe) {
+		$db = $.couch.db("evab");
+		$db.view("evab/hProjListe?include_docs=true", {
+			success: function (data) {
+				window.em.hProjektListe = data;
+				window.em.erstelleKartehOrtEdit_3(ort, data);
+			}
+		});
+	} else {
+		window.em.erstelleKartehOrtEdit_3(ort, window.em.hProjektListe);
+	}
+};
+
+// alle benötigten Räume holen
+window.em.erstelleKartehOrtEdit_3 = function(ort, hProjektListe) {
+	if (!window.em.hRaum && !window.em.hRaumListe) {
+		$db = $.couch.db("evab");
+		$db.view("evab/hRaumListe?include_docs=true", {
+			success: function (data) {
+				// window.em.hRaumListe nicht aktualisieren
+				window.em.erstelleKartehOrtEdit_4(ort, hProjektListe, data);
+			}
+		});
+	} else {
+		window.em.erstelleKartehOrtEdit_4(ort, hProjektListe, window.em.hRaumListe);
+	}
+};
+
+// wird benutzt in hOrtEdit.html
+window.em.erstelleKartehOrtEdit_4 = function(ort, hProjektListe, hRaumListe) {
 	var map,
 		verorted,
 		lat,
 		lng,
 		ZoomLevel,
-		latlng,
+		latlng_mapcenter,
 		options,
 		// title muss String sein
 		title = "",
+		projekt_row,
 		pName = "",
+		raum_row,
 		rName = "",
 		oName = "",
 		marker,
@@ -8221,15 +8272,29 @@ window.em.erstelleKartehOrtEdit = function() {
 		// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 44;
 	// Fehlermeldung verhindern, falls kein window.em.hOrt existiert
-	if (window.em.hOrt && window.em.hOrt.oName) {
-		title = window.em.hOrt.oName.toString();
-		oName = window.em.hOrt.oName;
+	if (window.em.hOrt) {
+		if (window.em.hOrt.oName) {
+			title = window.em.hOrt.oName.toString();
+			oName = window.em.hOrt.oName;
+		}
 	}
 	if (window.em.hProjekt && window.em.hProjekt.pName) {
 		pName = window.em.hProjekt.pName;
+	} else if (localStorage.ProjektId) {
+		// pName aus hProjektListe holen
+		projekt_row = _.find(hProjektListe.rows, function(row) {
+			return row.doc._id === localStorage.ProjektId;
+		});
+		pName = projekt_row.doc.pName;
 	}
 	if (window.em.hRaum && window.em.hRaum.rName) {
 		rName = window.em.hRaum.rName;
+	} else if (localStorage.RaumId) {
+		// rName aus hRaumListe holen
+		raum_row = _.find(hRaumListe.rows, function(row) {
+			return row.doc._id === localStorage.RaumId;
+		});
+		rName = raum_row.doc.rName;
 	}
 	$("#MapCanvas").css("height", contentHeight + "px");
 	if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
@@ -8243,39 +8308,35 @@ window.em.erstelleKartehOrtEdit = function() {
 		ZoomLevel = 12;
 		verorted = false;
 	}
-	latlng = new google.maps.LatLng(lat, lng);
+	latlng_mapcenter = new google.maps.LatLng(lat, lng);
 	options = {
 		zoom: ZoomLevel,
-		center: latlng,
+		center: latlng_mapcenter,
 		streetViewControl: false,
 		mapTypeId: google.maps.MapTypeId.HYBRID
 	};
 	map = new google.maps.Map(document.getElementById("MapCanvas"),options);
 	if (verorted === true) {
 		marker = new google.maps.Marker({
-			position: latlng, 
+			position: latlng_mapcenter, 
 			map: map,
 			title: title,
 			draggable: true
 		});
 		// Marker in Array speichern, damit er gelöscht werden kann
 		window.em.markersArray.push(marker);
-		contentString = '<div id="content">'+
-				'<div id="siteNotice">'+
-				'</div>'+
-				'<div id="bodyContent" class="GmInfowindow">'+
-				'<p>Projekt: ' + pName + '</p>'+
-				'<p>Raum: ' + rName + '</p>'+
-				'<p>Ort: ' + oName + '</p>'+
-				'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
-				'</div>'+
-				'</div>';
+		contentString = '<div class="GmInfowindow">';
+		contentString += '<p>Projekt: ' + pName + '</p>';
+		contentString += '<p>Raum: ' + rName + '</p>';
+		contentString += '<p>Ort: ' + oName + '</p>';
+		contentString += '<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>';
+		contentString += '</div>';
 		infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
 		window.em.InfoWindowArray.push(infowindow);
 		google.maps.event.addListener(marker, 'click', function () {
-		infowindow.open(map,marker);
+			infowindow.open(map,marker);
 		});
 		google.maps.event.addListener(marker, "dragend", function (event) {
 			window.em.SetLocationhOrtEdit(event.latLng, map, marker);
@@ -8312,8 +8373,8 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		image,
 		lat,
 		lng,
-		latlng,
-		latlng2,
+		latlng_mapcenter,
+		latlng_beob,
 		options,
 		map,
 		bounds,
@@ -8331,10 +8392,10 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		// Beobachtungen vorhanden: Karte aufbauen
 		lat = 47.383333;
 		lng = 8.533333;
-		latlng = new google.maps.LatLng(lat, lng);
+		latlng_mapcenter = new google.maps.LatLng(lat, lng);
 		options = {
 			zoom: 15,
-			center: latlng,
+			center: latlng_mapcenter,
 			streetViewControl: false,
 			mapTypeId: google.maps.MapTypeId.HYBRID
 		};
@@ -8350,24 +8411,24 @@ window.em.erstelleKarteBeobListe_2 = function() {
 				artgruppenname = "unbenannt.png";
 			}
 			image = "Artgruppenbilder/" + artgruppenname;
-			latlng2 = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
+			latlng_beob = new google.maps.LatLng(beob.oLatitudeDecDeg, beob.oLongitudeDecDeg);
 			if (anzBeob === 1) {
 				// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-				latlng = latlng2;
+				latlng_mapcenter = latlng_beob;
 			} else {
 				// Kartenausschnitt um diese Koordinate erweitern
-				bounds.extend(latlng2);
+				bounds.extend(latlng_beob);
 			}
 			marker = new MarkerWithLabel({ 
 				map: map,
-				position: latlng2,
+				position: latlng_beob,
 				// title muss String sein
 				title: beob.aArtName.toString() || "",
-				icon: image,
+				//icon: image,
 				labelContent: beob.aArtName,
-				labelAnchor: new google.maps.Point(22, 0),
+				labelAnchor: new google.maps.Point(75, 0),
 				labelClass: "MapLabel", // the CSS class for the label
-				labelStyle: {opacity: 0.75}
+				//labelStyle: {opacity: 0.75}
 			});
 			markers.push(marker);
 			contentString = '<div id="content">'+
@@ -8389,7 +8450,7 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		markerCluster = new MarkerClusterer(map, markers, mcOptions);
 		if (anzBeob === 1) {
 			// map.fitbounds setzt zu hohen zoom, wenn nur eine Beobachtung erfasst wurde > verhindern
-			map.setCenter(latlng);
+			map.setCenter(latlng_mapcenter);
 			map.setZoom(18);
 		} else {
 			// Karte auf Ausschnitt anpassen
@@ -8404,7 +8465,7 @@ window.em.erstelleKarteBeobEdit = function() {
 		lat,
 		lng,
 		ZoomLevel,
-		latlng,
+		latlng_mapcenter,
 		options,
 		mapcanvas,
 		image,
@@ -8426,10 +8487,10 @@ window.em.erstelleKarteBeobEdit = function() {
 		ZoomLevel = 12;
 		verorted = false;
 	}
-	latlng = new google.maps.LatLng(lat, lng);
+	latlng_mapcenter = new google.maps.LatLng(lat, lng);
 	options = {
 		zoom: ZoomLevel,
-		center: latlng,
+		center: latlng_mapcenter,
 		streetViewControl: false,
 		mapTypeId: google.maps.MapTypeId.HYBRID
 	};
@@ -8443,7 +8504,7 @@ window.em.erstelleKarteBeobEdit = function() {
 	image = "Artgruppenbilder/" + artgruppenname;
 	if (verorted === true) {
 		marker = new google.maps.Marker({
-			position: latlng, 
+			position: latlng_mapcenter, 
 			map: map,
 			// title muss String sein
 			title: localStorage.aArtName.toString() || "",
