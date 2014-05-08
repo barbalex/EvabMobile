@@ -3004,11 +3004,8 @@ window.em.holeArtenliste = function(filterwert) {
 // bekommt eine Artenliste und baut damit im Formular die Artenliste auf
 // filterwert: übergebener Teil aus der Artbezeichnung
 window.em.erstelleArtenliste = function(filterwert) {
-	var i,
-		html_temp = "",
-		html = "",
+	var html = "",
 		ArtBezeichnung,
-		Art,
 		artenliste_gefiltert;
 	// gefiltert werden muss nur, wenn mehr als 200 Arten aufgelistet würden
 	if (window.em.Artenliste.length > 0) {
@@ -3019,49 +3016,36 @@ window.em.erstelleArtenliste = function(filterwert) {
 				return ArtBezeichnung.toLowerCase().indexOf(filterwert) > -1;
 			});
 			if (artenliste_gefiltert.length > 0) {
+				if (artenliste_gefiltert.length > 200) {
+					html = '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Versuchen Sie einen strengeren Filter</li>';
+				} else {
+					html = '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert</li>';
+				}
 				// html der ersten 200 aufbauen
 				_.each(_.first(artenliste_gefiltert, 200), function(art) {
 					ArtBezeichnung = art.key[2];
-					html_temp += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
+					html += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
 				});
-				html += html_temp;
-				if (artenliste_gefiltert.length > 200) {
-					html += '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Versuchen Sie einen strengeren Filter</li>';
-				} else {
-					html += '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert</li>';
-				}
+				
 			} else {
-				html += '<li class="artlistenhinweis">Keine Arten gefunden</li>';
+				html = '<li class="artlistenhinweis">Keine Arten gefunden</li>';
 			}
 		} else {
 			// kein Filter gesetzt
 			if (window.em.Artenliste.length > 200) {
-				// die ersten 200 anzeigen
-				artenliste_loop_2:
-				for (i=0; i<window.em.Artenliste.length; i++) {
-					if (i<200) {
-						ArtBezeichnung = window.em.Artenliste[i].key[2];
-						Art = window.em.Artenliste[i].doc;
-						html_temp += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
-					} else if (i === 200) {
-						html += '<li class="artlistenhinweis">Die Artengruppe hat ' + window.em.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
-						break artenliste_loop_2;
-					}
-				}
-				html += html_temp;
+				html = '<li class="artlistenhinweis">Die Artengruppe hat ' + window.em.Artenliste.length + ' Arten.<br>Um Mobilgeräte nicht zu überfordern, <b>werden nur die ersten 200 angezeigt</b>.<br>Tipp: Setzen Sie einen Filter</li>';
 			} else {
-				// weniger als 200 Arten, kein Filter. Alle anzeigen
-				html += '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten angezeigt</li>';
-				_.each(window.em.Artenliste, function(art_objekt) {
-					ArtBezeichnung = art_objekt.key[2];
-					Art = art_objekt.doc;
-					html += window.em.holeHtmlFürArtInArtenliste(Art, ArtBezeichnung);
-				});
+				html = '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten</li>';
 			}
+			// erste zweihundert anzeigen
+			_.each(_.first(window.em.Artenliste, 200), function(art) {
+				ArtBezeichnung = art.key[2];
+				html += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
+			});
 		}
 	} else {
 		//Artenliste.length ==== 0
-		html += '<li class="artlistenhinweis">Die Artengruppe enthält keine Arten</li>';
+		html = '<li class="artlistenhinweis">Die Artengruppe enthält keine Arten</li>';
 	}
 	$("#al_ArtenListe").html(html);
 	$("#al_ArtenListe").show();
