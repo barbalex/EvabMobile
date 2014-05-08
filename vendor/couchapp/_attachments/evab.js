@@ -4362,21 +4362,17 @@ window.em.handleFelderWaehlenPageinit = function() {
 // wenn in FelderWaehlen.html input[name='Felder'] geändert wird
 // Felder speichern (checkbox)
 window.em.handleFelderWaehlenInputFelderChange = function() {
-	var i,
-		FeldName = $(this).prop("id"),
+	var FeldName = $(this).prop("id"),
 		FeldId = $(this).attr("feldid"),
 		Feld,
-		FeldPosition,
+		feldrow,
 		feld_mit_sichtbarkeit,
 		sichtbar_fuer_benutzer,
 		idx;
-	for (i in window.em[localStorage.FeldlisteFwName].rows) {
-		if (window.em[localStorage.FeldlisteFwName].rows[i].doc._id === FeldId) {
-			Feld = window.em[localStorage.FeldlisteFwName].rows[i].doc;
-			FeldPosition = parseInt(i);
-			break;
-		}
-	}
+	feldrow = _.find(window.em[localStorage.FeldlisteFwName].rows, function(row) {
+		return row.doc._id === FeldId;
+	});
+	Feld = feldrow.doc;
 	// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
 	if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 		feld_mit_sichtbarkeit = "SichtbarImModusEinfach";
@@ -4398,10 +4394,8 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 	// Änderung in DB speichern
 	$db.saveDoc(Feld, {
 		success: function(data) {
-			// neue rev holen
+			// neue rev holen (aktualisiert auch Feldliste-Objekt)
 			Feld._rev = data.rev;
-			// Änderung in Feldliste-Objekt speichern
-			window.em[localStorage.FeldlisteFwName].rows[FeldPosition].doc = Feld;
 		},
 		error: function() {
 			window.em.melde("Fehler: nicht gespeichert<br>Vielleicht klicken Sie zu schnell?");
