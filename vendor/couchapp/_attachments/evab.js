@@ -6369,13 +6369,10 @@ window.em.löscheOrt_2 = function() {
 	$db.removeDoc(window.em.hOrt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
-			if (window.em.OrtListe) {
-				for (i in window.em.OrtListe.rows) {
-					if (window.em.OrtListe.rows[i].doc._id === data.id) {
-						window.em.OrtListe.rows.splice(i, 1);
-						break;
-					}
-				}
+			if (window.em.OrtListe && window.em.OrtListe.rows) {
+				window.em.OrtListe.rows = _.reject(window.em.OrtListe.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine Ortliste mehr. Storage löschen
 				window.em.leereStorageOrtListe("mitLatLngListe");
@@ -6929,15 +6926,11 @@ window.em.löscheRaum_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hRaum, {
 		success: function(data) {
-			var i;
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.RaumListe) {
-				for (i in window.em.RaumListe.rows) {
-					if (window.em.RaumListe.rows[i].doc._id === data.id) {
-						window.em.RaumListe.rows.splice(i, 1);
-						break;
-					}
-				}
+				window.em.RaumListe.rows = _.reject(window.em.RaumListe.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine Raumliste mehr. Storage löschen
 				window.em.leereStorageRaumListe("mitLatLngListe");
@@ -7514,15 +7507,11 @@ window.em.löscheZeit_2 = function() {
 	$db = $.couch.db("evab");
 	$db.removeDoc(window.em.hZeit, {
 		success: function(data) {
-			var i;
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.ZeitListe) {
-				for (i in window.em.ZeitListe.rows) {
-					if (window.em.ZeitListe.rows[i].doc._id === data.id) {
-						window.em.ZeitListe.rows.splice(i, 1);
-						break;
-					}
-				}
+				window.em.ZeitListe.rows = _.reject(window.em.ZeitListe.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine ZeitListe mehr. Storage löschen
 				window.em.leereStorageZeitListe();
