@@ -1221,6 +1221,7 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 };
 
 window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
+	console.log("window.em.speichereFelderAusLocalStorageInObjektliste_2");
 	// in allen Objekten in der Objektliste
 	var DsBulkListe = {},
 		Docs = [],
@@ -1246,23 +1247,6 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 						delete doc[feldname];
 					}
 				});
-				/* löschen, wenn kein Fehler durch neue Variante
-				for (y in FelderArray) {
-					if (typeof y !== "function") {
-						// und ihre Werte aktualisieren
-						if (localStorage[FelderArray[y]]) {
-							if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "integer") {
-								doc[FelderArray[y]] = parseInt(localStorage[FelderArray[y]], 10);
-							} else if (window.em.myTypeOf(localStorage[FelderArray[y]]) === "float") {
-								doc[FelderArray[y]] = parseFloat(localStorage[FelderArray[y]]);
-							} else {
-								doc[FelderArray[y]] = localStorage[FelderArray[y]];
-							}
-						} else {
-							delete doc[FelderArray[y]];
-						}
-					}
-				}*/
 				Docs.push(doc);
 			}
 		});
@@ -1275,23 +1259,20 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 			data: JSON.stringify(DsBulkListe)
 		}).done(function(data) {
 			var z,
-				k;
+				k,
+				objekt,
+				doc;
 			// _rev in den Objekten in Objektliste aktualisieren
 			// für alle zurückgegebenen aktualisierten Zeilen
 			// offenbar muss data zuerst geparst werden ??!!
 			data = JSON.parse(data);
 			for (z in data) {
 				// das zugehörige Objekt in der Objektliste suchen
-				for (k in window.em[ObjektlistenName].rows) {
-					row = window.em[ObjektlistenName].rows[k].doc;
-					if (typeof k !== "function") {
-						// und dessen rev aktualisieren
-						if (row._id === data[z].id) {
-							row._rev = data[z].rev;
-							break;
-						}
-					}
-				}
+				objekt = _.find(window.em[ObjektlistenName].rows, function(row) {
+					doc = row.doc;
+					return doc._id === data[z].id;
+				});
+				objekt._rev = data[z].rev;
 			}
 		});
 	}
@@ -4987,29 +4968,26 @@ window.em.erstelleDynamischeFelderhArtEditListe = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	var Feld = {},
-		i,
 		FeldName,
 		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
-	for (i in window.em.FeldlistehArtEditListe.rows) {
-		if (typeof i !== "function") {
-			Feld = window.em.FeldlistehArtEditListe.rows[i].doc;
-			FeldName = Feld.FeldName;
-			// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
-			// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
-				if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
-					FeldWert = Feld.Standardwert[window.em.hArt.User];
-					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-					window.em.hArt[FeldName] = FeldWert;
-				} else {
-					//"" verhindert, dass im Feld undefined erscheint
-					FeldWert = window.em.hArt[FeldName] || "";
-				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
+		Feld = row.doc;
+		FeldName = Feld.FeldName;
+		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
+		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
+		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
+				FeldWert = Feld.Standardwert[window.em.hArt.User];
+				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+				window.em.hArt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert, dass im Feld undefined erscheint
+				FeldWert = window.em.hArt[FeldName] || "";
 			}
+			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
 		}
-	}
+	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
 		$db = $.couch.db("evab");
@@ -6133,13 +6111,10 @@ window.em.löscheProjekt_2 = function() {
 	$db.removeDoc(window.em.hProjekt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
-			if (window.em.Projektliste) {
-				for (i in window.em.Projektliste.rows) {
-					if (window.em.Projektliste.rows[i].doc._id === data.id) {
-						window.em.Projektliste.rows.splice(i, 1);
-						break;
-					}
-				}
+			if (window.em.Projektliste && window.em.Projektliste.rows) {
+				window.em.Projektliste.rows = _.reject(window.em.Projektliste.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine Projektliste mehr. Storage löschen
 				window.em.leereStorageProjektListe("mitLatLngListe");
