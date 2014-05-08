@@ -8049,7 +8049,37 @@ window.em.erstelleKarteH = function(viewname) {
 	}
 };
 
+// alle benötigten Projekte holen
 window.em.erstelleKarteH_2 = function(hOrteLatLng) {
+	if (!window.em.hProjekt && !window.em.hProjektListe) {
+		$db = $.couch.db("evab");
+		$db.view("evab/hProjListe?include_docs=true", {
+			success: function (data) {
+				window.em.hProjektListe = data;
+				window.em.erstelleKarteH_3(hOrteLatLng, data);
+			}
+		});
+	} else {
+		window.em.erstelleKarteH_3(hOrteLatLng, window.em.hProjektListe);
+	}
+};
+
+// alle benötigten Projekte holen
+window.em.erstelleKarteH_3 = function(hOrteLatLng, hProjektListe) {
+	if (!window.em.hRaum && !window.em.hRaumListe) {
+		$db = $.couch.db("evab");
+		$db.view("evab/hRaumListe?include_docs=true", {
+			success: function (data) {
+				// window.em.hRaumListe nicht aktualisieren
+				window.em.erstelleKarteH_4(hOrteLatLng, hProjektListe, data);
+			}
+		});
+	} else {
+		window.em.erstelleKarteH_4(hOrteLatLng, hProjektListe, window.em.hRaumListe);
+	}
+};
+
+window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 	var anzOrt = 0,
 		Ort,
 		lat,
@@ -8057,7 +8087,9 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 		latlng,
 		options,
 		map,
+		projekt_row,
 		pName,
+		raum_row,
 		rName,
 		bounds,
 		markers,
@@ -8066,8 +8098,7 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 		marker,
 		contentString,
 		mcOptions,
-		markerCluster,
-		i;
+		markerCluster;
 
 	// Orte zählen
 	if (hOrteLatLng.rows) {
@@ -8095,8 +8126,9 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 		bounds = new google.maps.LatLngBounds();
 		// für alle Orte Marker erstellen
 		markers = [];
-		for (i in hOrteLatLng.rows) {
-			Ort = hOrteLatLng.rows[i].doc;
+
+		_.each(hOrteLatLng.rows, function(row) {
+			Ort = row.doc;
 			hOrtId = Ort._id;
 
 			// Infos für Infowindow holen
@@ -8104,9 +8136,21 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 			rName = "";
 			if (window.em.hProjekt && window.em.hProjekt.pName) {
 				pName = window.em.hProjekt.pName;
+			} else {
+				// pName aus hProjektListe holen
+				projekt_row = _.find(hProjektListe.rows, function(row) {
+					return row.doc._id === Ort.hProjektId;
+				});
+				pName = projekt_row.doc.pName;
 			}
 			if (window.em.hRaum && window.em.hRaum.rName) {
 				rName = window.em.hRaum.rName;
+			} else {
+				// rName aus hRaumListe holen
+				raum_row = _.find(hRaumListe.rows, function(row) {
+					return row.doc._id === Ort.hRaumId;
+				});
+				rName = raum_row.doc.rName;
 			}
 
 			latlng2 = new google.maps.LatLng(Ort.oLatitudeDecDeg, Ort.oLongitudeDecDeg);
@@ -8128,19 +8172,15 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 				labelStyle: {opacity: 0.75}
 			});
 			markers.push(marker);
-			contentString = '<div id="content">'+
-				'<div id="siteNotice">'+
-				'</div>'+
-				'<div id="bodyContent" class="GmInfowindow">'+
+			contentString = '<div class="GmInfowindow">'+
 				'<p>Projekt: ' + pName + '</p>'+
 				'<p>Raum: ' + rName + '</p>'+
 				'<p>Ort: ' + Ort.oName + '</p>'+
 				'<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>'+
 				"<p><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>"+
-				'</div>'+
 				'</div>';
 			window.em.makeMapListener(map, marker, contentString);
-		}
+		});
 		mcOptions = {maxZoom: 17};
 		markerCluster = new MarkerClusterer(map, markers, mcOptions);
 		if (anzOrt === 1) {
