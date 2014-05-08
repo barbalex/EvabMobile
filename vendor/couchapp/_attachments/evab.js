@@ -8170,13 +8170,13 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				labelClass: "MapLabel", // the CSS class for the label
 			});
 			markers.push(marker);
-			contentString = '<div class="GmInfowindow">';
-			contentString += '<p>Projekt: ' + pName + '</p>';
-			contentString += '<p>Raum: ' + rName + '</p>';
-			contentString += '<p>Ort: ' + Ort.oName + '</p>';
-			contentString += '<p>Koordinaten: ' + Ort.oXKoord + ' / ' + Ort.oYKoord + '</p>';
-			contentString += "<p><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></p>";
-			contentString += '</div>';
+			contentString = '<table class="kartenlegende_tabelle">';
+			contentString += '<tr><td>Projekt:</td><td>' + pName + '</td></tr>';
+			contentString += '<tr><td>Raum:</td><td>' + rName + '</td></tr>';
+			contentString += '<tr><td>Ort:</td><td>' + Ort.oName + '</td></tr>';
+			contentString += '<tr><td>Koordinaten:</td><td>' + Ort.oXKoord + "/" + Ort.oYKoord + '</td></tr>';
+			contentString += "<tr><td><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></td><td></td></tr>";
+			contentString += '</table>';
 			window.em.makeMapListener(map, marker, contentString);
 		});
 		mcOptions = {maxZoom: 17};
@@ -8325,12 +8325,12 @@ window.em.erstelleKartehOrtEdit_4 = function(ort, hProjektListe, hRaumListe) {
 		});
 		// Marker in Array speichern, damit er gelöscht werden kann
 		window.em.markersArray.push(marker);
-		contentString = '<div class="GmInfowindow">';
-		contentString += '<p>Projekt: ' + pName + '</p>';
-		contentString += '<p>Raum: ' + rName + '</p>';
-		contentString += '<p>Ort: ' + oName + '</p>';
-		contentString += '<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>';
-		contentString += '</div>';
+		contentString = '<table class="kartenlegende_tabelle">';
+		contentString += '<tr><td>Projekt:</td><td>' + pName + '</td></tr>';
+		contentString += '<tr><td>Raum:</td><td>' + rName + '</td></tr>';
+		contentString += '<tr><td>Ort:</td><td>' + oName + '</td></tr>';
+		contentString += '<tr><td>Koordinaten:</td><td>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</td></tr>';
+		contentString += '</table>';
 		infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
@@ -8367,8 +8367,7 @@ window.em.erstelleKarteBeobListe = function() {
 };
 
 window.em.erstelleKarteBeobListe_2 = function() {
-	var i,
-		anzBeob = window.em.BeobListeLatLng.rows.length,
+	var anzBeob = window.em.BeobListeLatLng.rows.length,
 		beob,
 		image,
 		lat,
@@ -8404,8 +8403,8 @@ window.em.erstelleKarteBeobListe_2 = function() {
 		bounds = new google.maps.LatLngBounds();
 		// für alle Beobachtungen Marker erstellen
 		markers = [];
-		for (i in window.em.BeobListeLatLng.rows) {
-			beob = window.em.BeobListeLatLng.rows[i].doc;
+		_.each(window.em.BeobListeLatLng.rows, function(row) {
+			beob = row.doc;
 			artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png";
 			if (beob.aArtGruppe === "DiverseInsekten") {
 				artgruppenname = "unbenannt.png";
@@ -8430,17 +8429,18 @@ window.em.erstelleKarteBeobListe_2 = function() {
 				labelClass: "MapLabel", // the CSS class for the label
 			});
 			markers.push(marker);
-			contentString = '<h4 class="GmInfowindow">' + beob.aArtName + '</h4>';
-			contentString += '<div class="GmInfowindow">';
-			contentString += '<p>Art-Gruppe: ' + beob.aArtGruppe + '</p>';
-			contentString += '<p>Autor: ' + beob.aAutor + '</p>';
-			contentString += '<p>Datum: ' + beob.zDatum + '</p>';
-			contentString += '<p>Zeit: ' + beob.zUhrzeit + '</p>';
-			contentString += '<p>Koordinaten: ' + beob.oXKoord + " / " + beob.oYKoord + '</p>';
-			contentString += "<p><a <a href=\"#\" onclick=\"window.em.oeffneBeob('" + beob._id + "')\">bearbeiten<\/a></p>";
-			contentString += '</div>';
+			contentString = '<h4 class="map_infowindow_title">' + beob.aArtName + '</h4>';
+			contentString += '<table class="kartenlegende_tabelle">';
+			contentString += '<tr><td>Art-Gruppe:</td><td>' + beob.aArtGruppe + '</td></tr>';
+			if (beob.aAutor) {
+				contentString += '<tr><td>Autor:</td><td>' + beob.aAutor + '</td></tr>';
+			}
+			contentString += '<tr><td>Datum:</td><td>' + beob.zDatum + '</td></tr>';
+			contentString += '<tr><td>Zeit:</td><td>' + beob.zUhrzeit + '</td></tr>';
+			contentString += '<tr><td>Koordinaten:</td><td>' + beob.oXKoord + "/" + beob.oYKoord + '</td></tr>';
+			contentString += '</table>';
 			window.em.makeMapListener(map, marker, contentString);
-		}
+		});
 		mcOptions = {maxZoom: 17};
 		markerCluster = new MarkerClusterer(map, markers, mcOptions);
 		if (anzBeob === 1) {
@@ -8489,8 +8489,7 @@ window.em.erstelleKarteBeobEdit_2 = function(beob) {
 		infowindow,
 		// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 		contentHeight = $(window).height() - 44,
-		artgruppenname,
-		beob_row;
+		artgruppenname;
 	$("#MapCanvas").css("height", contentHeight + "px");
 	if (localStorage.oLatitudeDecDeg && localStorage.oLongitudeDecDeg) {
 		lat = localStorage.oLatitudeDecDeg;
@@ -8529,16 +8528,16 @@ window.em.erstelleKarteBeobEdit_2 = function(beob) {
 		});
 		// Marker in Array speichern, damit er gelöscht werden kann
 		window.em.markersArray.push(marker); 
-		contentString = '<div id="content">'+
-			'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
-			'<div id="bodyContent" class="GmInfowindow">'+
-			'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-			'<p>Autor: ' + beob.aAutor + '</p>'+
-			'<p>Datum: ' + beob.zDatum + '</p>'+
-			'<p>Zeit: ' + beob.zUhrzeit + '</p>'+
-			'<p>Koordinaten: ' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</p>' +
-			'</div>'+
-			'</div>';
+		contentString = '<h4 class="map_infowindow_title">' + localStorage.aArtName + '</h4>';
+		contentString += '<table class="kartenlegende_tabelle">';
+		contentString += '<tr><td>Art-Gruppe:</td><td>' + localStorage.aArtGruppe + '</td></tr>';
+		if (beob.aAutor) {
+			contentString += '<tr><td>Autor:</td><td>' + beob.aAutor + '</td></tr>';
+		}
+		contentString += '<tr><td>Datum:</td><td>' + beob.zDatum + '</td></tr>';
+		contentString += '<tr><td>Zeit:</td><td>' + beob.zUhrzeit + '</td></tr>';
+		contentString += '<tr><td>Koordinaten:</td><td>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</td></tr>';
+		contentString += '</table>';
 		infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
@@ -8616,16 +8615,12 @@ window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
 	localStorage.oYKoord = window.em.DdInChY(lat, lng);
 	localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 	window.em.clearInfoWindows();
-	contentString = '<div id="content">'+
-				'<div id="siteNotice">'+
-				'</div>'+
-				'<div id="bodyContent" class="GmInfowindow">'+
-				'<p>Projekt: ' + window.em.hOrt.pName + '</p>'+
-				'<p>Raum: ' + window.em.hOrt.rName + '</p>'+
-				'<p>Ort: ' + window.em.hOrt.oName + '</p>'+
-				'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
-				'</div>'+
-				'</div>';
+	contentString = '<table class="kartenlegende_tabelle">';
+	contentString += '<tr><td>Projekt:</td><td>' + window.em.hOrt.pName + '</td></tr>';
+	contentString += '<tr><td>Raum:</td><td>' + window.em.hOrt.rName + '</td></tr>';
+	contentString += '<tr><td>Ort:</td><td>' + window.em.hOrt.oName + '</td></tr>';
+	contentString += '<tr><td>Koordinaten:</td><td>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</td></tr>';
+	contentString += '</table>';
 	infowindow = new google.maps.InfoWindow({
 		content: contentString
 	});
@@ -8648,16 +8643,20 @@ window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
 	localStorage.oYKoord = window.em.DdInChY(lat, lng);
 	localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 	window.em.clearInfoWindows();
-	contentString = '<div id="content">'+
-			'<h4 id="firstHeading" class="GmInfowindow">' + localStorage.aArtName + '</h4>'+
-			'<div id="bodyContent" class="GmInfowindow">'+
-			'<p>Art-Gruppe: ' + localStorage.aArtGruppe + '</p>'+
-			'<p>Autor: ' + $("#aAutorBE").val() + '</p>'+
-			'<p>Datum: ' + $("#zDatumBE").val() + '</p>'+
-			'<p>Zeit: ' + $("#zUhrzeitBE").val() + '</p>'+
-			'<p>Koordinaten: ' + localStorage.oXKoord + " / " + localStorage.oYKoord + '</p>' +
-			'</div>'+
-			'</div>';
+	contentString = '<h4 class="map_infowindow_title">' + localStorage.aArtName + '</h4>';
+	contentString += '<table class="kartenlegende_tabelle">';
+	contentString += '<tr><td>Art-Gruppe:</td><td>' + localStorage.aArtGruppe + '</td></tr>';
+	if (window.em.Beobachtung.aAutor) {
+		contentString += '<tr><td>Autor:</td><td>' + window.em.Beobachtung.aAutor + '</td></tr>';
+	}
+	if (window.em.Beobachtung.zDatum) {
+		contentString += '<tr><td>Datum:</td><td>' + window.em.Beobachtung.zDatum + '</td></tr>';
+	}
+	if (window.em.Beobachtung.zUhrzeit) {
+		contentString += '<tr><td>Zeit:</td><td>' + window.em.Beobachtung.zUhrzeit + '</td></tr>';
+	}
+	contentString += '<tr><td>Koordinaten:</td><td>' + localStorage.oXKoord + "/" + localStorage.oYKoord + '</td></tr>';
+	contentString += '</table>';
 	infowindow = new google.maps.InfoWindow({
 		content: contentString
 	});
