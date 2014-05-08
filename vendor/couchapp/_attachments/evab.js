@@ -8596,6 +8596,8 @@ window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
 	window.em.SetLocationBeobEdit(location, map, marker);
 };
 
+// GoogleMap: alle Marker löschen
+// benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
 window.em.clearMarkers = function() {
 	_.each(window.em.markersArray, function(marker) {
 		marker.setMap(null);
@@ -8667,26 +8669,13 @@ window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
 	window.em.speichereKoordinaten(localStorage.BeobId, "Beobachtung");
 };
 
-// GoogleMap: alle Marker löschen
-// benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
-window.em.clearMarkers = function() {
-	var i;
-	if (window.em.markersArray) {
-		for (i in window.em.markersArray) {
-			window.em.markersArray[i].setMap(null);
-		}
-	}
-};
-
 // GoogleMap: alle InfoWindows löschen
 // benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
 window.em.clearInfoWindows = function() {
-	var i;
-	if (window.em.InfoWindowArray) {
-		for (i in window.em.InfoWindowArray) {
-			window.em.InfoWindowArray[i].setMap(null);
-		}
-	}
+	_.each(window.em.InfoWindowArray, function(infowindow) {
+		infowindow.setMap(null);
+	});
+	window.em.InfoWindowArray = [];
 };
 
 window.em.handleSignupPageshow = function() {
@@ -9094,12 +9083,9 @@ window.em.löscheHArt_2 = function() {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.hArtListe) {
-				for (i in window.em.hArtListe.rows) {
-					if (window.em.hArtListe.rows[i].doc._id === data.id) {
-						window.em.hArtListe.rows.splice(i, 1);
-						break;
-					}
-				}
+				window.em.hArtListe.rows = _.reject(window.em.hArtListe.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine Beobliste mehr. Storage löschen
 				window.em.leereStoragehArtListe();
@@ -9122,24 +9108,21 @@ window.em.pruefeFeldNamen = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function(data) {
-			var i,
-			tempFeld,
-			AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
+			var tempFeld,
+				AnzEigeneOderOffizielleFelderMitSelbemNamen = 0;
 			// durch alle Felder mit demselben Artnamen laufen
 			// prüfen, ob sie eigene oder offielle sind
 			if (data.rows) {
-				for (i in data.rows) {
-					if (typeof i !== "function") {
-						if (data.rows[i].doc) {
-							tempFeld = data.rows[i].doc;
-							// ist es ein eigenes oder ein offizielles?
-							if (tempFeld.User === localStorage.Email || tempFeld.User === "ZentrenBdKt") {
-								// ja > dieser Name ist nicht zulässig
-								AnzEigeneOderOffizielleFelderMitSelbemNamen += 1;
-							}
+				_.each(data.rows, function(row) {
+					if (row.doc) {
+						tempFeld = row.doc;
+						// ist es ein eigenes oder ein offizielles?
+						if (tempFeld.User === localStorage.Email || tempFeld.User === "ZentrenBdKt") {
+							// ja > dieser Name ist nicht zulässig
+							AnzEigeneOderOffizielleFelderMitSelbemNamen ++;
 						}
 					}
-				}
+				});
 			}
 			if (AnzEigeneOderOffizielleFelderMitSelbemNamen === 0) {
 				// Feldname ist neu, somit zulässig > speichern
@@ -9206,12 +9189,9 @@ window.em.loescheFeld_2 = function() {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.Feldliste) {
-				for (i in window.em.Feldliste.rows) {
-					if (window.em.Feldliste.rows[i].doc._id === data.id) {
-						window.em.Feldliste.rows.splice(i, 1);
-						break;
-					}
-				}
+				window.em.Feldliste.rows = _.reject(window.em.Feldliste.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine Feldliste mehr. Storage löschen
 				window.em.leereStorageFeldListe();
