@@ -2441,6 +2441,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 	$.fn.serializeObject = function() {
 		var o = {},
 			a = this.serializeArray();
+		console.log("this.serializeArray = " + JSON.stringify(a));
 		$.each(a, function() {
 			if (this.value) {
 				if (o[this.name]) {
@@ -3022,9 +3023,9 @@ window.em.erstelleArtenliste = function(filterwert) {
 					html = '<li class="artlistenhinweis">' + artenliste_gefiltert.length + ' Arten gefiltert</li>';
 				}
 				// html der ersten 200 aufbauen
-				_.each(_.first(artenliste_gefiltert, 200), function(art) {
-					ArtBezeichnung = art.key[2];
-					html += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
+				_.each(_.first(artenliste_gefiltert, 200), function(art_row) {
+					ArtBezeichnung = art_row.key[2];
+					html += window.em.holeHtmlFürArtInArtenliste(art_row.doc, ArtBezeichnung);
 				});
 				
 			} else {
@@ -4824,9 +4825,9 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			// html generieren
 			htmlContainerBody += '<td>';
 
-			console.log("feld = " + JSON.stringify(feld));
-			console.log("FeldName = " + FeldName);
-			console.log("FeldWert = " + FeldWert);
+			//console.log("feld = " + JSON.stringify(feld));
+			//console.log("FeldName = " + FeldName);
+			//console.log("FeldWert = " + FeldWert);
 
 			htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldWert, true);
 			htmlContainerBody += '</td>';
@@ -5054,6 +5055,7 @@ window.em.handleHArtEditListePageinit = function() {
 
 	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
 	$("#hArtEditListeForm").on("click", ".hart", function(event) {
+		console.log("initiierre hart");
 		//event.preventDefault();
 		var hartid = $(this).attr("hartid");
 		if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
@@ -8928,9 +8930,15 @@ window.em.zuArtliste = function() {
 // Speichert alle Daten
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
-	var that = this;
+	var that = this,
+		hartid;
+	// Achtung: in hArtEditListe kann es sein, dass window.em.hArt erst gerade aktualisiert wird und momentan nicht aktuell ist!
+	// Lösung: hartid aus höher liegender tr holen und vergleichen, ob window.em.hArt dieselbe id hat
+	if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
+		hartid = $(that).closest('tr').attr("hartid");
+	}
 	// prüfen, ob hArt als Objekt vorliegt
-	if (window.em.hArt) {
+	if ((window.em.hArt && !hartid) || (window.em.hArt && hartid === window.em.hArt._id)) {
 		// dieses verwenden
 		window.em.speichereHArt_2(that);
 	} else {
@@ -8961,9 +8969,17 @@ window.em.speichereHArt_2 = function(that) {
 		// alle anderen Feldtypen
 		Feldname = that.name;
 		// nötig, damit Arrays richtig kommen
-		//Feldjson = $("[name='" + Feldname + "']").serializeObject();	// Problem: Es gibt in hArtEditListe viele Felder mit diesem Namen
-		Feldjson = $(that).serializeObject();
+		if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
+			console.log("Wir sind in hArtEditListe");
+			// hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
+			Feldjson = $(that).serializeObject();
+		} else {
+			Feldjson = $("[name='" + Feldname + "']").serializeObject();
+		}
 		Feldwert = Feldjson[Feldname];
+		//console.log("$(that) = " + JSON.stringify($(that)));
+		console.log("Feldjson = " + JSON.stringify(Feldjson));
+		console.log("Feldwert = " + Feldwert);
 	}
 	// window.em.hArt aktualisieren
 	if (Feldwert) {
