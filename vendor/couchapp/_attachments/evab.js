@@ -3511,7 +3511,7 @@ window.em.handleAlArtListItemClick = function(that) {
 	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 	if (window.em.hArtListe && window.em.hArtListe.rows) {
 		_.each(window.em.hArtListe.rows, function(row) {
-			if (row.doc.aArtId == artid) {
+			if (row.doc.aArtId == artid && artid !== undefined) {
 				art_schon_erfasst = true;
 			}
 		});
@@ -4765,7 +4765,8 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="reflow">',
 		htmlContainerHead,
 		htmlContainerBody,
-		feldliste = [];
+		feldliste = [],
+		beob_der_gewählten_artgruppe_rows;
 
 	// zuerst mal ermitteln, welche Felder für diese Artgruppe und diesen User im Formular eingeblendet werden sollen
 	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
@@ -4789,47 +4790,48 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 
 	// Den Body aufbauen
 	htmlContainerBody = '<tbody>';
+	// Beobachtungen der gewählten Artgruppe wählen
+	beob_der_gewählten_artgruppe_rows = _.filter(window.em.hArtListe.rows, function(row) {
+		return row.doc.aArtGruppe === artgruppe;
+	});
 	// pro hArt das html erzeugen
-	_.each(window.em.hArtListe.rows, function(row) {
+	_.each(beob_der_gewählten_artgruppe_rows, function(row) {
 		var hart = row.doc,
 			optionen = [],
-			feldwert = hart.aArtName,
-			feldname = "aArtName_hael";
-		// nur Arten der gewählten Artgruppe auflisten
-		if (hart.aArtGruppe === artgruppe) {
-			optionen.push(hart.aArtName);
-			htmlContainerBody += '<tr class="hart" hartid="';
-			htmlContainerBody += hart._id;
-			htmlContainerBody += '">';
-			// Artname ergänzen
+			artname = hart.aArtName;
+		optionen.push(hart.aArtName);
+		htmlContainerBody += '<tr class="hart" hartid="';
+		htmlContainerBody += hart._id;
+		htmlContainerBody += '">';
+		// Artname ergänzen
+		htmlContainerBody += '<td>';
+		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu("aArtName_hael", "", artname, optionen, "SingleSelect", true, "arrow-r", hart._id + "_art");
+		htmlContainerBody += '</td>';
+		// dynamische Felder setzen
+		_.each(feldliste, function(feld) {
+			var FeldName = feld.FeldName,
+				FeldWert;
+			// Feldwert setzen
+			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
+				FeldWert = feld.Standardwert[window.em.hArt.User];
+				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
+				window.em.hArt[FeldName] = FeldWert;
+			} else {
+				//"" verhindert, dass im Feld undefined erscheint
+				FeldWert = hart[FeldName] || "";
+			}
+			// html generieren
 			htmlContainerBody += '<td>';
-			htmlContainerBody += window.em.generiereHtmlFuerSelectmenu(feldname, "", feldwert, optionen, "SingleSelect", true, "arrow-r", hart._id + "_art");
+
+			console.log("feld = " + JSON.stringify(feld));
+			console.log("FeldName = " + FeldName);
+			console.log("FeldWert = " + FeldWert);
+
+			htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldWert, true);
 			htmlContainerBody += '</td>';
-			// dynamische Felder setzen
-			_.each(feldliste, function(feld) {
-				var FeldName = feld.FeldName;
-				// Feldwert setzen
-				if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
-					FeldWert = feld.Standardwert[window.em.hArt.User];
-					// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
-					window.em.hArt[FeldName] = FeldWert;
-				} else {
-					//"" verhindert, dass im Feld undefined erscheint
-					FeldWert = hart[FeldName] || "";
-				}
-				// html generieren
-				htmlContainerBody += '<td>';
-
-				console.log("feld = " + JSON.stringify(feld));
-				console.log("FeldName = " + FeldName);
-				console.log("FeldWert = " + FeldWert);
-
-				htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldWert, true);
-				htmlContainerBody += '</td>';
-			});
-			// Tabellenzeile abschliessen
-			htmlContainerBody += '</tr>';
-		}
+		});
+		// Tabellenzeile abschliessen
+		htmlContainerBody += '</tr>';
 	});
 		
 	htmlContainerBody += '</tbody>';
