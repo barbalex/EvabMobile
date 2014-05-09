@@ -2779,7 +2779,7 @@ window.em.initiiereFelderWaehlen = function() {
 		break;
 	case "hArtEditListe":
 		TextUeberListe_FW = "<h3>Felder für Artliste wählen:</h3><p>Die Felder der Hierarchiestufe Art werden nur in den in der Feldverwaltung definierten Artgruppen angezeigt!</p>";
-		localStorage.FeldlisteFwName = "FeldlistehArtEditListe";
+		localStorage.FeldlisteFwName = "FeldlistehArtEdit";	// dieselbe Liste verwenden, weil die Einstellungen in window.em.FeldlistehArtEdit bei jeder Wahl angepasst werden, inkl. _rev. Und beim Anpassen der letzte Wert aus window.em.FeldlistehArtEdit genommen wird, ohne die DB abzufragen, weil das sonst zu langsam ist
 		FeldlisteViewname = "FeldListeArt";
 		localStorage.KriterienFürZuWählendeFelder = "Feld.Hierarchiestufe === 'Art' && (Feld.FeldName !== 'aArtGruppe') && (Feld.FeldName !== 'aArtName') && (Feld.FeldName !== 'aArtId')";
 		break;
