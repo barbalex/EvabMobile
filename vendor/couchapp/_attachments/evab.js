@@ -2981,10 +2981,11 @@ window.em.initiiereArtenliste = function(filterwert) {
 			window.em.erstelleArtenliste(filterwert);
 			return;
 		}
+	} else {
+		// sonst aus der DB holen und die Variabeln aktualisieren
+		localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
+		window.em.holeArtenliste(filterwert);
 	}
-	// sonst aus der DB holen und die Variabeln aktualisieren
-	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
-	window.em.holeArtenliste(filterwert);
 };
 
 // wird benutzt in Artenliste.html
@@ -3037,9 +3038,9 @@ window.em.erstelleArtenliste = function(filterwert) {
 				html = '<li class="artlistenhinweis">' + window.em.Artenliste.length + ' Arten</li>';
 			}
 			// erste zweihundert anzeigen
-			_.each(_.first(window.em.Artenliste, 200), function(art) {
-				ArtBezeichnung = art.key[2];
-				html += window.em.holeHtmlFürArtInArtenliste(art, ArtBezeichnung);
+			_.each(_.first(window.em.Artenliste, 200), function(art_row) {
+				ArtBezeichnung = art_row.key[2];
+				html += window.em.holeHtmlFürArtInArtenliste(art_row.doc, ArtBezeichnung);
 			});
 		}
 	} else {
