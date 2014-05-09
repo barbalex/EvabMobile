@@ -577,6 +577,9 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 	}
 	// nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("BeobEditFormHtml", window.em.Beobachtung);
+	
 	$("#BeobEdit").trigger("create").trigger("refresh");
 };
 
@@ -855,6 +858,8 @@ window.em.initiiereProjektEdit_3 = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hProjektEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("hProjektEditFormHtml", window.em.hProjekt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1509,6 +1514,8 @@ window.em.initiiereRaumEdit_3 = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hRaumEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("hRaumEditFormHtml", window.em.hRaum);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1677,6 +1684,8 @@ window.em.initiiereOrtEdit_3 = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hOrtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("hOrtEditFormHtml", window.em.hOrt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1838,6 +1847,8 @@ window.em.initiiereZeitEdit_3 = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hZeitEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("hZeitEditFormHtml", window.em.hZeit);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -2021,9 +2032,22 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hArtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	window.em.aktiviereFlipswitches("hArtEditFormHtml", window.em.hArt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
+};
+
+// Flipswitches mit Wert "nein" aktiv schalten
+// dazu muss der Wert aus der Objekt-Variabeln geholt werden
+// keine Ahnung, wieso das jQuery-mobile nicht macht
+window.em.aktiviereFlipswitches = function(dom_element_id, objekt_variable) {
+	$("#" + dom_element_id).find("select[data-role='flipswitch']").each(function() {
+		if (objekt_variable[this.id] === "nein") {
+			$(this).parent().addClass("ui-flipswitch-active");
+		}
+	});
 };
 
 // generiert das Html für Formular in hArtEdit.html
@@ -2158,9 +2182,9 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel)
 	case "textarea":
 		htmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;
-	/*case "toggleswitch":
+	case "toggleswitch":
 		htmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
-		break;*/
+		break;
 	case "checkbox":
 		htmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
 		break;
@@ -2255,7 +2279,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 	return htmlContainer;
 };
 
-/*// generiert den html-Inhalt für Toggleswitch
+// generiert den html-Inhalt für Toggleswitch
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
 	var htmlContainer = "<div class='ui-field-contain'>";
@@ -2274,7 +2298,7 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 	htmlContainer += FeldWert;
 	htmlContainer += "' class='speichern flipswitch'><option value='ja'>ja</option><option value='nein'>nein</option></select></div>";
 	return htmlContainer;
-};*/
+};
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehArtEdit aufgerufen
@@ -2977,16 +3001,14 @@ window.em.initiiereArtenliste = function(filterwert) {
 	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
 	// nur wenn eine Artenliste existiert. Grund: window.em.Artenliste lebt nicht so lang wie localStorage
 	// aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
-	if (window.em.Artenliste) {
-		if (localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
-			window.em.erstelleArtenliste(filterwert);
-			return;
-		}
+	if (window.em.Artenliste && localStorage.aArtGruppeZuletzt === localStorage.aArtGruppe) {
+		window.em.erstelleArtenliste(filterwert);
 	} else {
-		// sonst aus der DB holen und die Variabeln aktualisieren
-		localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
+		// sonst aus der DB holen
 		window.em.holeArtenliste(filterwert);
 	}
+	// letzte Artgruppe aktualisieren
+	localStorage.aArtGruppeZuletzt = localStorage.aArtGruppe;
 };
 
 // wird benutzt in Artenliste.html
@@ -4848,7 +4870,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	$("#hArtEditListeForm").html(htmlContainer).trigger("create").trigger("refresh");
 	$("#hArtEditListeTable").table();
 	$("#hArtEditListeTable").table("refresh");
-	// TODO?: Einstellen, welche Felder sichtbar sind
 
 	// Menus blenden und letzte url speichern
 	window.em.blendeMenus();
@@ -4915,6 +4936,11 @@ window.em.erstelleDynamischeFelderhArtEditListe = function() {
 		htmlContainer = "<hr />" + htmlContainer;
 	}
 	$("#hArtEditListeFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
+	
+	// TODO: jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+	// Schwierigkeit: Woher nimmt man den richtigen Wert?
+	//window.em.aktiviereFlipswitches("hArtEditListeFormHtml", window.em.hArtListe);
+
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
