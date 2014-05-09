@@ -1399,7 +1399,6 @@ window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
 
 window.em.initiiereProjektliste = function() {
 	// hat hProjektEdit.html eine Projektliste übergeben?
-	console.log("Projektliste wird initiiert");
 	if (window.em.Projektliste) {
 		window.em.initiiereProjektliste_2();
 	} else {
@@ -3969,7 +3968,6 @@ window.em.handleBeobListeMenuEinstellungenClick = function() {
 // das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 // oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 window.em.handleFeldEditPageshow = function() {
-	console.log("feldedit pageshow");
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -3983,7 +3981,6 @@ window.em.handleFeldEditPageshow = function() {
 // wenn FeldEdit.html initiiert wird
 // Code, der nur beim ersten Aufruf der Seite laufen soll
 window.em.handleFeldEditPageinit = function() {
-	console.log("feldedit pageinit");
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4774,7 +4771,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
 		var Feld = row.doc,
 			FeldName = Feld.FeldName;
-			//console.log("Feld vor Bedingung = " + JSON.stringify(Feld));
 		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe && Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(artgruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			feldliste.push(Feld);
 		}
@@ -6329,7 +6325,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 				delete window.em.ArtenVonZeit;
 			},
 			error: function() {
-				console.log('fehler in function speichereHOrtEdit_2(that)');
+				console.log('Fehler in function speichereHOrtEdit_2(that)');
 				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
 		});
@@ -7030,7 +7026,7 @@ window.em.speichereRaum_2 = function(that) {
 				delete window.em.ArtenVonZeit;
 			},
 			error: function() {
-				console.log('fehler in function speichereRaum_2(that)');
+				console.log('Fehler in function speichereRaum_2(that)');
 			}
 		});
 	}
@@ -7561,7 +7557,7 @@ window.em.speichereHZeitEdit = function() {
 				window.em.speichereHZeitEdit_2(that);
 			},
 			error: function() {
-				console.log('fehler in function speichereHZeitEdit(that)');
+				console.log('Fehler in function speichereHZeitEdit(that)');
 				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
 		});
@@ -7619,7 +7615,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 				delete window.em.ArtenVonOrt;
 			},
 			error: function() {
-				console.log('fehler in function speichereHZeitEdit_2(that)');
+				console.log('Fehler in function speichereHZeitEdit_2(that)');
 				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
 		});
@@ -8890,12 +8886,12 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 						}
 					db.saveDoc(doc, {
 						error: function () {
-							console.log('fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
+							console.log('Fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
 						}
 					});
 				},
 				error: function () {
-					console.log('fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
+					console.log('Fehler in function window.em.speichereUser: Datenverwendung nicht gespeichert");');
 				}
 			});
 		});
@@ -8930,7 +8926,6 @@ window.em.zuArtliste = function() {
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
 	var that = this;
-	//console.log("this = " + this);
 	// prüfen, ob hArt als Objekt vorliegt
 	if (window.em.hArt) {
 		// dieses verwenden
@@ -8944,7 +8939,7 @@ window.em.speichereHArt = function() {
 				window.em.speichereHArt_2(that);
 			},
 			error: function() {
-				console.log('fehler in function speichereHArt');
+				console.log('Fehler in function speichereHArt');
 			}
 		});
 	}
@@ -8990,7 +8985,7 @@ window.em.speichereHArt_2 = function(that) {
 			localStorage.hArtId = data.id;
 		},
 		error: function() {
-			console.log('fehler in function speichereHArt_2');
+			console.log('Fehler in function speichereHArt_2');
 		}
 	});
 };
@@ -9133,7 +9128,7 @@ window.em.pruefeFeldNamen = function() {
 			} else {
 				// Feldname kommt bei diesem User schon vor
 				// Wert im Feld zurücksetzen
-				if (localStorage.AlterFeldWert) {
+				if (localStorage.AlterFeldWert && localStorage.AlterFeldWert !== undefined) {
 					$("#FeldName").val(localStorage.AlterFeldWert);
 				} else {
 					$("#FeldName").val("");
@@ -9141,7 +9136,7 @@ window.em.pruefeFeldNamen = function() {
 				setTimeout(function() { 
 					$('#FeldName').focus(); 
 				}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
-				window.em.melde("Feldname " + localStorage.FeldWert + "existiert schon<br>Wählen Sie einen anderen");
+				window.em.melde("Feldname " + localStorage.FeldWert + " existiert schon<br>Wählen Sie einen anderen");
 				delete localStorage.FeldName;
 				delete localStorage.FeldWert;
 				delete localStorage.AlterFeldWert;
@@ -9502,21 +9497,19 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	}
 	// Formularfelder in Dokument schreiben
 	// setzt Vorhandensein von Feldnamen voraus!
-	for (i in Formularfelder) {
-		if (typeof i !== "function") {
-			if (Formularfelder[i]) {
-				if (i === "Reihenfolge" || i === "SliderMinimum" || i === "SliderMaximum") {
-					// Zahl wird sonst in Text verwandelt und falsch sortiert
-					window.em.Feld[i] = parseInt(Formularfelder[i]);
-				} else {
-					window.em.Feld[i] = Formularfelder[i];
-				}
+	_.each(Formularfelder, function(feldwert, feldname) {
+		if (feldwert) {
+			if (feldname === "Reihenfolge" || feldname === "SliderMinimum" || feldname === "SliderMaximum") {
+				// Zahl wird sonst in Text verwandelt und falsch sortiert
+				window.em.Feld[feldname] = parseInt(feldwert);
 			} else {
-				// leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
-				delete window.em.Feld[i];
+				window.em.Feld[feldname] = feldwert;
 			}
+		} else {
+			// leere Felder entfernen, damit werden auch soeben gelöschte Felder entfernt
+			delete window.em.Feld[feldname];
 		}
-	}
+	});
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
 			// rev aktualisieren
@@ -9636,12 +9629,9 @@ window.em.löscheBeob_2 = function() {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
 			if (window.em.BeobListe) {
-				for (var i in window.em.BeobListe.rows) {
-					if (window.em.BeobListe.rows[i].doc._id === data.id) {
-						window.em.BeobListe.rows.splice(i, 1);
-						break;
-					}
-				}
+				window.em.BeobListe.rows = _.reject(window.em.BeobListe.rows, function(row) {
+					return row.doc._id === data.id;
+				});
 			} else {
 				// Keine BeobListe mehr. Storage löschen
 				window.em.leereStorageBeobListe;
@@ -9672,7 +9662,7 @@ window.em.speichereBeob = function(that) {
 				window.em.speichereBeob_2(_this);
 			},
 			error: function() {
-				console.log('fehler in function speichereBeob_2(_this)');
+				console.log('Fehler in function speichereBeob_2(_this)');
 			}
 		});
 	}
@@ -9714,7 +9704,7 @@ window.em.speichereBeob_2 = function(that) {
 			window.em.Beobachtung._rev = data.rev;
 		},
 		error: function(data) {
-			console.log('fehler in function speichereBeob_2(that)');
+			console.log('Fehler in function speichereBeob_2(that)');
 		}
 	});
 };
@@ -9990,7 +9980,6 @@ window.em.exportiereBeobVonInArtendbFehlendenArtengruppen = function() {
 };
 
 window.em.importiereFehlendeArtengruppen = function() {
-	console.log("window.em.importiereFehlendeArtengruppen");
 	if (window.em.artgruppen_fehlen_in_evab.length === 0) {
 		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Artengruppen, die in artbeobachtungen.ch fehlen");
 		return;
@@ -10411,26 +10400,10 @@ window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
 	return html;
 };
 
-
-
 window.em.öffneArtenImportieren = function() {
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("ArtenImportieren.html");
 };
-
-window.em.aktualisiereArten = function() {
-	console.log("window.em.aktualisiereArten");
-	// neue von arteigenschaften.ch holen
-
-	// auflisten:
-	// bisherige unverändert (keine Aktion)
-	// bisherige verändert: aktualisieren
-	// zusätzliche: importieren
-	// nicht mehr vorhandene: 
-	//    1. zugehörige Beobachtungen exportieren (um sie anzupassen) 
-	//    2. löschen
-};
-
 
 /*!
 * jQuery Mobile Framework : drag pagination plugin
