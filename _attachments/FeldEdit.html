@@ -51,22 +51,18 @@
 			<form id="UserFeldForm" action="#" method="get" autocomplete="off">
 				<h2>meine Einstellungen</h2>
 				<div class="ui-field-contain">
-					<fieldset data-role="controlgroup">
-						<legend>Sichtbar im einfachen Modus?</legend>
-							<input type="radio" name="SichtbarImModusEinfach" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach_ja" value="ja">
-							<label for="SichtbarImModusEinfach_ja">ja</label>
-							<input type="radio" name="SichtbarImModusEinfach" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusEinfach_nein" value="nein">
-							<label for="SichtbarImModusEinfach_nein">nein</label>
-					</fieldset>
+					<label for="SichtbarImModusEinfach">Sichtbar im einfachen Modus?</label>
+					<select id="SichtbarImModusEinfach" name="SichtbarImModusEinfach" data-role="flipswitch" class="meineEinstellungen">
+						<option value="ja">ja</option>
+						<option value="nein">nein</option>
+					</select>
 				</div>
 				<div class="ui-field-contain">
-					<fieldset data-role="controlgroup">
-						<legend>Sichtbar im hierarchischen Modus?</legend>
-							<input type="radio" name="SichtbarImModusHierarchisch" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch_ja" value="ja">
-							<label for="SichtbarImModusHierarchisch_ja">ja</label>
-							<input type="radio" name="SichtbarImModusHierarchisch" class="Feldeigenschaften meineEinstellungen" id="SichtbarImModusHierarchisch_nein" value="nein">
-							<label for="SichtbarImModusHierarchisch_nein">nein</label>
-					</fieldset>
+					<label for="SichtbarImModusHierarchisch">Sichtbar im hierarchischen Modus?</label>
+					<select id="SichtbarImModusHierarchisch" name="SichtbarImModusHierarchisch" data-role="flipswitch" class="meineEinstellungen">
+						<option value="ja">ja</option>
+						<option value="nein">nein</option>
+					</select>
 				</div>
 				<div class="ui-field-contain">
 					<label for="Standardwert">Standardwert:</label>
