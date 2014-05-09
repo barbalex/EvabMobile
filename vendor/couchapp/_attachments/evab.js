@@ -4406,10 +4406,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 	if ($("#" + FeldName).prop("checked") === true) {
 		sichtbar_fuer_benutzer.push(localStorage.Email);
 	} else {
-		idx = sichtbar_fuer_benutzer.indexOf(localStorage.Email);
-		if (idx !== -1) {
-			sichtbar_fuer_benutzer.splice(idx, 1);
-		}
+		sichtbar_fuer_benutzer = _.without(sichtbar_fuer_benutzer, localStorage.Email);
 	}
 	Feld[feld_mit_sichtbarkeit] = sichtbar_fuer_benutzer;
 	// Änderung in DB speichern
@@ -9483,9 +9480,7 @@ window.em.speichereFeldeigenschaften = function() {
 };
 
 window.em.speichereFeldeigenschaften_2 = function() {
-	var Formularfelder = $("#FeldEditForm").serializeObjectNull(),
-		idx1,
-		idx2;
+	var Formularfelder = $("#FeldEditForm").serializeObjectNull();
 	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
 	if (Formularfelder.Optionen) {
 		Formularfelder.Optionen = Formularfelder.Optionen.split(",");
@@ -9515,30 +9510,20 @@ window.em.speichereFeldeigenschaften_2 = function() {
 	// Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
 	// Soll das Feld im Modus einfach sichtbar sein?
-	idx1 = window.em.Feld.SichtbarImModusEinfach.indexOf(localStorage.Email);
 	if ($("#SichtbarImModusEinfach_ja").prop("checked") === true) {
 		// User ergänzen, wenn noch nicht enthalten
-		if (idx1 === -1) {
-			window.em.Feld.SichtbarImModusEinfach.push(localStorage.Email);
-		}
+		window.em.Feld.SichtbarImModusEinfach = _.union(window.em.Feld.SichtbarImModusEinfach, localStorage.Email);
 	} else {
 		// User entfernen, wenn enthalten
-		if (idx1 !== -1) {
-			window.em.Feld.SichtbarImModusEinfach.splice(idx1, 1);
-		}
+		window.em.Feld.SichtbarImModusEinfach = _.without(window.em.Feld.SichtbarImModusEinfach, localStorage.Email);
 	}
 	// Soll das Feld im Modus hierarchisch sichtbar sein?
-	idx2 = window.em.Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email);
 	if ($("#SichtbarImModusHierarchisch_ja").prop("checked") === true) {
 		// User ergänzen, wenn noch nicht enthalten
-		if (idx2 === -1) {
-			window.em.Feld.SichtbarImModusHierarchisch.push(localStorage.Email);
-		}
+		window.em.Feld.SichtbarImModusHierarchisch = _.union(window.em.Feld.SichtbarImModusHierarchisch, localStorage.Email);
 	} else {
 		// User entfernen, wenn enthalten
-		if (idx2 !== -1) {
-			window.em.Feld.SichtbarImModusHierarchisch.splice(idx2, 1);
-		}
+		window.em.Feld.SichtbarImModusHierarchisch = _.without(window.em.Feld.SichtbarImModusHierarchisch, localStorage.Email);
 	}
 	// Formularfelder in Dokument schreiben
 	// setzt Vorhandensein von Feldnamen voraus!
@@ -10156,8 +10141,6 @@ window.em.entferneDokumenteEinesUsers = function() {
 			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					var felder = data.rows,
-						indexpos_einfach,
-						indexpos_hierarchisch,
 						fehler = 0,
 						gelöscht = 0;
 
@@ -10168,18 +10151,12 @@ window.em.entferneDokumenteEinesUsers = function() {
 
 						// User aus SichtbarImModusEinfach entfernen
 						if (feld.SichtbarImModusEinfach && feld.SichtbarImModusEinfach.length > 0) {
-							indexpos_einfach = feld.SichtbarImModusEinfach.indexOf(user);
-							if (indexpos_einfach > -1) {
-								feld.SichtbarImModusEinfach.splice(indexpos_einfach, 1);
-							}
+							feld.SichtbarImModusEinfach = _.without(feld.SichtbarImModusEinfach, user);
 						}
 
 						// User aus SichtbarImModusHierarchisch entfernen
 						if (feld.SichtbarImModusHierarchisch && feld.SichtbarImModusHierarchisch.length > 0) {
-							indexpos_hierarchisch = feld.SichtbarImModusHierarchisch.indexOf(user);
-							if (indexpos_hierarchisch > -1) {
-								feld.SichtbarImModusHierarchisch.splice(indexpos_hierarchisch, 1);
-							}
+							feld.SichtbarImModusHierarchisch = _.without(feld.SichtbarImModusHierarchisch, user);
 						}
 
 						// User aus Standardwert entfernen
