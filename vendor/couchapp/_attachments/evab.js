@@ -28,10 +28,16 @@ window.em.erstelleNeueUhrzeit = function() {
 };
 
 // wandelt decimal degrees (vom GPS) in WGS84 um
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84BreiteGrad = function(Breite) {
 	return Math.floor(Breite);
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84BreiteMin = function(Breite) {
 	var BreiteGrad = Math.floor(Breite);
 	return Math.floor((Breite-BreiteGrad)*60);
@@ -44,10 +50,16 @@ window.em.DdInWgs84BreiteSec = function(Breite) {
 	return BreiteSec;
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84LaengeGrad = function(Laenge) {
 	return Math.floor(Laenge);
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84LaengeMin = function(Laenge) {
 	var LaengeGrad = Math.floor(Laenge),
 		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
@@ -110,6 +122,9 @@ window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
 };
 
 // wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
+/**
+ * @return {number}
+ */
 window.em.DdInChX = function(Breite, Laenge) {
 	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
 		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
@@ -135,6 +150,9 @@ window.em.DdInChY = function(Breite, Laenge) {
 // von CH-Landeskoord zu DecDeg
 
 // Convert CH y/x to WGS lat
+/**
+ * @return {number}
+ */
 window.em.CHtoWGSlat = function(y, x) {
 	// Converts militar to civil and to unit = 1000km
 	var lat,
@@ -188,12 +206,11 @@ window.em.melde = function(Meldung) {
 		.css({"line-height": "95%", "font-weight": "bold"})
 		.appendTo($.mobile.pageContainer);
 	$("#meldung").popup({
-		afterclose: function(event, ui) {
+		afterclose: function() {
 			// Meldung wieder aus pageContainer entfernen
 			$("#meldung").remove();
 		}
-	});
-	$("#meldung").popup("open");
+	}).popup("open");
 };
 
 // wird in FeldEdit.html verwendet
@@ -323,7 +340,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						// Variabeln verfügbar machen
 						localStorage.hArtId = docId;
 						// damit hArtEdit.html die hArt nicht aus der DB holen muss
-						window.em.hArt = beob;
+						window.em.hArt = data;
 						// window.em.hArtListe anpassen
 						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 						if (window.em.hArtListe && window.em.hArtListe.rows) {
@@ -360,7 +377,8 @@ window.em.erstelleNeueZeit = function() {
 // Neue Zeiten werden erstellt
 // ausgelöst durch hZeitListe.html oder hZeitEdit.html
 // dies ist der erste Schritt: doc bilden
-	var doc = {};
+	var doc = {},
+        $hZeitEdit = $("#hZeitEdit");
 	doc.Typ = "hZeit";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -376,7 +394,7 @@ window.em.erstelleNeueZeit = function() {
 	// Globale Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	delete window.em.ZeitListe;
 	// Vorsicht: Von hZeitEdit.html aus samepage transition!
-	if ($("#hZeitEdit").length > 0 && $("#hZeitEdit").attr("data-url") !== "hZeitEdit") {
+	if ($hZeitEdit.length > 0 && $hZeitEdit.attr("data-url") !== "hZeitEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.em.hZeit);
@@ -394,7 +412,8 @@ window.em.erstelleNeueZeit = function() {
 // wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 // erwartet Username, hProjektId, hRaumId
 window.em.erstelleNeuenOrt = function() {
-	var doc = {};
+	var doc = {},
+        $hOrtEdit = $("#hOrtEdit");
 	doc.Typ = "hOrt";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -407,7 +426,7 @@ window.em.erstelleNeuenOrt = function() {
 	window.em.leereStorageOrtListe("mitLatLngListe");
 	localStorage.Status = "neu";	// das löst bei initiiereOrtEdit die Verortung aus
 	// Vorsicht: Von hOrtEdit.html aus samepage transition!
-	if ($("#hOrtEdit").length > 0 && $("#hOrtEdit").attr("data-url") !== "hOrtEdit") {
+	if ($hOrtEdit.length > 0 && $hOrtEdit.attr("data-url") !== "hOrtEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
@@ -422,7 +441,8 @@ window.em.erstelleNeuenOrt = function() {
 };
 
 window.em.erstelleNeuenRaum = function() {
-	var doc = {};
+	var doc = {},
+        $hRaumEdit = $("#hRaumEdit");
 	doc.Typ = "hRaum";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -434,7 +454,7 @@ window.em.erstelleNeuenRaum = function() {
 	// Globale Variablen für RaumListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStorageRaumListe("mitLatLngListe");
 	// Vorsicht: Von hRaumEdit.html aus same page transition!
-	if ($("#hRaumEdit").length > 0 && $("#hRaumEdit").attr("data-url") !== "hRaumEdit") {
+	if ($hRaumEdit.length > 0 && $hRaumEdit.attr("data-url") !== "hRaumEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
@@ -451,7 +471,8 @@ window.em.erstelleNeuenRaum = function() {
 // erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
 // das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
 window.em.erstelleNeuesProjekt = function() {
-	var doc = {};
+	var doc = {},
+        $hProjektEdit = $("#hProjektEdit");
 	doc.Typ = "hProjekt";
 	doc.User = localStorage.Email;
 	// damit hProjektEdit.html die hArt nicht aus der DB holen muss
@@ -462,7 +483,7 @@ window.em.erstelleNeuesProjekt = function() {
 	// Globale Variablen für hProjektListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	window.em.leereStorageProjektListe("mitLatLngListe");
 	// Vorsicht: Von hProjektEdit.html aus same page transition!
-	if ($("#hProjektEdit").length > 0 && $("#hProjektEdit").attr("data-url") !== "hProjektEdit") {
+	if ($hProjektEdit.length > 0 && $hProjektEdit.attr("data-url") !== "hProjektEdit") {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
@@ -485,15 +506,15 @@ window.em.löscheDokument = function(DocId) {
 	return $db.openDoc(DocId, {
 		success: function(document) {
 			$db.removeDoc(document, {
-				success: function(document) {
+				success: function() {
 					return true;
 				},
-				error: function(document) {
+				error: function() {
 					return false;
 				}
 			});
 		},
-		error: function(document) {
+		error: function() {
 			return false;
 		}
 	});
@@ -585,19 +606,21 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 // setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 // erwartet das Objekt Beob, welches die Werte enthält
 window.em.setzeFixeFelderInBeobEdit = function() {
-	$("#aArtGruppeBE").selectmenu();
-	$("#aArtGruppeBE").html("<option value='" + window.em.Beobachtung.aArtGruppe + "'>" + window.em.Beobachtung.aArtGruppe + "</option>");
-	$("#aArtGruppeBE").val(window.em.Beobachtung.aArtGruppe);
+    var $aArtGruppeBE = $("#aArtGruppeBE"),
+        $aArtNameBE = $("#aArtNameBE");
+	$aArtGruppeBE.selectmenu();
+	$aArtGruppeBE.html("<option value='" + window.em.Beobachtung.aArtGruppe + "'>" + window.em.Beobachtung.aArtGruppe + "</option>");
+	$aArtGruppeBE.val(window.em.Beobachtung.aArtGruppe);
 	// JQUERY MOBILE BRACHT MANCHMAL LANGE UM ZU INITIALIIEREN
 	// OHNE TIMEOUT REKLAMIERT ES BEIM REFRESH, DAS WIDGET SEI NOCH NICHT INITIALISIERT!!!!
 	// NACH EIN MAL VERZÖGERN HAT ES ABER WIEDER FUNKTIONIERT????!!!!
 	setTimeout(function() {
-		$("#aArtGruppeBE").selectmenu("refresh");
+		$aArtGruppeBE.selectmenu("refresh");
 	}, 0);
-	$("#aArtNameBE").selectmenu();
-	$("#aArtNameBE").html("<option value='" + window.em.Beobachtung.aArtName + "'>" + window.em.Beobachtung.aArtName + "</option>");
-	$("#aArtNameBE").val(window.em.Beobachtung.aArtName);
-	$("#aArtNameBE").selectmenu("refresh");
+	$aArtNameBE.selectmenu();
+	$aArtNameBE.html("<option value='" + window.em.Beobachtung.aArtName + "'>" + window.em.Beobachtung.aArtName + "</option>");
+	$aArtNameBE.val(window.em.Beobachtung.aArtName);
+	$aArtNameBE.selectmenu("refresh");
 	$("[name='aAutor']").val(window.em.Beobachtung.aAutor);
 	$("[name='oXKoord']").val(window.em.Beobachtung.oXKoord);
 	$("[name='oYKoord']").val(window.em.Beobachtung.oYKoord);
@@ -683,7 +706,7 @@ window.em.initiiereBeobliste_2 = function() {
 	if (anzBeob === 1) {
 		Titel2 = " Beobachtung";
 	}
-	$("#BeobListePageHeader .BeobListePageTitel").text(anzBeob + Titel2);
+	$("#BeobListePageHeader").find(".BeobListePageTitel").text(anzBeob + Titel2);
 
 	if (anzBeob === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
@@ -695,13 +718,13 @@ window.em.initiiereBeobliste_2 = function() {
 			if (beob.aArtGruppe === "DiverseInsekten") {
 				artgruppenname = "unbenannt.png";
 			}
-			listItemContainer += "<li class=\"beob ui-li-has-thumb\" id=\"";
+			listItemContainer += "<li class='beob ui-li-has-thumb' id='";
 			listItemContainer += beob._id;
-			listItemContainer += "\"><a href=\"BeobEdit.html\"><img class=\"ui-li-thumb\" src=\"";
+			listItemContainer += "'><a href='BeobEdit.html'><img class='ui-li-thumb' src='";
 			listItemContainer += "Artgruppenbilder/" + artgruppenname;
-			listItemContainer += "\" /><h3 class=\"aArtName\">";
+			listItemContainer += "' /><h3 class='aArtName'>";
 			listItemContainer += beob.aArtName;
-			listItemContainer += "<\/h3><p class=\"zUhrzeit\">";
+			listItemContainer += "<\/h3><p class='zUhrzeit'>";
 			listItemContainer += beob.zDatum;
 			listItemContainer += "&nbsp; &nbsp;";
 			listItemContainer += beob.zUhrzeit;
@@ -1140,10 +1163,10 @@ window.em.initiiereFeldliste_2 = function() {
 				FeldBeschreibung = tempFeld.FeldBeschreibung;
 			}
 			ImageLink = "Hierarchiebilder/" + Hierarchiestufe + ".png";
-			listItemContainer += "<li class=\"Feld ui-li-has-thumb\" FeldId=\"";
+			listItemContainer += "<li class='Feld ui-li-has-thumb' FeldId='";
 			listItemContainer += tempFeld._id;
-			listItemContainer += "\"><a href=\"#\"><img class=\"ui-li-thumb\" src=\"";
-			listItemContainer += ImageLink + "\" /><h2>";
+			listItemContainer += "'><a href='#'><img class='ui-li-thumb' src='";
+			listItemContainer += ImageLink + "' /><h2>";
 			listItemContainer += Hierarchiestufe;
 			listItemContainer += ': ';
 			listItemContainer += FeldBeschriftung;
@@ -1438,8 +1461,8 @@ window.em.initiiereProjektliste_2 = function() {
 			var Proj = row.doc,
 				key = row.key,
 				pName = key[1];
-			listItem = "<li ProjektId=\"" + Proj._id + "\" class=\"Projekt\">";
-			listItem += "<a href=\"#\">";
+			listItem = "<li ProjektId='" + Proj._id + "' class='Projekt'>";
+			listItem += "<a href='#'>";
 			listItem += "<h3>" + pName + "<\/h3><\/a><\/li>";
 			listItemContainer += listItem;
 		});
@@ -1602,7 +1625,7 @@ window.em.initiiereRaumListe_2 = function() {
 			Raum = row.doc;
 			key = row.key;
 			rName = Raum.rName;
-			listItemContainer += "<li RaumId=\"" + Raum._id + "\" class=\"Raum\"><a href=\"#\"><h3>" + rName + "<\/h3><\/a><\/li>";
+			listItemContainer += "<li RaumId='" + Raum._id + "' class='Raum'><a href='#'><h3>" + rName + "<\/h3><\/a><\/li>";
 		});
 	}
 	$("#RaumlistehRL").html(listItemContainer);
@@ -1773,7 +1796,7 @@ window.em.initiiereOrtListe_2 = function() {
 		_.each(window.em.OrtListe.rows, function(row) {
 			Ort = row.doc;
 			key = row.key;
-			listItemContainer += "<li OrtId=\"" + Ort._id + "\" class=\"Ort\"><a href=\"#\"><h3>" + Ort.oName + "<\/h3><\/a><\/li>";
+			listItemContainer += "<li OrtId='" + Ort._id + "' class='Ort'><a href='#'><h3>" + Ort.oName + "<\/h3><\/a><\/li>";
 		});
 	}
 	$("#OrtlistehOL").html(listItemContainer);
@@ -1894,7 +1917,7 @@ window.em.initiiereZeitListe_2 = function() {
 			Zeit = row.doc;
 			key = row.key;
 			zZeitDatum = key[2] + "&nbsp; &nbsp;" + key[3];
-			listItemContainer += "<li ZeitId=\"" + Zeit._id + "\" class=\"Zeit\"><a href=\"#\"><h3>" + zZeitDatum + "<\/h3><\/a><\/li>";
+			listItemContainer += "<li ZeitId='" + Zeit._id + "' class='Zeit'><a href='#'><h3>" + zZeitDatum + "<\/h3><\/a><\/li>";
 		});
 	}
 	$("#ZeitlistehZL").html(listItemContainer);
@@ -2152,9 +2175,9 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 		// das leere Bild anzeigen
 		artgruppenname = "unbenannt.png";
 	}
-	listItem = "<li class=\"beob ui-li-has-thumb\" hArtId=\"" + beob._id + "\" aArtGruppe=\"" + beob.aArtGruppe + "\"" + "\" aArtId=\"" + beob.aArtId + "\">" +
-		"<a href=\"#\">" +
-		"<img class=\"ui-li-thumb\" src=\"Artgruppenbilder/" + artgruppenname + "\" />" +
+	listItem = "<li class='beob ui-li-has-thumb' hArtId='" + beob._id + "' aArtGruppe='" + beob.aArtGruppe + "'" + "' aArtId='" + beob.aArtId + "'>" +
+		"<a href='#'>" +
+		"<img class='ui-li-thumb' src='Artgruppenbilder/" + artgruppenname + "' />" +
 		"<h3>" + beob.aArtName + "<\/h3>" +
 		"<\/a> <\/li>";
 	return listItem;
@@ -3078,12 +3101,12 @@ window.em.erstelleArtenliste = function(filterwert) {
 };
 
 window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
-	var html = "<li name=\"ArtListItem\" ArtBezeichnung=\"";
+	var html = "<li name='ArtListItem' ArtBezeichnung='";
 	html += ArtBezeichnung;
-	html += "\" ArtId=\"";
+	html += "' ArtId='";
 	html += Art._id;
-	html += "\">";
-	html += "<a href=\"#\"><h3>";
+	html += "'>";
+	html += "<a href='#'><h3>";
 	html += ArtBezeichnung;
 	html += "<\/h3>";
 	if (Art.HinweisVerwandschaft) {
@@ -3124,8 +3147,8 @@ window.em.erstelleArtgruppenListe_2 = function() {
 	_.each(window.em.Artgruppenliste.rows, function(row) {
 		ArtGruppe = row.key;
 		AnzArten = row.doc.AnzArten;
-		html += "<li name=\"ArtgruppenListItem\" ArtGruppe=\"" + ArtGruppe + "\">";
-		html += "<a href=\"#\"><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
+		html += "<li name='ArtgruppenListItem' ArtGruppe='" + ArtGruppe + "'>";
+		html += "<a href='#'><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 	});
 	$("#agl_ArtgruppenListe").html(html);
 	$("#agl_ArtgruppenListe").listview("refresh");
@@ -8015,7 +8038,7 @@ window.em.handleKartePageshow = function() {
 	var viewname;
 	// In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
 	// wird benutzt von: hOrtEdit.html, BeobEdit.html
-	window.em.markersArray = [],
+	window.em.markersArray = [];
 	window.em.InfoWindowArray = [];
 
 	// sicherstellen, dass localStorage.zurueck existiert (gibt sonst später Fehler)
@@ -8243,7 +8266,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 			contentString += '<tr><td>Raum:</td><td>' + rName + '</td></tr>';
 			contentString += '<tr><td>Ort:</td><td>' + Ort.oName + '</td></tr>';
 			contentString += '<tr><td>Koordinaten:</td><td>' + Ort.oXKoord + "/" + Ort.oYKoord + '</td></tr>';
-			contentString += "<tr><td><a href=\"#\" onclick=\"window.em.oeffneOrt('" + hOrtId + "')\">bearbeiten<\/a></td><td></td></tr>";
+			contentString += "<tr><td><a href='#' onclick='window.em.oeffneOrt('" + hOrtId + "')'>bearbeiten<\/a></td><td></td></tr>";
 			contentString += '</table>';
 			window.em.makeMapListener(map, marker, contentString);
 		});
@@ -9690,7 +9713,7 @@ window.em.löscheBeob_2 = function() {
 				});
 			} else {
 				// Keine BeobListe mehr. Storage löschen
-				window.em.leereStorageBeobListe;
+				window.em.leereStorageBeobListe();
 			}
 			window.em.leereStorageBeobEdit();
 			$.mobile.navigate("BeobListe.html");
