@@ -4470,8 +4470,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 		Feld,
 		feldrow,
 		feld_mit_sichtbarkeit,
-		sichtbar_fuer_benutzer,
-		idx;
+		sichtbar_fuer_benutzer;
 	feldrow = _.find(window.em[localStorage.FeldlisteFwName].rows, function(row) {
 		return row.doc._id === FeldId;
 	});
@@ -5600,8 +5599,8 @@ window.em.handleHOrtEditLoescheOrtClick = function() {
 
 // wenn in hOrtEdit.html #hoe_löschen_meldung_ja_loeschen geklickt wird
 window.em.handleHOrtEditLoeschenMeldungJaClick = function() {
-	var div = $("#hoe_löschen_meldung")[0];
-	window.em.löscheOrt($.data(div, 'Arten'), $.data(div, 'Zeiten'));
+	var $hoe_löschen_meldung = $("#hoe_löschen_meldung")[0];
+	window.em.löscheOrt($.data($hoe_löschen_meldung, 'Arten'), $.data($hoe_löschen_meldung, 'Zeiten'));
 };
 
 // wenn in hOrtEdit.html #KarteOeffnenOrtEdit geklickt wird
@@ -5964,7 +5963,7 @@ window.em.handleHProjektEditSpeichernAnhangChange = function() {
 };
 
 // wenn in hProjektEdit.html #LöscheProjektProjektEdit geklickt wird
-window.em.handleHProjektEditLöscheProjektClick = function(that) {
+window.em.handleHProjektEditLöscheProjektClick = function() {
 	// Anzahl Räume des Projekts zählen
 	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 	$db = $.couch.db("evab");
@@ -5983,7 +5982,7 @@ window.em.handleHProjektEditLöscheProjektClick = function(that) {
 							$db.view('evab/hArtIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 								success: function(Arten) {
 									var anzArten = Arten.rows.length, 
-										div = $("#hpe_löschen_meldung"),
+										$hoe_löschen_meldung = $("#hoe_löschen_meldung"),
 										räume_text = (anzRaeume === 1 ? ' Raum, ' : ' Räume, '),
 										orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
 										zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
@@ -5991,10 +5990,10 @@ window.em.handleHProjektEditLöscheProjektClick = function(that) {
 										meldung = 'Projekt inklusive ' + anzRaeume + räume_text + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 									$("#hpe_löschen_meldung_meldung").html(meldung);
 									// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-									div.data('Arten', Arten);
-									div.data('Zeiten', Zeiten);
-									div.data('Orte', Orte);
-									div.data('Raeume', Raeume);
+									$hoe_löschen_meldung.data('Arten', Arten);
+									$hoe_löschen_meldung.data('Zeiten', Zeiten);
+									$hoe_löschen_meldung.data('Orte', Orte);
+									$hoe_löschen_meldung.data('Raeume', Raeume);
 									// popup öffnen
 									$("#hpe_löschen_meldung").popup("open");
 								}
@@ -6009,8 +6008,8 @@ window.em.handleHProjektEditLöscheProjektClick = function(that) {
 
 // wenn in hProjektEdit.html #hpe_löschen_meldung_ja_loeschen geklickt wird
 window.em.handleHProjektEditLoeschenMeldungJaClick = function() {
-	var div = $("#hpe_löschen_meldung")[0];
-	window.em.löscheProjekt(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'), jQuery.data(div, 'Raeume'));
+	var $hpe_löschen_meldung = $("#hpe_löschen_meldung")[0];
+	window.em.löscheProjekt(jQuery.data($hpe_löschen_meldung, 'Arten'), jQuery.data($hpe_löschen_meldung, 'Zeiten'), jQuery.data($hpe_löschen_meldung, 'Orte'), jQuery.data($hpe_löschen_meldung, 'Raeume'));
 };
 
 // wenn in hProjektEdit.html #waehleFelderProjektEdit geklickt wird
@@ -6800,8 +6799,8 @@ window.em.handleRaumEditPageinit = function() {
 	});
 
 	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function() {
-		var div = $("#hre_löschen_meldung")[0];
-		window.em.löscheRaum(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'));
+		var $hre_löschen_meldung = $("#hre_löschen_meldung")[0];
+		window.em.löscheRaum(jQuery.data($hre_löschen_meldung, 'Arten'), jQuery.data($hre_löschen_meldung, 'Zeiten'), jQuery.data($hre_löschen_meldung, 'Orte'));
 	});
 
 	// Link zu Projekt in Navbar und Titelleiste
@@ -6920,18 +6919,18 @@ window.em.handleRaumEditLoescheRaumClick = function() {
 					$db.view('evab/hArtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 						success: function(Arten) {
 							var anzArten = Arten.rows.length,
-								div = $("#hre_löschen_meldung"),
+								$hre_löschen_meldung = $("#hre_löschen_meldung"),
 								orte_text = (anzOrte === 1 ? ' Ort, ' : ' Orte, '),
 								zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
 								arten_text = (anzArten === 1 ? ' Art' : ' Arten'),
 								meldung = 'Raum inklusive ' + anzOrte + orte_text + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 							$("#hre_löschen_meldung_meldung").html(meldung);
 							// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-							div.data('Arten', Arten);
-							div.data('Zeiten', Zeiten);
-							div.data('Orte', Orte);
+							$hre_löschen_meldung.data('Arten', Arten);
+							$hre_löschen_meldung.data('Zeiten', Zeiten);
+							$hre_löschen_meldung.data('Orte', Orte);
 							// popup öffnen
-							$("#hre_löschen_meldung").popup("open");
+                            $hre_löschen_meldung.popup("open");
 						}
 					});
 				}
@@ -7519,22 +7518,22 @@ window.em.handleZeitEditLoescheClick = function() {
 	$db = $.couch.db("evab");
 	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
 		success: function(Arten) {
-			var anzArten = Arten.rows.length, 
-				div = $("#hze_löschen_meldung"),
+			var anzArten = Arten.rows.length,
+				$hze_löschen_meldung = $("#hze_löschen_meldung"),
 				arten_text = (anzArten === 1 ? ' Art' : ' Arten'),
 				meldung = 'Zeit inklusive ' + anzArten + arten_text + ' löschen?';
 			$("#hze_löschen_meldung_meldung").html(meldung);
 			// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-			div.data('Arten', Arten);
+			$hze_löschen_meldung.data('Arten', Arten);
 			// popup öffnen
-			$("#hze_löschen_meldung").popup("open");
+            $hze_löschen_meldung.popup("open");
 		}
 	});
 };
 
 window.em.handleZeitEditLoeschenMeldungJaClick = function() {
-	var div = $("#hze_löschen_meldung")[0];
-	window.em.löscheZeit(jQuery.data(div, 'Arten'));
+	var $hze_löschen_meldung = $("#hze_löschen_meldung")[0];
+	window.em.löscheZeit(jQuery.data($hze_löschen_meldung, 'Arten'));
 };
 
 window.em.handleZeitEditContentSwipeleft = function() {
@@ -8868,7 +8867,7 @@ window.em.erstelleKonto = function() {
 			name: $('#su_Email').val(),
 			Datenverwendung: localStorage.Datenverwendung || "JaAber"
 		}, $('#su_Passwort').val(), {
-		success : function (r) {
+		success : function () {
 			localStorage.Email = $('#su_Email').val();
 			localStorage.Autor = $("#Autor").val();
 			window.em.speichereAutorAlsStandardwert();
@@ -9342,7 +9341,6 @@ window.em.geheZumNächstenFeld_2 = function() {
 	var i,
 		y,
 		FeldIdAktuell,
-		FeldIdNächstes,
 		AnzFelder = window.em.Feldliste.rows.length -1,
 		AktFeld_i,
 		AktFeld_y;
@@ -9410,7 +9408,6 @@ window.em.geheZumVorigenFeld_2 = function() {
 		y,
 		FeldIdAktuell,
 		FeldIdVoriges,
-		AnzFelder = window.em.Feldliste.rows.length -1,
 		AktFeld_i,
 		AktFeld_y;
 	for (i=0; window.em.Feldliste.rows.length; i++) {
@@ -9792,7 +9789,7 @@ window.em.speichereBeob_2 = function(that) {
 		success: function(data) {
 			window.em.Beobachtung._rev = data.rev;
 		},
-		error: function(data) {
+		error: function() {
 			console.log('Fehler in function speichereBeob_2(that)');
 		}
 	});
