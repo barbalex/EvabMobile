@@ -1162,6 +1162,7 @@ window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 	});
 	listItemContainer += "\n</fieldset>";
 	$("#Artgruppenliste_FeldEdit").html(listItemContainer).trigger("create").trigger("refresh");
+    $("#SichtbarInHArtEditListeFieldContain").show();
 };
 
 // initiiert FeldListe.html
@@ -4184,7 +4185,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 	// Felder der Datenzentren dürfen nicht verändert werden
 	// ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 	// aber: Der Benutzer soll wählen können, in welchen Artgruppen er ein solches Feld anzeigt
-	if (window.em.Feld.User === "ZentrenBdKt" && !$(this).hasClass('meineEinstellungen') && localStorage.FeldName !== "ArtGruppe") {
+	if (window.em.Feld.User === "ZentrenBdKt" && localStorage.FeldName !== "ArtGruppe") {
 		// Feldwert zurücksetzen	
 		if (localStorage.AlterFeldWert) {
 			$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
@@ -4256,6 +4257,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		if (window.em.Feld.Hierarchiestufe === "Art") {
 			// Wenn die Hierarchiestufe Art war und geändert wird, muss das Feld für die Artgruppe entfernt werden
 			$("#Artgruppenliste_FeldEdit").empty();
+            $("#SichtbarInHArtEditListeFieldContain").hide();
 		}
 		window.em.leereStorageFeldListe();
 		window.em.speichereFeldeigenschaften();
