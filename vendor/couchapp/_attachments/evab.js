@@ -3916,10 +3916,12 @@ window.em.handleBeobEditAArtnameClick = function() {
 // wenn in BeobEdit.html .speichern geändert wird
 // Für jedes Feld bei Änderung speichern
 window.em.handleBeobEditSpeichernChange = function() {
-	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
+    var $oXKoord = $("[name='oXKoord']"),
+        $oYKoord = $("[name='oYKoord']");
+	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $oXKoord.val() && $oYKoord.val()) {
 		// Wenn Koordinaten und beide erfasst
-		localStorage.oXKoord = $("[name='oXKoord']").val();
-		localStorage.oYKoord = $("[name='oYKoord']").val();
+		localStorage.oXKoord = $oXKoord.val();
+		localStorage.oYKoord = $oYKoord.val();
 		// Längen- und Breitengrade berechnen
 		localStorage.oLongitudeDecDeg = window.em.CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLatitudeDecDeg = window.em.CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
@@ -3982,10 +3984,11 @@ window.em.handleBeobEditMenuFelderVerwaltenClick = function() {
 // wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
 window.em.handleBeobEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuBeobEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuBeobEdit").popup("close");
+	$("#MenuBeobEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in BeobEdit.html .menu_einstellungen geklickt wird
@@ -4086,10 +4089,11 @@ window.em.handleBeobListeMenuFelderVerwaltenClick = function() {
 // wenn in BeobListe.html .menu_beob_exportieren geklickt wird
 window.em.handleBeobListeMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuBeobListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuBeobListe").popup("close");
+	$("#MenuBeobListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in BeobListe.html .menu_einstellungen geklickt wird
@@ -4330,29 +4334,32 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 };
 
 window.em.blendeDatentypabhängigeFelder = function() {
+    var $feldedit_inputtyp = $("#feldedit_inputtyp"),
+        $feldedit_optionen = $("#feldedit_optionen"),
+        $feldedit_slider = $(".feldedit_slider");
 	switch (window.em.Feld.Formularelement) {
 		case "textinput":
-			$("#feldedit_inputtyp").show();
-			$("#feldedit_optionen").hide();
-			$(".feldedit_slider").hide();
+			$feldedit_inputtyp.show();
+			$feldedit_optionen.hide();
+			$feldedit_slider.hide();
 			break;
 		case "selectmenu":
 		case "multipleselect":
 		case "radio":
 		case "checkbox":
-			$("#feldedit_optionen").show();
-			$("#feldedit_inputtyp").hide();
-			$(".feldedit_slider").hide();
+			$feldedit_optionen.show();
+			$feldedit_inputtyp.hide();
+			$feldedit_slider.hide();
 			break;
 		case "slider":
-			$(".feldedit_slider").show();
-			$("#feldedit_inputtyp").hide();
-			$("#feldedit_optionen").hide();
+			$feldedit_slider.show();
+			$feldedit_inputtyp.hide();
+			$feldedit_optionen.hide();
 			break;
 		default:
-			$(".feldedit_slider").hide();
-			$("#feldedit_inputtyp").hide();
-			$("#feldedit_optionen").hide();
+			$feldedit_slider.hide();
+			$feldedit_inputtyp.hide();
+			$feldedit_optionen.hide();
 			break;
 	}
 };
@@ -4475,10 +4482,11 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 // wenn in FeldEdit.htm .menu_datenfelder_exportieren geklickt wird
 window.em.handleFeldEditMenuDatenfelderExportierenClick = function() {
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuFeldEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuFeldEdit").popup("close");
+	$("#MenuFeldEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn FelderWaehlen.html erscheint
@@ -5387,10 +5395,11 @@ window.em.handleHArtListeMenuFelderVerwaltenClick = function() {
 // wenn in hArtListe.html .menu_beob_exportieren geklickt wird
 window.em.handleHArtListeMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuhArtListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuhArtListe").popup("close");
+	$("#MenuhArtListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in hArtListe.html .menu_einstellungen geklickt wird
@@ -5572,11 +5581,13 @@ window.em.handleHOrtEditOeffneProjektClick = function() {
 
 // wenn in hOrtEdit.html .speichern geändert wird
 window.em.handleHOrtEditSpeichernChange = function() {
-	var Feldname = this.name;
-	if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $("[name='oXKoord']").val() && $("[name='oYKoord']").val()) {
+	var Feldname = this.name,
+        $oXKoord = $("[name='oXKoord']"),
+        $oYKoord = $("[name='oYKoord']");
+	if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $oXKoord.val() && $oYKoord.val()) {
 		// Wenn Koordinaten und beide erfasst
-		localStorage.oXKoord = $("[name='oXKoord']").val();
-		localStorage.oYKoord = $("[name='oYKoord']").val();
+		localStorage.oXKoord = $oXKoord.val();
+		localStorage.oYKoord = $oYKoord.val();
 		// Längen- und Breitengrade berechnen
 		localStorage.oLongitudeDecDeg = window.em.CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLatitudeDecDeg = window.em.CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
@@ -5675,10 +5686,11 @@ window.em.handleHOrtEditMenuFelderVerwaltenClick = function() {
 // wenn in hOrtEdit.html .menu_orte_exportieren geklickt wird
 window.em.handleHOrtEditMenuOrteExportierenClick = function() {
 	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuOrtEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuOrtEdit").popup("close");
+	$("#MenuOrtEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in hOrtEdit.html .menu_einstellungen geklickt wird
@@ -5825,10 +5837,11 @@ window.em.handleHOrtListeMenuFelderVerwaltenClick = function() {
 // wenn in hOrtListe.html .menu_orte_exportieren geklickt wird
 window.em.handleHOrtListeMenuOrteExportierenClick = function() {
 	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuOrtListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuOrtListe").popup("close");
+	$("#MenuOrtListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in hOrtListe.html .menu_einstellungen geklickt wird
@@ -6073,10 +6086,11 @@ window.em.handleHProjektEditMenuFelderVerwaltenClick = function() {
 // wenn in hProjektEdit.html .menu_projekte_exportieren geklickt wird
 window.em.handleHProjektEditMenuProjekteExportierenClick = function() {
 	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuProjektEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuProjektEdit").popup("close");
+	$("#MenuProjektEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in hProjektEdit.html .menu_einstellungen geklickt wird
@@ -6628,10 +6642,11 @@ window.em.handleHArtEditMenuFelderVerwaltenClick = function() {
 // wenn in hArtEdit.html .menu_beob_exportieren geklickt wird
 window.em.handleHArtEditMenuBeobExportierenClick = function() {
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuhArtEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuhArtEdit").popup("close");
+	$("#MenuhArtEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn in hArtEdit.html .menu_einstellungen geklickt wird
@@ -6742,10 +6757,11 @@ window.em.handleProjektListeMenuFelderVerwaltenClick = function() {
 // wenn in hProjektListe.html .menu_projekte_exportieren geklickt wird
 window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
 	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuProjektListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuProjektListe").popup("close");
+	$("#MenuProjektListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 window.em.handleProjektListeMenuEinstellungenClick = function() {
@@ -6984,10 +7000,11 @@ window.em.handleRaumEditMenuFelderVerwaltenClick = function() {
 
 window.em.handleRaumEditMenuExportierenClick = function() {
 	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuRaumEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuRaumEdit").popup("close");
+	$("#MenuRaumEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 window.em.handleRaumEditMenuEinstellungenClick = function() {
@@ -7321,10 +7338,11 @@ window.em.handleRaumListeMenuEinstellungenClick = function() {
 
 window.em.handleHRaumListeMenuExportierenClick = function() {
 	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuRaumListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuRaumListe").popup("close");
+	$("#MenuRaumListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 // wenn hZeitEdit.html erscheint
@@ -7560,10 +7578,11 @@ window.em.handleZeitEditMenuFelderVerwaltenClick = function() {
 
 window.em.handleZeitEditMenuExportierenClick = function() {
 	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuZeitEdit").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuZeitEdit").popup("close");
+	$("#MenuZeitEdit")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 window.em.handleZeitEditMenuEinstellungenClick = function() {
@@ -7906,10 +7925,11 @@ window.em.handleZeitListeMenuFelderVerwaltenClick = function() {
 
 window.em.handleZeitListeMenuZeitenExportierenClick = function() {
 	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
-	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuZeitListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuZeitListe").popup("close");
+	$("#MenuZeitListe")
+        // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
+        .popup()
+        // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+        .popup("close");
 };
 
 window.em.handleZeitListeMenuEinstellungenClick = function() {
@@ -8259,7 +8279,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 				title: Ort.oName.toString() || "",
 				labelContent: Ort.oName,
 				labelAnchor: new google.maps.Point(75, -5),
-				labelClass: "MapLabel", // the CSS class for the label
+				labelClass: "MapLabel" // the CSS class for the label
 			});
 			markers.push(marker);
 			contentString = '<table class="kartenlegende_tabelle">';
@@ -8518,7 +8538,7 @@ window.em.erstelleKarteBeobListe_2 = function() {
 				//icon: image,
 				labelContent: beob.aArtName,
 				labelAnchor: new google.maps.Point(75, -5),
-				labelClass: "MapLabel", // the CSS class for the label
+				labelClass: "MapLabel" // the CSS class for the label
 			});
 			markers.push(marker);
 			contentString = '<h4 class="map_infowindow_title">' + beob.aArtName + '</h4>';
@@ -8929,17 +8949,18 @@ window.em.handleUserEditFeldChange = function() {
 };
 
 window.em.handleUserEditAutorChange = function() {
+    var $Autor = $("#Autor");
 	$db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
-			if ($("#Autor").val()) {
+			if ($Autor.val()) {
 				// Wenn Autor erfasst ist, speichern
 				// Falls Standardwert noch nicht existiert, 
 				// uss zuerst das Objekt geschaffen werden
 				if (!doc.Standardwert) {
 					doc.Standardwert = {};
 				}
-				doc.Standardwert[localStorage.Email] = $("#Autor").val();
+				doc.Standardwert[localStorage.Email] = $Autor.val();
 			} else {
 				// Wenn kein Autor erfasst ist, einen allfälligen löschen
 				if (doc.Standardwert) {
@@ -8950,7 +8971,7 @@ window.em.handleUserEditAutorChange = function() {
 				success: function () {
 					// Feldliste soll neu aufgebaut werden
 					window.em.leereStorageFeldListe();
-					localStorage.Autor = $("#Autor").val();
+					localStorage.Autor = $Autor.val();
 				},
 				error: function () {
 					window.em.melde("Fehler: Änderung am Autor nicht gespeichert");
@@ -8966,10 +8987,11 @@ window.em.handleUserEditAutorChange = function() {
 // kontrollierren, ob die erforderlichen Felder etwas enthalten
 // wenn ja wird true retourniert, sonst false
 window.em.validiereUserUserEdit = function() {
-	if (!$("#Autor").val()) {
+    var $Autor = $("#Autor");
+	if (!$Autor.val()) {
 		window.em.melde("Bitte Autor eingeben");
-		setTimeout(function() { 
-			$('#Autor').focus();
+		setTimeout(function() {
+            $Autor.focus();
 		}, 50);  // need to use a timer so that .blur() can finish before you do .focus()
 		return false;
 	}
