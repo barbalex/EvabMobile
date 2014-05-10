@@ -4812,7 +4812,7 @@ window.em.initiierehArtEditListe_2 = function() {
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
-	$("#hArtEditListePageHeader .hArtEditListePageTitel").text(anzArt + Titel2);
+	$("#hArtEditListePageHeader").find(".hArtEditListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
 		// Sollte nicht vorkommen, weil man nur aus einer existierenden Beobachtung in die Liste wechseln kann
@@ -4831,8 +4831,7 @@ window.em.initiierehArtEditListe_2 = function() {
 		if ((!window.em.hArt || !window.em.hArt.aArtGruppe) && artgruppen.length > 1) {
 			// Benutzer muss eine Artgruppe wählen
 			$("#hael_artgruppen_popup_fieldcontain").html(window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup(artgruppen)).trigger("create");
-			$("#hael_artgruppen_popup").popup();
-			$("#hael_artgruppen_popup").popup("open");
+			$("#hael_artgruppen_popup").popup().popup("open");
 		} else {
 			// die Artgruppen der zuletzt gewählten Art nehmen
 			artgruppe = window.em.hArt.aArtGruppe;
