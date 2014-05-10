@@ -75,6 +75,9 @@ window.em.DdInWgs84LaengeSec = function(Laenge) {
 };
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
+/**
+ * @return {number}
+ */
 window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
 	var lat,
 		lng,
@@ -101,6 +104,9 @@ window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
 };
 
 // Wandelt WGS84 in CH-Landeskoordinaten um
+/**
+ * @return {number}
+ */
 window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
 	var lat,
         lng,
@@ -973,6 +979,7 @@ window.em.initiiereFeldEdit_2 = function() {
 	window.em.checkAllRadiosOfForm("FeldEdit", false);
 
 	// Sichtbarkeit anzeigen
+    console.log("SichtbarImModusHierarchisch = " + SichtbarImModusHierarchisch);
 	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
 		$("#SichtbarImModusHierarchisch").val("ja");
 		$("#SichtbarImModusHierarchisch").parent().addClass("ui-flipswitch-active");
@@ -4050,13 +4057,11 @@ window.em.handleFeldEditPageinit = function() {
         });
 
     $("#UserFeldForm")
+        .on("change", ".meineEinstellungen", window.em.handleFeldEditMeineEinstellungenChange)
         .on("change", "#Standardwert", window.em.handleFeldEditStandardwertChange);
 
-	$("#FeldEditContent")
-        .on("change", ".meineEinstellungen", window.em.handleFeldEditMeineEinstellungenChange)
-        .on("change", ".Feldeigenschaften", window.em.handleFeldEditFeldeigenschaftenChange);
-
 	$("#FeldEditForm")
+        .on("change", ".Feldeigenschaften", window.em.handleFeldEditFeldeigenschaftenChange)
         .on("change", "#FeldFolgtNach", window.em.handleFeldEditFeldFolgtNachChange);
 
 	$("#fe_löschen_meldung")
@@ -4091,9 +4096,6 @@ window.em.handleFeldEditPageinit = function() {
             }
         });
 
-    $('#MenuFeldEdit')
-        .on('click', '.menu_datenfelder_exportieren', window.em.handleFeldEditMenuDatenfelderExportierenClick);
-
     $("#FeldEditFooter")
         .on("click", "#NeuesFeldFeldEdit", function(event) {
             event.preventDefault();
@@ -4103,6 +4105,9 @@ window.em.handleFeldEditPageinit = function() {
             event.preventDefault();
             window.em.handleFeldEditLoescheFeldFeldEditClick();
         });
+
+    $('#MenuFeldEdit')
+        .on('click', '.menu_datenfelder_exportieren', window.em.handleFeldEditMenuDatenfelderExportierenClick);
 };
 
 window.em.handleFeldEditMeineEinstellungenChange = function() {
@@ -4137,10 +4142,11 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 		// User entfernen, wenn enthalten
 		window.em.Feld["'"+feldname+"'"] = _.without(window.em.Feld["'"+feldname+"'"], localStorage.Email);
 	}
+    console.log("Feld vor Speicherung = " + JSON.stringify(window.em.Feld));
 	$db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
-			window.em.Feld._rev = data._rev;
+			window.em.Feld._rev = data.rev;
 		},
 		error: function() {
 			window.em.melde("Fehler: Die letzte Änderung wurde nicht gespeichert");
