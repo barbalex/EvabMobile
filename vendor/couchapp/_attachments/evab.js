@@ -3598,19 +3598,17 @@ window.em.handleAlAlStandardgruppeClick = function() {
 window.em.handleAlArtListItemClick = function(that) {
 	var ArtBezeichnung = $(that).attr("ArtBezeichnung"),
 		artid = $(that).attr("artid"),
-		art_schon_erfasst = false;
+        harten_mit_gleicher_artid = [];
 
 	// kontrollieren, ob diese Art schon erfasst wurde
 	// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 	if (window.em.hArtListe && window.em.hArtListe.rows) {
-		_.each(window.em.hArtListe.rows, function(row) {
-			if (row.doc.aArtId == artid && artid !== undefined) {
-				art_schon_erfasst = true;
-			}
-		});
+        harten_mit_gleicher_artid = _.filter(window.em.hArtListe.rows, function(row) {
+           return  row.doc.aArtId === artid && artid !== undefined;
+        });
 	}
 
-	if (art_schon_erfasst) {
+	if (harten_mit_gleicher_artid.length > 0) {
 		window.em.melde("Diese Art wurde bereits erfasst");
 	} else {
 		localStorage.aArtId = artid;
