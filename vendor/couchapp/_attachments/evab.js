@@ -338,7 +338,6 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 			beob.aArtId = localStorage.aArtId;
 			$db.saveDoc(beob, {
 				success: function(data) {
-					var row_objekt = {};
 					if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 						// Variabeln verfügbar machen
 						localStorage.BeobId = docId;
@@ -2156,14 +2155,14 @@ window.em.initiierehArtListe_2 = function() {
 		listItemContainer = "",
 		Titel2,
 		hArtTemp,
-		artgruppenname;
+        $ArtlistehAL = $("#ArtlistehAL");
 
 	// Im Titel der Seite die Anzahl Arten anzeigen
 	Titel2 = " Arten";
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
-	$("#hArtListePageHeader .hArtListePageTitel").text(anzArt + Titel2);
+	$("#hArtListePageHeader").find(".hArtListePageTitel").text(anzArt + Titel2);
 
 	if (anzArt === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
@@ -2175,8 +2174,8 @@ window.em.initiierehArtListe_2 = function() {
 			}
 		});
 	}
-	$("#ArtlistehAL").html(listItemContainer);
-	$("#ArtlistehAL").listview("refresh");
+	$ArtlistehAL.html(listItemContainer);
+	$ArtlistehAL.listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#hArtListe").find(".ui-input-search").children("input")[0].focus();
@@ -2781,11 +2780,10 @@ window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
 // erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
 window.em.zeigeAttachments = function(doc, Page) {
 	var htmlContainer = "",
-		url,
-		url_zumLöschen;
+		url;
 	$("#_attachments" + Page).val("");
 	if (doc._attachments) {
-		$.each(doc._attachments, function(Dateiname, val) {
+		$.each(doc._attachments, function(Dateiname) {
 			url = "/evab/" + doc._id + "/" + Dateiname;
 			//url_zumLöschen = url + "?" + doc._rev;	// theoretisch kann diese rev bis zum Löschen veraltet sein, praktisch kaum
 			htmlContainer += "<div><a href='";
@@ -4295,8 +4293,7 @@ window.em.handleFeldEditFeldFolgtNachChange = function() {
 window.em.handleFeldEditStandardwertChange = function() {
 	var optionen = $("#Optionen").val() || [],	// undefined verhindern
 		Feldwert = this.value || [],	// undefined verhindern
-		LetzterFeldwert, 
-		Formularelement, 
+		LetzterFeldwert,
 		StandardwertOptionen;
 	if (optionen.length > 0) {
 		// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
@@ -5159,9 +5156,7 @@ window.em.handleHArtEditListePageinit = function() {
 	});
 
 	// Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
-	$("#hArtEditListeForm").on("click", ".hart", function(event) {
-		console.log("initiierre hart");
-		//event.preventDefault();
+	$("#hArtEditListeForm").on("click", ".hart", function() {
 		var hartid = $(this).attr("hartid");
 		if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
 			// die Art muss initiiert werden
@@ -5578,7 +5573,7 @@ window.em.handleHOrtEditWaehleFelderClick = function() {
 };
 
 // wenn in hOrtEdit.html #LoescheOrtOrtEdit geklickt wird
-window.em.handleHOrtEditLoescheOrtClick = function(that) {
+window.em.handleHOrtEditLoescheOrtClick = function() {
 	// Anzahl Zeiten von Ort zählen
 	$db = $.couch.db("evab");
 	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
@@ -5587,16 +5582,16 @@ window.em.handleHOrtEditLoescheOrtClick = function(that) {
 			$db.view('evab/hArtIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
 				success: function(Arten) {
 					var anzArten = Arten.rows.length, 
-						div = $("#hoe_löschen_meldung"),
+						$hoe_löschen_meldung = $("#hoe_löschen_meldung"),
 						zeiten_text = (anzZeiten === 1 ? ' Zeit und ' : ' Zeiten und '),
 						arten_text = (anzArten === 1 ? ' Art' : ' Arten'), 
 						meldung = 'Ort inklusive ' + anzZeiten + zeiten_text + anzArten + arten_text + ' löschen?';
 					$("#hoe_löschen_meldung_meldung").html(meldung);
 					// Listen anhängen, damit ohne DB-Abfrage gelöscht werden kann
-					div.data('Arten', Arten);
-					div.data('Zeiten', Zeiten);
+					$hoe_löschen_meldung.data('Arten', Arten);
+					$hoe_löschen_meldung.data('Zeiten', Zeiten);
 					// popup öffnen
-					$("#hoe_löschen_meldung").popup("open");
+                    $hoe_löschen_meldung.popup("open");
 				}
 			});
 		}
@@ -6804,7 +6799,7 @@ window.em.handleRaumEditPageinit = function() {
 		window.em.handleRaumEditLoescheRaumClick();
 	});
 
-	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function(event) {
+	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function() {
 		var div = $("#hre_löschen_meldung")[0];
 		window.em.löscheRaum(jQuery.data(div, 'Arten'), jQuery.data(div, 'Zeiten'), jQuery.data(div, 'Orte'));
 	});
@@ -10473,7 +10468,7 @@ window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
 	// html für die erste Zeile beginnen
 	html += '<thead><tr>';
 	// html für die Spalten, Biespiel: <th>Artgruppe</th><th>Anzahl Arten</th>
-	_.each(_.first(objekte), function(value, key, list) {
+	_.each(_.first(objekte), function(value, key) {
 		html += '<th>' + key + '</th>';
 	});
 	// html für die erste Zeile abschliessen
@@ -10484,7 +10479,7 @@ window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
 	_.each(objekte, function(objekt) {
 		html += '<tr>';
 		// alle Spalten
-		_.each(objekt, function(value, key, list) {
+		_.each(objekt, function(value) {
 			html += '<td>' + value + '</td>';
 		});
 		html += '</tr>';
