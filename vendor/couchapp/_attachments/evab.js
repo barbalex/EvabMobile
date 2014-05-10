@@ -6697,25 +6697,21 @@ window.em.handleRaumEditPageinit = function() {
 		return;
 	}
 
-	$("#RaumEditHeader").on("click", "[name='OeffneRaumListeRaumEdit']", function(event) {
-		event.preventDefault();
-		window.em.handleRaumEditOeffneRaumListeClick();
-	});
+	$("#RaumEditHeader")
+        .on("click", "[name='OeffneRaumListeRaumEdit']", function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditOeffneRaumListeClick();
+        });
 
-	// Für jedes Feld bei Änderung speichern
-	$("#hRaumEditForm").on("change", ".speichern", window.em.speichereRaum);
-
-	// Eingabe im Zahlenfeld abfangen
-	$("#hRaumEditForm").on("blur", '.speichernSlider', window.em.speichereRaum);
-
-	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hRaumEditForm").on("mouseup", '.ui-slider-input', window.em.speichereRaum);
-
-	// Ende des Schiebens abfangen
-	$("#hRaumEditForm").on("slidestop", '.speichernSlider', window.em.speichereRaum);
-
-	// Änderungen im Formular für Anhänge speichern
-	$("#FormAnhängehRE").on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange);
+	$("#hRaumEditForm")
+        // Für jedes Feld bei Änderung speichern
+        .on("change", ".speichern", window.em.speichereRaum)
+        // Eingabe im Zahlenfeld abfangen
+        .on("blur", '.speichernSlider', window.em.speichereRaum)
+        // Klicken auf den Pfeilen im Zahlenfeld abfangen
+        .on("mouseup", '.ui-slider-input', window.em.speichereRaum)
+        // Ende des Schiebens abfangen
+        .on("slidestop", '.speichernSlider', window.em.speichereRaum);
 
 	// Code für den Raum-Löschen-Dialog
 	$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function(event) {
@@ -6728,94 +6724,88 @@ window.em.handleRaumEditPageinit = function() {
 		window.em.löscheRaum(jQuery.data($hre_löschen_meldung, 'Arten'), jQuery.data($hre_löschen_meldung, 'Zeiten'), jQuery.data($hre_löschen_meldung, 'Orte'));
 	});
 
-	// Link zu Projekt in Navbar und Titelleiste
-	$("#RaumEditHeader").on("click", "#ProjektOeffnenRaumEdit", function(event) {
-		event.preventDefault();
-		window.em.handleRaumEditProjektOeffnenClick();
-	});
+    $(document)
+        // inaktive tabs inaktivieren
+        .on("click", ".tab_inaktiv", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
-	// inaktive tabs inaktivieren
-	$(document).on("click", ".tab_inaktiv", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-	});
+	$("#RaumEditHeader")
+        // Link zu Projekt in Navbar und Titelleiste
+        .on("click", "#ProjektOeffnenRaumEdit", function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditProjektOeffnenClick();
+        })
+        // Link zu Ortliste in Navbar
+        .on("click", "#OrtListeOeffnenRaumEdit", function(event) {
+            event.preventDefault();
+            $.mobile.navigate("hOrtListe.html");
+        });
 
-	// Link zu Ortliste in Navbar
-	$("#RaumEditHeader").on("click", "#OrtListeOeffnenRaumEdit", function(event) {
-		event.preventDefault();
-		$.mobile.navigate("hOrtListe.html");
-	});
+	$("#hRaumEdit")
+        .on("swipeleft", "#hRaumEditContent", window.em.handleRaumEditContentSwipreleft)
+        .on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight)
+        // Pagination Pfeil voriger initialisieren
+        .on("vclick", ".ui-pagination-prev", function(event) {
+            event.preventDefault();
+            window.em.nächsterVorigerRaum("voriger");
+        })
+        // Pagination Pfeil nächster initialisieren
+        .on("vclick", ".ui-pagination-next", function(event) {
+            event.preventDefault();
+            window.em.nächsterVorigerRaum("nächster");
+        })
+        // Pagination Pfeiltasten initialisieren
+        .on("keyup", function(event) {
+            // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+            if (!$(event.target).is("input, textarea, select, button") && $('#hRaumEdit').is(':visible')) {
+                // Left arrow
+                if (event.keyCode === $.mobile.keyCode.LEFT) {
+                    window.em.nächsterVorigerRaum("voriger");
+                    event.preventDefault();
+                }
+                // Right arrow
+                else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+                    window.em.nächsterVorigerRaum("nächster");
+                    event.preventDefault();
+                }
+            }
+        });
 
-	// neuen Raum erstellen
-	$("#hRaumEditFooter").on("click", "#NeuerRaumRaumEdit", function(event) {
-		event.preventDefault();
-		window.em.erstelleNeuenRaum();
-	});
+    // Änderungen im Formular für Anhänge speichern
+    $("#FormAnhängehRE")
+        .on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange)
+        .on("click", "[name='LöscheAnhang']", function(event) {
+            event.preventDefault();
+            window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
+        });
 
-	// sichtbare Felder wählen
-	$("#hRaumEditFooter").on("click", "#waehleFelderRaumEdit", function(event) {
-		event.preventDefault();
-		window.em.handleRaumEditWaehleFelderClick();
-	});
+    $("#hRaumEditFooter")
+        // neuen Raum erstellen
+        .on("click", "#NeuerRaumRaumEdit", function(event) {
+            event.preventDefault();
+            window.em.erstelleNeuenRaum();
+        })
+        // sichtbare Felder wählen
+        .on("click", "#waehleFelderRaumEdit", function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditWaehleFelderClick();
+        })
+        .on("click", "#KarteOeffnenRaumEdit", function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditOeffneKarteClick();
+        });
 
-	$("#hRaumEdit").on("swipeleft", "#hRaumEditContent", window.em.handleRaumEditContentSwipreleft);
-
-	$("#hRaumEdit").on("swiperight", "#hRaumEditContent", window.em.handleRaumEditContentSwiperight);
-
-	// Pagination Pfeil voriger initialisieren
-	$("#hRaumEdit").on("vclick", ".ui-pagination-prev", function(event) {
-		event.preventDefault();
-		window.em.nächsterVorigerRaum("voriger");
-	});
-
-	// Pagination Pfeil nächster initialisieren
-	$("#hRaumEdit").on("vclick", ".ui-pagination-next", function(event) {
-		event.preventDefault();
-		window.em.nächsterVorigerRaum("nächster");
-	});
-
-	// Pagination Pfeiltasten initialisieren
-	$("#hRaumEdit").on("keyup", function(event) {
-		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#hRaumEdit').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				window.em.nächsterVorigerRaum("voriger");
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				window.em.nächsterVorigerRaum("nächster");
-				event.preventDefault();
-			}
-		}
-	});
-
-	$("#hRaumEditFooter").on("click", "#KarteOeffnenRaumEdit", function(event) {
-		event.preventDefault();
-		window.em.handleRaumEditOeffneKarteClick();
-	});
-
-	$("#FormAnhängehRE").on("click", "[name='LöscheAnhang']", function(event) {
-		event.preventDefault();
-		window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
-	});
-
-	$('#MenuRaumEdit').on('click', '.menu_einfacher_modus', window.em.handleRaumEditMenuEinfacherModusClick);
-
-	$('#MenuRaumEdit').on('click', '.menu_felder_verwalten', window.em.handleRaumEditMenuFelderVerwaltenClick);
-
-	$('#MenuRaumEdit').on('click', '.menu_raeume_exportieren', window.em.handleRaumEditMenuExportierenClick);
-
-	$('#MenuRaumEdit').on('click', '.menu_einstellungen', window.em.handleRaumEditMenuEinstellungenClick);
-
-	$('#MenuRaumEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuRaumEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuRaumEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
-
-	$('#MenuRaumEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuRaumEdit')
+        .on('click', '.menu_einfacher_modus', window.em.handleRaumEditMenuEinfacherModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleRaumEditMenuFelderVerwaltenClick)
+        .on('click', '.menu_raeume_exportieren', window.em.handleRaumEditMenuExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleRaumEditMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleRaumEditOeffneRaumListeClick = function() {
