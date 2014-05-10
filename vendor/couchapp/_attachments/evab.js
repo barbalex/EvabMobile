@@ -10,9 +10,8 @@ window.em.erstelleNeuesDatum = function() {
 		Mnt = jetzt.getMonth()+1,
 		MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt),
 		Tag = jetzt.getDate(),
-		TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag),
-		Datum = Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
-	return Datum;
+		TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag);
+	return Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
 };
 
 window.em.erstelleNeueUhrzeit = function() {
@@ -22,9 +21,8 @@ window.em.erstelleNeueUhrzeit = function() {
 		Min = jetzt.getMinutes(),
 		MinAusgabe = ((Min < 10) ? "0" + Min : Min),
 		Sek = jetzt.getSeconds(),
-		SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek),
-		Zeit = StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
-	return Zeit;
+		SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek);
+	return StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
 };
 
 // wandelt decimal degrees (vom GPS) in WGS84 um
@@ -43,11 +41,13 @@ window.em.DdInWgs84BreiteMin = function(Breite) {
 	return Math.floor((Breite-BreiteGrad)*60);
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84BreiteSec = function(Breite) {
 	var BreiteGrad = Math.floor(Breite),
-		BreiteMin = Math.floor((Breite-BreiteGrad)*60),
-		BreiteSec = Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100;
-	return BreiteSec;
+		BreiteMin = Math.floor((Breite-BreiteGrad)*60);
+	return Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100;
 };
 
 /**
@@ -61,16 +61,17 @@ window.em.DdInWgs84LaengeGrad = function(Laenge) {
  * @return {number}
  */
 window.em.DdInWgs84LaengeMin = function(Laenge) {
-	var LaengeGrad = Math.floor(Laenge),
-		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
-	return LaengeMin;
+	var LaengeGrad = Math.floor(Laenge);
+	return Math.floor((Laenge-LaengeGrad)*60);
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInWgs84LaengeSec = function(Laenge) {
 	var LaengeGrad = Math.floor(Laenge),
-		LaengeMin = Math.floor((Laenge-LaengeGrad)*60),
-		LaengeSec = Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100;
-	return LaengeSec;
+		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
+	return Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100;
 };
 
 // Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
@@ -78,7 +79,8 @@ window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
 	var lat,
 		lng,
 		lat_aux,
-		lng_aux;
+		lng_aux,
+        x;
 
 	// Converts degrees dec to sex
 	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
@@ -100,8 +102,11 @@ window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
 
 // Wandelt WGS84 in CH-Landeskoordinaten um
 window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-	var lat_aux,
-		lng_aux;
+	var lat,
+        lng,
+        lat_aux,
+		lng_aux,
+        y;
 
 	// Converts degrees dec to sex
 	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
@@ -131,20 +136,21 @@ window.em.DdInChX = function(Breite, Laenge) {
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
 		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
 		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
-		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge),
-		x = Math.floor(window.em.Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
-	return x;
+		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge);
+	return Math.floor(window.em.Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 };
 
+/**
+ * @return {number}
+ */
 window.em.DdInChY = function(Breite, Laenge) {
 	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
 		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
 		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
 		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
-		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge),
-		y = Math.floor(window.em.Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
-	return y;
+		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge);
+	return Math.floor(window.em.Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
 };
 
 // von CH-Landeskoord zu DecDeg
@@ -178,6 +184,9 @@ window.em.CHtoWGSlat = function(y, x) {
 };
 
 // Convert CH y/x to WGS long
+/**
+ * @return {number}
+ */
 window.em.CHtoWGSlng = function(y, x) {
 	// Converts militar to civil and to unit = 1000km
 	var lng,
@@ -326,7 +335,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 				beob.aArtGruppe = localStorage.aArtGruppe;
 			}
 			beob.aArtName = aArtName;
-			beob.aArtId = sessionStorage.ArtId;
+			beob.aArtId = localStorage.aArtId;
 			$db.saveDoc(beob, {
 				success: function(data) {
 					var row_objekt = {};
@@ -349,7 +358,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 								if (hArt._id == docId) {
 									hArt.aArtGruppe = localStorage.aArtGruppe;
 									hArt.aArtName = aArtName;
-									hArt.aArtId = sessionStorage.ArtId;
+									hArt.aArtId = localStorage.aArtId;
 								}
 							});
 							// window.em.hArtListe neu sortieren
@@ -398,11 +407,11 @@ window.em.erstelleNeueZeit = function() {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hZeit = JSON.stringify(window.em.hZeit);
-		window.open("hZeitEdit.html", target = "_self");
-	} else if ($("#hZeitEdit").length > 0 && $("#hZeitEdit").attr("data-url") === "hZeitEdit") {
+		window.open("hZeitEdit.html", "_self");
+	} else if ($hZeitEdit.length > 0 && $hZeitEdit.attr("data-url") === "hZeitEdit") {
 		//$(":mobile-pagecontainer").pagecontainer("change", "#hZeitEdit.html", { allowSamePageTransition : true });    FUNKTIONIERT NICHT
 		localStorage.hZeit = JSON.stringify(window.em.hZeit);
-		window.open("hZeitEdit.html", target = "_self");
+		window.open("hZeitEdit.html", "_self");
 	} else {
 		$.mobile.navigate("hZeitEdit.html");
 	}
@@ -430,11 +439,11 @@ window.em.erstelleNeuenOrt = function() {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
-		window.open("hOrtEdit.html", target = "_self");
-	} else if ($("#hOrtEdit").length > 0 && $("#hOrtEdit").attr("data-url") === "hOrtEdit") {
+		window.open("hOrtEdit.html", "_self");
+	} else if ($hOrtEdit.length > 0 && $hOrtEdit.attr("data-url") === "hOrtEdit") {
 		//$(":mobile-pagecontainer").pagecontainer("change", "#hOrtEdit.html", {allowSamePageTransition : true});    FUNKTIONIERT NICHT
 		localStorage.hOrt = JSON.stringify(window.em.hOrt);
-		window.open("hOrtEdit.html", target = "_self");
+		window.open("hOrtEdit.html", "_self");
 	} else {
 		$.mobile.navigate("hOrtEdit.html");
 	}
@@ -458,11 +467,11 @@ window.em.erstelleNeuenRaum = function() {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
-		window.open("hRaumEdit.html", target = "_self");
-	} else if ($("#hRaumEdit").length > 0 && $("#hRaumEdit").attr("data-url") === "hRaumEdit") {
+		window.open("hRaumEdit.html", "_self");
+	} else if ($hRaumEdit.length > 0 && $hRaumEdit.attr("data-url") === "hRaumEdit") {
 		//$(":mobile-pagecontainer").pagecontainer("change", "#hRaumEdit.html", {allowSamePageTransition : "true"});   FUNKTIONIERT NICHT
 		localStorage.hRaum = JSON.stringify(window.em.hRaum);
-		window.open("hRaumEdit.html", target = "_self");
+		window.open("hRaumEdit.html", "_self");
 	} else {
 		$.mobile.navigate("hRaumEdit.html");
 	}
@@ -487,11 +496,11 @@ window.em.erstelleNeuesProjekt = function() {
 		// Wenn die data-url ein Pfad ist, verursacht changePage einen Fehler: b.data("page") is undefined
 		// das Objekt muss über die localStorage übermittelt werden
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
-		window.open("hProjektEdit.html", target = "_self");
-	} else if ($("#hProjektEdit").length > 0 && $("#hProjektEdit").attr("data-url") === "hProjektEdit") {
-		//$.mobile.navigate($("#hProjektEdit"), {allowSamePageTransition: true});    FUNKTIONIERT NICHT
+		window.open("hProjektEdit.html", "_self");
+	} else if ($hProjektEdit.length > 0 && $hProjektEdit.attr("data-url") === "hProjektEdit") {
+		//$.mobile.navigate($hProjektEdit, {allowSamePageTransition: true});    FUNKTIONIERT NICHT
 		localStorage.hProjekt = JSON.stringify(window.em.hProjekt);
-		window.open("hProjektEdit.html", target = "_self");
+		window.open("hProjektEdit.html", "_self");
 	} else {
 		$.mobile.navigate("hProjektEdit.html");
 	}
@@ -699,7 +708,8 @@ window.em.initiiereBeobliste_2 = function() {
 		key,
 		listItemContainer = "",
 		Titel2,
-		artgruppenname;
+		artgruppenname,
+        $BeoblisteBL = $("#BeoblisteBL");
 
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	Titel2 = " Beobachtungen";
@@ -720,7 +730,7 @@ window.em.initiiereBeobliste_2 = function() {
 			}
 			listItemContainer += "<li class='beob ui-li-has-thumb' id='";
 			listItemContainer += beob._id;
-			listItemContainer += "'><a href='BeobEdit.html'><img class='ui-li-thumb' src='";
+			listItemContainer += "'><a href='#'><img class='ui-li-thumb' src='";
 			listItemContainer += "Artgruppenbilder/" + artgruppenname;
 			listItemContainer += "' /><h3 class='aArtName'>";
 			listItemContainer += beob.aArtName;
@@ -731,8 +741,8 @@ window.em.initiiereBeobliste_2 = function() {
 			listItemContainer += "<\/p><\/a> <\/li>";
 		});
 	}
-	$("#BeoblisteBL").html(listItemContainer);
-	$("#BeoblisteBL").listview("refresh");
+	$BeoblisteBL.html(listItemContainer);
+	$BeoblisteBL.listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
 	$("#BeobListe").find(".ui-input-search").children("input")[0].focus();
@@ -2253,7 +2263,7 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 	htmlContainer += FeldWert;
 	htmlContainer += '" class="speichern"/></div>';
 	return htmlContainer;
-}
+};
 
 // generiert den html-Inhalt für Slider
 // wird von erstellehArtEdit aufgerufen
@@ -3456,11 +3466,7 @@ window.em.speichereAutorAlsStandardwert = function() {
 */
 window.em.validateEmail = function(email) {
 	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-	if( !emailReg.test(email) ) {
-		return false;
-	} else {
-		return true;
-	}
+	return emailReg.test(email);
 };
 
 
@@ -4240,7 +4246,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		window.em.speichereFeldeigenschaften();
 	}
 	window.em.blendeDatentypabhängigeFelder();
-}
+};
 
 window.em.blendeDatentypabhängigeFelder = function() {
 	switch (window.em.Feld.Formularelement) {
@@ -4268,7 +4274,7 @@ window.em.blendeDatentypabhängigeFelder = function() {
 			$("#feldedit_optionen").hide();
 			break;
 	}
-}
+};
 
 // wenn in FeldEdit.htm #FeldFolgtNach geändert wird
 window.em.handleFeldEditFeldFolgtNachChange = function() {
@@ -4305,7 +4311,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 					// ein Wert ist keine Option, abbrechen
 					$("#Standardwert").val(LetzterFeldwert);
 					window.em.melde("Bitte wählen Sie eine oder mehrere der Optionen");
-					return;
+					// return ist hier nicht nötig
 				}
 			});
 			// alle Werte sind Optionen
@@ -4323,12 +4329,12 @@ window.em.handleFeldEditStandardwertChange = function() {
 						// der Wert ist keine Option, abbrechen
 						$("#Standardwert").val(LetzterFeldwert);
 						window.em.melde("Bitte wählen Sie eine der Optionen");
-						return;
+                        // return ist hier nicht nötig
 					}
 				});
 				// alle Werte sind Optionen
 				window.em.speichereStandardwert();
-				return;
+                // return ist hier nicht nötig
 			}
 		} else {
 			// Optionen sind erfasst, Feld braucht aber keine. Alle Werte akzeptieren
@@ -8304,7 +8310,7 @@ window.em.erstelleKartehOrtEdit = function() {
 			});
 		} else {
 			window.em.melde("Fehler: Kein Ort verfügbar");
-			return;
+            // return ist hier nicht nötig
 		}
 	} else {
 		window.em.erstelleKartehOrtEdit_2(window.em.hOrt);
@@ -8558,7 +8564,7 @@ window.em.erstelleKarteBeobEdit = function() {
 			});
 		} else {
 			window.em.melde("Fehler: Keine Beobachtung verfügbar");
-			return;
+            // return ist hier nicht nötig
 		}
 	} else {
 		window.em.erstelleKarteBeobEdit_2(window.em.Beobachtung);
@@ -10115,12 +10121,12 @@ window.em.handleArtengruppenImportierenZurückClick = function() {
 window.em.öffneArtengruppenImportieren = function() {
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("ArtengruppenImportieren.html");
-}
+};
 
 window.em.öffneAdmin = function() {
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("admin.html");
-}
+};
 
 window.em.handleAdminPageshow = function() {
 	if (localStorage.length === 0 || !localStorage.Email) {
