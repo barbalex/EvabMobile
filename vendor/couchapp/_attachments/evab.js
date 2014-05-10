@@ -7145,54 +7145,50 @@ window.em.handleHRaumListePageinit = function() {
 
 	// inaktive tabs inaktivieren
 	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-	});
+	$(document)
+        .on("click", ".tab_inaktiv", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
-	// Link zu Projekt in Navbar und Titelleiste
-	$("#hRaumListePageHeader").on("click", "[name='ProjektEditOeffnenRaumListe']", function(event) {
-		event.preventDefault();
-		window.em.handleRaumListeOeffneProjektEditClick();
-	});
+	$("#hRaumListePageHeader")
+        // Link zu Projekt in Navbar und Titelleiste
+        .on("click", "[name='ProjektEditOeffnenRaumListe']", function(event) {
+            event.preventDefault();
+            window.em.handleRaumListeOeffneProjektEditClick();
+        });
 
-	// neuen Raum erstellen
-	$("#hRaumListe").on("click", "[name='NeuerRaumRaumListe']", function(event) {
-		event.preventDefault();
-		window.em.erstelleNeuenRaum();
-	});
+	$("#hRaumListe")
+        // neuen Raum erstellen
+        .on("click", "[name='NeuerRaumRaumListe']", function(event) {
+            event.preventDefault();
+            window.em.erstelleNeuenRaum();
+        })
+        .on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
 
-	$("#RaumlistehRL").on("swipeleft", ".Raum", window.em.handleRaumListeSwipeleft);
+	$("#RaumlistehRL")
+        .on("swipeleft", ".Raum", window.em.handleRaumListeSwipeleft)
+        .on("click", ".Raum", function(event) {
+            event.preventDefault();
+            window.em.handleRaumListeRaumClick(this);
+        })
+        .on("swipeleft", ".erste", window.em.erstelleNeuenRaum);
 
-	$("#RaumlistehRL").on("click", ".Raum", function(event) {
-		event.preventDefault();
-		window.em.handleRaumListeRaumClick(this);
-	});
+	$("#hRaumListePageFooter")
+        .on("click", "#KarteOeffnenRaumListe", function(event) {
+            event.preventDefault();
+            window.em.handleRaumListeOeffneKarteClick();
+        });
 
-	$("#RaumlistehRL").on("swipeleft", ".erste", window.em.erstelleNeuenRaum);
-
-	$("#hRaumListe").on("swiperight", '#hRaumListePageContent', window.em.handleRaumListeContentSwiperight);
-
-	$("#hRaumListePageFooter").on("click", "#KarteOeffnenRaumListe", function(event) {
-		event.preventDefault();
-		window.em.handleRaumListeOeffneKarteClick();
-	});
-
-	$('#MenuRaumListe').on('click', '.menu_einfacher_modus', window.em.handleHRaumListeMenuEinfacherModusClick);
-
-	$('#MenuRaumListe').on('click', '.menu_felder_verwalten', window.em.handleRaumListeMenuFelderVerwaltenClick);
-
-	$('#MenuRaumListe').on('click', '.menu_raeume_exportieren', window.em.handleHRaumListeMenuExportierenClick);
-
-	$('#MenuRaumListe').on('click', '.menu_einstellungen', window.em.handleRaumListeMenuEinstellungenClick);
-
-	$('#MenuRaumListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuRaumListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuRaumListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
-
-	$('#MenuRaumListe').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuRaumListe')
+        .on('click', '.menu_einfacher_modus', window.em.handleHRaumListeMenuEinfacherModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleRaumListeMenuFelderVerwaltenClick)
+        .on('click', '.menu_raeume_exportieren', window.em.handleHRaumListeMenuExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleRaumListeMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleRaumListeOeffneProjektEditClick = function() {
@@ -7271,119 +7267,105 @@ window.em.handleHZeitEditPageinit = function() {
 		$.mobile.navigate("hProjektListe.html");
 	}
 
-	$("#ZeitEditPageHeader").on("click", "[name='OeffneZeitListeZeitEdit']", function(event) {
-		event.preventDefault();
-		window.em.leereStorageZeitEdit();
-		$.mobile.navigate("hZeitListe.html");
-	});
+	$("#ZeitEditPageHeader")
+        .on("click", "[name='OeffneZeitListeZeitEdit']", function(event) {
+            event.preventDefault();
+            window.em.leereStorageZeitEdit();
+            $.mobile.navigate("hZeitListe.html");
+        })
+        .on("click", "#OeffneOrtZeitEdit", function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditOeffneOrtClick();
+        })
+        .on("click", "#OeffneArtListeZeitEdit", function(event) {
+            event.preventDefault();
+            $.mobile.navigate("hArtListe.html");
+        })
+        .on("click", "#OeffneRaumZeitEdit", function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditOeffneRaumClick();
+        })
+        .on("click", "#OeffneProjektZeitEdit", function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditOeffneProjektClick();
+        });
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneOrtZeitEdit", function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditOeffneOrtClick();
-	});
+	$("#hZeitEditForm")
+        // Für jedes Feld bei Änderung speichern
+        .on("change", ".speichern", window.em.speichereHZeitEdit)
+        // Eingabe im Zahlenfeld abfangen
+        .on("blur", '.speichernSlider', window.em.speichereHZeitEdit)
+        // Klicken auf den Pfeilen im Zahlenfeld abfangen
+        .on("mouseup", '.ui-slider-input', window.em.speichereHZeitEdit)
+        // Ende des Schiebens abfangen
+        .on("slidestop", '.speichernSlider', window.em.speichereHZeitEdit);
 
+	$("#FormAnhängehZE")
+        // Änderungen im Formular für Anhänge speichern
+        .on("change", ".speichernAnhang", window.em.handleZeitEditSpeichernAnhangChange)
+        .on("click", "[name='LöscheAnhang']", function(event) {
+            event.preventDefault();
+            window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
+        });
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneArtListeZeitEdit", function(event) {
-		event.preventDefault();
-		$.mobile.navigate("hArtListe.html");
-	});
+	$("#hZeitEdit")
+        .on("swipeleft", '#ZeitEditPageContent', window.em.handleZeitEditContentSwipeleft)
+        .on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight)
+        // Pagination Pfeil voriger initialisieren
+        .on("vclick", ".ui-pagination-prev", function(event) {
+            event.preventDefault();
+            window.em.nächsteVorigeZeit("vorige");
+        })
+        // Pagination Pfeil nächster initialisieren
+        .on("vclick", ".ui-pagination-next", function(event) {
+            event.preventDefault();
+            window.em.nächsteVorigeZeit("nächste");
+        })
+        // Pagination Pfeiltasten initialisieren
+        .on("keyup", function(event) {
+            // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+            if (!$(event.target).is("input, textarea, select, button") && $('#hZeitEdit').is(':visible')) {
+                // Left arrow
+                if (event.keyCode === $.mobile.keyCode.LEFT) {
+                    window.em.nächsteVorigeZeit("vorige");
+                    event.preventDefault();
+                }
+                // Right arrow
+                else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+                    window.em.nächsteVorigeZeit("nächste");
+                    event.preventDefault();
+                }
+            }
+        });
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneRaumZeitEdit", function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditOeffneRaumClick();
-	});
+    $('#ZeitEditPageFooter')
+        // Neue Zeit erstellen
+        .on('click', '#NeueZeitZeitEdit', function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditNeuClick();
+        })
+        // sichtbare Felder wählen
+        .on("click", "#waehleFelderZeitEdit", function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditWaehleFelderClick();
+        })
+        // Code für den Zeit-Löschen-Dialog
+        .on('click', '#LoescheZeitZeitEdit', function(event) {
+            event.preventDefault();
+            window.em.handleZeitEditLoescheClick();
+        });
 
-	$("#ZeitEditPageHeader").on("click", "#OeffneProjektZeitEdit", function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditOeffneProjektClick();
-	});
+    $("#hze_löschen_meldung")
+        .on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLoeschenMeldungJaClick);
 
-	// Für jedes Feld bei Änderung speichern
-	$("#hZeitEditForm").on("change", ".speichern", window.em.speichereHZeitEdit);
-
-	// Eingabe im Zahlenfeld abfangen
-	$("#hZeitEditForm").on("blur", '.speichernSlider', window.em.speichereHZeitEdit);
-
-	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hZeitEditForm").on("mouseup", '.ui-slider-input', window.em.speichereHZeitEdit);
-
-	// Ende des Schiebens abfangen
-	$("#hZeitEditForm").on("slidestop", '.speichernSlider', window.em.speichereHZeitEdit);
-
-	// Änderungen im Formular für Anhänge speichern
-	$("#FormAnhängehZE").on("change", ".speichernAnhang", window.em.handleZeitEditSpeichernAnhangChange);
-
-	// Neue Zeit erstellen
-	$('#ZeitEditPageFooter').on('click', '#NeueZeitZeitEdit', function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditNeuClick();
-	});
-
-	// sichtbare Felder wählen
-	$("#ZeitEditPageFooter").on("click", "#waehleFelderZeitEdit", function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditWaehleFelderClick();
-	});
-
-	// Code für den Zeit-Löschen-Dialog
-	$('#ZeitEditPageFooter').on('click', '#LoescheZeitZeitEdit', function(event) {
-		event.preventDefault();
-		window.em.handleZeitEditLoescheClick();
-	});
-
-	$("#hze_löschen_meldung").on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLoeschenMeldungJaClick);
-
-	$("#hZeitEdit").on("swipeleft", '#ZeitEditPageContent', window.em.handleZeitEditContentSwipeleft);
-
-	$("#hZeitEdit").on("swiperight", '#ZeitEditPageContent', window.em.handleZeitEditContentSwiperight);
-
-	// Pagination Pfeil voriger initialisieren
-	$("#hZeitEdit").on("vclick", ".ui-pagination-prev", function(event) {
-		event.preventDefault();
-		window.em.nächsteVorigeZeit("vorige");
-	});
-
-	// Pagination Pfeil nächster initialisieren
-	$("#hZeitEdit").on("vclick", ".ui-pagination-next", function(event) {
-		event.preventDefault();
-		window.em.nächsteVorigeZeit("nächste");
-	});
-
-	// Pagination Pfeiltasten initialisieren
-	$("#hZeitEdit").on("keyup", function(event) {
-		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#hZeitEdit').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				window.em.nächsteVorigeZeit("vorige");
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				window.em.nächsteVorigeZeit("nächste");
-				event.preventDefault();
-			}
-		}
-	});
-
-	$("#FormAnhängehZE").on("click", "[name='LöscheAnhang']", function(event) {
-		event.preventDefault();
-		window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
-	});
-
-	$('#MenuZeitEdit').on('click', '.menu_einfacher_modus', window.em.handleZeitEditMenuEinfacherModusClick);
-
-	$('#MenuZeitEdit').on('click', '.menu_felder_verwalten', window.em.handleZeitEditMenuFelderVerwaltenClick);
-
-	$('#MenuZeitEdit').on('click', '.menu_zeiten_exportieren', window.em.handleZeitEditMenuExportierenClick);
-
-	$('#MenuZeitEdit').on('click', '.menu_einstellungen', window.em.handleZeitEditMenuEinstellungenClick);
-
-	$('#MenuZeitEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuZeitEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuZeitEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuZeitEdit')
+        .on('click', '.menu_einfacher_modus', window.em.handleZeitEditMenuEinfacherModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleZeitEditMenuFelderVerwaltenClick)
+        .on('click', '.menu_zeiten_exportieren', window.em.handleZeitEditMenuExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleZeitEditMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleZeitEditOeffneOrtClick = function() {
