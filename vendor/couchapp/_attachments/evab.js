@@ -643,7 +643,8 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerBeobEditForm = function() {
 	var htmlContainer = "",
-		ArtGruppe = window.em.Beobachtung.aArtGruppe;
+		ArtGruppe = window.em.Beobachtung.aArtGruppe,
+        FeldWert;
 	_.each(window.em.FeldlisteBeobEdit.rows, function(row) {
 		var Feld = row.doc,
 			FeldName = Feld.FeldName;
@@ -903,6 +904,7 @@ window.em.initiiereProjektEdit_3 = function() {
 window.em.generiereHtmlFuerProjektEditForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteProjekt.rows, function(row) {
 		Feld = row.doc;
@@ -1071,7 +1073,8 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
 	var tempFeld,
-		optionen = [];
+		optionen = [],
+        htmlContainer;
 	optionen.push("");
 	_.each(window.em.Feldliste.rows, function(row) {
 		tempFeld = row.doc;
@@ -1559,6 +1562,7 @@ window.em.initiiereRaumEdit_3 = function() {
 window.em.generiereHtmlFuerRaumEditForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteRaumEdit.rows, function(row) {
 		Feld = row.doc;
@@ -1729,6 +1733,7 @@ window.em.initiiereOrtEdit_3 = function() {
 window.em.generiereHtmlFuerOrtEditForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteOrtEdit.rows, function(row) {
 		Feld = row.doc;
@@ -1944,6 +1949,7 @@ window.em.initiiereZeitListe_2 = function() {
 window.em.generiereHtmlFuerZeitEditForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteZeitEdit.rows, function(row) {
 		Feld = row.doc;
@@ -2088,6 +2094,7 @@ window.em.aktiviereFlipswitches = function(dom_element_id, objekt_variable) {
 window.em.generiereHtmlFuerhArtEditForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	_.each(window.em.FeldlistehArtEdit.rows, function(row) {
@@ -2201,7 +2208,7 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel) {
 	var htmlContainer = "",
 		SliderMinimum,
-		SliderMinimum,
+        SliderMaximum,
 		optionen = Feld.Optionen || ['Bitte in Feldverwaltung Optionen erfassen'],
 		FeldName = Feld.FeldName,
 		FeldBeschriftung = Feld.FeldBeschriftung || FeldName;
@@ -3193,6 +3200,7 @@ window.em.stelleUserDatenBereit = function() {
 // wird benutzt von window.em.stelleUserDatenBereit()
 // öffnet die zuletzt benutzte Seite oder BeobListe.html
 window.em.oeffneZuletztBenutzteSeite = function() {
+    var LetzteUrl;
 	// unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
 		LetzteUrl = localStorage.LetzteUrl;
@@ -5022,6 +5030,7 @@ window.em.erstelleDynamischeFelderhArtEditListe = function() {
 window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	var Feld = {},
 		FeldName,
+        FeldWert,
 		htmlContainer = "",
 		ArtGruppe = window.em.hArt.aArtGruppe;
 	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
@@ -8072,7 +8081,7 @@ window.em.handleKartePageshow = function() {
 			window.em.erstelleKarteH(viewname);
 			break;
 		case "hOrtEdit":
-			OrtOderBeob = "Ort";
+			localStorage.OrtOderBeob = "Ort";
 			window.em.erstelleKartehOrtEdit();
 			break;
 		case "BeobListe":
