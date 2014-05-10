@@ -3516,11 +3516,10 @@ window.em.oeffneEigenschaftenVonArt = function(id) {
 window.em.handleAlPageinit = function() {
 	$(document).on("keypress", window.em.handleAlKeypress);
 
-	$("#Artenliste").on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick);
-
-	$("#Artenliste").on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick);
-
-	$("#Artenliste").on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
+    $("#Artenliste")
+        .on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick)
+        .on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick)
+        .on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
 
 	$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
 		event.preventDefault();
@@ -3681,110 +3680,94 @@ window.em.handleBeobEditPageinit = function() {
 
 	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", window.em.handleOeffneBeobListeBeobEditClick);
 
-	$("#BeobEditPageFooterNavbar").on("click", "#NeueBeobBeobEdit", function(event) {
-		event.preventDefault();
-		window.em.handleNeueBeobBeobEditClick();
-	});
+	$("#BeobEditForm")
+        .on("click", ".aArtGruppe", function(event) {
+            event.preventDefault();
+            window.em.handleBeobEditAArtGruppeClick();
+        })
+        .on('click', '.aArtName', function(event) {
+            event.preventDefault();
+            window.em.handleBeobEditAArtnameClick();
+        })
+        .on("change", ".speichern", window.em.handleBeobEditSpeichernChange)
+        // Eingabe im Zahlenfeld abfangen (blur)
+        // Ende des Schiebens abfangen (slidestop)
+        .on("blur slidestop", '.speichernSlider', window.em.speichereBeob)
+	    // Klicken auf den Pfeilen im Zahlenfeld abfangen
+	    .on("mouseup", '.ui-slider-input', window.em.speichereBeob);
 
-	$("#BeobEditForm").on("click", ".aArtGruppe", function(event) {
-		event.preventDefault();
-		window.em.handleBeobEditAArtGruppeClick();
-	});
-
-	$("#BeobEditPageFooterNavbar").on("click", "#waehleFelderBeobEdit", function(event) {
-		event.preventDefault();
-		window.em.handleWaehleFelderBeobEditClick();
-	});
-
-	$("#BeobEditForm").on('click', '.aArtName', function(event) {
-		event.preventDefault();
-		window.em.handleBeobEditAArtnameClick();
-	});
-
-	$("#BeobEditForm").on("change", ".speichern", window.em.handleBeobEditSpeichernChange);
-
-	// Eingabe im Zahlenfeld abfangen (blur)
-	// Ende des Schiebens abfangen (slidestop)
-	$("#BeobEditForm").on("blur slidestop", '.speichernSlider', window.em.speichereBeob);
-
-	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#BeobEditForm").on("mouseup", '.ui-slider-input', window.em.speichereBeob);
-
-	$("#FormAnhängeBE").on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange);
-
-	$("#BeobEditPageFooterNavbar").on('click', "#OeffneKarteBeobEdit", function(event) {
-		event.preventDefault();
-		window.em.handleBeobEditOeffneKarteClick();
-	});
-
-	$("#BeobEditPageFooterNavbar").on('click', "#verorteBeobBeobEdit", function(event) {
-		event.preventDefault();
-		window.em.GetGeolocation(localStorage.BeobId, "Beob");
-	});
-
-	$('#BeobEditPageFooterNavbar').on('click', '#LoescheBeobBeobEdit', function(event) {
-		event.preventDefault();
-		$("#beob_löschen_meldung").popup("open");
-	});
+    $("#BeobEditPageFooterNavbar")
+        .on("click", "#NeueBeobBeobEdit", function(event) {
+            event.preventDefault();
+            window.em.handleNeueBeobBeobEditClick();
+        })
+        .on("click", "#waehleFelderBeobEdit", function(event) {
+            event.preventDefault();
+            window.em.handleWaehleFelderBeobEditClick();
+        })
+        .on('click', "#OeffneKarteBeobEdit", function(event) {
+            event.preventDefault();
+            window.em.handleBeobEditOeffneKarteClick();
+        })
+        .on('click', "#verorteBeobBeobEdit", function(event) {
+            event.preventDefault();
+            window.em.GetGeolocation(localStorage.BeobId, "Beob");
+        })
+        .on('click', '#LoescheBeobBeobEdit', function(event) {
+            event.preventDefault();
+            $("#beob_löschen_meldung").popup("open");
+        });
 
 	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", window.em.löscheBeob);
 
-	$("#BeobEdit").on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft);
+    $("#FormAnhängeBE")
+        .on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange)
+        .on("click", "[name='LöscheAnhang']", function(event) {
+            event.preventDefault();
+            window.em.loescheAnhang(this, window.em.Beobachtung, localStorage.BeobId);
+        });
 
-	$("#BeobEdit").on("swiperight", "#BeobEditContent", window.em.handleBeobEditContentSwiperight);
+	$("#BeobEdit")
+        .on("swipeleft", "#BeobEditContent", window.em.handleBeobEditContentSwipeleft)
+        .on("swiperight", "#BeobEditContent", window.em.handleBeobEditContentSwiperight)
+        .on("vclick", ".ui-pagination-prev", function(event) {
+            event.preventDefault();
+            // zum vorigen Datensatz wechseln
+            window.em.nächsteVorigeBeob('vorige');
+        })
+        .on("vclick", ".ui-pagination-next", function(event) {
+            event.preventDefault();
+            // zum nächsten Datensatz wechseln
+            window.em.nächsteVorigeBeob('nächste');
+        })
+        .on("keyup", function(event) {
+            // Wechsel zwischen Datensätzen via Pfeiltasten steuern
+            // nicht in separate Funktion auslagern, weil IE9 event.preventDefault nicht kenn (und hier jQuery das abfängt)
+            // nur reagieren, wenn BeobEdit sichtbar und Fokus nicht in einem Feld
+            if (!$(event.target).is("input, textarea, select, button") && $('#BeobEdit').is(':visible')) {
+                // Left arrow
+                if (event.keyCode === $.mobile.keyCode.LEFT) {
+                    window.em.nächsteVorigeBeob('vorige');
+                    event.preventDefault();
+                }
+                // Right arrow
+                else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+                    window.em.nächsteVorigeBeob('nächste');
+                    event.preventDefault();
+                }
+            }
+        });
 
-	$("#BeobEdit").on("vclick", ".ui-pagination-prev", function(event) {
-		event.preventDefault();
-		// zum vorigen Datensatz wechseln
-		window.em.nächsteVorigeBeob('vorige');
-	});
-
-	$("#BeobEdit").on("vclick", ".ui-pagination-next", function(event) {
-		event.preventDefault();
-		// zum nächsten Datensatz wechseln
-		window.em.nächsteVorigeBeob('nächste');
-	});
-
-	$("#BeobEdit").on("keyup", function(event) {
-		// Wechsel zwischen Datensätzen via Pfeiltasten steuern
-		// nicht in separate Funktion auslagern, weil IE9 event.preventDefault nicht kenn (und hier jQuery das abfängt)
-		// nur reagieren, wenn BeobEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#BeobEdit').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				window.em.nächsteVorigeBeob('vorige');
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				window.em.nächsteVorigeBeob('nächste');
-				event.preventDefault();
-			}
-		}
-	});
-
-	$("#FormAnhängeBE").on("click", "[name='LöscheAnhang']", function(event) {
-		event.preventDefault();
-		window.em.loescheAnhang(this, window.em.Beobachtung, localStorage.BeobId);
-	});
-
-	$('#MenuBeobEdit').on('click', '.menu_arteigenschaften', window.em.handleBeobEditMenuArteigenschaftenClick);
-
-	$('#MenuBeobEdit').on('click', '.menu_hierarchischer_modus', window.em.handleBeobEditMenuHierarchischerModusClick);
-
-	$('#MenuBeobEdit').on('click', '.menu_felder_verwalten', window.em.handleBeobEditMenuFelderVerwaltenClick);
-
-	$('#MenuBeobEdit').on('click', '.menu_beob_exportieren', window.em.handleBeobEditMenuBeobExportierenClick);
-
-	$('#MenuBeobEdit').on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick);
-
-	$('#MenuBeobEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuBeobEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuBeobEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
-
-	$('#MenuBeobEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuBeobEdit')
+        .on('click', '.menu_arteigenschaften', window.em.handleBeobEditMenuArteigenschaftenClick)
+        .on('click', '.menu_hierarchischer_modus', window.em.handleBeobEditMenuHierarchischerModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleBeobEditMenuFelderVerwaltenClick)
+        .on('click', '.menu_beob_exportieren', window.em.handleBeobEditMenuBeobExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleBeobEditMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
@@ -8908,6 +8891,8 @@ window.em.handleUserEditPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
+    var $UserEditForm = $("#UserEditForm");
+
 	// zurück-Button steuern
 	$("#UserEditHeader").on('click', '#zurückUserEdit', function (event) {
 		event.preventDefault();
@@ -8915,14 +8900,14 @@ window.em.handleUserEditPageinit = function() {
 	});
 
 	// jedes Feld bei Änderung speichern
-	$("#UserEditForm").on("change", ".Feld", window.em.handleUserEditFeldChange);
+	$UserEditForm.on("change", ".Feld", window.em.handleUserEditFeldChange);
 
-	$("#UserEditForm").on("change", "[name='Datenverwendung']", function () {
+	$UserEditForm.on("change", "[name='Datenverwendung']", function () {
 		localStorage.Datenverwendung = $(this).attr("id");
 	});
 
 	// Autor bei Änderung speichern
-	$("#UserEditForm").on("change", "#Autor", window.em.handleUserEditAutorChange);
+	$UserEditForm.on("change", "#Autor", window.em.handleUserEditAutorChange);
 };
 
 window.em.handleUserEditZurückClick = function() {
@@ -9848,19 +9833,21 @@ window.em.handleArtenImportierenPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
+    var $ArtenImportierenContent = $("#ArtenImportierenContent");
+
 	// zurück-Button steuern
 	$("#ArtenImportierenHeader").on('click', '#zurückArtenImportieren', function (event) {
 		event.preventDefault();
 		window.em.handleArtenImportierenZurückClick();
 	});
 
-	$("#ArtenImportierenContent").on('click', '#ai_arten_ohne_artgruppe_entfernen', window.em.entferneArtenOhneArtgruppe);
+	$ArtenImportierenContent.on('click', '#ai_arten_ohne_artgruppe_entfernen', window.em.entferneArtenOhneArtgruppe);
 
-	$("#ArtenImportierenContent").on('click', '#ai_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArten);
+	$ArtenImportierenContent.on('click', '#ai_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArten);
 
-	$("#ArtenImportierenContent").on('click', '#ai_fehlen_in_evab_importieren', window.em.importiereFehlendeArten);
+	$ArtenImportierenContent.on('click', '#ai_fehlen_in_evab_importieren', window.em.importiereFehlendeArten);
 
-	$("#ArtenImportierenContent").on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
+	$ArtenImportierenContent.on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
 };
 
 window.em.importiereFehlendeArten = function() {
@@ -10073,6 +10060,8 @@ window.em.handleArtengruppenImportierenPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
+    var $ArtengruppenImportierenContent = $("#ArtengruppenImportierenContent");
+
 	// zurück-Button steuern
 	$("#ArtengruppenImportierenHeader").on('click', '#zurückArtengruppenImportieren', function (event) {
 		event.preventDefault();
@@ -10081,9 +10070,9 @@ window.em.handleArtengruppenImportierenPageinit = function() {
 
 	$(document).on('click', '#agi_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArtengruppen);
 
-	$("#ArtengruppenImportierenContent").on('click', '#agi_fehlen_in_evab_importieren', window.em.importiereFehlendeArtengruppen);
+	$ArtengruppenImportierenContent.on('click', '#agi_fehlen_in_evab_importieren', window.em.importiereFehlendeArtengruppen);
 
-	$("#ArtengruppenImportierenContent").on('click', '#agi_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArtengruppen);
+	$ArtengruppenImportierenContent.on('click', '#agi_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArtengruppen);
 };
 
 window.em.exportiereBeobVonInArtendbFehlendenArtengruppen = function() {
@@ -10170,15 +10159,17 @@ window.em.handleAdminPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
+    var $AdminContent = $("#AdminContent");
+
 	// zurück-Button steuern
 	$("#AdminHeader").on('click', '#zurückAdmin', function (event) {
 		event.preventDefault();
 		window.em.handleAdminZurückClick();
 	});
 
-	$("#AdminContent").on('click', '#admin_beob_eines_users_entfernen', window.em.entferneDokumenteEinesUsers);
+	$AdminContent.on('click', '#admin_beob_eines_users_entfernen', window.em.entferneDokumenteEinesUsers);
 
-	$("#AdminContent").on('click', '#admin_user_entfernen', window.em.entferneUser);
+	$AdminContent.on('click', '#admin_user_entfernen', window.em.entferneUser);
 };
 
 window.em.handleAdminZurückClick = function() {
