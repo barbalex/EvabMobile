@@ -9071,7 +9071,13 @@ window.em.speichereHArt_2 = function(that) {
 		if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
 			console.log("Wir sind in hArtEditListe");
 			// hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
-			Feldjson = $(that).serializeObject();
+            console.log("that.type = " + that.type);
+            if (["checkbox"].indexOf(that.type) >= 0) {
+                console.log('["checkbox"].indexOf(that.type) = ' + ["checkbox"].indexOf(that.type));
+                Feldjson = $(that).parents("fieldset").serializeObject();
+            } else {
+                Feldjson = $(that).serializeObject();
+            }
 		} else {
 			Feldjson = $("[name='" + Feldname + "']").serializeObject();
 		}
