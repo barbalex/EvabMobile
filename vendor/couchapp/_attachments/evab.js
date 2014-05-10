@@ -3514,7 +3514,8 @@ window.em.oeffneEigenschaftenVonArt = function(id) {
 
 // wenn Artenliste.html initiiert wird
 window.em.handleAlPageinit = function() {
-	$(document).on("keypress", window.em.handleAlKeypress);
+	$(document)
+        .on("keypress", window.em.handleAlKeypress);
 
     $("#Artenliste")
         .on("click", "#al_filter_setzen", window.em.handleAlAlFilterClick)
@@ -5781,8 +5782,8 @@ window.em.handleHProjektEditPageinit = function() {
 		return;
 	}
 
-	// inaktive tabs inaktivieren
 	$(document)
+        // inaktive tabs inaktivieren
         .on("click", ".tab_inaktiv", function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -6701,6 +6702,16 @@ window.em.handleRaumEditPageinit = function() {
         .on("click", "[name='OeffneRaumListeRaumEdit']", function(event) {
             event.preventDefault();
             window.em.handleRaumEditOeffneRaumListeClick();
+        })
+        // Link zu Projekt in Navbar und Titelleiste
+        .on("click", "#ProjektOeffnenRaumEdit", function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditProjektOeffnenClick();
+        })
+        // Link zu Ortliste in Navbar
+        .on("click", "#OrtListeOeffnenRaumEdit", function(event) {
+            event.preventDefault();
+            $.mobile.navigate("hOrtListe.html");
         });
 
 	$("#hRaumEditForm")
@@ -6713,34 +6724,24 @@ window.em.handleRaumEditPageinit = function() {
         // Ende des Schiebens abfangen
         .on("slidestop", '.speichernSlider', window.em.speichereRaum);
 
-	// Code für den Raum-Löschen-Dialog
-	$('#hRaumEditFooter').on('click', '#LoescheRaumRaumEdit', function(event) {
-		event.preventDefault();
-		window.em.handleRaumEditLoescheRaumClick();
-	});
+	$('#hRaumEditFooter')
+        // Code für den Raum-Löschen-Dialog
+        .on('click', '#LoescheRaumRaumEdit', function(event) {
+            event.preventDefault();
+            window.em.handleRaumEditLoescheRaumClick();
+        });
 
-	$("#hre_löschen_meldung").on("click", "#hre_löschen_meldung_ja_loeschen", function() {
-		var $hre_löschen_meldung = $("#hre_löschen_meldung")[0];
-		window.em.löscheRaum(jQuery.data($hre_löschen_meldung, 'Arten'), jQuery.data($hre_löschen_meldung, 'Zeiten'), jQuery.data($hre_löschen_meldung, 'Orte'));
-	});
+	$("#hre_löschen_meldung")
+        .on("click", "#hre_löschen_meldung_ja_loeschen", function() {
+            var $hre_löschen_meldung = $("#hre_löschen_meldung")[0];
+            window.em.löscheRaum(jQuery.data($hre_löschen_meldung, 'Arten'), jQuery.data($hre_löschen_meldung, 'Zeiten'), jQuery.data($hre_löschen_meldung, 'Orte'));
+        });
 
     $(document)
         // inaktive tabs inaktivieren
         .on("click", ".tab_inaktiv", function(event) {
             event.preventDefault();
             event.stopPropagation();
-        });
-
-	$("#RaumEditHeader")
-        // Link zu Projekt in Navbar und Titelleiste
-        .on("click", "#ProjektOeffnenRaumEdit", function(event) {
-            event.preventDefault();
-            window.em.handleRaumEditProjektOeffnenClick();
-        })
-        // Link zu Ortliste in Navbar
-        .on("click", "#OrtListeOeffnenRaumEdit", function(event) {
-            event.preventDefault();
-            $.mobile.navigate("hOrtListe.html");
         });
 
 	$("#hRaumEdit")
@@ -7143,9 +7144,9 @@ window.em.handleHRaumListePageinit = function() {
 		return;
 	}
 
-	// inaktive tabs inaktivieren
-	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
 	$(document)
+        // inaktive tabs inaktivieren
+        // BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF id des header NICHT FUNKTIONIERTE!!!???
         .on("click", ".tab_inaktiv", function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -7857,7 +7858,6 @@ window.em.handleIndexPageshow = function() {
 };
 
 window.em.handleIndexPageinit = function() {
-
     $("#indexForm")
         // Reaktion auf Enter-Taste
         .on("keydown", "#Passwort", function (event) {
@@ -9962,19 +9962,19 @@ window.em.handleArtengruppenImportierenPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
-    var $ArtengruppenImportierenContent = $("#ArtengruppenImportierenContent");
+	$("#ArtengruppenImportierenHeader")
+        // zurück-Button steuern
+        .on('click', '#zurückArtengruppenImportieren', function (event) {
+            event.preventDefault();
+            window.em.handleArtengruppenImportierenZurückClick();
+        });
 
-	// zurück-Button steuern
-	$("#ArtengruppenImportierenHeader").on('click', '#zurückArtengruppenImportieren', function (event) {
-		event.preventDefault();
-		window.em.handleArtengruppenImportierenZurückClick();
-	});
+	$(document)
+        .on('click', '#agi_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArtengruppen);
 
-	$(document).on('click', '#agi_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArtengruppen);
-
-	$ArtengruppenImportierenContent.on('click', '#agi_fehlen_in_evab_importieren', window.em.importiereFehlendeArtengruppen);
-
-	$ArtengruppenImportierenContent.on('click', '#agi_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArtengruppen);
+    $("#ArtengruppenImportierenContent")
+        .on('click', '#agi_fehlen_in_evab_importieren', window.em.importiereFehlendeArtengruppen)
+        .on('click', '#agi_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArtengruppen);
 };
 
 window.em.exportiereBeobVonInArtendbFehlendenArtengruppen = function() {
@@ -10061,17 +10061,16 @@ window.em.handleAdminPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
-    var $AdminContent = $("#AdminContent");
+	$("#AdminHeader")
+        // zurück-Button steuern
+        .on('click', '#zurückAdmin', function (event) {
+            event.preventDefault();
+            window.em.handleAdminZurückClick();
+        });
 
-	// zurück-Button steuern
-	$("#AdminHeader").on('click', '#zurückAdmin', function (event) {
-		event.preventDefault();
-		window.em.handleAdminZurückClick();
-	});
-
-	$AdminContent.on('click', '#admin_beob_eines_users_entfernen', window.em.entferneDokumenteEinesUsers);
-
-	$AdminContent.on('click', '#admin_user_entfernen', window.em.entferneUser);
+    $("#AdminContent")
+        .on('click', '#admin_beob_eines_users_entfernen', window.em.entferneDokumenteEinesUsers)
+        .on('click', '#admin_user_entfernen', window.em.entferneUser);
 };
 
 window.em.handleAdminZurückClick = function() {
