@@ -720,15 +720,16 @@ window.em.initiiereBeobliste_2 = function() {
 		key,
 		listItemContainer = "",
 		Titel2,
-		artgruppenname,
-        $BeoblisteBL = $("#BeoblisteBL");
+		artgruppenname;
 
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
 	Titel2 = " Beobachtungen";
 	if (anzBeob === 1) {
 		Titel2 = " Beobachtung";
 	}
-	$("#BeobListePageHeader").find(".BeobListePageTitel").text(anzBeob + Titel2);
+	$("#BeobListePageHeader")
+        .find(".BeobListePageTitel")
+        .text(anzBeob + Titel2);
 
 	if (anzBeob === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueBeobBeobListe">Erste Beobachtung erfassen</a></li>';
@@ -753,11 +754,15 @@ window.em.initiiereBeobliste_2 = function() {
 			listItemContainer += "<\/p><\/a> <\/li>";
 		});
 	}
-	$BeoblisteBL.html(listItemContainer);
-	$BeoblisteBL.listview("refresh");
+    $("#BeoblisteBL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#BeobListe").find(".ui-input-search").children("input")[0].focus();
+	$("#BeobListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -977,7 +982,8 @@ window.em.initiiereFeldEdit_2 = function() {
         $SichtbarInHArtEditListe = $("#SichtbarInHArtEditListe"),
 		SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach,
         $SichtbarImModusEinfach = $("#SichtbarImModusEinfach"),
-		Standardwert;
+		Standardwert,
+        $Standardwert = $("#Standardwert");
 
 	// alle radio und checkboxen leeren (damit keine voher gewählten Werte verbleiben)
 	window.em.checkAllRadiosOfForm("FeldEdit", false);
@@ -1018,29 +1024,32 @@ window.em.initiiereFeldEdit_2 = function() {
 	// Standardwert ist Objekt, darin werden die Standardwerte aller Benutzer gespeichert
 	// darum hier auslesen und setzen
 	// Zuerst leeren Wert setzen, sonst bleibt letzter, wenn keiner existiert!
-	$("#Standardwert").val("");
+	$Standardwert.val("");
 	if (window.em.Feld.Standardwert) {
 		Standardwert = window.em.Feld.Standardwert[localStorage.Email];
 		if (Standardwert) {
-			$("#Standardwert").val(Standardwert);
+			$Standardwert.val(Standardwert);
 		}
 	}
 
 	if (window.em.Feld.FeldName) {
 		// fix in Formulare eingebaute Felder: Standardwerte ausblenden und erklären
 		if (["aArtGruppe", "aArtName"].indexOf(window.em.Feld.FeldName) > -1) {
-			$("#Standardwert").attr("placeholder", "Keine Voreinstellung möglich");
-			$("#Standardwert").attr("disabled", true);
+			$Standardwert
+                .attr("placeholder", "Keine Voreinstellung möglich")
+                .attr("disabled", true);
 		// ausschalten, soll jetzt im Feld verwaltet werden
 		/*} else if (window.em.Feld.FeldName === "aAutor") {
-			$("#Standardwert").attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
-			$("#Standardwert").attr("disabled", true);*/
+			$Standardwert.attr("placeholder", 'Bitte im Menü "meine Einstellungen" voreinstellen');
+			$Standardwert.attr("disabled", true);*/
 		} else if (["oXKoord", "oYKoord", "oLatitudeDecDeg", "oLongitudeDecDeg", "oLagegenauigkeit"].indexOf(window.em.Feld.FeldName) > -1) {
-			$("#Standardwert").attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich');
-			$("#Standardwert").attr("disabled", true);
+			$Standardwert
+                .attr("placeholder", 'Lokalisierung erfolgt automatisch, keine Voreinstellung möglich')
+                .attr("disabled", true);
 		} else if (["zDatum", "zUhrzeit"].indexOf(window.em.Feld.FeldName) > -1) {
-			$("#Standardwert").attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich');
-			$("#Standardwert").attr("disabled", true);
+			$Standardwert
+                .attr("placeholder", 'Standardwert ist "jetzt", keine Voreinstellung möglich')
+                .attr("disabled", true);
 		}
 	}
 	$(".FeldEditHeaderTitel").text(window.em.Feld.Hierarchiestufe + ": " + window.em.Feld.FeldBeschriftung);
@@ -1218,12 +1227,18 @@ window.em.initiiereFeldliste_2 = function() {
 		}
 	});
 	// Im Titel der Seite die Anzahl Beobachtungen anzeigen
-	$("#FeldListeHeader .FeldListeTitel").text(anzFelder + " Felder");
-	$("#FeldListeFL").html(listItemContainer);
-	$("#FeldListeFL").listview("refresh");
+	$("#FeldListeHeader")
+        .find(".FeldListeTitel")
+        .text(anzFelder + " Felder");
+	$("#FeldListeFL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#FeldListePage").find(".ui-input-search").children("input")[0].focus();
+	$("#FeldListePage")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1492,7 +1507,9 @@ window.em.initiiereProjektliste_2 = function() {
 	if (anzProj === 1) {
 		Titel2 = " Projekt";
 	}
-	$("#hProjektListePageHeader .hProjektListePageTitel").text(anzProj + Titel2);
+	$("#hProjektListePageHeader")
+        .find(".hProjektListePageTitel")
+        .text(anzProj + Titel2);
 
 	if (anzProj === 0) {
 		listItemContainer = "<li><a href='#' class='erste NeuesProjektProjektListe'>Erstes Projekt erfassen</a></li>";
@@ -1507,11 +1524,15 @@ window.em.initiiereProjektliste_2 = function() {
 			listItemContainer += listItem;
 		});
 	}
-	$("#ProjektlistehPL").html(listItemContainer);
-	$("#ProjektlistehPL").listview("refresh");
+	$("#ProjektlistehPL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hProjektListe").find(".ui-input-search").children("input")[0].focus();
+	$("#hProjektListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1657,7 +1678,9 @@ window.em.initiiereRaumListe_2 = function() {
 	if (anzRaum === 1) {
 		Titel2 = " Raum";
 	}
-	$("#hRaumListePageHeader .hRaumListePageTitel").text(anzRaum + Titel2);
+	$("#hRaumListePageHeader")
+        .find(".hRaumListePageTitel")
+        .text(anzRaum + Titel2);
 
 	if (anzRaum === 0) {
 		listItemContainer = '<li><a href="#" name="NeuerRaumRaumListe" class="erste">Ersten Raum erfassen</a></li>';
@@ -1669,11 +1692,15 @@ window.em.initiiereRaumListe_2 = function() {
 			listItemContainer += "<li RaumId='" + Raum._id + "' class='Raum'><a href='#'><h3>" + rName + "<\/h3><\/a><\/li>";
 		});
 	}
-	$("#RaumlistehRL").html(listItemContainer);
-	$("#RaumlistehRL").listview("refresh");
+	$("#RaumlistehRL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hRaumListe").find(".ui-input-search").children("input")[0].focus();
+	$("#hRaumListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1830,7 +1857,9 @@ window.em.initiiereOrtListe_2 = function() {
 	if (anzOrt === 1) {
 		Titel2 = " Ort";
 	}
-	$("#hOrtListePageHeader .hOrtListePageTitel").text(anzOrt + Titel2);
+	$("#hOrtListePageHeader")
+        .find(".hOrtListePageTitel")
+        .text(anzOrt + Titel2);
 
 	if (anzOrt === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeuerOrtOrtListe">Ersten Ort erfassen</a></li>';
@@ -1841,11 +1870,15 @@ window.em.initiiereOrtListe_2 = function() {
 			listItemContainer += "<li OrtId='" + Ort._id + "' class='Ort'><a href='#'><h3>" + Ort.oName + "<\/h3><\/a><\/li>";
 		});
 	}
-	$("#OrtlistehOL").html(listItemContainer);
-	$("#OrtlistehOL").listview("refresh");
+	$("#OrtlistehOL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hOrtListe").find(".ui-input-search").children("input")[0].focus();
+	$("#hOrtListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -1950,7 +1983,9 @@ window.em.initiiereZeitListe_2 = function() {
 	if (anzZeit === 1) {
 		Titel2 = " Zeit";
 	}
-	$("#hZeitListePageHeader .hZeitListePageTitel").text(anzZeit + Titel2);
+	$("#hZeitListePageHeader")
+        .find(".hZeitListePageTitel")
+        .text(anzZeit + Titel2);
 
 	if (anzZeit === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueZeitZeitListe">Erste Zeit erfassen</a></li>';
@@ -1962,11 +1997,15 @@ window.em.initiiereZeitListe_2 = function() {
 			listItemContainer += "<li ZeitId='" + Zeit._id + "' class='Zeit'><a href='#'><h3>" + zZeitDatum + "<\/h3><\/a><\/li>";
 		});
 	}
-	$("#ZeitlistehZL").html(listItemContainer);
-	$("#ZeitlistehZL").listview("refresh");
+	$("#ZeitlistehZL")
+        .html(listItemContainer)
+        .listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hZeitListe").find(".ui-input-search").children("input")[0].focus();
+	$("#hZeitListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -2060,19 +2099,22 @@ window.em.initiierehArtEdit_2 = function() {
 	localStorage.aArtName = window.em.hArt.aArtName;
 	localStorage.aArtId = window.em.hArt.aArtId;
 	// fixe Felder aktualisieren
-	$("#aArtGruppe").val(window.em.hArt.aArtGruppe);
-	$("#aArtGruppe").html("<option value='" + window.em.hArt.aArtGruppe + "'>" + window.em.hArt.aArtGruppe + "</option>");
-	$("#aArtGruppe").selectmenu();
+	$("#aArtGruppe")
+        .val(window.em.hArt.aArtGruppe)
+        .html("<option value='" + window.em.hArt.aArtGruppe + "'>" + window.em.hArt.aArtGruppe + "</option>")
+        .selectmenu()
+        .selectmenu("refresh");
 	// JQUERY MOBILE BRACHT MANCHMAL LANGE UM ZU INITIALIIEREN
 	// OHNE TIMEOUT REKLAMIERT ES BEIM REFRESH, DAS WIDGET SEI NOCH NICHT INITIALISIERT!!!!
 	// NACH EIN MAL VERZÖGERN HAT ES ABER WIEDER FUNKTIONIERT????!!!!
-	setTimeout(function() {
+	/*setTimeout(function() {
 		$("#aArtGruppe").selectmenu("refresh");
-	}, 0);
-	$("#aArtName").val(window.em.hArt.aArtName);
-	$("#aArtName").html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>");
-	$("#aArtName").selectmenu();
-	$("#aArtName").selectmenu("refresh");
+	}, 0);*/
+	$("#aArtName")
+        .val(window.em.hArt.aArtName)
+        .html("<option value='" + window.em.hArt.aArtName + "'>" + window.em.hArt.aArtName + "</option>")
+        .selectmenu()
+        .selectmenu("refresh");
 	// prüfen, ob die Feldliste schon geholt wurde
 	// wenn ja: deren globale Variable verwenden
 	if (window.em.FeldlistehArtEdit) {
@@ -2111,11 +2153,13 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 // dazu muss der Wert aus der Objekt-Variabeln geholt werden
 // keine Ahnung, wieso das jQuery-mobile nicht macht
 window.em.aktiviereFlipswitches = function(dom_element, objekt_variable) {
-	$(dom_element).find("select[data-role='flipswitch']").each(function() {
-		if (objekt_variable[this.name] === "nein") {
-			$(this).parent().addClass("ui-flipswitch-active");
-		}
-	});
+	$(dom_element)
+        .find("select[data-role='flipswitch']")
+        .each(function() {
+            if (objekt_variable[this.name] === "nein") {
+                $(this).parent().addClass("ui-flipswitch-active");
+            }
+        });
 };
 
 // generiert das Html für Formular in hArtEdit.html
@@ -2193,7 +2237,9 @@ window.em.initiierehArtListe_2 = function() {
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
-	$("#hArtListePageHeader").find(".hArtListePageTitel").text(anzArt + Titel2);
+	$("#hArtListePageHeader")
+        .find(".hArtListePageTitel")
+        .text(anzArt + Titel2);
 
 	if (anzArt === 0) {
 		listItemContainer = '<li><a href="#" class="erste NeueBeobhArtListe">Erste Art erfassen</a></li>';
@@ -2209,7 +2255,10 @@ window.em.initiierehArtListe_2 = function() {
 	$ArtlistehAL.listview("refresh");
 	window.em.blendeMenus();
 	// Fokus in das Suchfeld setzen
-	$("#hArtListe").find(".ui-input-search").children("input")[0].focus();
+	$("#hArtListe")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 	window.em.speichereLetzteUrl();
 };
 
@@ -2594,7 +2643,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
 	var checkboxes = $("#" + pagename).find('input');
 	_.each(checkboxes, function(checkbox) {
-		if (checkbox.type == 'checkbox')	 {
+		if (checkbox.type === 'checkbox')	 {
 			checkbox.checked = checktoggle;
 			$("#"+checkbox.id).checkboxradio("refresh");
 		}
@@ -2961,8 +3010,10 @@ window.em.initiiereFelderWaehlen_2 = function() {
 			}
 		}
 	});
-	$("#FelderWaehlenPageHeader .FelderWaehlenPageTitel").text(anzFelder + " Felder");
-	htmlContainer += "\n\t</fieldset>\n</div>";
+	$("#FelderWaehlenPageHeader")
+        .find(".FelderWaehlenPageTitel")
+        .text(anzFelder + " Felder");
+	htmlContainer += "</fieldset></div>";
 	$("#FeldlisteFW").html(htmlContainer).trigger("create");
 	$("input[name='Felder']").checkboxradio();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
@@ -3141,11 +3192,15 @@ window.em.erstelleArtenliste = function(filterwert) {
 		//Artenliste.length ==== 0
 		html = '<li class="artlistenhinweis">Die Artengruppe enthält keine Arten</li>';
 	}
-	$("#al_ArtenListe").html(html);
-	$("#al_ArtenListe").show();
-	$("#al_ArtenListe").listview("refresh");
+	$("#al_ArtenListe")
+        .html(html)
+        .show()
+        .listview("refresh");
 	// Fokus in das Suchfeld setzen
-	$("#Artenliste").find(".ui-input-search").children("input")[0].focus();
+	$("#Artenliste")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 
 };
 
@@ -3199,11 +3254,17 @@ window.em.erstelleArtgruppenListe_2 = function() {
 		html += "<li name='ArtgruppenListItem' ArtGruppe='" + ArtGruppe + "'>";
 		html += "<a href='#'><h3>" + ArtGruppe + "<\/h3><span class='ui-li-count'>" + AnzArten + "</span><\/a><\/li>";
 	});
-	$("#agl_ArtgruppenListe").html(html);
-	$("#agl_ArtgruppenListe").listview("refresh");
-	$("#agl_Hinweistext").empty().remove();
+	$("#agl_ArtgruppenListe")
+        .html(html)
+        .listview("refresh");
+	$("#agl_Hinweistext")
+        .empty()
+        .remove();
 	// Fokus in das Suchfeld setzen
-	$("#Artgruppenliste").find(".ui-input-search").children("input")[0].focus();
+	$("#Artgruppenliste")
+        .find(".ui-input-search")
+        .children("input")[0]
+        .focus();
 };
 
 // Stellt die Daten des Users bereit
@@ -4308,7 +4369,8 @@ window.em.handleFeldEditStandardwertChange = function() {
 	var optionen = $("#Optionen").val() || [],	// undefined verhindern
 		Feldwert = this.value || [],	// undefined verhindern
 		LetzterFeldwert,
-		StandardwertOptionen;
+		StandardwertOptionen,
+        $Standardwert = $("#Standardwert");
 	if (optionen.length > 0) {
 		// es gibt Optionen. Der Standardwert muss eine oder allenfalls mehrere Optionen sein
 		LetzterFeldwert = [];
@@ -4328,7 +4390,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 			_.each(StandardwertOptionen, function(standardwertoption) {
 				if (optionen.indexOf(standardwertoption) === -1) {
 					// ein Wert ist keine Option, abbrechen
-					$("#Standardwert").val(LetzterFeldwert);
+					$Standardwert.val(LetzterFeldwert);
 					window.em.melde("Bitte wählen Sie eine oder mehrere der Optionen");
 					// return ist hier nicht nötig
 				}
@@ -4339,14 +4401,14 @@ window.em.handleFeldEditStandardwertChange = function() {
 			// Array darf nur ein Element enthalten
 			if (StandardwertOptionen.length > 1) {
 				// Array enthält mehrere Optionen, nicht zulässig
-				$("#Standardwert").val(LetzterFeldwert);
+				$Standardwert.val(LetzterFeldwert);
 				window.em.melde("Bitte wählen Sie nur EINE der Optionen");
 			} else {
 				// Array enthält eine einzige Option
 				_.each(StandardwertOptionen, function(standardwertoption) {
 					if (optionen.indexOf(standardwertoption) === -1) {
 						// der Wert ist keine Option, abbrechen
-						$("#Standardwert").val(LetzterFeldwert);
+						$Standardwert.val(LetzterFeldwert);
 						window.em.melde("Bitte wählen Sie eine der Optionen");
                         // return ist hier nicht nötig
 					}
@@ -4812,7 +4874,9 @@ window.em.initiierehArtEditListe_2 = function() {
 	if (anzArt === 1) {
 		Titel2 = " Art";
 	}
-	$("#hArtEditListePageHeader").find(".hArtEditListePageTitel").text(anzArt + Titel2);
+	$("#hArtEditListePageHeader")
+        .find(".hArtEditListePageTitel")
+        .text(anzArt + Titel2);
 
 	if (anzArt === 0) {
 		// Sollte nicht vorkommen, weil man nur aus einer existierenden Beobachtung in die Liste wechseln kann
@@ -7959,9 +8023,13 @@ window.em.meldeUserAn = function() {
 
 window.em.blendeMenus = function() {
 	if (localStorage.admin) {
-		$(".popup").find(".admin").show();
+		$(".popup")
+            .find(".admin")
+            .show();
 	} else {
-		$(".popup").find(".admin").hide();
+		$(".popup")
+            .find(".admin")
+            .hide();
 	}
 };
 
