@@ -7267,6 +7267,14 @@ window.em.handleHZeitEditPageinit = function() {
 		$.mobile.navigate("hProjektListe.html");
 	}
 
+    $(document)
+        // inaktive tabs inaktivieren
+        // BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+        .on("click", ".tab_inaktiv", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
 	$("#ZeitEditPageHeader")
         .on("click", "[name='OeffneZeitListeZeitEdit']", function(event) {
             event.preventDefault();
@@ -7709,59 +7717,53 @@ window.em.handleZeitListePageinit = function() {
 		return;
 	}
 
-	// inaktive tabs inaktivieren
-	// BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
-	$(document).on("click", ".tab_inaktiv", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-	});
+    $(document)
+        // inaktive tabs inaktivieren
+        // BEZUG AUF DOCUMENT, WEIL ES MIT BEZUG AUF hZeitListePageHeader NICHT FUNKTIONIERTE!!!???
+        .on("click", ".tab_inaktiv", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
-	// Link zu Raum in Navbar und Titelleiste
-	$("#hZeitListePageHeader").on("click", "[name='OeffneOrtZeitListe']", function(event) {
-		event.preventDefault();
-		window.em.handleZeitListeOeffneOrtClick();
-	});
+	$("#hZeitListePageHeader")
+        // Link zu Raum in Navbar und Titelleiste
+        .on("click", "[name='OeffneOrtZeitListe']", function(event) {
+            event.preventDefault();
+            window.em.handleZeitListeOeffneOrtClick();
+        })
+        .on("click", "#OeffneRaumZeitListe", function(event) {
+            event.preventDefault();
+            window.em.handleZeitListeOeffneRaumClick();
+        })
+        .on("click", "#OeffneProjektZeitListe", function(event) {
+            event.preventDefault();
+            window.em.handleZeitListeOeffneProjektClick();
+        });
 
-	$("#hZeitListePageHeader").on("click", "#OeffneRaumZeitListe", function(event) {
-		event.preventDefault();
-		window.em.handleZeitListeOeffneRaumClick();
-	});
+	$("#hZeitListe")
+        // Neue Zeit erstellen, erste Zeit und fixer button
+        .on("click", ".NeueZeitZeitListe", function(event) {
+            event.preventDefault();
+            window.em.erstelleNeueZeit();
+        })
+        .on("swiperight", window.em.handleZeitListeSwiperight);
 
-	$("#hZeitListePageHeader").on("click", "#OeffneProjektZeitListe", function(event) {
-		event.preventDefault();
-		window.em.handleZeitListeOeffneProjektClick();
-	});
+	$("#ZeitlistehZL")
+        .on("swipeleft", ".Zeit", window.em.handleZeitListeSwipeleftZeit)
+        .on("click", ".Zeit", function(event) {
+            event.preventDefault();
+            window.em.handleZeitListeZeitClick(this);
+        })
+        .on("swipeleft", ".erste", window.em.erstelleNeueZeit);
 
-	// Neue Zeit erstellen, erste Zeit und fixer button
-	$("#hZeitListe").on("click", ".NeueZeitZeitListe", function(event) {
-		event.preventDefault();
-		window.em.erstelleNeueZeit(); 
-	});
-
-	$("#ZeitlistehZL").on("swipeleft", ".Zeit", window.em.handleZeitListeSwipeleftZeit);
-
-	$("#ZeitlistehZL").on("click", ".Zeit", function(event) {
-		event.preventDefault();
-		window.em.handleZeitListeZeitClick(this);
-	});
-
-	$("#ZeitlistehZL").on("swipeleft", ".erste", window.em.erstelleNeueZeit);
-
-	$("#hZeitListe").on("swiperight", window.em.handleZeitListeSwiperight);
-
-	$('#MenuZeitListe').on('click', '.menu_einfacher_modus', window.em.handleZeitListeMenuEinfacherModusClick);
-
-	$('#MenuZeitListe').on('click', '.menu_felder_verwalten', window.em.handleZeitListeMenuFelderVerwaltenClick);
-
-	$('#MenuZeitListe').on('click', '.menu_zeiten_exportieren', window.em.handleZeitListeMenuZeitenExportierenClick);
-
-	$('#MenuZeitListe').on('click', '.menu_einstellungen', window.em.handleZeitListeMenuEinstellungenClick);
-
-	$('#MenuZeitListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuZeitListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuZeitListe').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuZeitListe')
+        .on('click', '.menu_einfacher_modus', window.em.handleZeitListeMenuEinfacherModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleZeitListeMenuFelderVerwaltenClick)
+        .on('click', '.menu_zeiten_exportieren', window.em.handleZeitListeMenuZeitenExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleZeitListeMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 window.em.handleZeitListeOeffneOrtClick = function() {
@@ -7855,31 +7857,33 @@ window.em.handleIndexPageshow = function() {
 };
 
 window.em.handleIndexPageinit = function() {
-	$("#indexFooter").on("click", "#index_submit_button", function (event) {
-		event.preventDefault();
-		window.em.meldeUserAn();
-	});
 
-	// Reaktion auf Enter-Taste
-	$("#indexForm").on("keydown", "#Passwort", function (event) {
-		if (event.keyCode === 13) {
-			window.em.meldeUserAn();
-			event.preventDefault();
-		}
-	});
+    $("#indexForm")
+        // Reaktion auf Enter-Taste
+        .on("keydown", "#Passwort", function (event) {
+            if (event.keyCode === 13) {
+                window.em.meldeUserAn();
+                event.preventDefault();
+            }
+        });
 
-	$("#indexFooter").on("click", "#index_signup_button", function (event) {
-		var email = $("#Email").val(),
-			passwort = $("#Passwort").val();
-		if (email) {
-			sessionStorage.prov_email = email;
-		}
-		if (passwort) {
-			sessionStorage.prov_passwort = passwort;
-		}
-		event.preventDefault();
-		$.mobile.navigate("Signup.html");
-	})
+	$("#indexFooter")
+        .on("click", "#index_submit_button", function (event) {
+            event.preventDefault();
+            window.em.meldeUserAn();
+        })
+        .on("click", "#index_signup_button", function (event) {
+            var email = $("#Email").val(),
+                passwort = $("#Passwort").val();
+            if (email) {
+                sessionStorage.prov_email = email;
+            }
+            if (passwort) {
+                sessionStorage.prov_passwort = passwort;
+            }
+            event.preventDefault();
+            $.mobile.navigate("Signup.html");
+        })
 };
 
 window.em.validiereUserIndex = function() {
@@ -7985,11 +7989,12 @@ window.em.handleKartePageshow = function() {
 };
 
 window.em.handleKartePageinit = function() {
-	// zurück-Button steuern
-	$("#KarteHeader").on('click', '#ZurueckKarte', function (event) {
-		event.preventDefault();
-		window.em.handleKarteZurueckClick();
-	});
+	$("#KarteHeader")
+        // zurück-Button steuern
+        .on('click', '#ZurueckKarte', function (event) {
+            event.preventDefault();
+            window.em.handleKarteZurueckClick();
+        });
 };
 
 window.em.handleKartePagehide = function() {
@@ -8695,14 +8700,16 @@ window.em.handleSignupPageshow = function() {
 };
 
 window.em.handleSignupPageinit = function() {
-	$("#SignupFooter").on("click", "#SubmitButton", function (event) {
-		event.preventDefault();
-		window.em.handleSignupSubmitButtonClick();
-	});
+    $("#SignupForm")
+        .on("change", "[name='Datenverwendung']", function () {
+            localStorage.Datenverwendung = $(this).attr("id");
+        });
 
-	$("#SignupForm").on("change", "[name='Datenverwendung']", function () {
-		localStorage.Datenverwendung = $(this).attr("id");
-	});
+	$("#SignupFooter")
+        .on("click", "#SubmitButton", function (event) {
+            event.preventDefault();
+            window.em.handleSignupSubmitButtonClick();
+        });
 };
 
 window.em.handleSignupSubmitButtonClick = function() {
@@ -8791,23 +8798,21 @@ window.em.handleUserEditPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
-    var $UserEditForm = $("#UserEditForm");
+	$("#UserEditHeader")
+        // zurück-Button steuern
+        .on('click', '#zurückUserEdit', function (event) {
+            event.preventDefault();
+            window.em.handleUserEditZurückClick();
+        });
 
-	// zurück-Button steuern
-	$("#UserEditHeader").on('click', '#zurückUserEdit', function (event) {
-		event.preventDefault();
-		window.em.handleUserEditZurückClick();
-	});
-
-	// jedes Feld bei Änderung speichern
-	$UserEditForm.on("change", ".Feld", window.em.handleUserEditFeldChange);
-
-	$UserEditForm.on("change", "[name='Datenverwendung']", function () {
-		localStorage.Datenverwendung = $(this).attr("id");
-	});
-
-	// Autor bei Änderung speichern
-	$UserEditForm.on("change", "#Autor", window.em.handleUserEditAutorChange);
+    $("#UserEditForm")
+        // jedes Feld bei Änderung speichern
+        .on("change", ".Feld", window.em.handleUserEditFeldChange)
+        .on("change", "[name='Datenverwendung']", function () {
+            localStorage.Datenverwendung = $(this).attr("id");
+        })
+        // Autor bei Änderung speichern
+        .on("change", "#Autor", window.em.handleUserEditAutorChange);
 };
 
 window.em.handleUserEditZurückClick = function() {
@@ -9733,21 +9738,18 @@ window.em.handleArtenImportierenPageinit = function() {
 		$.mobile.navigate("index.html");
 	}
 
-    var $ArtenImportierenContent = $("#ArtenImportierenContent");
+	$("#ArtenImportierenHeader")
+        // zurück-Button steuern
+        .on('click', '#zurückArtenImportieren', function (event) {
+            event.preventDefault();
+            window.em.handleArtenImportierenZurückClick();
+        });
 
-	// zurück-Button steuern
-	$("#ArtenImportierenHeader").on('click', '#zurückArtenImportieren', function (event) {
-		event.preventDefault();
-		window.em.handleArtenImportierenZurückClick();
-	});
-
-	$ArtenImportierenContent.on('click', '#ai_arten_ohne_artgruppe_entfernen', window.em.entferneArtenOhneArtgruppe);
-
-	$ArtenImportierenContent.on('click', '#ai_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArten);
-
-	$ArtenImportierenContent.on('click', '#ai_fehlen_in_evab_importieren', window.em.importiereFehlendeArten);
-
-	$ArtenImportierenContent.on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
+    $("#ArtenImportierenContent")
+        .on('click', '#ai_arten_ohne_artgruppe_entfernen', window.em.entferneArtenOhneArtgruppe)
+        .on('click', '#ai_gemeinsam_anzarten_aktualisieren', window.em.aktualisiereAnzahlArtenVonArten)
+        .on('click', '#ai_fehlen_in_evab_importieren', window.em.importiereFehlendeArten)
+        .on('click', '#ai_fehlen_in_artendb_exportieren', window.em.exportiereBeobVonInArtendbFehlendenArten);
 };
 
 window.em.importiereFehlendeArten = function() {
