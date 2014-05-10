@@ -973,6 +973,8 @@ window.em.initiiereFeldEdit = function() {
 window.em.initiiereFeldEdit_2 = function() {
 	var SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch,
         $SichtbarImModusHierarchisch = $("#SichtbarImModusHierarchisch"),
+        SichtbarInHArtEditListe = window.em.Feld.SichtbarInHArtEditListe,
+        $SichtbarInHArtEditListe = $("#SichtbarInHArtEditListe"),
 		SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach,
         $SichtbarImModusEinfach = $("#SichtbarImModusEinfach"),
 		Standardwert;
@@ -990,6 +992,15 @@ window.em.initiiereFeldEdit_2 = function() {
             .val("nein")
             .parent().addClass("ui-flipswitch-active");
 	}
+    if (SichtbarInHArtEditListe && SichtbarInHArtEditListe.indexOf(localStorage.Email) >= 0) {
+        $SichtbarInHArtEditListe
+            .val("ja")
+            .parent().removeClass("ui-flipswitch-active");
+    } else {
+        $SichtbarInHArtEditListe
+            .val("nein")
+            .parent().addClass("ui-flipswitch-active");
+    }
 	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) >= 0) {
         $SichtbarImModusEinfach.val("ja");
         $SichtbarImModusEinfach.parent().removeClass("ui-flipswitch-active");
@@ -2966,6 +2977,7 @@ window.em.neuesFeld = function() {
 	NeuesFeld.User = localStorage.Email;
 	NeuesFeld.SichtbarImModusEinfach = [];
 	NeuesFeld.SichtbarImModusHierarchisch = [];
+    NeuesFeld.SichtbarInHArtEditListe = [];
 	// Hierarchiestufe aufgrund der Herkunft wählen
 	switch (localStorage.zurueck) {
 		case "hProjektEdit.html":
@@ -2995,6 +3007,7 @@ window.em.neuesFeld = function() {
 	// gleich sichtbar stellen
 	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
+    NeuesFeld.SichtbarInHArtEditListe.push(localStorage.Email);
 	$db = $.couch.db("evab");
 	$db.saveDoc(NeuesFeld, {
 		success: function(data) {
@@ -5024,7 +5037,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 		FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
 				FeldWert = Feld.Standardwert[window.em.hArt.User];
 				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
@@ -10141,6 +10154,11 @@ window.em.entferneDokumenteEinesUsers = function() {
 						if (feld.SichtbarImModusHierarchisch && feld.SichtbarImModusHierarchisch.length > 0) {
                             feld.SichtbarImModusHierarchisch = _.without(feld.SichtbarImModusHierarchisch, user);
 						}
+
+                        // User aus SichtbarInHArtEditListe entfernen
+                        if (feld.SichtbarInHArtEditListe && feld.SichtbarInHArtEditListe.length > 0) {
+                            feld.SichtbarInHArtEditListe = _.without(feld.SichtbarInHArtEditListe, user);
+                        }
 
 						// User aus Standardwert entfernen
 						if (feld.Standardwert && feld.Standardwert[user]) {
