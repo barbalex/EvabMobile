@@ -972,27 +972,30 @@ window.em.initiiereFeldEdit = function() {
 
 window.em.initiiereFeldEdit_2 = function() {
 	var SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch,
+        $SichtbarImModusHierarchisch = $("#SichtbarImModusHierarchisch"),
 		SichtbarImModusEinfach = window.em.Feld.SichtbarImModusEinfach,
+        $SichtbarImModusEinfach = $("#SichtbarImModusEinfach"),
 		Standardwert;
 
 	// alle radio und checkboxen leeren (damit keine voher gewählten Werte verbleiben)
 	window.em.checkAllRadiosOfForm("FeldEdit", false);
 
 	// Sichtbarkeit anzeigen
-    console.log("SichtbarImModusHierarchisch = " + SichtbarImModusHierarchisch);
-	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
-		$("#SichtbarImModusHierarchisch").val("ja");
-		$("#SichtbarImModusHierarchisch").parent().addClass("ui-flipswitch-active");
+	if (SichtbarImModusHierarchisch && SichtbarImModusHierarchisch.indexOf(localStorage.Email) >= 0) {
+        $SichtbarImModusHierarchisch
+            .val("ja")
+            .parent().removeClass("ui-flipswitch-active");
 	} else {
-		$("#SichtbarImModusHierarchisch").val("nein");
-		$("#SichtbarImModusHierarchisch").parent().removeClass("ui-flipswitch-active");
+        $SichtbarImModusHierarchisch
+            .val("nein")
+            .parent().addClass("ui-flipswitch-active");
 	}
-	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1) {
-		$("#SichtbarImModusEinfach").val("ja");
-		$("#SichtbarImModusEinfach").parent().addClass("ui-flipswitch-active");
+	if (SichtbarImModusEinfach && SichtbarImModusEinfach.indexOf(localStorage.Email) >= 0) {
+        $SichtbarImModusEinfach.val("ja");
+        $SichtbarImModusEinfach.parent().removeClass("ui-flipswitch-active");
 	} else {
-		$("#SichtbarImModusEinfach").val("nein");
-		$("#SichtbarImModusEinfach").parent().removeClass("ui-flipswitch-active");
+        $SichtbarImModusEinfach.val("nein");
+        $SichtbarImModusEinfach.parent().addClass("ui-flipswitch-active");
 	}
 
 	// Artgruppe Aufbauen, wenn Hierarchiestufe == Art
@@ -4137,10 +4140,10 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
 	if (feldwert === "ja") {
 		// User ergänzen, wenn noch nicht enthalten
-		window.em.Feld["'"+feldname+"'"] = _.union(window.em.Feld["'"+feldname+"'"], localStorage.Email);
+		window.em.Feld[feldname] = _.union(window.em.Feld[feldname], localStorage.Email);
 	} else if (feldwert === "nein") {
 		// User entfernen, wenn enthalten
-		window.em.Feld["'"+feldname+"'"] = _.without(window.em.Feld["'"+feldname+"'"], localStorage.Email);
+		window.em.Feld[feldname] = _.without(window.em.Feld[feldname], localStorage.Email);
 	}
     console.log("Feld vor Speicherung = " + JSON.stringify(window.em.Feld));
 	$db = $.couch.db("evab");
@@ -9161,8 +9164,9 @@ window.em.pruefeFeldNamen = function() {
 			if (AnzEigeneOderOffizielleFelderMitSelbemNamen === 0) {
 				// Feldname ist neu, somit zulässig > speichern
 				// und alten FeldNamen aus der Liste der anzuzeigenden Felder entfernen
-				$("#SichtbarImModusHierarchisch").val("ja");
-				$("#SichtbarImModusHierarchisch").parent().addClass("ui-flipswitch-active");
+                $("#SichtbarImModusHierarchisch")
+				    .val("ja")
+				    .parent().addClass("ui-flipswitch-active");
 				window.em.speichereFeldeigenschaften();
 			} else {
 				// Feldname kommt bei diesem User schon vor
@@ -10120,8 +10124,6 @@ window.em.entferneDokumenteEinesUsers = function() {
 			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					var felder = data.rows,
-						indexpos_einfach,
-						indexpos_hierarchisch,
 						fehler = 0,
 						gelöscht = 0;
 
@@ -10132,18 +10134,12 @@ window.em.entferneDokumenteEinesUsers = function() {
 
 						// User aus SichtbarImModusEinfach entfernen
 						if (feld.SichtbarImModusEinfach && feld.SichtbarImModusEinfach.length > 0) {
-							indexpos_einfach = feld.SichtbarImModusEinfach.indexOf(user);
-							if (indexpos_einfach > -1) {
-								feld.SichtbarImModusEinfach.splice(indexpos_einfach, 1);
-							}
+                            feld.SichtbarImModusEinfach = _.without(feld.SichtbarImModusEinfach, user);
 						}
 
 						// User aus SichtbarImModusHierarchisch entfernen
 						if (feld.SichtbarImModusHierarchisch && feld.SichtbarImModusHierarchisch.length > 0) {
-							indexpos_hierarchisch = feld.SichtbarImModusHierarchisch.indexOf(user);
-							if (indexpos_hierarchisch > -1) {
-								feld.SichtbarImModusHierarchisch.splice(indexpos_hierarchisch, 1);
-							}
+                            feld.SichtbarImModusHierarchisch = _.without(feld.SichtbarImModusHierarchisch, user);
 						}
 
 						// User aus Standardwert entfernen
