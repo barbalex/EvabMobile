@@ -2514,7 +2514,6 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 	$.fn.serializeObject = function() {
 		var o = {},
 			a = this.serializeArray();
-		console.log("this.serializeArray = " + JSON.stringify(a));
 		$.each(a, function() {
 			if (this.value) {
 				if (o[this.name]) {
@@ -4123,8 +4122,6 @@ window.em.handleFeldEditPageinit = function() {
 window.em.handleFeldEditMeineEinstellungenChange = function() {
 	var feldname = this.name,
 		feldwert = this.value;
-	console.log("this.name = " + this.name);
-	console.log("this.value = " + this.value);
 	// prüfen, ob das Feld als Objekt vorliegt
 	if (window.em.Feld) {
 		// bestehendes Objekt verwenden
@@ -4147,7 +4144,6 @@ window.em.handleFeldEditMeineEinstellungenChange = function() {
 window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert) {
 	// Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
-	console.log("window.em.Feld['"+feldname+"'] vorher: " + JSON.stringify(window.em.Feld["'"+feldname+"'"]));
 	if (feldwert === "ja") {
 		// User ergänzen, wenn noch nicht enthalten
 		window.em.Feld["'"+feldname+"'"] = _.union(window.em.Feld["'"+feldname+"'"], localStorage.Email);
@@ -4155,7 +4151,6 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 		// User entfernen, wenn enthalten
 		window.em.Feld["'"+feldname+"'"] = _.without(window.em.Feld["'"+feldname+"'"], localStorage.Email);
 	}
-	console.log("window.em.Feld['"+feldname+"'] nachher: " + JSON.stringify(window.em.Feld["'"+feldname+"'"]));
 	$db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
@@ -4576,14 +4571,17 @@ window.em.handleFeldListeFeldClick = function(that) {
 window.em.handleFeldListeMenuDatenfelderExportierenClick = function() {
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
-	$("#MenuFeldListe").popup();
-	// ...bevor es geschlossen werden muss, weil es sonst offen bleibt
-	$("#MenuFeldListe").popup("close");
+    // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
+	$("#MenuFeldListe").popup().popup("close");
 };
 
 // wenn in FeldListe.html #FeldListeBackButton geklickt wird
 window.em.handleFeldListeBackButtonClick = function() {
-	$.mobile.navigate(localStorage.zurueck);
+    if (localStorage.hArtSicht === "liste" && localStorage.zurueck === "hArtEdit.html") {
+        $.mobile.navigate("hArtEditListe.html");
+    } else {
+        $.mobile.navigate(localStorage.zurueck);
+    }
 	delete localStorage.zurueck;
 };
 
@@ -4960,11 +4958,8 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	// htmlContainer in Formular setzen
 	$("#hArtEditListeForm").html(htmlContainer).trigger("create").trigger("refresh");
 	$("#hArtEditListeTable").table().table("refresh");
-	// TODO: flipswitch aktualisieren
     // jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
     _.each(beob_der_gewählten_artgruppe_rows, function(row) {
-        console.log("hartid = " + row.id);
-        console.log("hArt = " + JSON.stringify(row.doc));
         window.em.aktiviereFlipswitches("[hartid='" + row.id + "']", row.doc);
     });
 	// Menus blenden und letzte url speichern
@@ -5184,21 +5179,21 @@ window.em.handleHArtEditListePageinit = function() {
 		}
 	});
 
-	$('#MenuhArtEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
+	$('#MenuhArtEditListe').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
 
-	$('#MenuhArtEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
+	$('#MenuhArtEditListe').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
 
-	$('#MenuhArtEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
+	$('#MenuhArtEditListe').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
 
-	$('#MenuhArtEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
+	$('#MenuhArtEditListe').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
 
-	$('#MenuhArtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
+	$('#MenuhArtEditListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
 
-	$('#MenuhArtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
+	$('#MenuhArtEditListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
 
-	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
+	$('#MenuhArtEditListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
 
-	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuhArtEditListe').on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 
@@ -6198,7 +6193,6 @@ window.em.löscheProjekt_2 = function() {
 			}
 			// Projektedit zurücksetzen
 			window.em.leereStorageProjektEdit("mitLatLngListe");
-			console.log("jetzt hProjektListe anzeigen");
 			$.mobile.navigate("hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html");
 			//$(":mobile-pagecontainer").pagecontainer("change", "hProjektListe.html", {reload: true});
@@ -8936,7 +8930,11 @@ window.em.handleUserEditZurückClick = function() {
 	if (!localStorage.zurueck) {
 		localStorage.zurueck = "BeobListe.html";
 	}
-	$.mobile.navigate(localStorage.zurueck);
+    if (localStorage.hArtSicht === "liste" && localStorage.zurueck === "hArtEdit.html") {
+        $.mobile.navigate("hArtEditListe.html");
+    } else {
+        $.mobile.navigate(localStorage.zurueck);
+    }
 	delete localStorage.zurueck;
 };
 
