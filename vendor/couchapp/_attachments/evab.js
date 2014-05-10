@@ -287,6 +287,9 @@ window.em.speichereNeueBeob_02 = function(doc) {
 				localStorage.hArtId = data.id;
 				// damit hArtEdit.html die hArt nicht aus der DB holen muss
 				window.em.hArt = doc;
+                localStorage.aArtId = window.em.hArt.aArtId;
+                localStorage.aArtName = window.em.hArt.aArtName;
+                localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 				// window.em.hArtListe ergänzen, damit bei der nächsten Art kontrolliert werden kann, ob sie schon erfasst wurde
 				row_objekt.id = data.id;
 				row_objekt.doc = doc;
@@ -349,6 +352,9 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 						localStorage.hArtId = docId;
 						// damit hArtEdit.html die hArt nicht aus der DB holen muss
 						window.em.hArt = data;
+                        localStorage.aArtId = window.em.hArt.aArtId;
+                        localStorage.aArtName = window.em.hArt.aArtName;
+                        localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 						// window.em.hArtListe anpassen
 						// Vorsicht: window.em.hArtListe existiert nicht, wenn in hArtEdit F5 gedrückt wurde!
 						if (window.em.hArtListe && window.em.hArtListe.rows) {
@@ -1998,6 +2004,9 @@ window.em.initiierehArtEdit = function() {
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
+                localStorage.aArtId = window.em.hArt.aArtId;
+                localStorage.aArtName = window.em.hArt.aArtName;
+                localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 				window.em.initiierehArtEdit_2(data);
 			}
 		});
@@ -2404,9 +2413,11 @@ window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen
 		listItem += option;
 		listItem += "</label><input class='speichern' type='radio' name='";
 		listItem += feldname;
-		listItem += "' id='";
+		listItem += "'";
+        listItem += " id='";
 		listItem += option;
-		listItem += "' value='";
+        listItem += "'";
+		listItem += " value='";
 		listItem += option;
 		if (feldwert === option) {
 			listItem += "' checked='checked";
@@ -4793,6 +4804,9 @@ window.em.initiierehArtEditListe = function() {
 						return row.doc._id === localStorage.hArtId;
 					});
 					window.em.hArt = hart_row.doc;
+                    localStorage.aArtId = window.em.hArt.aArtId;
+                    localStorage.aArtName = window.em.hArt.aArtName;
+                    localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 				}
 				window.em.initiierehArtEditListe_2();
 			}
