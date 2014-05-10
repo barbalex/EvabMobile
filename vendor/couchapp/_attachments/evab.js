@@ -4526,22 +4526,26 @@ window.em.handleFeldListePageinit = function() {
 		localStorage.zurueck = "BeobListe.html";
 	}
 
-	$("#FeldListeFL").on('click', '.Feld', function(event) {
-		event.preventDefault();
-		window.em.handleFeldListeFeldClick(this);
-	});
+	$("#FeldListeFL")
+        .on('click', '.Feld', function(event) {
+            event.preventDefault();
+            window.em.handleFeldListeFeldClick(this);
+        });
 
-	$("#FeldListeFooter").on("click", "#NeuesFeldFeldListe", function(event) {
-		event.preventDefault();
-		window.em.neuesFeld();
-	});
+	$("#FeldListeFooter")
+        .on("click", "#NeuesFeldFeldListe", function(event) {
+            event.preventDefault();
+            window.em.neuesFeld();
+        });
 
-	$('#MenuFeldListe').on('click', '.menu_datenfelder_exportieren', window.em.handleFeldListeMenuDatenfelderExportierenClick);
+	$('#MenuFeldListe')
+        .on('click', '.menu_datenfelder_exportieren', window.em.handleFeldListeMenuDatenfelderExportierenClick);
 
-	$("#FeldListeHeader").on('click', '#FeldListeBackButton', function(event) {
-		event.preventDefault();
-		window.em.handleFeldListeBackButtonClick();
-	});
+	$("#FeldListeHeader")
+        .on('click', '#FeldListeBackButton', function(event) {
+            event.preventDefault();
+            window.em.handleFeldListeBackButtonClick();
+        });
 };
 
 // wenn in FeldListe.html .Feld geklickt wird
@@ -4600,147 +4604,122 @@ window.em.handleHArtEditPageinit = function() {
 		return;
 	}
 
-	$("#hArtEditPageHeader").on("click", "[name='OeffneArtListehArtEdit']", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditOeffneArtListehArtEditClick();
-	});
+	$("#hArtEditPageHeader")
+        .on("click", "[name='OeffneArtListehArtEdit']", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditOeffneArtListehArtEditClick();
+        })
+        .on("click", ".OeffneZeithArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditOeffneZeithArtEditClick();
+        })
+        .on("click", ".OeffneOrthArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditOeffneOrthArtEditClick();
+        })
+        .on("click", ".OeffneRaumhArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditOeffneRaumhArtEditClick();
+        })
+        .on("click", ".OeffneProjekthArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditOeffneProjekthArtEditClick();
+        });
 
-	$("#hArtEditPageHeader").on("click", ".OeffneZeithArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditOeffneZeithArtEditClick();
-	});
+	$("#hArtEditForm")
+        // Für jedes Feld bei Änderung speichern
+        .on("change", ".speichern", window.em.speichereHArt)
+	    // Eingabe im Zahlenfeld abfangen
+        .on("blur", '.speichernSlider', window.em.speichereHArt)
+	    // Klicken auf den Pfeilen im Zahlenfeld abfangen
+	    .on("mouseup", '.ui-slider-input', window.em.speichereHArt)
+	    // Ende des Schiebens abfangen
+	    .on("slidestop", '.speichernSlider', window.em.speichereHArt)
+	    // Editieren von Beobachtungen managen, ausgehend von Artgruppe
+	    .on("click", ".aArtGruppe", function(event) {
+            event.preventDefault();
+            window.em.zuArtgruppenliste();
+        })
+	    // Editieren von Beobachtungen managen, ausgehend von ArtName
+	    .on("click", ".aArtName", function(event) {
+            event.preventDefault();
+            window.em.zuArtliste();
+        });
 
-	$("#hArtEditPageHeader").on("click", ".OeffneOrthArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditOeffneOrthArtEditClick();
-	});
+    $("#hArtEditPageFooter")
+        // Neue Beobachtung managen
+        .on("click", "#NeueBeobhArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditNeueBeobhArtEditClick();
+        })
+	    // sichtbare Felder wählen
+        .on("click", "#waehleFelderhArtEdit", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditWaehleFelderClick();
+        })
+        // Code für den Art-Löschen-Dialog
+        .on('click', '#LoescheBeobhArtEdit', function(event) {
+            event.preventDefault();
+            $("#hae_löschen_meldung").popup("open");
+        })
+        // Code für den Art-Löschen-Dialog
+        .on('click', '#öffnehArtEditListe', function(event) {
+            event.preventDefault();
+            $.mobile.navigate("hArtEditListe.html");
+        });
 
-	$("#hArtEditPageHeader").on("click", ".OeffneRaumhArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditOeffneRaumhArtEditClick();
-	});
+	$("#hae_löschen_meldung")
+        .on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHArt);
 
-	$("#hArtEditPageHeader").on("click", ".OeffneProjekthArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditOeffneProjekthArtEditClick();
-	});
+	$("#hArtEdit")
+        .on("swipeleft", window.em.handleHArtEditSwipeleft)
+        .on("swiperight", window.em.handleHArtEditSwiperight)
+	    // Pagination Pfeil voriger initialisieren
+	    .on("vclick", ".ui-pagination-prev", function(event) {
+            event.preventDefault();
+            window.em.nächsteVorigeArt("vorige");
+        })
+	    // Pagination Pfeil nächster initialisieren
+        .on("vclick", ".ui-pagination-next", function(event) {
+            event.preventDefault();
+            window.em.nächsteVorigeArt("nächste");
+        })
+        // Pagination Pfeiltasten initialisieren
+        .on("keyup", function(event) {
+            // nur reagieren, wenn hArtEdit sichtbar und Fokus nicht in einem Feld
+            if (!$(event.target).is("input, textarea, select, button") && $('#hArtEdit').is(':visible')) {
+                // Left arrow
+                if (event.keyCode === $.mobile.keyCode.LEFT) {
+                    window.em.nächsteVorigeArt("vorige");
+                    event.preventDefault();
+                }
+                // Right arrow
+                else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+                    window.em.nächsteVorigeArt("nächste");
+                    event.preventDefault();
+                }
+            }
+        });
 
-	// Für jedes Feld bei Änderung speichern
-	$("#hArtEditForm").on("change", ".speichern", window.em.speichereHArt);
+	$("#FormAnhängehAE")
+        .on("click", "[name='LöscheAnhang']", function(event) {
+            event.preventDefault();
+            window.em.handleHArtEditLoescheAnhangClick(this);
+        })
+        // Änderungen im Formular für Anhänge speichern
+        .on("change", ".speichernAnhang", window.em.handleHArtEditSpeichernAnhangChange);
 
-	// Eingabe im Zahlenfeld abfangen
-	$("#hArtEditForm").on("blur", '.speichernSlider', window.em.speichereHArt);
-
-	// Klicken auf den Pfeilen im Zahlenfeld abfangen
-	$("#hArtEditForm").on("mouseup", '.ui-slider-input', window.em.speichereHArt);
-
-	// Ende des Schiebens abfangen
-	$("#hArtEditForm").on("slidestop", '.speichernSlider', window.em.speichereHArt);
-
-	// Änderungen im Formular für Anhänge speichern
-	$("#FormAnhängehAE").on("change", ".speichernAnhang", window.em.handleHArtEditSpeichernAnhangChange);
-
-	// Neue Beobachtung managen
-	$("#hArtEditPageFooter").on("click", "#NeueBeobhArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditNeueBeobhArtEditClick();
-	});
-
-	// Editieren von Beobachtungen managen, ausgehend von Artgruppe
-	$("#hArtEditForm").on("click", ".aArtGruppe", function(event) {
-		event.preventDefault();
-		window.em.zuArtgruppenliste();
-	});
-
-	// Editieren von Beobachtungen managen, ausgehend von ArtName
-	$("#hArtEditForm").on("click", ".aArtName", function(event) {
-		event.preventDefault();
-		window.em.zuArtliste();
-	});
-
-	// sichtbare Felder wählen
-	$("#hArtEditPageFooter").on("click", "#waehleFelderhArtEdit", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditWaehleFelderClick();
-	});
-
-	// Code für den Art-Löschen-Dialog
-	$("#hArtEditPageFooter").on('click', '#LoescheBeobhArtEdit', function(event) {
-		event.preventDefault();
-		$("#hae_löschen_meldung").popup("open");
-	});
-
-	// Code für den Art-Löschen-Dialog
-	$("#hArtEditPageFooter").on('click', '#öffnehArtEditListe', function(event) {
-		event.preventDefault();
-		$.mobile.navigate("hArtEditListe.html");
-	});
-
-	$("#hae_löschen_meldung").on("click", "#hae_löschen_meldung_ja_loeschen", window.em.löscheHArt);
-
-	$("#hArtEdit").on("swipeleft", window.em.handleHArtEditSwipeleft);
-
-	$("#hArtEdit").on("swiperight", window.em.handleHArtEditSwiperight);
-
-	// Pagination Pfeil voriger initialisieren
-	$("#hArtEdit").on("vclick", ".ui-pagination-prev", function(event) {
-		event.preventDefault();
-		window.em.nächsteVorigeArt("vorige");
-	});
-
-	// Pagination Pfeil nächster initialisieren
-	$("#hArtEdit").on("vclick", ".ui-pagination-next", function(event) {
-		event.preventDefault();
-		window.em.nächsteVorigeArt("nächste");
-	});
-
-	// Pagination Pfeiltasten initialisieren
-	$("#hArtEdit").on("keyup", function(event) {
-		// nur reagieren, wenn hArtEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#hArtEdit').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				window.em.nächsteVorigeArt("vorige");
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				window.em.nächsteVorigeArt("nächste");
-				event.preventDefault();
-			}
-		}
-	});
-
-	$("#FormAnhängehAE").on("click", "[name='LöscheAnhang']", function(event) {
-		event.preventDefault();
-		window.em.handleHArtEditLoescheAnhangClick(this);
-	});
-
-	$('#MenuhArtEdit').on('click', '.menu_arteigenschaften', window.em.handleHArtEditMenuArteigenschaftenClick);
-
-	$('#MenuhArtEdit').on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick);
-
-	$('#MenuhArtEdit').on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick);
-
-	$('#MenuhArtEdit').on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick);
-
-	$('#MenuhArtEdit').on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick);
-
-	$('#MenuhArtEdit').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuhArtEdit').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuhArtEdit').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
-
-	$('#MenuhArtEdit').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuhArtEdit')
+        .on('click', '.menu_arteigenschaften', window.em.handleHArtEditMenuArteigenschaftenClick)
+        .on('click', '.menu_einfacher_modus', window.em.handleHArtEditMenuEinfacherModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleHArtEditMenuFelderVerwaltenClick)
+        .on('click', '.menu_beob_exportieren', window.em.handleHArtEditMenuBeobExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleHArtEditMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
-
-
-
-
-
-
-
 
 // wenn hArtEditListe.html erscheint
 window.em.handleHArtEditListePageshow = function() {
