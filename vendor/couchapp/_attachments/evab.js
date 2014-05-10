@@ -606,7 +606,7 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 	// nötig, weil sonst die dynamisch eingefügten Elemente nicht erscheinen (Felder) bzw. nicht funktionieren (links)
 	$("#BeobEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("BeobEditFormHtml", window.em.Beobachtung);
+	window.em.aktiviereFlipswitches("#BeobEditFormHtml", window.em.Beobachtung);
 
 	$("#BeobEdit").trigger("create").trigger("refresh");
 };
@@ -891,7 +891,7 @@ window.em.initiiereProjektEdit_3 = function() {
 	}
 	$("#hProjektEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("hProjektEditFormHtml", window.em.hProjekt);
+	window.em.aktiviereFlipswitches("#hProjektEditFormHtml", window.em.hProjekt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1549,7 +1549,7 @@ window.em.initiiereRaumEdit_3 = function() {
 	}
 	$("#hRaumEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("hRaumEditFormHtml", window.em.hRaum);
+	window.em.aktiviereFlipswitches("#hRaumEditFormHtml", window.em.hRaum);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1720,7 +1720,7 @@ window.em.initiiereOrtEdit_3 = function() {
 	}
 	$("#hOrtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("hOrtEditFormHtml", window.em.hOrt);
+	window.em.aktiviereFlipswitches("#hOrtEditFormHtml", window.em.hOrt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -1884,7 +1884,7 @@ window.em.initiiereZeitEdit_3 = function() {
 	}
 	$("#hZeitEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("hZeitEditFormHtml", window.em.hZeit);
+	window.em.aktiviereFlipswitches("#hZeitEditFormHtml", window.em.hZeit);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -2070,7 +2070,7 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 	}
 	$("#hArtEditFormHtml").html(htmlContainer).trigger("create").trigger("refresh");
 	// jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
-	window.em.aktiviereFlipswitches("hArtEditFormHtml", window.em.hArt);
+	window.em.aktiviereFlipswitches("#hArtEditFormHtml", window.em.hArt);
 	window.em.blendeMenus();
 	// letzte url speichern - hier und nicht im pageshow, damit es bei jedem Datensatzwechsel passiert
 	window.em.speichereLetzteUrl();
@@ -2079,9 +2079,9 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 // Flipswitches mit Wert "nein" aktiv schalten
 // dazu muss der Wert aus der Objekt-Variabeln geholt werden
 // keine Ahnung, wieso das jQuery-mobile nicht macht
-window.em.aktiviereFlipswitches = function(dom_element_id, objekt_variable) {
-	$("#" + dom_element_id).find("select[data-role='flipswitch']").each(function() {
-		if (objekt_variable[this.id] === "nein") {
+window.em.aktiviereFlipswitches = function(dom_element, objekt_variable) {
+	$(dom_element).find("select[data-role='flipswitch']").each(function() {
+		if (objekt_variable[this.name] === "nein") {
 			$(this).parent().addClass("ui-flipswitch-active");
 		}
 	});
@@ -4945,10 +4945,14 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 
 	// htmlContainer in Formular setzen
 	$("#hArtEditListeForm").html(htmlContainer).trigger("create").trigger("refresh");
-	$("#hArtEditListeTable").table();
-	$("#hArtEditListeTable").table("refresh");
-	// TODO?: Einstellen, welche Felder sichtbar sind
-
+	$("#hArtEditListeTable").table().table("refresh");
+	// TODO: flipswitch aktualisieren
+    // jetzt alle Flipswitsches, die "nein" sind, aktiv setzen
+    _.each(beob_der_gewählten_artgruppe_rows, function(row) {
+        console.log("hartid = " + row.id);
+        console.log("hArt = " + JSON.stringify(row.doc));
+        window.em.aktiviereFlipswitches("[hartid='" + row.id + "']", row.doc);
+    });
 	// Menus blenden und letzte url speichern
 	window.em.blendeMenus();
 	window.em.speichereLetzteUrl();
@@ -4988,6 +4992,9 @@ window.em.initiierehArtEditListeArt = function(hartid) {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.initiierehArtEditListeArt_2(data);
+                localStorage.aArtId = window.em.hArt.aArtId;
+                localStorage.aArtName = window.em.hArt.aArtName;
+                localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 			}
 		});
 	}
@@ -9034,6 +9041,7 @@ window.em.speichereHArt = function() {
 	// Lösung: hartid aus höher liegender tr holen und vergleichen, ob window.em.hArt dieselbe id hat
 	if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
 		hartid = $(that).closest('tr').attr("hartid");
+        localStorage.hArtId = hartid;
 	}
 	// prüfen, ob hArt als Objekt vorliegt
 	if ((window.em.hArt && !hartid) || (window.em.hArt && hartid === window.em.hArt._id)) {
@@ -9046,6 +9054,9 @@ window.em.speichereHArt = function() {
 			success: function(data) {
 				window.em.hArt = data;
 				window.em.speichereHArt_2(that);
+                localStorage.aArtId = window.em.hArt.aArtId;
+                localStorage.aArtName = window.em.hArt.aArtName;
+                localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
 			},
 			error: function() {
 				console.log('Fehler in function speichereHArt');
@@ -9068,11 +9079,8 @@ window.em.speichereHArt_2 = function(that) {
 		Feldname = that.name;
 		// nötig, damit Arrays richtig kommen
 		if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
-			console.log("Wir sind in hArtEditListe");
 			// hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
-            console.log("that.type = " + that.type);
             if (["checkbox"].indexOf(that.type) >= 0) {
-                console.log('["checkbox"].indexOf(that.type) = ' + ["checkbox"].indexOf(that.type));
                 Feldjson = $(that).parents("fieldset").serializeObject();
             } else {
                 Feldjson = $(that).serializeObject();
@@ -9082,8 +9090,8 @@ window.em.speichereHArt_2 = function(that) {
 		}
 		Feldwert = Feldjson[Feldname];
 		//console.log("$(that) = " + JSON.stringify($(that)));
-		console.log("Feldjson = " + JSON.stringify(Feldjson));
-		console.log("Feldwert = " + Feldwert);
+		//console.log("Feldjson = " + JSON.stringify(Feldjson));
+		//console.log("Feldwert = " + Feldwert);
 	}
 	// window.em.hArt aktualisieren
 	if (Feldwert) {
