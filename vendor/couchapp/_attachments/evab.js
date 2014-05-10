@@ -3521,10 +3521,11 @@ window.em.handleAlPageinit = function() {
         .on("click", ".ui-icon-delete", window.em.handleAlUiIconDeleteClick)
         .on("click", "#al_standardgruppe", window.em.handleAlAlStandardgruppeClick);
 
-	$("#al_ArtenListe").on("click", "[name='ArtListItem']", function(event) {
-		event.preventDefault();
-		window.em.handleAlArtListItemClick(this);
-	});
+	$("#al_ArtenListe")
+        .on("click", "[name='ArtListItem']", function(event) {
+            event.preventDefault();
+            window.em.handleAlArtListItemClick(this);
+        });
 };
 
 // wenn Artenliste.html gezeigt wird
@@ -3678,7 +3679,8 @@ window.em.handleBeobEditPageinit = function() {
 		return;
 	}
 
-	$("#BeobEditHeader").on("click", "#OeffneBeobListeBeobEdit", window.em.handleOeffneBeobListeBeobEditClick);
+	$("#BeobEditHeader")
+        .on("click", "#OeffneBeobListeBeobEdit", window.em.handleOeffneBeobListeBeobEditClick);
 
 	$("#BeobEditForm")
         .on("click", ".aArtGruppe", function(event) {
@@ -3718,7 +3720,8 @@ window.em.handleBeobEditPageinit = function() {
             $("#beob_löschen_meldung").popup("open");
         });
 
-	$("#beob_löschen_meldung").on("click", "#beob_löschen_meldung_ja_loeschen", window.em.löscheBeob);
+	$("#beob_löschen_meldung")
+        .on("click", "#beob_löschen_meldung_ja_loeschen", window.em.löscheBeob);
 
     $("#FormAnhängeBE")
         .on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange)
@@ -3925,44 +3928,39 @@ window.em.handleBeobListePageinit = function() {
 		return;
 	}
 
-	$("#BeoblisteBL").on("swipeleft click", ".beob", window.em.handleBeobListeBeobSwipeleftClick);
+    $("#BeobListePageFooter")
+        .on('click', '#OeffneKarteBeobListe', function(event) {
+            event.preventDefault();
+            window.em.handleBeobListeOeffneKarteBeobListeClick();
+        });
 
-	$("#BeoblisteBL").on("taphold", ".beob", window.em.handleBeobListeBeobTaphold);
+    $("#BeobListePageHeader")
+        .on('click', "#OeffneProjektListeBeobListe", function(event) {
+            event.preventDefault();
+            $.mobile.navigate("hProjektListe.html");
+        });
 
-	$("#BeobListePageFooter").on('click', '#OeffneKarteBeobListe', function(event) {
-		event.preventDefault();
-		window.em.handleBeobListeOeffneKarteBeobListeClick();
-	});
+	$("#BeoblisteBL")
+        .on("swipeleft click", ".beob", window.em.handleBeobListeBeobSwipeleftClick)
+        .on("taphold", ".beob", window.em.handleBeobListeBeobTaphold)
+        .on("swipeleft", ".erste", window.em.erstelleNeueBeob_1_Artgruppenliste);
 
-	$("#BeobListePageHeader").on('click', "#OeffneProjektListeBeobListe", function(event) {
-		event.preventDefault();
-		$.mobile.navigate("hProjektListe.html");
-	});
+	$("#BeobListe")
+        .on("click", ".NeueBeobBeobListe", function(event) {
+            event.preventDefault();
+            window.em.erstelleNeueBeob_1_Artgruppenliste();
+        })
+        .on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
 
-	$("#BeobListe").on("click", ".NeueBeobBeobListe", function(event) {
-		event.preventDefault();
-		window.em.erstelleNeueBeob_1_Artgruppenliste();
-	});
-
-	$("#BeoblisteBL").on("swipeleft", ".erste", window.em.erstelleNeueBeob_1_Artgruppenliste);
-
-	$("#BeobListe").on("swiperight", "#BeobListePageContent", window.em.handleBeobListeBeobListePageContentSwiperight);
-
-	$('#MenuBeobListe').on('click', '.menu_hierarchischer_modus', window.em.handleBeobListeMenuHierarchischerModusClick);
-
-	$('#MenuBeobListe').on('click', '.menu_felder_verwalten', window.em.handleBeobListeMenuFelderVerwaltenClick);
-
-	$('#MenuBeobListe').on('click', '.menu_beob_exportieren', window.em.handleBeobListeMenuBeobExportierenClick);
-
-	$('#MenuBeobListe').on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick);
-
-	$('#MenuBeobListe').on('click', '.menu_neu_anmelden', window.em.meldeNeuAn);
-
-	$('#MenuBeobListe').on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren);
-
-	$('#MenuBeobListe').on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren);
-
-	$('#MenuBeobListe').on('click', '.menu_admin', window.em.öffneAdmin);
+	$('#MenuBeobListe')
+        .on('click', '.menu_hierarchischer_modus', window.em.handleBeobListeMenuHierarchischerModusClick)
+        .on('click', '.menu_felder_verwalten', window.em.handleBeobListeMenuFelderVerwaltenClick)
+        .on('click', '.menu_beob_exportieren', window.em.handleBeobListeMenuBeobExportierenClick)
+        .on('click', '.menu_einstellungen', window.em.handleBeobListeMenuEinstellungenClick)
+        .on('click', '.menu_neu_anmelden', window.em.meldeNeuAn)
+        .on('click', '.menu_artengruppen_importieren', window.em.öffneArtengruppenImportieren)
+        .on('click', '.menu_arten_importieren', window.em.öffneArtenImportieren)
+        .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
 // wenn in BeobListe.html .beob geklickt oder nach links geswiped wird
@@ -4042,64 +4040,66 @@ window.em.handleFeldEditPageinit = function() {
 		$.mobile.navigate("BeobListe.html");
 	}
 
-	$("#FeldEditContent").on("change", ".meineEinstellungen", window.em.handleFeldEditMeineEinstellungenChange);
+    $("#FeldEditHeader")
+        .on('click', '#zurueckFeldEdit', function(event) {
+            event.preventDefault();
+            window.em.geheZurueckFE();
+        });
 
-	$("#FeldEditContent").on("change", ".Feldeigenschaften", window.em.handleFeldEditFeldeigenschaftenChange);
+    $("#UserFeldForm")
+        .on("change", "#Standardwert", window.em.handleFeldEditStandardwertChange);
 
-	$("#FeldEditForm").on("change", "#FeldFolgtNach", window.em.handleFeldEditFeldFolgtNachChange);
+	$("#FeldEditContent")
+        .on("change", ".meineEinstellungen", window.em.handleFeldEditMeineEinstellungenChange)
+        .on("change", ".Feldeigenschaften", window.em.handleFeldEditFeldeigenschaftenChange);
 
-	$("#FeldEditFooter").on("click", "#NeuesFeldFeldEdit", function(event) {
-		event.preventDefault();
-		window.em.neuesFeld();
-	});
+	$("#FeldEditForm")
+        .on("change", "#FeldFolgtNach", window.em.handleFeldEditFeldFolgtNachChange);
 
-	$("#UserFeldForm").on("change", "#Standardwert", window.em.handleFeldEditStandardwertChange);
+	$("#fe_löschen_meldung")
+        .on("click", "#fe_löschen_meldung_ja_loeschen", window.em.handleFeldEditFeLoeschenMeldungJaClick);
 
-	$('#FeldEditFooter').on('click', '#LoescheFeldFeldEdit', function(event) {
-		event.preventDefault();
-		window.em.handleFeldEditLoescheFeldFeldEditClick();
-	});
+	$("#FeldEdit")
+        .on("swipeleft", "#FeldEditContent", window.em.geheZumNächstenFeld)
+        .on("swiperight", "#FeldEditContent", window.em.geheZumVorigenFeld)
+        .on("vclick", ".ui-pagination-prev", function(event) {
+            event.preventDefault();
+            window.em.geheZumVorigenFeld();
+        })
+        .on("vclick", ".ui-pagination-next", function(event) {
+            event.preventDefault();
+            window.em.geheZumNächstenFeld();
+        })
+        .on("keyup", function(event) {
+            // wenn in FeldEdit.htm eine Taste gedrückt wird
+            // mit Pfeiltasten Datensätze wechseln
+            // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
+            if (!$(event.target).is("input, textarea, select, button") && $('#FeldEdit').is(':visible')) {
+                // Left arrow
+                if (event.keyCode === $.mobile.keyCode.LEFT) {
+                    window.em.geheZumVorigenFeld();
+                    event.preventDefault();
+                }
+                // Right arrow
+                else if (event.keyCode === $.mobile.keyCode.RIGHT) {
+                    window.em.geheZumNächstenFeld();
+                    event.preventDefault();
+                }
+            }
+        });
 
-	$("#fe_löschen_meldung").on("click", "#fe_löschen_meldung_ja_loeschen", window.em.handleFeldEditFeLoeschenMeldungJaClick);
+    $('#MenuFeldEdit')
+        .on('click', '.menu_datenfelder_exportieren', window.em.handleFeldEditMenuDatenfelderExportierenClick);
 
-	$('#MenuFeldEdit').on('click', '.menu_datenfelder_exportieren', window.em.handleFeldEditMenuDatenfelderExportierenClick);
-
-	$("#FeldEditHeader").on('click', '#zurueckFeldEdit', function(event) {
-		event.preventDefault();
-		window.em.geheZurueckFE();
-	});
-
-	$("#FeldEdit").on("swipeleft", "#FeldEditContent", window.em.geheZumNächstenFeld);
-
-	$("#FeldEdit").on("swiperight", "#FeldEditContent", window.em.geheZumVorigenFeld);
-
-	$("#FeldEdit").on("vclick", ".ui-pagination-prev", function(event) {
-		event.preventDefault();
-		window.em.geheZumVorigenFeld();
-	});
-
-	$("#FeldEdit").on("vclick", ".ui-pagination-next", function(event) {
-		event.preventDefault();
-		window.em.geheZumNächstenFeld();
-	});
-
-	$("#FeldEdit").on("keyup", function(event) {
-		// wenn in FeldEdit.htm eine Taste gedrückt wird
-		// mit Pfeiltasten Datensätze wechseln
-		// nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
-		if (!$(event.target).is("input, textarea, select, button") && $('#FeldEdit').is(':visible')) {
-			// Left arrow
-			if (event.keyCode === $.mobile.keyCode.LEFT) {
-				window.em.geheZumVorigenFeld();
-				event.preventDefault();
-			}
-			// Right arrow
-			else if (event.keyCode === $.mobile.keyCode.RIGHT) {
-				window.em.geheZumNächstenFeld();
-				event.preventDefault();
-			}
-		}
-	});
+    $("#FeldEditFooter")
+        .on("click", "#NeuesFeldFeldEdit", function(event) {
+            event.preventDefault();
+            window.em.neuesFeld();
+        })
+        .on('click', '#LoescheFeldFeldEdit', function(event) {
+            event.preventDefault();
+            window.em.handleFeldEditLoescheFeldFeldEditClick();
+        });
 };
 
 window.em.handleFeldEditMeineEinstellungenChange = function() {
@@ -4435,20 +4435,21 @@ window.em.handleFelderWaehlenPageinit = function() {
 		$.mobile.navigate("BeobListe.html");
 	}
 
-	$("#FelderWaehlenPage").on("click", "#FelderWaehlenPage_back", function(event) {
-		event.preventDefault();
-		$.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
-	});
+	$("#FelderWaehlenPage")
+        .on("click", "#FelderWaehlenPage_back", function(event) {
+            event.preventDefault();
+            $.mobile.navigate(localStorage.AufrufendeSeiteFW + ".html");
+        });
 
-	$("#FeldlisteFW").on("change", "input[name='Felder']", window.em.handleFelderWaehlenInputFelderChange);
-
-	// aus unbekanntem Grund funktioniert .on nicht aber .bind schon
-	$("#FeldlisteFW").bind("taphold", "input[name='Felder']", function(event) {
-		event.preventDefault();
-		// event.target ist immer das label
-		var FeldName = $(event.target).prop("for");
-		window.em.öffneFeld(FeldName);
-	});
+	$("#FeldlisteFW")
+        .on("change", "input[name='Felder']", window.em.handleFelderWaehlenInputFelderChange)
+	    // aus unbekanntem Grund funktioniert .on nicht aber .bind schon
+	    .bind("taphold", "input[name='Felder']", function(event) {
+            event.preventDefault();
+            // event.target ist immer das label
+            var FeldName = $(event.target).prop("for");
+            window.em.öffneFeld(FeldName);
+        });
 };
 
 // wenn in FelderWaehlen.html input[name='Felder'] geändert wird
