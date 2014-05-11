@@ -2436,16 +2436,18 @@ window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldW
 // wird von generiereHtmlFuerCheckbox aufgerufen
 window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, optionen) {
 	var htmlContainer = "",
-		listItem;
+		listItem,
+        id;
 	_.each(optionen, function(option) {
+        id = _.uniqueId(FeldName + "_option_");
 		listItem = "<label for='";
-		listItem += option;
+        listItem += id;
 		listItem += "'>";
 		listItem += option;
 		listItem += "</label><input type='checkbox' name='";
 		listItem += FeldName;
 		listItem += "' id='";
-		listItem += option;
+        listItem += id;
 		listItem += "' value='";
 		listItem += option;
 		listItem += "' class='custom speichern'";
@@ -2476,17 +2478,19 @@ window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert
 // wird von generiereHtmlFuerRadio aufgerufen
 window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen) {
 	var htmlContainer = "",
-		listItem;
+		listItem,
+        id;
 	_.each(optionen, function(option) {
+        id = _.uniqueId(feldname + "_option_");
 		listItem = "<label for='";
-		listItem += option;
+		listItem += id;
 		listItem += "'>";
 		listItem += option;
 		listItem += "</label><input class='speichern' type='radio' name='";
 		listItem += feldname;
 		listItem += "'";
         listItem += " id='";
-		listItem += option;
+		listItem += id;
         listItem += "'";
 		listItem += " value='";
 		listItem += option;
@@ -2501,14 +2505,13 @@ window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon, id) {
-	var htmlContainer = "<div class='ui-field-contain'>";
-	if (!id) {
-		id = FeldName;
-	}
+window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon) {
+	var htmlContainer = "<div class='ui-field-contain'>",
+        id;
+    id = _.uniqueId(FeldName + "_");
 	if (!OhneLabel) {
 		htmlContainer += "<label for='";
-		htmlContainer += FeldName;
+		htmlContainer += id;
 		htmlContainer += "' class='select'>";
 		htmlContainer += FeldBeschriftung;
 		htmlContainer += "</label>";
@@ -2561,7 +2564,8 @@ window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, opt
 // FeldWert ist ein Array
 window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert, optionen) {
 	var htmlContainer = "<option value=''></option>",
-		listItem;
+		listItem,
+        id;
 	_.each(optionen, function(option) {
 		listItem = "<option value='";
 		listItem += option;
@@ -4978,7 +4982,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 		htmlContainerBody += '">';
 		// Artname ergänzen
 		htmlContainerBody += '<td>';
-		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu("aArtName_hael", "", artname, optionen, "SingleSelect", true, "arrow-r", hart._id + "_art");
+		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu("aArtName_hael", "", artname, optionen, "SingleSelect", true, "arrow-r");
 		htmlContainerBody += '</td>';
 		// dynamische Felder setzen
 		_.each(feldliste, function(feld) {
@@ -5069,16 +5073,16 @@ window.em.initiierehArtEditListeArt = function(hartid) {
 	}
 };
 
-window.em.initiierehArtEditListeArt_2 = function() {
+window.em.initiierehArtEditListeArt_2 = function(hart) {
 	// bei neuen hArt hat das Objekt noch keine ID
-	if (window.em.hArt._id) {
-		localStorage.hArtId = window.em.hArt._id;
+	if (hart._id) {
+		localStorage.hArtId = hart._id;
 	} else {
 		localStorage.hArtId = "neu";
 	}
-	localStorage.aArtGruppe = window.em.hArt.aArtGruppe;
-	localStorage.aArtName = window.em.hArt.aArtName;
-	localStorage.aArtId = window.em.hArt.aArtId;
+	localStorage.aArtGruppe = hart.aArtGruppe;
+	localStorage.aArtName = hart.aArtName;
+	localStorage.aArtId = hart.aArtId;
 };
 
 // generiert dynamisch die Artgruppen-abhängigen Felder
@@ -9091,14 +9095,18 @@ window.em.speichereHArt_2 = function(that) {
 	} else {
 		// alle anderen Feldtypen
 		Feldname = that.name;
+        console.log('$("body").pagecontainer("getActivePage").attr("id") = ' + $("body").pagecontainer("getActivePage").attr("id"));
 		// nötig, damit Arrays richtig kommen
-		if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") {
+		//if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") { // Funktioniert nicht, weil z.B. ein select ein eigenes Fenster öffnet!
+        if (localStorage.hArtId && localStorage.hArtSicht === "liste") {
 			// hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
+            console.log("that.type = " + that.type);
             if (["checkbox"].indexOf(that.type) >= 0) {
                 Feldjson = $(that).parents("fieldset").serializeObject();
             } else {
                 Feldjson = $(that).serializeObject();
             }
+            console.log("Feldjson = " + JSON.stringify(Feldjson));
 		} else {
 			Feldjson = $("[name='" + Feldname + "']").serializeObject();
 		}
