@@ -2496,15 +2496,7 @@ window.em.generiereHtmlFürRadioOptionen = function(feldname, feldwert, optionen
 		listItem += " value='";
 		listItem += option;
 		if (feldwert === option) {
-            // Problem: So gut das in allen übrigen Formularen funktioniert,
-            // in hArtEditListe wird nur der Wert des letzten Datensatzes angezeigt
 			listItem += "' checked='checked";
-            // das ist der Versuch, checked auf eine andere Weise zu provozieren
-            // der event wird aber nie aufgerufen
-            $("#" + id).on("checkboxradiocreate", function () {
-                console.log("jetzt wird gechecked");
-                $(this).attr("checked", "checked").checkboxradio("refresh");
-            })
 		}
 		listItem += "'/>";
 		htmlContainer += listItem;
@@ -3003,16 +2995,16 @@ window.em.initiiereFelderWaehlen_2 = function() {
 							listItem += " checked='checked'";
 						}
 					}
-				} else if (localStorage.AufrufendeSeiteFW === "hArtEdit") {
+				} else if (localStorage.AufrufendeSeiteFW === "hArtEditListe") {
+                    if (Feld.SichtbarInHArtEditListe) {
+                        if (Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1) {
+                            // wenn sichtbar, anzeigen
+                            listItem += " checked='checked'";
+                        }
+                    }
+                } else {
 					if (Feld.SichtbarImModusHierarchisch) {
 						if (Feld.SichtbarImModusHierarchisch.indexOf(localStorage.Email) !== -1) {
-							// wenn sichtbar, anzeigen
-							listItem += " checked='checked'";
-						}
-					}
-				} else if (localStorage.AufrufendeSeiteFW === "hArtEditListe") {
-					if (Feld.SichtbarInHArtEditListe) {
-						if (Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1) {
 							// wenn sichtbar, anzeigen
 							listItem += " checked='checked'";
 						}
@@ -4235,7 +4227,6 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 		// User entfernen, wenn enthalten
 		window.em.Feld[feldname] = _.without(window.em.Feld[feldname], localStorage.Email);
 	}
-    console.log("Feld vor Speicherung = " + JSON.stringify(window.em.Feld));
 	$db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
@@ -4576,10 +4567,11 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 	// Bei BeobEdit.html muss SichtbarImModusEinfach gesetzt werden, sonst SichtbarImModusHierarchisch
 	if (localStorage.AufrufendeSeiteFW === "BeobEdit") {
 		feld_mit_sichtbarkeit = "SichtbarImModusEinfach";
-	} else if (localStorage.AufrufendeSeiteFW === "hArtEdit") {
-		feld_mit_sichtbarkeit = "SichtbarImModusHierarchisch";
+	} else if (localStorage.AufrufendeSeiteFW === "hArtEditListe") {
+        feld_mit_sichtbarkeit = "SichtbarInHArtEditListe";
 	} else {
-		feld_mit_sichtbarkeit = "SichtbarInHArtEditListe";
+        // eines der hierarchischen Formulare
+        feld_mit_sichtbarkeit = "SichtbarImModusHierarchisch";
 	}
 	sichtbar_fuer_benutzer = Feld[feld_mit_sichtbarkeit] || [];
 	if ($("#" + FeldName).prop("checked") === true) {
@@ -5008,11 +5000,6 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			}
 			// html generieren
 			htmlContainerBody += '<td>';
-
-			//console.log("feld = " + JSON.stringify(feld));
-			//console.log("FeldName = " + FeldName);
-			//console.log("FeldWert = " + FeldWert);
-
 			htmlContainerBody += window.em.generiereHtmlFürFormularelement(feld, FeldWert, true);
 			htmlContainerBody += '</td>';
 		});
@@ -6309,7 +6296,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 				delete window.em.ArtenVonZeit;
 			},
 			error: function() {
-				console.log('fehler in function speichereHProjektEdit_2(that)');
+				console.log('Fehler in function speichereHProjektEdit_2(that)');
 				//melde("Fehler: Änderung in " + FeldnameDb + " nicht gespeichert");
 			}
 		});
@@ -6407,7 +6394,7 @@ window.em.speichereHOrtEdit = function(that) {
 				window.em.speichereHOrtEdit_2(_this);
 			},
 			error: function() {
-				console.log('fehler in function speichereHOrtEdit');
+				console.log('Fehler in function speichereHOrtEdit');
 				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
 			}
 		});
