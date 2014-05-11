@@ -194,6 +194,12 @@ em {
   width: 100%;
 }
 
+@media (max-width: 35em) {
+    #hArtEditListeForm {
+        padding-top: 8px;
+    }
+}
+
 /* Hintergrund streifen - nein
 .felder_tabelle tbody tr:nth-child(odd) td,
 .felder_tabelle tbody tr:nth-child(odd) th {
