@@ -672,7 +672,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 					// "" verhindert die Anzeige von undefined im Feld
 					FeldWert = window.em.Beobachtung[FeldName] || "";
 				}
-				htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+				htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 			}
 		}
 	});
@@ -935,7 +935,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 				//"" verhindert die Anzeige von undefined im Feld
 				FeldWert = window.em.hProjekt[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 	});
 	if (localStorage.Status === "neu") {
@@ -1119,7 +1119,7 @@ window.em.erstelleSelectFeldFolgtNach_2 = function() {
 			optionen.push(tempFeld.FeldName);
 		}
 	});
-	htmlContainer = window.em.generiereHtmlFuerSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", optionen, "SingleSelect");
+	htmlContainer = window.em.generiereHtmlFürSelectmenu("FeldFolgtNach", "Feld folgt nach:", "", optionen, "SingleSelect");
 	$("#FeldFolgtNachDiv").html(htmlContainer).trigger("create").trigger("refresh");
 };
 
@@ -1419,7 +1419,7 @@ window.em.myTypeOf = function(Wert) {
 	}
 };
 
-// Übernimmt einen Feldnamen, einen Feldwert
+// Übernimmt einen Feldnamen, einen feldwert
 // und eine Datensatzliste (z.B. alle Räume eines Projekts) sowie ihren Namen
 // speichert das neue Feld in alle Datensätze der Liste in der DB
 // und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
@@ -1625,7 +1625,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 				//"" verhindert die Anzeige von undefined im Feld
 				FeldWert = window.em.hRaum[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 	});
 	// In neuen Datensätzen allfällige Standardwerte speichern
@@ -1802,7 +1802,7 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 				//"" verhindert die Anzeige von undefined im Feld
 				FeldWert = window.em.hOrt[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 	});
 	// Allfällige Standardwerte speichern
@@ -2029,7 +2029,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 			} else {
 				FeldWert = window.em.hZeit[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 		// localStorage.Status wird schon im aufrufenden function gelöscht!
 	});
@@ -2185,7 +2185,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 				//"" verhindert, dass im Feld undefined erscheint
 				FeldWert = window.em.hArt[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 	});
 	if (localStorage.Status === "neu") {
@@ -2279,12 +2279,11 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 	return listItem;
 };
 
-
 // generiert das Html für ein Formularelement
 // erwartet diverse Übergabewerte
 // der htmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
-window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel) {
+window.em.generiereHtmlFürFormularelement = function(Feld, FeldWert, OhneLabel) {
 	var htmlContainer = "",
 		SliderMinimum,
         SliderMaximum,
@@ -2295,34 +2294,34 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel)
 	Feld.InputTyp = Feld.InputTyp || "text";
 	switch(Feld.Formularelement) {
 	case "textinput":
-		htmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	case "textarea":
-		htmlContainer = window.em.generiereHtmlFuerTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürTextarea(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;
 	case "toggleswitch":
-		htmlContainer = window.em.generiereHtmlFuerToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürToggleswitch(FeldName, FeldBeschriftung, FeldWert, OhneLabel);
 		break;
 	case "checkbox":
-		htmlContainer = window.em.generiereHtmlFuerCheckbox(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürCheckbox(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
 		break;
 	case "radio":
-		htmlContainer = window.em.generiereHtmlFuerRadio(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürRadio(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel);
 		break;
 	case "selectmenu":
-		htmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "SingleSelect", OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "SingleSelect", OhneLabel);
 		break;
 	case "multipleselect":
-		htmlContainer = window.em.generiereHtmlFuerSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "MultipleSelect", OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürSelectmenu(FeldName, FeldBeschriftung, FeldWert, optionen, "MultipleSelect", OhneLabel);
 		break;
 	case "slider":
 		SliderMinimum = Feld.SliderMinimum || 0;
 		SliderMaximum = Feld.SliderMaximum || 100;
-		htmlContainer = window.em.generiereHtmlFuerSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürSlider(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel);
 		break;
 	case null:
 		// Abfangen, wenn das Formularelement nicht gewählt wurde
-		htmlContainer = window.em.generiereHtmlFuerTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
+		htmlContainer = window.em.generiereHtmlFürTextinput(FeldName, FeldBeschriftung, FeldWert, Feld.InputTyp, OhneLabel);
 		break;
 	}
 	return htmlContainer;
@@ -2330,7 +2329,7 @@ window.em.generiereHtmlFuerFormularelement = function(Feld, FeldWert, OhneLabel)
 
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel) {
+window.em.generiereHtmlFürTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel) {
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2353,7 +2352,7 @@ window.em.generiereHtmlFuerTextinput = function(FeldName, FeldBeschriftung, Feld
 
 // generiert den html-Inhalt für Slider
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel) {
+window.em.generiereHtmlFürSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel) {
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2378,7 +2377,7 @@ window.em.generiereHtmlFuerSlider = function(FeldName, FeldBeschriftung, FeldWer
 
 // generiert den html-Inhalt für Textarea
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+window.em.generiereHtmlFürTextarea = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2399,7 +2398,7 @@ window.em.generiereHtmlFuerTextarea = function(FeldName, FeldBeschriftung, FeldW
 
 // generiert den html-Inhalt für Toggleswitch
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+window.em.generiereHtmlFürToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
 	var htmlContainer = "<div class='ui-field-contain'>";
 	if (!OhneLabel) {
 		htmlContainer += "<label for='";
@@ -2420,21 +2419,21 @@ window.em.generiereHtmlFuerToggleswitch = function(FeldName, FeldBeschriftung, F
 
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerCheckbox = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+window.em.generiereHtmlFürCheckbox = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
 	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
 		htmlContainer += "<legend>";
 		htmlContainer += FeldBeschriftung;
 		htmlContainer += "</legend>";
 	}
-	htmlContainer += window.em.generiereHtmlFuerCheckboxOptionen(FeldName, FeldWert, optionen);
+	htmlContainer += window.em.generiereHtmlFürCheckboxOptionen(FeldName, FeldWert, optionen);
 	htmlContainer += "</fieldset></div>";
 	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von Checkbox
-// wird von generiereHtmlFuerCheckbox aufgerufen
-window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, optionen) {
+// wird von generiereHtmlFürCheckbox aufgerufen
+window.em.generiereHtmlFürCheckboxOptionen = function(FeldName, FeldWert, optionen) {
 	var htmlContainer = "",
 		listItem,
         id;
@@ -2462,24 +2461,25 @@ window.em.generiereHtmlFuerCheckboxOptionen = function(FeldName, FeldWert, optio
 
 // generiert den html-Inhalt für Radio
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerRadio = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+window.em.generiereHtmlFürRadio = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
 	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
 		htmlContainer += "<legend>";
 		htmlContainer += FeldBeschriftung;
 		htmlContainer += "</legend>";
 	}
-	htmlContainer += window.em.generiereHtmlFuerRadioOptionen(FeldName, FeldWert, optionen);
+	htmlContainer += window.em.generiereHtmlFürRadioOptionen(FeldName, FeldWert, optionen);
 	htmlContainer += "</fieldset></div>";
 	return htmlContainer;
 };
 
 // generiert den html-Inhalt für Optionen von Radio
-// wird von generiereHtmlFuerRadio aufgerufen
-window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen) {
+// wird von generiereHtmlFürRadio aufgerufen
+window.em.generiereHtmlFürRadioOptionen = function(feldname, feldwert, optionen) {
 	var htmlContainer = "",
 		listItem,
-        id;
+        id,
+        feldname_eindeutig = _.uniqueId(feldname + "_");
 	_.each(optionen, function(option) {
         id = _.uniqueId(feldname + "_option_");
 		listItem = "<label for='";
@@ -2487,7 +2487,8 @@ window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen
 		listItem += "'>";
 		listItem += option;
 		listItem += "</label><input class='speichern' type='radio' name='";
-		listItem += feldname;
+		//listItem += feldname;
+        listItem += feldname_eindeutig;
 		listItem += "'";
         listItem += " id='";
 		listItem += id;
@@ -2495,7 +2496,15 @@ window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen
 		listItem += " value='";
 		listItem += option;
 		if (feldwert === option) {
+            // Problem: So gut das in allen übrigen Formularen funktioniert,
+            // in hArtEditListe wird nur der Wert des letzten Datensatzes angezeigt
 			listItem += "' checked='checked";
+            // das ist der Versuch, checked auf eine andere Weise zu provozieren
+            // der event wird aber nie aufgerufen
+            $("#" + id).on("checkboxradiocreate", function () {
+                console.log("jetzt wird gechecked");
+                $(this).attr("checked", "checked").checkboxradio("refresh");
+            })
 		}
 		listItem += "'/>";
 		htmlContainer += listItem;
@@ -2505,7 +2514,7 @@ window.em.generiereHtmlFuerRadioOptionen = function(feldname, feldwert, optionen
 
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
-window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon) {
+window.em.generiereHtmlFürSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon) {
 	var htmlContainer = "<div class='ui-field-contain'>",
         id;
     id = _.uniqueId(FeldName + "_");
@@ -2540,7 +2549,7 @@ window.em.generiereHtmlFuerSelectmenu = function(FeldName, FeldBeschriftung, Fel
 };
 
 // generiert den html-Inhalt für Optionen von Selectmenu
-// wird von generiereHtmlFuerSelectmenu aufgerufen
+// wird von generiereHtmlFürSelectmenu aufgerufen
 window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, optionen) {
 	var htmlContainer = "<option value=''></option>",
 		listItem;
@@ -2560,7 +2569,7 @@ window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, opt
 };
 
 // generiert den html-Inhalt für Optionen von MultipleSelect
-// wird von generiereHtmlFuerSelectmenu aufgerufen
+// wird von generiereHtmlFürSelectmenu aufgerufen
 // FeldWert ist ein Array
 window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert, optionen) {
 	var htmlContainer = "<option value=''></option>",
@@ -4253,7 +4262,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 	// ausser Standardwert, dessen Änderung wird aber in einer anderen Funktion verarbeitet
 	// aber: Der Benutzer soll wählen können, in welchen Artgruppen er ein solches Feld anzeigt
 	if (window.em.Feld.User === "ZentrenBdKt" && localStorage.FeldName !== "ArtGruppe") {
-		// Feldwert zurücksetzen	
+		// feldwert zurücksetzen
 		if (localStorage.AlterFeldWert) {
 			$("#" + localStorage.FeldName).val(localStorage.AlterFeldWert);
 		} else {
@@ -4265,7 +4274,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		window.em.melde("Dies ist ein geschütztes Feld eines öffentlichen Datenzentrums<br><br>Statt dieses zu ändern können Sie ein eigenes Feld erstellen");
 	} else if (localStorage.FeldName === "FeldName") {
 		// Wenn eigener Feldname verändert wird, kontrollieren, dass er nicht schon verwendet wurde
-		// ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten Feldwert von 
+		// ohne explizit auf undefined zu prüfen, akzeptierte die Bedingung einen alten feldwert von
 		// undefined als o.k.!!!!
 		if (localStorage.AlterFeldWert !== "undefined" && localStorage.AlterFeldWert) {
 			// wenn ein alter Feldname existiert,
@@ -4393,7 +4402,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 		// Standardwert in Array verwandeln
 		StandardwertOptionen = [];
 		if (Feldwert.length > 0) {
-			// Fehler verhindern, falls Feldwert undefined ist
+			// Fehler verhindern, falls feldwert undefined ist
 			StandardwertOptionen = Feldwert.split(",");
 		}
 		if (["multipleselect", "checkbox"].indexOf(window.em.Feld.Formularelement) > -1) {
@@ -4982,13 +4991,13 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 		htmlContainerBody += '">';
 		// Artname ergänzen
 		htmlContainerBody += '<td>';
-		htmlContainerBody += window.em.generiereHtmlFuerSelectmenu("aArtName_hael", "", artname, optionen, "SingleSelect", true, "arrow-r");
+		htmlContainerBody += window.em.generiereHtmlFürSelectmenu("aArtName_hael", "", artname, optionen, "SingleSelect", true, "arrow-r");
 		htmlContainerBody += '</td>';
 		// dynamische Felder setzen
 		_.each(feldliste, function(feld) {
 			var FeldName = feld.FeldName,
 				FeldWert;
-			// Feldwert setzen
+			// feldwert setzen
 			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && feld.Standardwert && feld.Standardwert[window.em.hArt.User]) {
 				FeldWert = feld.Standardwert[window.em.hArt.User];
 				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
@@ -5004,7 +5013,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 			//console.log("FeldName = " + FeldName);
 			//console.log("FeldWert = " + FeldWert);
 
-			htmlContainerBody += window.em.generiereHtmlFuerFormularelement(feld, FeldWert, true);
+			htmlContainerBody += window.em.generiereHtmlFürFormularelement(feld, FeldWert, true);
 			htmlContainerBody += '</td>';
 		});
 		// Tabellenzeile abschliessen
@@ -5122,7 +5131,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 				//"" verhindert, dass im Feld undefined erscheint
 				FeldWert = window.em.hArt[FeldName] || "";
 			}
-			htmlContainer += window.em.generiereHtmlFuerFormularelement(Feld, FeldWert);
+			htmlContainer += window.em.generiereHtmlFürFormularelement(Feld, FeldWert);
 		}
 	});
 	if (localStorage.Status === "neu") {
@@ -6256,35 +6265,28 @@ window.em.speichereHProjektEdit = function() {
 };
 
 window.em.speichereHProjektEdit_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		Feldwert = Feldjson[Feldname];
-	}
+    var FeldnameDb,
+        Feldwert,
+        feldinfos;
+    // Feldname und -wert ermitteln
+    feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	if (window.em.validierehProjektEdit()) {
-		if (Feldname === "pName") {
+		if (FeldnameDb === "pName") {
 			// Variablen für Projektliste zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 			window.em.leereStorageProjektListe("mitLatLngListe");
 		}
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
-				window.em.hProjekt[Feldname] = parseFloat(Feldwert);
+				window.em.hProjekt[FeldnameDb] = parseFloat(Feldwert);
 			} else if (window.em.myTypeOf(Feldwert) === "integer") {
-				window.em.hProjekt[Feldname] = parseInt(Feldwert);
+				window.em.hProjekt[FeldnameDb] = parseInt(Feldwert);
 			} else {
-				window.em.hProjekt[Feldname] = Feldwert;
+				window.em.hProjekt[FeldnameDb] = Feldwert;
 			}
-		} else if (window.em.hProjekt[Feldname]) {
-			delete window.em.hProjekt[Feldname]
+		} else if (window.em.hProjekt[FeldnameDb]) {
+			delete window.em.hProjekt[FeldnameDb]
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hProjekt, {
@@ -6308,7 +6310,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 			},
 			error: function() {
 				console.log('fehler in function speichereHProjektEdit_2(that)');
-				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+				//melde("Fehler: Änderung in " + FeldnameDb + " nicht gespeichert");
 			}
 		});
 	}
@@ -6413,36 +6415,29 @@ window.em.speichereHOrtEdit = function(that) {
 };
 
 window.em.speichereHOrtEdit_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		Feldwert = Feldjson[Feldname];
-	}
+    var FeldnameDb,
+        Feldwert,
+        feldinfos;
+    // Feldname und -wert ermitteln
+    feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	if (window.em.validatehOrtEdit()) {
-		if (Feldname === "oName") {
+		if (FeldnameDb === "oName") {
 			// Variablen für OrtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			window.em.leereStorageOrtListe("mitLatLngListe");
 		}
 		// Werte aus dem Formular aktualisieren
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
-				window.em.hOrt[Feldname] = parseFloat(Feldwert);
+				window.em.hOrt[FeldnameDb] = parseFloat(Feldwert);
 			} else if (window.em.myTypeOf(Feldwert) === "integer") {
-				window.em.hOrt[Feldname] = parseInt(Feldwert);
+				window.em.hOrt[FeldnameDb] = parseInt(Feldwert);
 			} else {
-				window.em.hOrt[Feldname] = Feldwert;
+				window.em.hOrt[FeldnameDb] = Feldwert;
 			}
-		} else if (window.em.hOrt[Feldname]) {
-			delete window.em.hOrt[Feldname]
+		} else if (window.em.hOrt[FeldnameDb]) {
+			delete window.em.hOrt[FeldnameDb]
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hOrt, {
@@ -6465,7 +6460,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 			},
 			error: function() {
 				console.log('Fehler in function speichereHOrtEdit_2(that)');
-				//melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+				//melde("Fehler: Änderung in " + FeldnameDb + " nicht gespeichert");
 			}
 		});
 	}
@@ -7102,35 +7097,28 @@ window.em.speichereRaum = function() {
 };
 
 window.em.speichereRaum_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		Feldwert = Feldjson[Feldname];
-	}
+    var FeldnameDb,
+        Feldwert,
+        feldinfos;
+    // Feldname und -wert ermitteln
+    feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	if (window.em.validierehRaumEdit()) {
-		if (Feldname === "rName") {
+		if (FeldnameDb === "rName") {
 			// RaumListe zurücksetzen, damit sie beim nächsten Aufruf neu aufgebaut wird
 			window.em.leereStorageRaumListe("mitLatLngListe");
 		}
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
-				window.em.hRaum[Feldname] = parseFloat(Feldwert);
+				window.em.hRaum[FeldnameDb] = parseFloat(Feldwert);
 			} else if (window.em.myTypeOf(Feldwert) === "integer") {
-				window.em.hRaum[Feldname] = parseInt(Feldwert);
+				window.em.hRaum[FeldnameDb] = parseInt(Feldwert);
 			} else {
-				window.em.hRaum[Feldname] = Feldwert;
+				window.em.hRaum[FeldnameDb] = Feldwert;
 			}
-		} else if (window.em.hRaum[Feldname]) {
-			delete window.em.hRaum[Feldname];
+		} else if (window.em.hRaum[FeldnameDb]) {
+			delete window.em.hRaum[FeldnameDb];
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hRaum, {
@@ -7685,36 +7673,29 @@ window.em.speichereHZeitEdit = function() {
 };
 
 window.em.speichereHZeitEdit_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		Feldwert = Feldjson[Feldname];
-	}
+    var FeldnameDb,
+        Feldwert,
+        feldinfos;
+    // Feldname und -wert ermitteln
+    feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	if (window.em.validierehZeitEdit()) {
-		if (Feldname === "zDatum" || Feldname === "zUhrzeit") {
+		if (FeldnameDb === "zDatum" || FeldnameDb === "zUhrzeit") {
 			// Variablen für ZeitListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 			window.em.leereStorageZeitListe();
 		}
 		// Werte aus dem Formular aktualisieren
 		if (Feldwert) {
 			if (window.em.myTypeOf(Feldwert) === "float") {
-				window.em.hZeit[Feldname] = parseFloat(Feldwert);
+				window.em.hZeit[FeldnameDb] = parseFloat(Feldwert);
 			} else if (window.em.myTypeOf(Feldwert) === "integer") {
-				window.em.hZeit[Feldname] = parseInt(Feldwert);
+				window.em.hZeit[FeldnameDb] = parseInt(Feldwert);
 			} else {
-				window.em.hZeit[Feldname] = Feldwert;
+				window.em.hZeit[FeldnameDb] = Feldwert;
 			}
-		} else if (window.em.hZeit[Feldname]) {
-			delete window.em.hZeit[Feldname];
+		} else if (window.em.hZeit[FeldnameDb]) {
+			delete window.em.hZeit[FeldnameDb];
 		}
 		// alles speichern
 		$db.saveDoc(window.em.hZeit, {
@@ -7735,7 +7716,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 			},
 			error: function() {
 				console.log('Fehler in function speichereHZeitEdit_2(that)');
-				//window.em.melde("Fehler: Änderung in " + Feldname + " nicht gespeichert");
+				//window.em.melde("Fehler: Änderung in " + FeldnameDb + " nicht gespeichert");
 			}
 		});
 	}
@@ -9084,48 +9065,24 @@ window.em.speichereHArt = function() {
 };
 
 window.em.speichereHArt_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
+	var FeldnameDb,
+		Feldwert,
+        feldinfos;
 	// Feldname und -wert ermitteln
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-        console.log('$("body").pagecontainer("getActivePage").attr("id") = ' + $("body").pagecontainer("getActivePage").attr("id"));
-		// nötig, damit Arrays richtig kommen
-		//if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") { // Funktioniert nicht, weil z.B. ein select ein eigenes Fenster öffnet!
-        if (localStorage.hArtId && localStorage.hArtSicht === "liste") {
-			// hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
-            console.log("that.type = " + that.type);
-            if (["checkbox"].indexOf(that.type) >= 0) {
-                Feldjson = $(that).parents("fieldset").serializeObject();
-            } else {
-                Feldjson = $(that).serializeObject();
-            }
-            console.log("Feldjson = " + JSON.stringify(Feldjson));
-		} else {
-			Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		}
-		Feldwert = Feldjson[Feldname];
-		//console.log("$(that) = " + JSON.stringify($(that)));
-		//console.log("Feldjson = " + JSON.stringify(Feldjson));
-		//console.log("Feldwert = " + Feldwert);
-	}
+	feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	// window.em.hArt aktualisieren
 	if (Feldwert) {
 		if (window.em.myTypeOf(Feldwert) === "float") {
-			window.em.hArt[Feldname] = parseFloat(Feldwert);
+			window.em.hArt[FeldnameDb] = parseFloat(Feldwert);
 		} else if (window.em.myTypeOf(Feldwert) === "integer") {
-			window.em.hArt[Feldname] = parseInt(Feldwert);
+			window.em.hArt[FeldnameDb] = parseInt(Feldwert);
 		} else {
-			window.em.hArt[Feldname] = Feldwert;
+			window.em.hArt[FeldnameDb] = Feldwert;
 		}
-	} else if (window.em.hArt[Feldname]) {
-		delete window.em.hArt[Feldname];
+	} else if (window.em.hArt[FeldnameDb]) {
+		delete window.em.hArt[FeldnameDb];
 	}
 	// Werte aktualisieren, die nicht durch .speichern erfasst werden
 	window.em.hArt.aArtId = localStorage.aArtId;
@@ -9141,6 +9098,41 @@ window.em.speichereHArt_2 = function(that) {
 			console.log('Fehler in function speichereHArt_2');
 		}
 	});
+};
+
+window.em.holeFeldInfosVonElement = function(that) {
+    var feldinfos = {},
+        feldjson;
+    // Feldname und -wert ermitteln
+    if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
+        // slider
+        feldinfos.feldname_dom = feldinfos.feldname_db = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
+        feldinfos.feldwert = $(that).attr("aria-valuenow");
+    } else {
+        // alle anderen Feldtypen
+        if (that.type === "radio") {
+            // in hArtEditListe zeigen radios ihre Werte nur an, wenn die radios desselben Felds unterschiedliche Namen haben
+            // darum wird _ und eine id hintangestellt
+            feldinfos.feldname_dom = that.name;
+            feldinfos.feldname_db = that.name.substring(0, that.name.lastIndexOf("_"));
+        } else {
+            feldinfos.feldname_db = feldinfos.feldname_dom = that.name;
+        }
+        // nötig, damit Arrays richtig kommen
+        //if ($("body").pagecontainer("getActivePage").attr("id") === "hArtEditListe") { // Funktioniert nicht, weil z.B. ein select ein eigenes Fenster öffnet!
+        if (localStorage.hArtId && localStorage.hArtSicht === "liste") {
+            // hier gibt es pro Tabellenzeile ein Feld mit diesem Namen!
+            if (["checkbox"].indexOf(that.type) >= 0) {
+                feldjson = $(that).parents("fieldset").serializeObject();
+            } else {
+                feldjson = $(that).serializeObject();
+            }
+        } else {
+            feldjson = $("[name='" + feldinfos.feldname_dom + "']").serializeObject();
+        }
+        feldinfos.feldwert = feldjson[feldinfos.feldname_dom];
+    }
+    return feldinfos;
 };
 
 // Öffnet die vorige oder nächste Art
@@ -9791,31 +9783,24 @@ window.em.speichereBeob = function(that) {
 };
 
 window.em.speichereBeob_2 = function(that) {
-	var Feldname,
-		Feldjson,
-		Feldwert;
-	if (window.em.myTypeOf($(that).attr("aria-valuenow")) !== "string") {
-		// slider
-		Feldname = $(that).attr("aria-labelledby").slice(0, ($(that).attr("aria-labelledby").length -6));
-		Feldwert = $(that).attr("aria-valuenow");
-	} else {
-		// alle anderen Feldtypen
-		Feldname = that.name;
-		// nötig, damit Arrays richtig kommen
-		Feldjson = $("[name='" + Feldname + "']").serializeObject();
-		Feldwert = Feldjson[Feldname];
-	}
+    var FeldnameDb,
+        Feldwert,
+        feldinfos;
+    // Feldname und -wert ermitteln
+    feldinfos = window.em.holeFeldInfosVonElement(that);
+    FeldnameDb = feldinfos.feldname_db;
+    Feldwert = feldinfos.feldwert;
 	// Werte aus dem Formular aktualisieren
 	if (Feldwert) {
 		if (window.em.myTypeOf(Feldwert) === "float") {
-			window.em.Beobachtung[Feldname] = parseFloat(Feldwert);
+			window.em.Beobachtung[FeldnameDb] = parseFloat(Feldwert);
 		} else if (window.em.myTypeOf(Feldwert) === "integer") {
-			window.em.Beobachtung[Feldname] = parseInt(Feldwert);
+			window.em.Beobachtung[FeldnameDb] = parseInt(Feldwert);
 		} else {
-			window.em.Beobachtung[Feldname] = Feldwert;
+			window.em.Beobachtung[FeldnameDb] = Feldwert;
 		}
-	} else if (window.em.Beobachtung[Feldname]) {
-		delete window.em.Beobachtung[Feldname]
+	} else if (window.em.Beobachtung[FeldnameDb]) {
+		delete window.em.Beobachtung[FeldnameDb]
 	}
 	window.em.Beobachtung.aArtGruppe = localStorage.aArtGruppe;
 	window.em.Beobachtung.aArtName = localStorage.aArtName;
