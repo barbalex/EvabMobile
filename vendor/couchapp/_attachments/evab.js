@@ -4488,7 +4488,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 						// prüfen, ob der neue Feldname schon existiert
 						// wenn ja: melden, zurückstellen
 						// wenn nein: speichern
-						window.em.pruefeFeldNamen();
+						window.em.prüfeFeldNamen();
 					} else {
 						// Feldname wird schon verwendet > melden, zurückstellen
 						ds = "Datensätzen";
@@ -4508,7 +4508,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 			// prüfen, ob der neue Feldname schon existiert
 			// wenn ja: melden, zurückstellen
 			// wenn nein: speichern
-			window.em.pruefeFeldNamen();
+			window.em.prüfeFeldNamen();
 		}
 	} else if (localStorage.FeldName === "Hierarchiestufe" && localStorage.FeldWert === "Art") {
 		$(".FeldEditHeaderTitel").text(localStorage.FeldWert + ": " + window.em.Feld.FeldBeschriftung);
@@ -4570,7 +4570,7 @@ window.em.blendeDatentypabhängigeFelder = function() {
 // wenn in FeldEdit.htm #FeldFolgtNach geändert wird
 window.em.handleFeldEditFeldFolgtNachChange = function() {
 	'use strict';
-	window.em.setzeReihenfolgeMitVorgaenger(this.value);
+	window.em.setzeReihenfolgeMitVorgänger(this.value);
 	// Feldliste soll neu aufgebaut werden
 	delete window.em.Feldliste;
 };
@@ -4655,7 +4655,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 	'use strict';
 	if (!window.em.Feld.FeldName) {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
-		window.em.loescheFeld();
+		window.em.löscheFeld();
 	} else {
 		var $db = $.couch.db("evab");
 		// zählen, in wievielen Datensätzen das Feld verwendet wird
@@ -4673,7 +4673,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 					}
 				});
 				if (anzVorkommen === 0) {
-					window.em.loescheFeld();
+					window.em.löscheFeld();
 				} else {
 					ds = "Datensätzen";
 					if (anzVorkommen === 1) {
@@ -7061,16 +7061,19 @@ window.em.handleProjektListeÖffneKarteClick = function() {
 };
 
 window.em.handleProjektListeMenuEinfacherModusClick = function() {
+	'use strict';
 	$.mobile.navigate("BeobListe.html");
 };
 
 window.em.handleProjektListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hProjektListe.html .menu_projekte_exportieren geklickt wird
 window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
 	$("#MenuProjektListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -7080,12 +7083,14 @@ window.em.handleHProjektListeMenuProjekteExportierenClick = function() {
 };
 
 window.em.handleProjektListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektListe.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn hRaumEdit erscheint
 window.em.handleRaumEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -7103,6 +7108,7 @@ window.em.handleRaumEditPageshow = function() {
 
 // wenn hRaumEdit initiiert wird
 window.em.handleRaumEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -7118,12 +7124,12 @@ window.em.handleRaumEditPageinit = function() {
 	$("#RaumEditHeader")
         .on("click", "[name='OeffneRaumListeRaumEdit']", function(event) {
             event.preventDefault();
-            window.em.handleRaumEditOeffneRaumListeClick();
+            window.em.handleRaumEditÖffneRaumListeClick();
         })
         // Link zu Projekt in Navbar und Titelleiste
         .on("click", "#ProjektOeffnenRaumEdit", function(event) {
             event.preventDefault();
-            window.em.handleRaumEditProjektOeffnenClick();
+            window.em.handleRaumEditProjektÖffnenClick();
         })
         // Link zu Ortliste in Navbar
         .on("click", "#OrtListeOeffnenRaumEdit", function(event) {
@@ -7145,7 +7151,7 @@ window.em.handleRaumEditPageinit = function() {
         // Code für den Raum-Löschen-Dialog
         .on('click', '#LoescheRaumRaumEdit', function(event) {
             event.preventDefault();
-            window.em.handleRaumEditLoescheRaumClick();
+            window.em.handleRaumEditLöscheRaumClick();
         });
 
 	$("#hre_löschen_meldung")
@@ -7176,6 +7182,7 @@ window.em.handleRaumEditPageinit = function() {
         })
         // Pagination Pfeiltasten initialisieren
         .on("keyup", function(event) {
+            'use strict';
             // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
             if (!$(event.target).is("input, textarea, select, button") && $('#hRaumEdit').is(':visible')) {
                 // Left arrow
@@ -7208,11 +7215,11 @@ window.em.handleRaumEditPageinit = function() {
         // sichtbare Felder wählen
         .on("click", "#waehleFelderRaumEdit", function(event) {
             event.preventDefault();
-            window.em.handleRaumEditWaehleFelderClick();
+            window.em.handleRaumEditWähleFelderClick();
         })
         .on("click", "#KarteOeffnenRaumEdit", function(event) {
             event.preventDefault();
-            window.em.handleRaumEditOeffneKarteClick();
+            window.em.handleRaumEditÖffneKarteClick();
         });
 
 	$('#MenuRaumEdit')
@@ -7226,19 +7233,22 @@ window.em.handleRaumEditPageinit = function() {
         .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
-window.em.handleRaumEditOeffneRaumListeClick = function() {
+window.em.handleRaumEditÖffneRaumListeClick = function() {
+	'use strict';
 	window.em.leereStorageRaumEdit();
 	$.mobile.navigate("hRaumListe.html");
 };
 
 window.em.handleRaumEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentshRE").val();
 	if (_attachments && _attachments.length > 0) {
 		window.em.speichereAnhänge(localStorage.RaumId, window.em.hRaum, "hRE");
 	}
 };
 
-window.em.handleRaumEditLoescheRaumClick = function() {
+window.em.handleRaumEditLöscheRaumClick = function() {
+	'use strict';
 	// Anzahl Orte des Raums zählen
 	var $db = $.couch.db("evab");
 	$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
@@ -7272,17 +7282,20 @@ window.em.handleRaumEditLoescheRaumClick = function() {
 	});
 };
 
-window.em.handleRaumEditProjektOeffnenClick = function() {
+window.em.handleRaumEditProjektÖffnenClick = function() {
+	'use strict';
 	window.em.leereStorageRaumListe("mitLatLngListe");
 	$.mobile.navigate("hProjektEdit.html");
 };
 
-window.em.handleRaumEditWaehleFelderClick = function() {
+window.em.handleRaumEditWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hRaumEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
 window.em.handleRaumEditContentSwipreleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsterVorigerRaum("nächster");
@@ -7290,18 +7303,21 @@ window.em.handleRaumEditContentSwipreleft = function() {
 };
 
 window.em.handleRaumEditContentSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsterVorigerRaum("voriger");
 	}
 };
 
-window.em.handleRaumEditOeffneKarteClick = function() {
+window.em.handleRaumEditÖffneKarteClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumEdit";
 	$.mobile.navigate("Karte.html");
 };
 
 window.em.handleRaumEditMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
 	window.em.leereStorageProjektEdit();
@@ -7309,11 +7325,13 @@ window.em.handleRaumEditMenuEinfacherModusClick = function() {
 };
 
 window.em.handleRaumEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 window.em.handleRaumEditMenuExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuRaumEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -7323,11 +7341,13 @@ window.em.handleRaumEditMenuExportierenClick = function() {
 };
 
 window.em.handleRaumEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 window.em.löscheRaum = function(Arten, Zeiten, Orte) {
+	'use strict';
 	// nur löschen, wo Datensätze vorkommen
 	if (Orte.rows.length > 0) {
 		window.em.loescheIdIdRevListe(Orte);
@@ -7357,6 +7377,7 @@ window.em.löscheRaum = function(Arten, Zeiten, Orte) {
 };
 
 window.em.löscheRaum_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hRaum, {
 		success: function(data) {
@@ -7380,6 +7401,7 @@ window.em.löscheRaum_2 = function() {
 };
 
 window.em.validierehRaumEdit = function() {
+	'use strict';
 	if (!$("#rName").val()) {
 		window.em.melde("Bitte Raumnamen eingeben");
 		setTimeout(function() { 
@@ -7391,6 +7413,7 @@ window.em.validierehRaumEdit = function() {
 };
 
 window.em.speichereRaum = function() {
+	'use strict';
 	var that = this;
 	// prüfen, ob Objekt Raum existiert
 	// fehlt z.B. nach refresh
@@ -7413,6 +7436,7 @@ window.em.speichereRaum = function() {
 };
 
 window.em.speichereRaum_2 = function(that) {
+	'use strict';
     var FeldnameDb,
         Feldwert,
         feldinfos;
@@ -7469,6 +7493,7 @@ window.em.speichereRaum_2 = function(that) {
 // nächster des letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
+	'use strict';
 	// prüfen, ob RaumListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.RaumListe) {
@@ -7489,6 +7514,7 @@ window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
 };
 
 window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
+	'use strict';
 	var i,
 		RaumIdAktuell,
 		AnzRaum;
@@ -7527,6 +7553,7 @@ window.em.nächsterVorigerRaum_2 = function(NächsterOderVoriger) {
 
 // wenn hRaumListe erscheint
 window.em.handleHRaumListePageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -7544,6 +7571,7 @@ window.em.handleHRaumListePageshow = function() {
 
 // wenn hRaumListe initiiert wird
 window.em.handleHRaumListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -7568,7 +7596,7 @@ window.em.handleHRaumListePageinit = function() {
         // Link zu Projekt in Navbar und Titelleiste
         .on("click", "[name='ProjektEditOeffnenRaumListe']", function(event) {
             event.preventDefault();
-            window.em.handleRaumListeOeffneProjektEditClick();
+            window.em.handleRaumListeÖffneProjektEditClick();
         });
 
 	$("#hRaumListe")
@@ -7590,7 +7618,7 @@ window.em.handleHRaumListePageinit = function() {
 	$("#hRaumListePageFooter")
         .on("click", "#KarteOeffnenRaumListe", function(event) {
             event.preventDefault();
-            window.em.handleRaumListeOeffneKarteClick();
+            window.em.handleRaumListeÖffneKarteClick();
         });
 
 	$('#MenuRaumListe')
@@ -7604,17 +7632,20 @@ window.em.handleHRaumListePageinit = function() {
         .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
-window.em.handleRaumListeOeffneProjektEditClick = function() {
+window.em.handleRaumListeÖffneProjektEditClick = function() {
+	'use strict';
 	window.em.leereStorageRaumListe();
 	$.mobile.navigate("hProjektEdit.html");
 };
 
 window.em.handleRaumListeSwipeleft = function() {
+	'use strict';
 	localStorage.RaumId = $(this).attr('RaumId');
 	$.mobile.navigate("hOrtListe.html");
 };
 
 window.em.handleRaumListeRaumClick = function(that) {
+	'use strict';
 	localStorage.RaumId = $(that).attr('RaumId');
 	$.mobile.navigate("hRaumEdit.html");
 };
@@ -7624,28 +7655,33 @@ window.em.handleRaumListeContentSwiperight = function() {
 	$.mobile.navigate("hProjektListe.html");
 };
 
-window.em.handleRaumListeOeffneKarteClick = function() {
+window.em.handleRaumListeÖffneKarteClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumListe";
 	$.mobile.navigate("Karte.html");
 };
 
 window.em.handleHRaumListeMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageRaumListe();
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 };
 
 window.em.handleRaumListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 window.em.handleRaumListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hRaumListe.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 window.em.handleHRaumListeMenuExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportRaum/ExportRaum?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuRaumListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -7656,6 +7692,7 @@ window.em.handleHRaumListeMenuExportierenClick = function() {
 
 // wenn hZeitEdit.html erscheint
 window.em.handleHZeitEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -7671,6 +7708,7 @@ window.em.handleHZeitEditPageshow = function() {
 
 // wenn hZeitEdit.html initiiert wird
 window.em.handleHZeitEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -7697,7 +7735,7 @@ window.em.handleHZeitEditPageinit = function() {
         })
         .on("click", "#OeffneOrtZeitEdit", function(event) {
             event.preventDefault();
-            window.em.handleZeitEditOeffneOrtClick();
+            window.em.handleZeitEditÖffneOrtClick();
         })
         .on("click", "#OeffneArtListeZeitEdit", function(event) {
             event.preventDefault();
@@ -7705,11 +7743,11 @@ window.em.handleHZeitEditPageinit = function() {
         })
         .on("click", "#OeffneRaumZeitEdit", function(event) {
             event.preventDefault();
-            window.em.handleZeitEditOeffneRaumClick();
+            window.em.handleZeitEditÖffneRaumClick();
         })
         .on("click", "#OeffneProjektZeitEdit", function(event) {
             event.preventDefault();
-            window.em.handleZeitEditOeffneProjektClick();
+            window.em.handleZeitEditÖffneProjektClick();
         });
 
 	$("#hZeitEditForm")
@@ -7769,16 +7807,16 @@ window.em.handleHZeitEditPageinit = function() {
         // sichtbare Felder wählen
         .on("click", "#waehleFelderZeitEdit", function(event) {
             event.preventDefault();
-            window.em.handleZeitEditWaehleFelderClick();
+            window.em.handleZeitEditWähleFelderClick();
         })
         // Code für den Zeit-Löschen-Dialog
         .on('click', '#LoescheZeitZeitEdit', function(event) {
             event.preventDefault();
-            window.em.handleZeitEditLoescheClick();
+            window.em.handleZeitEditLöscheClick();
         });
 
     $("#hze_löschen_meldung")
-        .on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLoeschenMeldungJaClick);
+        .on("click", "#hze_löschen_meldung_ja_loeschen", window.em.handleZeitEditLöschenMeldungJaClick);
 
 	$('#MenuZeitEdit')
         .on('click', '.menu_einfacher_modus', window.em.handleZeitEditMenuEinfacherModusClick)
@@ -7790,13 +7828,15 @@ window.em.handleHZeitEditPageinit = function() {
         .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
-window.em.handleZeitEditOeffneOrtClick = function() {
+window.em.handleZeitEditÖffneOrtClick = function() {
+	'use strict';
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
 };
 
-window.em.handleZeitEditOeffneRaumClick = function() {
+window.em.handleZeitEditÖffneRaumClick = function() {
+	'use strict';
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -7804,7 +7844,8 @@ window.em.handleZeitEditOeffneRaumClick = function() {
 	$.mobile.navigate("hRaumEdit.html");
 };
 
-window.em.handleZeitEditOeffneProjektClick = function() {
+window.em.handleZeitEditÖffneProjektClick = function() {
+	'use strict';
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -7815,6 +7856,7 @@ window.em.handleZeitEditOeffneProjektClick = function() {
 };
 
 window.em.handleZeitEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentshZE").val();
 	if (_attachments && _attachments.length > 0) {
 		window.em.speichereAnhänge(localStorage.ZeitId, window.em.hZeit, "hZE");
@@ -7822,17 +7864,20 @@ window.em.handleZeitEditSpeichernAnhangChange = function() {
 };
 
 window.em.handleZeitEditNeuClick = function() {
+	'use strict';
 	// Globale Variablen für ZeitListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageZeitListe();
 	window.em.erstelleNeueZeit();
 };
 
-window.em.handleZeitEditWaehleFelderClick = function() {
+window.em.handleZeitEditWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hZeitEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
-window.em.handleZeitEditLoescheClick = function() {
+window.em.handleZeitEditLöscheClick = function() {
+	'use strict';
 	// Anzahl Zeiten von Ort zählen
 	var $db = $.couch.db("evab");
 	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
@@ -7850,12 +7895,14 @@ window.em.handleZeitEditLoescheClick = function() {
 	});
 };
 
-window.em.handleZeitEditLoeschenMeldungJaClick = function() {
+window.em.handleZeitEditLöschenMeldungJaClick = function() {
+	'use strict';
 	var $hze_löschen_meldung = $("#hze_löschen_meldung")[0];
 	window.em.löscheZeit(jQuery.data($hze_löschen_meldung, 'Arten'));
 };
 
 window.em.handleZeitEditContentSwipeleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeZeit("nächste");
@@ -7863,6 +7910,7 @@ window.em.handleZeitEditContentSwipeleft = function() {
 };
 
 window.em.handleZeitEditContentSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeZeit("vorige");
@@ -7870,6 +7918,7 @@ window.em.handleZeitEditContentSwiperight = function() {
 };
 
 window.em.handleZeitEditMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
@@ -7881,11 +7930,13 @@ window.em.handleZeitEditMenuEinfacherModusClick = function() {
 };
 
 window.em.handleZeitEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hZeitEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 window.em.handleZeitEditMenuExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuZeitEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -7895,11 +7946,13 @@ window.em.handleZeitEditMenuExportierenClick = function() {
 };
 
 window.em.handleZeitEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hZeitEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 window.em.löscheZeit = function(Arten) {
+	'use strict';
 	// nur löschen, wo Datensätze vorkommen
 	if (Arten.rows.length > 0) {
 		window.em.loescheIdIdRevListe(Arten);
@@ -7924,6 +7977,7 @@ window.em.löscheZeit = function(Arten) {
 };
 
 window.em.löscheZeit_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hZeit, {
 		success: function(data) {
@@ -7946,6 +8000,7 @@ window.em.löscheZeit_2 = function() {
 };
 
 window.em.validierehZeitEdit = function() {
+	'use strict';
 	if (!$("[name='zDatum']").val()) {
 		window.em.melde("Bitte Datum erfassen");
 		setTimeout(function() { 
@@ -7967,6 +8022,7 @@ window.em.validierehZeitEdit = function() {
 // den Wert in die DB
 // erwartet das Feld als Objekt
 window.em.speichereHZeitEdit = function() {
+	'use strict';
 	var that = this;
 	// prüfen, ob die Zeit als Objekt vorliegt
 	if (window.em.hZeit) {
@@ -7990,6 +8046,7 @@ window.em.speichereHZeitEdit = function() {
 };
 
 window.em.speichereHZeitEdit_2 = function(that) {
+	'use strict';
     var FeldnameDb,
         Feldwert,
         feldinfos;
@@ -8045,6 +8102,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 // nächste der letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 window.em.nächsteVorigeZeit = function(NächsteOderVorige) {
+	'use strict';
 	// prüfen, ob ZeitListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.ZeitListe) {
@@ -8061,6 +8119,7 @@ window.em.nächsteVorigeZeit = function(NächsteOderVorige) {
 };
 
 window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
+	'use strict';
 	var i,
 		ZeitIdAktuell,
 		AnzZeit;
@@ -8098,6 +8157,7 @@ window.em.nächsteVorigeZeit_2 = function(NächsteOderVorige) {
 };
 
 window.em.handleZeitListePageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -8114,6 +8174,7 @@ window.em.handleZeitListePageshow = function() {
 };
 
 window.em.handleZeitListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -8138,15 +8199,15 @@ window.em.handleZeitListePageinit = function() {
         // Link zu Raum in Navbar und Titelleiste
         .on("click", "[name='OeffneOrtZeitListe']", function(event) {
             event.preventDefault();
-            window.em.handleZeitListeOeffneOrtClick();
+            window.em.handleZeitListeÖffneOrtClick();
         })
         .on("click", "#OeffneRaumZeitListe", function(event) {
             event.preventDefault();
-            window.em.handleZeitListeOeffneRaumClick();
+            window.em.handleZeitListeÖffneRaumClick();
         })
         .on("click", "#OeffneProjektZeitListe", function(event) {
             event.preventDefault();
-            window.em.handleZeitListeOeffneProjektClick();
+            window.em.handleZeitListeÖffneProjektClick();
         });
 
 	$("#hZeitListe")
@@ -8175,19 +8236,22 @@ window.em.handleZeitListePageinit = function() {
         .on('click', '.menu_admin', window.em.öffneAdmin);
 };
 
-window.em.handleZeitListeOeffneOrtClick = function() {
+window.em.handleZeitListeÖffneOrtClick = function() {
+	'use strict';
 	window.em.leereStorageZeitListe();
 	$.mobile.navigate("hOrtEdit.html");
 };
 
-window.em.handleZeitListeOeffneRaumClick = function() {
+window.em.handleZeitListeÖffneRaumClick = function() {
+	'use strict';
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 };
 
-window.em.handleZeitListeOeffneProjektClick = function() {
+window.em.handleZeitListeÖffneProjektClick = function() {
+	'use strict';
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageOrtListe();
@@ -8197,20 +8261,24 @@ window.em.handleZeitListeOeffneProjektClick = function() {
 };
 
 window.em.handleZeitListeSwipeleftZeit = function() {
+	'use strict';
 	localStorage.ZeitId = $(this).attr('ZeitId');
 	$.mobile.navigate("hArtListe.html");
 };
 
 window.em.handleZeitListeZeitClick = function(that) {
+	'use strict';
 	localStorage.ZeitId = $(that).attr('ZeitId');
 	$.mobile.navigate("hZeitEdit.html");
 };
 
 window.em.handleZeitListeSwiperight = function() {
+	'use strict';
 	$.mobile.navigate("hOrtListe.html");
 };
 
 window.em.handleZeitListeMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageZeitListe();
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageOrtListe();
@@ -8222,11 +8290,13 @@ window.em.handleZeitListeMenuEinfacherModusClick = function() {
 };
 
 window.em.handleZeitListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hZeitListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 window.em.handleZeitListeMenuZeitenExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportZeit/ExportZeit?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuZeitListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -8236,11 +8306,13 @@ window.em.handleZeitListeMenuZeitenExportierenClick = function() {
 };
 
 window.em.handleZeitListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hZeitListe.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 window.em.handleIndexPageshow = function() {
+	'use strict';
 	// Wenn möglich localStorage.Email für die Anmeldung verwenden
 	// ausser User hat via Menü bewusst neu anmelden wollen
 	// localStorage muss bei Neuanmeldung geleert werden, sonst werden die Beobachtungen des alten Users gezeigt
@@ -8267,6 +8339,7 @@ window.em.handleIndexPageshow = function() {
 };
 
 window.em.handleIndexPageinit = function() {
+	'use strict';
     $("#indexForm")
         // Reaktion auf Enter-Taste
         .on("keydown", "#Passwort", function (event) {
@@ -8282,6 +8355,7 @@ window.em.handleIndexPageinit = function() {
             window.em.meldeUserAn();
         })
         .on("click", "#index_signup_button", function (event) {
+            'use strict';
             var email = $("#Email").val(),
                 passwort = $("#Passwort").val();
             if (email) {
@@ -8296,6 +8370,7 @@ window.em.handleIndexPageinit = function() {
 };
 
 window.em.validiereUserIndex = function() {
+	'use strict';
 	var Email = $('input[name=Email]').val(),
 		Passwort = $('input[name=Passwort]').val();
 	if (!Email) {
@@ -8315,6 +8390,7 @@ window.em.validiereUserIndex = function() {
 };
 
 window.em.meldeUserAn = function() {
+	'use strict';
 	var Email = $('input[name=Email]').val(),
 		Passwort = $('input[name=Passwort]').val();
 	// sicherstellen, dass die localStorage leer ist
@@ -8345,6 +8421,7 @@ window.em.meldeUserAn = function() {
 };
 
 window.em.blendeMenus = function() {
+	'use strict';
 	if (localStorage.admin) {
 		$(".popup")
             .find(".admin")
@@ -8357,6 +8434,7 @@ window.em.blendeMenus = function() {
 };
 
 window.em.handleKartePageshow = function() {
+	'use strict';
 	// Karten müssen in pageshow erstellt werden, weil sie sonst in Chrome nicht erscheinen
 	var viewname;
 	// In diesem Array werden alle Marker gespeichert, damit sie gelöscht werden können
@@ -8402,20 +8480,23 @@ window.em.handleKartePageshow = function() {
 };
 
 window.em.handleKartePageinit = function() {
+	'use strict';
 	$("#KarteHeader")
         // zurück-Button steuern
         .on('click', '#ZurueckKarte', function (event) {
             event.preventDefault();
-            window.em.handleKarteZurueckClick();
+            window.em.handleKarteZurückClick();
         });
 };
 
 window.em.handleKartePagehide = function() {
+	'use strict';
 	// leeren, damit bei erneuten Öffnen die Karte nicht zweimal aufgebaut wird
 	$("#MapCanvas").html("");
 };
 
-window.em.handleKarteZurueckClick = function() {
+window.em.handleKarteZurückClick = function() {
+	'use strict';
 	var zurueck;
 	if (localStorage.zurueck) {
 		zurueck = localStorage.zurueck + ".html";
@@ -8429,6 +8510,7 @@ window.em.handleKarteZurueckClick = function() {
 // erstellt Karten für hProjektListe bis hOrtListe
 // im ersten Teil wird die Liste aller Orte erstellt und an den zweiten Teil übergeben
 window.em.erstelleKarteH = function(viewname) {
+	'use strict';
 
 	// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 	var contentHeight = $(window).height() - 44,
@@ -8466,6 +8548,7 @@ window.em.erstelleKarteH = function(viewname) {
 
 // alle benötigten Projekte holen
 window.em.erstelleKarteH_2 = function(hOrteLatLng) {
+	'use strict';
 	if (!window.em.hProjekt && !window.em.hProjektListe) {
 		var $db = $.couch.db("evab");
 		$db.view("evab/hProjListe?include_docs=true", {
@@ -8481,6 +8564,7 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 
 // alle benötigten Räume holen
 window.em.erstelleKarteH_3 = function(hOrteLatLng, hProjektListe) {
+	'use strict';
 	if (!window.em.hRaum && !window.em.hRaumListe) {
 		var $db = $.couch.db("evab");
 		$db.view("evab/hRaumListe?include_docs=true", {
@@ -8495,6 +8579,7 @@ window.em.erstelleKarteH_3 = function(hOrteLatLng, hProjektListe) {
 };
 
 window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
+	'use strict';
 	var anzOrt = 0,
 		Ort,
 		lat,
@@ -8608,6 +8693,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 };
 
 window.em.makeMapListener = function(map, marker, contentString) {
+	'use strict';
 	var infowindow = new google.maps.InfoWindow();
 	google.maps.event.addListener(marker, 'click', function () {
 		infowindow.setContent(contentString);
@@ -8617,6 +8703,7 @@ window.em.makeMapListener = function(map, marker, contentString) {
 
 // wenn nötig Ort holen
 window.em.erstelleKartehOrtEdit = function() {
+	'use strict';
 	if (!window.em.hOrt) {
 		if (localStorage.OrtId) {
 			var $db = $.couch.db("evab");
@@ -8637,6 +8724,7 @@ window.em.erstelleKartehOrtEdit = function() {
 
 // alle benötigten Projekte holen
 window.em.erstelleKartehOrtEdit_2 = function(ort) {
+	'use strict';
 	if (!window.em.hProjekt && !window.em.hProjektListe) {
 		var $db = $.couch.db("evab");
 		$db.view("evab/hProjListe?include_docs=true", {
@@ -8652,6 +8740,7 @@ window.em.erstelleKartehOrtEdit_2 = function(ort) {
 
 // alle benötigten Räume holen
 window.em.erstelleKartehOrtEdit_3 = function(ort, hProjektListe) {
+	'use strict';
 	if (!window.em.hRaum && !window.em.hRaumListe) {
 		var $db = $.couch.db("evab");
 		$db.view("evab/hRaumListe?include_docs=true", {
@@ -8667,6 +8756,7 @@ window.em.erstelleKartehOrtEdit_3 = function(ort, hProjektListe) {
 
 // wird benutzt in hOrtEdit.html
 window.em.erstelleKartehOrtEdit_4 = function(ort, hProjektListe, hRaumListe) {
+	'use strict';
 	var map,
 		verorted,
 		lat,
@@ -8764,6 +8854,7 @@ window.em.erstelleKartehOrtEdit_4 = function(ort, hProjektListe, hRaumListe) {
 
 // wird benutzt in BeobListe.html
 window.em.erstelleKarteBeobListe = function() {
+	'use strict';
 	// Seitenhöhe korrigieren, weil sonst GoogleMap weiss bleibt
 	var contentHeight = $(window).height() - 44;
 	$("#MapCanvas").css("height", contentHeight + "px");
@@ -8782,6 +8873,7 @@ window.em.erstelleKarteBeobListe = function() {
 };
 
 window.em.erstelleKarteBeobListe_2 = function() {
+	'use strict';
 	var anzBeob = window.em.BeobListeLatLng.rows.length,
 		beob,
 		image,
@@ -8871,6 +8963,7 @@ window.em.erstelleKarteBeobListe_2 = function() {
 
 // sicherstellen, dass window.em.Beobachtung existiert
 window.em.erstelleKarteBeobEdit = function() {
+	'use strict';
 	if (!window.em.Beobachtung) {
 		if (localStorage.BeobId) {
 			var $db = $.couch.db("evab");
@@ -8890,6 +8983,7 @@ window.em.erstelleKarteBeobEdit = function() {
 };
 
 window.em.erstelleKarteBeobEdit_2 = function(beob) {
+	'use strict';
 	var map,
 		verorted,
 		lat,
@@ -8971,6 +9065,7 @@ window.em.erstelleKarteBeobEdit_2 = function(beob) {
 
 // wird benutzt in hOrtEdit.html
 window.em.placeMarkerhOrtEdit = function(location, map, marker) {
+	'use strict';
 	// zuerst bisherige Marker löschen
 	//window.em.clearMarkers();
 	marker = new google.maps.Marker({
@@ -8991,6 +9086,7 @@ window.em.placeMarkerhOrtEdit = function(location, map, marker) {
 };
 
 window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
+	'use strict';
 	// zuerst bisherigen Marker löschen
 	//window.em.clearMarkers();
 	marker = new google.maps.Marker({
@@ -9014,6 +9110,7 @@ window.em.placeMarkerBeobEdit = function(location, map, marker, image) {
 // GoogleMap: alle Marker löschen
 // benutzt wo in GoogleMaps Marker gesetzt und verschoben werden
 window.em.clearMarkers = function() {
+	'use strict';
 	_.each(window.em.markersArray, function(marker) {
 		marker.setMap(null);
 	});
@@ -9022,6 +9119,7 @@ window.em.clearMarkers = function() {
 
 // wird benutzt in hOrtEdit.html
 window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
+	'use strict';
 	var lat = LatLng.lat(),
 		lng = LatLng.lng(),
 		contentString,
@@ -9050,6 +9148,7 @@ window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
 
 // wird benutzt in BeobEdit.html
 window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
+	'use strict';
 	var lat = LatLng.lat(),
 		lng = LatLng.lng(),
 		contentString,
@@ -9087,6 +9186,7 @@ window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
 // GoogleMap: alle InfoWindows löschen
 // benutzt wo in GoogleMaps Infowindows neu gesetzt werden müssen, weil die Daten verändert wurden
 window.em.clearInfoWindows = function() {
+	'use strict';
 	_.each(window.em.InfoWindowArray, function(infowindow) {
 		infowindow.setMap(null);
 	});
@@ -9094,6 +9194,7 @@ window.em.clearInfoWindows = function() {
 };
 
 window.em.handleSignupPageshow = function() {
+	'use strict';
 	// sicherstellen, dass nichts vom letzten User übrig bleibt
 	window.em.leereAlleVariabeln();
 	// Datenverwendung managen: Wenn der User nichts angibt, jaAber setzen
@@ -9113,6 +9214,7 @@ window.em.handleSignupPageshow = function() {
 };
 
 window.em.handleSignupPageinit = function() {
+	'use strict';
     $("#SignupForm")
         .on("change", "[name='Datenverwendung']", function () {
             localStorage.Datenverwendung = $(this).attr("id");
@@ -9126,6 +9228,7 @@ window.em.handleSignupPageinit = function() {
 };
 
 window.em.handleSignupSubmitButtonClick = function() {
+	'use strict';
 	if (window.em.validiereUserSignup()) {
 		window.em.erstelleKonto();
 	}
@@ -9134,6 +9237,7 @@ window.em.handleSignupSubmitButtonClick = function() {
 // kontrollierren, ob die erforderlichen Felder etwas enthalten
 // wenn ja wird true retourniert, sonst false
 window.em.validiereUserSignup = function() {
+	'use strict';
 	var Email = $("#su_Email").val(),
 		Passwort = $("#su_Passwort").val(),
 		su_Passwort2 = $("#su_Passwort2").val(),
@@ -9179,6 +9283,7 @@ window.em.validiereUserSignup = function() {
 };
 
 window.em.erstelleKonto = function() {
+	'use strict';
 	// User in _user eintragen
 	$.couch.signup({
 			name: $('#su_Email').val(),
@@ -9196,6 +9301,7 @@ window.em.erstelleKonto = function() {
 };
 
 window.em.handleUserEditPageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -9204,6 +9310,7 @@ window.em.handleUserEditPageshow = function() {
 };
 
 window.em.handleUserEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -9229,6 +9336,7 @@ window.em.handleUserEditPageinit = function() {
 };
 
 window.em.handleUserEditZurückClick = function() {
+	'use strict';
 	// sicherstellen, dass er immer ein zurück kennt
 	if (!localStorage.zurueck) {
 		localStorage.zurueck = "BeobListe.html";
@@ -9242,6 +9350,7 @@ window.em.handleUserEditZurückClick = function() {
 };
 
 window.em.handleUserEditFeldChange = function() {
+	'use strict';
 	var Feldname = this.name,
 		// nötig, damit Arrays richtig kommen
 		Feldjson = $("[name='" + Feldname + "']").serializeObject(),
@@ -9252,8 +9361,9 @@ window.em.handleUserEditFeldChange = function() {
 };
 
 window.em.handleUserEditAutorChange = function() {
-    var $Autor = $("#Autor");
-	var $db = $.couch.db("evab");
+	'use strict';
+    var $Autor = $("#Autor"),
+        $db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
 			if ($Autor.val()) {
@@ -9290,6 +9400,7 @@ window.em.handleUserEditAutorChange = function() {
 // kontrollierren, ob die erforderlichen Felder etwas enthalten
 // wenn ja wird true retourniert, sonst false
 window.em.validiereUserUserEdit = function() {
+	'use strict';
     var $Autor = $("#Autor");
 	if (!$Autor.val()) {
 		window.em.melde("Bitte Autor eingeben");
@@ -9302,6 +9413,7 @@ window.em.validiereUserUserEdit = function() {
 };
 
 window.em.speichereUser = function(Feldname, Feldwert) {
+	'use strict';
 	if (localStorage.Datenverwendung) {
 		$.couch.userDb(function(db) {
 			db.openDoc("org.couchdb.user:" + localStorage.Email, {
@@ -9331,6 +9443,7 @@ window.em.speichereUser = function(Feldname, Feldwert) {
 
 // wird in hArtEdit.html verwendet
 window.em.zuArtgruppenliste = function() {
+	'use strict';
 	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	//window.em.leereStoragehArtListe();
 	localStorage.Von = "hArtEdit";
@@ -9345,6 +9458,7 @@ window.em.zuArtgruppenliste = function() {
 
 // wird in hArtEdit.html verwendet
 window.em.zuArtliste = function() {
+	'use strict';
 	localStorage.Von = "hArtEdit";
 	$.mobile.navigate("Artenliste.html");
 };
@@ -9352,6 +9466,7 @@ window.em.zuArtliste = function() {
 // Speichert alle Daten
 // wird in hArtEdit.html verwendet
 window.em.speichereHArt = function() {
+	'use strict';
 	var that = this,
 		hartid;
 	// Achtung: in hArtEditListe kann es sein, dass window.em.hArt erst gerade aktualisiert wird und momentan nicht aktuell ist!
@@ -9383,6 +9498,7 @@ window.em.speichereHArt = function() {
 };
 
 window.em.speichereHArt_2 = function(that) {
+	'use strict';
 	var FeldnameDb,
 		Feldwert,
         feldinfos;
@@ -9420,6 +9536,7 @@ window.em.speichereHArt_2 = function(that) {
 };
 
 window.em.holeFeldInfosVonElement = function(that) {
+	'use strict';
     var feldinfos = {},
         feldjson;
     // Feldname und -wert ermitteln
@@ -9460,6 +9577,7 @@ window.em.holeFeldInfosVonElement = function(that) {
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird in hArtEdit.html verwendet
 window.em.nächsteVorigeArt = function(NächsteOderVorige) {
+	'use strict';
 	// prüfen, ob hArtListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.hArtListe) {
@@ -9479,6 +9597,7 @@ window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 };
 
 window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
+	'use strict';
 	var i,
 		ArtIdAktuell,
 		AnzArt;
@@ -9518,6 +9637,7 @@ window.em.nächsteVorigeArt_2 = function(NächsteOderVorige) {
 // wird in hArtEdit.html benutzt
 // löscht eine Beobachtung
 window.em.löscheHArt = function() {
+	'use strict';
 	if (window.em.hArt) {
 		// vorhandenes Objekt nutzen
 		window.em.löscheHArt_2();
@@ -9537,6 +9657,7 @@ window.em.löscheHArt = function() {
 };
 
 window.em.löscheHArt_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hArt, {
 		success: function(data) {
@@ -9563,7 +9684,8 @@ window.em.löscheHArt_2 = function() {
 // wenn ja: melden, zurückstellen
 // wenn nein: speichern
 // wird in FeldEdit.html verwendet
-window.em.pruefeFeldNamen = function() {
+window.em.prüfeFeldNamen = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function(data) {
@@ -9624,17 +9746,18 @@ window.em.pruefeFeldNamen = function() {
 
 // löscht Felder
 // wird in FeldEdit.html verwendet
-window.em.loescheFeld = function() {
+window.em.löscheFeld = function() {
+	'use strict';
 	if (window.em.Feld) {
 		// Objekt nutzen
-		window.em.loescheFeld_2();
+		window.em.löscheFeld_2();
 	} else {
 		// Feld aus DB holen
 		var $db = $.couch.db("evab");
 		$db.openDoc(window.em.Feld._id, {
 			success: function(data) {
 				window.em.Feld = data;
-				window.em.loescheFeld_2();
+				window.em.löscheFeld_2();
 			},
 			error: function() {
 				window.em.melde("Fehler: nicht gelöscht");
@@ -9643,7 +9766,8 @@ window.em.loescheFeld = function() {
 	}
 };
 
-window.em.loescheFeld_2 = function() {
+window.em.löscheFeld_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.Feld, {
 		success: function(data) {
@@ -9670,6 +9794,7 @@ window.em.loescheFeld_2 = function() {
 // erwartet die ID des aktuellen Datensatzes
 // wird in FeldEdit.html verwendet
 window.em.geheZumNächstenFeld = function() {
+	'use strict';
 	if (window.em.Feldliste) {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 		window.em.geheZumNächstenFeld_2();
@@ -9685,6 +9810,7 @@ window.em.geheZumNächstenFeld = function() {
 };
 
 window.em.geheZumNächstenFeld_2 = function() {
+	'use strict';
 	var i,
 		y,
 		FeldIdAktuell,
@@ -9736,6 +9862,7 @@ window.em.geheZumNächstenFeld_2 = function() {
 // erwartet die ID des aktuellen Datensatzes
 // wird in FeldEdit.html verwendet
 window.em.geheZumVorigenFeld = function() {
+	'use strict';
 	if (window.em.Feldliste) {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 		window.em.geheZumVorigenFeld_2();
@@ -9751,6 +9878,7 @@ window.em.geheZumVorigenFeld = function() {
 };
 
 window.em.geheZumVorigenFeld_2 = function() {
+	'use strict';
 	var i,
 		y,
 		FeldIdAktuell,
@@ -9805,9 +9933,10 @@ window.em.geheZumVorigenFeld_2 = function() {
 // sucht das nächste eigene Feld und setzt als Reihenfolge den Mittelwert der zwei Reihenfolgen
 // Wenn kein weiteres eigenes Feld kommt, wird als Reihenfolge der nächste um mindestens 1 höhere ganzzahlige Wert gesetzt
 // wird in FeldEdit.html verwendet
-window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
-	var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
-	var $db = $.couch.db("evab");
+window.em.setzeReihenfolgeMitVorgänger = function(FeldNameVorgänger) {
+	'use strict';
+	var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgänger + '"&include_docs=true',
+        $db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function(data) {
 			var ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
@@ -9820,6 +9949,7 @@ window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
 // speichert, dass ein Wert als Standardwert verwendet werden soll
 // wird in FeldEdit.html verwendet
 window.em.speichereStandardwert = function() {
+	'use strict';
 	// Prüfen, ob Feld als Objekt vorliegt
 	if (window.em.Feld) {
 		// dieses verwenden
@@ -9841,6 +9971,7 @@ window.em.speichereStandardwert = function() {
 };
 
 window.em.speichereStandardwert_2 = function() {
+	'use strict';
 	var Feldwert = $("#Standardwert").val();
 	// Standardwert managen
 	// Standardwert ist Objekt, in dem die Werte für jeden User gespeichert werden
@@ -9882,6 +10013,7 @@ window.em.speichereStandardwert_2 = function() {
 // speichert Feldeigenschaften
 // wird in FeldEdit.html verwendet
 window.em.speichereFeldeigenschaften = function() {
+	'use strict';
 	// prüfen, ob das Feld als Objekt vorliegt
 	if (window.em.Feld) {
 		// bestehendes Objekt verwenden
@@ -9902,6 +10034,7 @@ window.em.speichereFeldeigenschaften = function() {
 };
 
 window.em.speichereFeldeigenschaften_2 = function() {
+	'use strict';
 	var Formularfelder = $("#FeldEditForm").serializeObjectNull();
 	// Felder mit Arrays: Kommagetrennte Werte in Arrays verwandeln
 	if (Formularfelder.Optionen) {
@@ -9965,6 +10098,7 @@ window.em.speichereFeldeigenschaften_2 = function() {
 // wird in BeobListe.html verwendet
 // eigene Funktion, weil auch die Beobliste darauf verweist, wenn noch keine Art erfasst wurde
 window.em.erstelleNeueBeob_1_Artgruppenliste = function() {
+	'use strict';
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
@@ -9980,6 +10114,7 @@ window.em.erstelleNeueBeob_1_Artgruppenliste = function() {
 // nächste der letzten => melden
 // erwartet ob nächster oder voriger gesucht wird
 window.em.nächsteVorigeBeob = function(NächsteOderVorige) {
+	'use strict';
 	// prüfen, ob BeobListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.BeobListe) {
@@ -10001,6 +10136,7 @@ window.em.nächsteVorigeBeob = function(NächsteOderVorige) {
 };
 
 window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
+	'use strict';
 	var i,
 		BeobIdAktuell,
 		AnzBeob;
@@ -10040,6 +10176,7 @@ window.em.nächsteVorigeBeob_2 = function(NächsteOderVorige) {
 // wird in BeobEdit.html benutzt
 // löscht eine Beobachtung
 window.em.löscheBeob = function() {
+	'use strict';
 	if (window.em.Beobachtung) {
 		// vorhandenes Objekt nutzen
 		window.em.löscheBeob_2();
@@ -10059,6 +10196,7 @@ window.em.löscheBeob = function() {
 };
 
 window.em.löscheBeob_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.Beobachtung, {
 		success: function(data) {
@@ -10082,6 +10220,7 @@ window.em.löscheBeob_2 = function() {
 
 // Speichert alle Daten in BeobEdit.html
 window.em.speichereBeob = function(that) {
+	'use strict';
 	// eventhandler übergeben this nicht in der Klammer
 	var _this = that || this;
 	// prüfen, ob Beob als Objekt vorliegt
@@ -10104,6 +10243,7 @@ window.em.speichereBeob = function(that) {
 };
 
 window.em.speichereBeob_2 = function(that) {
+	'use strict';
     var FeldnameDb,
         Feldwert,
         feldinfos;
@@ -10139,6 +10279,7 @@ window.em.speichereBeob_2 = function(that) {
 };
 
 window.em.meldeNeuAn = function() {
+	'use strict';
 	localStorage.UserStatus = "neu";
 	$.mobile.changePage("index.html");
 	// Felder zurücksetzen, sonst ist hier noch die alte Anmeldung drin
@@ -10151,6 +10292,7 @@ window.em.meldeNeuAn = function() {
 
 
 window.em.handleArtenImportierenPageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -10159,6 +10301,7 @@ window.em.handleArtenImportierenPageshow = function() {
 };
 
 window.em.handleArtenImportierenPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -10181,6 +10324,7 @@ window.em.handleArtenImportierenPageinit = function() {
 };
 
 window.em.importiereFehlendeArten = function() {
+	'use strict';
 	if (window.em.arten_fehlen_in_evab.length === 0) {
 		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Arten, die in artbeobachtungen.ch fehlen");
 		return;
@@ -10199,15 +10343,18 @@ window.em.importiereFehlendeArten = function() {
 };
 
 window.em.aktualisiereAnzahlArtenVonArten = function() {
+	'use strict';
 	window.em.melde("Diese Funktion ist noch nicht implementiert");
 };
 
 window.em.exportiereBeobVonInArtendbFehlendenArten = function() {
+	'use strict';
 	window.em.melde("Diese Funktion ist noch nicht implementiert");
 };
 
 // PROVISORISCH, NACH BENUTZUNG ENTFERNEN
 window.em.entferneArtenOhneArtgruppe = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.view('evab/ArtenOhneArtgruppe?include_docs=true', {
 		success: function(data) {
@@ -10230,6 +10377,7 @@ window.em.entferneArtenOhneArtgruppe = function() {
 };
 
 window.em.handleArtenImportierenZurückClick = function() {
+	'use strict';
 	// sicherstellen, dass er immer ein zurück kennt
 	if (!localStorage.zurueck) {
 		localStorage.zurueck = "BeobListe";
@@ -10239,6 +10387,7 @@ window.em.handleArtenImportierenZurückClick = function() {
 };
 
 window.em.initiiereArtenImportieren = function() {
+	'use strict';
 	// aktuelle aus evm holen
 	$.ajax({
 		type: "GET",
@@ -10364,6 +10513,7 @@ window.em.initiiereArtenImportieren = function() {
 };
 
 window.em.reduziereArtenfelderAufArtgruppeUndName = function(arten) {
+	'use strict';
 	// da es soviele Arten gibt, nur die ersten 50 verarbeiten und anzeigen
 	var erste_fünfzig_arten = _.first(arten, 50);
 	return _.map(erste_fünfzig_arten, function(art) {
@@ -10375,6 +10525,7 @@ window.em.reduziereArtenfelderAufArtgruppeUndName = function(arten) {
 };
 
 window.em.handleArtengruppenImportierenPageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -10383,6 +10534,7 @@ window.em.handleArtengruppenImportierenPageshow = function() {
 };
 
 window.em.handleArtengruppenImportierenPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -10406,10 +10558,12 @@ window.em.handleArtengruppenImportierenPageinit = function() {
 };
 
 window.em.exportiereBeobVonInArtendbFehlendenArtengruppen = function() {
+	'use strict';
 	console.log("window.em.exportiereBeobVonInArtendbFehlendenArtengruppen");
 };
 
 window.em.importiereFehlendeArtengruppen = function() {
+	'use strict';
 	if (window.em.artgruppen_fehlen_in_evab.length === 0) {
 		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Artengruppen, die in artbeobachtungen.ch fehlen");
 		return;
@@ -10428,6 +10582,7 @@ window.em.importiereFehlendeArtengruppen = function() {
 };
 
 window.em.aktualisiereAnzahlArtenVonArtengruppen = function() {
+	'use strict';
 	if (window.em.artgruppen_gemeinsam_anzarten.length === 0) {
 		window.em.melde("Aktion abgebrochen: Es gibt keine gemeinsamen Artengruppen mit unterschiedlicher Anzahl Arten");
 		return;
@@ -10455,6 +10610,7 @@ window.em.aktualisiereAnzahlArtenVonArtengruppen = function() {
 };
 
 window.em.handleArtengruppenImportierenZurückClick = function() {
+	'use strict';
 	// sicherstellen, dass er immer ein zurück kennt
 	if (!localStorage.zurueck) {
 		localStorage.zurueck = "BeobListe";
@@ -10464,16 +10620,19 @@ window.em.handleArtengruppenImportierenZurückClick = function() {
 };
 
 window.em.öffneArtengruppenImportieren = function() {
+	'use strict';
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("ArtengruppenImportieren.html");
 };
 
 window.em.öffneAdmin = function() {
+	'use strict';
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("admin.html");
 };
 
 window.em.handleAdminPageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -10482,6 +10641,7 @@ window.em.handleAdminPageshow = function() {
 };
 
 window.em.handleAdminPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -10502,6 +10662,7 @@ window.em.handleAdminPageinit = function() {
 };
 
 window.em.handleAdminZurückClick = function() {
+	'use strict';
 	// sicherstellen, dass er immer ein zurück kennt
 	if (!localStorage.zurueck) {
 		localStorage.zurueck = "BeobListe";
@@ -10511,6 +10672,7 @@ window.em.handleAdminZurückClick = function() {
 };
 
 window.em.entferneDokumenteEinesUsers = function() {
+	'use strict';
 	var user = $("#admin_beob_eines_users_entfernen_user").val();
 	if (!user) {
 		window.em.melde("Bitte User eingeben");
@@ -10594,6 +10756,7 @@ window.em.entferneDokumenteEinesUsers = function() {
 };
 
 window.em.entferneUser = function() {
+	'use strict';
 	var user = $("#admin_user_entfernen_user").val();
 	if (!user) {
 		window.em.melde("Bitte User eingeben");
@@ -10645,6 +10808,7 @@ window.em.entferneUser = function() {
 };
 
 window.em.initiiereArtengruppenImportieren = function() {
+	'use strict';
 	// aktuelle aus evm holen
 	$.ajax({
 		type: "GET",
@@ -10779,6 +10943,7 @@ window.em.initiiereArtengruppenImportieren = function() {
 };
 
 window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl = function(artgruppen) {
+	'use strict';
 	return _.map(artgruppen, function(artgruppe) {
 		var artgruppe_return = {};
 		artgruppe_return.Artgruppe = artgruppe.ArtGruppe;
@@ -10793,6 +10958,7 @@ window.em.reduziereArtgruppenfelderAufArtgruppeUndAnzahl = function(artgruppen) 
 // table_id: die ID wird benötigt, damit die Tabelle nach ihrer Erstellung initiiert werden kann
 // class: Klasse, welche die Darstellung bestimmt. Standard ist: tabelle_gestreift
 window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
+	'use strict';
 	var html,
 		datamode = datamode || "reflow",
 		css_class = css_class || "tabelle_gestreift";
@@ -10827,6 +10993,7 @@ window.em.erstelleTabelle = function(objekte, datamode, table_id, css_class) {
 };
 
 window.em.öffneArtenImportieren = function() {
+	'use strict';
 	localStorage.zurueck = $("body").pagecontainer("getActivePage").attr("id");
 	$.mobile.navigate("ArtenImportieren.html");
 };
