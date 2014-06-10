@@ -5,6 +5,7 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 window.em = window.em || {};
 
 window.em.erstelleNeuesDatum = function() {
+    'use strict';
 	var jetzt = new Date(),
 		Jahr = jetzt.getFullYear(),
 		Mnt = jetzt.getMonth()+1,
@@ -15,6 +16,7 @@ window.em.erstelleNeuesDatum = function() {
 };
 
 window.em.erstelleNeueUhrzeit = function() {
+	'use strict';
 	var jetzt = new Date(),
 		Std = jetzt.getHours(),
 		StdAusgabe = ((Std < 10) ? "0" + Std : Std),
@@ -30,6 +32,7 @@ window.em.erstelleNeueUhrzeit = function() {
  * @return {number}
  */
 window.em.DdInWgs84BreiteGrad = function(Breite) {
+	'use strict';
 	return Math.floor(Breite);
 };
 
@@ -37,6 +40,7 @@ window.em.DdInWgs84BreiteGrad = function(Breite) {
  * @return {number}
  */
 window.em.DdInWgs84BreiteMin = function(Breite) {
+	'use strict';
 	var BreiteGrad = Math.floor(Breite);
 	return Math.floor((Breite-BreiteGrad)*60);
 };
@@ -45,6 +49,7 @@ window.em.DdInWgs84BreiteMin = function(Breite) {
  * @return {number}
  */
 window.em.DdInWgs84BreiteSec = function(Breite) {
+	'use strict';
 	var BreiteGrad = Math.floor(Breite),
 		BreiteMin = Math.floor((Breite-BreiteGrad)*60);
 	return Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100;
@@ -54,6 +59,7 @@ window.em.DdInWgs84BreiteSec = function(Breite) {
  * @return {number}
  */
 window.em.DdInWgs84LaengeGrad = function(Laenge) {
+	'use strict';
 	return Math.floor(Laenge);
 };
 
@@ -61,6 +67,7 @@ window.em.DdInWgs84LaengeGrad = function(Laenge) {
  * @return {number}
  */
 window.em.DdInWgs84LaengeMin = function(Laenge) {
+	'use strict';
 	var LaengeGrad = Math.floor(Laenge);
 	return Math.floor((Laenge-LaengeGrad)*60);
 };
@@ -69,6 +76,7 @@ window.em.DdInWgs84LaengeMin = function(Laenge) {
  * @return {number}
  */
 window.em.DdInWgs84LaengeSec = function(Laenge) {
+	'use strict';
 	var LaengeGrad = Math.floor(Laenge),
 		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
 	return Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100;
@@ -79,6 +87,7 @@ window.em.DdInWgs84LaengeSec = function(Laenge) {
  * @return {number}
  */
 window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
+	'use strict';
 	var lat,
 		lng,
 		lat_aux,
@@ -108,6 +117,7 @@ window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
  * @return {number}
  */
 window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
+	'use strict';
 	var lat,
         lng,
         lat_aux,
@@ -137,6 +147,7 @@ window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
  * @return {number}
  */
 window.em.DdInChX = function(Breite, Laenge) {
+	'use strict';
 	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
 		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
@@ -150,6 +161,7 @@ window.em.DdInChX = function(Breite, Laenge) {
  * @return {number}
  */
 window.em.DdInChY = function(Breite, Laenge) {
+	'use strict';
 	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
 		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
@@ -166,6 +178,7 @@ window.em.DdInChY = function(Breite, Laenge) {
  * @return {number}
  */
 window.em.CHtoWGSlat = function(y, x) {
+	'use strict';
 	// Converts militar to civil and to unit = 1000km
 	var lat,
 		y_aux,
@@ -194,6 +207,7 @@ window.em.CHtoWGSlat = function(y, x) {
  * @return {number}
  */
 window.em.CHtoWGSlng = function(y, x) {
+	'use strict';
 	// Converts militar to civil and to unit = 1000km
 	var lng,
 		y_aux,
@@ -217,6 +231,7 @@ window.em.CHtoWGSlng = function(y, x) {
 };
 
 window.em.melde = function(Meldung) {
+	'use strict';
 	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'><a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>"+Meldung+"</div>")
 		.css({"line-height": "95%", "font-weight": "bold"})
 		.appendTo($.mobile.pageContainer);
@@ -230,6 +245,7 @@ window.em.melde = function(Meldung) {
 
 // wird in FeldEdit.html verwendet
 window.em.geheZurueckFE = function() {
+	'use strict';
 	window.em.leereStorageFeldEdit();
 	if (localStorage.zurueck && localStorage.zurueck !== "FelderWaehlen.html") {
 		// via die Feldliste zurück
@@ -253,6 +269,7 @@ window.em.geheZurueckFE = function() {
 // ausgelöst durch BeobListe.html, BeobEdit.html, hArtListe.html oder hArtEdit.html
 // aufgerufen bloss von Artenliste.html
 window.em.speichereNeueBeob = function(aArtBezeichnung) {
+	'use strict';
 	var doc = {};
 	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
@@ -282,6 +299,8 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 // dies ist der letzte Schritt:
 // Autor anfügen und weiter zum Edit-Formular
 window.em.speichereNeueBeob_02 = function(doc) {
+	'use strict';
+    var $db = $.couch.db("evab");
 	$db.saveDoc(doc, {
 		success: function(data) {
 			var row_objekt = {};
@@ -331,13 +350,14 @@ window.em.speichereNeueBeob_02 = function(doc) {
 // Speichert, wenn in BeobEdit oder hArtEdit eine neue Art und ev. auch eine neue Artgruppe gewählt wurde
 // erwartet localStorage.Von = von welchem Formular aufgerufen wurde
 window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
+	'use strict';
 	var docId;
 	if (localStorage.Von === "BeobListe" || localStorage.Von === "BeobEdit") {
 		docId = localStorage.BeobId;
 	} else {
 		docId = localStorage.hArtId;
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.openDoc(docId, {
 		success: function(beob) {
 			if (localStorage.aArtGruppe) {
@@ -394,6 +414,7 @@ window.em.speichereBeobNeueArtgruppeArt = function(aArtName) {
 };
 
 window.em.erstelleNeueZeit = function() {
+	'use strict';
 // Neue Zeiten werden erstellt
 // ausgelöst durch hZeitListe.html oder hZeitEdit.html
 // dies ist der erste Schritt: doc bilden
@@ -432,6 +453,7 @@ window.em.erstelleNeueZeit = function() {
 // wird aufgerufen von: hOrtEdit.html, hOrtListe.html
 // erwartet Username, hProjektId, hRaumId
 window.em.erstelleNeuenOrt = function() {
+	'use strict';
 	var doc = {},
         $hOrtEdit = $("#hOrtEdit");
 	doc.Typ = "hOrt";
@@ -461,6 +483,7 @@ window.em.erstelleNeuenOrt = function() {
 };
 
 window.em.erstelleNeuenRaum = function() {
+	'use strict';
 	var doc = {},
         $hRaumEdit = $("#hRaumEdit");
 	doc.Typ = "hRaum";
@@ -491,6 +514,7 @@ window.em.erstelleNeuenRaum = function() {
 // erstellt ein Objekt für ein neues Projekt und öffnet danach hProjektEdit.html
 // das Objekt wird erst von initiiereProjektEdit gespeichert (einen DB-Zugriff sparen)
 window.em.erstelleNeuesProjekt = function() {
+	'use strict';
 	var doc = {},
         $hProjektEdit = $("#hProjektEdit");
 	doc.Typ = "hProjekt";
@@ -518,11 +542,13 @@ window.em.erstelleNeuesProjekt = function() {
 };
 
 window.em.öffneMeineEinstellungen = function() {
+	'use strict';
 	$.mobile.navigate("UserEdit.html");
 };
 
 window.em.löscheDokument = function(DocId) {
-	$db = $.couch.db("evab");
+	'use strict';
+	var $db = $.couch.db("evab");
 	return $db.openDoc(DocId, {
 		success: function(document) {
 			$db.removeDoc(document, {
@@ -543,6 +569,7 @@ window.em.löscheDokument = function(DocId) {
 // initiiert Variabeln, fixe Felder und dynamische Felder in BeobEdit.html
 // wird aufgerufen von BeobEdit.html und Felder_Beob.html
 window.em.initiiereBeobEdit = function() {
+	'use strict';
 	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängeBE').hide();
 	// prüfen, ob die Feldliste schon geholt wurde
@@ -553,7 +580,7 @@ window.em.initiiereBeobEdit = function() {
 		// das dauert länger - hinweisen
 		$("#BeobEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		// holt die Feldliste aus der DB
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeBeob?include_docs=true', {
 			success: function(data) {
 				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
@@ -567,11 +594,12 @@ window.em.initiiereBeobEdit = function() {
 // allfällige Beob übernehmen von speichereNeueBeob
 // um die DB-Abfrage zu sparen
 window.em.initiiereBeobEdit_2 = function() {
+	'use strict';
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.Beobachtung && (!localStorage.Von || localStorage.Von !== "BeobEdit")) {
 		window.em.initiiereBeobEdit_3();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function(data) {
 				window.em.Beobachtung = data;
@@ -582,6 +610,7 @@ window.em.initiiereBeobEdit_2 = function() {
 };
 
 window.em.initiiereBeobEdit_3 = function() {
+	'use strict';
 	// diese (globalen) Variabeln werden in BeobEdit.html gebraucht
 	// bei neuen Beob hat das Objekt noch keine ID
 	if (window.em.Beobachtung._id) {
@@ -608,7 +637,8 @@ window.em.initiiereBeobEdit_3 = function() {
 // und aktualisiert die Links für pagination
 // Mitgeben: id der Beobachtung, Username
 window.em.erstelleDynamischeFelderBeobEdit = function() {
-	var htmlContainer = window.em.generiereHtmlFuerBeobEditForm();
+	'use strict';
+	var htmlContainer = window.em.generiereHtmlFürBeobEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
 		htmlContainer = "<hr />" + htmlContainer;
@@ -626,6 +656,7 @@ window.em.erstelleDynamischeFelderBeobEdit = function() {
 // setzt die Values in die hart codierten Felder im Formular BeobEdit.html
 // erwartet das Objekt Beob, welches die Werte enthält
 window.em.setzeFixeFelderInBeobEdit = function() {
+	'use strict';
     var $aArtGruppeBE = $("#aArtGruppeBE"),
         $aArtNameBE = $("#aArtNameBE");
 	$aArtGruppeBE.selectmenu();
@@ -652,7 +683,8 @@ window.em.setzeFixeFelderInBeobEdit = function() {
 // generiert das Html für das Formular in BeobEdit.html
 // erwartet Feldliste als Objekt; Beob als Objekt, Artgruppe
 // der htmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerBeobEditForm = function() {
+window.em.generiereHtmlFürBeobEditForm = function() {
+	'use strict';
 	var htmlContainer = "",
 		ArtGruppe = window.em.Beobachtung.aArtGruppe,
         FeldWert;
@@ -663,7 +695,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusEinfach.indexOf(localStorage.Email) !== -1 && ['aArtGruppe', 'aArtName', 'aAutor', 'aAutor', 'oXKoord', 'oYKoord', 'oLagegenauigkeit', 'zDatum', 'zUhrzeit'].indexOf(FeldName) === -1) {
 			// In Hierarchiestufe Art muss die Artgruppe im Feld Artgruppen enthalten sein
 			// vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-			if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0)) {
+			if (Feld.Hierarchiestufe !== "Art" || (typeof Feld.ArtGruppe !== "undefined" && (Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 || Feld.ArtGruppe[0] === "alle"))) {
 				if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
 					FeldWert = Feld.Standardwert[localStorage.Email];
 					// Objekt Beob um den Standardwert ergänzen, um später zu speichern
@@ -678,7 +710,7 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.Beobachtung, {
 			success: function(data) {
 				window.em.Beobachtung._id = data.id;
@@ -697,13 +729,14 @@ window.em.generiereHtmlFuerBeobEditForm = function() {
 
 // BeobListe in BeobList.html vollständig neu aufbauen
 window.em.initiiereBeobliste = function() {
+	'use strict';
 	// hat BeobEdit.html eine BeobListe übergeben?
 	if (window.em.BeobListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiiereBeobliste_2();
 	} else {
 		// Beobliste aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 			success: function(data) {
 				// BeobListe für BeobEdit bereitstellen
@@ -715,6 +748,7 @@ window.em.initiiereBeobliste = function() {
 };
 
 window.em.initiiereBeobliste_2 = function() {
+	'use strict';
 	var anzBeob = window.em.BeobListe.rows.length,
 		beob,
 		key,
@@ -768,17 +802,18 @@ window.em.initiiereBeobliste_2 = function() {
 
 // löscht Anhänge
 // erwartet den Datensatz als Objekt und das Objekt, dass geklickt wurde
-window.em.loescheAnhang = function(that, Objekt, id) {
+window.em.löscheAnhang = function(that, Objekt, id) {
+	'use strict';
 	if (Objekt) {
 		// Es wurde ein Objekt übergeben, keine DB-Abfrage nötig
-		window.em.loescheAnhang_2(that, Objekt);
+		window.em.löscheAnhang_2(that, Objekt);
 	} else {
 		// Objekt aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function(data) {
 				window.em[Objekt.Typ] = data;
-				window.em.loescheAnhang_2(that, window.em[Objekt.Typ]);
+				window.em.löscheAnhang_2(that, window.em[Objekt.Typ]);
 			},
 			error: function() {
 				window.em.melde("Fehler: Anhang wurde nicht entfernt");
@@ -787,7 +822,8 @@ window.em.loescheAnhang = function(that, Objekt, id) {
 	}
 };
 
-window.em.loescheAnhang_2 = function(that, Objekt) {
+window.em.löscheAnhang_2 = function(that, Objekt) {
+	'use strict';
 	var Dateiname = that.id;
 	// Anhang aus Objekt entfernen
 	delete window.em[Objekt.Typ]._attachments[Dateiname];
@@ -808,6 +844,7 @@ window.em.loescheAnhang_2 = function(that, Objekt) {
 
 // initiiert UserEdit.html
 window.em.initiiereUserEdit = function() {
+	'use strict';
 	$("#ue_Email").val(localStorage.Email);
 	$("[name='Datenverwendung']").checkboxradio();
 	if (localStorage.Autor) {
@@ -839,6 +876,7 @@ window.em.initiiereUserEdit = function() {
 // initiiert Installieren.html
 // kurz, da keine Daten benötigt werden
 window.em.initiiereInstallieren = function() {
+	'use strict';
 	window.em.blendeMenus();
 	window.em.speichereLetzteUrl();
 };
@@ -847,6 +885,7 @@ window.em.initiiereInstallieren = function() {
 // Mitgeben: id des Projekts, Username
 // bei neuen Projekten wird das zuvor erzeugte Projekt übernommen, um die DB-Anfrage zu sparen
 window.em.initiiereProjektEdit = function() {
+	'use strict';
 	// Anhänge ausblenden, weil sonst beim Einblenden diejenigen des vorigen Datensatzes aufblitzen
 	//$('#AnhängehPE').hide().trigger('updatelayout');
 	// window.em.hProjekt existiert schon bei neuem Projekt
@@ -858,7 +897,7 @@ window.em.initiiereProjektEdit = function() {
 		delete localStorage.hProjekt;
 		window.em.initiiereProjektEdit_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
 			success: function(data) {
 				window.em.hProjekt = data;
@@ -874,6 +913,7 @@ window.em.initiiereProjektEdit = function() {
 };
 
 window.em.initiiereProjektEdit_2 = function() {
+	'use strict';
 	// fixe Felder aktualisieren
 	$("#pName").val(window.em.hProjekt.pName);
 	// Variabeln bereitstellen (bei neuen Projekten wird ProjektId später nachgeschoben)
@@ -890,7 +930,7 @@ window.em.initiiereProjektEdit_2 = function() {
 		// das dauert länger - Hinweis einblenden
 		$("#hProjektEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		// Feldliste aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeProjekt?include_docs=true', {
 			success: function(Feldliste) {
 				window.em.FeldlisteProjekt = Feldliste;
@@ -901,7 +941,8 @@ window.em.initiiereProjektEdit_2 = function() {
 };
 
 window.em.initiiereProjektEdit_3 = function() {
-	var htmlContainer = window.em.generiereHtmlFuerProjektEditForm();
+	'use strict';
+	var htmlContainer = window.em.generiereHtmlFürProjektEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
 		htmlContainer = "<hr />" + htmlContainer;
@@ -917,7 +958,8 @@ window.em.initiiereProjektEdit_3 = function() {
 // generiert das Html für das Formular in hProjektEdit.html
 // erwartet Feldliste als Objekt; Projekt als Objekt
 // der htmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerProjektEditForm = function() {
+window.em.generiereHtmlFürProjektEditForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
@@ -941,7 +983,7 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 	if (localStorage.Status === "neu") {
 		$("#pName").focus();
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hProjekt, {
 			success: function(data) {
 				window.em.hProjekt._id = data.id;
@@ -960,11 +1002,12 @@ window.em.generiereHtmlFuerProjektEditForm = function() {
 
 // initiiert FeldEdit.html
 window.em.initiiereFeldEdit = function() {
+	'use strict';
 	// Bei neuem Feld gibt es Feld schon
 	if (window.em.Feld) {
 		window.em.initiiereFeldEdit_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function(doc) {
 				// Feld bereitstellen
@@ -976,6 +1019,7 @@ window.em.initiiereFeldEdit = function() {
 };
 
 window.em.initiiereFeldEdit_2 = function() {
+	'use strict';
 	var SichtbarImModusHierarchisch = window.em.Feld.SichtbarImModusHierarchisch,
         $SichtbarImModusHierarchisch = $("#SichtbarImModusHierarchisch"),
         SichtbarInHArtEditListe = window.em.Feld.SichtbarInHArtEditListe,
@@ -1089,13 +1133,14 @@ window.em.initiiereFeldEdit_2 = function() {
 // wird von FeldEdit.html aufgerufen
 // erstellt das Selectmenu, um die Reihenfolge-Position des Felds zu bestimmen
 window.em.erstelleSelectFeldFolgtNach = function() {
+	'use strict';
 	// Nur bei eigenen Feldern anzeigen
 	if (window.em.Feld.User !== "ZentrenBdKt") {
 		if (window.em.Feldliste) {
 			// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 			window.em.erstelleSelectFeldFolgtNach_2();
 		} else {
-			$db = $.couch.db("evab");
+			var $db = $.couch.db("evab");
 			$db.view("evab/FeldListe?include_docs=true", {
 				success: function(data) {
 					window.em.Feldliste = data;
@@ -1107,6 +1152,7 @@ window.em.erstelleSelectFeldFolgtNach = function() {
 };
 
 window.em.erstelleSelectFeldFolgtNach_2 = function() {
+	'use strict';
 	var tempFeld,
 		optionen = [],
         htmlContainer;
@@ -1127,6 +1173,7 @@ window.em.erstelleSelectFeldFolgtNach_2 = function() {
 // von je einer Funktion in FeldEdit.html und evab.js
 // Funktion ist zweigeteilt, um wenn möglich Datenbankabfragen zu sparen
 window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
+	'use strict';
 	if (window.em.Artgruppen) {
 		// Artgruppen von globaler Variable holen
 		window.em.ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
@@ -1136,7 +1183,7 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 		window.em.ArtGruppeAufbauenFeldEdit_2(ArtGruppenArrayIn);
 	} else {
 		// Artgruppen aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$("select#ArtGruppe").empty();
 		$db.view("evab/Artgruppen", {
 			success: function(data) {
@@ -1149,6 +1196,7 @@ window.em.ArtGruppeAufbauenFeldEdit = function(ArtGruppenArrayIn) {
 };
 
 window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
+	'use strict';
 	var ArtGruppe,
 		listItemContainer = "<fieldset data-role='controlgroup'><legend>In diesen Artgruppen kann das Feld angezeigt werden (erforderlich):</legend>",
 		listItem,
@@ -1176,13 +1224,14 @@ window.em.ArtGruppeAufbauenFeldEdit_2 = function(ArtGruppenArrayIn) {
 
 // initiiert FeldListe.html
 window.em.initiiereFeldliste = function() {
+	'use strict';
 	// hat FeldEdit.html eine Feldliste übergeben?
 	if (window.em.Feldliste) {
 		// Feldliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiiereFeldliste_2();
 	} else {
 		// FeldListe aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view("evab/FeldListe?include_docs=true", {
 			success: function(data) {
 				window.em.Feldliste = data;
@@ -1193,6 +1242,7 @@ window.em.initiiereFeldliste = function() {
 };
 
 window.em.initiiereFeldliste_2 = function() {
+	'use strict';
 	var tempFeld,
 		anzFelder = 0,
 		ImageLink,
@@ -1250,13 +1300,14 @@ window.em.initiiereFeldliste_2 = function() {
 // kontrolliert, ob das Objekt existiert
 // wenn nein wird es aus der DB geholt
 window.em.speichereKoordinaten = function(id, ObjektName) {
+	'use strict';
 	// kontrollieren, ob Ort oder Beob als Objekt vorliegt
 	if (window.em[ObjektName]) {
 		// ja: Objekt verwenden
 		window.em.speichereKoordinaten_2(id, ObjektName);
 	} else {
 		// nein: Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function(data) {
 				window.em[ObjektName] = data;
@@ -1273,6 +1324,7 @@ window.em.speichereKoordinaten = function(id, ObjektName) {
 // aktualisiert darin die Felder, welche in FelderArray aufgelistet sind
 // Variablen müssen in Objekt und localStorage denselben Namen verwenden
 window.em.speichereKoordinaten_2 = function(id, ObjektName) {
+	'use strict';
 	var FelderArray = ["oLongitudeDecDeg", "oLongitudeDecDeg", "oLatitudeDecDeg", "oXKoord", "oYKoord", "oLagegenauigkeit", "oHöhe", "oHöheGenauigkeit"];
 	window.em.speichereFelderAusLocalStorageInObjekt(ObjektName, FelderArray, "FormularAktualisieren");
 	// nun die Koordinaten in den Zeiten und Arten dieses Objekts aktualisieren
@@ -1286,13 +1338,14 @@ window.em.speichereKoordinaten_2 = function(id, ObjektName) {
 // wird verwendet, um die Koordinaten von Orten in Zeiten und Arten zu schreiben
 // im ersten Schritt prüfen, ob die Objektliste vorhanden ist. Wenn nicht, aus DB holen
 window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert, Querystring) {
+	'use strict';
 	if (window.em[ObjektlistenName]) {
 		// vorhandene Objektliste nutzen
 		window.em.speichereFelderAusLocalStorageInObjektliste_2(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert);
 	} else {
 		// Objektliste aus DB holen
 		var viewname = 'evab/' + Querystring + '?startkey=["' + BezugsIdWert + '"]&endkey=["' + BezugsIdWert + '",{}]&include_docs=true';
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function(data) {
 				window.em[ObjektlistenName] = data;
@@ -1303,6 +1356,7 @@ window.em.speichereFelderAusLocalStorageInObjektliste = function(ObjektlistenNam
 };
 
 window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenName, FelderArray, BezugsIdName, BezugsIdWert) {
+	'use strict';
 	// in allen Objekten in der Objektliste
 	var DsBulkListe = {},
 		Docs = [],
@@ -1363,6 +1417,7 @@ window.em.speichereFelderAusLocalStorageInObjektliste_2 = function(ObjektlistenN
 // FelderArray enthält eine Liste der Namen der zu aktualisierenden Felder
 // ObjektName ist der Name des zu aktualisierenden Objekts bzw. Datensatzes
 window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderArray, FormularAktualisieren) {
+	'use strict';
 	// Objekt aktualisieren
 	_.each(FelderArray, function(feldname) {
 		if (localStorage[feldname]) {
@@ -1378,6 +1433,7 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 		}
 	});
 	// in DB speichern
+    var $db = $.couch.db("evab");
 	$db.saveDoc(window.em[ObjektName], {
 		success: function(data) {
 			window.em[ObjektName]._rev = data.rev;
@@ -1391,6 +1447,7 @@ window.em.speichereFelderAusLocalStorageInObjekt = function(ObjektName, FelderAr
 // übernimmt ein Objekt (via dessen Namen) und eine Liste von Feldern (FelderArray)
 // setzt in alle Felder mit den Namen gemäss FelderArray die Werte gemäss Objekt
 window.em.aktualisiereKoordinatenfelderInFormular = function(ObjektName, FelderArray) {
+	'use strict';
 	_.each(FelderArray, function(feldname) {
 		$("[name='" + feldname + "']").val(window.em[ObjektName][feldname] || null);
 	});
@@ -1399,12 +1456,14 @@ window.em.aktualisiereKoordinatenfelderInFormular = function(ObjektName, FelderA
 // dient der Unterscheidung von Int und Float
 // NICHT BENUTZT
 window.em.isInt = function(n) {
+	'use strict';
 	return typeof n === 'number' && parseFloat(n) == parseInt(n, 10) && !isNaN(n);
 };
 
 // Hilfsfunktion, die typeof ersetzt und ergänzt
 // typeof gibt bei input-Feldern immer String zurück!
 window.em.myTypeOf = function(Wert) {
+	'use strict';
 	if (typeof Wert === "boolean") {
 		return "boolean";
 	} else if (parseInt(Wert, 10) && parseFloat(Wert) && parseInt(Wert, 10) != parseFloat(Wert) && parseInt(Wert, 10) == Wert) {
@@ -1425,6 +1484,7 @@ window.em.myTypeOf = function(Wert) {
 // und aktualisiert die Liste selber, damit sie das nächste mal nicht in der DB geholt werden muss
 // NICHT IM GEBRAUCH
 window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, DatensatzlisteName) {
+	'use strict';
 	var DsBulkListe = {},
 		Docs = [],
 		doc;
@@ -1458,6 +1518,7 @@ window.em.speichereFeldInDatensatzliste = function(Feldname, Feldwert, Datensatz
 // Array[0] ist fremde _id (mit der die Abfrage gefiltert wurde),
 // Array[1] die _id des zu löschenden Datensatzes und Array[2] dessen _rev
 window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
+	'use strict';
 	var ObjektMitDeleteListe = {},
 		Docs = [];
 	_.each(Datensatzobjekt.rows, function(row) {
@@ -1480,12 +1541,13 @@ window.em.loescheIdIdRevListe = function(Datensatzobjekt) {
 
 
 window.em.initiiereProjektliste = function() {
+	'use strict';
 	// hat hProjektEdit.html eine Projektliste übergeben?
 	if (window.em.Projektliste) {
 		window.em.initiiereProjektliste_2();
 	} else {
 		// Daten für die Projektliste aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 			success: function(data) {
 				// Projektliste für hProjektEdit bereitstellen
@@ -1497,6 +1559,7 @@ window.em.initiiereProjektliste = function() {
 };
 
 window.em.initiiereProjektliste_2 = function() {
+	'use strict';
 	var anzProj = window.em.Projektliste.rows.length,
 		listItem,
 		listItemContainer = "",
@@ -1540,6 +1603,7 @@ window.em.initiiereProjektliste_2 = function() {
 // Mitgeben: id des Raums, Username
 // Bei neuen Räumen wird der Raum übernommen um eine DB-Abfrage zu sparen
 window.em.initiiereRaumEdit = function() {
+	'use strict';
 	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehRE').hide();
 	if (window.em.hRaum) {
@@ -1550,7 +1614,7 @@ window.em.initiiereRaumEdit = function() {
 		delete localStorage.hRaum;
 		window.em.initiiereRaumEdit_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
 			success: function(data) {
 				window.em.hRaum = data;
@@ -1561,6 +1625,7 @@ window.em.initiiereRaumEdit = function() {
 };
 
 window.em.initiiereRaumEdit_2 = function() {
+	'use strict';
 	// fixes Feld setzen
 	$("#rName").val(window.em.hRaum.rName);
 	// Variabeln bereitstellen
@@ -1579,7 +1644,7 @@ window.em.initiiereRaumEdit_2 = function() {
 		// das dauert länger - hinweisen
 		$("#hRaumEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		// holt die Feldliste aus der DB
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeRaum?include_docs=true', {
 			success: function(Feldliste) {
 				// Variabeln bereitstellen
@@ -1591,6 +1656,7 @@ window.em.initiiereRaumEdit_2 = function() {
 };
 
 window.em.initiiereRaumEdit_3 = function() {
+	'use strict';
 	var htmlContainer = window.em.generiereHtmlFuerRaumEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
@@ -1608,6 +1674,7 @@ window.em.initiiereRaumEdit_3 = function() {
 // erwartet Feldliste als Objekt; window.em.hRaum als Objekt
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerRaumEditForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
@@ -1631,7 +1698,7 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 	// In neuen Datensätzen allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
 		$("#rName").focus();
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hRaum, {
 			success: function(data) {
 				window.em.hRaum._id = data.id;
@@ -1648,13 +1715,14 @@ window.em.generiereHtmlFuerRaumEditForm = function() {
 };
 
 window.em.initiiereRaumListe = function() {
+	'use strict';
 	// hat hRaumEdit.html eine RaumListe übergeben?
 	if (window.em.RaumListe) {
 		// Raumliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiiereRaumListe_2();
 	} else {
 		// Raumliste aud DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// RaumListe für haumEdit bereitstellen
@@ -1666,6 +1734,7 @@ window.em.initiiereRaumListe = function() {
 };
 
 window.em.initiiereRaumListe_2 = function() {
+	'use strict';
 	var anzRaum = window.em.RaumListe.rows.length,
 		Raum,
 		key,
@@ -1707,6 +1776,7 @@ window.em.initiiereRaumListe_2 = function() {
 // generiert in hOrtEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 // Mitgeben: id des Orts
 window.em.initiiereOrtEdit = function() {
+	'use strict';
 	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehOE').hide();
 	if (window.em.hOrt) {
@@ -1717,7 +1787,7 @@ window.em.initiiereOrtEdit = function() {
 		delete localStorage.hOrt;
 		window.em.initiiereOrtEdit_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function(data) {
 				window.em.hOrt = data;
@@ -1728,6 +1798,7 @@ window.em.initiiereOrtEdit = function() {
 };
 
 window.em.initiiereOrtEdit_2 = function() {
+	'use strict';
 	// fixe Felder aktualisieren
 	$("[name='oName']").val(window.em.hOrt.oName);
 	$("[name='oXKoord']").val(window.em.hOrt.oXKoord);
@@ -1756,7 +1827,7 @@ window.em.initiiereOrtEdit_2 = function() {
 		// das dauert länger - hinweisen
 		$("#hOrtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
 		// holt die Feldliste aus der DB
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeOrt?include_docs=true', {
 			success: function(Feldliste) {
 				// Globale Variable erstellen, damit ab dem zweiten mal die vorige Abfrage gespaart werden kann
@@ -1768,7 +1839,8 @@ window.em.initiiereOrtEdit_2 = function() {
 };
 
 window.em.initiiereOrtEdit_3 = function() {
-	var htmlContainer = window.em.generiereHtmlFuerOrtEditForm();
+	'use strict';
+	var htmlContainer = window.em.generiereHtmlFürOrtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
 		htmlContainer = "<hr />" + htmlContainer;
@@ -1784,17 +1856,21 @@ window.em.initiiereOrtEdit_3 = function() {
 // generiert das Html für das Formular in hOrtEdit.html
 // erwartet Feldliste als Objekt (aus der globalen Variable); window.em.hOrt als Objekt
 // der htmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerOrtEditForm = function() {
+window.em.generiereHtmlFürOrtEditForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
 		htmlContainer = "";
 	_.each(window.em.FeldlisteOrtEdit.rows, function(row) {
+	'use strict';
 		Feld = row.doc;
 		FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		if ((Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hOrt.User) !== -1 && (FeldName !== "oName") && (FeldName !== "oXKoord") && (FeldName !== "oYKoord") && (FeldName !== "oLagegenauigkeit")) {
+	'use strict';
 			if (localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[localStorage.Email]) {
+	'use strict';
 				FeldWert = Feld.Standardwert[localStorage.Email];
 				// Objekt window.em.hOrt um den Standardwert ergänzen, um später zu speichern
 				window.em.hOrt[FeldName] = FeldWert;
@@ -1807,10 +1883,12 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 	});
 	// Allfällige Standardwerte speichern
 	if (localStorage.Status === "neu") {
+	'use strict';
 		$("[name='oName']").focus();
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hOrt, {
 			success: function(data) {
+	'use strict';
 				window.em.hOrt._id = data.id;
 				window.em.hOrt._rev = data.rev;
 				localStorage.OrtId = data.id;
@@ -1828,13 +1906,14 @@ window.em.generiereHtmlFuerOrtEditForm = function() {
 
 // erstellt die Ortliste in hOrtListe.html
 window.em.initiiereOrtListe = function() {
+	'use strict';
 	// hat hOrtEdit.html eine OrtListe übergeben?
 	if (window.em.OrtListe) {
 		// Ortliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiiereOrtListe_2();
 	} else {
 		// Ortliste aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// OrtListe für hOrtEdit bereitstellen
@@ -1846,6 +1925,7 @@ window.em.initiiereOrtListe = function() {
 };
 
 window.em.initiiereOrtListe_2 = function() {
+	'use strict';
 	var anzOrt = window.em.OrtListe.rows.length,
 		Ort,
 		key,
@@ -1885,6 +1965,7 @@ window.em.initiiereOrtListe_2 = function() {
 // generiert in hZeitEdit.html dynamisch die von den Sichtbarkeits-Einstellungen abhängigen Felder
 // Mitgeben: id der Zeit
 window.em.initiiereZeitEdit = function() {
+	'use strict';
 	// Anhänge ausblenden, weil sie sonst beim Wechsel stören
 	//$('#AnhängehZE').hide();
 	// hZeit existiert schon bei neuer Zeit
@@ -1897,7 +1978,7 @@ window.em.initiiereZeitEdit = function() {
 		delete localStorage.hZeit;
 		window.em.initiiereZeitEdit_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
 			success: function(data) {
 				window.em.hZeit = data;
@@ -1908,6 +1989,7 @@ window.em.initiiereZeitEdit = function() {
 };
 
 window.em.initiiereZeitEdit_2 = function() {
+	'use strict';
 	// fixe Felder aktualisieren
 	$("[name='zDatum']").val(window.em.hZeit.zDatum);
 	$("[name='zUhrzeit']").val(window.em.hZeit.zUhrzeit);
@@ -1927,7 +2009,7 @@ window.em.initiiereZeitEdit_2 = function() {
 		// Feldliste aus der DB holen
 		// das dauert länger - hinweisen
 		$("#hZeitEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeZeit?include_docs=true', {
 			success: function(Feldliste) {
 				window.em.FeldlisteZeitEdit = Feldliste;
@@ -1938,6 +2020,7 @@ window.em.initiiereZeitEdit_2 = function() {
 };
 
 window.em.initiiereZeitEdit_3 = function() {
+	'use strict';
 	var htmlContainer = window.em.generiereHtmlFuerZeitEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
@@ -1953,13 +2036,14 @@ window.em.initiiereZeitEdit_3 = function() {
 
 // erstellt die Liste der Zeiten in Formular hZeitListe.html
 window.em.initiiereZeitListe = function() {
+	'use strict';
 	// hat hZeitEdit.html eine ZeitListe übergeben?
 	if (window.em.ZeitListe) {
 		// Zeitliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiiereZeitListe_2();
 	} else {
 		// Zeitliste aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// ZeitListe für hZeitEdit bereitstellen
@@ -1971,6 +2055,7 @@ window.em.initiiereZeitListe = function() {
 };
 
 window.em.initiiereZeitListe_2 = function() {
+	'use strict';
 	var anzZeit = window.em.ZeitListe.rows.length,
 		Zeit,
 		key,
@@ -2013,6 +2098,7 @@ window.em.initiiereZeitListe_2 = function() {
 // erwartet Feldliste als Objekt; Zeit als Objekt
 // der htmlContainer wird zurück gegeben
 window.em.generiereHtmlFuerZeitEditForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
@@ -2035,7 +2121,7 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hZeit, {
 			success: function(data) {
 				window.em.hZeit._id = data.id;
@@ -2055,13 +2141,14 @@ window.em.generiereHtmlFuerZeitEditForm = function() {
 // erwartet die hArtId
 // wird aufgerufen von hArtEdit.html bei pageshow
 window.em.initiierehArtEdit = function() {
+	'use strict';
 	// markieren, dass die Einzelsicht aktiv ist
 	localStorage.hArtSicht = "einzel";
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.hArt && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		window.em.initiierehArtEdit_2(window.em.hArt);
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
@@ -2075,6 +2162,7 @@ window.em.initiierehArtEdit = function() {
 };
 
 window.em.initiierehArtEdit_2 = function() {
+	'use strict';
 	// hier werden Variablen gesetzt,
 	// in die fixen Felder Werte eingesetzt,
 	// die dynamischen Felder aufgebaut
@@ -2123,7 +2211,7 @@ window.em.initiierehArtEdit_2 = function() {
 		// Feldliste aus der DB holen
 		// das dauert länger - hinweisen
 		$("#hArtEditFormHtml").html('<p class="HinweisDynamischerFeldaufbau">Die Felder werden aufgebaut...</p>');
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function(data) {
 				window.em.FeldlistehArtEdit = data;
@@ -2136,7 +2224,8 @@ window.em.initiierehArtEdit_2 = function() {
 // generiert dynamisch die Artgruppen-abhängigen Felder
 // Mitgeben: Feldliste, Beobachtung
 window.em.erstelleDynamischeFelderhArtEdit = function() {
-	var htmlContainer = window.em.generiereHtmlFuerhArtEditForm();
+	'use strict';
+	var htmlContainer = window.em.generiereHtmlFürhArtEditForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
 		htmlContainer = "<hr />" + htmlContainer;
@@ -2153,6 +2242,7 @@ window.em.erstelleDynamischeFelderhArtEdit = function() {
 // dazu muss der Wert aus der Objekt-Variabeln geholt werden
 // keine Ahnung, wieso das jQuery-mobile nicht macht
 window.em.aktiviereFlipswitches = function(dom_element, objekt_variable) {
+	'use strict';
 	$(dom_element)
         .find("select[data-role='flipswitch']")
         .each(function() {
@@ -2165,7 +2255,8 @@ window.em.aktiviereFlipswitches = function(dom_element, objekt_variable) {
 // generiert das Html für Formular in hArtEdit.html
 // erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 // der htmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerhArtEditForm = function() {
+window.em.generiereHtmlFürhArtEditForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
@@ -2176,7 +2267,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 		FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarImModusHierarchisch.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && (Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 || Feld.ArtGruppe[0] === "alle")) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
 				FeldWert = Feld.Standardwert[window.em.hArt.User];
 				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
@@ -2190,7 +2281,7 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hArt, {
 			success: function(data) {
 				window.em.hArt._id = data.id;
@@ -2208,13 +2299,14 @@ window.em.generiereHtmlFuerhArtEditForm = function() {
 
 // initiiert BeobListe.html
 window.em.initiierehArtListe = function() {
+	'use strict';
 	// hat hArtEdit.html eine hArtListe übergeben?
 	if (window.em.hArtListe) {
 		// Beobliste aus globaler Variable holen - muss nicht geparst werden
 		window.em.initiierehArtListe_2();
 	} else {
 		// Beobliste aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
@@ -2226,6 +2318,7 @@ window.em.initiierehArtListe = function() {
 };
 
 window.em.initiierehArtListe_2 = function() {
+	'use strict';
 	var anzArt = window.em.hArtListe.rows.length,
 		listItemContainer = "",
 		Titel2,
@@ -2265,6 +2358,7 @@ window.em.initiierehArtListe_2 = function() {
 // übernimmt eine hArt
 // retourniert das html für deren Zeile in der Liste
 window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
+	'use strict';
 	var artgruppenname = encodeURIComponent(beob.aArtGruppe.replace('ü', 'ue').replace('ä', 'ae').replace('ö', 'oe')) + ".png",
 		listItem;
 	if (beob.aArtGruppe === "DiverseInsekten") {
@@ -2284,6 +2378,7 @@ window.em.erstelleHtmlFürBeobInHArtListe = function(beob) {
 // der htmlContainer wird zurück gegeben
 // OhneLabel: Für die Tabelle in hArtEditListe.html werden die Felder ohne Label benötigt, weil dieses im Spaltentitel steht
 window.em.generiereHtmlFürFormularelement = function(Feld, FeldWert, OhneLabel) {
+	'use strict';
 	var htmlContainer = "",
 		SliderMinimum,
         SliderMaximum,
@@ -2330,6 +2425,7 @@ window.em.generiereHtmlFürFormularelement = function(Feld, FeldWert, OhneLabel)
 // generiert den html-Inhalt für Textinputs
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürTextinput = function(FeldName, FeldBeschriftung, FeldWert, InputTyp, OhneLabel) {
+	'use strict';
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2353,6 +2449,7 @@ window.em.generiereHtmlFürTextinput = function(FeldName, FeldBeschriftung, Feld
 // generiert den html-Inhalt für Slider
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürSlider = function(FeldName, FeldBeschriftung, FeldWert, SliderMinimum, SliderMaximum, OhneLabel) {
+	'use strict';
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2378,6 +2475,7 @@ window.em.generiereHtmlFürSlider = function(FeldName, FeldBeschriftung, FeldWer
 // generiert den html-Inhalt für Textarea
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürTextarea = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+	'use strict';
 	var htmlContainer = '<div class="ui-field-contain">';
 	if (!OhneLabel) {
 		htmlContainer += '<label for="';
@@ -2399,6 +2497,7 @@ window.em.generiereHtmlFürTextarea = function(FeldName, FeldBeschriftung, FeldW
 // generiert den html-Inhalt für Toggleswitch
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürToggleswitch = function(FeldName, FeldBeschriftung, FeldWert, OhneLabel) {
+	'use strict';
 	var htmlContainer = "<div class='ui-field-contain'>";
 	if (!OhneLabel) {
 		htmlContainer += "<label for='";
@@ -2420,6 +2519,7 @@ window.em.generiereHtmlFürToggleswitch = function(FeldName, FeldBeschriftung, F
 // generiert den html-Inhalt für Checkbox
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürCheckbox = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+	'use strict';
 	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
 		htmlContainer += "<legend>";
@@ -2434,6 +2534,7 @@ window.em.generiereHtmlFürCheckbox = function(FeldName, FeldBeschriftung, FeldW
 // generiert den html-Inhalt für Optionen von Checkbox
 // wird von generiereHtmlFürCheckbox aufgerufen
 window.em.generiereHtmlFürCheckboxOptionen = function(FeldName, FeldWert, optionen) {
+	'use strict';
 	var htmlContainer = "",
 		listItem,
         id;
@@ -2462,6 +2563,7 @@ window.em.generiereHtmlFürCheckboxOptionen = function(FeldName, FeldWert, optio
 // generiert den html-Inhalt für Radio
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürRadio = function(FeldName, FeldBeschriftung, FeldWert, optionen, OhneLabel) {
+	'use strict';
 	var htmlContainer = "<div class='ui-field-contain'><fieldset data-role='controlgroup'>";
 	if (!OhneLabel) {
 		htmlContainer += "<legend>";
@@ -2476,6 +2578,7 @@ window.em.generiereHtmlFürRadio = function(FeldName, FeldBeschriftung, FeldWert
 // generiert den html-Inhalt für Optionen von Radio
 // wird von generiereHtmlFürRadio aufgerufen
 window.em.generiereHtmlFürRadioOptionen = function(feldname, feldwert, optionen) {
+	'use strict';
 	var htmlContainer = "",
 		listItem,
         id,
@@ -2507,6 +2610,7 @@ window.em.generiereHtmlFürRadioOptionen = function(feldname, feldwert, optionen
 // generiert den html-Inhalt für Selectmenus
 // wird von erstellehArtEdit aufgerufen
 window.em.generiereHtmlFürSelectmenu = function(FeldName, FeldBeschriftung, FeldWert, optionen, MultipleSingleSelect, OhneLabel, icon) {
+	'use strict';
 	var htmlContainer = "<div class='ui-field-contain'>",
         id;
     id = _.uniqueId(FeldName + "_");
@@ -2543,6 +2647,7 @@ window.em.generiereHtmlFürSelectmenu = function(FeldName, FeldBeschriftung, Fel
 // generiert den html-Inhalt für Optionen von Selectmenu
 // wird von generiereHtmlFürSelectmenu aufgerufen
 window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, optionen) {
+	'use strict';
 	var htmlContainer = "<option value=''></option>",
 		listItem;
 		_.each(optionen, function(option) {
@@ -2564,9 +2669,9 @@ window.em.generiereHtmlFuerSelectmenuOptionen = function(feldname, feldwert, opt
 // wird von generiereHtmlFürSelectmenu aufgerufen
 // FeldWert ist ein Array
 window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert, optionen) {
+	'use strict';
 	var htmlContainer = "<option value=''></option>",
-		listItem,
-        id;
+		listItem;
 	_.each(optionen, function(option) {
 		listItem = "<option value='";
 		listItem += option;
@@ -2646,6 +2751,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function(feldname, feldwert,
 })(jQuery);
 
 window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
+	'use strict';
 	var checkboxes = $("#" + pagename).find('input');
 	_.each(checkboxes, function(checkbox) {
 		if (checkbox.type === 'checkbox')	 {
@@ -2656,6 +2762,7 @@ window.em.checkAllCheckboxesOfForm = function(pagename, checktoggle) {
 };
 
 window.em.checkAllRadiosOfForm = function(pagename, checktoggle) {
+	'use strict';
 	var radios = $("#" + pagename).find('input');
 	_.each(radios, function(radio) {
 		if (radio.type == 'radio')	 {
@@ -2669,6 +2776,7 @@ window.em.checkAllRadiosOfForm = function(pagename, checktoggle) {
 // wird benutzt von BeobEdit.html und hOrtEdit.html
 // erwartet die docId, um am Ende der Verortung die neuen Koordinaten zu speichern
 window.em.GetGeolocation = function(docId, OrtOderBeob) {
+	'use strict';
 	// benötigte Variabeln setzen
 	localStorage.docId = docId;
 	// Zweck: Genau solange animieren, wie verortet wird
@@ -2696,6 +2804,7 @@ window.em.GetGeolocation = function(docId, OrtOderBeob) {
 // solange verortet wird, 
 // wird die Verortung in der Navbar jede Sekunde ein- und ausgeblendet
 window.em.NavbarVerortungAnimieren = function() {
+	'use strict';
 	if (localStorage.NavbarVerortungAnimieren && localStorage.NavbarVerortungAnimieren === "true") {
 		$(".neu").removeClass("ui-btn-active");
 		$(".verorten").addClass("ui-btn-active").fadeToggle("slow");
@@ -2707,6 +2816,7 @@ window.em.NavbarVerortungAnimieren = function() {
 };
 
 window.em.GeolocationAuslesen = function(position) {
+	'use strict';
 	localStorage.oLagegenauigkeit = Math.floor(position.coords.accuracy);
 	localStorage.oLongitudeDecDeg = position.coords.longitude;
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
@@ -2728,6 +2838,7 @@ window.em.GeolocationAuslesen = function(position) {
 
 // Position ermitteln war erfolgreich
 window.em.onGeolocationSuccess = function(position) {
+	'use strict';
 	// nur erste Position akzeptieren oder solche, die genauer sind als vorige
 	if (!localStorage.oLagegenauigkeit || position.coords.accuracy < localStorage.oLagegenauigkeit) {
 		if (position.coords.accuracy < 100) {
@@ -2742,12 +2853,14 @@ window.em.onGeolocationSuccess = function(position) {
 // Position ermitteln war nicht erfolgreich
 // onError Callback receives a PositionError object
 window.em.onGeolocationError = function(error) {
+	'use strict';
 	window.em.melde("Keine Position erhalten\n" + error.message);
 	window.em.stopGeolocation();
 };
 
 // Beendet Ermittlung der Position
 window.em.stopGeolocation = function() {
+	'use strict';
 	// Positionssuche beenden
 	// wenn keine watchID mehr, wurde sie schon beendet
 	// stop timeout stoppen
@@ -2782,15 +2895,17 @@ window.em.stopGeolocation = function() {
 	delete localStorage.OrtOderBeob;
 };
 
-// damit kann bei erneuter Anmeldung window.em.oeffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
+// damit kann bei erneuter Anmeldung window.em.öffneZuletztBenutzteSeite() die letzte Ansicht wiederherstellen
 // host wird NICHT geschrieben, weil sonst beim Wechsel von lokal zu iriscouch Fehler!
 window.em.speichereLetzteUrl = function() {
+	'use strict';
 	localStorage.LetzteUrl = window.location.pathname + window.location.search;
 };
 
 window.em.holeAutor = function() {
+	'use strict';
 	// aAutor holen
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function(doc) {
 			if (doc.Standardwert) {
@@ -2807,13 +2922,14 @@ window.em.holeAutor = function() {
 // nimmt den Formnamen entgegen respektive einen Anhang dazu, damit die Form ID eindeutig sein kann
 // wird benutzt von allen Formularen mit Anhängen
 window.em.speichereAnhänge = function(id, Objekt, Page) {
+	'use strict';
 	// prüfen, ob der Datensatz als Objekt übergeben wurde
 	if (Objekt) {
 		// das Objekt verwenden
 		window.em.speichereAnhänge_2(id, Objekt, Page);
 	} else {
 		// Objekt aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(id, {
 			success: function(data) {
 				window.em[Objekt.Typ] = data;
@@ -2827,6 +2943,8 @@ window.em.speichereAnhänge = function(id, Objekt, Page) {
 };
 
 window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
+	'use strict';
+    var $db = $.couch.db("evab");
 	$("#_rev" + Page).val(window.em[Objekt.Typ]._rev);
 	$("#FormAnhänge" + Page).ajaxSubmit({
 		url: "/evab/" + id,
@@ -2865,6 +2983,7 @@ window.em.speichereAnhänge_2 = function(id, Objekt, Page) {
 // wird benutzt von allen (h)Beobachtungs-Edit-Formularen
 // erwartet Page, damit sowohl das AttachmentFeld als auch das div um die Anhänge reinzuhängen eindeutig sind 
 window.em.zeigeAttachments = function(doc, Page) {
+	'use strict';
 	var htmlContainer = "",
 		url;
 	$("#_attachments" + Page).val("");
@@ -2889,7 +3008,8 @@ window.em.zeigeAttachments = function(doc, Page) {
 // initiiert FelderWaehlen.html
 // generiert dynamisch die Felder im Checkbox Felder
 // checked diejenigen, die der User anzeigen will
-window.em.initiiereFelderWaehlen = function() {
+window.em.initiiereFelderWählen = function() {
+	'use strict';
 	var TextUeberListe_FW,
 		FeldlisteViewname;
 	// Je nach aufrufender Seite Variabeln setzen
@@ -2943,20 +3063,21 @@ window.em.initiiereFelderWaehlen = function() {
 	// besser ist aber, dieselbe Liste zu teilen, die in derselben Hierarchiestufe für die Anzeige der Felder verwendet wird
 	// darum wird hier für jede Seite eine eigene verwendet
 	if (window.em[localStorage.FeldlisteFwName]) {
-		window.em.initiiereFelderWaehlen_2();
+		window.em.initiiereFelderWählen_2();
 	} else {
 		// holt die Feldliste aus der DB
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/' + FeldlisteViewname + '?include_docs=true', {
 			success: function(data) {
 				window.em[localStorage.FeldlisteFwName] = data;
-				window.em.initiiereFelderWaehlen_2();
+				window.em.initiiereFelderWählen_2();
 			}
 		});
 	}
 };
 
-window.em.initiiereFelderWaehlen_2 = function() {
+window.em.initiiereFelderWählen_2 = function() {
+	'use strict';
 	var htmlContainer = "<div class='ui-field-contain'>\n\t<fieldset data-role='controlgroup'>",
 		anzFelder = 0,
 		Feld,
@@ -2972,7 +3093,7 @@ window.em.initiiereFelderWaehlen_2 = function() {
 			if (eval(localStorage.KriterienFürZuWählendeFelder)) {
 				anzFelder += 1;
 				FeldBeschriftung = Feld.Hierarchiestufe + ": " + Feld.FeldBeschriftung;
-				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
+				if (Feld.Hierarchiestufe === "Art" && Feld.ArtGruppe && Feld.ArtGruppe[0] !== "alle" && Feld.ArtGruppe.indexOf(localStorage.aArtGruppe) === -1) {
 					FeldBeschriftung += "<span style='font-weight:normal;'> (nicht sichtbar in Artgruppe " + localStorage.aArtGruppe + ")</span>";
 				}
 				listItem = "<label for='";
@@ -3028,6 +3149,7 @@ window.em.initiiereFelderWaehlen_2 = function() {
 // kreiert ein neues Feld
 // wird benutzt von FeldListe.html und FeldEdit.html
 window.em.neuesFeld = function() {
+	'use strict';
 	var NeuesFeld = {},
 		hierarchiestufe;
 	NeuesFeld.Typ = "Feld";
@@ -3065,7 +3187,7 @@ window.em.neuesFeld = function() {
 	NeuesFeld.SichtbarImModusEinfach.push(localStorage.Email);
 	NeuesFeld.SichtbarImModusHierarchisch.push(localStorage.Email);
     NeuesFeld.SichtbarInHArtEditListe.push(localStorage.Email);
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.saveDoc(NeuesFeld, {
 		success: function(data) {
 			localStorage.FeldId = data.id;
@@ -3083,7 +3205,8 @@ window.em.neuesFeld = function() {
 };
 
 // MOMENTAN NICHT BENUTZT
-window.em.pruefeAnmeldung = function() {
+window.em.prüfeAnmeldung = function() {
+	'use strict';
 	// Username Anmeldung überprüfen
 	// Wenn angemeldet, globale Variable Username aktualisieren
 	// Wenn nicht angemeldet, Anmeldedialog öffnen
@@ -3106,7 +3229,8 @@ window.em.pruefeAnmeldung = function() {
 // setzt die OrtId, damit hOrtEdit.html am richtigen Ort öffnet
 // und ruft dann hOrtEdit.html auf
 // wird von den Links in der Karte benutzt
-window.em.oeffneOrt = function(OrtId) {
+window.em.öffneOrt = function(OrtId) {
+	'use strict';
 	localStorage.OrtId = OrtId;
 	$.mobile.navigate("hOrtEdit.html");
 };
@@ -3114,7 +3238,8 @@ window.em.oeffneOrt = function(OrtId) {
 // setzt die BeobId, damit BeobEdit.html am richtigen Ort öffnet
 // und ruft dann BeobEdit.html auf
 // wird von den Links in der Karte auf BeobListe.html benutzt
-window.em.oeffneBeob = function(BeobId) {
+window.em.öffneBeob = function(BeobId) {
+	'use strict';
 	localStorage.BeobId = BeobId;
 	$.mobile.navigate("BeobEdit.html");
 };
@@ -3125,6 +3250,7 @@ window.em.oeffneBeob = function(BeobId) {
 // Wenn mehrmals nacheinander dieselbe Artenliste aufgerufen wird, soll wenn möglich die alte Liste verwendet werden können
 // möglich ist dies wenn diese Faktoren gleich sind: Artgruppe, allfällige Unterauswahl
 window.em.initiiereArtenliste = function(filterwert) {
+	'use strict';
 	// wenn alle drei Faktoren gleich sind, direkt die Artenliste erstellen
 	// nur wenn eine Artenliste existiert. Grund: window.em.Artenliste lebt nicht so lang wie localStorage
 	// aber die Artenliste aus der localStorage zu parsen macht auch keinen sinn
@@ -3141,8 +3267,9 @@ window.em.initiiereArtenliste = function(filterwert) {
 // wird benutzt in Artenliste.html
 // aufgerufen von initiiereArtenliste
 window.em.holeArtenliste = function(filterwert) {
+	'use strict';
 	var viewname = 'evab/Artliste?startkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '"]&endkey=["' + encodeURIComponent(localStorage.aArtGruppe) + '",{},{}]&include_docs=true';
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function(data) {
 			window.em.Artenliste = data.rows;
@@ -3154,6 +3281,7 @@ window.em.holeArtenliste = function(filterwert) {
 // bekommt eine Artenliste und baut damit im Formular die Artenliste auf
 // filterwert: übergebener Teil aus der Artbezeichnung
 window.em.erstelleArtenliste = function(filterwert) {
+	'use strict';
 	var html = "",
 		ArtBezeichnung,
 		artenliste_gefiltert;
@@ -3210,6 +3338,7 @@ window.em.erstelleArtenliste = function(filterwert) {
 };
 
 window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
+	'use strict';
 	var html = "<li name='ArtListItem' ArtBezeichnung='";
 	html += ArtBezeichnung;
 	html += "' ArtId='";
@@ -3228,6 +3357,7 @@ window.em.holeHtmlFürArtInArtenliste = function(Art, ArtBezeichnung) {
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
 window.em.erstelleArtgruppenListe = function() {
+	'use strict';
 	// Artgruppenliste verfügbar machen
 	if (window.em.Artgruppenliste) {
 		window.em.erstelleArtgruppenListe_2();
@@ -3235,7 +3365,7 @@ window.em.erstelleArtgruppenListe = function() {
 		window.em.Artgruppenliste = JSON.parse(localStorage.Artgruppenliste);
 		window.em.erstelleArtgruppenListe_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function(data) {
 				// Artgruppenliste bereitstellen
@@ -3250,6 +3380,7 @@ window.em.erstelleArtgruppenListe = function() {
 // wird benutzt in Artgruppenliste.html
 // aufgerufen von erstelleArtgruppenListe
 window.em.erstelleArtgruppenListe_2 = function() {
+	'use strict';
 	var html = "",
 		ArtGruppe,
 		AnzArten;
@@ -3277,6 +3408,7 @@ window.em.erstelleArtgruppenListe_2 = function() {
 // Auch wenn eine Seite direkt geöffnet wird und die Userdaten vermisst
 // braucht den Usernamen
 window.em.stelleUserDatenBereit = function() {
+	'use strict';
 	window.em.holeAutor();
 	$.couch.userDb(function(db) {
 		db.openDoc("org.couchdb.user:" + localStorage.Email, {
@@ -3289,7 +3421,7 @@ window.em.stelleUserDatenBereit = function() {
 					$.mobile.navigate("UserEdit.html");
 					return;
 				}
-				window.em.oeffneZuletztBenutzteSeite();
+				window.em.öffneZuletztBenutzteSeite();
 			}
 		});
 	});
@@ -3297,7 +3429,8 @@ window.em.stelleUserDatenBereit = function() {
 
 // wird benutzt von window.em.stelleUserDatenBereit()
 // öffnet die zuletzt benutzte Seite oder BeobListe.html
-window.em.oeffneZuletztBenutzteSeite = function() {
+window.em.öffneZuletztBenutzteSeite = function() {
+	'use strict';
     var LetzteUrl;
 	// unendliche Schlaufe verhindern, falls LetzteUrl auf diese Seite verweist
 	if (localStorage.LetzteUrl && localStorage.LetzteUrl !== "/evab/_design/evab/index.html") {
@@ -3313,6 +3446,7 @@ window.em.oeffneZuletztBenutzteSeite = function() {
 // mitLatLngListe gibt an, ob die Liste für die Karte auch entfernt werden soll
 
 window.em.leereAlleVariabeln = function(ohneClear) {
+	'use strict';
 	// ohne clear: nötig, wenn man in FelderWaehlen.html ist und keine aufrufende Seite kennt
 	// Username soll erhalten bleiben
 	if (!ohneClear) {
@@ -3336,6 +3470,7 @@ window.em.leereAlleVariabeln = function(ohneClear) {
 };
 
 window.em.leereStorageProjektListe = function(mitLatLngListe) {
+	'use strict';
 	delete window.em.Projektliste;
 	if (mitLatLngListe) {
 		delete window.em.hOrteLatLngProjektliste;
@@ -3344,6 +3479,7 @@ window.em.leereStorageProjektListe = function(mitLatLngListe) {
 
 // ohneId wird beim paginaten benutzt, da die ID übermittelt werden muss
 window.em.leereStorageProjektEdit = function(mitLatLngListe, ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.ProjektId;
 	}
@@ -3365,6 +3501,7 @@ window.em.leereStorageProjektEdit = function(mitLatLngListe, ohneId) {
 };
 
 window.em.leereStorageRaumListe = function(mitLatLngListe) {
+	'use strict';
 	delete window.em.RaumListe;
 	if (mitLatLngListe) {
 		delete window.em.hOrteLatLngProjekt;
@@ -3373,6 +3510,7 @@ window.em.leereStorageRaumListe = function(mitLatLngListe) {
 };
 
 window.em.leereStorageRaumEdit = function(mitLatLngListe, ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.RaumId;
 	}
@@ -3393,6 +3531,7 @@ window.em.leereStorageRaumEdit = function(mitLatLngListe, ohneId) {
 };
 
 window.em.leereStorageOrtListe = function(mitLatLngListe) {
+	'use strict';
 	delete window.em.OrtListe;
 	if (mitLatLngListe) {
 		delete window.em.hOrteLatLngRaum;
@@ -3402,6 +3541,7 @@ window.em.leereStorageOrtListe = function(mitLatLngListe) {
 };
 
 window.em.leereStorageOrtEdit = function(ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.OrtId;
 	}
@@ -3429,6 +3569,7 @@ window.em.leereStorageOrtEdit = function(ohneId) {
 };
 
 window.em.leereStorageZeitListe = function() {
+	'use strict';
 	delete window.em.ZeitListe;
 	delete window.em.ZeitenVonProjekt;
 	delete window.em.ZeitenVonRaum;
@@ -3436,6 +3577,7 @@ window.em.leereStorageZeitListe = function() {
 };
 
 window.em.leereStorageZeitEdit = function(ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.ZeitId;
 	}
@@ -3448,6 +3590,7 @@ window.em.leereStorageZeitEdit = function(ohneId) {
 };
 
 window.em.leereStoragehArtListe = function() {
+	'use strict';
 	delete window.em.hArtListe;
 	delete window.em.ArtenVonProjekt;
 	delete window.em.ArtenVonRaum;
@@ -3456,6 +3599,7 @@ window.em.leereStoragehArtListe = function() {
 };
 
 window.em.leereStoragehArtEdit = function(ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.hArtId;
 	}
@@ -3463,11 +3607,13 @@ window.em.leereStoragehArtEdit = function(ohneId) {
 };
 
 window.em.leereStorageBeobListe = function() {
+	'use strict';
 	delete window.em.BeobListe;
 	delete window.em.BeobListeLatLng;
 };
 
 window.em.leereStorageBeobEdit = function(ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.BeobId;
 	}
@@ -3487,6 +3633,7 @@ window.em.leereStorageBeobEdit = function(ohneId) {
 };
 
 window.em.leereStorageFeldListe = function() {
+	'use strict';
 	delete window.em.Feldliste;
 	delete window.em.FeldlisteBeobEdit;
 	delete window.em.FeldlistehArtEdit;
@@ -3498,6 +3645,7 @@ window.em.leereStorageFeldListe = function() {
 };
 
 window.em.leereStorageFeldEdit = function(ohneId) {
+	'use strict';
 	if (!ohneId) {
 		delete localStorage.FeldId;
 	}
@@ -3509,8 +3657,9 @@ window.em.leereStorageFeldEdit = function(ohneId) {
 // Modus einfach wird hier nicht eingestellt: Die minimalen Felder sind fix programmiert
 // wird verwendet in: Signup.html, UserEdit.html
 window.em.erstelleSichtbareFelder = function() {
+	'use strict';
 	var viewname = 'evab/FeldListeFeldName?include_docs=true';
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function(data) {
 			var Feld;
@@ -3535,7 +3684,8 @@ window.em.erstelleSichtbareFelder = function() {
 // erstellt die sichtbaren Felder
 // wird benutzt von: Signup.html
 window.em.speichereAutorAlsStandardwert = function() {
-	$db = $.couch.db("evab");
+	'use strict';
+	var $db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function(Feld) {
 			// Falls Standardwert noch nicht existiert, 
@@ -3571,6 +3721,7 @@ window.em.speichereAutorAlsStandardwert = function() {
 *Quelle: http://stackoverflow.com/questions/2507030/email-validation-using-jquery
 */
 window.em.validateEmail = function(email) {
+	'use strict';
 	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 	return emailReg.test(email);
 };
@@ -3578,7 +3729,8 @@ window.em.validateEmail = function(email) {
 
 // testet, ob die lokale Version erreichbar ist
 // wenn ja, wird diese geöffnet, sonst arteigenschaften.ch
-window.em.oeffneEigenschaftenVonArt = function(id) {
+window.em.öffneEigenschaftenVonArt = function(id) {
+	'use strict';
 	var url,
 		// neues Fenster jetzt schon gründen
 		// wenn man window.open nach dem callback ausführt, öffnet das Fenster als popup
@@ -3818,7 +3970,7 @@ window.em.handleBeobEditPageinit = function() {
         .on("change", ".speichernAnhang", window.em.handleBeobEditSpeichernAnhangChange)
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.loescheAnhang(this, window.em.Beobachtung, localStorage.BeobId);
+            window.em.löscheAnhang(this, window.em.Beobachtung, localStorage.BeobId);
         });
 
 	$("#BeobEdit")
@@ -3971,7 +4123,7 @@ window.em.handleBeobEditContentSwiperight = function() {
 
 // wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
 window.em.handleBeobEditMenuArteigenschaftenClick = function() {
-	window.em.oeffneEigenschaftenVonArt(localStorage.aArtId);
+	window.em.öffneEigenschaftenVonArt(localStorage.aArtId);
 };
 
 // wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
@@ -4204,7 +4356,7 @@ window.em.handleFeldEditMeineEinstellungenChange = function() {
 		window.em.handleFeldEditMeineEinstellungenChange_2(feldname, feldwert);
 	} else {
 		// Objekt aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function(data) {
 				window.em.Feld = data;
@@ -4227,7 +4379,7 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 		// User entfernen, wenn enthalten
 		window.em.Feld[feldname] = _.without(window.em.Feld[feldname], localStorage.Email);
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
 			window.em.Feld._rev = data.rev;
@@ -4270,7 +4422,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 		if (localStorage.AlterFeldWert !== "undefined" && localStorage.AlterFeldWert) {
 			// wenn ein alter Feldname existiert,
 			// zählen, in wievielen Datensätzen das Feld verwendet wird
-			$db = $.couch.db("evab");
+			var $db = $.couch.db("evab");
 			$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 				success: function(data) {
 					var anzVorkommen = 0,
@@ -4454,7 +4606,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 		window.em.loescheFeld();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		// zählen, in wievielen Datensätzen das Feld verwendet wird
 		$db.view('evab/FeldSuche?key="' + localStorage.Email + '"&include_docs=true', {
 			success: function(data) {
@@ -4507,7 +4659,7 @@ window.em.handleFelderWaehlenPageshow = function() {
 		$.mobile.navigate("BeobListe.html");
 		return;
 	}
-	window.em.initiiereFelderWaehlen();
+	window.em.initiiereFelderWählen();
 };
 
 // wenn FelderWaehlen.html verschwindet
@@ -4581,6 +4733,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 	}
 	Feld[feld_mit_sichtbarkeit] = sichtbar_fuer_benutzer;
 	// Änderung in DB speichern
+    var $db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
 		success: function(data) {
 			// neue rev holen (aktualisiert auch Feldliste-Objekt)
@@ -4593,7 +4746,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 };
 
 window.em.öffneFeld = function(FeldName) {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"&include_docs=true', {
 		success: function(data) {
 			localStorage.FeldId = data.rows[0].doc._id;
@@ -4853,7 +5006,7 @@ window.em.initiierehArtEditListe = function() {
 		// Beobliste aus DB holen
 		// Problem: Wenn in hArtEdit ein Wert geändert wurde, ist er sonst nicht aktuell
 		// Alternative: Beim Speichern window.em.hArtListe nachführen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				var hart_row;
@@ -4927,7 +5080,7 @@ window.em.initiierehArtEditListe_3 = function(artgruppe) {
 		window.em.initiierehArtEditListe_4(artgruppe);
 	} else {*/
 		// Feldliste aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListeArt?include_docs=true', {
 			success: function(data) {
 				window.em.FeldlistehArtEditListe = data;
@@ -4950,7 +5103,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 	_.each(window.em.FeldlistehArtEditListe.rows, function(row) {
 		var Feld = row.doc,
 			FeldName = Feld.FeldName;
-		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe && Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(artgruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+		if (Feld.Hierarchiestufe === "Art" && (Feld.User === localStorage.Email || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe && Feld.SichtbarInHArtEditListe.indexOf(localStorage.Email) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && (Feld.ArtGruppe.indexOf(artgruppe) >= 0 || Feld.ArtGruppe[0] === "alle")) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			feldliste.push(Feld);
 		}
 	});
@@ -5056,7 +5209,7 @@ window.em.initiierehArtEditListeArt = function(hartid) {
 	if (window.em.hArt && window.em.hArt._id === hartid && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
 		window.em.initiierehArtEditListeArt_2(window.em.hArt);
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(hartid, {
 			success: function(data) {
 				window.em.hArt = data;
@@ -5109,7 +5262,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 		FeldName = Feld.FeldName;
 		// nur sichtbare eigene Felder. Bereits im Formular integrierte Felder nicht anzeigen
 		// Vorsicht: Erfasst jemand ein Feld der Hierarchiestufe Art ohne Artgruppe, sollte das keinen Fehler auslösen
-		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && Feld.ArtGruppe.indexOf(ArtGruppe) >= 0) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
+		if ((Feld.User === window.em.hArt.User || Feld.User === "ZentrenBdKt") && Feld.SichtbarInHArtEditListe.indexOf(window.em.hArt.User) !== -1 && (typeof Feld.ArtGruppe !== "undefined" && (Feld.ArtGruppe.indexOf(ArtGruppe) >= 0 || Feld.ArtGruppe[0] === "alle")) && (FeldName !== "aArtId") && (FeldName !== "aArtGruppe") && (FeldName !== "aArtName")) {
 			if (window.em.hArt[FeldName] && localStorage.Status === "neu" && Feld.Standardwert && Feld.Standardwert[window.em.hArt.User]) {
 				FeldWert = Feld.Standardwert[window.em.hArt.User];
 				// Objekt window.em.hArt um den Standardwert ergänzen, um später zu speichern
@@ -5123,7 +5276,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 	});
 	if (localStorage.Status === "neu") {
 		// in neuen Datensätzen dynamisch erstellte Standardwerte speichern
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hArt, {
 			success: function(data) {
 				window.em.hArt._id = data.id;
@@ -5486,7 +5639,7 @@ window.em.handleHOrtEditPageinit = function() {
         .on("change", ".speichernAnhang", window.em.handleHOrtEditSpeichernAnhangChange)
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.loescheAnhang(this, window.em.hOrt, localStorage.OrtId);
+            window.em.löscheAnhang(this, window.em.hOrt, localStorage.OrtId);
         });
 
     $("#hOrtEdit")
@@ -5616,7 +5769,7 @@ window.em.handleHOrtEditWaehleFelderClick = function() {
 // wenn in hOrtEdit.html #LoescheOrtOrtEdit geklickt wird
 window.em.handleHOrtEditLoescheOrtClick = function() {
 	// Anzahl Zeiten von Ort zählen
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
 		success: function(Zeiten) {
 			var anzZeiten = Zeiten.rows.length;
@@ -5912,7 +6065,7 @@ window.em.handleHProjektEditPageinit = function() {
         .on("change", ".speichernAnhang", window.em.handleHProjektEditSpeichernAnhangChange)
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.loescheAnhang(this, window.em.hProjekt, localStorage.ProjektId);
+            window.em.löscheAnhang(this, window.em.hProjekt, localStorage.ProjektId);
         });
 
 	$("#hProjektEdit")
@@ -5997,7 +6150,7 @@ window.em.handleHProjektEditSpeichernAnhangChange = function() {
 window.em.handleHProjektEditLöscheProjektClick = function() {
 	// Anzahl Räume des Projekts zählen
 	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/hRaumIdVonProjekt?startkey=["' + localStorage.ProjektId + '"]&endkey=["' + localStorage.ProjektId + '",{},{}]', {
 		success: function(Raeume) {
 			var anzRaeume = Raeume.rows.length;
@@ -6113,7 +6266,7 @@ window.em.nächstesVorigesProjekt = function(NächstesOderVoriges) {
 	} else {
 		// keine Projektliste übergeben
 		// neu aus DB erstellen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hProjListe?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{}]&include_docs=true', {
 			success: function(data) {
 				// Projektliste bereitstellen
@@ -6182,7 +6335,7 @@ window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
 		window.em.löscheProjekt_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
 			success: function(data) {
 				window.em.hProjekt = data;
@@ -6196,7 +6349,7 @@ window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
 };
 
 window.em.löscheProjekt_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hProjekt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -6238,7 +6391,7 @@ window.em.speichereHProjektEdit = function() {
 	if (window.em.hProjekt) {
 		window.em.speichereHProjektEdit_2(that);
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ProjektId, {
 			success: function(data) {
 				window.em.hProjekt = data;
@@ -6276,6 +6429,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 			delete window.em.hProjekt[FeldnameDb]
 		}
 		// alles speichern
+        var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hProjekt, {
 			success: function(data) {
 				window.em.hProjekt._rev = data.rev;
@@ -6317,7 +6471,7 @@ window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 	} else {
 		// keine Ortliste vorhanden
 		// neu aus DB erstellen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hOrtListe?startkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.RaumId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// OrtListe für hOrtListe.html bereitstellen
@@ -6387,7 +6541,7 @@ window.em.speichereHOrtEdit = function(that) {
 		window.em.speichereHOrtEdit_2(_this);
 	} else {
 		// kein Ort > aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function(data) {
 				window.em.hOrt = data;
@@ -6427,6 +6581,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 			delete window.em.hOrt[FeldnameDb]
 		}
 		// alles speichern
+        var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hOrt, {
 			success: function(data) {
 				window.em.hOrt._rev = data.rev;
@@ -6468,7 +6623,7 @@ window.em.löscheOrt = function(Arten, Zeiten) {
 		window.em.löscheOrt_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.OrtId, {
 			success: function(data) {
 				window.em.hOrt = data;
@@ -6482,7 +6637,7 @@ window.em.löscheOrt = function(Arten, Zeiten) {
 };
 
 window.em.löscheOrt_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hOrt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -6597,12 +6752,12 @@ window.em.handleHArtEditSwiperight = function() {
 
 // wenn in hArtEdit.html [name='LöscheAnhang'] geklickt wird
 window.em.handleHArtEditLoescheAnhangClick = function(that) {
-	window.em.loescheAnhang(that, window.em.hArt, localStorage.hArtId);
+	window.em.löscheAnhang(that, window.em.hArt, localStorage.hArtId);
 };
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
 window.em.handleHArtEditMenuArteigenschaftenClick = function() {
-	window.em.oeffneEigenschaftenVonArt(window.em.hArt.aArtId);
+	window.em.öffneEigenschaftenVonArt(window.em.hArt.aArtId);
 };
 
 // wenn in hArtEdit.html .menu_einfacher_modus geklickt wird
@@ -6867,7 +7022,7 @@ window.em.handleRaumEditPageinit = function() {
         .on("change", ".speichernAnhang", window.em.handleRaumEditSpeichernAnhangChange)
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.loescheAnhang(this, window.em.hRaum, localStorage.RaumId);
+            window.em.löscheAnhang(this, window.em.hRaum, localStorage.RaumId);
         });
 
     $("#hRaumEditFooter")
@@ -6911,7 +7066,7 @@ window.em.handleRaumEditSpeichernAnhangChange = function() {
 
 window.em.handleRaumEditLoescheRaumClick = function() {
 	// Anzahl Orte des Raums zählen
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/hOrtIdVonRaum?startkey=["' + localStorage.RaumId + '"]&endkey=["' + localStorage.RaumId + '",{},{}]', {
 		success: function(Orte) {
 			var anzOrte = Orte.rows.length;
@@ -7014,7 +7169,7 @@ window.em.löscheRaum = function(Arten, Zeiten, Orte) {
 		window.em.löscheRaum_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
 			success: function(data) {
 				window.em.hRaum = data;
@@ -7028,7 +7183,7 @@ window.em.löscheRaum = function(Arten, Zeiten, Orte) {
 };
 
 window.em.löscheRaum_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hRaum, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -7069,7 +7224,7 @@ window.em.speichereRaum = function() {
 		window.em.speichereRaum_2(that);
 	} else {
 		// kein Raum > aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.RaumId, {
 			success: function(data) {
 				window.em.hRaum = data;
@@ -7108,6 +7263,7 @@ window.em.speichereRaum_2 = function(that) {
 			delete window.em.hRaum[FeldnameDb];
 		}
 		// alles speichern
+        var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hRaum, {
 			success: function(data) {
 				window.em.hRaum._rev = data.rev;
@@ -7147,7 +7303,7 @@ window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
 	} else {
 		// keine Raumliste übergeben
 		// neu aus DB erstellen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hRaumListe?startkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ProjektId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// RaumListe bereitstellen
@@ -7397,7 +7553,7 @@ window.em.handleHZeitEditPageinit = function() {
         .on("change", ".speichernAnhang", window.em.handleZeitEditSpeichernAnhangChange)
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.loescheAnhang(this, window.em.hZeit, localStorage.ZeitId);
+            window.em.löscheAnhang(this, window.em.hZeit, localStorage.ZeitId);
         });
 
 	$("#hZeitEdit")
@@ -7504,7 +7660,7 @@ window.em.handleZeitEditWaehleFelderClick = function() {
 
 window.em.handleZeitEditLoescheClick = function() {
 	// Anzahl Zeiten von Ort zählen
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/hArtIdVonZeit?startkey=["' + localStorage.ZeitId + '"]&endkey=["' + localStorage.ZeitId + '",{},{}]', {
 		success: function(Arten) {
 			var anzArten = Arten.rows.length,
@@ -7580,7 +7736,7 @@ window.em.löscheZeit = function(Arten) {
 		window.em.löscheZeit_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
 			success: function(data) {
 				window.em.hZeit = data;
@@ -7594,7 +7750,7 @@ window.em.löscheZeit = function(Arten) {
 };
 
 window.em.löscheZeit_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hZeit, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -7644,7 +7800,7 @@ window.em.speichereHZeitEdit = function() {
 		window.em.speichereHZeitEdit_2(that);
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.ZeitId, {
 			success: function(data) {
 				window.em.hZeit = data;
@@ -7685,6 +7841,7 @@ window.em.speichereHZeitEdit_2 = function(that) {
 			delete window.em.hZeit[FeldnameDb];
 		}
 		// alles speichern
+        var $db = $.couch.db("evab");
 		$db.saveDoc(window.em.hZeit, {
 			success: function(data) {
 				window.em.hZeit._rev = data.rev;
@@ -7719,7 +7876,7 @@ window.em.nächsteVorigeZeit = function(NächsteOderVorige) {
 	if (window.em.ZeitListe) {
 		window.em.nächsteVorigeZeit_2(NächsteOderVorige);
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hZeitListe?startkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.OrtId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				window.em.ZeitListe = data;
@@ -7917,7 +8074,7 @@ window.em.handleIndexPageshow = function() {
 		if (localStorage.Email) {
 			if (localStorage.UserStatus !== "neu") {
 				if (localStorage.Email && localStorage.Autor) {
-					window.em.oeffneZuletztBenutzteSeite();
+					window.em.öffneZuletztBenutzteSeite();
 					return;
 				} else {
 					// Userdaten bereitstellen und danach die zuletzt benutzte Seite öffnen
@@ -8123,7 +8280,7 @@ window.em.erstelleKarteH = function(viewname) {
 	if (window.em[hOrtLatLngListe]) {
 		window.em.erstelleKarteH_2(window.em[hOrtLatLngListe]);
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view(viewname, {
 			success: function (data) {
 				window.em[hOrtLatLngListe] = data;
@@ -8136,7 +8293,7 @@ window.em.erstelleKarteH = function(viewname) {
 // alle benötigten Projekte holen
 window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 	if (!window.em.hProjekt && !window.em.hProjektListe) {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view("evab/hProjListe?include_docs=true", {
 			success: function (data) {
 				window.em.hProjektListe = data;
@@ -8151,7 +8308,7 @@ window.em.erstelleKarteH_2 = function(hOrteLatLng) {
 // alle benötigten Räume holen
 window.em.erstelleKarteH_3 = function(hOrteLatLng, hProjektListe) {
 	if (!window.em.hRaum && !window.em.hRaumListe) {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view("evab/hRaumListe?include_docs=true", {
 			success: function (data) {
 				// window.em.hRaumListe nicht aktualisieren
@@ -8259,7 +8416,7 @@ window.em.erstelleKarteH_4 = function(hOrteLatLng, hProjektListe, hRaumListe) {
 			contentString += '<tr><td>Raum:</td><td>' + rName + '</td></tr>';
 			contentString += '<tr><td>Ort:</td><td>' + Ort.oName + '</td></tr>';
 			contentString += '<tr><td>Koordinaten:</td><td>' + Ort.oXKoord + "/" + Ort.oYKoord + '</td></tr>';
-			contentString += "<tr><td><a href='#' onclick='window.em.oeffneOrt('" + hOrtId + "')'>bearbeiten<\/a></td><td></td></tr>";
+			contentString += "<tr><td><a href='#' onclick='window.em.öffneOrt('" + hOrtId + "')'>bearbeiten<\/a></td><td></td></tr>";
 			contentString += '</table>';
 			window.em.makeMapListener(map, marker, contentString);
 		});
@@ -8288,7 +8445,7 @@ window.em.makeMapListener = function(map, marker, contentString) {
 window.em.erstelleKartehOrtEdit = function() {
 	if (!window.em.hOrt) {
 		if (localStorage.OrtId) {
-			$db = $.couch.db("evab");
+			var $db = $.couch.db("evab");
 			$db.openDoc(localStorage.OrtId, {
 				success: function(doc) {
 					window.em.hOrt = doc;
@@ -8307,7 +8464,7 @@ window.em.erstelleKartehOrtEdit = function() {
 // alle benötigten Projekte holen
 window.em.erstelleKartehOrtEdit_2 = function(ort) {
 	if (!window.em.hProjekt && !window.em.hProjektListe) {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view("evab/hProjListe?include_docs=true", {
 			success: function (data) {
 				window.em.hProjektListe = data;
@@ -8322,7 +8479,7 @@ window.em.erstelleKartehOrtEdit_2 = function(ort) {
 // alle benötigten Räume holen
 window.em.erstelleKartehOrtEdit_3 = function(ort, hProjektListe) {
 	if (!window.em.hRaum && !window.em.hRaumListe) {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view("evab/hRaumListe?include_docs=true", {
 			success: function (data) {
 				// window.em.hRaumListe nicht aktualisieren
@@ -8440,7 +8597,7 @@ window.em.erstelleKarteBeobListe = function() {
 	if (window.em.BeobListeLatLng) {
 		window.em.erstelleKarteBeobListe_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/BeobListeLatLng?key="' + localStorage.Email + '"&include_docs=true', {
 			success: function (data) {
 				window.em.BeobListeLatLng = data;
@@ -8542,7 +8699,7 @@ window.em.erstelleKarteBeobListe_2 = function() {
 window.em.erstelleKarteBeobEdit = function() {
 	if (!window.em.Beobachtung) {
 		if (localStorage.BeobId) {
-			$db = $.couch.db("evab");
+			var $db = $.couch.db("evab");
 			$db.openDoc(localStorage.BeobId, {
 				success: function(doc) {
 					window.em.Beobachtung = doc;
@@ -8922,7 +9079,7 @@ window.em.handleUserEditFeldChange = function() {
 
 window.em.handleUserEditAutorChange = function() {
     var $Autor = $("#Autor");
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.openDoc("f19cd49bd7b7a150c895041a5d02acb0", {
 		success: function (doc) {
 			if ($Autor.val()) {
@@ -9035,7 +9192,7 @@ window.em.speichereHArt = function() {
 		window.em.speichereHArt_2(that);
 	} else {
 		// Objekt aud DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
@@ -9076,6 +9233,7 @@ window.em.speichereHArt_2 = function(that) {
 	window.em.hArt.aArtName = localStorage.aArtName;
 	window.em.hArt.aArtGruppe = localStorage.aArtGruppe;
 	// Datenbank aktualisieren
+    var $db = $.couch.db("evab");
 	$db.saveDoc(window.em.hArt, {
 		success: function(data) {
 			window.em.hArt._rev = data.rev;
@@ -9135,7 +9293,7 @@ window.em.nächsteVorigeArt = function(NächsteOderVorige) {
 		window.em.nächsteVorigeArt_2(NächsteOderVorige);
 	} else {
 		// keine Ortliste vorhanden, neu aus DB erstellen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/hArtListe?startkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '"]&endkey=["' + localStorage.Email + '", "' + localStorage.ZeitId + '" ,{}]&include_docs=true', {
 			success: function(data) {
 				// Liste bereitstellen, um Datenbankzugriffe zu reduzieren
@@ -9191,7 +9349,7 @@ window.em.löscheHArt = function() {
 		window.em.löscheHArt_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.hArtId, {
 			success: function(data) {
 				window.em.hArt = data;
@@ -9205,7 +9363,7 @@ window.em.löscheHArt = function() {
 };
 
 window.em.löscheHArt_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hArt, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -9232,7 +9390,7 @@ window.em.löscheHArt_2 = function() {
 // wenn nein: speichern
 // wird in FeldEdit.html verwendet
 window.em.pruefeFeldNamen = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/FeldNamen?key="' + localStorage.FeldWert + '"&include_docs=true', {
 		success: function(data) {
 			var tempFeld,
@@ -9298,7 +9456,7 @@ window.em.loescheFeld = function() {
 		window.em.loescheFeld_2();
 	} else {
 		// Feld aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(window.em.Feld._id, {
 			success: function(data) {
 				window.em.Feld = data;
@@ -9312,7 +9470,7 @@ window.em.loescheFeld = function() {
 };
 
 window.em.loescheFeld_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.Feld, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -9342,7 +9500,7 @@ window.em.geheZumNächstenFeld = function() {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 		window.em.geheZumNächstenFeld_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
 			success: function(data) {
 				window.em.Feldliste = data;
@@ -9408,7 +9566,7 @@ window.em.geheZumVorigenFeld = function() {
 		// Feldliste aus globaler Variable verwenden - muss nicht geparst werden
 		window.em.geheZumVorigenFeld_2();
 	} else {
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/FeldListe?include_docs=true', {
 			success: function(data) {
 				window.em.Feldliste = data;
@@ -9475,7 +9633,7 @@ window.em.geheZumVorigenFeld_2 = function() {
 // wird in FeldEdit.html verwendet
 window.em.setzeReihenfolgeMitVorgaenger = function(FeldNameVorgaenger) {
 	var viewname = 'evab/FeldListeFeldName?key="' + FeldNameVorgaenger + '"&include_docs=true';
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view(viewname, {
 		success: function(data) {
 			var ReihenfolgeVorgaenger = data.rows[0].doc.Reihenfolge;
@@ -9494,7 +9652,7 @@ window.em.speichereStandardwert = function() {
 		window.em.speichereStandardwert_2();
 	} else {
 		// aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function(doc) {
 				window.em.Feld = doc;
@@ -9533,6 +9691,7 @@ window.em.speichereStandardwert_2 = function() {
 			window.em.Feld.Standardwert[localStorage.Email] = Feldwert;
 		}
 	}
+    var $db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
 			window.em.Feld._rev = data.rev;
@@ -9555,7 +9714,7 @@ window.em.speichereFeldeigenschaften = function() {
 		window.em.speichereFeldeigenschaften_2();
 	} else {
 		// Objekt aus der DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.FeldId, {
 			success: function(data) {
 				window.em.Feld = data;
@@ -9611,6 +9770,7 @@ window.em.speichereFeldeigenschaften_2 = function() {
 			delete window.em.Feld[feldname];
 		}
 	});
+    var $db = $.couch.db("evab");
 	$db.saveDoc(window.em.Feld, {
 		success: function(data) {
 			// rev aktualisieren
@@ -9654,7 +9814,7 @@ window.em.nächsteVorigeBeob = function(NächsteOderVorige) {
 	} else {
 		// keine Projektliste übergeben
 		// neu aus DB erstellen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/BeobListe?startkey=["' + localStorage.Email + '",{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true', {
 			success: function(data) {
 				// Globale Variable erstellen, damit Abfrage ab dem zweiten Mal nicht mehr nötig ist
@@ -9711,7 +9871,7 @@ window.em.löscheBeob = function() {
 		window.em.löscheBeob_2();
 	} else {
 		// Objekt aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function(data) {
 				window.em.Beobachtung = data;
@@ -9725,7 +9885,7 @@ window.em.löscheBeob = function() {
 };
 
 window.em.löscheBeob_2 = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.Beobachtung, {
 		success: function(data) {
 			// Liste anpassen. Vorsicht: Bei refresh kann sie fehlen
@@ -9756,7 +9916,7 @@ window.em.speichereBeob = function(that) {
 		window.em.speichereBeob_2(_this);
 	} else {
 		// nein: Beob aus DB holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.openDoc(localStorage.BeobId, {
 			success: function(data) {
 				window.em.Beobachtung = data;
@@ -9793,6 +9953,7 @@ window.em.speichereBeob_2 = function(that) {
 	window.em.Beobachtung.aArtName = localStorage.aArtName;
 	window.em.Beobachtung.aArtId = localStorage.aArtId;
 	// alles speichern
+    var $db = $.couch.db("evab");
 	$db.saveDoc(window.em.Beobachtung, {
 		success: function(data) {
 			window.em.Beobachtung._rev = data.rev;
@@ -9850,7 +10011,7 @@ window.em.importiereFehlendeArten = function() {
 		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Arten, die in artbeobachtungen.ch fehlen");
 		return;
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	_.each(window.em.arten_fehlen_in_evab, function(art) {
 		$db.saveDoc(art, {
 			success: function() {
@@ -9873,7 +10034,7 @@ window.em.exportiereBeobVonInArtendbFehlendenArten = function() {
 
 // PROVISORISCH, NACH BENUTZUNG ENTFERNEN
 window.em.entferneArtenOhneArtgruppe = function() {
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/ArtenOhneArtgruppe?include_docs=true', {
 		success: function(data) {
 			if (data.rows.length === 0) {
@@ -9923,7 +10084,7 @@ window.em.initiiereArtenImportieren = function() {
 
 		// eigene Arten holen
 		console.log("hole Arten aus evab");
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/Artliste?include_docs=true', {
 			success: function(data) {
 				// Arten in evab ermitteln
@@ -10079,7 +10240,7 @@ window.em.importiereFehlendeArtengruppen = function() {
 		window.em.melde("Aktion abgebrochen: Es gibt in arteigenschaften.ch keine Artengruppen, die in artbeobachtungen.ch fehlen");
 		return;
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	_.each(window.em.artgruppen_fehlen_in_evab, function(artgruppe) {
 		$db.saveDoc(artgruppe, {
 			success: function() {
@@ -10097,7 +10258,7 @@ window.em.aktualisiereAnzahlArtenVonArtengruppen = function() {
 		window.em.melde("Aktion abgebrochen: Es gibt keine gemeinsamen Artengruppen mit unterschiedlicher Anzahl Arten");
 		return;
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	_.each(window.em.artgruppen_gemeinsam_anzarten, function(artgruppe_artendb) {
 		$db.openDoc(artgruppe_artendb._id, {
 			success: function(artgruppe_evab) {
@@ -10181,7 +10342,7 @@ window.em.entferneDokumenteEinesUsers = function() {
 		window.em.melde("Bitte User eingeben");
 		return;
 	}
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/UserDocs?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 		success: function(data) {
 			var dokumenten = data.rows,
@@ -10203,7 +10364,6 @@ window.em.entferneDokumenteEinesUsers = function() {
 			});
 
 			// Bezug zu Usern aus Feldern entfernen (username in Arrays)
-			$db = $.couch.db("evab");
 			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					var felder = data.rows,
@@ -10266,7 +10426,7 @@ window.em.entferneUser = function() {
 		return;
 	}
 	// Kontrollieren, ob der User noch Dokumente hat
-	$db = $.couch.db("evab");
+	var $db = $.couch.db("evab");
 	$db.view('evab/UserDocs?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 		success: function(data) {
 			if (data.rows.length > 0) {
@@ -10274,7 +10434,6 @@ window.em.entferneUser = function() {
 				return;
 			}
 			// kontrollieren, ob der User noch Feldeinstellungen hat
-			$db = $.couch.db("evab");
 			$db.view('evab/UserFelderMitDaten?key="' + user + '"&descending=true&include_docs=true&reduce=false', {
 				success: function(data) {
 					if (data.rows.length > 0) {
@@ -10329,7 +10488,7 @@ window.em.initiiereArtengruppenImportieren = function() {
 		// Anzahl anzeigen
 		$("#agi_artendb_titel").html("In arteigenschaften.ch<br>vorhandene Artengruppen (" + artgruppen_artendb_reduziert.length + "):");
 		// eigene Artgruppen holen
-		$db = $.couch.db("evab");
+		var $db = $.couch.db("evab");
 		$db.view('evab/Artgruppen?include_docs=true', {
 			success: function(data) {
 				// Artgruppen in evab ermitteln
