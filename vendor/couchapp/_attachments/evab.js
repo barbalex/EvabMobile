@@ -7138,7 +7138,7 @@ window.em.speichereRaum_2 = function(that) {
 // voriger des ersten => RaumListe
 // nächster des letzten => melden
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
-window.em.nächsterVorigerRaum = function(NächsterOderVoriger) {
+window.em.nächsterVorigerRaum = function(NächsterOderVoriger) { 
 	// prüfen, ob RaumListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.RaumListe) {
