@@ -4925,23 +4925,23 @@ window.em.handleHArtEditPageinit = function() {
 	$("#hArtEditPageHeader")
         .on("click", "[name='OeffneArtListehArtEdit']", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneArtListehArtEditClick();
+            window.em.handleHArtEditÖffneArtListehArtEditClick();
         })
         .on("click", ".OeffneZeithArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneZeithArtEditClick();
+            window.em.handleHArtEditÖffneZeithArtEditClick();
         })
         .on("click", ".OeffneOrthArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneOrthArtEditClick();
+            window.em.handleHArtEditÖffneOrthArtEditClick();
         })
         .on("click", ".OeffneRaumhArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneRaumhArtEditClick();
+            window.em.handleHArtEditÖffneRaumhArtEditClick();
         })
         .on("click", ".OeffneProjekthArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneProjekthArtEditClick();
+            window.em.handleHArtEditÖffneProjekthArtEditClick();
         });
 
 	$("#hArtEditForm")
@@ -4973,7 +4973,7 @@ window.em.handleHArtEditPageinit = function() {
 	    // sichtbare Felder wählen
         .on("click", "#waehleFelderhArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditWaehleFelderClick();
+            window.em.handleHArtEditWähleFelderClick();
         })
         // Code für den Art-Löschen-Dialog
         .on('click', '#LoescheBeobhArtEdit', function(event) {
@@ -5023,7 +5023,7 @@ window.em.handleHArtEditPageinit = function() {
 	$("#FormAnhängehAE")
         .on("click", "[name='LöscheAnhang']", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditLoescheAnhangClick(this);
+            window.em.handleHArtEditLöscheAnhangClick(this);
         })
         // Änderungen im Formular für Anhänge speichern
         .on("change", ".speichernAnhang", window.em.handleHArtEditSpeichernAnhangChange);
@@ -5386,23 +5386,23 @@ window.em.handleHArtEditListePageinit = function() {
 	$("#hArtEditListePageHeader")
         .on("click", "[name='OeffneArtListehArtEdit']", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneArtListehArtEditClick();
+            window.em.handleHArtEditÖffneArtListehArtEditClick();
         })
         .on("click", ".OeffneZeithArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneZeithArtEditClick();
+            window.em.handleHArtEditÖffneZeithArtEditClick();
         })
         .on("click", ".OeffneOrthArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneOrthArtEditClick();
+            window.em.handleHArtEditÖffneOrthArtEditClick();
         })
         .on("click", ".OeffneRaumhArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneRaumhArtEditClick();
+            window.em.handleHArtEditÖffneRaumhArtEditClick();
         })
         .on("click", ".OeffneProjekthArtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditOeffneProjekthArtEditClick();
+            window.em.handleHArtEditÖffneProjekthArtEditClick();
         });
 
 	$("#hArtEditListeForm")
@@ -6168,7 +6168,7 @@ window.em.handleHProjektEditPageinit = function() {
 	$("#hProjektEditHeader")
         .on("click", "[name='OeffneProjektListeProjektEdit']", function(event) {
             event.preventDefault();
-            window.em.handleHProjektEditOeffneProjektListeClick();
+            window.em.handleHProjektEditÖffneProjektListeClick();
         })
         .on("click", "#OeffneRaumListeProjektEdit", function(event) {
             event.preventDefault();
@@ -6237,15 +6237,15 @@ window.em.handleHProjektEditPageinit = function() {
         // sichtbare Felder wählen
         .on("click", "#waehleFelderProjektEdit", function(event) {
             event.preventDefault();
-            window.em.handleHProjektEditWaehleFelderClick();
+            window.em.handleHProjektEditWähleFelderClick();
         })
         .on('click', '#KarteOeffnenProjektEdit', function(event) {
             event.preventDefault();
-            window.em.handleHProjektEditKarteOeffnenClick();
+            window.em.handleHProjektEditKarteÖffnenClick();
         });
 
     $("#hpe_löschen_meldung")
-        .on("click", "#hpe_löschen_meldung_ja_loeschen", window.em.handleHProjektEditLoeschenMeldungJaClick);
+        .on("click", "#hpe_löschen_meldung_ja_loeschen", window.em.handleHProjektEditLöschenMeldungJaClick);
 
 	$('#MenuProjektEdit')
         .on('click', '.menu_einfacher_modus', window.em.handleHProjektEditMenuEinfacherModusClick)
@@ -6258,13 +6258,15 @@ window.em.handleHProjektEditPageinit = function() {
 };
 
 // wenn in hProjektEdit.html [name='OeffneProjektListeProjektEdit'] geklickt wird
-window.em.handleHProjektEditOeffneProjektListeClick = function() {
+window.em.handleHProjektEditÖffneProjektListeClick = function() {
+	'use strict';
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("hProjektListe.html");
 };
 
 // wenn in hProjektEdit.html .speichernAnhang geändert wird
 window.em.handleHProjektEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentshPE").val();
 	if (_attachments && _attachments.length > 0) {
 		window.em.speichereAnhänge(localStorage.ProjektId, window.em.hProjekt, "hPE");
@@ -6273,6 +6275,7 @@ window.em.handleHProjektEditSpeichernAnhangChange = function() {
 
 // wenn in hProjektEdit.html #LöscheProjektProjektEdit geklickt wird
 window.em.handleHProjektEditLöscheProjektClick = function() {
+	'use strict';
 	// Anzahl Räume des Projekts zählen
 	// die Abfrage verwenden, um die Datensätze später direkt zu löschen, ohne weitere DB-Abfrage
 	var $db = $.couch.db("evab");
@@ -6316,19 +6319,22 @@ window.em.handleHProjektEditLöscheProjektClick = function() {
 };
 
 // wenn in hProjektEdit.html #hpe_löschen_meldung_ja_loeschen geklickt wird
-window.em.handleHProjektEditLoeschenMeldungJaClick = function() {
+window.em.handleHProjektEditLöschenMeldungJaClick = function() {
+	'use strict';
 	var $hpe_löschen_meldung = $("#hpe_löschen_meldung")[0];
 	window.em.löscheProjekt(jQuery.data($hpe_löschen_meldung, 'Arten'), jQuery.data($hpe_löschen_meldung, 'Zeiten'), jQuery.data($hpe_löschen_meldung, 'Orte'), jQuery.data($hpe_löschen_meldung, 'Raeume'));
 };
 
 // wenn in hProjektEdit.html #waehleFelderProjektEdit geklickt wird
-window.em.handleHProjektEditWaehleFelderClick = function() {
+window.em.handleHProjektEditWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hProjektEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
 // wenn in hProjektEdit.html #hProjektEditContent nach links gewischt wird
 window.em.handleHProjektEditContentSwipeleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächstesVorigesProjekt("nächstes");
@@ -6337,6 +6343,7 @@ window.em.handleHProjektEditContentSwipeleft = function() {
 
 // wenn in hProjektEdit.html #hProjektEditContent nach rechts gewischt wird
 window.em.handleHProjektEditContentSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächstesVorigesProjekt("voriges");
@@ -6344,25 +6351,29 @@ window.em.handleHProjektEditContentSwiperight = function() {
 };
 
 // wenn in hProjektEdit.html #KarteOeffnenProjektEdit geklickt wird
-window.em.handleHProjektEditKarteOeffnenClick = function() {
+window.em.handleHProjektEditKarteÖffnenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektEdit";
 	$.mobile.navigate("Karte.html");
 };
 
 // wenn in hProjektEdit.html .menu_einfacher_modus geklickt wird
 window.em.handleHProjektEditMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageProjektEdit();
 	$.mobile.navigate("BeobListe.html");
 };
 
 // wenn in hProjektEdit.html .menu_felder_verwalten geklickt wird
 window.em.handleHProjektEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hProjektEdit.html .menu_projekte_exportieren geklickt wird
 window.em.handleHProjektEditMenuProjekteExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportProjekt/ExportProjekt?startkey=["' + localStorage.Email + '",{},{},{},{},{}]&endkey=["' + localStorage.Email + '"]&descending=true&include_docs=true');
 	$("#MenuProjektEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -6373,6 +6384,7 @@ window.em.handleHProjektEditMenuProjekteExportierenClick = function() {
 
 // wenn in hProjektEdit.html .menu_einstellungen geklickt wird
 window.em.handleHProjektEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
@@ -6383,6 +6395,7 @@ window.em.handleHProjektEditMenuEinstellungenClick = function() {
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird benutzt in hProjektEdit.html
 window.em.nächstesVorigesProjekt = function(NächstesOderVoriges) {
+	'use strict';
 	// prüfen, ob Projektliste schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.Projektliste) {
@@ -6403,6 +6416,7 @@ window.em.nächstesVorigesProjekt = function(NächstesOderVoriges) {
 };
 
 window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
+	'use strict';
 	var i,
 		ProjIdAktuell,
 		AnzProj;
@@ -6441,6 +6455,7 @@ window.em.nächstesVorigesProjekt_2 = function(NächstesOderVoriges) {
 
 // wird benutzt in hProjektEdit.html
 window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
+	'use strict';
 	// nur löschen, wo Datensätze vorkommen
 	if (Raeume.rows.length > 0) {
 		window.em.loescheIdIdRevListe(Raeume);
@@ -6474,6 +6489,7 @@ window.em.löscheProjekt = function(Arten, Zeiten, Orte, Raeume) {
 };
 
 window.em.löscheProjekt_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hProjekt, {
 		success: function(data) {
@@ -6500,6 +6516,7 @@ window.em.löscheProjekt_2 = function() {
 
 // wird benutzt in hProjektEdit.html
 window.em.validierehProjektEdit = function() {
+	'use strict';
 	if (!$("[name='pName']").val()) {
 		window.em.melde("Bitte Projektnamen eingeben");
 		setTimeout(function() { 
@@ -6512,6 +6529,7 @@ window.em.validierehProjektEdit = function() {
 
 // wird benutzt in hProjektEdit.html
 window.em.speichereHProjektEdit = function() {
+	'use strict';
 	var that = this;
 	if (window.em.hProjekt) {
 		window.em.speichereHProjektEdit_2(that);
@@ -6530,6 +6548,7 @@ window.em.speichereHProjektEdit = function() {
 };
 
 window.em.speichereHProjektEdit_2 = function(that) {
+	'use strict';
     var FeldnameDb,
         Feldwert,
         feldinfos;
@@ -6588,6 +6607,7 @@ window.em.speichereHProjektEdit_2 = function(that) {
 // erwartet die ID des aktuellen Datensatzes und ob nächster oder voriger gesucht wird
 // wird benutzt in hOrtEdit.html
 window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
+	'use strict';
 	// prüfen, ob OrtListe schon existiert
 	// nur abfragen, wenn sie noch nicht existiert
 	if (window.em.OrtListe) {
@@ -6608,6 +6628,7 @@ window.em.nächsterVorigerOrt = function(NächsterOderVoriger) {
 };
 
 window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
+	'use strict';
 	var i,
 		OrtIdAktuell,
 		AnzOrt;
@@ -6646,6 +6667,7 @@ window.em.nächsterVorigerOrt_2 = function(NächsterOderVoriger) {
 
 // wird benutzt in hOrtEdit.html
 window.em.validatehOrtEdit = function() {
+	'use strict';
 	if (!$("[name='oName']").val()) {
 		window.em.melde("Bitte Ortnamen eingeben");
 		setTimeout(function() { 
@@ -6658,6 +6680,7 @@ window.em.validatehOrtEdit = function() {
 
 // wird benutzt in hOrtEdit.html
 window.em.speichereHOrtEdit = function(that) {
+	'use strict';
 	// die eventhandler übergeben this nicht über die Klammer
 	var _this = that || this;
 	// prüfen, ob Ort existiert
@@ -6681,6 +6704,7 @@ window.em.speichereHOrtEdit = function(that) {
 };
 
 window.em.speichereHOrtEdit_2 = function(that) {
+	'use strict';
     var FeldnameDb,
         Feldwert,
         feldinfos;
@@ -6735,6 +6759,7 @@ window.em.speichereHOrtEdit_2 = function(that) {
 
 // wird benutzt in hOrtEdit.html
 window.em.löscheOrt = function(Arten, Zeiten) {
+	'use strict';
 	// nur löschen, wo Datensätze vorkommen
 	if (Zeiten.rows.length > 0) {
 		window.em.loescheIdIdRevListe(Zeiten);
@@ -6762,6 +6787,7 @@ window.em.löscheOrt = function(Arten, Zeiten) {
 };
 
 window.em.löscheOrt_2 = function() {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.removeDoc(window.em.hOrt, {
 		success: function(data) {
@@ -6785,6 +6811,7 @@ window.em.löscheOrt_2 = function() {
 
 // wird verwendet in hArtListe.html
 window.em.öffneArtgruppenliste_hal = function() {
+	'use strict';
 	// Globale Variablen für hArtListe zurücksetzen, damit die Liste beim nächsten Aufruf neu aufgebaut wird
 	//window.em.leereStoragehArtListe();
 	localStorage.Status = "neu";
@@ -6794,20 +6821,23 @@ window.em.öffneArtgruppenliste_hal = function() {
 };
 
 // wenn in hArtEdit.html auf [name='OeffneArtListehArtEdit'] geklickt wird
-window.em.handleHArtEditOeffneArtListehArtEditClick = function() {
+window.em.handleHArtEditÖffneArtListehArtEditClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	$.mobile.navigate("hArtListe.html");
 };
 
 // wenn in hArtEdit.html auf .OeffneZeithArtEdit geklickt wird
-window.em.handleHArtEditOeffneZeithArtEditClick = function() {
+window.em.handleHArtEditÖffneZeithArtEditClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	window.em.leereStoragehArtListe();
 	$.mobile.navigate("hZeitEdit.html");
 };
 
 // wenn in hArtEdit.html .OeffneOrthArtEdit geklickt wird
-window.em.handleHArtEditOeffneOrthArtEditClick = function() {
+window.em.handleHArtEditÖffneOrthArtEditClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
@@ -6816,7 +6846,8 @@ window.em.handleHArtEditOeffneOrthArtEditClick = function() {
 };
 
 // wenn in hArtEdit.html .OeffneRaumhArtEdit geklickt wird
-window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
+window.em.handleHArtEditÖffneRaumhArtEditClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
@@ -6827,7 +6858,8 @@ window.em.handleHArtEditOeffneRaumhArtEditClick = function() {
 };
 
 // wenn in hArtEdit.html .OeffneProjekthArtEdit geklickt wird
-window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
+window.em.handleHArtEditÖffneProjekthArtEditClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
@@ -6841,6 +6873,7 @@ window.em.handleHArtEditOeffneProjekthArtEditClick = function() {
 
 // wenn in hArtEdit.html .speichernAnhang geändert wird
 window.em.handleHArtEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentshAE").val();
 	if (_attachments && _attachments.length !== 0) {
 		window.em.speichereAnhänge(localStorage.hArtId, window.em.hArt, "hAE");
@@ -6849,18 +6882,21 @@ window.em.handleHArtEditSpeichernAnhangChange = function() {
 
 // wenn in hArtEdit.html #NeueBeobhArtEdit geklickt wird
 window.em.handleHArtEditNeueBeobhArtEditClick = function() {
+	'use strict';
 	localStorage.Status = "neu";
 	window.em.zuArtgruppenliste();
 };
 
 // wenn in hArtEdit.html #waehleFelderhArtEdit geklickt wird
-window.em.handleHArtEditWaehleFelderClick = function() {
+window.em.handleHArtEditWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hArtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
 // wenn in hArtEdit.html nach links gewischt wird
 window.em.handleHArtEditSwipeleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeArt("nächste");
@@ -6869,6 +6905,7 @@ window.em.handleHArtEditSwipeleft = function() {
 
 // wenn in hArtEdit.html nach rechts gewischt wird
 window.em.handleHArtEditSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeArt("vorige");
@@ -6876,17 +6913,20 @@ window.em.handleHArtEditSwiperight = function() {
 };
 
 // wenn in hArtEdit.html [name='LöscheAnhang'] geklickt wird
-window.em.handleHArtEditLoescheAnhangClick = function(that) {
+window.em.handleHArtEditLöscheAnhangClick = function(that) {
+	'use strict';
 	window.em.löscheAnhang(that, window.em.hArt, localStorage.hArtId);
 };
 
 // wenn in hArtEdit.html .menu_arteigenschaften geklickt wird
 window.em.handleHArtEditMenuArteigenschaftenClick = function() {
+	'use strict';
 	window.em.öffneEigenschaftenVonArt(window.em.hArt.aArtId);
 };
 
 // wenn in hArtEdit.html .menu_einfacher_modus geklickt wird
 window.em.handleHArtEditMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStoragehArtEdit();
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
@@ -6901,12 +6941,14 @@ window.em.handleHArtEditMenuEinfacherModusClick = function() {
 
 // wenn in hArtEdit.html .menu_felder_verwalten geklickt wird
 window.em.handleHArtEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hArtEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hArtEdit.html .menu_beob_exportieren geklickt wird
 window.em.handleHArtEditMenuBeobExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuhArtEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -6917,12 +6959,14 @@ window.em.handleHArtEditMenuBeobExportierenClick = function() {
 
 // wenn in hArtEdit.html .menu_einstellungen geklickt wird
 window.em.handleHArtEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hArtEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn hProjektListe erscheint
 window.em.handleHProjektListePageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -6933,6 +6977,7 @@ window.em.handleHProjektListePageshow = function() {
 
 // wenn hProjektListe initiiert wird
 window.em.handleHProjektListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -6978,7 +7023,7 @@ window.em.handleHProjektListePageinit = function() {
 	$('#ProjektListePageFooter')
         .on('click', '#OeffneKarteProjektListe', function(event) {
             event.preventDefault();
-            window.em.handleProjektListeOeffneKarteClick();
+            window.em.handleProjektListeÖffneKarteClick();
         });
 
 	$('#MenuProjektListe')
@@ -6993,20 +7038,24 @@ window.em.handleHProjektListePageinit = function() {
 };
 
 window.em.handleProjektListeSwipeleft = function() {
+	'use strict';
 	localStorage.ProjektId = $(this).attr('ProjektId');
 	$.mobile.navigate("hRaumListe.html");
 };
 
 window.em.handleProjektListeProjektClick = function(that) {
+	'use strict';
 	localStorage.ProjektId = $(that).attr('ProjektId');
 	$.mobile.navigate("hProjektEdit.html");
 };
 
 window.em.handleProjektListeSwiperight = function() {
+	'use strict';
 	$.mobile.navigate("BeobListe.html");
 };
 
-window.em.handleProjektListeOeffneKarteClick = function() {
+window.em.handleProjektListeÖffneKarteClick = function() {
+	'use strict';
 	localStorage.zurueck = "hProjektListe";
 	$.mobile.navigate("Karte.html");
 };
