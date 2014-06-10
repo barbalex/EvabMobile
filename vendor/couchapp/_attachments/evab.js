@@ -3756,6 +3756,7 @@ window.em.öffneEigenschaftenVonArt = function(id) {
 
 // wenn Artenliste.html initiiert wird
 window.em.handleAlPageinit = function() {
+	'use strict';
 	$(document)
         .on("keypress", window.em.handleAlKeypress);
 
@@ -3773,6 +3774,7 @@ window.em.handleAlPageinit = function() {
 
 // wenn Artenliste.html gezeigt wird
 window.em.handleAlPageshow = function() {
+	'use strict';
 	window.em.initiiereArtenliste("");
 	if (window.em.gruppe_merken) {
 		$("#al_standardgruppe").removeClass('ui-disabled');
@@ -3783,11 +3785,13 @@ window.em.handleAlPageshow = function() {
 
 // wenn Artenliste.html verschwindet
 window.em.handleAlPagehide = function() {
+	'use strict';
 	$("#al_ArtenListe").hide();
 };
 
 // wenn in Artenliste.html eine Taste gedrückt wird
 window.em.handleAlKeypress = function() {
+	'use strict';
 	if (event.which == 13) {
 		var filterwert = $("#al_filter").val().toLowerCase();
 		window.em.initiiereArtenliste(filterwert);
@@ -3796,24 +3800,28 @@ window.em.handleAlKeypress = function() {
 
 // wenn in Artenliste.html #al_filter_setzen geklickt wird
 window.em.handleAlAlFilterClick = function() {
+	'use strict';
 	var filterwert = $("#al_filter").val().toLowerCase();
 	window.em.initiiereArtenliste(filterwert);
 };
 
 // wenn in Artenliste.html .ui-icon-delete geklickt wird
 window.em.handleAlUiIconDeleteClick = function() {
+	'use strict';
 	var filterwert = "";
 	window.em.initiiereArtenliste(filterwert);
 };
 
 // wenn in Artenliste.html #al_standardgruppe geklickt wird
 window.em.handleAlAlStandardgruppeClick = function() {
+	'use strict';
 	delete window.em.gruppe_merken;
 	$.mobile.navigate("Artgruppenliste.html");
 };
 
 // wenn in Artenliste.html [name='ArtListItem'] geklickt wird
 window.em.handleAlArtListItemClick = function(that) {
+	'use strict';
 	var ArtBezeichnung = $(that).attr("ArtBezeichnung"),
 		artid = $(that).attr("artid"),
         harten_mit_gleicher_artid = [];
@@ -3840,17 +3848,20 @@ window.em.handleAlArtListItemClick = function(that) {
 
 // wenn Artgruppenliste.html erscheint
 window.em.handleAglPageshow = function() {
+	'use strict';
 	window.em.erstelleArtgruppenListe();
 	delete window.em.gruppe_merken;
 };
 
 // wenn Artgruppenliste.html verschwindet
 window.em.handleAglPagehide = function() {
+	'use strict';
 	$("#agl_standardgruppe").html("nächste Gruppe merken");
 };
 
 // wenn Artgruppenliste.html initiiert wird
 window.em.handleAglPageinit = function() {
+	'use strict';
 	// Vorsicht: Genauer als body funktioniert hier nicht,
 	// weil die nested List im DOM jedes mal eine eigene Page aufbaut
 	$("body")
@@ -3865,6 +3876,7 @@ window.em.handleAglPageinit = function() {
 
 // wenn in Artgruppenliste.html [name='ArtgruppenListItem'] geklickt wird
 window.em.handleAglArtgruppenListItemClick = function(that) {
+	'use strict';
 	localStorage.aArtGruppe = $(that).attr("ArtGruppe");
 	// wenn die Gruppe gemerkt werden soll, sie als globale Variable speichern
 	if (window.em.gruppe_merken) {
@@ -3875,6 +3887,7 @@ window.em.handleAglArtgruppenListItemClick = function(that) {
 
 // wenn in Artgruppenliste.html #agl_standardgruppe geklickt wird
 window.em.handleAglAglStandardgruppeClick = function() {
+	'use strict';
 	if ($(this).html() === "nächste Gruppe merken") {
 		window.em.gruppe_merken = true;
 		$(this).html("nächste Gruppe wird gemerkt");
@@ -3886,6 +3899,7 @@ window.em.handleAglAglStandardgruppeClick = function() {
 
 // wenn BeobEdit.html erscheint
 window.em.handleBeobEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -3903,6 +3917,7 @@ window.em.handleBeobEditPageshow = function() {
 
 // wenn BeobEdit.html verschwindet
 window.em.handleBeobEditPagehide = function() {
+	'use strict';
 	if (typeof window.em.watchID !== "undefined") {
 		window.em.stopGeolocation();
 	}
@@ -3910,6 +3925,7 @@ window.em.handleBeobEditPagehide = function() {
 
 // wenn BeobEdit.html initiiert wird
 window.em.handleBeobEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -3987,6 +4003,7 @@ window.em.handleBeobEditPageinit = function() {
             window.em.nächsteVorigeBeob('nächste');
         })
         .on("keyup", function(event) {
+            'use strict';
             // Wechsel zwischen Datensätzen via Pfeiltasten steuern
             // nicht in separate Funktion auslagern, weil IE9 event.preventDefault nicht kenn (und hier jQuery das abfängt)
             // nur reagieren, wenn BeobEdit sichtbar und Fokus nicht in einem Feld
@@ -4018,6 +4035,7 @@ window.em.handleBeobEditPageinit = function() {
 
 // wenn in BeobEdit.html #OeffneBeobListeBeobEdit geklickt wird
 window.em.handleOeffneBeobListeBeobEditClick = function() {
+	'use strict';
 	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("BeobListe.html");
 };
@@ -4025,6 +4043,7 @@ window.em.handleOeffneBeobListeBeobEditClick = function() {
 // wenn in BeobEdit.html #NeueBeobBeobEdit geklickt wird
 // neue Beobachtung erfassen
 window.em.handleNeueBeobBeobEditClick = function() {
+    'use strict';
 	// Globale Variable für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Status = "neu";
@@ -4041,6 +4060,7 @@ window.em.handleNeueBeobBeobEditClick = function() {
 // wenn in BeobEdit.html .aArtGruppe geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von Artgruppe
 window.em.handleBeobEditAArtGruppeClick = function() {
+	'use strict';
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	delete localStorage.Status;	// ja kein Status neu
@@ -4057,6 +4077,7 @@ window.em.handleBeobEditAArtGruppeClick = function() {
 // wenn in BeobEdit.html #waehleFelderBeobEdit geklickt wird
 // sichtbare Felder wählen
 window.em.handleWaehleFelderBeobEditClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "BeobEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
@@ -4064,6 +4085,7 @@ window.em.handleWaehleFelderBeobEditClick = function() {
 // wenn in BeobEdit.html .aArtName geklickt wird
 // Editieren von Beobachtungen managen, ausgehend von ArtName
 window.em.handleBeobEditAArtnameClick = function() {
+	'use strict';
 	// Globale Variablen für BeobListe zurücksetzen, damit die Liste neu aufgebaut wird
 	window.em.leereStorageBeobListe();
 	localStorage.Von = "BeobEdit";
@@ -4073,6 +4095,7 @@ window.em.handleBeobEditAArtnameClick = function() {
 // wenn in BeobEdit.html .speichern geändert wird
 // Für jedes Feld bei Änderung speichern
 window.em.handleBeobEditSpeichernChange = function() {
+	'use strict';
     var $oXKoord = $("[name='oXKoord']"),
         $oYKoord = $("[name='oYKoord']");
 	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $oXKoord.val() && $oYKoord.val()) {
@@ -4093,6 +4116,7 @@ window.em.handleBeobEditSpeichernChange = function() {
 // wenn in BeobEdit.html .speichernAnhang geändert wird
 // Änderungen im Formular für Anhänge speichern
 window.em.handleBeobEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentsBE").val();
 	if (_attachments && _attachments.length !== 0) {
 		window.em.speichereAnhänge(localStorage.BeobId, window.em.Beobachtung, "BE");
@@ -4101,12 +4125,14 @@ window.em.handleBeobEditSpeichernAnhangChange = function() {
 
 // wenn in BeobEdit.html #OeffneKarteBeobEdit geklickt wird
 window.em.handleBeobEditOeffneKarteClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobEdit";
 	$.mobile.navigate("Karte.html");
 };
 
 // wenn in BeobEdit.html auf #BeobEditContent nach links gewischt wird
 window.em.handleBeobEditContentSwipeleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeBeob("nächste");
@@ -4115,6 +4141,7 @@ window.em.handleBeobEditContentSwipeleft = function() {
 
 // wenn in BeobEdit.html auf #BeobEditContent nach rechts gewischt wird
 window.em.handleBeobEditContentSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsteVorigeBeob("vorige");
@@ -4123,23 +4150,27 @@ window.em.handleBeobEditContentSwiperight = function() {
 
 // wenn in BeobEdit.html .menu_arteigenschaften geklickt wird
 window.em.handleBeobEditMenuArteigenschaftenClick = function() {
+	'use strict';
 	window.em.öffneEigenschaftenVonArt(localStorage.aArtId);
 };
 
 // wenn in BeobEdit.html .menu_hierarchischer_modus geklickt wird
 window.em.handleBeobEditMenuHierarchischerModusClick = function() {
+	'use strict';
 	window.em.leereStorageBeobEdit();
 	$.mobile.navigate("hProjektListe.html");
 };
 
 // wenn in BeobEdit.html .menu_felder_verwalten geklickt wird
 window.em.handleBeobEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in BeobEdit.html .menu_beob_exportieren geklickt wird
 window.em.handleBeobEditMenuBeobExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuBeobEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -4150,12 +4181,14 @@ window.em.handleBeobEditMenuBeobExportierenClick = function() {
 
 // wenn in BeobEdit.html .menu_einstellungen geklickt wird
 window.em.handleBeobEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn BeobListe.html erscheint
 window.em.handleBeobListePageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -4166,6 +4199,7 @@ window.em.handleBeobListePageshow = function() {
 
 // Wenn BeobListe.html initiiert wird
 window.em.handleBeobListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4223,28 +4257,33 @@ window.em.handleBeobListeBeobTaphold = function() {
 
 // wenn in BeobListe.html #OeffneKarteBeobListe geklickt wird
 window.em.handleBeobListeOeffneKarteBeobListeClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobListe";
 	$.mobile.navigate("Karte.html");
 };
 
 // wenn in BeobListe.html #BeobListePageContent nach rechts gewischt wird
 window.em.handleBeobListeBeobListePageContentSwiperight = function() {
+	'use strict';
 	$.mobile.navigate("hProjektListe.html");
 };
 
 // wenn in BeobListe.html .menu_hierarchischer_modus geklickt wird
 window.em.handleBeobListeMenuHierarchischerModusClick = function() {
+	'use strict';
 	$.mobile.navigate("hProjektListe.html");
 };
 
 // wenn in BeobListe.html .menu_felder_verwalten geklickt wird
 window.em.handleBeobListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in BeobListe.html .menu_beob_exportieren geklickt wird
 window.em.handleBeobListeMenuBeobExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuBeobListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -4255,6 +4294,7 @@ window.em.handleBeobListeMenuBeobExportierenClick = function() {
 
 // wenn in BeobListe.html .menu_einstellungen geklickt wird
 window.em.handleBeobListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "BeobListe.html";
 	window.em.öffneMeineEinstellungen();
 };
@@ -4264,6 +4304,7 @@ window.em.handleBeobListeMenuEinstellungenClick = function() {
 // das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 // oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
 window.em.handleFeldEditPageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -4277,6 +4318,7 @@ window.em.handleFeldEditPageshow = function() {
 // wenn FeldEdit.html initiiert wird
 // Code, der nur beim ersten Aufruf der Seite laufen soll
 window.em.handleFeldEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4316,6 +4358,7 @@ window.em.handleFeldEditPageinit = function() {
             window.em.geheZumNächstenFeld();
         })
         .on("keyup", function(event) {
+            'use strict';
             // wenn in FeldEdit.htm eine Taste gedrückt wird
             // mit Pfeiltasten Datensätze wechseln
             // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
@@ -4348,6 +4391,7 @@ window.em.handleFeldEditPageinit = function() {
 };
 
 window.em.handleFeldEditMeineEinstellungenChange = function() {
+	'use strict';
 	var feldname = this.name,
 		feldwert = this.value;
 	// prüfen, ob das Feld als Objekt vorliegt
@@ -4370,6 +4414,7 @@ window.em.handleFeldEditMeineEinstellungenChange = function() {
 };
 
 window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert) {
+	'use strict';
 	// Sichtbarkeitseinstellungen: In einem Array werden die User aufgelistet, welche das Feld sehen
 	// Es muss geprüft werden, ob der aktuelle User in diesem Array enthalten ist
 	if (feldwert === "ja") {
@@ -4393,6 +4438,7 @@ window.em.handleFeldEditMeineEinstellungenChange_2 = function(feldname, feldwert
 // wenn in FeldEdit.htm .Feldeigenschaften geändert wird
 // jedes Feld aus Feldeigenschaften bei Änderung speichern
 window.em.handleFeldEditFeldeigenschaftenChange = function() {
+	'use strict';
 	localStorage.FeldWert = this.value;
 	if (this.name) {
 		localStorage.FeldName = this.name;
@@ -4490,6 +4536,7 @@ window.em.handleFeldEditFeldeigenschaftenChange = function() {
 };
 
 window.em.blendeDatentypabhängigeFelder = function() {
+	'use strict';
     var $feldedit_inputtyp = $("#feldedit_inputtyp"),
         $feldedit_optionen = $("#feldedit_optionen"),
         $feldedit_slider = $(".feldedit_slider");
@@ -4522,6 +4569,7 @@ window.em.blendeDatentypabhängigeFelder = function() {
 
 // wenn in FeldEdit.htm #FeldFolgtNach geändert wird
 window.em.handleFeldEditFeldFolgtNachChange = function() {
+	'use strict';
 	window.em.setzeReihenfolgeMitVorgaenger(this.value);
 	// Feldliste soll neu aufgebaut werden
 	delete window.em.Feldliste;
@@ -4529,6 +4577,7 @@ window.em.handleFeldEditFeldFolgtNachChange = function() {
 
 // wenn in FeldEdit.htm #Standardwert geändert wird
 window.em.handleFeldEditStandardwertChange = function() {
+	'use strict';
 	var optionen = $("#Optionen").val() || [],	// undefined verhindern
 		Feldwert = this.value || [],	// undefined verhindern
 		LetzterFeldwert,
@@ -4593,6 +4642,7 @@ window.em.handleFeldEditStandardwertChange = function() {
 // wenn in FeldEdit.htm #LoescheFeldFeldEdit geklickt wird
 // Beim Löschen rückfragen
 window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
+	'use strict';
 	if (window.em.Feld.User === "ZentrenBdKt") {
 		window.em.melde("Dies ist ein Feld eines nationalen Datenzentrums<br><br>Es kann nicht gelöscht werden<br><br>Sie können es ausblenden");
 	} else {
@@ -4602,6 +4652,7 @@ window.em.handleFeldEditLoescheFeldFeldEditClick = function() {
 
 // wenn in FeldEdit.htm #fe_löschen_meldung_ja_loeschen geklickt wird
 window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
+	'use strict';
 	if (!window.em.Feld.FeldName) {
 		// Ohne Feldname kann nicht kontrolliert werden, in wievielen Datensätzen das Feld vorkommt
 		window.em.loescheFeld();
@@ -4637,6 +4688,7 @@ window.em.handleFeldEditFeLoeschenMeldungJaClick = function() {
 
 // wenn in FeldEdit.htm .menu_datenfelder_exportieren geklickt wird
 window.em.handleFeldEditMenuDatenfelderExportierenClick = function() {
+	'use strict';
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
 	$("#MenuFeldEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -4646,7 +4698,7 @@ window.em.handleFeldEditMenuDatenfelderExportierenClick = function() {
 };
 
 // wenn FelderWaehlen.html erscheint
-window.em.handleFelderWaehlenPageshow = function() {
+window.em.handleFelderWählenPageshow = function() {
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
