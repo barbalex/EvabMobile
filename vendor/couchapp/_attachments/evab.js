@@ -4699,6 +4699,7 @@ window.em.handleFeldEditMenuDatenfelderExportierenClick = function() {
 
 // wenn FelderWaehlen.html erscheint
 window.em.handleFelderWählenPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu BeobListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -4715,8 +4716,9 @@ window.em.handleFelderWählenPageshow = function() {
 };
 
 // wenn FelderWaehlen.html verschwindet
-window.em.handleFelderWaehlenPagehide = function() {
-	// globale Variabeln aufräumen
+window.em.handleFelderWählenPagehide = function() {
+	'use strict';
+	// globale Variablen aufräumen
 	delete localStorage.FeldlisteFwName;
 	delete localStorage.KriterienFürZuWählendeFelder;
 	// ausgeschaltet, weil es das braucht, wenn man von FelderWahlen direkt nach FeldEdit springt und dann zu FeldWaehlen zurück
@@ -4726,7 +4728,8 @@ window.em.handleFelderWaehlenPagehide = function() {
 };
 
 // wenn FelderWaehlen.html initiiert wird
-window.em.handleFelderWaehlenPageinit = function() {
+window.em.handleFelderWählenPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4745,9 +4748,10 @@ window.em.handleFelderWaehlenPageinit = function() {
         });
 
 	$("#FeldlisteFW")
-        .on("change", "input[name='Felder']", window.em.handleFelderWaehlenInputFelderChange)
+        .on("change", "input[name='Felder']", window.em.handleFelderWählenInputFelderChange)
 	    // aus unbekanntem Grund funktioniert .on nicht aber .bind schon
 	    .bind("taphold", "input[name='Felder']", function(event) {
+            'use strict';
             event.preventDefault();
             // event.target ist immer das label
             var FeldName = $(event.target).prop("for");
@@ -4757,13 +4761,14 @@ window.em.handleFelderWaehlenPageinit = function() {
 
 // wenn in FelderWaehlen.html input[name='Felder'] geändert wird
 // Felder speichern (checkbox)
-window.em.handleFelderWaehlenInputFelderChange = function() {
+window.em.handleFelderWählenInputFelderChange = function() {
+	'use strict';
 	var FeldName = $(this).prop("id"),
 		FeldId = $(this).attr("feldid"),
 		Feld,
 		feldrow,
 		feld_mit_sichtbarkeit,
-		sichtbar_fuer_benutzer;
+		sichtbar_für_benutzer;
 	feldrow = _.find(window.em[localStorage.FeldlisteFwName].rows, function(row) {
 		return row.doc._id === FeldId;
 	});
@@ -4777,13 +4782,13 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
         // eines der hierarchischen Formulare
         feld_mit_sichtbarkeit = "SichtbarImModusHierarchisch";
 	}
-	sichtbar_fuer_benutzer = Feld[feld_mit_sichtbarkeit] || [];
+	sichtbar_für_benutzer = Feld[feld_mit_sichtbarkeit] || [];
 	if ($("#" + FeldName).prop("checked") === true) {
-		sichtbar_fuer_benutzer.push(localStorage.Email);
+		sichtbar_für_benutzer.push(localStorage.Email);
 	} else {
-		sichtbar_fuer_benutzer = _.without(sichtbar_fuer_benutzer, localStorage.Email);
+		sichtbar_für_benutzer = _.without(sichtbar_für_benutzer, localStorage.Email);
 	}
-	Feld[feld_mit_sichtbarkeit] = sichtbar_fuer_benutzer;
+	Feld[feld_mit_sichtbarkeit] = sichtbar_für_benutzer;
 	// Änderung in DB speichern
     var $db = $.couch.db("evab");
 	$db.saveDoc(Feld, {
@@ -4798,6 +4803,7 @@ window.em.handleFelderWaehlenInputFelderChange = function() {
 };
 
 window.em.öffneFeld = function(FeldName) {
+	'use strict';
 	var $db = $.couch.db("evab");
 	$db.view('evab/FeldListeFeldName?key="' + FeldName + '"&include_docs=true', {
 		success: function(data) {
@@ -4810,6 +4816,7 @@ window.em.öffneFeld = function(FeldName) {
 
 // wenn FeldListe.html erscheint
 window.em.handleFeldListePageshow = function() {
+	'use strict';
 	if (localStorage.length === 0 || !localStorage.Email) {
 		window.em.leereAlleVariabeln();
 		$.mobile.navigate("index.html");
@@ -4819,6 +4826,7 @@ window.em.handleFeldListePageshow = function() {
 
 // wenn FeldListe.html initiiert wird
 window.em.handleFeldListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4856,12 +4864,14 @@ window.em.handleFeldListePageinit = function() {
 // wenn in FeldListe.html .Feld geklickt wird
 // Feld öffnen
 window.em.handleFeldListeFeldClick = function(that) {
+	'use strict';
 	localStorage.FeldId = $(that).attr('FeldId');
 	$.mobile.navigate("FeldEdit.html");
 };
 
 // wenn in FeldListe.html .menu_datenfelder_exportieren geklickt wird
 window.em.handleFeldListeMenuDatenfelderExportierenClick = function() {
+	'use strict';
 	window.open("_list/FeldExport/FeldListe?include_docs=true");
 	// völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
     // ...bevor es geschlossen werden muss, weil es sonst offen bleibt
@@ -4870,6 +4880,7 @@ window.em.handleFeldListeMenuDatenfelderExportierenClick = function() {
 
 // wenn in FeldListe.html #FeldListeBackButton geklickt wird
 window.em.handleFeldListeBackButtonClick = function() {
+	'use strict';
     if (localStorage.hArtSicht === "liste" && localStorage.zurueck === "hArtEdit.html") {
         $.mobile.navigate("hArtEditListe.html");
     } else {
@@ -4880,6 +4891,7 @@ window.em.handleFeldListeBackButtonClick = function() {
 
 // wenn hArtEdit.html erscheint
 window.em.handleHArtEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -4897,6 +4909,7 @@ window.em.handleHArtEditPageshow = function() {
 
 // wenn hArtEdit.html initiiert wird
 window.em.handleHArtEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -4991,6 +5004,7 @@ window.em.handleHArtEditPageinit = function() {
         })
         // Pagination Pfeiltasten initialisieren
         .on("keyup", function(event) {
+            'use strict';
             // nur reagieren, wenn hArtEdit sichtbar und Fokus nicht in einem Feld
             if (!$(event.target).is("input, textarea, select, button") && $('#hArtEdit').is(':visible')) {
                 // Left arrow
@@ -5028,6 +5042,7 @@ window.em.handleHArtEditPageinit = function() {
 
 // wenn hArtEditListe.html erscheint
 window.em.handleHArtEditListePageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -5048,6 +5063,7 @@ window.em.handleHArtEditListePageshow = function() {
 // managt den Aufbau aller Daten und Felder für hArtEditListe.html
 // Artliste und hArt holen
 window.em.initiierehArtEditListe = function() {
+	'use strict';
 	// markieren, dass die Listensicht aktiv ist
 	localStorage.hArtSicht = "liste";
 	// hat hArtEdit.html eine hArtListe übergeben?
@@ -5082,6 +5098,7 @@ window.em.initiierehArtEditListe = function() {
 
 // Artgruppe ermitteln
 window.em.initiierehArtEditListe_2 = function() {
+	'use strict';
 	var anzArt = window.em.hArtListe.rows.length,
 		Titel2,
 		artgruppen = [],
@@ -5125,6 +5142,7 @@ window.em.initiierehArtEditListe_2 = function() {
 
 // Feldliste holen
 window.em.initiierehArtEditListe_3 = function(artgruppe) {
+	'use strict';
 	// prüfen, ob die Feldliste schon geholt wurde
 	// wenn ja: deren globale Variable verwenden
 	// immer neu holen, sonst hat man veraltete Daten, wenn zuvor in hArtEdit Felder geändert wurden
@@ -5145,6 +5163,7 @@ window.em.initiierehArtEditListe_3 = function(artgruppe) {
 
 // baut das HTML für die hArtEditListeForm auf
 window.em.initiierehArtEditListe_4 = function(artgruppe) {
+	'use strict';
 	var htmlContainer = '<table id="hArtEditListeTable" data-role="table" class="ui-body-d ui-responsive felder_tabelle" data-mode="reflow">',
 		htmlContainerHead,
 		htmlContainerBody,
@@ -5233,6 +5252,7 @@ window.em.initiierehArtEditListe_4 = function(artgruppe) {
 };
 
 window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup = function(artgruppen) {
+	'use strict';
 	var html = '<fieldset id="hael_artgruppen_popup_fieldset" data-role="controlgroup">';
 	_.each(artgruppen, function(artgruppe) {
 		html += '<input type="radio" name="hael_artgruppen_popup_input" id="hael_';
@@ -5252,10 +5272,11 @@ window.em.erstelleHtmlFürHaelArtgruppenPopupRadiogroup = function(artgruppen) {
 	return html;
 };
 
-// managt das Initialiseren einer Art in hArtEditListe.html
+// managt das Initialisieren einer Art in hArtEditListe.html
 // erwartet die hArtId
 // wird aufgerufen von hArtEditListe.html, wenn der Fokus in einen Datensatz kommt
 window.em.initiierehArtEditListeArt = function(hartid) {
+	'use strict';
 	// Infos zur Art holen
 	// achtung: wenn soeben die Art geändert wurde, müssen ArtId und ArtName neu geholt werden
 	if (window.em.hArt && window.em.hArt._id === hartid && (!localStorage.Von || localStorage.Von !== "hArtEdit")) {
@@ -5275,6 +5296,7 @@ window.em.initiierehArtEditListeArt = function(hartid) {
 };
 
 window.em.initiierehArtEditListeArt_2 = function(hart) {
+	'use strict';
 	// bei neuen hArt hat das Objekt noch keine ID
 	if (hart._id) {
 		localStorage.hArtId = hart._id;
@@ -5289,7 +5311,8 @@ window.em.initiierehArtEditListeArt_2 = function(hart) {
 // generiert dynamisch die Artgruppen-abhängigen Felder
 // Mitgeben: Feldliste, Beobachtung
 window.em.erstelleDynamischeFelderhArtEditListe = function() {
-	var htmlContainer = window.em.generiereHtmlFuerhArtEditListeForm();
+	'use strict';
+	var htmlContainer = window.em.generiereHtmlFürhArtEditListeForm();
 	// Linie nur anfügen, wenn Felder erstellt wurden
 	if (htmlContainer) {
 		htmlContainer = "<hr />" + htmlContainer;
@@ -5303,7 +5326,8 @@ window.em.erstelleDynamischeFelderhArtEditListe = function() {
 // generiert das Html für Formular in hArtEdit.html
 // erwartet ArtGruppe; Feldliste als Objekt; Beobachtung als Objekt
 // der htmlContainer wird zurück gegeben
-window.em.generiereHtmlFuerhArtEditListeForm = function() {
+window.em.generiereHtmlFürhArtEditListeForm = function() {
+	'use strict';
 	var Feld = {},
 		FeldName,
         FeldWert,
@@ -5346,6 +5370,7 @@ window.em.generiereHtmlFuerhArtEditListeForm = function() {
 
 // wenn hArtEditListe.html initiiert wird
 window.em.handleHArtEditListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -5391,6 +5416,7 @@ window.em.handleHArtEditListePageinit = function() {
         .on("slidestop", '.speichernSlider', window.em.speichereHArt)
         // Sobald auf einen Datensatz geklickt wird, ihn initiieren - falls noch nicht geschehen
         .on("click", ".hart", function() {
+            'use strict';
             var hartid = $(this).attr("hartid");
             if (!localStorage.hArtId || localStorage.hArtId !== hartid) {
                 // die Art muss initiiert werden
@@ -5408,7 +5434,7 @@ window.em.handleHArtEditListePageinit = function() {
         // sichtbare Felder wählen
         .on("click", "#waehleFelderhArtEditListe", function(event) {
             event.preventDefault();
-            window.em.handleHArtEditListeWaehleFelderClick();
+            window.em.handleHArtEditListeWähleFelderClick();
         })
         // In Einzelansicht wechseln
         .on("click", "#hArtEditListeEinzelsicht", function(event) {
@@ -5449,13 +5475,15 @@ window.em.handleHArtEditListePageinit = function() {
 
 
 // wenn in hArtEditListe.html #waehleFelderhArtEditListe geklickt wird
-window.em.handleHArtEditListeWaehleFelderClick = function() {
+window.em.handleHArtEditListeWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hArtEditListe";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
 // wenn hArtListe.html erscheint
 window.em.handleHArtListePageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -5473,6 +5501,7 @@ window.em.handleHArtListePageshow = function() {
 
 // wenn hArtListe.html initiiert wird
 window.em.handleHArtListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -5493,15 +5522,15 @@ window.em.handleHArtListePageinit = function() {
         })
         .on("click", "#OeffneOrthArtListe", function(event) {
             event.preventDefault();
-            window.em.handleHArtListeOeffneOrtClick();
+            window.em.handleHArtListeÖffneOrtClick();
         })
         .on("click", "#OeffneRaumhArtListe", function(event) {
             event.preventDefault();
-            window.em.handleHArtListeOeffneRaumClick();
+            window.em.handleHArtListeÖffneRaumClick();
         })
         .on("click", "#OeffneProjekthArtListe", function(event) {
             event.preventDefault();
-            window.em.handleHArtListeOeffneProjektClick();
+            window.em.handleHArtListeÖffneProjektClick();
         });
 
 	$("#hArtListe")
@@ -5529,12 +5558,14 @@ window.em.handleHArtListePageinit = function() {
 
 // wenn in hArtListe.html [name='OeffneZeithArtListe'] geklickt wird
 window.em.handleHArtListeOeffneZeitClick = function() {
+	'use strict';
 	window.em.leereStoragehArtListe();
 	$.mobile.navigate("hZeitEdit.html");
 };
 
 // wenn in hArtListe.html #OeffneOrthArtListe geklickt wird
-window.em.handleHArtListeOeffneOrtClick = function() {
+window.em.handleHArtListeÖffneOrtClick = function() {
+	'use strict';
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -5542,7 +5573,8 @@ window.em.handleHArtListeOeffneOrtClick = function() {
 };
 
 // wenn in hArtListe.html #OeffneRaumhArtListe geklickt wird
-window.em.handleHArtListeOeffneRaumClick = function() {
+window.em.handleHArtListeÖffneRaumClick = function() {
+	'use strict';
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -5552,7 +5584,8 @@ window.em.handleHArtListeOeffneRaumClick = function() {
 };
 
 // wenn in hArtListe.html #OeffneProjekthArtListe geklickt wird
-window.em.handleHArtListeOeffneProjektClick = function() {
+window.em.handleHArtListeÖffneProjektClick = function() {
+	'use strict';
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -5565,6 +5598,7 @@ window.em.handleHArtListeOeffneProjektClick = function() {
 
 // wenn in hArtListe.html .beob geklickt wird
 window.em.handleHArtListeBeobClick = function() {
+	'use strict';
 	localStorage.hArtId = $(this).attr('hArtId');
 	if (localStorage.hArtSicht === "liste") {
 		$.mobile.navigate("hArtEditListe.html");
@@ -5575,11 +5609,13 @@ window.em.handleHArtListeBeobClick = function() {
 
 // wenn in hArtListe.html nach rechts gewischt wird
 window.em.handleHArtListeSwiperight = function() {
+	'use strict';
 	$.mobile.navigate("hZeitListe.html");
 };
 
 // wenn in hArtListe.html .menu_einfacher_modus geklickt wird
 window.em.handleHArtListeMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStoragehArtListe();
 	window.em.leereStorageZeitEdit();
 	window.em.leereStorageZeitListe();
@@ -5593,12 +5629,14 @@ window.em.handleHArtListeMenuEinfacherModusClick = function() {
 
 // wenn in hArtListe.html .menu_felder_verwalten geklickt wird
 window.em.handleHArtListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hArtListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hArtListe.html .menu_beob_exportieren geklickt wird
 window.em.handleHArtListeMenuBeobExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportBeob/ExportBeob?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuhArtListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -5609,12 +5647,14 @@ window.em.handleHArtListeMenuBeobExportierenClick = function() {
 
 // wenn in hArtListe.html .menu_einstellungen geklickt wird
 window.em.handleHArtListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hArtListe.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn hOrtEdit.html erscheint
 window.em.handleHOrtEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -5632,6 +5672,7 @@ window.em.handleHOrtEditPageshow = function() {
 
 // wenn hOrtEdit.html verschwindet
 window.em.handleHOrtEditPagehide = function() {
+	'use strict';
 	if (typeof window.em.watchID !== "undefined") {
 		window.em.stopGeolocation();
 	}
@@ -5639,6 +5680,7 @@ window.em.handleHOrtEditPagehide = function() {
 
 // wenn hOrtEdit.html initiiert wird
 window.em.handleHOrtEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -5661,11 +5703,11 @@ window.em.handleHOrtEditPageinit = function() {
 	$("#OrtEditHeader")
         .on("click", "[name='OeffneOrtListeOrtEdit']", function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditOeffneOrtListeClick();
+            window.em.handleHOrtEditÖffneOrtListeClick();
         })
         .on("click", "#OeffneRaumOrtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditOeffneRaumClick();
+            window.em.handleHOrtEditÖffneRaumClick();
         })
         .on("click", "#OeffneZeitListeOrtEdit", function(event) {
             event.preventDefault();
@@ -5673,7 +5715,7 @@ window.em.handleHOrtEditPageinit = function() {
         })
         .on("click", "#OeffneProjektOrtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditOeffneProjektClick();
+            window.em.handleHOrtEditÖffneProjektClick();
         });
 
 	$("#hOrtEditForm")
@@ -5709,6 +5751,7 @@ window.em.handleHOrtEditPageinit = function() {
         })
         // Pagination Pfeiltasten initialisieren
         .on("keyup", function(event) {
+            'use strict';
             // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
             if (!$(event.target).is("input, textarea, select, button") && $('#hOrtEdit').is(':visible')) {
                 // Left arrow
@@ -5733,17 +5776,17 @@ window.em.handleHOrtEditPageinit = function() {
         // sichtbare Felder wählen
         .on("click", "#waehleFelderOrtEdit", function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditWaehleFelderClick();
+            window.em.handleHOrtEditWähleFelderClick();
         })
         // Code für den Ort-Löschen-Dialog
         .on('click', '#LoescheOrtOrtEdit', function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditLoescheOrtClick(this);
+            window.em.handleHOrtEditLöscheOrtClick(this);
         })
         // Karte managen
         .on('click', '#KarteOeffnenOrtEdit', function(event) {
             event.preventDefault();
-            window.em.handleHOrtEditKarteOeffnenClick();
+            window.em.handleHOrtEditKarteÖffnenClick();
         })
         .on('click', '#VerortungOrtEdit', function(event) {
             event.preventDefault();
@@ -5751,7 +5794,7 @@ window.em.handleHOrtEditPageinit = function() {
         });
 
     $("#hoe_löschen_meldung")
-        .on("click", "#hoe_löschen_meldung_ja_loeschen", window.em.handleHOrtEditLoeschenMeldungJaClick);
+        .on("click", "#hoe_löschen_meldung_ja_loeschen", window.em.handleHOrtEditLöschenMeldungJaClick);
 
 	$('#MenuOrtEdit')
         .on('click', '.menu_einfacher_modus', window.em.handleHOrtEditMenuEinfacherModusClick)
@@ -5764,20 +5807,23 @@ window.em.handleHOrtEditPageinit = function() {
 };
 
 // wenn in hOrtEdit.html [name='OeffneOrtListeOrtEdit'] geklickt wird
-window.em.handleHOrtEditOeffneOrtListeClick = function() {
+window.em.handleHOrtEditÖffneOrtListeClick = function() {
+	'use strict';
 	window.em.leereStorageOrtEdit();
 	$.mobile.navigate("hOrtListe.html");
 };
 
 // wenn in hOrtEdit.html #OeffneRaumOrtEdit geklickt wurde
-window.em.handleHOrtEditOeffneRaumClick = function() {
+window.em.handleHOrtEditÖffneRaumClick = function() {
+	'use strict';
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 };
 
 // wenn in hOrtEdit.html #OeffneProjektOrtEdit geklickt wird
-window.em.handleHOrtEditOeffneProjektClick = function() {
+window.em.handleHOrtEditÖffneProjektClick = function() {
+	'use strict';
 	// sonst wird bei Rückkehr die alte Liste angezeigt, egal von welchem Raum man kommt!
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumListe();
@@ -5786,6 +5832,7 @@ window.em.handleHOrtEditOeffneProjektClick = function() {
 
 // wenn in hOrtEdit.html .speichern geändert wird
 window.em.handleHOrtEditSpeichernChange = function() {
+	'use strict';
 	var Feldname = this.name,
         $oXKoord = $("[name='oXKoord']"),
         $oYKoord = $("[name='oYKoord']");
@@ -5806,6 +5853,7 @@ window.em.handleHOrtEditSpeichernChange = function() {
 
 // wenn in hOrtEdit.html .speichernAnhang ändert
 window.em.handleHOrtEditSpeichernAnhangChange = function() {
+	'use strict';
 	var _attachments = $("#_attachmentshOE").val();
 	if (_attachments && _attachments.length !== 0) {
 		window.em.speichereAnhänge(localStorage.OrtId, window.em.hOrt, "hOE");
@@ -5813,13 +5861,15 @@ window.em.handleHOrtEditSpeichernAnhangChange = function() {
 };
 
 // wenn in hOrtEdit.html #waehleFelderOrtEdit geklickt wird
-window.em.handleHOrtEditWaehleFelderClick = function() {
+window.em.handleHOrtEditWähleFelderClick = function() {
+	'use strict';
 	localStorage.AufrufendeSeiteFW = "hOrtEdit";
 	$.mobile.navigate("FelderWaehlen.html");
 };
 
 // wenn in hOrtEdit.html #LoescheOrtOrtEdit geklickt wird
-window.em.handleHOrtEditLoescheOrtClick = function() {
+window.em.handleHOrtEditLöscheOrtClick = function() {
+	'use strict';
 	// Anzahl Zeiten von Ort zählen
 	var $db = $.couch.db("evab");
 	$db.view('evab/hZeitIdVonOrt?startkey=["' + localStorage.OrtId + '"]&endkey=["' + localStorage.OrtId + '",{},{}]', {
@@ -5845,19 +5895,22 @@ window.em.handleHOrtEditLoescheOrtClick = function() {
 };
 
 // wenn in hOrtEdit.html #hoe_löschen_meldung_ja_loeschen geklickt wird
-window.em.handleHOrtEditLoeschenMeldungJaClick = function() {
+window.em.handleHOrtEditLöschenMeldungJaClick = function() {
+	'use strict';
 	var $hoe_löschen_meldung = $("#hoe_löschen_meldung")[0];
 	window.em.löscheOrt($.data($hoe_löschen_meldung, 'Arten'), $.data($hoe_löschen_meldung, 'Zeiten'));
 };
 
 // wenn in hOrtEdit.html #KarteOeffnenOrtEdit geklickt wird
-window.em.handleHOrtEditKarteOeffnenClick = function() {
+window.em.handleHOrtEditKarteÖffnenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtEdit";
 	$.mobile.navigate("Karte.html");
 };
 
 // wenn in hOrtEdit.html #OrtEditContent nach links gewischt wird
 window.em.handleHOrtEditContentSwipeleft = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsterVorigerOrt("nächster");
@@ -5866,6 +5919,7 @@ window.em.handleHOrtEditContentSwipeleft = function() {
 
 // wenn in hOrtEdit.html #OrtEditContent nach rechts gewischt wird
 window.em.handleHOrtEditContentSwiperight = function() {
+	'use strict';
 	if (!$("*:focus").attr("aria-valuenow")) {
 		// kein slider
 		window.em.nächsterVorigerOrt("voriger");
@@ -5874,6 +5928,7 @@ window.em.handleHOrtEditContentSwiperight = function() {
 
 // wenn in hOrtEdit.html .menu_einfacher_modus geklickt wird
 window.em.handleHOrtEditMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageOrtEdit();
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumEdit();
@@ -5884,12 +5939,14 @@ window.em.handleHOrtEditMenuEinfacherModusClick = function() {
 
 // wenn in hOrtEdit.html .menu_felder_verwalten geklickt wird
 window.em.handleHOrtEditMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtEdit.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hOrtEdit.html .menu_orte_exportieren geklickt wird
 window.em.handleHOrtEditMenuOrteExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuOrtEdit")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -5900,12 +5957,14 @@ window.em.handleHOrtEditMenuOrteExportierenClick = function() {
 
 // wenn in hOrtEdit.html .menu_einstellungen geklickt wird
 window.em.handleHOrtEditMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtEdit.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn hOrtListe.html erscheint
 window.em.handleHOrtListePageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -5923,6 +5982,7 @@ window.em.handleHOrtListePageshow = function() {
 
 // wenn hOrtListe.html initiiert wird
 window.em.handleHOrtListePageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -5946,11 +6006,11 @@ window.em.handleHOrtListePageinit = function() {
         // Link zu Raum in Navbar und Titelleiste
         .on("click", "[name='OeffneRaumOrtListe']", function(event) {
             event.preventDefault();
-            window.em.handleHOrtListeOeffneRaumClick();
+            window.em.handleHOrtListeÖffneRaumClick();
         })
         .on("click", "#OeffneProjektOrtListe", function(event) {
             event.preventDefault();
-            window.em.handleHOrtListeOeffneProjektClick();
+            window.em.handleHOrtListeÖffneProjektClick();
         });
 
 	$("#hOrtListe")
@@ -5972,7 +6032,7 @@ window.em.handleHOrtListePageinit = function() {
 	$("#hOrtListePageFooter")
         .on('click', '#OeffneKarteOrtListe', function(event) {
             event.preventDefault();
-            window.em.handleHOrtListeOeffneKarteClick();
+            window.em.handleHOrtListeÖffneKarteClick();
         });
 
 	$('#MenuOrtListe')
@@ -5986,13 +6046,15 @@ window.em.handleHOrtListePageinit = function() {
 };
 
 // wenn in hOrtListe.html [name='OeffneRaumOrtListe'] geklickt wird
-window.em.handleHOrtListeOeffneRaumClick = function() {
+window.em.handleHOrtListeÖffneRaumClick = function() {
+	'use strict';
 	window.em.leereStorageOrtListe();
 	$.mobile.navigate("hRaumEdit.html");
 };
 
 // wenn in hOrtListe.html #OeffneProjektOrtListe geklickt wird
-window.em.handleHOrtListeOeffneProjektClick = function() {
+window.em.handleHOrtListeÖffneProjektClick = function() {
+	'use strict';
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
@@ -6001,31 +6063,36 @@ window.em.handleHOrtListeOeffneProjektClick = function() {
 
 // wenn in hOrtListe.html nach links gewischt wird
 window.em.handleHOrtListeSwipeleft = function() {
+	'use strict';
 	localStorage.OrtId = $(this).attr('OrtId');
 	$.mobile.navigate("hZeitListe.html");
 };
 
 // wenn in hOrtListe.html .Ort geklickt wird
 window.em.handleHOrtListeOrtClick = function(that) {
+	'use strict';
 	localStorage.OrtId = $(that).attr('OrtId');
 	$.mobile.navigate("hOrtEdit.html");
 };
 
 // wenn in hOrtListe.html #hOrtListePageContent nach rechts gewischt wird
 window.em.handleHOrtListePageContentSwiperight = function() {
+	'use strict';
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumEdit();
 	$.mobile.navigate("hRaumListe.html");
 };
 
 // wenn in hOrtListe.html #OeffneKarteOrtListe geklickt wird
-window.em.handleHOrtListeOeffneKarteClick = function() {
+window.em.handleHOrtListeÖffneKarteClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtListe";
 	$.mobile.navigate("Karte.html");
 };
 
 // wenn in hOrtListe.html .menu_einfacher_modus geklickt wird
 window.em.handleHOrtListeMenuEinfacherModusClick = function() {
+	'use strict';
 	window.em.leereStorageOrtListe();
 	window.em.leereStorageRaumEdit();
 	window.em.leereStorageRaumListe();
@@ -6035,12 +6102,14 @@ window.em.handleHOrtListeMenuEinfacherModusClick = function() {
 
 // wenn in hOrtListe.html .menu_felder_verwalten geklickt wird
 window.em.handleHOrtListeMenuFelderVerwaltenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtListe.html";
 	$.mobile.navigate("FeldListe.html");
 };
 
 // wenn in hOrtListe.html .menu_orte_exportieren geklickt wird
 window.em.handleHOrtListeMenuOrteExportierenClick = function() {
+	'use strict';
 	window.open('_list/ExportOrt/ExportOrt?startkey=["' + localStorage.Email + '"]&endkey=["' + localStorage.Email + '",{},{}]&include_docs=true');
 	$("#MenuOrtListe")
         // völlig unlogisch: das bereits offene popup muss zuerst initialisiert werden...
@@ -6051,12 +6120,14 @@ window.em.handleHOrtListeMenuOrteExportierenClick = function() {
 
 // wenn in hOrtListe.html .menu_einstellungen geklickt wird
 window.em.handleHOrtListeMenuEinstellungenClick = function() {
+	'use strict';
 	localStorage.zurueck = "hOrtListe.html";
 	window.em.öffneMeineEinstellungen();
 };
 
 // wenn hProjektEdit.html angezeigt wird
 window.em.handleHProjektEditPageshow = function() {
+	'use strict';
 	// Sollte keine id vorliegen, zu hProjektListe.html wechseln
 	// das kommt im Normalfall nur vor, wenn der Cache des Browsers geleert wurde
 	// oder in der Zwischenzeit auf einem anderen Browser dieser Datensatz gelöscht wurde
@@ -6074,6 +6145,7 @@ window.em.handleHProjektEditPageshow = function() {
 
 // wenn hProjektEdit.html initiiert wird
 window.em.handleHProjektEditPageinit = function() {
+	'use strict';
 	// Wird diese Seite direkt aufgerufen und es gibt keinen localStorage,
 	// muss auf index.html umgeleitet werden
 	if (localStorage.length === 0 || !localStorage.Email) {
@@ -6135,6 +6207,7 @@ window.em.handleHProjektEditPageinit = function() {
         })
         // Pagination Pfeiltasten initialisieren
         .on("keyup", function(event) {
+            'use strict';
             // nur reagieren, wenn hProjektEdit sichtbar und Fokus nicht in einem Feld
             if (!$(event.target).is("input, textarea, select, button") && $('#hProjektEdit').is(':visible')) {
                 // Left arrow
