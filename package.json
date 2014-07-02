@@ -1,0 +1,30 @@
+{
+  "name": "EvabMobile",
+  "version": "0.0.0",
+  "description": "Mit _evab mobile_ erfassen Naturschutzprofis und ambitionierte Amateure Artbeobachtungen direkt im Feld auf Mobilgeräten. Grösste Stärke: NutzerInnen erstellen einfach und flexibel eigene, projektspezifische Datenstrukturen.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/barbalex/EvabMobile.git"
+  },
+  "keywords": [
+    "artbeobachtungen"
+  ],
+  "author": "Alexander Gabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/barbalex/EvabMobile/issues"
+  },
+  "homepage": "https://github.com/barbalex/EvabMobile",
+  "devDependencies": {
+    "gulp": "~3.7.0",
+    "gulp-concat": "~2.2.0",
+    "gulp-minify-css": "~0.3.4",
+    "gulp-notify": "~1.3.1",
+    "gulp-uglify": "~0.3.0",
+    "gulp-autoprefixer": "0.0.7"
+  }
+}
