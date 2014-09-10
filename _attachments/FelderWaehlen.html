@@ -39,8 +39,9 @@
 			</form>
 		</div>
 		<script>
-			$("#FelderWaehlenPage").on("pageshow", window.em.handleFelderWählenPageshow);
-			$("#FelderWaehlenPage").on("pagehide", window.em.handleFelderWählenPagehide);
+			$("#FelderWaehlenPage")
+               .on("pageshow", window.em.handleFelderWählenPageshow)
+               .on("pagehide", window.em.handleFelderWählenPagehide);
 			$(":jqmData(role='page')").on("pageinit", window.em.handleFelderWählenPageinit);
 		</script>
 	</div>

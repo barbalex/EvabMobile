@@ -7,7 +7,7 @@
   	<title>EvAB</title>
   	<link rel="stylesheet" href="style/main.css">
   	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="src/jquery.js" type="text/javascript"><\/script>');</script>
+	<script>window.jQuery || document.write('<script src="vendor/couchapp/jquery.js" type="text/javascript"><\/script>');</script>
   	<script>
 		$(document).on("mobileinit", function () {
 			$.mobile.page.prototype.options.degradeInputs.date = 'text';
@@ -65,8 +65,9 @@
 			</div>
 		</div>
 		<script charset="utf-8">
-			$("#hOrtListe").on("pageshow", window.em.handleHOrtListePageshow);
-			$("#hOrtListe").on("pageinit", window.em.handleHOrtListePageinit);
+			$("#hOrtListe")
+                .on("pageshow", window.em.handleHOrtListePageshow)
+			    .on("pageinit", window.em.handleHOrtListePageinit);
 		</script>
 	</div>
   </body>
