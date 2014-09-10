@@ -4,48 +4,6 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 
 window.em = window.em || {};
 
-//window.em.erstelleNeuesDatum = require('./modules/erstelleNeuesDatum');
-window.em.erstelleNeuesDatum = function() {
-    'use strict';
-	var jetzt = new Date(),
-		Jahr = jetzt.getFullYear(),
-		Mnt = jetzt.getMonth()+1,
-		MntAusgabe = ((Mnt < 10) ? "0" + Mnt : Mnt),
-		Tag = jetzt.getDate(),
-		TagAusgabe = ((Tag < 10) ? "0" + Tag : Tag);
-	return Jahr + "-" + MntAusgabe + "-" + TagAusgabe;
-};
-
-window.em.erstelleNeueUhrzeit = function() {
-	'use strict';
-	var jetzt = new Date(),
-		Std = jetzt.getHours(),
-		StdAusgabe = ((Std < 10) ? "0" + Std : Std),
-		Min = jetzt.getMinutes(),
-		MinAusgabe = ((Min < 10) ? "0" + Min : Min),
-		Sek = jetzt.getSeconds(),
-		SekAusgabe = ((Sek < 10) ? "0" + Sek : Sek);
-	return StdAusgabe + ":" + MinAusgabe + ":" + SekAusgabe;
-};
-
-// wandelt decimal degrees (vom GPS) in WGS84 um
-/**
- * @return {number}
- */
-window.em.DdInWgs84BreiteGrad = function(Breite) {
-	'use strict';
-	return Math.floor(Breite);
-};
-
-/**
- * @return {number}
- */
-window.em.DdInWgs84BreiteMin = function(Breite) {
-	'use strict';
-	var BreiteGrad = Math.floor(Breite);
-	return Math.floor((Breite-BreiteGrad)*60);
-};
-
 /**
  * @return {number}
  */
@@ -149,8 +107,10 @@ window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, La
  */
 window.em.DdInChX = function(Breite, Laenge) {
 	'use strict';
-	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
-		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
+    var DdInWgs84BreiteGrad = require('./modules/ddInWgs84BreiteGrad'),
+        BreiteGrad = DdInWgs84BreiteGrad(Breite),
+        DdInWgs84BreiteMin = require('./modules/ddInWgs84BreiteMin'),
+		BreiteMin = DdInWgs84BreiteMin(Breite),
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
 		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
 		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
@@ -163,8 +123,10 @@ window.em.DdInChX = function(Breite, Laenge) {
  */
 window.em.DdInChY = function(Breite, Laenge) {
 	'use strict';
-	var BreiteGrad = window.em.DdInWgs84BreiteGrad(Breite),
-		BreiteMin = window.em.DdInWgs84BreiteMin(Breite),
+	var DdInWgs84BreiteGrad = require('./modules/ddInWgs84BreiteGrad'),
+        BreiteGrad = DdInWgs84BreiteGrad(Breite),
+        DdInWgs84BreiteMin = require('./modules/ddInWgs84BreiteMin'),
+		BreiteMin = DdInWgs84BreiteMin(Breite),
 		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
 		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
 		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
@@ -271,7 +233,9 @@ window.em.geheZurueckFE = function() {
 // aufgerufen bloss von Artenliste.html
 window.em.speichereNeueBeob = function(aArtBezeichnung) {
 	'use strict';
-	var doc = {};
+	var doc = {},
+        erstelleNeuesDatum = require('./modules/erstelleNeuesDatum'),
+        erstelleNeueUhrzeit = require('./modules/erstelleNeueUhrzeit');
 	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
@@ -289,8 +253,8 @@ window.em.speichereNeueBeob = function(aArtBezeichnung) {
 	} else {
 		//localStorage.Von == "BeobListe" || localStorage.Von == "BeobEdit"
 		doc.Typ = "Beobachtung";
-		doc.zDatum = window.em.erstelleNeuesDatum();
-		doc.zUhrzeit = window.em.erstelleNeueUhrzeit();
+		doc.zDatum = erstelleNeuesDatum();
+		doc.zUhrzeit = erstelleNeueUhrzeit();
 		window.em.speichereNeueBeob_02(doc);
 	}
 };
@@ -420,14 +384,16 @@ window.em.erstelleNeueZeit = function() {
 // ausgelöst durch hZeitListe.html oder hZeitEdit.html
 // dies ist der erste Schritt: doc bilden
 	var doc = {},
-        $hZeitEdit = $("#hZeitEdit");
+        $hZeitEdit = $("#hZeitEdit"),
+        erstelleNeuesDatum = require('./modules/erstelleNeuesDatum'),
+        erstelleNeueUhrzeit = require('./modules/erstelleNeueUhrzeit');
 	doc.Typ = "hZeit";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
 	doc.hRaumId = localStorage.RaumId;
 	doc.hOrtId = localStorage.OrtId;
-	doc.zDatum = window.em.erstelleNeuesDatum();
-	doc.zUhrzeit = window.em.erstelleNeueUhrzeit();
+	doc.zDatum = erstelleNeuesDatum();
+	doc.zUhrzeit = erstelleNeueUhrzeit();
 	// an hZeitEdit.html übergeben
 	window.em.hZeit = doc;
 	// Variabeln verfügbar machen
