@@ -5,4 +5,5 @@
   // ".*\\.swp$"
   // ".*\\.bak$"
   "node_modules$"
+  "gulp-tasks$"
 ]
