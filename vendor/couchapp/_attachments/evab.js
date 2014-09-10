@@ -4,195 +4,6 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 
 window.em = window.em || {};
 
-/**
- * @return {number}
- */
-window.em.DdInWgs84BreiteSec = function(Breite) {
-	'use strict';
-	var BreiteGrad = Math.floor(Breite),
-		BreiteMin = Math.floor((Breite-BreiteGrad)*60);
-	return Math.round((((Breite - BreiteGrad) - (BreiteMin/60)) * 60 * 60) * 100) / 100;
-};
-
-/**
- * @return {number}
- */
-window.em.DdInWgs84LaengeGrad = function(Laenge) {
-	'use strict';
-	return Math.floor(Laenge);
-};
-
-/**
- * @return {number}
- */
-window.em.DdInWgs84LaengeMin = function(Laenge) {
-	'use strict';
-	var LaengeGrad = Math.floor(Laenge);
-	return Math.floor((Laenge-LaengeGrad)*60);
-};
-
-/**
- * @return {number}
- */
-window.em.DdInWgs84LaengeSec = function(Laenge) {
-	'use strict';
-	var LaengeGrad = Math.floor(Laenge),
-		LaengeMin = Math.floor((Laenge-LaengeGrad)*60);
-	return Math.round((((Laenge - LaengeGrad) - (LaengeMin/60)) * 60 * 60) * 100 ) / 100;
-};
-
-// Wandelt WGS84 lat/long (° dec) in CH-Landeskoordinaten um
-/**
- * @return {number}
- */
-window.em.Wgs84InChX = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-	'use strict';
-	var lat,
-		lng,
-		lat_aux,
-		lng_aux,
-        x;
-
-	// Converts degrees dec to sex
-	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
-	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
-
-	// Axiliary values (% Bern)
-	lat_aux = (lat - 169028.66)/10000;
-	lng_aux = (lng - 26782.5)/10000;
-
-	x = 200147.07
-	  + 308807.95 * lat_aux 
-	  +   3745.25 * Math.pow(lng_aux,2)
-	  +     76.63 * Math.pow(lat_aux,2)
-	  -    194.56 * Math.pow(lng_aux,2) * lat_aux
-	  +    119.79 * Math.pow(lat_aux,3);
-
-	return x;
-};
-
-// Wandelt WGS84 in CH-Landeskoordinaten um
-/**
- * @return {number}
- */
-window.em.Wgs84InChY = function(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec) {
-	'use strict';
-	var lat,
-        lng,
-        lat_aux,
-		lng_aux,
-        y;
-
-	// Converts degrees dec to sex
-	lat = BreiteSec + BreiteMin*60 + BreiteGrad*3600;
-	lng = LaengeSec + LaengeMin*60 + LaengeGrad*3600;
-
-	// Axiliary values (% Bern)
-	lat_aux = (lat - 169028.66)/10000;
-	lng_aux = (lng - 26782.5)/10000;
-
-	// Process Y
-	y = 600072.37
-	   + 211455.93 * lng_aux 
-	   -  10938.51 * lng_aux * lat_aux
-	   -      0.36 * lng_aux * Math.pow(lat_aux,2)
-	   -     44.54 * Math.pow(lng_aux,3);
-
-	return y;
-};
-
-// wandelt decimal degrees (vom GPS) in CH-Landeskoordinaten um
-/**
- * @return {number}
- */
-window.em.DdInChX = function(Breite, Laenge) {
-	'use strict';
-    var DdInWgs84BreiteGrad = require('./modules/ddInWgs84BreiteGrad'),
-        BreiteGrad = DdInWgs84BreiteGrad(Breite),
-        DdInWgs84BreiteMin = require('./modules/ddInWgs84BreiteMin'),
-		BreiteMin = DdInWgs84BreiteMin(Breite),
-		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
-		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
-		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
-		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge);
-	return Math.floor(window.em.Wgs84InChX(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
-};
-
-/**
- * @return {number}
- */
-window.em.DdInChY = function(Breite, Laenge) {
-	'use strict';
-	var DdInWgs84BreiteGrad = require('./modules/ddInWgs84BreiteGrad'),
-        BreiteGrad = DdInWgs84BreiteGrad(Breite),
-        DdInWgs84BreiteMin = require('./modules/ddInWgs84BreiteMin'),
-		BreiteMin = DdInWgs84BreiteMin(Breite),
-		BreiteSec = window.em.DdInWgs84BreiteSec(Breite),
-		LaengeGrad = window.em.DdInWgs84LaengeGrad(Laenge),
-		LaengeMin = window.em.DdInWgs84LaengeMin(Laenge),
-		LaengeSec = window.em.DdInWgs84LaengeSec(Laenge);
-	return Math.floor(window.em.Wgs84InChY(BreiteGrad, BreiteMin, BreiteSec, LaengeGrad, LaengeMin, LaengeSec));
-};
-
-// von CH-Landeskoord zu DecDeg
-
-// Convert CH y/x to WGS lat
-/**
- * @return {number}
- */
-window.em.CHtoWGSlat = function(y, x) {
-	'use strict';
-	// Converts militar to civil and to unit = 1000km
-	var lat,
-		y_aux,
-		x_aux;
-
-	// Axiliary values (% Bern)
-	y_aux = (y - 600000)/1000000;
-	x_aux = (x - 200000)/1000000;
-
-	// Process lat
-	lat = 16.9023892
-	     +  3.238272 * x_aux
-	     -  0.270978 * Math.pow(y_aux,2)
-	     -  0.002528 * Math.pow(x_aux,2)
-	     -  0.0447   * Math.pow(y_aux,2) * x_aux
-	     -  0.0140   * Math.pow(x_aux,3);
-
-	// Unit 10000" to 1 " and converts seconds to degrees (dec)
-	lat = lat * 100/36;
-
-	return lat;
-};
-
-// Convert CH y/x to WGS long
-/**
- * @return {number}
- */
-window.em.CHtoWGSlng = function(y, x) {
-	'use strict';
-	// Converts militar to civil and to unit = 1000km
-	var lng,
-		y_aux,
-		x_aux;
-
-	// Axiliary values (% Bern)
-	y_aux = (y - 600000)/1000000;
-	x_aux = (x - 200000)/1000000;
-
-	// Process long
-	lng = 2.6779094
-	    + 4.728982 * y_aux
-	    + 0.791484 * y_aux * x_aux
-	    + 0.1306   * y_aux * Math.pow(x_aux,2)
-	    - 0.0436   * Math.pow(y_aux,3);
-
-	// Unit 10000" to 1 " and converts seconds to degrees (dec)
-	lng = lng * 100/36;
-	
-	return lng;
-};
-
 window.em.melde = function(Meldung) {
 	'use strict';
 	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'><a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>"+Meldung+"</div>")
@@ -234,8 +45,8 @@ window.em.geheZurueckFE = function() {
 window.em.speichereNeueBeob = function(aArtBezeichnung) {
 	'use strict';
 	var doc = {},
-        erstelleNeuesDatum = require('./modules/erstelleNeuesDatum'),
-        erstelleNeueUhrzeit = require('./modules/erstelleNeueUhrzeit');
+        erstelleNeuesDatum = require('./util/erstelleNeuesDatum'),
+        erstelleNeueUhrzeit = require('./util/erstelleNeueUhrzeit');
 	doc.User = localStorage.Email;
 	doc.aAutor = localStorage.Autor;
 	doc.aArtGruppe = localStorage.aArtGruppe;
@@ -385,8 +196,8 @@ window.em.erstelleNeueZeit = function() {
 // dies ist der erste Schritt: doc bilden
 	var doc = {},
         $hZeitEdit = $("#hZeitEdit"),
-        erstelleNeuesDatum = require('./modules/erstelleNeuesDatum'),
-        erstelleNeueUhrzeit = require('./modules/erstelleNeueUhrzeit');
+        erstelleNeuesDatum = require('./util/erstelleNeuesDatum'),
+        erstelleNeueUhrzeit = require('./util/erstelleNeueUhrzeit');
 	doc.Typ = "hZeit";
 	doc.User = localStorage.Email;
 	doc.hProjektId = localStorage.ProjektId;
@@ -2784,11 +2595,13 @@ window.em.NavbarVerortungAnimieren = function() {
 
 window.em.GeolocationAuslesen = function(position) {
 	'use strict';
+    var DdInChX = require('./util/ddInChX'),
+        DdInChY = require('./util/ddInChY');
 	localStorage.oLagegenauigkeit = Math.floor(position.coords.accuracy);
 	localStorage.oLongitudeDecDeg = position.coords.longitude;
 	localStorage.oLatitudeDecDeg = position.coords.latitude;
-	localStorage.oXKoord = window.em.DdInChX(position.coords.latitude, position.coords.longitude);
-	localStorage.oYKoord = window.em.DdInChY(position.coords.latitude, position.coords.longitude);
+	localStorage.oXKoord = DdInChX(position.coords.latitude, position.coords.longitude);
+	localStorage.oYKoord = DdInChY(position.coords.latitude, position.coords.longitude);
 	$("[name='oXKoord']").val(localStorage.oXKoord);
 	$("[name='oYKoord']").val(localStorage.oYKoord);
 	$("[name='oLongitudeDecDeg']").val(position.coords.longitude);
@@ -4064,14 +3877,16 @@ window.em.handleBeobEditAArtnameClick = function() {
 window.em.handleBeobEditSpeichernChange = function() {
 	'use strict';
     var $oXKoord = $("[name='oXKoord']"),
-        $oYKoord = $("[name='oYKoord']");
+        $oYKoord = $("[name='oYKoord']"),
+        ChToWgsLng = require('./util/chToWgsLng'),
+        ChToWgsLat = require('./util/chToWgsLat');
 	if (['oXKoord', 'oYKoord'].indexOf(this.name) > -1 && $oXKoord.val() && $oYKoord.val()) {
 		// Wenn Koordinaten und beide erfasst
 		localStorage.oXKoord = $oXKoord.val();
 		localStorage.oYKoord = $oYKoord.val();
 		// Längen- und Breitengrade berechnen
-		localStorage.oLongitudeDecDeg = window.em.CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
-		localStorage.oLatitudeDecDeg = window.em.CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLongitudeDecDeg = ChToWgsLng(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLatitudeDecDeg = ChToWgsLat(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLagegenauigkeit = null;
 		// und Koordinaten speichern
 		window.em.speichereKoordinaten(localStorage.BeobId, "Beobachtung");
@@ -5802,14 +5617,16 @@ window.em.handleHOrtEditSpeichernChange = function() {
 	'use strict';
 	var Feldname = this.name,
         $oXKoord = $("[name='oXKoord']"),
-        $oYKoord = $("[name='oYKoord']");
+        $oYKoord = $("[name='oYKoord']"),
+        ChToWgsLng = require('./util/chToWgsLng'),
+        ChToWgsLat = require('./util/chToWgsLat');
 	if (['oXKoord', 'oYKoord'].indexOf(Feldname) > -1 && $oXKoord.val() && $oYKoord.val()) {
 		// Wenn Koordinaten und beide erfasst
 		localStorage.oXKoord = $oXKoord.val();
 		localStorage.oYKoord = $oYKoord.val();
 		// Längen- und Breitengrade berechnen
-		localStorage.oLongitudeDecDeg = window.em.CHtoWGSlng(localStorage.oYKoord, localStorage.oXKoord);
-		localStorage.oLatitudeDecDeg = window.em.CHtoWGSlat(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLongitudeDecDeg = ChToWgsLng(localStorage.oYKoord, localStorage.oXKoord);
+		localStorage.oLatitudeDecDeg = ChToWgsLat(localStorage.oYKoord, localStorage.oXKoord);
 		localStorage.oLagegenauigkeit = null;
 		// und Koordinaten speichern
 		window.em.speichereKoordinaten(localStorage.OrtId, "hOrt");
@@ -9090,11 +8907,13 @@ window.em.SetLocationhOrtEdit = function(LatLng, map, marker) {
 	var lat = LatLng.lat(),
 		lng = LatLng.lng(),
 		contentString,
-		infowindow;
+		infowindow,
+        DdInChX = require('./util/ddInChX'),
+        DdInChY = require('./util/ddInChY');
 	localStorage.oLatitudeDecDeg = lat;
 	localStorage.oLongitudeDecDeg = lng;
-	localStorage.oXKoord = window.em.DdInChX(lat, lng);
-	localStorage.oYKoord = window.em.DdInChY(lat, lng);
+	localStorage.oXKoord = DdInChX(lat, lng);
+	localStorage.oYKoord = DdInChY(lat, lng);
 	localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 	window.em.clearInfoWindows();
 	contentString = '<table class="kartenlegende_tabelle">';
@@ -9119,11 +8938,13 @@ window.em.SetLocationBeobEdit = function(LatLng, map, marker) {
 	var lat = LatLng.lat(),
 		lng = LatLng.lng(),
 		contentString,
-		infowindow;
+		infowindow,
+        DdInChX = require('./util/ddInChX'),
+        DdInChY = require('./util/ddInChY');
 	localStorage.oLatitudeDecDeg = lat;
 	localStorage.oLongitudeDecDeg = lng;
-	localStorage.oXKoord = window.em.DdInChX(lat, lng);
-	localStorage.oYKoord = window.em.DdInChY(lat, lng);
+	localStorage.oXKoord = DdInChX(lat, lng);
+	localStorage.oYKoord = DdInChY(lat, lng);
 	localStorage.oLagegenauigkeit = "Auf Luftbild markiert";
 	window.em.clearInfoWindows();
 	contentString = '<h4 class="map_infowindow_title">' + localStorage.aArtName + '</h4>';
