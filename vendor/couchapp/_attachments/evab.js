@@ -4,6 +4,7 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 
 window.em = window.em || {};
 
+//window.em.erstelleNeuesDatum = require('./modules/erstelleNeuesDatum');
 window.em.erstelleNeuesDatum = function() {
     'use strict';
 	var jetzt = new Date(),
