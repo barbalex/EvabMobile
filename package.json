@@ -41,6 +41,7 @@
     "gulp-util": "~3.0.1",
     "pretty-hrtime": "~0.2.1",
     "jquery": "~2.1.1",
-    "pouchdb": "~3.0.5"
+    "pouchdb": "~3.0.5",
+    "backbone": "~1.1.2"
   }
 }
