@@ -4,6 +4,9 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 
 window.em = window.em || {};
 
+var sync = require('./modules/dbSync');
+sync();
+
 window.em.melde = function(Meldung) {
 	'use strict';
 	$("<div id='meldung' data-role='popup' class='ui-content' data-overlay-theme='a'><a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>"+Meldung+"</div>")
