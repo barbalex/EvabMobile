@@ -2,7 +2,7 @@
 
 var gulp = require('gulp'),
     shell = require('gulp-shell'),
-    pass_file = require('../.couchpass.json'),
+    pass_file = require('../.couchpass'),
     user_name,
     password,
     request;
