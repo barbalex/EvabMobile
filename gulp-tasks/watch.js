@@ -1,7 +1,8 @@
 var gulp = require('gulp');
 
 return gulp.task('watch', function() {
-    gulp.watch([
+    gulp.watch(
+        [
             '_attachments/*',
             '-_attachments/style',
             'vendor/couchapp/_attachments/*',
@@ -13,7 +14,14 @@ return gulp.task('watch', function() {
         ],
         ['dev_src_1', 'dev_src_2']
     );
-    gulp.watch(['_attachments/style/*', '-_attachments/style/main.css', '-_attachments/style/evab.min.css'], ['dev_style']);
+    gulp.watch(
+        [
+            '_attachments/style/*',
+            '-_attachments/style/main.css',
+            '-_attachments/style/evab.min.css'
+        ],
+        ['dev_style']
+    );
     // browserify soll wissen, das gewatched wird
     global.isWatching = true;
 });
