@@ -1,10 +1,12 @@
+'use strict';
+
 var gulp = require('gulp');
 
 return gulp.task('watch', function() {
     gulp.watch(
         [
             '_attachments/*',
-            '-_attachments/style',
+            '-_attachments/style/*',
             'vendor/couchapp/_attachments/*',
             '-vendor/couchapp/_attachments/main.js',
             '-vendor/couchapp/_attachments/main2.js',
@@ -12,7 +14,7 @@ return gulp.task('watch', function() {
             'vendor/couchapp/_attachments/modules/*',
             'vendor/couchapp/_attachments/util/*'
         ],
-        ['dev_src_1', 'dev_src_2']
+        ['dev_only_src']
     );
     gulp.watch(
         [

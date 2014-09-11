@@ -6,7 +6,7 @@ window.em = window.em || {};
 
 var sync = require('./modules/dbSync');
 window.em.sync = sync;
-sync();
+//sync();
 
 window.em.melde = function(Meldung) {
 	'use strict';

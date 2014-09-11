@@ -5,4 +5,6 @@ var requireDir = require('require-dir');
 
 requireDir('../gulp-tasks', {recurse: true});
 
-return gulp.task('prod', ['browserify', 'prod_style', 'prod_src_1', 'prod_src_2']);
+return gulp.task('dev_only_src', ['browserify'], function() {
+    gulp.start('dev_only_src_2');
+});

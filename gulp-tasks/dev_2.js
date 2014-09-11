@@ -1,0 +1,11 @@
+'use strict';
+
+var gulp = require('gulp');
+var requireDir = require('require-dir');
+
+requireDir('../gulp-tasks', {recurse: true});
+
+return gulp.task('dev_2', ['dev_style', 'dev_src_1', 'dev_src_2'], function() {
+    gulp.start('build_couchapp');
+    //gulp.start('watch');
+});

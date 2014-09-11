@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),

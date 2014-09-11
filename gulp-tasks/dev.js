@@ -1,8 +1,17 @@
+/**
+ * Baut das Projekt für die Entwicklung:
+ * zuerst mit browserify Module einbinden
+ * dann style und src_1 und src_2 (hinter Body)
+ * dann watch
+ */
+
+'use strict';
+
 var gulp = require('gulp');
 var requireDir = require('require-dir');
 
 requireDir('../gulp-tasks', {recurse: true});
 
-return gulp.task('dev', ['browserify', 'dev_style', 'dev_src_1', 'dev_src_2'], function() {
-    gulp.start('watch');
+return gulp.task('dev', ['browserify'], function() {
+    gulp.start('dev_2');
 });
