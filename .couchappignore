@@ -4,5 +4,5 @@
   // ".*~$"
   // ".*\\.swp$"
   // ".*\\.bak$"
-  "node_modules$", "gulp-tasks$", "gulpfile.js"
+  "node_modules$", "gulp-tasks$", "gulpfile.js", "couchpass.json", "EvabMobile.iml"
 ]
