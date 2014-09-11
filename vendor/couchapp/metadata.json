@@ -1,5 +1,5 @@
 {
-	"name": "couchapp",
-	"description": "official couchapp vendor",
-	"fetch_uri": "git://github.com/couchapp/vendor.git"
+	"name": "artbeobachtungen.ch",
+	"description": "gabriel-software.ch",
+	"fetch_uri": "git://github.com/barbalex/EvabMobile.git"
 }

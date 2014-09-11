@@ -1,5 +1,3 @@
-/*.sublime-project
-/*.sublime-workspace
 /.idea
 /EvabMobile.iml
-/.couchpass.json
+.couchpass.json
