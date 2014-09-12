@@ -4,7 +4,7 @@
 
 'use strict';
 
-exports.sync = function() {
+module.exports = function() {
     var PouchDB = require('pouchdb')
         , db = new PouchDB('evab')
         , configuration = require('./configuration')
@@ -27,5 +27,5 @@ exports.sync = function() {
         console.log('error syncing');
     }
 
-    return sync();
+    sync();
 };

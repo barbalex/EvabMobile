@@ -8,7 +8,7 @@ var _ = require('underscore')
     , Backbone = require('backbone')
     , PouchDB = require('pouchdb')
     , Boxspring = require('boxspring')
-    , configuration = require('./modules/configuration')
+    , configuration = require('./configuration')
     , couchUser = configuration.couch.userName
     , couchPassword = configuration.couch.passWord
     ;
@@ -20,7 +20,7 @@ var evabDbMaker = Backbone.Boxspring.Model.extend({
         '_db_name': 'evab'
         , '_design': '_design/evab'
         , '_maker': ddoc
-        '_auth': {
+        , '_auth': {
             'name': couchUser,
             'password': couchPassword
         }
