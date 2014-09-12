@@ -5,9 +5,15 @@
 'use strict';
 
 exports.sync = function() {
-    var PouchDB = require('pouchdb'),
-        db = new PouchDB('ab'),
-        remoteCouch = 'http://barbalex:dLhdMg12@127.0.0.1:5984/evab';
+    var PouchDB = require('pouchdb')
+        , db = new PouchDB('evab')
+        , configuration = require('./configuration')
+        , couchUser = configuration.couch.userName
+        , couchPassword = configuration.couch.passWord
+        , couchUrl = configuration.couch.dbUrl
+        , couchName = configuration.couch.dbName
+        , remoteCouch = 'http://' + couchUser + ':' + couchPassword + '@' + couchUrl + '/' + couchName
+        ;
 
     function sync() {
         if (remoteCouch) {
