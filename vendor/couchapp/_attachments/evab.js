@@ -4,7 +4,20 @@ Diese Funktionen werden in evab auf mehreren Seiten benutzt
 
 window.em = window.em || {};
 
+/*
+ * dieser Code war der Versuch, Models einzuführen
+ * zwischenzeitlich aufgegeben (stattdessen in neuem Projekt)
+
 window.em.sync = require('./modules/dbSync');
+
+var BeobEinfachListe = require('./modules/BeobEinfachListe')
+    , testData = require('./test_data/beobEinfachListe.json')
+    ;
+
+window.em.beobEinfachListe = new BeobEinfachListe(testData.rows);
+*/
+
+
 
 window.em.melde = function(Meldung) {
 	'use strict';
