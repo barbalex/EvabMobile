@@ -6,17 +6,25 @@
  of browserify for faster bundling using caching.
  */
 
-var browserify   = require('browserify');
-var watchify     = require('watchify');
-var bundleLogger = require('../vendor/couchapp/_attachments/util/bundleLogger');
-var gulp         = require('gulp');
-var handleErrors = require('../vendor/couchapp/_attachments/util/handleErrors');
-var source       = require('vinyl-source-stream');
+/*jslint node: true, browser: true, nomen: true, todo: true */
+'use strict';
 
-gulp.task('browserify', function() {
-    var bundler = browserify({
+var browserify   = require('browserify'),
+    watchify     = require('watchify'),
+    bundleLogger = require('../vendor/couchapp/_attachments/util/bundleLogger'),
+    gulp         = require('gulp'),
+    handleErrors = require('../vendor/couchapp/_attachments/util/handleErrors'),
+    source       = require('vinyl-source-stream');
+
+gulp.task('browserify', function () {
+    var bundler,
+        bundle;
+
+    bundler = browserify({
         // Required watchify args
-        cache: {}, packageCache: {}, fullPaths: true,
+        cache: {},
+        packageCache: {},
+        fullPaths: true,
         // Specify the entry point of your app
         entries: ['./vendor/couchapp/_attachments/evab.js'],
         // Add file extentions to make optional in your requires
@@ -25,7 +33,7 @@ gulp.task('browserify', function() {
         debug: true
     });
 
-    var bundle = function() {
+    bundle = function () {
         // Log when bundling starts
         bundleLogger.start();
 
@@ -43,7 +51,7 @@ gulp.task('browserify', function() {
             .on('end', bundleLogger.end);
     };
 
-    if(global.isWatching) {
+    if (global.isWatching) {
         bundler = watchify(bundler);
         // Rebundle with watchify on changes.
         bundler.on('update', bundle);

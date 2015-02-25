@@ -1,8 +1,14 @@
+/*jslint node: true, browser: true, nomen: true, todo: true */
 'use strict';
 
-var gulp = require('gulp');
-var requireDir = require('require-dir');
+var gulp        = require('gulp'),
+    requireDir  = require('require-dir'),
+    runSequence = require('run-sequence');
 
 requireDir('../gulp-tasks', {recurse: true});
 
-return gulp.task('prod', ['browserify', 'prod_style', 'prod_src_1', 'prod_src_2']);
+return gulp.task('prod', function () {
+    runSequence(
+        ['browserify', 'prod_style', 'prod_src_1', 'prod_src_2']
+    );
+});
