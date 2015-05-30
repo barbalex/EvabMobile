@@ -2,8 +2,8 @@
 Diese Funktionen werden in evab auf mehreren Seiten benutzt
 */
 
-var $ = require('jquery'),
-  _ = require('underscore')
+var $ = require('jquery')
+var _ = require('underscore')
 
 window.em = window.em || {}
 
@@ -2462,12 +2462,12 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function (feldname, feldwert
 }
 
 // von oben trennen, sonst wird es vom linter zusammengefügt
-(function ($) {
+(function (jQuery) {
   // friendly helper http://tinyurl.com/6aow6yn
   // Läuft durch alle Felder im Formular
   // Wenn ein Wert enthalten ist, wird Feldname und Wert ins Objekt geschrieben
   // nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-  $.fn.serializeObject = function () {
+  jQuery.fn.serializeObject = function () {
     var o = {},
       a = this.serializeArray()
     $.each(a, function () {
@@ -2499,7 +2499,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function (feldname, feldwert
   // so können auch bei soeben gelöschten Feldinhalten das entsprechende Feld im doc gelöscht werden
   // siehe Beispiel in FeldEdit.html
   // nicht vergessen: Typ, _id und _rev dazu geben, um zu speichern
-  $.fn.serializeObjectNull = function () {
+  jQuery.fn.serializeObjectNull = function () {
     var o = {},
       a = this.serializeArray()
     $.each(a, function () {
@@ -2523,7 +2523,7 @@ window.em.generiereHtmlFuerMultipleselectOptionen = function (feldname, feldwert
     })
     return o
   }
-})($)
+})(jQuery)
 
 window.em.checkAllCheckboxesOfForm = function (pagename, checktoggle) {
   'use strict'

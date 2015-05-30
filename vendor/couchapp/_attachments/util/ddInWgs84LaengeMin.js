@@ -3,9 +3,9 @@
  * @return {number}
  */
 
-'use strict';
+'use strict'
 
-module.exports = function(Laenge) {
-    var LaengeGrad = Math.floor(Laenge);
-    return Math.floor((Laenge-LaengeGrad)*60);
-};
+module.exports = function (Laenge) {
+  var LaengeGrad = Math.floor(Laenge)
+  return Math.floor((Laenge - LaengeGrad) * 60)
+}

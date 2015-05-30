@@ -3,8 +3,8 @@
  * @return {number}
  */
 
-'use strict';
+'use strict'
 
-module.exports = function(Breite) {
-    return Math.floor(Breite);
-};
+module.exports = function (Breite) {
+  return Math.floor(Breite)
+}

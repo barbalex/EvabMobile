@@ -2,14 +2,14 @@
  * Modell für einfache Beobachtungen
  */
 
-'use strict';
+'use strict'
 
-var _ = require('underscore')
-    , Backbone = require('backbone')
-    ;
+var _ = require('underscore'),
+  Backbone = require('backbone')
+  
 
 var BeobEinfach = Backbone.Model.extend({
-    idAttribute: '_id'
-});
+  idAttribute: '_id'
+})
 
-module.exports = BeobEinfach;
+module.exports = BeobEinfach
